@@ -12,7 +12,6 @@ package com.ibm.ws.session.store.cache;
 
 import java.util.Map;
 
-import javax.cache.CacheException;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.spi.CachingProvider;
@@ -80,8 +79,11 @@ public class CacheStoreService implements SessionStoreService {
 
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
-        if ("true".equals(configurationProperties.get("useMultiRowSchema")))
-            smc.setUsingMultirow(true); // TODO temporary code for experimenting with cache entry per session property
+        // Always use a separate cache entry for each session property.
+        // These are kept in a cache named com.ibm.ws.session.prop.{ENCODED_APP_ROOT}
+        // and are keyed by {SESSION_PROP_ID}.{PROPERTY_NAME}
+        smc.setUsingMultirow(true);
+
         IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
         store.setLoader(new SessionLoader(serializationService, classLoader, applicationSessionStore));
         setCompletedPassivation(false);

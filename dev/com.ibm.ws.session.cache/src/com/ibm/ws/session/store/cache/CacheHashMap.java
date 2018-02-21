@@ -45,7 +45,18 @@ import com.ibm.wsspi.session.IStore;
 
 /**
  * Hash map backed by JCache.
- * TODO most methods are not implemented
+ * A CacheHashMap exists per application that uses HTTP sessions.
+ * It is built upon 2 caches, both of which are specific to the application.
+ * <ul>
+ *  <li>com.ibm.ws.session.info.{PERCENT_ENCODED_APP_CONTEXT_ROOT}
+ *   <br>Keys are session ids. Except for one additional key, {INVAL_KEY}, which is used to track the timestamp of invalidation
+ *   <br>Value is an ArrayList, containing information about the session, but not any session property values. Its content is represented by SessionInfo.
+ *  </li>
+ *  <li>com.ibm.ws.session.prop.{PERCENT_ENCODED_APP_CONTEXT_ROOT}
+ *   <br>Keys are {SESSION_ID}.{SESSION_PROPERTY_NAME}
+ *   <br>Value is a byte[] which is the session property value serialized to bytes.
+ *  </li>
+ * </ul>
  */
 public class CacheHashMap extends BackedHashMap {
     private static final long serialVersionUID = 1L; // not serializable, rejects writeObject
@@ -60,38 +71,39 @@ public class CacheHashMap extends BackedHashMap {
     /**
      * Key in the session info cache that is reserved for coordinating invalidation
      */
-    static final String INVAL_KEY = ".inval";
+    private static final String INVAL_KEY = ".inval";
 
-    // this is set to true for multirow in DatabaseHashMapMR if additional conditions are satisfied
-    boolean appDataTablesPerThread = false;
+    // this is set to true for multirow if additional conditions are satisfied
+    private final boolean appDataTablesPerThread;
 
-    CacheStoreService cacheStoreService;
-    IStore _iStore;
-    SessionManagerConfig _smc;
-
-    final String encodedAppRoot;
+    final CacheStoreService cacheStoreService;
+    private final IStore _iStore;
+    private final SessionManagerConfig _smc;
 
     /**
-     * For single-cache path, the whole session is store as an entry in this cache.
-     * For multi-cache path, separate caches are created per application to store the session properties each as their own cache entry,
-     * and this cache only contains information about the session rather than its contents.
+     * Per-application cache that contains information about the session but not the session property values.
      */
     @SuppressWarnings("rawtypes")
-    Cache<String, ArrayList> sessionInfoCache;
+    private Cache<String, ArrayList> sessionInfoCache;
 
     /**
      * Per-application session property cache.
-     * This cache is used on the entry-per-session property path.
-     * Null if all session properties are stored in a single entry of the com.ibm.ws.session.cache cache.
      */
-    Cache<String, byte[]> sessionPropertyCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
+    private Cache<String, byte[]> sessionPropertyCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
 
     @FFDCIgnore(CacheException.class)
-    public CacheHashMap(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
+    CacheHashMap(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
         super(store, smc);
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         this.cacheStoreService = cacheStoreService;
         this._iStore = store;
         this._smc = smc;
+
+        // We know we're running multi-row..if not writeAllProperties and not time-based writes,
+        // we must keep the app data tables per thread (rather than per session)
+        appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
 
         // Build a unique per-application cache name by starting with the application context root and percent encoding
         // the / and : characters (JCache spec does not allow these in cache names)
@@ -99,30 +111,25 @@ public class CacheHashMap extends BackedHashMap {
         String a = PERCENT.matcher(store.getId()).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
         a = SLASH.matcher(a).replaceAll("%2F");
         a = COLON.matcher(a).replaceAll("%3A");
-        encodedAppRoot = a;
 
-        // Use different cache names depending on whether session property values are all stored in a single entry
-        // within this main cache vs as separate entries in other caches.
-        // The use of different cache names prevents servers from colliding on the same cache when they have different
-        // options selected for how to store session properties.
-        String prefix = "true".equals(cacheStoreService.configurationProperties.get("useMultiRowSchema")) // TODO remove single entry cache and codepath
-                                        ? "com.ibm.ws.session.info."   // no session property values are kept in this cache
-                                        : "com.ibm.ws.session.cache."; // all session property values are stored in a single entry per session
-        String cacheName = new StringBuilder(prefix.length() + encodedAppRoot.length()).append(prefix).append(encodedAppRoot).toString();
+        String infoCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.info.").append(a).toString();
 
-        sessionInfoCache = cacheStoreService.cacheManager.getCache(cacheName, String.class, ArrayList.class);
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "find or create cache", infoCacheName);
+
+        sessionInfoCache = cacheStoreService.cacheManager.getCache(infoCacheName, String.class, ArrayList.class);
         if (sessionInfoCache == null) {
             @SuppressWarnings("rawtypes")
             Configuration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>()
                             .setTypes(String.class, ArrayList.class)
                             .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
             try {
-                sessionInfoCache = cacheStoreService.cacheManager.createCache(cacheName, config);
+                sessionInfoCache = cacheStoreService.cacheManager.createCache(infoCacheName, config);
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                if (trace && tc.isDebugEnabled())
                     Tr.debug(tc, "Created a new session info cache", sessionInfoCache);
             } catch (CacheException x) {
-                sessionInfoCache = cacheStoreService.cacheManager.getCache(cacheName, String.class, ArrayList.class);
+                sessionInfoCache = cacheStoreService.cacheManager.getCache(infoCacheName, String.class, ArrayList.class);
                 if (sessionInfoCache == null)
                     throw x;
             }
@@ -130,25 +137,31 @@ public class CacheHashMap extends BackedHashMap {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Using session info cache", sessionInfoCache);
-    }
 
-    /**
-     * Create a key for a session, of the form: SessionId@Application
-     * 
-     * @param sessionId the session id
-     * @param app the application
-     * @return the key
-     */
-    @Trivial
-    static final String createSessionKey(String sessionId, String app) {
-        String key = new StringBuilder(sessionId.length() + 1 + app.length())
-                        .append(sessionId)
-                        .append('@')
-                        .append(app)
-                        .toString();
+        String propCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.prop.").append(a).toString();
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "find or create cache", propCacheName);
+
+        sessionPropertyCache = cacheStoreService.cacheManager.getCache(propCacheName, String.class, byte[].class);
+        if (sessionPropertyCache == null) {
+            Configuration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
+                            .setTypes(String.class, byte[].class)
+                            .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
+            try {
+                sessionPropertyCache = cacheStoreService.cacheManager.createCache(propCacheName, config);
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(tc, "Created a new session property cache", propCacheName);
+            } catch (CacheException x) {
+                sessionPropertyCache = cacheStoreService.cacheManager.getCache(propCacheName, String.class, byte[].class);
+                if (sessionPropertyCache == null)
+                    throw x;
+            }
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "session key: " + key);
-        return key;
+            Tr.debug(tc, "Using session property cache", sessionPropertyCache);
     }
 
     /**
@@ -159,7 +172,7 @@ public class CacheHashMap extends BackedHashMap {
      * @return the key
      */
     @Trivial
-    static final String createSessionPropertyKey(String sessionId, String propertyId) {
+    private static final String createSessionPropertyKey(String sessionId, String propertyId) {
         String key = new StringBuilder(sessionId.length() + 1 + propertyId.length())
                         .append(sessionId)
                         .append('.')
@@ -188,10 +201,10 @@ public class CacheHashMap extends BackedHashMap {
                 Cache.Entry<String, ArrayList> entry = it.next();
                 String id = entry == null ? null : entry.getKey();
                 if (id != null && !INVAL_KEY.equals(id)) {
-                    SessionData sessionData = new SessionData(entry.getValue());
-                    long lastAccess = sessionData.getLastAccess();
-                    short listenerCnt = sessionData.getListenerCount();
-                    int maxInactive = sessionData.getMaxInactiveTime();
+                    SessionInfo sessionInfo = new SessionInfo(entry.getValue());
+                    long lastAccess = sessionInfo.getLastAccess();
+                    short listenerCnt = sessionInfo.getListenerCount();
+                    int maxInactive = sessionInfo.getMaxInactiveTime();
                     if ((listenerCnt == 0 || listenerCnt == 2)
                                     && maxInactive >= 0
                                     && maxInactive < (now - lastAccess) / 1000) {
@@ -209,19 +222,16 @@ public class CacheHashMap extends BackedHashMap {
                                 Tr.debug(this, tc, "deleted " + id);
 
                             //delete sub rows
-                            if (_smc.isUsingMultirow()) {
-                                SessionInfo sessionInfo = new SessionInfo(entry.getValue());
-                                Set<String> propIds = sessionInfo.getSessionPropertyIds();
-                                if (propIds != null && !propIds.isEmpty()) {
-                                    HashSet<String> propKeys = new HashSet<String>();
-                                    for (String propId : propIds)
-                                        propKeys.add(createSessionPropertyKey(id, propId));
+                            Set<String> propIds = sessionInfo.getSessionPropertyIds();
+                            if (propIds != null && !propIds.isEmpty()) {
+                                HashSet<String> propKeys = new HashSet<String>();
+                                for (String propId : propIds)
+                                    propKeys.add(createSessionPropertyKey(id, propId));
 
-                                    if (trace && tc.isDebugEnabled())
-                                        Tr.debug(this, tc, "deleting", propKeys);
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, "deleting", propKeys);
 
-                                    sessionPropertyCache.removeAll(propKeys);
-                                }
+                                sessionPropertyCache.removeAll(propKeys);
                             }
                         }
 
@@ -231,7 +241,7 @@ public class CacheHashMap extends BackedHashMap {
                          * accurate Id and creationTime to send to the PMI counters.
                          */
                         superRemove(id);
-                        long createTime = sessionData.getCreationTime();
+                        long createTime = sessionInfo.getCreationTime();
                         //we don't want to retrieve session, so use a fake one for pmi
                         if (pmiStatSession == null)
                             pmiStatSession = new CacheSession();
@@ -252,6 +262,75 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
+     * Loads all the properties.
+     * Copied from DatabaseHashMapMR.
+     */
+    Object getAllValues(BackedSession sess) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        String id = sess.getId();
+
+        long startTime = System.nanoTime();
+        long readSize = 0;
+
+        ArrayList<?> list = sessionInfoCache.get(id);
+        Set<String> propIds = list == null ? null : new SessionInfo(list).getSessionPropertyIds();
+
+        Hashtable<String, Object> h = new Hashtable<String, Object>();
+        try {
+            if (propIds != null) {
+                for (String propId : propIds) {
+                    // If an attribute is already in appDataRemovals or appDataChanges, then the attribute was already retrieved from the cache.  Skip retrieval from the cache here.
+                    if (sess.appDataRemovals != null && sess.appDataRemovals.containsKey(propId)) {
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "Found property " + propId + " in appDataRemovals, skipping query for this prop");
+                        continue;
+                    } else if (sess.appDataChanges != null && sess.appDataChanges.containsKey(propId)) {
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "Found property " + propId + " in appDataChanges, skipping query for this prop");
+                        continue;
+                    }
+
+                    String propertyKey = createSessionPropertyKey(id, propId);
+                    byte[] b = sessionPropertyCache.get(propertyKey);
+
+                    if (b != null) {
+                        ByteArrayInputStream bais = new ByteArrayInputStream(b);
+                        BufferedInputStream bis = new BufferedInputStream(bais);
+                        Object obj;
+                        try {
+                            obj = ((CacheStore) getIStore()).getLoader().loadObject(bis);
+                            readSize += b.length;
+                        } catch (ClassNotFoundException x) {
+                            FFDCFilter.processException(x, getClass().getName(), "91", sess);
+                            throw new RuntimeException(x);
+                        }
+
+                        bis.close();
+                        bais.close();
+
+                        if (obj != null) {
+                            if (trace && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "put prop in mSwappableData: " + propId);
+                            }
+                            h.put(propId, obj);
+                        }
+                    }
+                }
+            }
+
+            SessionStatistics pmiStats = _iStore.getSessionStatistics();
+            if (pmiStats != null) {
+                pmiStats.readTimes(readSize, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+            }
+        } catch (IOException e) {
+            FFDCFilter.processException(e, getClass().getName(), "319", sess);
+            throw new RuntimeException(e);
+        }
+        return h;
+    }
+
+    /**
      * @see com.ibm.ws.session.store.common.BackedHashMap#getAppDataTablesPerThread()
      */
     @Override
@@ -260,54 +339,172 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
-     * TODO rewrite this. For now, it is copied based on DatabaseHashMap.getValue
+     * copied from DatabaseHashMapMR
      */
-    protected Object getValue(String id, BackedSession s) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private boolean handlePropertyHits(BackedSession d2) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        Object tmp = null;
+        Thread t = Thread.currentThread();
 
-        if (!s.getId().equals(id))
-            throw new IllegalArgumentException(id + " != " + s.getId()); // internal error
+        String id = d2.getId();
 
-        ArrayList<?> value = sessionInfoCache.get(id);
+        try {
+            Set<String> propsToWrite = null;
 
-        if (value == null)
-            return null;
-
-        SessionData sessionData = new SessionData(value);
-
-        if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, id, sessionData);
-
-        long startTime = System.nanoTime();
-        byte[] bytes = sessionData.getBytes();
-        if (bytes != null && bytes.length > 0) {
-            BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(bytes));
-            try {
-                try {
-                    tmp = ((CacheStore) getIStore()).getLoader().loadObject(in);
-                } finally {
-                    in.close();
+            // we are not synchronized here - were not in old code either
+            Hashtable tht = null;
+            if (_smc.writeAllProperties()) {
+                Map<?, ?> ht = d2.getSwappableData();
+                propsToWrite = (Set<String>) ht.keySet();
+                if (trace && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "doing app changes for ALL mSwappable Data", ht);
                 }
-            } catch (ClassNotFoundException | IOException x) {
-                FFDCFilter.processException(x, getClass().getName(), "96", s);
-                throw new RuntimeException(x);
+            } else {
+                if (d2.appDataChanges != null) {
+                    if (appDataTablesPerThread) {
+                        if ((tht = (Hashtable) d2.appDataChanges.get(t)) != null) {
+                            if (trace && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "doing app changes for " + id + " on thread " + t);
+                            }
+                            propsToWrite = tht.keySet();
+                        }
+                    } else { // appDataTablesPerSession
+                        propsToWrite = d2.appDataChanges.keySet();
+                        if (trace && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "doing app changes for TimeBasedWrite");
+                        }
+                    }
+                }
             }
+
+            if (propsToWrite != null) {
+                for (String propid : propsToWrite) {
+                    long startTime = System.nanoTime();
+
+                    if (id.equals(propid)) {
+                        throw new IllegalArgumentException(propid); // internal error, should never occur
+                    }
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+                    ObjectOutputStream oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
+                    oos.writeObject(d2.getSwappableData().get(propid));
+                    oos.flush();
+
+                    int size = baos.size();
+                    byte[] objbuf = baos.toByteArray();
+
+                    oos.close();
+                    baos.close();
+
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "before update " + propid + " for session " + id + " size " + size);
+
+                    String key = createSessionPropertyKey(id, propid);
+                    sessionPropertyCache.put(key, objbuf);
+
+                    SessionStatistics pmiStats = _iStore.getSessionStatistics();
+                    if (pmiStats != null) {
+                        pmiStats.writeTimes(objbuf.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+                    }
+                }
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, propsToWrite.size() + " property writes are done");
+
+                if (appDataTablesPerThread) {
+                    if (d2.appDataChanges != null)
+                        d2.appDataChanges.remove(t);
+                    if (trace && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "remove thread from appDataChanges for thread", t);
+                    }
+                } else { //appDataTablesPerSession
+                    if (d2.appDataChanges != null)
+                        d2.appDataChanges.clear();
+                    if (trace && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "clearing appDataChanges");
+                    }
+                }
+            }
+
+            // see if any properties were REMOVED.
+            // if so, process them
+
+            Set<String> propsToRemove = null;
+
+            if (d2.appDataRemovals != null) {
+                if (!appDataTablesPerThread) { // appDataTablesPerSession
+                    propsToRemove = d2.appDataRemovals.keySet();
+                    if (trace && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "doing app removals for " + id + " on ALL threads");
+                    }
+                } else { //appDataTablesPerThread
+                    if ((tht = (Hashtable) d2.appDataRemovals.get(t)) != null) {
+                        if (trace && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "doing app removals for " + id + " on thread ", t);
+                        }
+                        propsToRemove = tht.keySet();
+                    }
+                }
+
+                if (propsToRemove != null && !propsToRemove.isEmpty()) {
+                    for (String propid : propsToRemove) {
+                        if (trace && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "deleting prop " + propid + " for session " + id);
+                        }
+                        String key = createSessionPropertyKey(id, propid);
+                        sessionPropertyCache.remove(key);
+                    }
+                }
+
+                if (!appDataTablesPerThread) { // appDataTablesPerSession
+                    if (d2.appDataRemovals != null)
+                        d2.appDataRemovals.clear();
+                    if (trace && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "clearing appDataRemovals");
+                    }
+                } else { //appDataTablesPerThread
+                    if (d2.appDataRemovals != null)
+                        d2.appDataRemovals.remove(t);
+                    if (trace && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "remove thread from appDataRemovals", t);
+                    }
+                }
+            }
+
+            // Update the session's main cache entry per the identified changes
+            if (propsToWrite != null || propsToRemove != null) {
+                ArrayList<?> oldValue, newValue;
+                long backoff = 20; // allows first two attempts without delay, then a delay of 160-319ms, then a delay of 320-639 ms, ...
+                do {
+                    if ((backoff *= 2) > 100)
+                        try {
+                            // TODO remove this error and switch to enforce a maximum on backoff time
+                            // This error is temporarily here to identify how often this is reached
+                            if (backoff > 500)
+                                throw new RuntimeException("Giving up on retries"); 
+                            TimeUnit.MILLISECONDS.sleep(backoff + (long) Math.random() * backoff);
+                        } catch (InterruptedException x) {
+                            FFDCFilter.processException(x, getClass().getName(), "324", new Object[] { id, backoff, propsToWrite, propsToRemove });
+                            throw new RuntimeException(x);
+                        }
+                    oldValue = sessionInfoCache.get(id);
+                    if (oldValue == null)
+                        throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?
+                    SessionInfo sessionInfo = new SessionInfo(oldValue).clone();
+                    if (propsToWrite != null)
+                        sessionInfo.addSessionPropertyIds(propsToWrite);
+                    if (propsToRemove != null)
+                        sessionInfo.removeSessionPropertyIds(propsToRemove);
+                    newValue = sessionInfo.getArrayList();
+                } while (!sessionInfoCache.replace(id, oldValue, newValue));
+            }
+        } catch (IOException x) {
+            FFDCFilter.processException(x, getClass().getName(), "256", d2);
+            throw new RuntimeException(x);
         }
 
-        SessionStatistics pmiStats = getIStore().getSessionStatistics();
-        if (pmiStats != null) {
-            pmiStats.readTimes(bytes == null ? 0 : bytes.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
-        }
-
-        return tmp;
-    }
-
-    /**
-     * Override in subclass for multi-row.
-     */
-    boolean handlePropertyHits(BackedSession d2) {
         return true;
     }
 
@@ -324,9 +521,9 @@ public class CacheHashMap extends BackedHashMap {
         long tmpCreationTime = d2.getCreationTime();
         d2.setLastWriteLastAccessTime(tmpCreationTime);
 
-        SessionData sessionData = new SessionData(tmpCreationTime, d2.getMaxInactiveInterval(), d2.listenerFlag, d2.getUserName());
+        SessionInfo sessionInfo = new SessionInfo(tmpCreationTime, d2.getMaxInactiveInterval(), d2.listenerFlag, d2.getUserName());
 
-        if (!sessionInfoCache.putIfAbsent(id, sessionData.getArrayList()))
+        if (!sessionInfoCache.putIfAbsent(id, sessionInfo.getArrayList()))
             throw new IllegalStateException("Cache already contains " + id);
 
         d2.needToInsert = false;
@@ -349,8 +546,8 @@ public class CacheHashMap extends BackedHashMap {
 
     /**
      * Copied from DatabaseHashMap.
-     * For multirow db, attempts to get the requested attr from the db
-     * Returns null if attr doesn't exist or we're not running multirow
+     * Attempts to get the requested attr from the db
+     * Returns null if attr doesn't exist
      * We consider populatedAppData as well
      * populatedAppData is true when session is new or when the entire session is read into memory
      * in those cases, we don't want to go to the backend to retrieve the attribute
@@ -362,7 +559,7 @@ public class CacheHashMap extends BackedHashMap {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         Object value = null;
-        if (_smc.isUsingMultirow() && !((CacheSession) sess).getPopulatedAppData()) {
+        if (!((CacheSession) sess).getPopulatedAppData()) {
             String id = sess.getId();
             String appName = getIStore().getId();
 
@@ -417,13 +614,13 @@ public class CacheHashMap extends BackedHashMap {
         int updateCount;
 
         ArrayList<?> oldValue = sessionInfoCache.get(id);
-        SessionData sessionData = oldValue == null ? null : new SessionData(oldValue).clone();
+        SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
         synchronized (sess) {
-            if (sessionData == null || sessionData.getLastAccess() != sess.getCurrentAccessTime() || sessionData.getLastAccess() == nowTime) {
+            if (sessionInfo == null || sessionInfo.getLastAccess() != sess.getCurrentAccessTime() || sessionInfo.getLastAccess() == nowTime) {
                 updateCount = 0;
             } else {
-                sessionData.setLastAccess(nowTime);
-                ArrayList<?> newValue = sessionData.getArrayList();
+                sessionInfo.setLastAccess(nowTime);
+                ArrayList<?> newValue = sessionInfo.getArrayList();
 
                 if (sessionInfoCache.replace(id, oldValue, newValue)) {
                     sess.updateLastAccessTime(nowTime);
@@ -461,16 +658,16 @@ public class CacheHashMap extends BackedHashMap {
                 if (oldValue == null) {
                     // If we are here, it means this is the first time this web module is
                     // trying to perform invalidation of sessions
-                    SessionData sessionData = new SessionData(now, // last access
+                    SessionInfo sessionInfo = new SessionInfo(now, // last access
                                                               -1, // max inactive time,
                                                               (short) 0, // listener count 
                                                               null); // user name
-                    ArrayList<Object> newValue = sessionData.getArrayList();
+                    ArrayList<Object> newValue = sessionInfo.getArrayList();
                     sessionInfoCache.put(INVAL_KEY, newValue);
                     doInvals = true;
                 } else {
-                    SessionData sessionData = new SessionData(oldValue);
-                    long lastTime = sessionData.getLastAccess();
+                    SessionInfo sessionInfo = new SessionInfo(oldValue);
+                    long lastTime = sessionInfo.getLastAccess();
 
                     long lastCheck = now - _smc.getInvalidationCheckInterval() * 1000;
 
@@ -481,9 +678,9 @@ public class CacheHashMap extends BackedHashMap {
                     //if no other server tried to process invalidation within the interval, this will be true
                     //similar to updateNukerTimeStamp, but we have an extra check here to test the last access time hasn't changed
                     if (lastCheck >= lastTime || lastTime > now) {
-                        sessionData = sessionData.clone();
-                        sessionData.setLastAccess(now);
-                        ArrayList<Object> newValue = sessionData.getArrayList();
+                        sessionInfo = sessionInfo.clone();
+                        sessionInfo.setLastAccess(now);
+                        ArrayList<Object> newValue = sessionInfo.getArrayList();
                         doInvals = sessionInfoCache.replace(INVAL_KEY, oldValue, newValue);
                     }
                 }
@@ -524,63 +721,43 @@ public class CacheHashMap extends BackedHashMap {
                 return true;
             }
 
-            byte[] objbuf = null;
-            if (propHit) {
-                if (_smc.isUsingMultirow()) {
-                    if (!handlePropertyHits(d2)) {
-                        return false;
-                    }
-                } else {
-                    objbuf = serializeAppData(d2);
-                }
+            if (propHit && !handlePropertyHits(d2)) {
+                return false;
             }
-
-            long startTimeNS = System.nanoTime();
 
             for (boolean updated = false; !updated;) {
                 ArrayList<?> oldValue = sessionInfoCache.get(id);
                 if (oldValue == null)
                     return false;
 
-                SessionData sessionData = new SessionData(oldValue).clone();
+                SessionInfo sessionInfo = new SessionInfo(oldValue).clone();
 
                 if (d2.userWriteHit) {
                     d2.userWriteHit = false;
-                    sessionData.setUser(d2.getUserName());
+                    sessionInfo.setUser(d2.getUserName());
                 }
 
                 if (d2.maxInactWriteHit) {
                     d2.maxInactWriteHit = false;
-                    sessionData.setMaxInactiveTime(d2.getMaxInactiveInterval());
+                    sessionInfo.setMaxInactiveTime(d2.getMaxInactiveInterval());
                 }
 
                 if (d2.listenCntHit) {
                     d2.listenCntHit = false;
-                    sessionData.setListenerCount(d2.listenerFlag);
+                    sessionInfo.setListenerCount(d2.listenerFlag);
                 }
 
                 long time = d2.getCurrentAccessTime();
                 if (!_smc.getEnableEOSWrite() || _smc.getScheduledInvalidation()) {
                     d2.setLastWriteLastAccessTime(time);
-                    sessionData.setLastAccess(time);
-                }
-
-                if (propHit && !_smc.isUsingMultirow()) {
-                    sessionData.setBytes(objbuf);
+                    sessionInfo.setLastAccess(time);
                 }
 
                 if (trace & tc.isDebugEnabled())
-                    Tr.debug(this, tc, id, sessionData);
+                    Tr.debug(this, tc, id, sessionInfo);
 
-                ArrayList<?> newValue = sessionData.getArrayList();
+                ArrayList<?> newValue = sessionInfo.getArrayList();
                 updated = sessionInfoCache.replace(id, oldValue, newValue);
-            }
-
-            if (objbuf != null && propHit && !_smc.isUsingMultirow()) {
-                SessionStatistics pmiStats = _iStore.getSessionStatistics();
-                if (pmiStats != null) {
-                    pmiStats.writeTimes(objbuf.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNS));
-                }
             }
         } catch (Exception ee) {
             FFDCFilter.processException(ee, getClass().getName(), "272", d2);
@@ -606,10 +783,10 @@ public class CacheHashMap extends BackedHashMap {
             Cache.Entry<String, ArrayList> entry = it.next();
             String id = entry == null ? null : entry.getKey();
             if (id != null && !INVAL_KEY.equals(id)) {
-                SessionData sessionData = new SessionData(entry.getValue());
-                long lastAccess = sessionData.getLastAccess();
-                short listenerCnt = sessionData.getListenerCount();
-                int maxInactive = sessionData.getMaxInactiveTime();
+                SessionInfo sessionInfo = new SessionInfo(entry.getValue());
+                long lastAccess = sessionInfo.getLastAccess();
+                short listenerCnt = sessionInfo.getListenerCount();
+                int maxInactive = sessionInfo.getMaxInactiveTime();
                 if ((listenerCnt == 0 || listenerCnt == 2)
                                 && maxInactive >= 0
                                 && maxInactive < (start - lastAccess) / 1000) {
@@ -622,9 +799,9 @@ public class CacheHashMap extends BackedHashMap {
                     s.setIsValid(true);
                     s.setIsNew(false);
                     s.updateLastAccessTime(lastAccess);
-                    s.setCreationTime(sessionData.getCreationTime());
+                    s.setCreationTime(sessionInfo.getCreationTime());
                     s.internalSetMaxInactive(maxInactive);
-                    s.internalSetUser(sessionData.getUser());
+                    s.internalSetUser(sessionInfo.getUser());
                     s.setListenerFlag(listenerCnt);
 
                     long now = System.currentTimeMillis();
@@ -637,28 +814,25 @@ public class CacheHashMap extends BackedHashMap {
                         s.setIsNew(false);
                         s.getSwappableListeners(BackedSession.HTTP_SESSION_BINDING_LISTENER);
 
-                        sessionData = sessionData.clone();
-                        sessionData.setLastAccess(lastAccess);
+                        sessionInfo = sessionInfo.clone();
+                        sessionInfo.setLastAccess(lastAccess);
 
                         // only invalidate those which have not been accessed since
                         // check in computeInvalidList
-                        if (sessionInfoCache.remove(id, sessionData.getArrayList())) {
+                        if (sessionInfoCache.remove(id, sessionInfo.getArrayList())) {
                             // return of session done as a result of this call
                             s.internalInvalidate(true);
 
-                            if (_smc.isUsingMultirow()) {
-                                SessionInfo sessionInfo = new SessionInfo(entry.getValue());
-                                Set<String> propIds = sessionInfo.getSessionPropertyIds();
-                                if (propIds != null && !propIds.isEmpty()) {
-                                    HashSet<String> propKeys = new HashSet<String>();
-                                    for (String propId : propIds)
-                                        propKeys.add(createSessionPropertyKey(id, propId));
+                            Set<String> propIds = sessionInfo.getSessionPropertyIds();
+                            if (propIds != null && !propIds.isEmpty()) {
+                                HashSet<String> propKeys = new HashSet<String>();
+                                for (String propId : propIds)
+                                    propKeys.add(createSessionPropertyKey(id, propId));
 
-                                    if (trace && tc.isDebugEnabled())
-                                        Tr.debug(this, tc, "deleting", propKeys);
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, "deleting", propKeys);
 
-                                    sessionPropertyCache.removeAll(propKeys);
-                                }
+                                sessionPropertyCache.removeAll(propKeys);
                             }
                         }
 
@@ -692,14 +866,14 @@ public class CacheHashMap extends BackedHashMap {
         CacheSession sess = null;
         ArrayList<?> value = sessionInfoCache.get(id);
         if (value != null) {
-            SessionData sessionData = new SessionData(value);
+            SessionInfo sessionInfo = new SessionInfo(value);
             sess = new CacheSession(this, id, getIStore().getStoreCallback());
-            sess.updateLastAccessTime((Long) sessionData.getLastAccess());
-            sess.setCreationTime((Long) sessionData.getCreationTime());
-            sess.internalSetMaxInactive((Integer) sessionData.getMaxInactiveTime());
-            sess.internalSetUser((String) sessionData.getUser());
+            sess.updateLastAccessTime((Long) sessionInfo.getLastAccess());
+            sess.setCreationTime((Long) sessionInfo.getCreationTime());
+            sess.internalSetMaxInactive((Integer) sessionInfo.getMaxInactiveTime());
+            sess.internalSetUser((String) sessionInfo.getUser());
             sess.setIsValid(true);
-            sess.setListenerFlag((Short) sessionData.getListenerCount());
+            sess.setListenerFlag((Short) sessionInfo.getListenerCount());
         }
         return sess;
     }
@@ -712,41 +886,19 @@ public class CacheHashMap extends BackedHashMap {
         //If the app calls invalidate, it may not be removed from the local cache yet.
         superRemove(id);
 
-        sessionInfoCache.remove(id);
+        ArrayList<?> removed = sessionInfoCache.getAndRemove(id);
 
         addToRecentlyInvalidatedList(id);
-    }
 
-    /**
-     * serializeAppData - returns a byte array form of the swappableData
-     */
-    private byte[] serializeAppData(BackedSession d2) throws Exception {
-        // return either the byte array input stream for the app
-        // data or a vector of byte array input streams if their is a
-        // row for each piece of app data
-        ByteArrayOutputStream baos = null;
-        ObjectOutputStream oos = null;
-        byte[] objbuf = null;
-
-        Map<Object, Object> ht;
-        synchronized (d2) {
-            ht = d2.getSwappableData();
+        Set<String> propIds = removed == null ? null : new SessionInfo(removed).getSessionPropertyIds();
+        if (propIds != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "remove session properties", propIds);
+            for (String propId : propIds) {
+                String propertyKey = createSessionPropertyKey(id, propId);
+                sessionPropertyCache.remove(propertyKey);
+            }
         }
-
-        // serialize session (app data only) into byte array buffer
-        baos = new ByteArrayOutputStream();
-        oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
-        oos.writeObject(ht);
-        oos.flush();
-        objbuf = baos.toByteArray();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc,  "success - size of byte array is " + objbuf.length);
-        }
-
-        oos.close();
-        baos.close();
-
-        return objbuf;
     }
 
     @Trivial
@@ -768,12 +920,12 @@ public class CacheHashMap extends BackedHashMap {
 
         while (updateCount == -1) {
             ArrayList<?> oldValue = sessionInfoCache.get(id);
-            SessionData sessionData = oldValue == null ? null : new SessionData(oldValue).clone();
-            if (sessionData == null || sessionData.getLastAccess() == nowTime) {
+            SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
+            if (sessionInfo == null || sessionInfo.getLastAccess() == nowTime) {
                 updateCount = 0;
             } else {
-                sessionData.setLastAccess(nowTime);
-                ArrayList<Object> newValue = sessionData.getArrayList();
+                sessionInfo.setLastAccess(nowTime);
+                ArrayList<Object> newValue = sessionInfo.getArrayList();
                 if (sessionInfoCache.replace(id, oldValue, newValue))
                     updateCount = 1;
             }
@@ -790,11 +942,11 @@ public class CacheHashMap extends BackedHashMap {
      */
     private void updateNukerTimeStamp(String appName) {
         long now = System.currentTimeMillis();
-        SessionData sessionData = new SessionData(now, // last access
+        SessionInfo sessionInfo = new SessionInfo(now, // last access
                                                   -1, // max inactive time,
                                                   (short) 0, // listener count 
                                                   null); // user name
-        ArrayList<Object> newValue = sessionData.getArrayList();
+        ArrayList<Object> newValue = sessionInfo.getArrayList();
         sessionInfoCache.put(INVAL_KEY, newValue);
     }
 
@@ -803,7 +955,7 @@ public class CacheHashMap extends BackedHashMap {
      * writeCachedLastAccessedTimes - if we have manual writes of time-based writes, we cache the last
      * accessed times and only write them to the persistent store prior to the inval thread running.
      */
-    void writeCachedLastAccessedTimes() throws Exception {
+    private void writeCachedLastAccessedTimes() throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // create a copy for the updates, then atomically clear the table
@@ -823,12 +975,12 @@ public class CacheHashMap extends BackedHashMap {
                         Tr.debug(this, tc, "Updating LastAccess for " + id);
 
                     ArrayList<?> oldValue = sessionInfoCache.get(id);
-                    SessionData sessionData = oldValue == null ? null : new SessionData(oldValue).clone();
-                    if (sessionData == null || sessionData.getLastAccess() >= time) {
+                    SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
+                    if (sessionInfo == null || sessionInfo.getLastAccess() >= time) {
                         updateCount = 0;
                     } else {
-                        sessionData.setLastAccess(time);
-                        ArrayList<Object> newValue = sessionData.getArrayList();
+                        sessionInfo.setLastAccess(time);
+                        ArrayList<Object> newValue = sessionInfo.getArrayList();
                         if (sessionInfoCache.replace(id, oldValue, newValue))
                             updateCount = 1;
                     }
