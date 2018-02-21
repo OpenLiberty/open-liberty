@@ -308,28 +308,28 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         try {
             registerMBeanIfDelayed(name);
         } catch (InstanceNotFoundException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "Instance of MBean already exists");
+            emitJMXMBeanCreateAction(name, className, null, null, null, "create", "failure", "Instance of MBean already exists");
             throw new InstanceAlreadyExistsException();//TODOD appropriate message
         }
         try {
             oi = super.createMBean(className, name);
         } catch (ReflectionException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "Class definition not found for MBean");
+            emitJMXMBeanCreateAction(name, className, null, null, null, "create", "failure", "Class definition not found for MBean");
             throw e;
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "Instance of MBean already exists");
+            emitJMXMBeanCreateAction(name, className, null, null, null, "create", "failure", "Instance of MBean already exists");
             throw e;
         } catch (MBeanRegistrationException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "MBean registration failure");
+            emitJMXMBeanCreateAction(name, className, null, null, null, "create", "failure", "MBean registration failure");
             throw e;
         } catch (MBeanException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "MBean constructor exception");
+            emitJMXMBeanCreateAction(name, className, null, null, null, "create", "failure", "MBean constructor exception");
             throw e;
         } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "Not compliant MBean");
+            emitJMXMBeanCreateAction(name, className, null, null, null, "create", "failure", "Not compliant MBean");
             throw e;
         }
-        emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "success", "Successful create of MBean");
+        emitJMXMBeanCreateAction(name, className, null, null, null, "create", "success", "Successful create of MBean");
         return oi;
     }
 
@@ -342,22 +342,22 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         try {
             oi = super.createMBean(className, name, loaderName);
         } catch (ReflectionException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "Class definition not found for MBean");
+            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "create", "failure", "Class definition not found for MBean");
             throw e;
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "Instance of MBean already exists");
+            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "create", "failure", "Instance of MBean already exists");
             throw e;
         } catch (MBeanRegistrationException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "MBean registration failure");
+            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "create", "failure", "MBean registration failure");
             throw e;
         } catch (MBeanException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "MBean constructor exception");
+            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "create", "failure", "MBean constructor exception");
             throw e;
         } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "Not compliant MBean");
+            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "create", "failure", "Not compliant MBean");
             throw e;
         }
-        emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "success", "Successful create of MBean");
+        emitJMXMBeanCreateAction(name, className, loaderName, null, null, "create", "success", "Successful create of MBean");
         return oi;
     }
 
@@ -375,22 +375,22 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         try {
             oi = super.createMBean(className, name, params, signature);
         } catch (ReflectionException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "Class definition not found for MBean");
+            emitJMXMBeanCreateAction(name, className, null, params, signature, "create", "failure", "Class definition not found for MBean");
             throw e;
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "Instance of MBean already exists");
+            emitJMXMBeanCreateAction(name, className, null, params, signature, "create", "failure", "Instance of MBean already exists");
             throw e;
         } catch (MBeanRegistrationException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "MBean registration failure");
+            emitJMXMBeanCreateAction(name, className, null, params, signature, "create", "failure", "MBean registration failure");
             throw e;
         } catch (MBeanException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "MBean constructor exception");
+            emitJMXMBeanCreateAction(name, className, null, params, signature, "create", "failure", "MBean constructor exception");
             throw e;
         } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "Not compliant MBean");
+            emitJMXMBeanCreateAction(name, className, null, params, signature, "create", "failure", "Not compliant MBean");
             throw e;
         }
-        emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "success", "Successful create of MBean");
+        emitJMXMBeanCreateAction(name, className, null, params, signature, "create", "success", "Successful create of MBean");
         return oi;
     }
 
@@ -404,19 +404,19 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         try {
             oi = super.createMBean(className, name, loaderName, params, signature);
         } catch (ReflectionException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "Class definition not found for MBean");
+            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "create", "failure", "Class definition not found for MBean");
             throw e;
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "Instance of MBean already exists");
+            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "create", "failure", "Instance of MBean already exists");
             throw e;
         } catch (MBeanRegistrationException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "MBean registration failure");
+            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "create", "failure", "MBean registration failure");
             throw e;
         } catch (MBeanException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "MBean constructor exception");
+            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "create", "failure", "MBean constructor exception");
             throw e;
         } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "Not compliant MBean");
+            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "create", "failure", "Not compliant MBean");
             throw e;
         }
         emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "success", "Successful create of MBean");
@@ -756,10 +756,10 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         try {
             oi = super.queryMBeans(name, query);
         } catch (Exception e) {
-            emitJMXMBeanQueryEvent(name, query, "queryMBeans", "failure", e.getMessage());
+            emitJMXMBeanQueryEvent(name, query, "query", "failure", e.getMessage());
             throw e;
         }
-        emitJMXMBeanQueryEvent(name, query, "queryMBeans", "success", "Successful query of MBeans");
+        emitJMXMBeanQueryEvent(name, query, "query", "success", "Successful query of MBeans");
         return oi;
     }
 
