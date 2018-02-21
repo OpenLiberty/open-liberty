@@ -16,6 +16,9 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * ServerVariable
  *
@@ -128,9 +131,10 @@ public class ServerVariableImpl implements ServerVariable {
         StringBuilder sb = new StringBuilder();
         sb.append("class ServerVariable {\n");
 
-        sb.append("    _enum: ").append(toIndentedString(_enum)).append("\n");
-        sb.append("    _default: ").append(toIndentedString(_default)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
+        sb = !toIndentedString(_enum).equals(Constants.NULL_VALUE) ? sb.append("    _enum: ").append(toIndentedString(_enum)).append("\n") : sb.append("");
+        sb = !toIndentedString(_default).equals(Constants.NULL_VALUE) ? sb.append("    _default: ").append(toIndentedString(_default)).append("\n") : sb.append("");
+        sb = !toIndentedString(description).equals(Constants.NULL_VALUE) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = !toIndentedString(extensions).equals(Constants.NULL_VALUE) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }
