@@ -188,7 +188,7 @@ public class EAREJBModuleTest extends JavaEESecTestBase {
         setupConnection();
 
         //Test case isCallerInRoleLDAPWar1
-        //Access WAR 1 and check for isCallerInRole sending user2 which exist in WAR 1 Annotated LDAP IS.
+        //Access WAR 1 and check for declareRoles01 sending user2 which exist in WAR 1 Annotated LDAP IS.
         Log.info(logClass, getCurrentTestName(), "-----Running isCallerInRoleLDAPWar1 scenario");
 
         queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=declareRoles01";
@@ -205,7 +205,7 @@ public class EAREJBModuleTest extends JavaEESecTestBase {
         setupConnection();
 
         //Test case testisCallerInRoleLDAPWar2
-        //Access WAR 2 and check for isCaller in role sending user2 which exist in WAR 1 Annotated LDAP IS.
+        //Access WAR 2 and check for declareRoles01 in role sending user2 which exist in WAR 1 Annotated LDAP IS.
         Log.info(logClass, getCurrentTestName(), "-----Running testisCallerInRoleLDAPWar2 scenario");
         queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=declareRoles01";
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");

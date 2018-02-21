@@ -22,6 +22,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBAccessException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 
 /**
@@ -33,6 +34,10 @@ import javax.security.enterprise.SecurityContext;
 @DeclareRoles("DeclaredRole01")
 @RunAs("Employee")
 public class SecurityEJBA01Bean extends SecurityEJBBeanBase implements SecurityEJBInterface {
+
+    // get the Security Context
+    @Inject
+    private SecurityContext securityContext;
 
     private static final Class<?> c = SecurityEJBA01Bean.class;
     protected Logger logger = Logger.getLogger(c.getCanonicalName());
@@ -196,13 +201,12 @@ public class SecurityEJBA01Bean extends SecurityEJBBeanBase implements SecurityE
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see web.ejb.jar.bean.SecurityEJBBeanBase#getSecurityContext()
      */
     @Override
     protected SecurityContext getSecurityContext() {
-        // TODO Auto-generated method stub
-        return null;
+        return securityContext;
     }
 
 }

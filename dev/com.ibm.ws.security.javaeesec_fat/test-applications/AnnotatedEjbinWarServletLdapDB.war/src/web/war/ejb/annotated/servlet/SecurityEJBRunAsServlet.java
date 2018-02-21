@@ -13,6 +13,7 @@ package web.war.ejb.annotated.servlet;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
@@ -30,8 +31,11 @@ import web.ejb.jar.bean.SecurityEJBInterface;
                                  groupsQuery = "select group_name from callertable_groups where caller_name = ?",
                                  dataSourceLookup = "jdbc/derby1fat")
 //TODO Uncomment to use RunAS Functionalities
-//@RunAs("Manager")
+@RunAs("Manager")
 public class SecurityEJBRunAsServlet extends SecurityEJBBaseServlet {
+
+    /**  */
+    private static final long serialVersionUID = 1L;
 
     final String servletName;
 

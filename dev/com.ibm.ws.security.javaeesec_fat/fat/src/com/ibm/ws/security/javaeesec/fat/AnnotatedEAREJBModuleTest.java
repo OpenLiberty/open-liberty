@@ -54,10 +54,10 @@ public class AnnotatedEAREJBModuleTest extends JavaEESecTestBase {
     protected static String TEMP_DIR = "test_temp";
     protected static String EJB_BEAN_JAR_NAME = "SecurityEJBinWAR.jar";
     protected static String EJB_SERVLET_NAME = "SecurityEJBBaseServlet";
-    protected static String EJB_WAR_NAME = "EjbinWarServletLdapDb.war";
-    protected static String EJB_WAR_PATH = "/EjbinWarServletLdapDb/";
-    protected static String EJB_WAR_NAME2 = "EjbinWarServletLdap.war";
-    protected static String EJB_WAR2_PATH = "/EjbinWarServletLdap/";
+    protected static String EJB_WAR_NAME = "AnnotatedEjbinWarServletLdapDB.war";
+    protected static String EJB_WAR_PATH = "/AnnotatedEjbinWarServletLdapDB/";
+    protected static String EJB_WAR_NAME2 = "AnnotatedEjbinWarServletLdap.war";
+    protected static String EJB_WAR2_PATH = "/AnnotatedEjbinWarServletLdap/";
     protected static String EJB_EAR_NAME = "securityejbinwar.ear";
     protected static String EJB_APP_NAME = EJB_EAR_NAME;
     protected static String XML_NAME = "ejbserver.xml";
@@ -181,8 +181,9 @@ public class AnnotatedEAREJBModuleTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
-    @Test
+    //TODO need to add runas
+    //@Mode(TestMode.LITE)
+    //@Test
     public void testisUserInRoleDBWar1() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -198,37 +199,40 @@ public class AnnotatedEAREJBModuleTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR2 (ejbinwarservlet2).
-//     * </OL>
-//     * <P> Expected Results: 200 OK and isUserInRole(true).
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testisUserInRoleLDAPISWar2() throws Exception {
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//
-//        String queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-//                                                          LocalLdapServer.PASSWORD,
-//                                                          HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, "isUserInRole(Manager): true");
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
-//
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR2 (ejbinwarservlet2).
+     * </OL>
+     * <P> Expected Results: 200 OK and isUserInRole(true).
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testisUserInRoleLDAPISWar2() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
+                                                          LocalLdapServer.PASSWORD,
+                                                          HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+
+        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
+                              Constants.getEjbCallerPrincipal + LocalLdapServer.USER1);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+//TODO add test cases that uses declareRoles EJB
 //    /**
 //     * Verify the following:
 //     * <OL>
@@ -237,7 +241,7 @@ public class AnnotatedEAREJBModuleTest extends JavaEESecTestBase {
 //     * Each war files has one jar file.
 //     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR1 (ejbinwarservlet).
 //     * </OL>
-//     * <P> Expected Results: 200 OK and isCallerInRole(true).
+//     * <P> Expected Results: 200 OK and declareRoles01(true).
 //     * <OL>
 //     * <LI>
 //     * </OL>
@@ -254,11 +258,11 @@ public class AnnotatedEAREJBModuleTest extends JavaEESecTestBase {
 //                                                          HttpServletResponse.SC_OK);
 //        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
 //        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER2, "securityContext.isCallerInRole(DeclaredRole01): true");
+//        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
+//                              "securityContext.isCallerInRole(DeclaredRole01): true");
 //        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
 //        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
 //    }
-//
 //    /**
 //     * Verify the following:
 //     * <OL>
@@ -267,7 +271,7 @@ public class AnnotatedEAREJBModuleTest extends JavaEESecTestBase {
 //     * Each war files has one jar file.
 //     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR2 (ejbinwarservlet2).
 //     * </OL>
-//     * <P> Expected Results: 200 OK and isCallerInRole(true).
+//     * <P> Expected Results: 200 OK and declareRoles01(true).
 //     * <OL>
 //     * <LI>
 //     * </OL>
@@ -288,67 +292,69 @@ public class AnnotatedEAREJBModuleTest extends JavaEESecTestBase {
 //        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
 //        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
 //    }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR1 (ejbinwarservlet).
-//     * </OL>
-//     * <P> Expected Results: 200 OK and isUserInRole(false).
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testisUserNotInRoleLDAPWar1() throws Exception {
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//
-//        String queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
-//                                                          LocalLdapServer.PASSWORD,
-//                                                          HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.INVALIDUSER, "isUserInRole(Manager): false");
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR2 (ejbinwarservlet2).
-//     * </OL>
-//     * <P> Expected Results: 200 OK and isUserInRole(true).
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testisUserNotInRoleLDAPWar2() throws Exception {
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//
-//        String queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
-//                                                          LocalLdapServer.PASSWORD,
-//                                                          HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.INVALIDUSER, "isUserInRole(Manager): false");
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
-//
+//TODO declare role end here
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR1 (ejbinwarservlet).
+     * </OL>
+     * <P> Expected Results: 200 OK and isUserInRole(false).
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testisUserNotInRoleLDAPWar1() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
+                                                          LocalLdapServer.PASSWORD,
+                                                          HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbErrorUserResponse(response, Constants.ejbAuthorizationFailed);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR2 (ejbinwarservlet2).
+     * </OL>
+     * <P> Expected Results: 200 OK and isUserInRole(true).
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testisUserNotInRoleLDAPWar2() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
+                                                          LocalLdapServer.PASSWORD,
+                                                          HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbErrorUserResponse(response, Constants.ejbAuthorizationFailed);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+//TODO add declared role
 //    /**
 //     * Verify the following:
 //     * <OL>
@@ -407,130 +413,131 @@ public class AnnotatedEAREJBModuleTest extends JavaEESecTestBase {
 //        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.INVALIDUSER, "securityContext.isCallerInRole(DeclaredRole01): false");
 //        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
 //        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * This test case uses EJB with the purpose of testing Basic Authentication but falling back to the server's UR.
-//     * </OL>
-//     * <P> Expected Results: 403 Due to the application uses IS.
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations() throws Exception {
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//
-//        String queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user99",
-//                                                          "user99pwd",
-//                                                          HttpServletResponse.SC_FORBIDDEN);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR1 (ejbinwarservlet).
-//     * The User that exist in the LDAP will try to access the servlet that is configured to use DB in the same WAR.
-//     * </OL>
-//     * <P> Expected Results: 200 OK and isUserInRole(true).
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testLDAPUserAccessDBServletWar1() throws Exception {
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//
-//        String queryString = EJB_WAR_PATH + RUNAS_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-//                                                          LocalLdapServer.PASSWORD,
-//                                                          HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, "isUserInRole(Manager): true");
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * This test case uses EJB with the purpose of testing Basic Authentication with DB Identity Store.
-//     * The servlet for DB is designed to use RunAS.
-//     * The User that exist in the DB will try to access the servlet that is configured to use LDAP in the same WAR.
-//     * </OL>
-//     * <P> Expected Results: 200 OK and isUserInRole(true).
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testDBUserAccessLDAPServletWar1() throws Exception {
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//
-//        String queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb01&testMethod=runAsSpecified";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
-//                                                          Constants.DB_USER1_PWD,
-//                                                          HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER1, "isUserInRole(Manager): true");
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * This test case uses EJB with the purpose of testing Basic Authentication with DB Identity Store.
-//     * The servlet for DB is designed to use RunAS.
-//     * The User that exist in the DB will try to access the servlet that is configured to use LDAP in a different WAR.
-//     * </OL>
-//     * <P> Expected Results: 200 OK and isUserInRole(true).
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testDBUserAccessWAR2Servlet() throws Exception {
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//
-//        String queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb01&testMethod=runAsSpecified";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
-//                                                          Constants.DB_USER1_PWD,
-//                                                          HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER1, "isUserInRole(Manager): true");
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
+//    }TODO declared roles end here
+
+    //TODO OK
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * This test case uses EJB with the purpose of testing Basic Authentication but falling back to the server's UR.
+     * </OL>
+     * <P> Expected Results: 403 Due to the application uses IS.
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user99",
+                                                          "user99pwd",
+                                                          HttpServletResponse.SC_FORBIDDEN);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * This test case uses EJB with the purpose of testing Basic Authentication with LDAP Identity Store in WAR1 (ejbinwarservlet).
+     * The User that exist in the LDAP will try to access the servlet that is configured to use DB in the same WAR.
+     * </OL>
+     * <P> Expected Results: 200 OK and isUserInRole(true).
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testLDAPUserAccessDBServletWar1() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String queryString = EJB_WAR_PATH + RUNAS_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
+                                                          LocalLdapServer.PASSWORD,
+                                                          HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, "isUserInRole(Manager): true");
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * This test case uses EJB with the purpose of testing Basic Authentication with DB Identity Store.
+     * Will try to access the first servlet in war 1 using DB user configured in the second servlet the same WAR
+     * </OL>
+     * <P> Expected Results: 200 OK and isUserInRole(true).
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testDBUserAccessLDAPServletWar1() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb02&testMethod=employeeAndManager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
+                                                          Constants.DB_USER1_PWD,
+                                                          HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb02Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodEmployeeAndManager,
+                              Constants.getEjbCallerPrincipal + Constants.DB_USER1);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * This test case uses EJB with the purpose of testing Basic Authentication with DB Identity Store.
+     * Will try to access the first servlet in WAR 2 using DB user configured in the second servlet of WAR 1
+     * </OL>
+     * <P> Expected Results: 200 OK and isUserInRole(true).
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testDBUserAccessWAR2Servlet() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb02&testMethod=employeeAndManager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
+                                                          Constants.DB_USER1_PWD,
+                                                          HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb02Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodEmployeeAndManager,
+                              Constants.getEjbCallerPrincipal + Constants.DB_USER1);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
 
 /* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {

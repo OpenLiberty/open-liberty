@@ -22,8 +22,8 @@
     <application type="ear" id="securityejbinwar" name="securityejbinwar" location="securityejbinwar.ear">
 		<application-bnd>
 			<security-role name="Employee">
-				<user name="blue2" />
-				<run-as userid="blue2" access-id="user:jdbc/derby1fat/blue2" password="pwd2"/>
+			<user name="blue2" access-id="user:jdbc/derby1fat/blue2" />
+				<!--<run-as userid="blue2" password="pwd2"/>-->
 			</security-role>	
 			<security-role name="Manager">
 			    <user name="user1" access-id="uid=user1,ou=users,o=ibm,c=us" />
@@ -34,7 +34,7 @@
 			<security-role name="AllAuthenticated">
 				<special-subject type="ALL_AUTHENTICATED_USERS" />
 			</security-role>
-			<security-role name="DeclaredRole01">
+			<security-role name="declareRoles01">
 				<user name="user2" access-id="uid=user2,ou=users,o=ibm,c=us"/>
 				<user name="user2" access-id="uid=user2,ou=anotherusers,o=ibm,c=us" />
 			</security-role>

@@ -46,6 +46,25 @@ public abstract class SecurityEJBBaseServlet2 extends FlexibleBaseServlet {
         mySteps.add(new WriteJSR375Step());
     }
 
+    @Override
+    public void handleRequest(String type, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter writer = resp.getWriter();
+        writer.println("Using EJB Base Servlet");
+        writer.println("\nServletName: " + servletName());
+        writer.println("Request type: " + type);
+
+        StringBuffer sb = new StringBuffer();
+        try {
+            performTask(type, req, resp, sb);
+        } catch (Throwable t) {
+            t.printStackTrace(writer);
+        }
+
+        writer.write(sb.toString());
+        writer.flush();
+        writer.close();
+    }
+
 //Extend this to use the flexibleServlet.
     /**
      * Invoke EJB method
@@ -56,32 +75,6 @@ public abstract class SecurityEJBBaseServlet2 extends FlexibleBaseServlet {
 
     protected interface Invoke {
         String go(SecurityEJBInterface securityEJBInterface);
-    }
-
-    /**
-     * Common logic to handle any of the various requests this servlet supports.
-     * The actual business logic can be customized by overriding performTask.
-     *
-     * @param req
-     * @param resp
-     * @throws ServletException
-     * @throws IOException
-     */
-    protected void handleRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter writer = resp.getWriter();
-
-        writer.println("\nServletName: " + servletName());
-
-        StringBuffer sb = new StringBuffer();
-        try {
-            performTask(req, resp, sb);
-        } catch (Throwable t) {
-            t.printStackTrace(writer);
-        }
-
-        writer.write(sb.toString());
-        writer.flush();
-        writer.close();
     }
 
     abstract String servletName();
@@ -95,7 +88,8 @@ public abstract class SecurityEJBBaseServlet2 extends FlexibleBaseServlet {
      * @throws ServletException
      * @throws IOException
      */
-    protected void performTask(HttpServletRequest req, HttpServletResponse resp, StringBuffer sb) throws ServletException, IOException {
+    @Override
+    public void performTask(String type, HttpServletRequest req, HttpServletResponse resp, StringBuffer sb) throws ServletException, IOException {
 
         //Get parameters from URL link
         String testMethod = req.getParameter("testMethod");

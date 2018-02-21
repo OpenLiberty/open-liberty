@@ -639,11 +639,16 @@ public class JavaEESecTestBase {
         mustContain(response, getRemoteUser);
     }
 
-    protected void verifyEjbUserResponse(String response, String ejbBean, String ejbBeanMethod, String getEjbUserPrincipal) {
-        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + ejbBean + ", " + ejbBeanMethod + "," + getEjbUserPrincipal);
+    protected void verifyEjbErrorUserResponse(String response, String errorMsgs) {
+        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + errorMsgs);
+        mustContain(response, errorMsgs);
+    }
+
+    protected void verifyEjbUserResponse(String response, String ejbBean, String ejbBeanMethod, String getEjbRemoteUser) {
+        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + ejbBean + ", " + ejbBeanMethod + "," + getEjbRemoteUser);
         mustContain(response, ejbBean);
         mustContain(response, ejbBeanMethod);
-        mustContain(response, getEjbUserPrincipal);
+        mustContain(response, getEjbRemoteUser);
     }
 
     protected void verifyGroupIdsResponse(String response, String realmName, String groupName) {

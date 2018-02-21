@@ -41,6 +41,12 @@ src: \
  	test-applications/securityContextEJBInWar.war/src,\
  	test-applications/EjbinWarServletLdapDb.war/src,\
  	test-applications/EjbinWarServletLdap.war/src,\
+	test-applications/DatabaseIdstoreDeferred.war/src,\
+	test-applications/securityContextHamApp.war/src,\
+	test-applications/SecurityEJBinWAR.jar/src,\
+	test-applications/securityContextEJBInWar.war/src,\
+	test-applications/AnnotatedEjbinWarServletLdapDB.war/src,\
+	test-applications/AnnotatedEjbinWarServletLdap.war/src,\
 	test-applications/EjbinWarServletISLdapDb.war/src,\
 	test-applications/EjbinWarServletISLdap.war/src
 

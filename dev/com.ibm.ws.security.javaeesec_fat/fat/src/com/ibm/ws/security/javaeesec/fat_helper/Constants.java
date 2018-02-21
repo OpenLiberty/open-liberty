@@ -126,14 +126,23 @@ public class Constants {
 
     //Values to be verified in ejb servlet response
     public final static String getEJBBeanResponse = "EJB  = ";
+    public final static String ejb01Bean = "SecurityEJBA01Bean";
+    public final static String ejb02Bean = "SecurityEJBA02Bean";
     public final static String ejb03Bean = "SecurityEJBA03Bean";
+    public final static String ejb06Bean = "SecurityEJBA06Bean";
     public final static String getEjbBeanMethodName = "Method = ";
     public final static String ejbBeanMethodManager = "manager";
+    public final static String ejbBeanMethodEmployeeAndManager = "employeeAndManager";
     public final static String ejbisCallerManagerTrue = "isCallerInRole(Manager)=true";
     public final static String ejbisCallerManagerFale = "isCallerInRole(Manager)=false";
     public final static String ejbisCallerEmployeeTrue = "isCallerInRole(Employee)=true";
     public final static String ejbisCallerEmployeeFalse = "isCallerInRole(Employee)=false";
+    public final static String ejbisUserManagerTrue = "isUserInRole(Manager): true";
+    public final static String ejbisUserManagerFalse = "isUserInRole(Manager)= false";
+    public final static String ejbisUserEmployeeTrue = "isUserInRole(Employee)= true";
+    public final static String ejbisUserEmployeeFalse = "isUserInRole(Employee)= false";
     public final static String getEjbCallerPrincipal = "getCallerPrincipal()=";
+    public final static String ejbAuthorizationFailed = "EJBAccessException: CWWKS9400A: ";
 
     // Values to be verified in servlet response
 
