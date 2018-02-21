@@ -104,7 +104,7 @@ public class OpenAPIValidationTestTwo {
         assertNotNull("The OAuthFlow Validator should have been triggered by missing \"scopes\" field",
                       server.waitForMultipleStringsInLog(3, "Message: Required \"scopes\" field is missing or is set to an invalid value*"));
         assertNotNull("The OAuthFlow Validator should have been triggered by invalid URL",
-                      server.waitForStringInLog("Message: The OAuth Flow Object must contain a valid URL. The \"www.refreshurl.com\" value*"));
+                      server.waitForStringInLog("Message: The OAuth Flow Object must contain a valid URL. The \"invalid URL example\" value*"));
     }
 
     @Test
