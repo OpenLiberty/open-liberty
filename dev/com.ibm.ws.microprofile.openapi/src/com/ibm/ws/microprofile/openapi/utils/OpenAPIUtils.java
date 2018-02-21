@@ -161,7 +161,7 @@ public class OpenAPIUtils {
         }
         return null;
     }
-    
+  
     /**
      * Print map to string
      *
