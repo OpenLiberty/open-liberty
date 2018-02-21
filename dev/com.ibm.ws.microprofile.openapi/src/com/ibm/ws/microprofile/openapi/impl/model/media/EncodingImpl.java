@@ -16,6 +16,9 @@ import java.util.Map;
 import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.media.Encoding;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * Encoding
  *
@@ -132,13 +135,27 @@ public class EncodingImpl implements Encoding {
 
     @Override
     public String toString() {
-        return "Encoding{" +
-               "contentType='" + contentType + '\'' +
-               ", headers=" + headers +
-               ", style='" + style + '\'' +
-               ", explode=" + explode +
-               ", allowReserved=" + allowReserved +
-               '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("class Discriminator {\n");
+        sb = (!toIndentedString(contentType).equals(Constants.NULL_VALUE)) ? sb.append("    contentType: ").append(toIndentedString(contentType)).append("\n") : sb.append("");
+        sb = (!toIndentedString(headers).equals(Constants.NULL_VALUE)) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
+        sb = (!toIndentedString(style).equals(Constants.NULL_VALUE)) ? sb.append("    style: ").append(toIndentedString(style)).append("\n") : sb.append("");
+        sb = (!toIndentedString(explode).equals(Constants.NULL_VALUE)) ? sb.append("    explode: ").append(toIndentedString(explode)).append("\n") : sb.append("");
+        sb = (!toIndentedString(allowReserved).equals(Constants.NULL_VALUE)) ? sb.append("    allowReserved: ").append(toIndentedString(allowReserved)).append("\n") : sb.append("");
+        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
     }
 
     @Override

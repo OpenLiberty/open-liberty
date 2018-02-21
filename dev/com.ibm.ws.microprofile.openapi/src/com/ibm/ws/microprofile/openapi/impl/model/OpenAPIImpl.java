@@ -25,6 +25,9 @@ import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * OpenAPI
  *
@@ -258,15 +261,16 @@ public class OpenAPIImpl implements OpenAPI {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class OpenAPI {\n");
+        sb = (!toIndentedString(openapi).equals(Constants.NULL_VALUE)) ? sb.append("    openapi: ").append(toIndentedString(openapi)).append("\n") : sb.append("");
+        sb = (!toIndentedString(info).equals(Constants.NULL_VALUE)) ? sb.append("    info: ").append(toIndentedString(info)).append("\n") : sb.append("");
+        sb = (!toIndentedString(externalDocs).equals(Constants.NULL_VALUE)) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
+        sb = (!toIndentedString(servers).equals(Constants.NULL_VALUE)) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
+        sb = (!toIndentedString(security).equals(Constants.NULL_VALUE)) ? sb.append("    security: ").append(toIndentedString(security)).append("\n") : sb.append("");
+        sb = (!toIndentedString(tags).equals(Constants.NULL_VALUE)) ? sb.append("    tags: ").append(toIndentedString(tags)).append("\n") : sb.append("");
+        sb = (!toIndentedString(paths).equals(Constants.NULL_VALUE)) ? sb.append("    paths: ").append(toIndentedString(paths)).append("\n") : sb.append("");
+        sb = (!toIndentedString(components).equals(Constants.NULL_VALUE)) ? sb.append("    components: ").append(toIndentedString(components)).append("\n") : sb.append("");
+        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
-        sb.append("    openapi: ").append(toIndentedString(openapi)).append("\n");
-        sb.append("    info: ").append(toIndentedString(info)).append("\n");
-        sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n");
-        sb.append("    servers: ").append(toIndentedString(servers)).append("\n");
-        sb.append("    security: ").append(toIndentedString(security)).append("\n");
-        sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-        sb.append("    paths: ").append(toIndentedString(paths)).append("\n");
-        sb.append("    components: ").append(toIndentedString(components)).append("\n");
         sb.append("}");
         return sb.toString();
     }

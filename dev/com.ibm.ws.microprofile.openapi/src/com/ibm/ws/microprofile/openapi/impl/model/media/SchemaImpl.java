@@ -24,6 +24,8 @@ import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.XML;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * Schema
@@ -841,39 +843,42 @@ public class SchemaImpl implements Schema {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Schema {\n");
-
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    title: ").append(toIndentedString(title)).append("\n");
-        sb.append("    multipleOf: ").append(toIndentedString(multipleOf)).append("\n");
-        sb.append("    maximum: ").append(toIndentedString(maximum)).append("\n");
-        sb.append("    exclusiveMaximum: ").append(toIndentedString(exclusiveMaximum)).append("\n");
-        sb.append("    minimum: ").append(toIndentedString(minimum)).append("\n");
-        sb.append("    exclusiveMinimum: ").append(toIndentedString(exclusiveMinimum)).append("\n");
-        sb.append("    maxLength: ").append(toIndentedString(maxLength)).append("\n");
-        sb.append("    minLength: ").append(toIndentedString(minLength)).append("\n");
-        sb.append("    pattern: ").append(toIndentedString(pattern)).append("\n");
-        sb.append("    maxItems: ").append(toIndentedString(maxItems)).append("\n");
-        sb.append("    minItems: ").append(toIndentedString(minItems)).append("\n");
-        sb.append("    uniqueItems: ").append(toIndentedString(uniqueItems)).append("\n");
-        sb.append("    maxProperties: ").append(toIndentedString(maxProperties)).append("\n");
-        sb.append("    minProperties: ").append(toIndentedString(minProperties)).append("\n");
-        sb.append("    required: ").append(toIndentedString(required)).append("\n");
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("    not: ").append(toIndentedString(not)).append("\n");
-        sb.append("    properties: ").append(toIndentedString(properties)).append("\n");
-        sb.append("    additionalProperties: ").append(toIndentedString(additionalProperties)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    format: ").append(toIndentedString(format)).append("\n");
-        sb.append("    $ref: ").append(toIndentedString($ref)).append("\n");
-        sb.append("    nullable: ").append(toIndentedString(nullable)).append("\n");
-        sb.append("    readOnly: ").append(toIndentedString(readOnly)).append("\n");
-        sb.append("    writeOnly: ").append(toIndentedString(writeOnly)).append("\n");
-        sb.append("    example: ").append(toIndentedString(example)).append("\n");
-        sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n");
-        sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n");
-        sb.append("    xml: ").append(toIndentedString(xml)).append("\n");
-        sb.append("    discriminator: ").append(toIndentedString(discriminator)).append("\n");
-        sb.append("    items: ").append(toIndentedString(items)).append("\n");
+        sb = (!toIndentedString(name).equals(Constants.NULL_VALUE)) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
+        sb = (!toIndentedString(title).equals(Constants.NULL_VALUE)) ? sb.append("    title: ").append(toIndentedString(title)).append("\n") : sb.append("");
+        sb = (!toIndentedString(multipleOf).equals(Constants.NULL_VALUE)) ? sb.append("    multipleOf: ").append(toIndentedString(multipleOf)).append("\n") : sb.append("");
+        sb = (!toIndentedString(maximum).equals(Constants.NULL_VALUE)) ? sb.append("    maximum: ").append(toIndentedString(maximum)).append("\n") : sb.append("");
+        sb = (!toIndentedString(exclusiveMaximum).equals(Constants.NULL_VALUE)) ? sb.append("    exclusiveMaximum: ").append(toIndentedString(exclusiveMaximum)).append("\n") : sb.append("");
+        sb = (!toIndentedString(minimum).equals(Constants.NULL_VALUE)) ? sb.append("    minimum: ").append(toIndentedString(minimum)).append("\n") : sb.append("");
+        sb = (!toIndentedString(exclusiveMinimum).equals(Constants.NULL_VALUE)) ? sb.append("    exclusiveMinimum: ").append(toIndentedString(exclusiveMinimum)).append("\n") : sb.append("");
+        sb = (!toIndentedString(maxLength).equals(Constants.NULL_VALUE)) ? sb.append("    maxLength: ").append(toIndentedString(maxLength)).append("\n") : sb.append("");
+        sb = (!toIndentedString(minLength).equals(Constants.NULL_VALUE)) ? sb.append("    minLength: ").append(toIndentedString(minLength)).append("\n") : sb.append("");
+        sb = (!toIndentedString(pattern).equals(Constants.NULL_VALUE)) ? sb.append("    pattern: ").append(toIndentedString(pattern)).append("\n") : sb.append("");
+        sb = (!toIndentedString(maxItems).equals(Constants.NULL_VALUE)) ? sb.append("    maxItems: ").append(toIndentedString(maxItems)).append("\n") : sb.append("");
+        sb = (!toIndentedString(minItems).equals(Constants.NULL_VALUE)) ? sb.append("    minItems: ").append(toIndentedString(minItems)).append("\n") : sb.append("");
+        sb = (!toIndentedString(uniqueItems).equals(Constants.NULL_VALUE)) ? sb.append("    uniqueItems: ").append(toIndentedString(uniqueItems)).append("\n") : sb.append("");
+        sb = (!toIndentedString(maxProperties).equals(Constants.NULL_VALUE)) ? sb.append("    maxProperties: ").append(toIndentedString(maxProperties)).append("\n") : sb.append("");
+        sb = (!toIndentedString(minProperties).equals(Constants.NULL_VALUE)) ? sb.append("    minProperties: ").append(toIndentedString(minProperties)).append("\n") : sb.append("");
+        sb = (!toIndentedString(required).equals(Constants.NULL_VALUE)) ? sb.append("    required: ").append(toIndentedString(required)).append("\n") : sb.append("");
+        sb = (!toIndentedString(type).equals(Constants.NULL_VALUE)) ? sb.append("    type: ").append(toIndentedString(type)).append("\n") : sb.append("");
+        sb = (!toIndentedString(not).equals(Constants.NULL_VALUE)) ? sb.append("    not: ").append(toIndentedString(not)).append("\n") : sb.append("");
+        sb = (!toIndentedString(properties).equals(Constants.NULL_VALUE)) ? sb.append("    properties: ").append(OpenAPIUtils.mapToString(properties)).append("\n") : sb.append("");
+        sb = (!toIndentedString(additionalProperties).equals(Constants.NULL_VALUE)) ? sb.append("    additionalProperties: ").append(toIndentedString(additionalProperties)).append("\n") : sb.append("");
+        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (!toIndentedString(format).equals(Constants.NULL_VALUE)) ? sb.append("    format: ").append(toIndentedString(format)).append("\n") : sb.append("");
+        sb = (!toIndentedString($ref).equals(Constants.NULL_VALUE)) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (!toIndentedString(nullable).equals(Constants.NULL_VALUE)) ? sb.append("    nullable: ").append(toIndentedString(nullable)).append("\n") : sb.append("");
+        sb = (!toIndentedString(readOnly).equals(Constants.NULL_VALUE)) ? sb.append("    readOnly: ").append(toIndentedString(readOnly)).append("\n") : sb.append("");
+        sb = (!toIndentedString(writeOnly).equals(Constants.NULL_VALUE)) ? sb.append("    writeOnly: ").append(toIndentedString(writeOnly)).append("\n") : sb.append("");
+        sb = (!toIndentedString(example).equals(Constants.NULL_VALUE)) ? sb.append("    example: ").append(toIndentedString(example)).append("\n") : sb.append("");
+        sb = (!toIndentedString(externalDocs).equals(Constants.NULL_VALUE)) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
+        sb = (!toIndentedString(deprecated).equals(Constants.NULL_VALUE)) ? sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n") : sb.append("");
+        sb = (!toIndentedString(xml).equals(Constants.NULL_VALUE)) ? sb.append("    xml: ").append(toIndentedString(xml)).append("\n") : sb.append("");
+        sb = (!toIndentedString(discriminator).equals(Constants.NULL_VALUE)) ? sb.append("    discriminator: ").append(toIndentedString(discriminator)).append("\n") : sb.append("");
+        sb = (!toIndentedString(items).equals(Constants.NULL_VALUE)) ? sb.append("    items: ").append(toIndentedString(items)).append("\n") : sb.append("");
+        sb = (!toIndentedString(anyOf).equals(Constants.NULL_VALUE)) ? sb.append("    anyOf: ").append(toIndentedString(anyOf)).append("\n") : sb.append("");
+        sb = (!toIndentedString(allOf).equals(Constants.NULL_VALUE)) ? sb.append("    allOf: ").append(toIndentedString(allOf)).append("\n") : sb.append("");
+        sb = (!toIndentedString(oneOf).equals(Constants.NULL_VALUE)) ? sb.append("    oneOf: ").append(toIndentedString(oneOf)).append("\n") : sb.append("");
+        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }
