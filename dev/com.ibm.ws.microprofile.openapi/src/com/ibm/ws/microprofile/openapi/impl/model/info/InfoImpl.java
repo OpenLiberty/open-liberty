@@ -16,6 +16,9 @@ import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  *
  * @see "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.md#infoObject"
@@ -171,13 +174,14 @@ public class InfoImpl implements Info {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Info {\n");
+        sb = (!toIndentedString(title).equals(Constants.NULL_VALUE)) ? sb.append("    title: ").append(toIndentedString(title)).append("\n") : sb.append("");
+        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (!toIndentedString(termsOfService).equals(Constants.NULL_VALUE)) ? sb.append("    termsOfService: ").append(toIndentedString(termsOfService)).append("\n") : sb.append("");
+        sb = (!toIndentedString(contact).equals(Constants.NULL_VALUE)) ? sb.append("    contact: ").append(toIndentedString(contact)).append("\n") : sb.append("");
+        sb = (!toIndentedString(license).equals(Constants.NULL_VALUE)) ? sb.append("    license: ").append(toIndentedString(license)).append("\n") : sb.append("");
+        sb = (!toIndentedString(version).equals(Constants.NULL_VALUE)) ? sb.append("    version: ").append(toIndentedString(version)).append("\n") : sb.append("");
+        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
-        sb.append("    title: ").append(toIndentedString(title)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    termsOfService: ").append(toIndentedString(termsOfService)).append("\n");
-        sb.append("    contact: ").append(toIndentedString(contact)).append("\n");
-        sb.append("    license: ").append(toIndentedString(license)).append("\n");
-        sb.append("    version: ").append(toIndentedString(version)).append("\n");
         sb.append("}");
         return sb.toString();
     }

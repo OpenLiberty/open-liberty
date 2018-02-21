@@ -19,6 +19,8 @@ import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+
 /**
  * MediaType
  *
@@ -157,11 +159,11 @@ public class MediaTypeImpl implements MediaType {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class MediaType {\n");
+        sb = (!toIndentedString(schema).equals(Constants.NULL_VALUE)) ? sb.append("    schema: ").append(toIndentedString(schema)).append("\n") : sb.append("");
+        sb = (!toIndentedString(examples).equals(Constants.NULL_VALUE)) ? sb.append("    examples: ").append(toIndentedString(examples)).append("\n") : sb.append("");
+        sb = (!toIndentedString(example).equals(Constants.NULL_VALUE)) ? sb.append("    example: ").append(toIndentedString(example)).append("\n") : sb.append("");
+        sb = (!toIndentedString(encoding).equals(Constants.NULL_VALUE)) ? sb.append("    encoding: ").append(toIndentedString(encoding)).append("\n") : sb.append("");
 
-        sb.append("    schema: ").append(toIndentedString(schema)).append("\n");
-        sb.append("    examples: ").append(toIndentedString(examples)).append("\n");
-        sb.append("    example: ").append(toIndentedString(example)).append("\n");
-        sb.append("    encoding: ").append(toIndentedString(encoding)).append("\n");
         sb.append("}");
         return sb.toString();
     }

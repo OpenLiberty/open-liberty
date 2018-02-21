@@ -25,6 +25,9 @@ import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * Components
  *
@@ -317,15 +320,17 @@ public class ComponentsImpl implements Components {
         StringBuilder sb = new StringBuilder();
         sb.append("class Components {\n");
 
-        sb.append("    schemas: ").append(toIndentedString(schemas)).append("\n");
-        sb.append("    responses: ").append(toIndentedString(responses)).append("\n");
-        sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n");
-        sb.append("    examples: ").append(toIndentedString(examples)).append("\n");
-        sb.append("    requestBodies: ").append(toIndentedString(requestBodies)).append("\n");
-        sb.append("    headers: ").append(toIndentedString(headers)).append("\n");
-        sb.append("    securitySchemes: ").append(toIndentedString(securitySchemes)).append("\n");
-        sb.append("    links: ").append(toIndentedString(links)).append("\n");
-        sb.append("    callbacks: ").append(toIndentedString(callbacks)).append("\n");
+        sb = (!toIndentedString(schemas).equals(Constants.NULL_VALUE)) ? sb.append("    schemas: ").append(OpenAPIUtils.mapToString(schemas)).append("\n") : sb.append("");
+        sb = (!toIndentedString(responses).equals(Constants.NULL_VALUE)) ? sb.append("    responses: ").append(OpenAPIUtils.mapToString(responses)).append("\n") : sb.append("");
+        sb = (!toIndentedString(parameters).equals(Constants.NULL_VALUE)) ? sb.append("    parameters: ").append(OpenAPIUtils.mapToString(parameters)).append("\n") : sb.append("");
+        sb = (!toIndentedString(examples).equals(Constants.NULL_VALUE)) ? sb.append("    examples: ").append(OpenAPIUtils.mapToString(examples)).append("\n") : sb.append("");
+        sb = (!toIndentedString(requestBodies).equals(Constants.NULL_VALUE)) ? sb.append("    requestBodies: ").append(OpenAPIUtils.mapToString(requestBodies)).append("\n") : sb.append("");
+        sb = (!toIndentedString(headers).equals(Constants.NULL_VALUE)) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
+        sb = (!toIndentedString(securitySchemes).equals(Constants.NULL_VALUE)) ? sb.append("    securitySchemes: ").append(OpenAPIUtils.mapToString(securitySchemes)).append("\n") : sb.append("");
+        sb = (!toIndentedString(links).equals(Constants.NULL_VALUE)) ? sb.append("    links: ").append(OpenAPIUtils.mapToString(links)).append("\n") : sb.append("");
+        sb = (!toIndentedString(callbacks).equals(Constants.NULL_VALUE)) ? sb.append("    callbacks: ").append(OpenAPIUtils.mapToString(callbacks)).append("\n") : sb.append("");
+        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        
         sb.append("}");
         return sb.toString();
     }

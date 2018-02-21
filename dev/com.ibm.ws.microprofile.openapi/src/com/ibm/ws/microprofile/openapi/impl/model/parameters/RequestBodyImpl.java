@@ -13,6 +13,9 @@ package com.ibm.ws.microprofile.openapi.impl.model.parameters;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * RequestBody
  *
@@ -152,10 +155,11 @@ public class RequestBodyImpl implements RequestBody {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class RequestBody {\n");
-
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    content: ").append(toIndentedString(content)).append("\n");
-        sb.append("    required: ").append(toIndentedString(required)).append("\n");
+        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (!toIndentedString(content).equals(Constants.NULL_VALUE)) ? sb.append("    content: ").append(toIndentedString(content)).append("\n") : sb.append("");
+        sb = (!toIndentedString(required).equals(Constants.NULL_VALUE)) ? sb.append("    required: ").append(toIndentedString(required)).append("\n") : sb.append("");
+        sb = (!toIndentedString($ref).equals(Constants.NULL_VALUE)) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

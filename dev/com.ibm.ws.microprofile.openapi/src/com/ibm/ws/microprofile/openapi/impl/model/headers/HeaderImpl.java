@@ -19,6 +19,9 @@ import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * Header
  *
@@ -278,17 +281,19 @@ public class HeaderImpl implements Header {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Header {\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    required: ").append(toIndentedString(required)).append("\n");
-        sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n");
-        sb.append("    allowEmptyValue: ").append(toIndentedString(allowEmptyValue)).append("\n");
-        sb.append("    style: ").append(toIndentedString(style)).append("\n");
-        sb.append("    explode: ").append(toIndentedString(explode)).append("\n");
-        sb.append("    schema: ").append(toIndentedString(schema)).append("\n");
-        sb.append("    examples: ").append(toIndentedString(examples)).append("\n");
-        sb.append("    example: ").append(toIndentedString(example)).append("\n");
-        sb.append("    content: ").append(toIndentedString(content)).append("\n");
-        sb.append("    $ref: ").append(toIndentedString($ref)).append("\n");
+        sb = (!toIndentedString(description).equals(Constants.NULL_VALUE)) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (!toIndentedString(required).equals(Constants.NULL_VALUE)) ? sb.append("    required: ").append(toIndentedString(required)).append("\n") : sb.append("");
+        sb = (!toIndentedString(deprecated).equals(Constants.NULL_VALUE)) ? sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n") : sb.append("");
+        sb = (!toIndentedString(allowEmptyValue).equals(Constants.NULL_VALUE)) ? sb.append("    allowEmptyValue: ").append(toIndentedString(allowEmptyValue)).append("\n") : sb.append("");
+        sb = (!toIndentedString(style).equals(Constants.NULL_VALUE)) ? sb.append("    style: ").append(toIndentedString(style)).append("\n") : sb.append("");
+        sb = (!toIndentedString(explode).equals(Constants.NULL_VALUE)) ? sb.append("    explode: ").append(toIndentedString(explode)).append("\n") : sb.append("");
+        sb = (!toIndentedString(schema).equals(Constants.NULL_VALUE)) ? sb.append("    schema: ").append(toIndentedString(schema)).append("\n") : sb.append("");
+        sb = (!toIndentedString(examples).equals(Constants.NULL_VALUE)) ? sb.append("    examples: ").append(OpenAPIUtils.mapToString(examples)).append("\n") : sb.append("");
+        sb = (!toIndentedString(example).equals(Constants.NULL_VALUE)) ? sb.append("    example: ").append(toIndentedString(example)).append("\n") : sb.append("");
+        sb = (!toIndentedString(content).equals(Constants.NULL_VALUE)) ? sb.append("    content: ").append(toIndentedString(content)).append("\n") : sb.append("");
+        sb = (!toIndentedString($ref).equals(Constants.NULL_VALUE)) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (!toIndentedString(extensions).equals(Constants.NULL_VALUE)) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+
         sb.append("}");
         return sb.toString();
     }

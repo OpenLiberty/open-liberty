@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
@@ -159,5 +160,24 @@ public class OpenAPIUtils {
             }
         }
         return null;
+    }
+    
+    /**
+     * Print map to string
+     *
+     * @param map - the map to be printed to String
+     */
+    public static String mapToString(Map<String, ?> map) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\n");
+        for (String key : map.keySet()) {
+            if (map.get(key) != null) {
+                sb.append(key + ": " + map.get(key) + "\n ");
+            } else {
+                continue;
+            }
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }
