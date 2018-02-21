@@ -29,6 +29,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * This CDI Bean controls the creation of all raw types whose values are obtained via a Config instance.
@@ -94,18 +95,21 @@ public class ConfigPropertyBean<T> extends AbstractConfigBean<T> implements Bean
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public Class<?> getBeanClass() {
         return beanClass;
     }
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public boolean isNullable() {
         return true;
     }
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public Class<? extends Annotation> getScope() {
         return Dependent.class;
     }

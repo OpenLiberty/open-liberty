@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 
@@ -32,14 +33,17 @@ public class AutomaticConverter extends BuiltInConverter {
     private Method parseMethod;
     private final boolean useCtorFirst;
 
+    @Trivial
     public AutomaticConverter(Class<?> type) {
         this(type, type);
     }
 
+    @Trivial
     public AutomaticConverter(Type converterType, Class<?> reflectionClass) {
         this(converterType, reflectionClass, false); //by default valueOf(String) is preferred to the Ctor(String)
     }
 
+    @Trivial
     public AutomaticConverter(Type converterType, Class<?> reflectionClass, boolean useCtorFirst) {
         super(converterType);
         this.useCtorFirst = useCtorFirst;
@@ -57,12 +61,24 @@ public class AutomaticConverter extends BuiltInConverter {
         if (this.ctor == null && this.valueOfMethod == null) {
             this.parseMethod = getParse(reflectionClass);
         }
+
         if (this.ctor == null && this.valueOfMethod == null && this.parseMethod == null) {
             throw new IllegalArgumentException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", reflectionClass));
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                if (this.ctor != null) {
+                    Tr.debug(tc, "Automatic converter for {0} using {1}", converterType, this.ctor);
+                } else if (this.valueOfMethod != null) {
+                    Tr.debug(tc, "Automatic converter for {0} using {1}", converterType, this.valueOfMethod);
+                } else if (this.parseMethod != null) {
+                    Tr.debug(tc, "Automatic converter for {0} using {1}", converterType, this.parseMethod);
+                }
+            }
         }
     }
 
     @FFDCIgnore(NoSuchMethodException.class)
+    @Trivial
     private static <M> Constructor<M> getConstructor(Class<M> reflectionClass) {
         Constructor<M> ctor = null;
         try {
@@ -74,6 +90,7 @@ public class AutomaticConverter extends BuiltInConverter {
     }
 
     @FFDCIgnore(NoSuchMethodException.class)
+    @Trivial
     private static Method getValueOfMethod(Class<?> reflectionClass) {
         Method method = null;
         try {
@@ -91,6 +108,7 @@ public class AutomaticConverter extends BuiltInConverter {
     }
 
     @FFDCIgnore(NoSuchMethodException.class)
+    @Trivial
     private static Method getParse(Class<?> reflectionClass) {
         Method method = null;
         try {
@@ -141,5 +159,11 @@ public class AutomaticConverter extends BuiltInConverter {
             }
         }
         return converted;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "Automatic Converter for type " + getType();
     }
 }

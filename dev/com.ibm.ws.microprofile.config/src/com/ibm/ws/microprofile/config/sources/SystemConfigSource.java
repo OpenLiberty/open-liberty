@@ -21,6 +21,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 /**
@@ -47,6 +48,7 @@ public class SystemConfigSource extends InternalConfigSource implements ConfigSo
         return props;
     }
 
+    @Trivial
     public static int getSystemOrdinal() {
         String ordinalProp = getOrdinalSystemProperty();
         int ordinal = ConfigConstants.ORDINAL_SYSTEM_PROPERTIES;
@@ -56,9 +58,11 @@ public class SystemConfigSource extends InternalConfigSource implements ConfigSo
         return ordinal;
     }
 
+    @Trivial
     private static String getOrdinalSystemProperty() {
         String prop = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
+            @Trivial
             public String run() {
                 return System.getProperty(ConfigConstants.ORDINAL_PROPERTY);
             }
@@ -66,9 +70,11 @@ public class SystemConfigSource extends InternalConfigSource implements ConfigSo
         return prop;
     }
 
+    @Trivial
     private static Properties getSystemProperties() {
         Properties prop = AccessController.doPrivileged(new PrivilegedAction<Properties>() {
             @Override
+            @Trivial
             public Properties run() {
                 return System.getProperties();
             }

@@ -200,6 +200,7 @@ public class PollingDynamicConfig implements Closeable {
      * @param key
      * @return True if the key is contained within this or any of it's child configurations
      */
+    @Trivial
     protected boolean containsKey(String key) {
         return current.containsKey(key);
     }
@@ -209,6 +210,7 @@ public class PollingDynamicConfig implements Closeable {
      *
      * @param key
      */
+    @Trivial
     protected String getRawProperty(String key) {
         return current.get(key);
     }
@@ -216,6 +218,7 @@ public class PollingDynamicConfig implements Closeable {
     /**
      * @return Return an iterator to all property names owned by this config
      */
+    @Trivial
     protected Iterator<String> getKeys() {
         return current.keySet().iterator();
     }

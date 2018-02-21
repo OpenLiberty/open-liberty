@@ -23,6 +23,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
@@ -32,10 +33,12 @@ public class PropertiesConfigSource extends InternalConfigSource implements Conf
 
     private final ConcurrentMap<String, String> properties;
 
+    @Trivial
     public PropertiesConfigSource(URL resource) {
         this(loadProperties(resource), resource.toString());
     }
 
+    @Trivial
     public PropertiesConfigSource(ConcurrentMap<String, String> properties, String id) {
         this(properties, getPropsOrdinal(properties), Tr.formatMessage(tc, "properties.file.config.source", id));
     }
@@ -50,6 +53,7 @@ public class PropertiesConfigSource extends InternalConfigSource implements Conf
         return properties;
     }
 
+    @Trivial
     public static int getPropsOrdinal(Map<String, String> properties) {
         String ordinalProp = properties.get(ConfigConstants.ORDINAL_PROPERTY);
         int ordinal = ConfigConstants.ORDINAL_PROPERTIES_FILE;

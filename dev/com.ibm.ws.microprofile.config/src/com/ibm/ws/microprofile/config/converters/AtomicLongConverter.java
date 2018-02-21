@@ -12,11 +12,14 @@ package com.ibm.ws.microprofile.config.converters;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  *
  */
 public class AtomicLongConverter extends BuiltInConverter {
 
+    @Trivial
     public AtomicLongConverter() {
         super(AtomicLong.class);
     }

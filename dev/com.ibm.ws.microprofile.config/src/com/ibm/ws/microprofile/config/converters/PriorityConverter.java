@@ -29,6 +29,7 @@ public abstract class PriorityConverter {
      * @param priority The priority of the converter
      * @param converter The actual converter
      */
+    @Trivial
     public PriorityConverter(Type type, int priority) {
         this.type = type;
         this.priority = priority;

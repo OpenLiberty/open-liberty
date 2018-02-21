@@ -16,9 +16,12 @@ import javax.enterprise.util.AnnotationLiteral;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * ConfigPropertyLiteral represents an instance of the ConfigProperty annotation
  */
+@Trivial
 public class ConfigPropertyLiteral extends AnnotationLiteral<ConfigProperty> implements ConfigProperty {
 
     /**  */

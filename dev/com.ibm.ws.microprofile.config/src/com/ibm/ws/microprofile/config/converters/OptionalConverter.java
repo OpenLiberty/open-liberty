@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 
 /**
@@ -21,6 +22,7 @@ import com.ibm.ws.microprofile.config.impl.ConversionManager;
  */
 public class OptionalConverter extends BuiltInConverter implements ExtendedGenericConverter {
 
+    @Trivial
     public OptionalConverter() {
         super(Optional.class);
     }

@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.config.converters;
 
 import java.time.format.DateTimeParseException;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 
 /**
@@ -19,6 +20,7 @@ import com.ibm.ws.microprofile.config.interfaces.ConversionException;
  */
 public class DateTimeConverter extends AutomaticConverter {
 
+    @Trivial
     public DateTimeConverter(Class<?> type) {
         super(type);
     }

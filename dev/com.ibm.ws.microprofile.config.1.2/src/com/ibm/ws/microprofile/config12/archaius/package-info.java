@@ -8,24 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.converters;
-
-import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
- *
+ * @version 1.0
  */
-public class IdentityConverter extends BuiltInConverter {
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "APPCONFIG", messageBundle = "com.ibm.ws.microprofile.config.resources.Config")
+package com.ibm.ws.microprofile.config12.archaius;
 
-    @Trivial
-    public IdentityConverter() {
-        super(String.class);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String convert(String value) {
-        //identity function
-        return value;
-    }
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;
