@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -198,6 +199,7 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     //since servlet40
     private String requestEncoding = null;
     private String responseEncoding = null;
+    private static final String NULLSERVLETNAME = "com.ibm.ws.webcontainer.NullServletName"; //PI93226
 
     /**
      * Constructor.
@@ -206,7 +208,7 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
      */
     public WebAppConfiguration(String id) {
         super(id);
-        this.servletInfo = new HashMap<String, IServletConfig>();
+        this.servletInfo = new ConcurrentHashMap<String, IServletConfig>();
         this.servletMappings = new HashMap<String, List<String>>();
         this.filterInfo = new HashMap<String, IFilterConfig>();
         this.filterMappings = new ArrayList();
@@ -238,10 +240,24 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     }
 
     public void addServletInfo(String name, IServletConfig info) {
+        if (name == null || name.isEmpty()){
+            Tr.debug(tc, "addServletInfo", "servlet name is null/empty. Use internal servlet name " + NULLSERVLETNAME);
+            name = NULLSERVLETNAME;
+        }
+        
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "addServletInfo", "servlet name: " + name);
+        }
+
         this.servletInfo.put(name, info);
     }
 
     public void removeServletInfo(String name) {
+        if (name == null || name.isEmpty()){
+            Tr.debug(tc, "removeServletInfo", "servlet name is null/empty. Use internal servlet name " + NULLSERVLETNAME);
+            name = NULLSERVLETNAME;
+        }
+
         this.servletInfo.remove(name);
     }
 
@@ -573,6 +589,11 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
      * @return ServletConfig
      */
     public IServletConfig getServletInfo(String string) {
+        if (string == null || string.isEmpty()){
+            Tr.debug(tc, "getServletInfo", "servlet name is null/empty. Use internal servlet name " + NULLSERVLETNAME);
+            string = NULLSERVLETNAME;
+        }
+
         return (IServletConfig) this.servletInfo.get(string);
     }
 
