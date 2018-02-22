@@ -203,6 +203,11 @@ public class WebAppSecurityCollaboratorImplTest {
         public SecurityMetadata getSecurityMetadata() {
             return commonSecurityMetadata;
         }
+
+        @Override
+        public SecurityMetadata getSecurityMetadata(HttpServletRequest req) {
+            return commonSecurityMetadata;
+        }
     }
 
     class RedirectReplyTestDouble extends RedirectReply {

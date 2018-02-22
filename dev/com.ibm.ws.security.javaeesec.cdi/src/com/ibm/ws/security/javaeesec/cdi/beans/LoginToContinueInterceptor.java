@@ -147,10 +147,10 @@ public class LoginToContinueInterceptor {
         //todo: it would be an optional but if context root matches to the global login page, remove context root.
         // otherwise, webcollaborator won't exempt login and error page from authorization check.
         if (!_useGlobalLogin) {
-            updateFormLoginConfiguration(loginPage, errorPage);
+            updateFormLoginConfiguration(req, loginPage, errorPage);
         } else {
             // when using global login, clear login setting in the application.
-            updateFormLoginConfiguration("", "");
+            updateFormLoginConfiguration(req, "", "");
         }
 
         // set wasrequrl cookie and postparam cookie.
@@ -253,11 +253,11 @@ public class LoginToContinueInterceptor {
         return result;
     }
 
-    private void updateFormLoginConfiguration(String loginPage, String errorPage) {
+    private void updateFormLoginConfiguration(HttpServletRequest req, String loginPage, String errorPage) {
         if (loginPage != null && errorPage != null) {
             FormLoginConfiguration flc = new FormLoginConfigurationImpl(loginPage, errorPage);
             LoginConfiguration lc = new LoginConfigurationImpl(LoginConfiguration.FORM, null, flc);
-            SecurityMetadata smd = getSecurityMetadata();
+            SecurityMetadata smd = getSecurityMetadata(req);
             if (smd != null) {
                 smd.setLoginConfiguration(lc);
                 if (tc.isDebugEnabled()) {
@@ -267,8 +267,8 @@ public class LoginToContinueInterceptor {
         }
     }
 
-    protected SecurityMetadata getSecurityMetadata() {
-        return WebConfigUtils.getSecurityMetadata();
+    protected SecurityMetadata getSecurityMetadata(HttpServletRequest req) {
+        return WebConfigUtils.getSecurityMetadata(req);
     }
 
     protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res, boolean isCustomForm) throws IOException, RuntimeException {
