@@ -102,7 +102,9 @@ public class CacheStoreService implements SessionStoreService {
         cache = cacheManager.getCache(cacheName, String.class, ArrayList.class);
         if (cache == null) {
             @SuppressWarnings("rawtypes")
-            Configuration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>().setTypes(String.class, ArrayList.class);
+            Configuration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>()
+                            .setTypes(String.class, ArrayList.class)
+                            .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
             try {
                 cache = cacheManager.createCache(cacheName, config);
 
@@ -138,37 +140,6 @@ public class CacheStoreService implements SessionStoreService {
     @Deactivate
     protected void deactivate(ComponentContext context) {
         cacheManager.close();
-    }
-
-    /**
-     * Obtains the session cache for the specified application.
-     * For multi-cache path, each session property is a separate entry in this cache.
-     * 
-     * @param appName the application name.
-     * @return the cache.
-     */
-    Cache<String, byte[]> getCache(String appName) {
-        // TODO replace / and : characters (per spec for cache names) and ensure the name is still unique.
-        String cacheName = "com.ibm.ws.session.app." + appName;
-
-        // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
-        Cache<String, byte[]> cache = cacheManager.getCache(cacheName, String.class, byte[].class);
-        if (cache == null) {
-            Configuration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
-                            .setTypes(String.class, byte[].class)
-                            .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
-            try {
-                cache = cacheManager.createCache(cacheName, config);
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Created a new session property cache");
-            } catch (CacheException x) {
-                cache = cacheManager.getCache(cacheName, String.class, byte[].class);
-                if (cache == null)
-                    throw x;
-            }
-        }
-        return cache;
     }
 
     @Override
