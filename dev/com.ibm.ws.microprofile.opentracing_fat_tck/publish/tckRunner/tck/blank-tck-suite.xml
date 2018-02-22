@@ -9,7 +9,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="microprofile-opentracing-1.0-tck" verbose="2"
-    opentracingfailurepolicy="continue">
+    configfailurepolicy="continue">
     <test name="microprofile-opentracing-1.0-tck-all">
         <packages>
             <package name="org.eclipse.microprofile.opentracing.tck.*" />
