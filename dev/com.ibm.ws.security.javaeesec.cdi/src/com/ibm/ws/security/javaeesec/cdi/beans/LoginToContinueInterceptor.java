@@ -113,9 +113,8 @@ public class LoginToContinueInterceptor {
                 HttpServletRequest req = (HttpServletRequest) params[0];
                 HttpServletResponse res = (HttpServletResponse) params[1];
                 HttpMessageContext hmc = (HttpMessageContext) params[2];
-                AuthenticationParameters authParams = hmc.getAuthParameters();
-                Class hamClass = getClass(ic);
-                if (!isNewAuth(authParams)) {
+                if (!isNewAuth(hmc)) {
+                    Class hamClass = getClass(ic);
                     if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
                         // need to redirect.
                         result = gotoLoginPage(mpp.getAuthMechProperties(hamClass), req, res, hmc);
@@ -402,12 +401,12 @@ public class LoginToContinueInterceptor {
         return null;
     }
 
-    private boolean isNewAuth(AuthenticationParameters authParams) {
-        boolean isNewAuth = false;
+    private boolean isNewAuth(HttpMessageContext hmc) {
+        AuthenticationParameters authParams = hmc.getAuthParameters();
         if (authParams != null) {
-            isNewAuth = authParams.isNewAuthentication();
+            return authParams.isNewAuthentication();
         }
-        return isNewAuth;
+        return false;
     }
 
     @SuppressWarnings("rawtypes")

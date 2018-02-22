@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 
 @Default
 @ApplicationScoped
@@ -45,8 +46,6 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
 
         Subject clientSubject = httpMessageContext.getClientSubject();
         @SuppressWarnings("unchecked")
-        HttpServletRequest req = httpMessageContext.getRequest();
-        HttpServletResponse rsp = httpMessageContext.getResponse();
         AuthenticationParameters authParams = httpMessageContext.getAuthParameters();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "AuthenticationParameters : " + authParams);
@@ -71,7 +70,8 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
                     status = AuthenticationStatus.SEND_CONTINUE;
                 }
             } else {
-                status = handleFormLogin(cred, rsp, clientSubject, httpMessageContext);
+                boolean newAuth = authParams.isNewAuthentication();
+                status = handleFormLogin(cred, newAuth == true ? null : httpMessageContext.getResponse(), clientSubject, httpMessageContext);
             }
         }
         return status;
@@ -93,16 +93,17 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
 
     private AuthenticationStatus handleFormLogin(@Sensitive Credential credential, HttpServletResponse rsp, Subject clientSubject,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
-        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        int rspStatus = HttpServletResponse.SC_FORBIDDEN;
-        status = utils.validateCredential(getCDI(), "defaultRealm", clientSubject, credential, httpMessageContext);
+        AuthenticationStatus status = utils.handleAuthenticate(getCDI(), JavaEESecConstants.DEFAULT_REALM, credential, clientSubject, httpMessageContext);
+        int rspStatus;
         if (status == AuthenticationStatus.SUCCESS) {
-            httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
             rspStatus = HttpServletResponse.SC_OK;
         } else {
+            rspStatus = HttpServletResponse.SC_FORBIDDEN;
             // TODO: Audit invalid user or password
         }
-        rsp.setStatus(rspStatus);
+        if (rsp != null) {
+            rsp.setStatus(rspStatus);
+        }
         return status;
     }
 
