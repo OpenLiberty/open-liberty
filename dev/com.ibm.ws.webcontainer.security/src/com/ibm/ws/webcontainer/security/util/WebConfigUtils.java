@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.webcontainer.security.util;
 
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
@@ -18,12 +19,14 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class contains methods for getting web app config information
  */
 public class WebConfigUtils {
-
+    public static final String ATTR_WEB_MODULE_METADATA = "com.ibm.ws.webcontainer.security.webmodulemetadata";
+    
     /**
      * Get the web application config
      * 
@@ -59,8 +62,26 @@ public class WebConfigUtils {
     public static SecurityMetadata getSecurityMetadata() {
         SecurityMetadata secMetadata = null;
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
-        secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
+        ModuleMetaData mmd = cmd.getModuleMetaData();
+        if (mmd instanceof WebModuleMetaData) {
+            secMetadata = (SecurityMetadata)((WebModuleMetaData)mmd).getSecurityMetaData();
+        }
+        return secMetadata;
+    }
+
+    /**
+     * Get the security metadata
+     * 
+     * @return the security metadata
+     */
+    public static SecurityMetadata getSecurityMetadata(HttpServletRequest req) {
+        SecurityMetadata secMetadata = getSecurityMetadata();
+        if (secMetadata == null) {
+            WebModuleMetaData wmmd = (WebModuleMetaData)req.getAttribute(ATTR_WEB_MODULE_METADATA);
+            if (wmmd != null) {
+                secMetadata = (SecurityMetadata)wmmd.getSecurityMetaData();
+            }
+        }
         return secMetadata;
     }
 }
