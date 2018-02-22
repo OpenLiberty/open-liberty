@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017 - 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
  *
  */
 @Component(name = "com.ibm.ws.security.mp.jwt", configurationPid = "com.ibm.ws.security.mp.jwt", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = { MicroProfileJwtConfig.class, JwtConsumerConfig.class }, property = { "service.vendor=IBM", "type=microProfileJwtConfig" })
-public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig, JwtConsumerConfig {
+public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
     private static TraceComponent tc = Tr.register(MicroProfileJwtConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     protected final boolean IS_REQUIRED = true;
