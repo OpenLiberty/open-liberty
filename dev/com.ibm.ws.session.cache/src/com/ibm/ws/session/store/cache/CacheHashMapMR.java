@@ -18,10 +18,15 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
-import javax.cache.Cache;
+import javax.cache.CacheException;
+import javax.cache.configuration.Configuration;
+import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.EternalExpiryPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -40,11 +45,47 @@ public class CacheHashMapMR extends CacheHashMap {
 
     private static final TraceComponent tc = Tr.register(CacheHashMapMR.class);
 
+    /**
+     * Reusable patterns for String.replaceAll
+     */
+    private static final Pattern COLON = Pattern.compile(":"), PERCENT = Pattern.compile("%"), SLASH = Pattern.compile("/");
+
     public CacheHashMapMR(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
         super(store, smc, cacheStoreService);
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         // We know we're running multi-row..if not writeAllProperties and not time-based writes,
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
+
+        // Build a unique per-application cache name by starting with the application context root and percent encoding
+        // the / and : characters (JCache spec does not allow these in cache names)
+        // and also the % character (which is necessary because of percent encoding)
+        String a = PERCENT.matcher(store.getId()).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
+        a = SLASH.matcher(a).replaceAll("%2F");
+        a = COLON.matcher(a).replaceAll("%3A");
+        String cacheName = new StringBuilder(23 + a.length()).append("com.ibm.ws.session.app.").append(a).toString();
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "find or create cache", cacheName);
+
+        sessionPropertyCache = cacheStoreService.cacheManager.getCache(cacheName, String.class, byte[].class);
+        if (sessionPropertyCache == null) {
+            Configuration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
+                            .setTypes(String.class, byte[].class)
+                            .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
+            try {
+                sessionPropertyCache = cacheStoreService.cacheManager.createCache(cacheName, config);
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(tc, "Created a new session property cache", cacheName);
+            } catch (CacheException x) {
+                sessionPropertyCache = cacheStoreService.cacheManager.getCache(cacheName, String.class, byte[].class);
+                if (sessionPropertyCache == null)
+                    throw x;
+            }
+        }
     }
 
     /**
@@ -67,7 +108,6 @@ public class CacheHashMapMR extends CacheHashMap {
         Hashtable<String, Object> h = new Hashtable<String, Object>();
         try {
             if (propIds != null) {
-                Cache<String, byte[]> cache = cacheStoreService.getCache(appName);
                 for (String propId : propIds) {
                     // If an attribute is already in appDataRemovals or appDataChanges, then the attribute was already retrieved from the cache.  Skip retrieval from the cache here.
                     if (sess.appDataRemovals != null && sess.appDataRemovals.containsKey(propId)) {
@@ -81,7 +121,7 @@ public class CacheHashMapMR extends CacheHashMap {
                     }
 
                     String propertyKey = createSessionPropertyKey(id, propId);
-                    byte[] b = cache.get(propertyKey);
+                    byte[] b = sessionPropertyCache.get(propertyKey);
 
                     if (b != null) {
                         ByteArrayInputStream bais = new ByteArrayInputStream(b);
@@ -128,7 +168,7 @@ public class CacheHashMapMR extends CacheHashMap {
         Object tmp = null;
 
         String key = createSessionPropertyKey(sessId, id);
-        byte[] sessionPropBytes = cacheStoreService.getCache(appName).get(key);
+        byte[] sessionPropBytes = sessionPropertyCache.get(key);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, key.toString(), sessionPropBytes == null ? null : sessionPropBytes.length);
@@ -187,8 +227,8 @@ public class CacheHashMapMR extends CacheHashMap {
             // we are not synchronized here - were not in old code either
             Hashtable tht = null;
             if (_smc.writeAllProperties()) {
-                Hashtable ht = d2.getSwappableData();
-                propsToWrite = ht.keySet();
+                Map<?, ?> ht = d2.getSwappableData();
+                propsToWrite = (Set<String>) ht.keySet();
                 if (trace && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "doing app changes for ALL mSwappable Data", ht);
                 }
@@ -211,8 +251,6 @@ public class CacheHashMapMR extends CacheHashMap {
             }
 
             if (propsToWrite != null) {
-                Cache<String, byte[]> cache = cacheStoreService.getCache(appName);
-
                 for (String propid : propsToWrite) {
                     long startTime = System.nanoTime();
 
@@ -236,7 +274,7 @@ public class CacheHashMapMR extends CacheHashMap {
                         Tr.debug(this, tc, "before update " + propid + " for session " + id + " size " + size);
 
                     String key = createSessionPropertyKey(id, propid);
-                    cache.put(key, objbuf);
+                    sessionPropertyCache.put(key, objbuf);
 
                     SessionStatistics pmiStats = _iStore.getSessionStatistics();
                     if (pmiStats != null) {
@@ -283,14 +321,12 @@ public class CacheHashMapMR extends CacheHashMap {
                 }
 
                 if (propsToRemove != null && !propsToRemove.isEmpty()) {
-                    Cache<String, byte[]> cache = cacheStoreService.getCache(appName);
-
                     for (String propid : propsToRemove) {
                         if (trace && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "deleting prop " + propid + " for session " + id);
                         }
                         String key = createSessionPropertyKey(id, propid);
-                        cache.remove(key);
+                        sessionPropertyCache.remove(key);
                     }
                 }
 
@@ -362,10 +398,9 @@ public class CacheHashMapMR extends CacheHashMap {
         if (propIds != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "remove session properties", propIds);
-            Cache<String, byte[]> cache = cacheStoreService.getCache(_iStore.getId());
             for (String propId : propIds) {
                 String propertyKey = createSessionPropertyKey(id, propId);
-                cache.remove(propertyKey);
+                sessionPropertyCache.remove(propertyKey);
             }
         }
     }

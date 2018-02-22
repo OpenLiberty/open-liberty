@@ -17,9 +17,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import javax.cache.Cache;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -46,6 +47,13 @@ public class CacheHashMap extends BackedHashMap {
     CacheStoreService cacheStoreService;
     IStore _iStore;
     SessionManagerConfig _smc;
+
+    /**
+     * Per-application session property cache.
+     * This cache is used on the entry-per-session property path.
+     * Null if all session properties are stored in a single entry of the com.ibm.ws.session.cache cache.
+     */
+    Cache<String, byte[]> sessionPropertyCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
 
     public CacheHashMap(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
         super(store, smc);
@@ -210,7 +218,7 @@ public class CacheHashMap extends BackedHashMap {
             String appName = getIStore().getId();
 
             String key = createSessionPropertyKey(id, attrName);
-            byte[] bytes = cacheStoreService.getCache(appName).get(key);
+            byte[] bytes = sessionPropertyCache.get(key);
 
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "byte length", bytes == null ? null : bytes.length);
@@ -428,35 +436,33 @@ public class CacheHashMap extends BackedHashMap {
         ObjectOutputStream oos = null;
         byte[] objbuf = null;
 
-        try {
-            @SuppressWarnings("rawtypes")
-            Hashtable ht;
-            synchronized (d2) {
-                ht = d2.getSwappableData();
-            }
-
-            // serialize session (app data only) into byte array buffer
-            baos = new ByteArrayOutputStream();
-            oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
-            oos.writeObject(ht);
-            oos.flush();
-            objbuf = baos.toByteArray();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc,  "success - size of byte array is " + objbuf.length);
-            }
-
-            oos.close();
-            baos.close();
-        } catch (ConcurrentModificationException cme) {
-            // TODO copied from DatabaseHashMap, but this seems suspicious. Need to investigate further. 
-            Tr.event(this, tc,  "CacheHashMap.deferWrite", d2.getId());
+        Map<Object, Object> ht;
+        synchronized (d2) {
+            ht = d2.getSwappableData();
         }
+
+        // serialize session (app data only) into byte array buffer
+        baos = new ByteArrayOutputStream();
+        oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
+        oos.writeObject(ht);
+        oos.flush();
+        objbuf = baos.toByteArray();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc,  "success - size of byte array is " + objbuf.length);
+        }
+
+        oos.close();
+        baos.close();
+
         return objbuf;
     }
 
     @Trivial
     public String toString() {
-        return new StringBuilder(getClass().getSimpleName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).toString();
+        return new StringBuilder(getClass().getSimpleName())
+                        .append('@').append(Integer.toHexString(System.identityHashCode(this)))
+                        .append(" for ").append(_iStore.getId())
+                        .toString();
     }
 
     /**
