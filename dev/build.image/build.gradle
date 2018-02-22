@@ -205,6 +205,30 @@ task zipOpenLibertyAll(type: Zip) {
         props.store(propsFile.newWriter(), null)
     }
 }
+task zipOpenLibertyMavenRepo(type: Zip){
+	dependsOn parent.subprojects.assemble
+	doLast{
+		basename 'openliberty-mavenArtifact'
+		from "${baseDir}/cnf/build/temp/"
+		include "mavenArtifact/**"
+    	destinationDir distsDir
+    }
+}
+
+publish.dependsOn zipOpenLibertyMavenRepo
+
+task zipMavenRepoRequirements(type:Zip){
+	dependsOn parent.subprojects.assemble
+	doLast{
+		basename 'openliberty-featureMavenRepo'
+		from "${baseDir}/cnf/build/temp/"
+		include "LibertyFeaturesToMavenRepo/**"
+    	destinationDir distsDir
+    }
+
+}
+
+publish.dependsOn zipMavenRepoRequirements
 
 clean.doLast {
     file('wlp').deleteDir()
