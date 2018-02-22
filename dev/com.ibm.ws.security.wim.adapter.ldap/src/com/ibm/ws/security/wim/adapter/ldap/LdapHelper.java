@@ -44,7 +44,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-import com.ibm.ws.security.wim.AccessControllerHelper;
 import com.ibm.wsspi.security.wim.exception.CertificateMapperException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.exception.WIMSystemException;
@@ -711,32 +710,12 @@ public class LdapHelper {
      * @return The encoded byte array which can be stored in <code>unicodePwd</code> attribute in Active Directory.
      */
     public static byte[] encodePassword(String password) throws WIMSystemException {
-        byte[] encodedPassword = null;
-
         try {
-            // Encode password for Active Directory
-            String ATTRIBUTE_ENCODING = "Unicode";
-            String tempPassword = "\"" + password + "\"";
-            byte[] bytes = tempPassword.getBytes(ATTRIBUTE_ENCODING);
-            encodedPassword = new byte[bytes.length - 2];
-            System.arraycopy(bytes, 2, encodedPassword, 0, bytes.length - 2);
-
-            //Changing high byte in low byte for non intel-platforms, like SOLARIS, AIX, LINUX
-            if (!((AccessControllerHelper.getSystemProperty("os.arch").equals("x86")) || (AccessControllerHelper.getSystemProperty("os.arch").equals("ia64"))
-                  || (AccessControllerHelper.getSystemProperty("os.arch").equals("amd64")))) {
-                byte temp;
-                for (int i = 0; i < encodedPassword.length; i = i + 2) {
-                    temp = encodedPassword[i];
-                    encodedPassword[i] = encodedPassword[i + 1];
-                    encodedPassword[i + 1] = temp;
-                }
-            }
+            return ("\"" + password + "\"").getBytes("UTF-16LE");
         } catch (Exception e) {
             String msg = Tr.formatMessage(tc, WIMMessageKey.GENERIC, WIMMessageHelper.generateMsgParms(e.getMessage()));
             throw new WIMSystemException(WIMMessageKey.GENERIC, msg, e);
         }
-
-        return encodedPassword;
     }
 
     public static byte[] getOctetString(String hexStr) {
