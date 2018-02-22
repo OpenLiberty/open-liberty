@@ -122,9 +122,6 @@
                         <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-rest-tck</dependency>
                         <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-api-tck</dependency>
                     </dependenciesToScan>
-                    <excludes>
-                       <exclude>**/TimerTest.java</exclude>
-                    </excludes>
                </configuration>
 			</plugin>
 		</plugins>
