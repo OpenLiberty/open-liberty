@@ -127,15 +127,10 @@ public class UICustomizationTest extends FATServletClient {
         server.startServer("UICustomizationTest.log", false);
 
         // Wait for /openapi/ui to be restarted - first the regular start then it should be restored to default customization values and started again.
-        // It's possible that the server didn't cache the old CSS, so we check for the default after seeing the first openapi/ui message.
+        // It's possible that the server didn't cache the old CSS, so we tolerate one or two openapi/ui messages.
         assertTrue("Web application /openapi/ui/ was not restarted on server",
-                   server.waitForMultipleStringsInLog(1, "CWWKT0016I.*/openapi/ui/", TIMEOUT, server.getDefaultLogFile()) == 1);
-        if (!isValidDefaultOpenAPIUI()) {
-            // Wait for the restart before checking again.
-            assertTrue("Web application /openapi/ui/ was not restarted on server",
-                       server.waitForMultipleStringsInLog(2, "CWWKT0016I.*/openapi/ui/", TIMEOUT, server.getDefaultLogFile()) == 2);
-            validateDefaultOpenAPIUI();
-        }
+                   server.waitForMultipleStringsInLog(2, "CWWKT0016I.*/openapi/ui/", TIMEOUT * 2, server.getDefaultLogFile()) > 0);
+        validateDefaultOpenAPIUI();
 
         //---------------------------------------------------------------------------------
         // Empty CSS file (should produce a warning because it does not contain .swagger-ui .headerbar)
@@ -145,10 +140,6 @@ public class UICustomizationTest extends FATServletClient {
         assertNotNull("Expected warning CWWKO1656W with customization.css was not received",
                       server.waitForStringInLogUsingMark("CWWKO1656W.*customization.css", TIMEOUT));
         validateDefaultOpenAPIUI();
-    }
-
-    private boolean isValidDefaultOpenAPIUI() throws IOException, Exception {
-        return validateOpenAPIUI(CSS_CONTENT_DEFAULT, false, false);
     }
 
     private void validateDefaultOpenAPIUI() throws IOException, Exception {
