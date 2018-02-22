@@ -23,7 +23,7 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
 public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.ConsoleLogHandler";
-    private SystemLogHolder sysLogHolder;
+    private SystemLogHolder sysLogHolderOriginal;
 
     public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
@@ -36,6 +36,11 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     @Override
     public void synchronousWrite(Object event) {
+        SystemLogHolder sysLogHolder = sysLogHolderOriginal;
+        if (sysLogHolder == null) {
+            return;
+        }
+
         /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
@@ -49,6 +54,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     @Override
     public void setWriter(Object writer) {
-        this.sysLogHolder = (SystemLogHolder) writer;
+        this.sysLogHolderOriginal = (SystemLogHolder) writer;
     }
 }
