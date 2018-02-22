@@ -884,7 +884,7 @@ public class MemorySession implements ISession {
      * To get at the data that can by Serialized and stored externally
      * called from mBean
      */
-    public Hashtable getSwappableData() {
+    public Map<Object, Object> getSwappableData() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[GET_SWAPPABLE_DATA], appNameAndIdString);
         }

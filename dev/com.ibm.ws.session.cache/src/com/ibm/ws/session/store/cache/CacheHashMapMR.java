@@ -18,10 +18,14 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.cache.Cache;
+import javax.cache.CacheException;
+import javax.cache.configuration.Configuration;
+import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.EternalExpiryPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -42,9 +46,34 @@ public class CacheHashMapMR extends CacheHashMap {
 
     public CacheHashMapMR(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
         super(store, smc, cacheStoreService);
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         // We know we're running multi-row..if not writeAllProperties and not time-based writes,
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
+
+        String cacheName = new StringBuilder(24 + encodedAppRoot.length()).append("com.ibm.ws.session.prop.").append(encodedAppRoot).toString();
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "find or create cache", cacheName);
+
+        sessionPropertyCache = cacheStoreService.cacheManager.getCache(cacheName, String.class, byte[].class);
+        if (sessionPropertyCache == null) {
+            Configuration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
+                            .setTypes(String.class, byte[].class)
+                            .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
+            try {
+                sessionPropertyCache = cacheStoreService.cacheManager.createCache(cacheName, config);
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(tc, "Created a new session property cache", cacheName);
+            } catch (CacheException x) {
+                sessionPropertyCache = cacheStoreService.cacheManager.getCache(cacheName, String.class, byte[].class);
+                if (sessionPropertyCache == null)
+                    throw x;
+            }
+        }
     }
 
     /**
@@ -55,19 +84,16 @@ public class CacheHashMapMR extends CacheHashMap {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String id = sess.getId();
-        String appName = getAppName();
 
         long startTime = System.nanoTime();
         long readSize = 0;
 
-        String sessionKey = createSessionKey(id, appName);
-        ArrayList<?> list = cacheStoreService.cache.get(sessionKey);
+        ArrayList<?> list = sessionInfoCache.get(id);
         Set<String> propIds = list == null ? null : new SessionInfo(list).getSessionPropertyIds();
 
         Hashtable<String, Object> h = new Hashtable<String, Object>();
         try {
             if (propIds != null) {
-                Cache<String, byte[]> cache = cacheStoreService.getCache(appName);
                 for (String propId : propIds) {
                     // If an attribute is already in appDataRemovals or appDataChanges, then the attribute was already retrieved from the cache.  Skip retrieval from the cache here.
                     if (sess.appDataRemovals != null && sess.appDataRemovals.containsKey(propId)) {
@@ -81,7 +107,7 @@ public class CacheHashMapMR extends CacheHashMap {
                     }
 
                     String propertyKey = createSessionPropertyKey(id, propId);
-                    byte[] b = cache.get(propertyKey);
+                    byte[] b = sessionPropertyCache.get(propertyKey);
 
                     if (b != null) {
                         ByteArrayInputStream bais = new ByteArrayInputStream(b);
@@ -128,7 +154,7 @@ public class CacheHashMapMR extends CacheHashMap {
         Object tmp = null;
 
         String key = createSessionPropertyKey(sessId, id);
-        byte[] sessionPropBytes = cacheStoreService.getCache(appName).get(key);
+        byte[] sessionPropBytes = sessionPropertyCache.get(key);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, key.toString(), sessionPropBytes == null ? null : sessionPropBytes.length);
@@ -158,7 +184,7 @@ public class CacheHashMapMR extends CacheHashMap {
         }
 
         // Before returning the value, confirm that the cache entry for the session hasn't expired
-        if (!cacheStoreService.cache.containsKey(createSessionKey(sessId, appName))) {
+        if (!sessionInfoCache.containsKey(sessId)) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, sessId + " does not appear to be a valid session for " + appName);
             tmp = null;
@@ -179,7 +205,6 @@ public class CacheHashMapMR extends CacheHashMap {
         Thread t = Thread.currentThread();
 
         String id = d2.getId();
-        String appName = getAppName();
 
         try {
             Set<String> propsToWrite = null;
@@ -187,8 +212,8 @@ public class CacheHashMapMR extends CacheHashMap {
             // we are not synchronized here - were not in old code either
             Hashtable tht = null;
             if (_smc.writeAllProperties()) {
-                Hashtable ht = d2.getSwappableData();
-                propsToWrite = ht.keySet();
+                Map<?, ?> ht = d2.getSwappableData();
+                propsToWrite = (Set<String>) ht.keySet();
                 if (trace && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "doing app changes for ALL mSwappable Data", ht);
                 }
@@ -211,8 +236,6 @@ public class CacheHashMapMR extends CacheHashMap {
             }
 
             if (propsToWrite != null) {
-                Cache<String, byte[]> cache = cacheStoreService.getCache(appName);
-
                 for (String propid : propsToWrite) {
                     long startTime = System.nanoTime();
 
@@ -236,7 +259,7 @@ public class CacheHashMapMR extends CacheHashMap {
                         Tr.debug(this, tc, "before update " + propid + " for session " + id + " size " + size);
 
                     String key = createSessionPropertyKey(id, propid);
-                    cache.put(key, objbuf);
+                    sessionPropertyCache.put(key, objbuf);
 
                     SessionStatistics pmiStats = _iStore.getSessionStatistics();
                     if (pmiStats != null) {
@@ -283,14 +306,12 @@ public class CacheHashMapMR extends CacheHashMap {
                 }
 
                 if (propsToRemove != null && !propsToRemove.isEmpty()) {
-                    Cache<String, byte[]> cache = cacheStoreService.getCache(appName);
-
                     for (String propid : propsToRemove) {
                         if (trace && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "deleting prop " + propid + " for session " + id);
                         }
                         String key = createSessionPropertyKey(id, propid);
-                        cache.remove(key);
+                        sessionPropertyCache.remove(key);
                     }
                 }
 
@@ -311,7 +332,6 @@ public class CacheHashMapMR extends CacheHashMap {
 
             // Update the session's main cache entry per the identified changes
             if (propsToWrite != null || propsToRemove != null) {
-                String sessionKey = createSessionKey(id, appName);
                 ArrayList<?> oldValue, newValue;
                 long backoff = 20; // allows first two attempts without delay, then a delay of 160-319ms, then a delay of 320-639 ms, ...
                 do {
@@ -323,10 +343,10 @@ public class CacheHashMapMR extends CacheHashMap {
                                 throw new RuntimeException("Giving up on retries"); 
                             TimeUnit.MILLISECONDS.sleep(backoff + (long) Math.random() * backoff);
                         } catch (InterruptedException x) {
-                            FFDCFilter.processException(x, getClass().getName(), "324", new Object[] { sessionKey, backoff, propsToWrite, propsToRemove });
+                            FFDCFilter.processException(x, getClass().getName(), "324", new Object[] { id, backoff, propsToWrite, propsToRemove });
                             throw new RuntimeException(x);
                         }
-                    oldValue = cacheStoreService.cache.get(sessionKey);
+                    oldValue = sessionInfoCache.get(id);
                     if (oldValue == null)
                         throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?
                     SessionInfo sessionInfo = new SessionInfo(oldValue).clone();
@@ -335,7 +355,7 @@ public class CacheHashMapMR extends CacheHashMap {
                     if (propsToRemove != null)
                         sessionInfo.removeSessionPropertyIds(propsToRemove);
                     newValue = sessionInfo.getArrayList();
-                } while (!cacheStoreService.cache.replace(sessionKey, oldValue, newValue));
+                } while (!sessionInfoCache.replace(id, oldValue, newValue));
             }
         } catch (IOException x) {
             FFDCFilter.processException(x, getClass().getName(), "256", d2);
@@ -353,8 +373,7 @@ public class CacheHashMapMR extends CacheHashMap {
         //If the app calls invalidate, it may not be removed from the local cache yet.
         superRemove(id);
 
-        String sessionKey = createSessionKey(id, _iStore.getId());
-        ArrayList<?> removed = cacheStoreService.cache.getAndRemove(sessionKey);
+        ArrayList<?> removed = sessionInfoCache.getAndRemove(id);
 
         addToRecentlyInvalidatedList(id);
 
@@ -362,10 +381,9 @@ public class CacheHashMapMR extends CacheHashMap {
         if (propIds != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "remove session properties", propIds);
-            Cache<String, byte[]> cache = cacheStoreService.getCache(_iStore.getId());
             for (String propId : propIds) {
                 String propertyKey = createSessionPropertyKey(id, propId);
-                cache.remove(propertyKey);
+                sessionPropertyCache.remove(propertyKey);
             }
         }
     }
