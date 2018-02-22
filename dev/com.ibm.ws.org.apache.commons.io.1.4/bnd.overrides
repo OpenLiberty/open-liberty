@@ -1,6 +1,0 @@
--include= ~../cnf/resources/bnd/rejar.props
-bVersion=1.0
-
-Bundle-SymbolicName: com.ibm.ws.org.apache.commons.io.1.4
-
-Import-Package: !org.apache.commons.io.*, *
