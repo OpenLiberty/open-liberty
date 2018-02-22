@@ -36,7 +36,7 @@ audit.launchTime.explanation=Ce message est fourni \u00e0 titre d'information un
 audit.launchTime.useraction=Aucune action n'est requise.
 
 audit.kernelStartTime=CWWKE0002I: Noyau d\u00e9marr\u00e9 apr\u00e8s {0}
-audit.kernelStartTime.explanation=Le noyau a \u00e9t\u00e9 d\u00e9marr\u00e9. L'intervalle (en secondes) est d\u00e9fini par rapport au moment o\u00f9 la plate-forme a \u00e9t\u00e9 lanc\u00e9e.
+audit.kernelStartTime.explanation=Le noyau (kernel) a \u00e9t\u00e9 d\u00e9marr\u00e9. L'intervalle (en secondes) est d\u00e9fini par rapport au moment o\u00f9 la plate-forme a \u00e9t\u00e9 lanc\u00e9e.
 audit.kernelStartTime.useraction=Aucune action n'est requise.
 
 info.bootstrapChange=CWWKE0003I: Les emplacements d'amor\u00e7age ont chang\u00e9, de sorte que le serveur devra \u00eatre red\u00e9marr\u00e9 proprement.
@@ -85,8 +85,7 @@ error.serverNameCharacter.useraction=Changez le nom du serveur en utilisant uniq
 
 error.unknownArgument=CWWKE0013E: Option inconnue : {0}
 error.unknownArgument.explanation=L'option sp\u00e9cifi\u00e9e n'a pas \u00e9t\u00e9 reconnue.
-error.unknownArgument.useraction=Relancez la commande en utilisant des options valides. Utilisez \
---help pour obtenir la liste des options valides.
+error.unknownArgument.useraction=Relancez la commande en utilisant des options valides. Utilisez --help pour obtenir la liste des options valides.
 
 error.bootPropsStream=CWWKE0014E: Le syst\u00e8me n''a pas pu ouvrir ni lire le fichier de propri\u00e9t\u00e9s d''amor\u00e7age sp\u00e9cifi\u00e9. Chemin : {0} Raison : {1}
 error.bootPropsStream.explanation=Le fichier bootstrap.properties ne peut pas \u00eatre lu ou n'existe pas.
@@ -100,7 +99,7 @@ error.secPermission=CWWKE0016E: Le fichier JAR d''amor\u00e7age n\u00e9cessite l
 s\u00e9curit\u00e9 AllPermission afin de permettre le lancement de l''environnement d''ex\u00e9cution et \
 du framework OSGi ({0}).
 error.secPermission.explanation=Les droits Java 2 Security sont insuffisants pour permettre au fichier JAR d'amor\u00e7age de lancer l'environnement d'ex\u00e9cution et l'infrastructure OSGi.
-error.secPermission.useraction=Assurez-vous que le fichier JAR d'amor\u00e7age a re\u00e7u les privil\u00e8ges AllPermission dans le fichier de r\u00e8gles Java 2 Security.
+error.secPermission.useraction=Assurez-vous que le fichier JAR d'amor\u00e7age (bootstrap) a re\u00e7u les privil\u00e8ges AllPermission dans le fichier de r\u00e8gles Java 2 Security.
 
 # CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
 
@@ -125,7 +124,7 @@ error.kernelDef.explanation=Des fichiers requis pour l'installation du serveur s
 error.kernelDef.useraction=V\u00e9rifiez que le produit a \u00e9t\u00e9 correctement install\u00e9. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 error.kernelDefFile=CWWKE0023E: La d\u00e9finition de noyau sp\u00e9cifi\u00e9e ({0}) n''existe pas.
-error.kernelDefFile.explanation=La d\u00e9finition sp\u00e9cifi\u00e9e pour le noyau est introuvable.
+error.kernelDefFile.explanation=La d\u00e9finition sp\u00e9cifi\u00e9e pour le noyau (kernel) est introuvable.
 error.kernelDefFile.useraction=Assurez-vous que la ressource de d\u00e9finition du noyau existe et qu'elle peut \u00eatre lue par l'utilisateur en cours.
 
 error.specifiedLocation=CWWKE0025E: La valeur {0} doit d\u00e9signer un r\u00e9pertoire. \
@@ -275,7 +274,7 @@ warn.unableWriteFile.useraction=Faites une nouvelle tentative. Si l'erreur persi
 # {1} The name of a base jar file
 warn.ifix.ignored=CWWKE0060W: Le fichier JAR de l''iFix {0} est ignor\u00e9 car le fichier JAR de base {1} n''existe pas.
 warn.ifix.ignored.explanation=Un fichier JAR de correctif temporaire a \u00e9t\u00e9 trouv\u00e9, mais le fichier JAR de base auquel ce correctif temporaire est cens\u00e9 \u00eatre appliqu\u00e9 n'est pas install\u00e9.
-warn.ifix.ignored.useraction=Procurez-vous un correctif temporaire correspondant au niveau de groupe de correctifs install\u00e9, ou bien mettez \u00e0 jour l'installation pour la porter au niveau de groupe de correctifs appropri\u00e9e. Sinon, supprimez le fichier JAR de correctif temporaire.
+warn.ifix.ignored.useraction=Procurez-vous un correctif temporaire correspondant au niveau de fixpack install\u00e9, ou bien mettez \u00e0 jour l'installation pour la porter au niveau de fixpack appropri\u00e9e. Sinon, supprimez le fichier JAR de correctif temporaire.
 
 warn.fileEncodingNotFound=CWWKE0061W: L''identificateur de jeu de caract\u00e8res cod\u00e9s z/OS correspondant \u00e0 l''encodage {0} n''existe pas. Les fichiers texte ne seront pas balis\u00e9s. 
 warn.fileEncodingNotFound.explanation=Les fichiers texte ne sont pas balis\u00e9s avec l'encodage sp\u00e9cifi\u00e9.
@@ -296,7 +295,7 @@ error.loadNativeLibrary.useraction=V\u00e9rifiez que le chemin existe et recomme
 # {0} The server name
 # {1} The server directory path
 error.creatingNewServerExists=CWWKE0065E: Une exception s''est produite lors de la cr\u00e9ation du serveur {0}. Une activit\u00e9 externe a \u00e9t\u00e9 d\u00e9tect\u00e9 au niveau du chemin de serveur ({1}), la cr\u00e9ation du serveur a \u00e9t\u00e9 arr\u00eat\u00e9e.
-error.creatingNewServerExists.explanation=Le serveur sp\u00e9cifi\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9 car une autre application effectuait des op\u00e9rations de fichier dans le nouveau r\u00e9pertoire de serveur.
+error.creatingNewServerExists.explanation=Le serveur sp\u00e9cifi\u00e9  ne peut pas \u00eatre cr\u00e9\u00e9 car une autre application effectuait des op\u00e9rations de fichier dans le nouveau r\u00e9pertoire de serveur.
 error.creatingNewServerExists.useraction=Recherchez pourquoi il n'y avait pas d'activit\u00e9 de fichier dans le r\u00e9pertoire de serveur en dehors de la commande de cr\u00e9ation, puis supprimez le r\u00e9pertoire de serveur et essayer de le recr\u00e9er.
 
 # {0} The server name
@@ -387,23 +386,23 @@ audit.jvm.shutdown.explanation=Le serveur a intercept\u00e9 une demande d'arr\u0
 audit.jvm.shutdown.useraction=Si l'arr\u00eat du serveur \u00e9tait inattendu, d\u00e9terminez si un signal d'arr\u00eat a \u00e9t\u00e9 envoy\u00e9 au processus serveur.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Le d\u00e9marrage du serveur a \u00e9t\u00e9 lanc\u00e9 pour le serveur {0}, mais il est impossible de d\u00e9terminer s''il s''est achev\u00e9 car le port de commande serveur est d\u00e9sactiv\u00e9.
-warning.serverStartedCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 explicitement pour ce serveur, il est impossible de savoir quand son d\u00e9marrage s'est termin\u00e9.
+warning.serverStartedCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 explicitement pour ce serveur, il est impossible de savoir quand son d\u00e9marrage s'est termin\u00e9.
 warning.serverStartedCommandPortDisabled.useraction=V\u00e9rifiez manuellement les fichiers journaux du serveur pour v\u00e9rifier que son d\u00e9marrage a abouti.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Le d\u00e9marrage du serveur a \u00e9t\u00e9 lanc\u00e9 pour le serveur {0} avec l''ID de processus {1}, mais il est impossible de d\u00e9terminer s''il s''est achev\u00e9 car le port de commande serveur est d\u00e9sactiv\u00e9.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 explicitement pour ce serveur, il est impossible de savoir quand son d\u00e9marrage s'est termin\u00e9.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 explicitement pour ce serveur, il est impossible de savoir quand son d\u00e9marrage s'est termin\u00e9.
 warning.serverStartedWithPIDCommandPortDisabled.useraction=V\u00e9rifiez manuellement les fichiers journaux du serveur pour v\u00e9rifier que son d\u00e9marrage a abouti.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: Le serveur {0} n''a pas pu \u00eatre arr\u00eat\u00e9 car le port de commande serveur est d\u00e9sactiv\u00e9.
-error.serverStopCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Son port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9, ce serveur ne peut pas \u00eatre arr\u00eat\u00e9 via ce script.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
+error.serverStopCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Son port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9, ce serveur ne peut pas \u00eatre arr\u00eat\u00e9 via ce script.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
 error.serverStopCommandPortDisabled.useraction=S'il s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, le serveur peut \u00eatre arr\u00eat\u00e9 depuis la console de l'op\u00e9rateur.  Sinon, le processus du serveur peut \u00eatre arr\u00eat\u00e9 depuis un shell.
 
 warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: La prise de clich\u00e9 (dump) du serveur {0} est termin\u00e9e dans {1}.  Certaines informations n''ont pas pu \u00eatre obtenues car le port de commande serveur est d\u00e9sactiv\u00e9, ce qui emp\u00eache une communication directe avec le serveur en cours d''ex\u00e9cution.
-warning.serverDumpCompleteCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Son port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9, certaines parties du clich\u00e9 du serveur qui requi\u00e8rent une communication directe avec le serveur n'ont pas pu \u00eatre obtenues.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
+warning.serverDumpCompleteCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Son port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9, certaines parties du clich\u00e9 du serveur qui requi\u00e8rent une communication directe avec le serveur n'ont pas pu \u00eatre obtenues.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
 warning.serverDumpCompleteCommandPortDisabled.useraction=Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, un clich\u00e9 complet du serveur peut \u00eatre demand\u00e9 depuis la console de l'op\u00e9rateur.  Pour plus d'informations, voir le Centre de documentation.
 
 error.serverJavaDumpCommandPortDisabled=CWWKE0091E: Le clich\u00e9 {0} du serveur n''a pas pu \u00eatre captur\u00e9 car le port de commande serveur est d\u00e9sactiv\u00e9.
-error.serverJavaDumpCommandPortDisabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 pour ce serveur, le clich\u00e9 demand\u00e9 n'a pas pu \u00eatre captur\u00e9.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
+error.serverJavaDumpCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 pour ce serveur, le clich\u00e9 demand\u00e9 n'a pas pu \u00eatre captur\u00e9.  Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
 error.serverJavaDumpCommandPortDisabled.useraction=Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, ce clich\u00e9 peut \u00eatre demand\u00e9 depuis la console de l'op\u00e9rateur.  Pour plus d'informations, voir le Centre de documentation.
 
 info.javadump.zos.system.created=CWWKE0092I: La demande de clich\u00e9 de transaction Java System Transaction Dump (SYSTDUMP) a abouti.
@@ -589,7 +588,7 @@ info.server.pause.all.request.received.explanation=Un utilisateur a \u00e9mis un
 info.server.pause.all.request.received.useraction=Aucune action n'est requise.
 
 info.server.pause.request.received=CWWKE0924I: Une demande a \u00e9t\u00e9 re\u00e7ue pour mise en pause des composants suivants sur le serveur : {0}
-info.server.pause.request.received.explanation=Un utilisateur a \u00e9mis une demande de mise en pause de composants sp\u00e9cifiques sur le serveur. Le serveur va tenter de mettre en pause ces composants. 
+info.server.pause.request.received.explanation=Un utilisateur a \u00e9mis une demande de mise en pause de composants sp\u00e9cifiques sur le serveur. Le serveur va tenter de mettre en pause ces composants 
 info.server.pause.request.received.useraction=Aucune action n'est requise.
 
 info.server.resume.all.request.received=CWWKE0925I: Une demande a \u00e9t\u00e9 re\u00e7ue pour reprise de l'op\u00e9ration de tous les composants mis en pause sur le serveur.
@@ -617,12 +616,12 @@ error.server.resume.failed.explanation=Le serveur a trait\u00e9 une demande de r
 error.server.resume.failed.useraction=Consultez les journaux du serveur pour plus d'informations sur les erreurs affectant les composants o\u00f9 l'op\u00e9ration a \u00e9chou\u00e9.
 
 warning.server.pause.invalid.targets=CWWKE0931W: Une demande de mise en pause de composants sp\u00e9cifiques a \u00e9t\u00e9 re\u00e7ue, mais la liste de composants sur l'option de cible est vide. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.pause.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de mise en pause en indiquant une liste vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.pause.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target une liste de composants \u00e0 mettre en pause. Pour mettre en pause tous les composants pouvant l'\u00eatre sur le serveur, lancez une demande de mise en pause en omettant l'option target.
+warning.server.pause.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de mise en pause en indiquant une liste vide sur l'option de cible. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.pause.invalid.targets.useraction=Sp\u00e9cifiez dans l'option de cible une liste de composants \u00e0 mettre en pause. Pour mettre en pause tous les composants pouvant l'\u00eatre sur le serveur, lancez une demande de mise en pause en omettant l'option de cible.
 
 warning.server.resume.invalid.targets=CWWKE0932W: Une demande de reprise d'op\u00e9ration de composants sp\u00e9cifiques a \u00e9t\u00e9 re\u00e7ue, mais la liste de composants dans l'option de cible \u00e9tait vide. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.resume.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de reprise d'op\u00e9ration en indiquant une liste vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.resume.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target une liste de composants dont reprendre l'op\u00e9ration. Pour reprendre l'op\u00e9ration de tous les composants en pause sur le serveur, lancez une commande de reprise d'op\u00e9ration en omettant l'option target.
+warning.server.resume.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de reprise d'op\u00e9ration en indiquant une liste vide sur l'option de cible. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.resume.invalid.targets.useraction=Sp\u00e9cifiez dans l'option de cible une liste de composants dont reprendre l'op\u00e9ration. Pour reprendre l'op\u00e9ration de tous les composants en pause sur le serveur, lancez une commande de reprise d'op\u00e9ration en omettant l'option de cible.
 
 warning.server.pause.no.targets=CWWKE0933W: Une demande de mise en pause a \u00e9t\u00e9 re\u00e7ue, mais aucun composant pouvant \u00eatre mis en pause n'a \u00e9t\u00e9 identifi\u00e9 sur le serveur. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
 warning.server.pause.no.targets.explanation=Le serveur a trait\u00e9 une demande de mise en pause, mais aucun composant pouvant \u00eatre mis en pause n'a \u00e9t\u00e9 identifi\u00e9 sur le serveur. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
@@ -672,13 +671,9 @@ error.server.resume.command.port.disabled=CWWKE0945E: Une demande de reprise a \
 error.server.resume.command.port.disabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution. Le port de commande est d\u00e9sactiv\u00e9 pour ce serveur ; par cons\u00e9quent, la demande de reprise n'a pas pu \u00eatre trait\u00e9e. Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
 error.server.resume.command.port.disabled.useraction=Activez le port de commande pour ce serveur. Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, cette reprise peut aussi \u00eatre demand\u00e9e depuis la console op\u00e9rateur.
 
-warning.server.status.invalid.targets=CWWKE0946W: Une demande de statut \
-a \u00e9t\u00e9 re\u00e7ue pour des composants sp\u00e9cifiques, mais la liste des composants dans l'option target est vide. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.status.invalid.targets.explanation=Un utilisateur a \u00e9mis \
-une demande de statut avec une liste de cibles vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
-warning.server.status.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target la liste des composants pour lesquels v\u00e9rifier le statut. Pour v\u00e9rifier le \
-statut cumul\u00e9 de tous les composants pouvant \u00eatre mis en pause sur le serveur, \u00e9mettez la \
-demande de statut sans l'option target.
+warning.server.status.invalid.targets=CWWKE0946W: Une demande de statut a \u00e9t\u00e9 re\u00e7ue pour des composants sp\u00e9cifiques, mais la liste des composants dans l'option target est vide. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.status.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de statut avec une liste de cibles vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.status.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target la liste des composants pour lesquels v\u00e9rifier le statut. Pour v\u00e9rifier le statut cumul\u00e9 de tous les composants pouvant \u00eatre mis en pause sur le serveur, \u00e9mettez la demande de statut sans l'option target.
 
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.

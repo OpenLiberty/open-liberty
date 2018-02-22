@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 #
 # -------------------------------------------------------------------------------------------------
 #0001-0050: app manager
@@ -88,7 +88,7 @@ APPLICATION_STOP_FAILED=CWWKZ0010E: {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc7
 APPLICATION_STOP_FAILED.explanation=\uc11c\ubc84\uac00 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc911\uc9c0\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 APPLICATION_STOP_FAILED.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc911\uc9c0\ub420 \uc218 \uc788\ub294 \uc0c1\ud0dc\uc5d0 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 
-#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
 #{0} is file name
 #{1} is exception message
 FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: {0} \ud30c\uc77c\uc744 \uac80\uc0c9\ud558\ub294 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678 \uba54\uc2dc\uc9c0: {1}
@@ -96,7 +96,7 @@ FIND_FILE_EXCEPTION_ENCOUNTERED.explanation=CMSG0001
 FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
 #{0} is application name
 APPLICATION_NOT_STARTED=CWWKZ0012I: {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc2dc\uc791\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
-APPLICATION_NOT_STARTED.explanation=\uc774\uc804 \uc624\ub958 \ub54c\ubb38\uc5d0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc5c8\uc2b5\ub2c8\ub2e4. 
+APPLICATION_NOT_STARTED.explanation=\uc774\uc804 \uc624\ub958 \ub54c\ubb38\uc5d0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc5c8\uc2b5\ub2c8\ub2e4.
 APPLICATION_NOT_STARTED.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc131\uc744 \ud655\uc778\ud558\uace0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc2dc\uc791 \uc911\uc5d0 \uc624\ub958\uac00 \uc788\ub294\uc9c0 \ub85c\uadf8\ub97c \uc810\uac80\ud558\uc2ed\uc2dc\uc624.
 
 #{0} the application name
@@ -131,7 +131,7 @@ PARTIAL_START.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc2dc\uc791
 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 {0}\uc774(\uac00) \uc5c5\ub370\uc774\ud2b8\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
-APPLICATION_NOT_UPDATED.explanation=\uc774\uc804 \uc624\ub958 \ub54c\ubb38\uc5d0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc5c8\uc2b5\ub2c8\ub2e4. 
+APPLICATION_NOT_UPDATED.explanation=\uc774\uc804 \uc624\ub958 \ub54c\ubb38\uc5d0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc5c8\uc2b5\ub2c8\ub2e4.
 APPLICATION_NOT_UPDATED.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc131\uc744 \ud655\uc778\ud558\uace0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc2dc\uc791 \uc911\uc5d0 \uc624\ub958\uac00 \uc788\ub294\uc9c0 \ub85c\uadf8\ub97c \uc810\uac80\ud558\uc2ed\uc2dc\uc624.
 
 #Existing message changed per resolution to design issue 117781
@@ -170,7 +170,7 @@ MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc15
 MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=\ucf5c\ub4dc \uc2a4\ud0c0\ud2b8\ub85c \uc11c\ubc84\ub97c \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624.
 
 #{0} is the start time in seconds
-APPLICATION_MONITOR_STARTED=CWWKZ0058I: \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 {0}\uc744(\ub97c) \ubaa8\ub2c8\ud130\ud558\ub294 \uc911\uc785\ub2c8\ub2e4. 
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 {0}\uc744(\ub97c) \ubaa8\ub2c8\ud130\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
 APPLICATION_MONITOR_STARTED.explanation=\uc11c\ubc84\ub294 \ubc30\uce58\ub420 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \ub514\ub809\ud1a0\ub9ac\ub97c \ubaa8\ub2c8\ud130\ub9c1\ud569\ub2c8\ub2e4.
 APPLICATION_MONITOR_STARTED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
 #{0} is application name
@@ -186,7 +186,7 @@ MONITOR_DIR_CLEANUP_FAIL.useraction=\uc774\uc804 \ub514\ub809\ud1a0\ub9ac\uac00 
 
 #{0} is application name
 APPLICATION_MONITORING_FAIL=CWWKZ0060W: {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubaa8\ub2c8\ud130\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
-APPLICATION_MONITORING_FAIL.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc124\uce58\ub418\uc5c8\uc9c0\ub9cc \ubaa8\ub2c8\ud130\ub9c1\uc774 \uc2dc\uc791\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c \ud30c\uc77c\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub0b4\uc5d0\uc11c \uc5c5\ub370\uc774\ud2b8\ub418\ub294 \uacbd\uc6b0, \uc11c\ubc84\uac00 \ubcc0\uacbd\uc0ac\ud56d\uc744 \ubc1c\uacac\ud558\uc9c0 \ubabb\ud569\ub2c8\ub2e4. 
+APPLICATION_MONITORING_FAIL.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc124\uce58\ub418\uc5c8\uc9c0\ub9cc \uc774\uc5d0 \ub300\ud55c \ubaa8\ub2c8\ud130\ub9c1\uc774 \uc2dc\uc791\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c \ud30c\uc77c\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub0b4\uc5d0\uc11c \uc5c5\ub370\uc774\ud2b8\ub418\ub294 \uacbd\uc6b0, \uc11c\ubc84\uac00 \ubcc0\uacbd\uc0ac\ud56d\uc744 \ubc1c\uacac\ud558\uc9c0 \ubabb\ud569\ub2c8\ub2e4.
 APPLICATION_MONITORING_FAIL.useraction=\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \ud30c\uc77c\uc744 \uc5c5\ub370\uc774\ud2b8\ud560 \ub54c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc124\uce58 \uc81c\uac70\ud558\uace0 \uc11c\ubc84\uc5d0 \ub2e4\uc2dc \uc124\uce58\ud574\uc57c \ud569\ub2c8\ub2e4.
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: \uc704\uce58 {1}\uc758 {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \ubaa8\ub2c8\ud130\ub9c1\ub41c \ub514\ub809\ud1a0\ub9ac {2} \ub0b4\uc5d0 \uc788\uc2b5\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc694\uc18c\uac00 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
@@ -196,3 +196,15 @@ APPLICATION_LOCATION_INSIDE_DROPINS.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc
 APPLICATION_UPDATED=CWWKZ0062I: {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc5c5\ub370\uc774\ud2b8\ub418\uc5c8\uc9c0\ub9cc \ub2e4\uc2dc \uc2dc\uc791\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
 APPLICATION_UPDATED.explanation=\uc9c0\uc815\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc0ac\uc18c\ud55c \ubcc0\uacbd\uc0ac\ud56d\uc774 \uc788\uc5c8\uc73c\uba70 \uadf8 \ubcc0\uacbd\uc0ac\ud56d\uc740 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ub2e4\uc2dc \uc2dc\uc791\ud560 \ud544\uc694\uac00 \uc5c6\ub294 \uc0ac\uc18c\ud55c \uac83\uc73c\ub85c \ud310\ub2e8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 APPLICATION_UPDATED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: \ubaa8\ub4e0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 Jandex \uc0ac\uc6a9\uc774 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=\ubaa8\ub4e0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 Jandex \uc0c9\uc778\uc774 \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uacbd\uc6b0\uc5d0\ub294 \ud074\ub798\uc2a4 \ubc0f \uc5b4\ub178\ud14c\uc774\uc158 \ub370\uc774\ud130\ub97c Jandex \uc0c9\uc778\uc5d0\uc11c \uac00\uc838\uc635\ub2c8\ub2e4.
+APPLICATION_JANDEX_ENABLED_ALL.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
+#{0} is application name
+APPLICATION_JANDEX_ENABLED=CWWKZ0064I: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 {0}\uc5d0 \ub300\ud574 Jandex \uc0ac\uc6a9\uc774 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+APPLICATION_JANDEX_ENABLED.explanation=\uc9c0\uc815\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 Jandex \uc0c9\uc778\uc774 \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uacbd\uc6b0\uc5d0\ub294 \ud074\ub798\uc2a4 \ubc0f \uc5b4\ub178\ud14c\uc774\uc158 \ub370\uc774\ud130\ub97c Jandex \uc0c9\uc778\uc5d0\uc11c \uac00\uc838\uc635\ub2c8\ub2e4.
+APPLICATION_JANDEX_ENABLED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        
+#{0} is application name
+APPLICATION_JANDEX_DISABLED=CWWKZ0065I: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 {0}\uc5d0 \ub300\ud574 Jandex \uc0ac\uc6a9\uc774 \uc0ac\uc6a9 \uc548\ud568\uc73c\ub85c \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+APPLICATION_JANDEX_DISABLED.explanation=\uc9c0\uc815\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 Jandex \uc0c9\uc778\uc774 \uc0ac\uc6a9 \uc548\ud568\uc73c\ub85c \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+APPLICATION_JANDEX_DISABLED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.                        

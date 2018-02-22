@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 #
 # -------------------------------------------------------------------------------------------------
 #0001-0050: app manager
@@ -89,7 +89,7 @@ APPLICATION_STOP_FAILED=CWWKZ0010E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} alka
 APPLICATION_STOP_FAILED.explanation=A kiszolg\u00e1l\u00f3 nem tudta le\u00e1ll\u00edtani az alkalmaz\u00e1st.
 APPLICATION_STOP_FAILED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s egy olyan \u00e1llapotban van, amelyben le\u00e1ll\u00edthat\u00f3.
 
-#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
 #{0} is file name
 #{1} is exception message
 FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} f\u00e1jl keres\u00e9se sor\u00e1n. A kiv\u00e9tel \u00fczenet: {1}
@@ -98,7 +98,7 @@ FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
 
 #{0} is application name
 APPLICATION_NOT_STARTED=CWWKZ0012I: A(z) {0} alkalmaz\u00e1s nincs elind\u00edtva.
-APPLICATION_NOT_STARTED.explanation=Az alkalmaz\u00e1s kor\u00e1bbi hib\u00e1k miatt nem ind\u00edthat\u00f3 el. 
+APPLICATION_NOT_STARTED.explanation=Az alkalmaz\u00e1s kor\u00e1bbi hib\u00e1k miatt nem ind\u00edthat\u00f3 el.
 APPLICATION_NOT_STARTED.useraction=Ellen\u0151rizze az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t, valamint az alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n a napl\u00f3kba \u00edrt hib\u00e1kat.
 
 #{0} the application name
@@ -134,7 +134,7 @@ PARTIAL_START.useraction=Oldja meg az alkalmaz\u00e1s azon r\u00e9sze eset\u00e9
 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: A(z) {0} alkalmaz\u00e1s nem friss\u00fclt.
-APPLICATION_NOT_UPDATED.explanation=Az alkalmaz\u00e1s kor\u00e1bbi hib\u00e1k miatt nem ind\u00edthat\u00f3 el. 
+APPLICATION_NOT_UPDATED.explanation=Az alkalmaz\u00e1s kor\u00e1bbi hib\u00e1k miatt nem ind\u00edthat\u00f3 el.
 APPLICATION_NOT_UPDATED.useraction=Ellen\u0151rizze az alkalmaz\u00e1skonfigur\u00e1ci\u00f3t, valamint az alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n a napl\u00f3kba \u00edrt hib\u00e1kat.
 
 #Existing message changed per resolution to design issue 117781
@@ -175,7 +175,7 @@ MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Az alkalmaz\u00e1sfigyel\u0151 nem 
 MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Ind\u00edtsa el a kiszolg\u00e1l\u00f3t hideg ind\u00edt\u00e1ssal.
 
 #{0} is the start time in seconds
-APPLICATION_MONITOR_STARTED=CWWKZ0058I: {0} megfigyel\u00e9se alkalmaz\u00e1sok eset\u00e9ben. 
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: {0} megfigyel\u00e9se alkalmaz\u00e1sok eset\u00e9ben.
 APPLICATION_MONITOR_STARTED.explanation=A kiszolg\u00e1l\u00f3 megfigyeli a telep\u00edtend\u0151 alkalmaz\u00e1sok egy k\u00f6nyvt\u00e1r\u00e1t.
 APPLICATION_MONITOR_STARTED.useraction=Semmit sem kell tennie.
 
@@ -192,7 +192,7 @@ MONITOR_DIR_CLEANUP_FAIL.useraction=Ha a r\u00e9gi k\u00f6nyvt\u00e1rra m\u00e1r
 
 #{0} is application name
 APPLICATION_MONITORING_FAIL=CWWKZ0060W: A(z) {0} alkalmaz\u00e1s nem figyelhet\u0151 meg.
-APPLICATION_MONITORING_FAIL.explanation=Az alkalmaz\u00e1s telep\u00edt\u00e9sre ker\u00fclt, de a megfigyel\u00e9se nem indult el, \u00edgy ha egy f\u00e1jl friss\u00edt\u00e9sre ker\u00fcl egy alkalmaz\u00e1son bel\u00fcl, akkor a v\u00e1ltoz\u00e1st a kiszolg\u00e1l\u00f3 nem fogja \u00e9rz\u00e9kelni. 
+APPLICATION_MONITORING_FAIL.explanation=Az alkalmaz\u00e1s telep\u00edt\u00e9sre ker\u00fclt, de a megfigyel\u00e9se nem indult el, \u00edgy ha egy f\u00e1jl friss\u00edt\u00e9sre ker\u00fcl egy alkalmaz\u00e1son bel\u00fcl, akkor a v\u00e1ltoz\u00e1st a kiszolg\u00e1l\u00f3 nem fogja \u00e9rz\u00e9kelni.
 APPLICATION_MONITORING_FAIL.useraction=Amikor az alkalmaz\u00e1sban f\u00e1jlokat friss\u00edt, az alkalmaz\u00e1st el kell t\u00e1vol\u00edtani, majd \u00fajra kell telep\u00edteni a kiszolg\u00e1l\u00f3ra.
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: A(z) {0} alkalmaz\u00e1s a(z) {1} helyen a megfigyelt {2} k\u00f6nyvt\u00e1ron bel\u00fcl van. Az alkalmaz\u00e1s figyelmen k\u00edv\u00fcl marad.
@@ -202,3 +202,17 @@ APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Jav\u00edtsa az alkalmaz\u00e1sel
 APPLICATION_UPDATED=CWWKZ0062I: A(z) {0} alkalmaz\u00e1s friss\u00edt\u00e9sre ker\u00fclt, de nem lett \u00fajraind\u00edtva.
 APPLICATION_UPDATED.explanation=Kisebb m\u00f3dos\u00edt\u00e1s t\u00f6rt\u00e9nt a megadott alkalmaz\u00e1sban, ami nem ig\u00e9nyli az alkalmaz\u00e1s \u00fajraind\u00edt\u00e1s\u00e1t.
 APPLICATION_UPDATED.useraction=Semmit sem kell tennie.
+
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: A Jandex haszn\u00e1lat enged\u00e9lyezve van minden alkalmaz\u00e1shoz.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Minden alkalmaz\u00e1s eset\u00e9n, amikor a Jandex indexek el\u00e9rhet\u0151k, az oszt\u00e1ly \u00e9s annot\u00e1ci\u00f3 adatok a Jandex indexekb\u0151l ker\u00fclnek beszerz\u00e9sre.
+APPLICATION_JANDEX_ENABLED_ALL.useraction=Semmit sem kell tennie.
+
+#{0} is application name
+APPLICATION_JANDEX_ENABLED=CWWKZ0064I: A Jandex haszn\u00e1lat enged\u00e9lyezve van a(z) {0} alkalmaz\u00e1shoz.
+APPLICATION_JANDEX_ENABLED.explanation=A megadott alkalmaz\u00e1s eset\u00e9n, amikor a Jandex indexek el\u00e9rhet\u0151k, az osz\u00e1ly \u00e9s annot\u00e1ci\u00f3 adatok a Jandex indexekb\u0151l ker\u00fclnek beszerz\u00e9sre.
+APPLICATION_JANDEX_ENABLED.useraction=Semmit sem kell tennie.
+
+#{0} is application name
+APPLICATION_JANDEX_DISABLED=CWWKZ0065I: A Jandex haszn\u00e1lat le van tiltva a(z) {0} alkalmaz\u00e1shoz.
+APPLICATION_JANDEX_DISABLED.explanation=A Jandex index le van tiltva a megadott alkalmaz\u00e1shoz.
+APPLICATION_JANDEX_DISABLED.useraction=Semmit sem kell tennie.

@@ -560,11 +560,15 @@ czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Zainicjowano procedur\u0119 uruchamiania serwera {0} \
 (ID procesu: {1}), jednak nie mo\u017cna stwierdzi\u0107, czy zosta\u0142a ona zako\u0144czona, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
-warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
+kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, \
+czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: Nie mo\u017cna zatrzyma\u0107 serwera {0}, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
 error.serverStopCommandPortDisabled.useraction=Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, mo\u017cna go zatrzyma\u0107 \
 z poziomu konsoli operatora.  W przeciwnym razie proces serwera mo\u017cna zatrzyma\u0107 z poziomu pow\u0142oki.
 
@@ -644,7 +648,8 @@ error.zosProcStart.start.length.useraction=Skr\u00f3\u0107 nazw\u0119 serwera i 
 info.addProductExtension=CWWKE0108I: Rozszerzenie \
 produktu {0} zosta\u0142o programowo w\u0142\u0105czone. Identyfikator produktu rozszerzenia \
 to {1}. Miejsce instalacji rozszerzenia produktu to {2}.
-info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
+info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.  \
+Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
 com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
 info.addProductExtension.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
@@ -906,15 +911,14 @@ error.server.resume.command.port.disabled.explanation=Port komend serwera jest w
 z dzia\u0142aj\u0105cym serwerem. Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna przetworzy\u0107 \u017c\u0105dania wznowienia. Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
 error.server.resume.command.port.disabled.useraction=W\u0142\u0105cz port komend dla tego serwera. Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, wznowienia mo\u017cna te\u017c za\u017c\u0105da\u0107 z poziomu konsoli operatora.
 
-warning.server.status.invalid.targets=CWWKE0946W: Odebrano \
-\u017c\u0105danie statusu dla konkretnych komponent\u00f3w, lecz lista komponent\u00f3w w opcji \
-docelowej by\u0142a pusta. Nie podj\u0119to \u017cadnego dzia\u0142ania.
+warning.server.status.invalid.targets=CWWKE0946W: Odebrano \u017c\u0105danie statusu dla \
+konkretnych komponent\u00f3w, lecz lista komponent\u00f3w w opcji docelowej by\u0142a pusta. Nie podj\u0119to \u017cadnego dzia\u0142ania.
 warning.server.status.invalid.targets.explanation=U\u017cytkownik \
 wys\u0142a\u0142 \u017c\u0105danie statusu z pust\u0105 list\u0105 docelow\u0105 w opcji docelowej. \u017b\u0105danie zosta\u0142o wykonane, ale nie zosta\u0142o podj\u0119te \u017cadne dzia\u0142anie.
 warning.server.status.invalid.targets.useraction=Okre\u015bl list\u0119 \
 komponent\u00f3w dla opcji docelowej, aby sprawdzi\u0107 ich status. Aby sprawdzi\u0107 \
-zbiorczy status wszystkich komponent\u00f3w na serwerze obs\u0142uguj\u0105cych wstrzymanie, \
-wy\u015blij \u017c\u0105danie statusu bez opcji docelowej.
+zbiorczy status wszystkich komponent\u00f3w na serwerze obs\u0142uguj\u0105cych wstrzymanie, wy\u015blij \
+\u017c\u0105danie statusu bez opcji docelowej.
 
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.

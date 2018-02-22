@@ -94,6 +94,28 @@ no.such.element.CWMCG0015E=CWMCG0015E: Nie znaleziono w\u0142a\u015bciwo\u015bci
 no.such.element.CWMCG0015E.explanation=\u017b\u0105dana w\u0142a\u015bciwo\u015b\u0107 nie istnieje w \u017cadnym ze skonfigurowanych \u017ar\u00f3de\u0142.
 no.such.element.CWMCG0015E.useraction=Dodaj w\u0142a\u015bciwo\u015b\u0107 do jednego z istniej\u0105cych \u017ar\u00f3de\u0142 lub dodaj nowe \u017ar\u00f3d\u0142o, kt\u00f3re zawiera w\u0142a\u015bciwo\u015b\u0107.
 
+# The server is unable to cancel the asynchronous update thread for the {0} Config Source.
+future.update.not.cancelled.CWMCG0016E=CWMCG0016E: Serwer nie mo\u017ce anulowa\u0107 w\u0105tku aktualizacji asynchronicznej dla \u017ar\u00f3d\u0142a konfiguracji {0}.
+future.update.not.cancelled.CWMCG0016E.explanation=Nast\u0105pi\u0142a nieudana pr\u00f3ba anulowania przysz\u0142ej aktualizacji asynchronicznej. Zwykle jest to spowodowane wywo\u0142aniem d\u0142ugotrwa\u0142ej operacji aktualizacji skierowanym do instancji obiektu ConfigSource.
+future.update.not.cancelled.CWMCG0016E.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# No implicit String constructor methods found for the {0} class.
+implicit.string.constructor.method.not.found.CWMCG0017E=CWMCG0017E: Nie znaleziono niejawnych metod konstruktora \u0142a\u0144cucha dla klasy {0}.
+implicit.string.constructor.method.not.found.CWMCG0017E.explanation=W podanej klasie nie znaleziono poprawnych metod konstruktora \u0142a\u0144cucha.
+implicit.string.constructor.method.not.found.CWMCG0017E.useraction=Sprawd\u017a, czy podana klasa ma poprawn\u0105 metod\u0119 konstruktora \u0142a\u0144cucha. Aby okre\u015bli\u0107, jakie metody s\u0105 poprawne, nale\u017cy zapozna\u0107 si\u0119 ze specyfikacj\u0105 konfiguracji MicroProfile.
+
+# The {0} Generic Type Variable for the {1} conversion type is not supported.
+generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: Zmienna typu og\u00f3lnego {0} dla typu przekszta\u0142cenia {1} nie jest obs\u0142ugiwana.
+generic.type.variables.notsupported.CWMCG0018E.explanation=Podj\u0119to pr\u00f3b\u0119 przekszta\u0142cenia przy u\u017cyciu zmiennej typu og\u00f3lnego, takiej jak List<T>. Taka operacja nie jest obs\u0142ugiwana.
+generic.type.variables.notsupported.CWMCG0018E.useraction=Zamiast tego nale\u017cy u\u017cy\u0107 konkretnego typu argumentu, na przyk\u0142ad List<String>.
+
+# Environment Variables Config Source
+environment.variables.config.source=\u0179r\u00f3d\u0142o konfiguracji zmiennych \u015brodowiskowych
+# Properties File Config Source: {0}
+properties.file.config.source=\u0179r\u00f3d\u0142o konfiguracji pliku w\u0142a\u015bciwo\u015bci: {0}
+# System Properties Config Source
+system.properties.config.source=\u0179r\u00f3d\u0142o konfiguracji w\u0142a\u015bciwo\u015bci systemowych
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message
 #-----------------------------------------------------------------------------------------------------------------------------

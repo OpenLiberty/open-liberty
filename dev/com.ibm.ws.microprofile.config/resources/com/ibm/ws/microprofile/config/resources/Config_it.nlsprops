@@ -94,6 +94,28 @@ no.such.element.CWMCG0015E=CWMCG0015E: La propriet\u00e0 {0} non \u00e8 stata tr
 no.such.element.CWMCG0015E.explanation=La propriet\u00e0 richiesta non esiste in alcuna delle origini configurate.
 no.such.element.CWMCG0015E.useraction=Aggiungere la propriet\u00e0 a una delle origini esistenti oppure aggiungere una nuova origine che contiene la propriet\u00e0.
 
+# The server is unable to cancel the asynchronous update thread for the {0} Config Source.
+future.update.not.cancelled.CWMCG0016E=CWMCG0016E: Il server non \u00e8 in grado di annullare il thread di aggiornamento asincrono per l'origine di configurazione {0}.
+future.update.not.cancelled.CWMCG0016E.explanation=Il tentativo di annullare un aggiornamento asincrono futuro ha avuto esito negativo. In genere, ci\u00f2 si verifica a causa di una chiamata di aggiornamento a un'istanza ConfigSource in esecuzione da molto tempo.
+future.update.not.cancelled.CWMCG0016E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+# No implicit String constructor methods found for the {0} class.
+implicit.string.constructor.method.not.found.CWMCG0017E=CWMCG0017E: Nessun metodo costruttore stringa implicito trovato per la classe {0}.
+implicit.string.constructor.method.not.found.CWMCG0017E.explanation=Non sono stati trovati metodi costruttore stringa validi sulla classe specificata.
+implicit.string.constructor.method.not.found.CWMCG0017E.useraction=Controllare che la classe specificata abbia un metodo costruttore stringa valido. Per determinare quali metodi sono validi, fare riferimento alla specifica di configurazione del microprofilo.
+
+# The {0} Generic Type Variable for the {1} conversion type is not supported.
+generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: La variabile tipo generico {0} per il tipo di conversione {1} non \u00e8 supportata.
+generic.type.variables.notsupported.CWMCG0018E.explanation=Si \u00e8 tentato di convertire utilizzando una variabile tipo generico, come List<T>. Ci\u00f2 non \u00e8 supportato.
+generic.type.variables.notsupported.CWMCG0018E.useraction=Utilizzare, invece, un tipo di argomento concreto, come List<String>.
+
+# Environment Variables Config Source
+environment.variables.config.source=Origine di configurazione delle variabili di ambiente
+# Properties File Config Source: {0}
+properties.file.config.source=Origine di configurazione del file delle propriet\u00e0: {0}
+# System Properties Config Source
+system.properties.config.source=Origine di configurazione delle propriet\u00e0 del sistema
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message
 #-----------------------------------------------------------------------------------------------------------------------------

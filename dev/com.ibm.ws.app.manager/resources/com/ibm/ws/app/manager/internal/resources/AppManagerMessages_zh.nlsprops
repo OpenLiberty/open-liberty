@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 #
 # -------------------------------------------------------------------------------------------------
 #0001-0050: app manager
@@ -86,7 +86,7 @@ APPLICATION_STOP_FAILED=CWWKZ0010E: \u505c\u6b62\u5e94\u7528\u7a0b\u5e8f {0} \u6
 APPLICATION_STOP_FAILED.explanation=\u670d\u52a1\u5668\u65e0\u6cd5\u505c\u6b62\u8be5\u5e94\u7528\u7a0b\u5e8f\u3002
 APPLICATION_STOP_FAILED.useraction=\u8bf7\u786e\u4fdd\u8be5\u5e94\u7528\u7a0b\u5e8f\u5904\u4e8e\u53ef\u4ee5\u505c\u6b62\u7684\u72b6\u6001\u3002
 
-#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
 #{0} is file name
 #{1} is exception message
 FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: \u641c\u7d22\u6587\u4ef6 {0} \u65f6\u53d1\u751f\u5f02\u5e38\u3002\u5f02\u5e38\u6d88\u606f\u4e3a\uff1a{1}
@@ -195,3 +195,15 @@ APPLICATION_LOCATION_INSIDE_DROPINS.useraction=\u8bf7\u66f4\u6b63\u5e94\u7528\u7
 APPLICATION_UPDATED=CWWKZ0062I: {0} \u5e94\u7528\u7a0b\u5e8f\u5df2\u66f4\u65b0\uff0c\u4f46\u672a\u91cd\u65b0\u542f\u52a8\u3002
 APPLICATION_UPDATED.explanation=\u6307\u5b9a\u5e94\u7528\u7a0b\u5e8f\u4e2d\u5df2\u8fdb\u884c\u7ec6\u5fae\u7684\u66f4\u6539\uff0c\u5e76\u4e14\u8be5\u66f4\u6539\u7684\u786e\u5c0f\u5230\u6ca1\u6709\u5fc5\u8981\u91cd\u65b0\u542f\u52a8\u5e94\u7528\u7a0b\u5e8f\u3002
 APPLICATION_UPDATED.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: \u5df2\u5bf9\u6240\u6709\u5e94\u7528\u7a0b\u5e8f\u542f\u7528\u4f7f\u7528 Jandex\u3002
+APPLICATION_JANDEX_ENABLED_ALL.explanation=\u5bf9\u4e8e\u6240\u6709\u5e94\u7528\u7a0b\u5e8f\uff0c\u5f53 Jandex \u7d22\u5f15\u53ef\u7528\u65f6\uff0c\u5c06\u4ece Jandex \u7d22\u5f15\u83b7\u5f97\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u3002
+APPLICATION_JANDEX_ENABLED_ALL.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002 
+#{0} is application name
+APPLICATION_JANDEX_ENABLED=CWWKZ0064I: \u5bf9\u5e94\u7528\u7a0b\u5e8f {0} \u542f\u7528\u4e86\u4f7f\u7528 Jandex\u3002
+APPLICATION_JANDEX_ENABLED.explanation=\u5bf9\u4e8e\u6240\u6307\u5b9a\u7684\u5e94\u7528\u7a0b\u5e8f\uff0c\u5f53 Jandex \u7d22\u5f15\u53ef\u7528\u65f6\uff0c\u5c06\u4ece Jandex \u7d22\u5f15\u83b7\u5f97\u7c7b\u548c\u6ce8\u91ca\u6570\u636e\u3002
+APPLICATION_JANDEX_ENABLED.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002 
+#{0} is application name
+APPLICATION_JANDEX_DISABLED=CWWKZ0065I: \u5bf9\u5e94\u7528\u7a0b\u5e8f {0} \u7981\u7528\u4e86\u4f7f\u7528 Jandex\u3002
+APPLICATION_JANDEX_DISABLED.explanation=\u5df2\u5bf9\u6240\u6307\u5b9a\u7684\u5e94\u7528\u7a0b\u5e8f\u7981\u7528 Jandex \u7d22\u5f15\u3002
+APPLICATION_JANDEX_DISABLED.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002

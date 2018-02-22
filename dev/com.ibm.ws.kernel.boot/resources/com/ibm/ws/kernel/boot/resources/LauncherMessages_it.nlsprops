@@ -309,7 +309,7 @@ info.javadump.request.received.explanation=Questo messaggio \u00e8 unicamente a 
 info.javadump.request.received.useraction=Non \u00e8 richiesta alcuna azione.
 
 info.javadump.created=CWWKE0068I: Dump Java creato: {0}
-info.javadump.created.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+info.javadump.created.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
 info.javadump.created.useraction=Non \u00e8 richiesta alcuna azione.
 
 warn.javadump.unsupported=CWWKE0069W: Dump Java di tipo {0} non supportato.
@@ -728,7 +728,8 @@ info.pauseFailedException=Sospensione del server {0} non riuscita. Per ulteriori
 controllare i log del server.
 info.pausingListeners.target=Sospensione dei componenti di destinazione specificati del server {0}.
 info.pausedListeners.target=Sospensione dei componenti di destinazione specificati del server {0} completata.
-info.pauseFailedException.target=Sospensione dei componenti di destinazione specificati del server {0} non riuscita. Per ulteriori informazioni, \
+info.pauseFailedException.target=Sospensione dei componenti di destinazione specificati del server {0} non riuscita. \
+Per ulteriori informazioni, \
 controllare i log del server.
 info.resumingListeners=Riattivazione del server {0}.
 info.resumedListeners=Riattivazione del server {0} completata.
@@ -736,7 +737,8 @@ info.resumeFailedException=Riattivazione del server {0} non riuscita. Per ulteri
 controllare i log del server.
 info.resumingListeners.target=Riattivazione dei componenti di destinazione specificati del server {0}.
 info.resumedListeners.target=Riattivazione dei componenti di destinazione specificati del server {0} completata.
-info.resumeFailedException.target=Riattivazione dei componenti di destinazione specificati del server {0} non riuscita. Per ulteriori informazioni, \
+info.resumeFailedException.target=Riattivazione dei componenti di destinazione specificati del server {0} non riuscita. \
+Per ulteriori informazioni, \
 controllare i log del server.
 
 # For info.serverLaunch and info.serverVersion: 

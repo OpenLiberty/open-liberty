@@ -325,3 +325,18 @@ display.unresolved.jsl.useraction=Verifica\u0163i c\u0103 numele de fi\u015fier 
 JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: Numele operationGroup {0} nu a fost rezolvat la un nume valid de grup.
 JOB_GROUP_NAME_NOT_VALID.explanation=\u00cencerc\u0103rile de a accesa jobul folosind accesul de grup pot e\u015fua dac\u0103 apar \u00eencerc\u0103ri de a utiliza un nume de grup invalid.
 JOB_GROUP_NAME_NOT_VALID.useraction=Corecta\u0163i numele grupului \u00een fi\u015fierul cu configura\u0163ia serverului.
+
+#BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} was not detected to be at the latest version {1}. The table was instead detected to have been created at version {2}. The createTables setting for the database store is set to {3}. 
+BATCH_TABLES_NOT_CURRENT=CWWKY0045W: Tabela batch Java {0} configurat\u0103 nu a fost detectat\u0103 ca fiind la ultima versiune {1}. Tabela a fost detectat\u0103 ca fiind creat\u0103 la versiunea {2}. Setarea createTables pentru depozitul baz\u0103 de date de este setat\u0103 la {3}. 
+BATCH_TABLES_NOT_CURRENT.explanation=Tabela runtime batch Java specificat\u0103 nu a fost detectat\u0103 ca fiind creat\u0103 la ultima versiune.
+BATCH_TABLES_NOT_CURRENT.useraction=Verifica\u0163i setarea createTables pentru depozitul de baz\u0103 de date. Dac\u0103 setarea createTables este setat\u0103 la true, atunci determina\u0163i de ce tabela auto-creat\u0103 a e\u015fuat s\u0103 apar\u0103. Dac\u0103 este setat\u0103 la false, atunci administratorul (sau DBA) ar trebui s\u0103 creeze tabela necesar\u0103.
+
+#BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables were detected to have been created at the latest table version.
+BATCH_TABLES_CURRENT=CWWKY0046I: Tabelele batch Java configurate au fost detectate ca fiind create la ultima versiune de tabel.
+BATCH_TABLES_CURRENT.explanation=Tabelele batch Java configurate au fost detectate ca fiind create la ultima versiune de tabel, fie via auto-creare fie printr-o creare manual\u0103 de un administrator.
+BATCH_TABLES_CURRENT.useraction=Nici o ac\u0163iune necesar\u0103.
+
+#BATCH_SECURITY_NOT_ACTIVE=CWWKY047W: Security is not enabled in this server, Group Security associated with job instance {0} will not be enabled.
+BATCH_SECURITY_NOT_ACTIVE=CWWKY0047W: Caracteristica de securitate nu este activat\u0103 pe acest server, Securitatea de grup asociat\u0103 cu instan\u0163a de job {0} nu va fi activat\u0103.
+BATCH_SECURITY_NOT_ACTIVE.explanation=Securitatea nu este activat\u0103 pentru acest server, deci asocierile de securitate de grup batch nu vor fi persistente pentru instan\u0163a de job de referin\u0163\u0103. Aceasta \u00eenseamn\u0103 c\u0103 rolurile batchGroupAdmin \u015fi batchGroupMonitor nu pot fi utilizate pentru a dob\u00e2ndi autoriza\u0163ia de a opera pe acest job, acum sau \u00een orice moment \u00een viitor. 
+BATCH_SECURITY_NOT_ACTIVE.useraction= Dac\u0103 este dorit\u0103 impunerea securit\u0103\u0163ii de grup batch Java, activa\u0163i Securitatea pentru acest server.

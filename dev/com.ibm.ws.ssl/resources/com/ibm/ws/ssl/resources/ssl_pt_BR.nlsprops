@@ -715,13 +715,9 @@ ssl.defaultOutbound.conflict.CWPKI0816W=CWPKI0816W: O elemento outboundConnectio
 ssl.defaultOutbound.conflict.CWPKI0816W.explanation=O elemento outboundConnection com um asterisco (*) como o host e a porta est\u00e1 em conflito com o atributo outboundSSLRef que est\u00e1 configurado. O servidor usa a configura\u00e7\u00e3o de SSL que \u00e9 especificada pelo atributo outboundSSLRef.
 ssl.defaultOutbound.conflict.CWPKI0816W.useraction=Revise a configura\u00e7\u00e3o conflitante e determine qual configura\u00e7\u00e3o usar como a configura\u00e7\u00e3o de SSL padr\u00e3o. Remova a configura\u00e7\u00e3o de que voc\u00ea n\u00e3o precisa.
 #--------------------------------------------------------------------------------------------------
-ssl.defaultKeyStore.expected.CWPKI0817A=CWPKI0817A: A configura\u00e7\u00e3o SSL padr\u00e3o espera um elemento <keyStore> com um valor de ID de {0} e uma senha. O elemento {0} <keyStore> est\u00e1 ausente ou a senha n\u00e3o est\u00e1 especificada. Defina o \
-elemento ausente: <keyStore id="{0}" password="yourpassword" /> ou mude a configura\u00e7\u00e3o SSL padr\u00e3o para usar um keystore existente.  \
-Consulte o exemplo a seguir: <ssl id="defaultSSLConfig" keyStoreRef="newKeyStore" />.
-ssl.defaultKeyStore.expected.CWPKI0817A.explanation=A configura\u00e7\u00e3o SSL padr\u00e3o espera o elemento de \
-keystore padr\u00e3o, que n\u00e3o existe.
-ssl.defaultKeyStore.expected.CWPKI0817A.useraction=Revise a configura\u00e7\u00e3o e inclua o keystore ausente ou mude a \
-configura\u00e7\u00e3o SSL padr\u00e3o para usar um keystore diferente.
+ssl.defaultKeyStore.expected.CWPKI0817A=CWPKI0817A: A configura\u00e7\u00e3o SSL padr\u00e3o espera um elemento <keyStore> com um valor de ID de {0} e uma senha. O elemento {0} <keyStore> est\u00e1 ausente ou a senha n\u00e3o est\u00e1 especificada. Se o SSL n\u00e3o for necess\u00e1rio, esta mensagem poder\u00e1 ser ignorada. Se o SSL for necess\u00e1rio, defina o elemento ausente: <keyStore id="{0}" password="yourpassword" /> ou mude a configura\u00e7\u00e3o SSL padr\u00e3o para usar um keystore existente. Consulte o exemplo a seguir: <ssl id="defaultSSLConfig" keyStoreRef="newKeyStore" />.
+ssl.defaultKeyStore.expected.CWPKI0817A.explanation=A inicializa\u00e7\u00e3o de SSL foi tentada porque o recurso ssl foi carregado. A inicializa\u00e7\u00e3o n\u00e3o p\u00f4de ser conclu\u00edda, porque a configura\u00e7\u00e3o SSL padr\u00e3o espera um elemento keystore com o valor de ID especificado e uma senha. O elemento keyStore est\u00e1 ausente ou a senha n\u00e3o est\u00e1 especificada.
+ssl.defaultKeyStore.expected.CWPKI0817A.useraction=Se o SSL n\u00e3o for necess\u00e1rio, esta mensagem poder\u00e1 ser ignorada. Se o SSL for necess\u00e1rio, revise a configura\u00e7\u00e3o e inclua o keystore ausente ou mude a configura\u00e7\u00e3o SSL padr\u00e3o para usar um keystore diferente.
 #--------------------------------------------------------------------------------------------------
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E=CWPKI0818E: A configura\u00e7\u00e3o SSL padr\u00e3o referencia um \
 elemento <keyStore> com um valor de ID de {0}, que n\u00e3o existe na configura\u00e7\u00e3o ou cuja defini\u00e7\u00e3o n\u00e3o tem uma senha. Defina um \

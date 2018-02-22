@@ -35,3 +35,17 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: Falha ao configurar a codifica\u
 unsupported.response.encoding.[{0}].explanation=A codifica\u00e7\u00e3o de resposta especificada na resposta n\u00e3o \u00e9 v\u00e1lida. Este \u00e9 um erro de aplica\u00e7\u00e3o.
 unsupported.response.encoding.[{0}].useraction=Reveja os logs para determinar se a codifica\u00e7\u00e3o especificada \u00e9 uma codifica\u00e7\u00e3o v\u00e1lida.
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: Os trailers n\u00e3o poder\u00e3o ser configurados se a resposta for confirmada.
+set.trailer.fields.committed.response.explanation=A resposta j\u00e1 foi confirmada.
+set.trailer.fields.committed.response.useraction=Assegure-se de que a resposta n\u00e3o tenha sido confirmada antes da configura\u00e7\u00e3o dos trailers.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: Os trailers n\u00e3o poder\u00e3o ser configurados se a vers\u00e3o HTTP n\u00e3o for 1.1 ou superior.
+set.trailer.fields.incorrect.http.version.explanation=Os Trailers HTTP s\u00e3o suportados apenas em HTTP 1.1 ou superior.
+set.trailer.fields.incorrect.http.version.useraction=Assegure-se de que HTTP 1.1 ou superior esteja sendo usado.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Os trailers n\u00e3o poder\u00e3o ser configurados se o valor do cabe\u00e7alho Transfer-Encoding n\u00e3o for "chunked".
+set.trailer.fields.incorrect.transfer.encoding.explanation=Os trailers ser\u00e3o suportados apenas se o valor do cabe\u00e7alho Transfer-Encoding for "chunked".
+set.trailer.fields.incorrect.transfer.encoding.useraction=Assegure-se de que o cabe\u00e7alho Transfer-Encoding contenha o valor "chunked".

@@ -107,7 +107,7 @@ error.unknownException.explanation=Die Ausnahme verhindert das Starten des Serve
 error.unknownException.useraction=Beheben Sie die Ausnahme, sofern m\u00f6glich, und wiederholen Sie die Aktion. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
 
 error.frameworkDef=CWWKE0019E: Die erforderliche Frameworkdefinition wurde nicht angegeben.
-error.frameworkDef.explanation=Der Serverinstallation fehlen erforderliche Dateien und der Server konnte nicht gestartet werden.
+error.frameworkDef.explanation=Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
 error.frameworkDef.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
 
 error.frameworkDefFile=CWWKE0020E: Die angegebene Frameworkdefinition ({0}) ist nicht vorhanden.
@@ -119,7 +119,7 @@ error.frameworkJarFile.explanation=Da angegebene Framework-Bundle-Artefakt wurde
 error.frameworkJarFile.useraction=Stellen Sie sicher, dass die Ressource vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
 
 error.kernelDef=CWWKE0022E: Die erforderliche Kerneldefinition wurde nicht angegeben.
-error.kernelDef.explanation=Der Serverinstallation fehlen erforderliche Dateien und der Server konnte nicht gestartet werden.
+error.kernelDef.explanation=Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
 error.kernelDef.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
 
 error.kernelDefFile=CWWKE0023E: Die angegebene Kerneldefinition ({0}) ist nicht vorhanden.
@@ -181,7 +181,7 @@ error.unknown.console.protocol.explanation=Das angegebene Protokoll wird nicht u
 error.unknown.console.protocol.useraction=Es ist keine Aktion erforderlich, um das Standardprotokoll zu verwenden. Andernfalls \u00e4ndern Sie die Konfiguration so, dass ein unterst\u00fctztes Protokoll verwendet wird.
 
 error.rasProvider=CWWKE0038E: Der erforderliche Protokollprovider wurde nicht angegeben.
-error.rasProvider.explanation=Der Serverinstallation fehlen erforderliche Dateien und der Server konnte nicht gestartet werden.
+error.rasProvider.explanation=Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
 error.rasProvider.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
 
 error.rasProviderResolve=CWWKE0039E: Die angegebene JAR-Datei bzw. das angegebene Bundle f\u00fcr den Protokollprovider ({0}) ist nicht vorhanden.
@@ -332,15 +332,15 @@ error.blst.spec.invalid.useraction=Geben Sie den symbolischen Namen und den Vers
 
 # {0} The BLST filename
 error.blst.failed.to.resolve=CWWKE0073E: Die BLST-Datei f\u00fcr {0} kann nicht aufgel\u00f6st werden.
-error.blst.failed.to.resolve.explanation=Die angegebene BLST-Datei wurde nicht gefunden. Der Serverinstallation fehlen erforderliche Dateien und der Server konnte nicht gestartet werden.
-error.blst.failed.to.resolve.useraction=Geben Sie eine aufl\u00f6sbare BLST-Datei in der Serverdatei bootstrap.properties des Servers an.
+error.blst.failed.to.resolve.explanation=Die angegebene BLST-Datei wurde nicht gefunden. Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
+error.blst.failed.to.resolve.useraction=Geben Sie eine aufl\u00f6sbare BLST-Datei in der Serverdatei bootstrap.properties des Server an.
 
 error.platform.dir.not.found=CWWKE0074E: Das Plattformverzeichnis wurde nicht gefunden.
-error.platform.dir.not.found.explanation=Das Plattformverzeichnis wurde nicht gefunden Der Serverinstallation fehlen erforderliche Dateien und der Server konnte nicht gestartet werden.
+error.platform.dir.not.found.explanation=Das Plattformverzeichnis wurde nicht gefunden Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
 error.platform.dir.not.found.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
 
 error.unknown.kernel.version=CWWKE0075E: Der Kernelversionsbereich konnte nicht aus dem Bootstrapmanifest gelesen werden.
-error.unknown.kernel.version.explanation=Der Versionsbereich des Kernels konnte nicht gelesen werden. Der Serverinstallation fehlen erforderliche Dateien und der Server konnte nicht gestartet werden.
+error.unknown.kernel.version.explanation=Der Versionsbereich des Kernels konnte nicht gelesen werden. Der Serverinstallation fehlen erforderliche Dateien, und der Server konnte nicht gestartet werden.
 error.unknown.kernel.version.useraction=Stellen Sie sicher, dass das Produkt ordnungsgem\u00e4\u00df installiert wurde. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
 
 # Messages for minify.. 

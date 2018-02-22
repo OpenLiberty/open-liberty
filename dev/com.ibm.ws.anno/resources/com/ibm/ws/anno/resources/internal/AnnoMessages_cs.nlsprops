@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 # -------------------------------------------------------------------------------------------------
 # Base Anno scanning layer: 0001 to 0250   com.ibm.ws.anno.resources.internal.AnnoMessages
 # -------------------------------------------------------------------------------------------------
@@ -33,21 +33,23 @@
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The class name of the resource
 # # {2} the hashcode id of the resource
-ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] [{2}] se nezda\u0159ilo s v\u00fdjimkou.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: Zav\u0159en\u00ed zdroje [{1}] [{2}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {3}
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=Zav\u0159en\u00ed prost\u0159edku zp\u016fsobilo v\u00fdjimku.
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource
 # # {2} the name of the class associated with the resource
-ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo s v\u00fdjimkou.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {3}
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=Zav\u0159en\u00ed vstupn\u00edho proudu pro prost\u0159edek zp\u016fsobilo v\u00fdjimku.
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource, includes the full path to the class
 # # {2} the name of the class associated with the resource
-ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]: Otev\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo s v\u00fdjimkou.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]: Otev\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo.
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=Otev\u0159en\u00ed vstupn\u00edho proudu InputStream pro prost\u0159edek zp\u016fsobilo v\u00fdjimku.
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
@@ -99,7 +101,7 @@ ANNO_CLASSSOURCE_EMPTY_DIR.useraction=Zkontrolujte, zda by m\u011bl adres\u00e1\
 # # {3} the name of the container for {1}
 # # {4} the name of the class
 ANNO_CLASSSOURCE_NOT_FILE=CWWKC0009W: [ {0} ]: Prost\u0159edek [{1}] byl nalezen jako adres\u00e1\u0159 [{2}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{3}] pro t\u0159\u00eddu [{4}].
-ANNO_CLASSSOURCE_NOT_FILE.explanation=Prost\u0159edek m\u011bl b\u00fdt souborem, nalezen byl ale adres\u00e1\u0159. 
+ANNO_CLASSSOURCE_NOT_FILE.explanation=Prost\u0159edek m\u011bl b\u00fdt souborem, nalezen byl ale adres\u00e1\u0159.
 ANNO_CLASSSOURCE_NOT_FILE.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
 
 # # {0} A hashcode id used to identify the object emitting the message
@@ -112,15 +114,16 @@ ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=Pokus o otev\u0159en\u00ed vstupn\u
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
 # # {0} A hashcode id used to identify the object emitting the message
-# # {1} a resource name
-# # {2} a directory path
-# # {3} a class name
-ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{2}] pro t\u0159\u00eddu [{3}] se nezda\u0159ilo.
+# # {1} A resource name
+# # {2} A directory path
+# # {3} A class name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{2}] pro t\u0159\u00eddu [{3}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {4}
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=Zav\u0159en\u00ed vstupn\u00edho proudu InputStream pro prost\u0159edek zp\u016fsobilo v\u00fdjimku.
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
 # # {0} A hashcode id used to identify the object emitting the message
-# # {1} a jar file path name
+# # {1} A jar file path name
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: [ {0} ]: Otev\u0159en\u00ed souboru [{1}] se nezda\u0159ilo s v\u00fdjimkou.
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Soubor byl otev\u00edr\u00e1n jako soubor Jar a tato akce zp\u016fsobila v\u00fdjimku.
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
@@ -131,26 +134,27 @@ ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete 
 ANNO_CLASSSOURCE_JAR_STATE_BAD=CWWKC0013W: [ {0} ]: \u010c\u00edta\u010d po\u010dtu otev\u0159en\u00ed [{2}] souboru JAR [{1}] m\u011bl p\u0159i zav\u00edr\u00e1n\u00ed chybn\u00fd stav.
 ANNO_CLASSSOURCE_JAR_STATE_BAD.explanation=Do\u0161lo k intern\u00ed chyb\u011b. Po\u010det aktivn\u00edch u\u017eivatel\u016f souboru jar se neshoduje se stavem souboru jar.
 ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
-                        
+
 # # {0} A hashcode id used to identify the object emitting the message
-# # {1} the name of a jar file
-ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]: Zav\u0159en\u00ed souboru [{1}] se nezda\u0159ilo s v\u00fdjimkou.
+# # {1} The name of a jar file
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]: Zav\u0159en\u00ed [{1}] se nezda\u0159ilo.
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=Pokus o zav\u0159en\u00ed objektu JarFile zp\u016fsobil v\u00fdjimku.
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
-                
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} a resource name
-# # {2} a class name
-# # {3} a jar file path 
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ]: Otev\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] s cestou [{3}] se nezda\u0159ilo s v\u00fdjimkou.
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=V souboru jar byla nalezena polo\u017eka pro t\u0159\u00eddu, ale vytvo\u0159en\u00ed vstupn\u00edho proudu InputStream pro t\u0159\u00eddu zp\u016fsobilo v\u00fdjimku. 
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a resource name
 # # {2} a class name
-# # {3} a jar file path 
-ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] s cestou [{3}] se nezda\u0159ilo s v\u00fdjimkou.
+# # {3} a jar file path
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ]: Otev\u0159en\u00ed [{1}] pro t\u0159\u00eddu [{2}] v [{3}] se nezda\u0159ilo.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=V souboru jar byla nalezena polo\u017eka pro t\u0159\u00eddu, ale vytvo\u0159en\u00ed vstupn\u00edho proudu InputStream pro t\u0159\u00eddu zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} A class name
+# # {3} A jar file path
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] v [{3}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {4}
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=Zav\u0159en\u00ed vstupn\u00edho proudu InputStream prost\u0159edku zp\u016fsobilo v\u00fdjimku.
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
@@ -160,14 +164,14 @@ ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete
 ANNO_ANNOINFO_NO_METHOD=CWWKC0017W: Anotace [{0}] t\u0159\u00eddy anotac\u00ed [{1}] neobsahuje metodu [{2}].
 ANNO_ANNOINFO_NO_METHOD.explanation=Pro parametr nelze na k\u00f3dovan\u00e9 anotaci nal\u00e9zt vyhovuj\u00edc\u00ed metodu.
 ANNO_ANNOINFO_NO_METHOD.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
-                
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS1=CWWKC0018W: [{0}] Ji\u017e m\u00e1 jako jedine\u010dnou t\u0159\u00eddu java [{2}] objekt [{1}].
 ANNO_CLASSINFO_EXISTS1.explanation=Objekt informac\u00ed o t\u0159\u00edd\u011b pro danou pam\u011b\u0165 ji\u017e existuje v mezipam\u011bti.
 ANNO_CLASSINFO_EXISTS1.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
-            
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS2=CWWKC0019W: [{0}] Ji\u017e m\u00e1 jako t\u0159\u00eddu java objekt [{1}].
@@ -180,7 +184,7 @@ ANNO_CLASSINFO_EXISTS2.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akc
 ANNO_CLASSINFO_EXISTS3=CWWKC0020W: [{0}] Ji\u017e m\u00e1 jedine\u010dnou anotovanou t\u0159\u00eddu [{2}] objekt [{1}].
 ANNO_CLASSINFO_EXISTS3.explanation=Objekt informac\u00ed o t\u0159\u00edd\u011b pro danou pam\u011b\u0165 ji\u017e existuje v mezipam\u011bti.
 ANNO_CLASSINFO_EXISTS3.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
-            
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS4=CWWKC0021W: [ {0} ] Ji\u017e m\u00e1 jako anotovanou t\u0159\u00eddu objekt [{1}].
@@ -198,17 +202,17 @@ ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve 
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_METHODEXISTS=CWWKC0023W: [ {0} ] P\u0159id\u00e1n\u00ed objektu [{1}] p\u0159ep\u00ed\u0161e existuj\u00edc\u00ed objekt [{2}].
 ANNO_CLASSINFO_METHODEXISTS.explanation=Objekt metody pro t\u0159\u00eddu ji\u017e existuje v mezipam\u011bti.
-ANNO_CLASSINFO_METHODEXISTS.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. 
+ANNO_CLASSINFO_METHODEXISTS.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_FIELDEXISTS=CWWKC0024W: [ {0} ] P\u0159id\u00e1n\u00ed objektu [{1}] p\u0159ep\u00ed\u0161e existuj\u00edc\u00ed objekt [{2}].
 ANNO_CLASSINFO_FIELDEXISTS.explanation=Objekt pole pro t\u0159\u00eddu ji\u017e existuje v mezipam\u011bti.
-ANNO_CLASSINFO_FIELDEXISTS.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. 
+ANNO_CLASSINFO_FIELDEXISTS.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
 
 # # {0} A hashcode id used to identify the object emitting the message
-# # {1} The name of a class 
+# # {1} The name of a class
 ANNO_CLASSINFO_CLASS_NOTFOUND=CWWKC0025W: [ {0} ] T\u0159\u00edda [{1}] nebyla nalezena.
 ANNO_CLASSINFO_CLASS_NOTFOUND.explanation=Proces proch\u00e1zen\u00ed anotac\u00ed nerozpoznal t\u0159\u00eddu. Toto lze vy\u0159e\u0161it dodate\u010dn\u00fdm pokusem o rozpozn\u00e1n\u00ed t\u0159\u00eddy.
 ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=Ov\u011b\u0159te, zda se t\u0159\u00edda nach\u00e1z\u00ed v cest\u011b k aplikaci nebo v cest\u011b ke t\u0159\u00edd\u011b aplikace.
@@ -225,14 +229,14 @@ ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve
 ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: [ {0} ]: Zav\u0159en\u00ed objektu [{1}] zp\u016fsobilo v\u00fdjimku.
 ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=Zav\u0159en\u00ed zdroje t\u0159\u00eddy zp\u016fsobilo v\u00fdjimku.
 ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
-       
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: [ {0} ]: Otev\u0159en\u00ed vstupn\u00edho proudu pro prost\u0159edek [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo s v\u00fdjimkou.
-ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Kdy\u017e se proces proch\u00e1zen\u00ed anotac\u00ed pokusil otev\u0159\u00edt vstupn\u00ed proud pro t\u0159\u00eddu, do\u0161lo k v\u00fdjimce. 
+ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Kdy\u017e se proces proch\u00e1zen\u00ed anotac\u00ed pokusil otev\u0159\u00edt vstupn\u00ed proud pro t\u0159\u00eddu, do\u0161lo k v\u00fdjimce.
 ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
-            
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
@@ -252,7 +256,7 @@ ANNO_CREATE_READER_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v
 ANNO_INFOVISIT_INVALID_STATE=CWWKC0031W: Chyba intern\u00edho stavu: N\u00e1v\u0161t\u011bvn\u00edk [ {0} ] Nastaven\u00ed [ {1} ] na [ {2} ].
 ANNO_INFOVISIT_INVALID_STATE.explanation=Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed anotace, objekt n\u00e1v\u0161t\u011bvn\u00edka je chybn\u00fd.
 ANNO_INFOVISIT_INVALID_STATE.useraction=CMSG0001
-                    
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A hashcode id used to identify the object that exists
 ANNO_INFOVISITOR_RESET1=CWWKC0032W: [ {0} ] Existuje zbytkov\u00fd bal\u00edk objektu [ {1} ].
@@ -270,13 +274,13 @@ ANNO_INFOVISITOR_RESET2.useraction=CMSG0002
 ANNO_INFOVISITOR_RESET3=CWWKC0034W: [ {0} ] Existuje zbytkov\u00e1 metoda objektu [ {1} ].
 ANNO_INFOVISITOR_RESET3.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
 ANNO_INFOVISITOR_RESET3.useraction=CMSG0002
-                
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A hashcode id used to identify the object that exists
 ANNO_INFOVISITOR_RESET4=CWWKC0035W: [ {0} ] Existuje zbytkov\u00e9 pole objektu [ {1} ].
 ANNO_INFOVISITOR_RESET4.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
 ANNO_INFOVISITOR_RESET4.useraction=CMSG0002
-   
+
 # # {0} A hashcode id used to identify the object emitting the message
 ANNO_INFOVISITOR_RESET5=CWWKC0036W: [ {0} ] Existuje zbytkov\u00fd stav zastaven\u00ed.
 ANNO_INFOVISITOR_RESET5.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
@@ -287,7 +291,7 @@ ANNO_INFOVISITOR_RESET5.useraction=CMSG0002
 ANNO_INFOVISITOR_RESET6=CWWKC0037W: [ {0} ] Existuje n\u00e1zev zbytkov\u00e9 extern\u00ed t\u0159\u00eddy objektu [ {1} ].
 ANNO_INFOVISITOR_RESET6.explanation=Do\u0161lo k intern\u00ed chyb\u011b. B\u011bhem nulov\u00e1n\u00ed n\u00e1v\u0161t\u011bvn\u00edka byla nalezena zbytkov\u00e1 data.
 ANNO_INFOVISITOR_RESET6.useraction=CMSG0002
-                                       
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of a class package
 ANNO_INFOVISITOR_VISIT1=CWWKC0038W: [ {0} ] Bal\u00edk s n\u00e1zvem [ {1} ] m\u00e1 hodnotu null.
@@ -372,7 +376,7 @@ ANNO_TARGETS_UNEXPECTED_NULL=CWWKC0056W: Intern\u00ed chyba proch\u00e1zen\u00ed
 ANNO_TARGETS_UNEXPECTED_NULL.explanation=CMSG0001
 ANNO_TARGETS_UNEXPECTED_NULL.useraction=CMSG0002
 
-ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Vnit\u0159n\u00ed nekonzistence dat: Obousm\u011brn\u00e9 mapov\u00e1n\u00ed objektu [ {0} ] nenamapovalo konzistentn\u011b kl\u00ed\u010d [ {1} ] na hodnotu [ {2} ]. V\u00fdsledkem p\u0159id\u00e1n\u00ed kl\u00ed\u010de bylo [ {3} ], zat\u00edmco v\u00fdsledkem p\u0159id\u00e1n\u00ed hodnoty bylo [ {4} ]. V\u00fdsledky by m\u011bly b\u00fdt stejn\u00e9. 
+ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Vnit\u0159n\u00ed nekonzistence dat: Obousm\u011brn\u00e9 mapov\u00e1n\u00ed objektu [ {0} ] nenamapovalo konzistentn\u011b kl\u00ed\u010d [ {1} ] na hodnotu [ {2} ]. V\u00fdsledkem p\u0159id\u00e1n\u00ed kl\u00ed\u010de bylo [ {3} ], zat\u00edmco v\u00fdsledkem p\u0159id\u00e1n\u00ed hodnoty bylo [ {4} ]. V\u00fdsledky by m\u011bly b\u00fdt stejn\u00e9.
 ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
 ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
 
@@ -397,15 +401,155 @@ ANNO_UTIL_UNRECOGNIZED_TYPE.explanation=CMSG0001
 ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
 
 # #{0} A hashcode id used to identify the object emitting the message
-# #{1} The name of the java exception which occurred 
+# #{1} The name of the java exception which occurred
 # #{2} The class name of the resource being closed
 # #{3} The hashcode id of the resource being closed
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: [ {0} ]: Ru\u0161en\u00ed dal\u0161\u00ed v\u00fdjimky {1} zav\u0159en\u00ed prost\u0159edku t\u0159\u00eddy {2} [ {3} ].
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=P\u0159i pokusu o zav\u0159en\u00ed prost\u0159edku do\u0161lo k v\u00fdjimce.
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
 
-# {0} The name of the class
-# {1} The name of the jar the class was in.
+# # {0} The name of the class
+# # {1} The name of the JAR file the class is in.
 ANNO_TARGETS_CORRUPT_CLASS=CWWKC0064I: T\u0159\u00eddu {0} v {1} nebylo mo\u017en\u00e9 zpracovat pro anotace, proto\u017ee je z\u0159ejm\u011b po\u0161kozen\u00e1.
 ANNO_TARGETS_CORRUPT_CLASS.explanation=Do\u0161lo k probl\u00e9mu p\u0159i na\u010d\u00edt\u00e1n\u00ed souboru t\u0159\u00eddy k ur\u010den\u00ed, zda existuj\u00ed n\u011bjak\u00e9 d\u016fle\u017eit\u00e9 anotace. T\u0159\u00edda je pravd\u011bpodobn\u011b neplatn\u00fd soubor t\u0159\u00eddy. V\u00fdsledkem bude, \u017ee anotace od t\u00e9to t\u0159\u00eddy nebudou rozpozn\u00e1ny.
 ANNO_TARGETS_CORRUPT_CLASS.useraction=V z\u00e1vislosti na v\u00fdznamu t\u0159\u00eddy pro fungov\u00e1n\u00ed aplikace m\u016f\u017eete t\u0159\u00eddu nahradit, odebrat nebo tuto zpr\u00e1vu ignorovat.
+
+#### Added 07-Feb-2018:
+
+# # {0} A hashcode ID that identifies the object emitting the message
+# # {1} A hashcode ID that identifies the object causing the exception
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION=CWWKC0065W: [ {0} ]: Otev\u0159en\u00ed zdroje pod\u0159\u00edzen\u00e9 t\u0159\u00eddy [{1}] zp\u016fsobilo v\u00fdjimku. Chybov\u00e1 zpr\u00e1va: {2}
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.explanation=Otev\u0159en\u00ed zdroje pod\u0159\u00edzen\u00e9 t\u0159\u00eddy zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode ID that identifies the object emitting the message
+# # {1} A hashcode ID that identifies the object causing the exception
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION=CWWKC0066W: [ {0} ]: Zav\u0159en\u00ed zdroje pod\u0159\u00edzen\u00e9 t\u0159\u00eddy [{1}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {3}
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.explanation=Zav\u0159en\u00ed zdroje pod\u0159\u00edzen\u00e9 t\u0159\u00eddy zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} An entry name
+# # {2} A class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION=CWWKC0067W: [ {0} ] Zpracov\u00e1n\u00ed polo\u017eky [{1}] pro t\u0159\u00eddu [{2}] zp\u016fsobilo v\u00fdjimku. Chybov\u00e1 zpr\u00e1va: {3}
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.explanation=Zpracov\u00e1n\u00ed informac\u00ed o t\u0159\u00edd\u011b na\u010dten\u00fdch z polo\u017eky zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A JAR entry name
+# # {2} A class name
+# # {3} A JAR file name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION=CWWKC0068W: [ {0} ]: Zav\u0159en\u00ed polo\u017eky [{1}] pro t\u0159\u00eddu [{2}] v [{3}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {4}
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.explanation=Zav\u0159en\u00ed polo\u017eky zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A file name
+# # {2} A class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION=CWWKC0069W: [ {0} ] Zpracov\u00e1n\u00ed souboru [{1}] pro t\u0159\u00eddu [{2}] zp\u016fsobilo v\u00fdjimku. Chybov\u00e1 zpr\u00e1va: {3}
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.explanation=Zpracov\u00e1n\u00ed informac\u00ed o t\u0159\u00edd\u011b na\u010dten\u00fdch ze souboru zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} A directory path
+# # {3} A class name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION=CWWKC0070W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{2}] pro t\u0159\u00eddu [{3}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {4}
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.explanation=Zav\u0159en\u00ed souboru zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A JAR entry name
+# # {2} A class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION=CWWKC0071W: [ {0} ] Zpracov\u00e1n\u00ed polo\u017eky JAR [{1}] pro t\u0159\u00eddu [{2}] zp\u016fsobilo v\u00fdjimku. Chybov\u00e1 zpr\u00e1va: {3}
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.explanation=Zpracov\u00e1n\u00ed informac\u00ed o t\u0159\u00edd\u011b na\u010dten\u00fdch z polo\u017eky JAR zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A JAR entry name
+# # {2} A class name
+# # {3} A jar name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION=CWWKC0072W: [ {0} ]: Zav\u0159en\u00ed polo\u017eky JAR [{1}] pro t\u0159\u00eddu [{2}] v [{3}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {4}
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.explanation=Zav\u0159en\u00ed souboru zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} A class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION=CWWKC0073W: [ {0} ] Zpracov\u00e1n\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] zp\u016fsobilo v\u00fdjimku. Chybov\u00e1 zpr\u00e1va: {3}
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.explanation=Zpracov\u00e1n\u00ed informac\u00ed o t\u0159\u00edd\u011b na\u010dten\u00fdch z prost\u0159edku zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The resource name
+# # {2} The class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION=CWWKC0074W: [ {0} ]: Zav\u0159en\u00ed prost\u0159edku [{1}] pro t\u0159\u00eddu [{2}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {3}
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.explanation=Zav\u0159en\u00ed prost\u0159edku zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The target convertion type
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION=CWWKC0075W: [ {0} ]: Kontejneru tohoto zdroje t\u0159\u00eddy se nezda\u0159il p\u0159evod na [{1}]. Chybov\u00e1 zpr\u00e1va: {2}
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.explanation=Soubor nelze p\u0159en\u00e9st na nov\u00fd typ objektu.
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} File name
+# # {2} A class name
+# # {3} A file name
+# # {4} The file path name of {1}
+# # {5} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION=CWWKC0076W: [ {0} ]: P\u0159evod prost\u0159edku [{1}] t\u0159\u00eddy [{2}] v ko\u0159enov\u00e9m adres\u00e1\u0159i [{3}] pro p\u0159edponu [{4}] se nezda\u0159il. Chybov\u00e1 zpr\u00e1va: {5}
+ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.explanation=Polo\u017eku nelze p\u0159en\u00e9st na nov\u00fd typ objektu.
+ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.useraction=Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a class name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: [ {0} ] Zpracov\u00e1n\u00ed informac\u00ed Jandex pro t\u0159\u00eddu [{1}] zp\u016fsobilo v\u00fdjimku. Chybov\u00e1 zpr\u00e1va: {2}
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=Zpracov\u00e1n\u00ed informac\u00ed Jandex t\u0159\u00eddy zp\u016fsobilo v\u00fdjimku.
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Otev\u0159en\u00ed prost\u0159edku indexu Jandex [{1}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=Pokus o otev\u0159en\u00ed prost\u0159edku indexu Jandex zp\u016fsobil v\u00fdjimku.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] \u010cten\u00ed prost\u0159edku indexu Jandex [{1}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=Pokus o \u010dten\u00ed indexu Jandex se nezda\u0159il s v\u00fdjimkou.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] Otev\u0159en\u00ed souboru indexu Jandex [{1}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=Pokus o otev\u0159en\u00ed prost\u0159edku indexu Jandex zp\u016fsobil v\u00fdjimku.
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] \u010cten\u00ed souboru indexu Jandex [{1}] se nezda\u0159ilo. Chybov\u00e1 zpr\u00e1va: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=Pokus o \u010dten\u00ed indexu Jandex se nezda\u0159il s v\u00fdjimkou.
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Dal\u0161\u00ed informace naleznete ve v\u00fdjimce a p\u0159idru\u017een\u00e9 zpr\u00e1v\u011b FFDC.
+
+# # {0} A class name
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: Jandex zpracov\u00e1v\u00e1 duplicitn\u00ed zpracov\u00e1n\u00ed t\u0159\u00eddy [{0}].
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
