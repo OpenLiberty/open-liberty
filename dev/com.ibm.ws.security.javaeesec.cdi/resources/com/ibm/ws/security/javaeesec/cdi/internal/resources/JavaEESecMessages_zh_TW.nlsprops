@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=\u97
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=\u8acb\u78ba\u5b9a\u5df2\u5728 FormAuthenticationMechanismDefinition \u6216 CustomFormAuthenticationMechanismDefinition \u8a3b\u91cb\u4e2d\uff0c\u4f7f\u7528 LoginToContinue \u8a3b\u91cb\u6a19\u8a3b\u61c9\u7528\u7a0b\u5f0f\u3002
 
 JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: CustomFormHttpAuthenticationMechanism \u985e\u5225\u4e0d\u652f\u63f4\u6240\u63d0\u4f9b\u7684\u8a8d\u8b49\u985e\u5225 {0}\u3002\u8acb\u4f7f\u7528 javax.security.enterprise.credential.UsernamePasswordCredential \u6216 javax.security.enterprise.credential.BasicAuthenticationCredential \u4f86\u9032\u884c\u9451\u5225\u3002
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=CustomFormHttpAuthenticationMechanism \u985e\u5225\u4e0d\u652f\u63f4\u6240\u63d0\u4f9b\u7684\u8a8d\u8b49\u985e\u5225\u3002\u8acb\u4f7f\u7528 javax.security.enterprise.credential.UsernamePasswordCredential \u6216 javax.security.enterprise.credential.BasicAuthenticationCredential \u4f86\u9032\u884c\u9451\u5225\u3002
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=CustomFormHttpAuthenticationMechanism \u985e\u5225\u4e0d\u652f\u63f4\u6240\u63d0\u4f9b\u7528\u4f86\u9032\u884c\u9451\u5225\u7684\u8a8d\u8b49\u985e\u5225\u3002\u8acb\u4f7f\u7528 javax.security.enterprise.credential.UsernamePasswordCredential \u6216 javax.security.enterprise.credential.BasicAuthenticationCredential \u4f86\u9032\u884c\u9451\u5225\u3002
 JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=\u8acb\u78ba\u5b9a\u300c\u81ea\u8a02\u8868\u55ae\u300d\u9451\u5225\u63a1\u7528\u652f\u63f4\u7684\u8a8d\u8b49\u985e\u5225\u3002
 
 JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: Principal \u540d\u7a31\u662f\u7a7a\u503c\uff0c\u6216\u8005 Principal \u7269\u4ef6\u4e0d\u5b58\u5728\u3002\u8acb\u78ba\u5b9a CredentialValidationResult \u5305\u542b\u6709\u6548\u7684 Principal \u7269\u4ef6\u3002
@@ -36,7 +36,7 @@ JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=\u5982\u679c\u61c9\u7528\u7a0b\u5f0
 
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: UniqueId \u662f\u7a7a\u503c\u3002\u8acb\u78ba\u5b9a CredentialValidationResult \u542b\u6709\u6709\u6548\u7684 UniqueId\u3002
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=\u7d66\u5b9a CredentialValidationResult \u7269\u4ef6\u4e2d\u7684 UniqueId \u662f\u7a7a\u503c\u3002
-JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u63d0\u4f9b IdentityStore\uff0c\u8acb\u78ba\u5b9a\u5b83\u6703\u5728 CredentialValidationResult \u4e2d\u50b3\u56de\u6709\u6548\u7684 UniqueId \u7269\u4ef6\u3002
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u63d0\u4f9b IdentityStore\uff0c\u8acb\u78ba\u5b9a\u5b83\u6703\u5728 CredentialValidationResult \u4e2d\u50b3\u56de\u6709\u6548\u7684 UniqueId\u3002
 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: \u627e\u4e0d\u5230 IdentityStoreHandler Bean\u3002\u8acb\u4f7f\u7528 server.xml \u6240\u5b9a\u7fa9\u7684\u300c\u4f7f\u7528\u8005\u767b\u9304\u300d\u3002\u7576\u81f3\u5c11\u6709\u4e00\u500b IdentityStore Bean \u6642\uff0c\u6703\u5efa\u7acb IdentityStoreHandler Bean\u3002\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u6253\u7b97\u4f7f\u7528 IdentityStore\uff0c\u8acb\u78ba\u5b9a\u5b83\u914d\u7f6e\u9069\u7576\u3002
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=\u627e\u4e0d\u5230 IdentityStoreHandler Bean\u3002\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u6253\u7b97\u4f7f\u7528 IdentityStore\uff0c\u8acb\u78ba\u5b9a\u5b83\u914d\u7f6e\u9069\u7576\u3002\u7576\u81f3\u5c11\u6709\u4e00\u500b IdentityStore Bean \u6642\uff0c\u6703\u5efa\u7acb IdentityStoreHandler Bean\u3002
@@ -48,7 +48,7 @@ JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=\u5982\u679c\u8981\u555f\u752
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: \u672a\u8a2d\u5b9a\u57fa\u672c\u9451\u5225\u7684\u9818\u57df\u540d\u7a31\uff0c\u56e0\u6b64\u4f7f\u7528\u4e86\u9810\u8a2d\u503c defaultRealm\u3002
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=\u7531\u65bc\u672a\u8a2d\u5b9a\u57fa\u672c\u9451\u5225\u7684\u9818\u57df\u540d\u7a31\uff0c\u800c\u5c07\u9818\u57df\u540d\u7a31\u8a2d\u70ba\u9810\u8a2d\u503c defaultRealm\u3002
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=\u5982\u679c\u8981\u8a2d\u5b9a\u9818\u57df\u540d\u7a31\uff0c\u8acb\u5c07\u5b83\u5b9a\u7fa9\u5728\u61c9\u7528\u7a0b\u5f0f\u7684 BasicAuthenticationMechanismDefinition \u8a3b\u91cb\u4e2d\u3002
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=\u5982\u679c\u8981\u8a2d\u5b9a\u9818\u57df\u540d\u7a31\uff0c\u8acb\u5c07\u5b83\u5b9a\u7fa9\u5728\u61c9\u7528\u7a0b\u5f0f\u7684 BasicAuthenticationMechanismDefinition \u8a3b\u91cb\u4e2d\u3002\u53e6\u5916\uff0c\u7576 overrideHttpAuthenticationMechanism \u5c6c\u6027\u8a2d\u70ba BASIC \u6642\uff0c\u8acb\u8a2d\u5b9a basicAuthenticationMechanismRealmName \u5c6c\u6027\u7684\u503c\u3002
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: \u914d\u7f6e\u53c3\u6578 {1} \u7684\u503c {0} \u7121\u6548\u3002
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=\u914d\u7f6e\u53c3\u6578\u503c\u7121\u6548\u3002
@@ -61,6 +61,14 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=\u8acb\u78ba\u5b
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: \u96dc\u6e4a\u8cc7\u6599\u7121\u6548\u3002{0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=\u8cc7\u6599\u5eab\u4e2d\u7684\u96dc\u6e4a\u503c\u7121\u6548\u3002
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=\u8acb\u78ba\u5b9a\u8cc7\u6599\u5eab\u4e2d\u7684\u96dc\u6e4a\u8cc7\u6599\u662f\u4ee5 PasswordHash \u5be6\u4f5c\u985e\u5225\u652f\u63f4\u7684\u96dc\u6e4a\u6f14\u7b97\u6cd5\u4f86\u96dc\u6e4a\u3002
+
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: webAppSecurity \u5143\u7d20\u4e2d\u672a\u8a2d\u5b9a {0} \u5c6c\u6027\uff0c\u5132\u5b58\u5668\u7f6e\u63db\u9805\u76ee HttpAuthenticationMechanism \u5c07\u7121\u6cd5\u6b63\u5e38\u904b\u4f5c\u3002"
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=\u7531\u65bc\u672a\u8a2d\u5b9a\u5fc5\u8981\u5c6c\u6027\uff0c\u5132\u5b58\u5668\u7f6e\u63db\u9805\u76ee HttpAuthenticationMechanism \u8868\u55ae\u9451\u5225\u6c92\u6709\u767c\u63ee\u4f5c\u7528\u3002
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=\u9700\u8981\u8a2d\u5b9a\u8a0a\u606f\u4e2d\u7684\u5c6c\u6027\u3002
+
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: contextRootForFormAuthenticationMechanism \u5c6c\u6027\u7684\u503c {0} \u4e0d\u7b26\u5408 webAppSecurity \u5143\u7d20\u4e2d\u4e4b\u5c6c\u6027 {2} \u7684\u74b0\u5883\u5b9a\u7fa9\u6839\u76ee\u9304\u503c {1}\uff0c\u5132\u5b58\u5668\u7f6e\u63db\u9805\u76ee HttpAuthenticationMechanism \u5c07\u7121\u6cd5\u6b63\u5e38\u904b\u4f5c\u3002"
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=\u7531\u65bc\u74b0\u5883\u5b9a\u7fa9\u6839\u76ee\u9304\u503c\u4e0d\u7b26\u5408\u6307\u5b9a\u7684\u5c6c\u6027\uff0c\u5132\u5b58\u5668\u7f6e\u63db\u9805\u76ee HttpAuthenticationMechanism \u8868\u55ae\u9451\u5225\u6c92\u6709\u767c\u63ee\u4f5c\u7528\u3002"
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=\u8a0a\u606f\u4e2d\u7684\u5c6c\u6027\u9700\u8981\u7b26\u5408\u6307\u5b9a\u7684\u74b0\u5883\u5b9a\u7fa9\u6839\u76ee\u9304\u3002
 
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=\u758a\u4ee3 {0} \u4e0d\u662f\u6578\u5b57\u3002

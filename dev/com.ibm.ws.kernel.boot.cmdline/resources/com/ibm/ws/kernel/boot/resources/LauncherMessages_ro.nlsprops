@@ -139,7 +139,7 @@ warning.noPlatformCache.useraction=Verifica\u0163i \u015fi rezolva\u0163i excep\
 
 warning.singleServer=CWWKE0027W: Un singur server poate fi specificat \u00een linia de comand\u0103; numele urm\u0103toare vor fi ignorate (server={0}, ignored={1}).
 warning.singleServer.explanation=Pute\u0163i specifica un singur server \u00een linia de comand\u0103. Primul nume de server a fost procesat; numele r\u0103mase au fost ignorate.
-warning.singleServer.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Specifica\u0163i un singur server pentru a evita acest avertisment.
+warning.singleServer.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Specifica\u0163i un singur server pentru a evita acest avertisment.
   
 error.serverAlreadyRunning=CWWKE0029E: O instan\u0163\u0103 a serverului {0} ruleaz\u0103 deja.
 error.serverAlreadyRunning.explanation=\u00cencerca\u0163i s\u0103 porni\u0163i un server ce ruleaz\u0103 deja.
@@ -254,7 +254,7 @@ error.fileNotFound.useraction=Verifica\u0163i c\u0103 exist\u0103 calea \u015fi 
 # Note {0,time,short} tells the message formatter to expand
 info.stop.request.received=CWWKE0055I: Oprirea serverului a fost cerut\u0103 pe {0,date,full} la {0,time,short}. Serverul {1} se opre\u015fte.
 info.stop.request.received.explanation=Acest mesaj este pur informativ.
-info.stop.request.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+info.stop.request.received.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 error.unableZipDir=CWWKE0056E: Nu se poate arhiva directorul datorit\u0103 unei excep\u0163ii IO {0}. 
 error.unableZipDir.explanation=A avut loc o excep\u0163ie IO.
@@ -581,7 +581,7 @@ warning.java.security.permdenied.quickmsg.explanation=Metoda checkPermission() a
 warning.java.security.permdenied.quickmsg.useraction=Verifica\u0163i c\u0103 opera\u0163ia \u00eencercat\u0103 este permis\u0103 \u015fi actualiza\u0163i fi\u015fierul de politic\u0103 de permisiuni pentru bundle sau aplica\u0163ii, dup\u0103 cum este necesar.
 
 error.package.missingLibExtractDir=CWWKE0922E: Comanda de pachet nu se poate finaliza deoarece instalarea nu are directorul lib/extract.
-error.package.missingLibExtractDir.explanation=Directorul lib/extract con\u0163ine metadate \u015fi clasele de auto-extrac\u0163ie pentru finalizarea comenzii package. Dac\u0103 acest director lipse\u015fte, aceasta poate ar\u0103ta c\u0103 instalarea WebSphere Liberty Profile nu a fost complet\u0103 sau c\u0103 directorul a fost \u015fters.
+error.package.missingLibExtractDir.explanation=Directorul lib/extract con\u0163ine metadate \u015fi clasele de auto-extrac\u0163ie pentru finalizarea comenzii package.  Dac\u0103 acest director lipse\u015fte, aceasta poate ar\u0103ta c\u0103 instalarea WebSphere Liberty Profile nu a fost complet\u0103 sau c\u0103 directorul a fost \u015fters.
 error.package.missingLibExtractDir.useraction=Reinstala\u0163i WebSphere Liberty Profile \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 directorul lib/extract sub directorul WLP_HOME.
 
 info.server.pause.all.request.received=CWWKE0923I: A fost primit\u0103 o cerere de a trece \u00een pauz\u0103 toate componentele capabile de pauz\u0103 din server.
@@ -675,6 +675,10 @@ error.server.pause.command.port.disabled.useraction=Activa\u0163i portul de coma
 error.server.resume.command.port.disabled=CWWKE0945E: A fost recep\u0163ionat\u0103 o cerere de reluare pentru serverul {0}, dar portul de comand\u0103 al serverului este dezactivat. Cererea nu a putut fi procesat\u0103. Activa\u0163i portul de comand\u0103 \u015fi \u00eencerca\u0163i din nou.
 error.server.resume.command.port.disabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103. Portul de comand\u0103 este dezactivat pentru acest server, prin urmare nu a putut fi procesat\u0103 cererea de reluare. Observa\u0163i c\u0103 portul de comand\u0103 este dezactivat implicit c\u00e2nd un server este pornit ca task pornit pe z/OS.
 error.server.resume.command.port.disabled.useraction=Activa\u0163i portul de comand\u0103 pentru acest server. Dac\u0103 serverul ruleaz\u0103 ca task pornit pe z/OS, aceast\u0103 reluare poate fi cerut\u0103 \u015fi de pe consola de operator.
+
+warning.server.status.invalid.targets=CWWKE0946W: A fost primit\u0103 o cerere de stare pentru anumite componente, dar lista de componente pe op\u0163iunea pentru \u0163int\u0103 a fost goal\u0103. Nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.status.invalid.targets.explanation=Un utilizator a lansat o cerere de stare cu o list\u0103 de \u0163inte goal\u0103 pe op\u0163iunea pentru \u0163int\u0103. Cererea s-a finalizat, dar nu a fost realizat\u0103 nicio ac\u0163iune.
+warning.server.status.invalid.targets.useraction=Specifica\u0163i pe op\u0163iunea pentru \u0163int\u0103 o list\u0103 de componente pentru a le verifica starea. Pentru a verifica starea cumulativ\u0103 a tuturor componentelor capabile de pauz\u0103 din server, lansa\u0163i o cerere de stare f\u0103r\u0103 op\u0163iunea pentru \u0163int\u0103.
 
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.

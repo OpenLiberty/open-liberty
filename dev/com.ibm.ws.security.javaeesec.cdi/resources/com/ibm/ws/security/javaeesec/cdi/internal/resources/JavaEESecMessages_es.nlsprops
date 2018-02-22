@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Si la aplicaci\u00f3n proporciona 
 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: No se ha encontrado el bean IdentityStoreHandler. Utilice un registro de usuarios definido en en server.xml. El bean IdentityStoreHandler se crea cuando hay al menos un bean IdentityStore. Si la aplicaci\u00f3n tiene previsto utilizar un objeto IdentityStore, aseg\u00farese de que se haya configurado correctamente. 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=No se ha encontrado el bean IdentityStoreHandler. Si la aplicaci\u00f3n tiene previsto utilizar un objeto IdentityStore, aseg\u00farese de que se haya configurado correctamente. El bean IdentityStoreHandler se crea cuando hay al menos un bean IdentityStore.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Si la aplicaci\u00f3n tiene previsto utilizar un objeto IdentityStore, aseg\u00farese de que se haya configurado correctamente. 
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Si la aplicaci\u00f3n tiene previsto utilizar un objeto IdentityStore, aseg\u00farese de que se haya configurado correctamente.
 
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: El despliegue de la aplicaci\u00f3n ha fallado porque se ha encontrado un elemento login-config en el archivo web.xml del m\u00f3dulo {0} de la aplicaci\u00f3n {1}. Para habilitar el bean HttpAuthenticationMechanism, elimine el elemento login-config del archivo web.xml.
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=El despliegue de la aplicaci\u00f3n ha fallado porque se han definido el elemento login-config y el bean HttpAuthenticationMechanism. Solo se puede utilizar en la aplicaci\u00f3n uno de estos mecanismos de autenticaci\u00f3n.
@@ -48,7 +48,7 @@ JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Para habilitar el bean HttpAu
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: Como no se ha establecido el nombre de reino para la autenticaci\u00f3n b\u00e1sica, se ha utilizado el valor predeterminado defaultRealm.
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Como no se ha definido el nombre de reino para la autenticaci\u00f3n b\u00e1sica, el nombre de reino se ha definido como el valor predeterminado de defaultRealm.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Para establecer el nombre de reino, def\u00ednalo en una anotaci\u00f3n BasicAuthenticationMechanismDefinition en la aplicaci\u00f3n.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Para establecer el nombre de reino, def\u00ednalo en una anotaci\u00f3n BasicAuthenticationMechanismDefinition en la aplicaci\u00f3n. De forma alternativa, cuando el atributo overrideHttpAuthenticationMechanism se ha establecido como BASIC, establezca el valor del atributo basicAuthenticationMechanismRealmName.
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: El valor {0} del par\u00e1metro de configuraci\u00f3n {1} no es v\u00e1lido.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=El valor del par\u00e1metro de configuraci\u00f3n no es v\u00e1lido.
@@ -61,6 +61,14 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Aseg\u00farese d
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Los datos con hash no son v\u00e1lidos. {0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=El valor con hash de la base de datos no es v\u00e1lido.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Compruebe que los datos con hash de la base de datos se han establecido como tal mediante el algoritmo hash que la clase de implementaci\u00f3n PasswordHash admite.
+
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: El atributo {0} no se ha establecido en el elemento webAppSecurity, las alteraciones temporales de contenedor HttpAuthenticationMechanism no funcionar\u00e1n correctamente.
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=Dado que el atributo necesario no se ha establecido, la autenticaci\u00f3n de formulario de HttpAuthenticationMechanism de alteraciones temporales de contenedor no funciona.
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=es necesario establecer el atributo del mensaje.
+
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: El valor {0} del atributo contextRootForFormAuthenticationMechanism no coincide con el valor de ra\u00edz de contexto {1} del atributo {2} en el elemento webAppSecurity, las alteraciones temporales de contenedor HttpAuthenticationMechanism no funcionar\u00e1 correctamente."
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=Dado que el valor de ra\u00edz de contexto no coincide con el atributo especificado, la autenticaci\u00f3n de formulario HttpAuthenticationMechanism de alteraciones temporales de contenedor no funciona."
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=es necesario que el atributo del mensaje coincida con la ra\u00edz de contexto especificada.
 
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=Las iteraciones {0} no son un n\u00famero.

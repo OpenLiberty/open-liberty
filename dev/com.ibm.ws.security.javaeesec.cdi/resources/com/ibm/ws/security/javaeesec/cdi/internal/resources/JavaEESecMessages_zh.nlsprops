@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -32,15 +32,15 @@ JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=\u786e\u4fdd\u5bf9\u5b9a\u5236\u
 
 JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: \u4e3b\u4f53\u540d\u79f0\u4e3a\u7a7a\uff0c\u6216 Principal \u5bf9\u8c61\u4e0d\u5b58\u5728\u3002\u786e\u4fdd CredentialValidationResult \u5305\u542b\u6709\u6548 Principal \u5bf9\u8c61\u3002
 JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=\u7ed9\u5b9a CredentialValidationResult \u5bf9\u8c61\u4e2d\u7684 Principal \u5bf9\u8c61\u65e0\u6548\u3002\u6b64\u9879\u4e3a\u7a7a\u6216\u6ca1\u6709\u6709\u6548\u540d\u79f0\u3002
-JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u63d0\u4f9b\u4e86 IdentityStore\uff0c\u8bf7\u786e\u4fdd\u5b83\u5728 CredentialValidationResult \u4e2d\u8fd4\u56de\u6709\u6548 Principal \u5bf9\u8c61\u3002
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u63d0\u4f9b\u4e86 IdentityStore\uff0c\u786e\u4fdd\u5b83\u5728 CredentialValidationResult \u4e2d\u8fd4\u56de\u6709\u6548 Principal \u5bf9\u8c61\u3002
 
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: UniqueId \u4e3a\u7a7a\u3002\u786e\u4fdd CredentialValidationResult \u5305\u542b\u6709\u6548 UniqueId\u3002
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=\u7ed9\u5b9a CredentialValidationResult \u5bf9\u8c61\u4e2d\u7684 UniqueId \u4e3a\u7a7a\u3002
-JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u63d0\u4f9b\u4e86 IdentityStore\uff0c\u8bf7\u786e\u4fdd\u5b83\u5728 CredentialValidationResult \u4e2d\u8fd4\u56de\u6709\u6548 UniqueId\u3002
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u63d0\u4f9b\u4e86 IdentityStore\uff0c\u786e\u4fdd\u5b83\u5728 CredentialValidationResult \u4e2d\u8fd4\u56de\u6709\u6548 UniqueId\u3002
 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: \u627e\u4e0d\u5230 IdentityStoreHandler bean\u3002\u4f7f\u7528 server.xml \u5b9a\u4e49\u7684\u7528\u6237\u6ce8\u518c\u8868\u3002\u5982\u679c\u81f3\u5c11\u6709\u4e00\u4e2a IdentityStore bean\uff0c\u90a3\u4e48\u5c06\u521b\u5efa IdentityStoreHandler bean\u3002\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u8ba1\u5212\u4f7f\u7528 IdentityStore\uff0c\u8bf7\u786e\u4fdd\u5b83\u8fdb\u884c\u4e86\u6b63\u786e\u914d\u7f6e\u3002
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=\u627e\u4e0d\u5230 IdentityStoreHandler bean\u3002\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u8ba1\u5212\u4f7f\u7528 IdentityStore\uff0c\u8bf7\u786e\u4fdd\u5b83\u8fdb\u884c\u4e86\u6b63\u786e\u914d\u7f6e\u3002\u5982\u679c\u81f3\u5c11\u6709\u4e00\u4e2a IdentityStore bean\uff0c\u90a3\u4e48\u5c06\u521b\u5efa IdentityStoreHandler bean\u3002
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u8ba1\u5212\u4f7f\u7528 IdentityStore\uff0c\u8bf7\u786e\u4fdd\u5b83\u8fdb\u884c\u4e86\u6b63\u786e\u914d\u7f6e\u3002
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=\u627e\u4e0d\u5230 IdentityStoreHandler bean\u3002\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u8ba1\u5212\u4f7f\u7528 IdentityStore\uff0c\u786e\u4fdd\u5b83\u8fdb\u884c\u4e86\u6b63\u786e\u914d\u7f6e\u3002\u5982\u679c\u81f3\u5c11\u6709\u4e00\u4e2a IdentityStore bean\uff0c\u90a3\u4e48\u5c06\u521b\u5efa IdentityStoreHandler bean\u3002
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=\u5982\u679c\u5e94\u7528\u7a0b\u5e8f\u8ba1\u5212\u4f7f\u7528 IdentityStore\uff0c\u786e\u4fdd\u5b83\u8fdb\u884c\u4e86\u6b63\u786e\u914d\u7f6e\u3002
 
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: \u5e94\u7528\u7a0b\u5e8f\u90e8\u7f72\u5931\u8d25\uff0c\u56e0\u4e3a\u5728 web.xml \u6587\u4ef6\u4e2d\u53d1\u73b0\u5bf9\u5e94 {1} \u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684 {0} \u6a21\u5757\u7684 login-config \u5143\u7d20\u3002\u8981\u542f\u7528 HttpAuthenticationMechanism bean\uff0c\u8bf7\u4ece web.xml \u6587\u4ef6\u4e2d\u79fb\u9664 login-config \u5143\u7d20\u3002
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=\u5e94\u7528\u7a0b\u5e8f\u90e8\u7f72\u5931\u8d25\uff0c\u56e0\u4e3a\u540c\u65f6\u5b9a\u4e49\u4e86 login-config \u5143\u7d20\u548c HttpAuthenticationMechanism bean\u3002\u5e94\u7528\u7a0b\u5e8f\u4e2d\u53ea\u80fd\u4f7f\u7528\u8fd9\u4e24\u4e2a\u8ba4\u8bc1\u673a\u5236\u7684\u5176\u4e2d\u4e00\u4e2a\u3002
@@ -48,7 +48,7 @@ JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=\u8981\u542f\u7528 HttpAuthen
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: \u672a\u8bbe\u7f6e\u57fa\u672c\u8ba4\u8bc1\u7684\u57df\u540d\uff0c\u6240\u4ee5\u4f7f\u7528\u4e86\u7f3a\u7701\u503c defaultRealm\u3002
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=\u56e0\u4e3a\u672a\u5b9a\u4e49\u57fa\u672c\u8ba4\u8bc1\u7684\u57df\u540d\uff0c\u6240\u4ee5\u57df\u540d\u8bbe\u7f6e\u4e3a\u7f3a\u7701\u503c defaultRealm\u3002
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=\u8981\u8bbe\u7f6e\u57df\u540d\uff0c\u8bf7\u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684 BasicAuthenticationMechanismDefinition \u6ce8\u91ca\u4e0a\u8fdb\u884c\u5b9a\u4e49\u3002
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=\u8981\u8bbe\u7f6e\u57df\u540d\uff0c\u8bf7\u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684 BasicAuthenticationMechanismDefinition \u6ce8\u91ca\u4e0a\u8fdb\u884c\u5b9a\u4e49\u3002\u6216\u8005\uff0coverrideHttpAuthenticationMechanism \u5c5e\u6027\u8bbe\u7f6e\u4e3a BASIC \u65f6\uff0c\u8bbe\u7f6e\u5c5e\u6027 basicAuthenticationMechanismRealmName \u7684\u503c\u3002
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: \u914d\u7f6e\u53c2\u6570 {1} \u7684\u503c {0} \u65e0\u6548\u3002
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=\u914d\u7f6e\u53c2\u6570\u7684\u503c\u65e0\u6548\u3002
@@ -61,6 +61,14 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=\u786e\u4fdd\u91
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: \u6563\u5217\u6570\u636e\u65e0\u6548\u3002{0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=\u6570\u636e\u5e93\u4e2d\u7684\u6563\u5217\u503c\u65e0\u6548\u3002
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=\u786e\u4fdd\u6570\u636e\u5e93\u4e2d\u7684\u6563\u5217\u6570\u636e\u5df2\u6309 PasswordHash \u5b9e\u73b0\u7c7b\u652f\u6301\u7684\u6563\u5217\u7b97\u6cd5\u8fdb\u884c\u4e86\u6563\u5217\u3002
+
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: webAppSecurity \u5143\u7d20\u4e2d\u672a\u8bbe\u7f6e\u5c5e\u6027 {0}\uff0c\u8be5\u5bb9\u5668\u8986\u76d6 HttpAuthenticationMechanism \u7684\u64cd\u4f5c\u5c06\u65e0\u6cd5\u6b63\u5e38\u5de5\u4f5c\u3002
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=\u56e0\u4e3a\u672a\u8bbe\u7f6e\u6240\u9700\u5c5e\u6027\uff0c\u6240\u4ee5\u8be5\u5bb9\u5668\u8986\u76d6 HttpAuthenticationMechanism \u8868\u5355\u8ba4\u8bc1\u7684\u64cd\u4f5c\u65e0\u6cd5\u6b63\u5e38\u5de5\u4f5c\u3002
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=\u9700\u8981\u8bbe\u7f6e\u6d88\u606f\u4e2d\u63d0\u5230\u7684\u5c5e\u6027\u3002
+
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: contextRootForFormAuthenticationMechanism \u5c5e\u6027\u7684\u503c {0} \u4e0e webAppSecurity \u5143\u7d20\u4e2d\u7684\u5c5e\u6027 {2} \u7684\u4e0a\u4e0b\u6587\u6839\u503c {1} \u4e0d\u5339\u914d\uff0c\u8be5\u5bb9\u5668\u8986\u76d6 HttpAuthenticationMechanism \u7684\u64cd\u4f5c\u65e0\u6cd5\u6b63\u5e38\u5de5\u4f5c\u3002
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=\u56e0\u4e3a\u4e0a\u4e0b\u6587\u6839\u503c\u4e0e\u6240\u6307\u5b9a\u5c5e\u6027\u4e0d\u5339\u914d\uff0c\u6240\u4ee5\u8be5\u5bb9\u5668\u8986\u76d6HttpAuthenticationMechanism \u8868\u5355\u8ba4\u8bc1\u7684\u64cd\u4f5c\u65e0\u6cd5\u6b63\u5e38\u5de5\u4f5c\u3002
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=\u6d88\u606f\u4e2d\u63d0\u5230\u7684\u5c5e\u6027\u9700\u8981\u4e0e\u6240\u6307\u5b9a\u4e0a\u4e0b\u6587\u6839\u5339\u914d\u3002
 
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=\u8fed\u4ee3\u6570 {0} \u5e76\u975e\u6570\u5b57\u3002
