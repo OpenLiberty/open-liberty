@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); you 
+	may not use this file except in compliance with the License. You may obtain 
+	a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
+	required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.ibm.ws.microprofile.metrics11</groupId>
+	<artifactId>tck.runner.tck</artifactId>
+	<version>1.1-SNAPSHOT</version>
+	<name>MicroProfile Metrics TCK Runner 1.1 TCK Module</name>
+
+	<properties>
+		<microprofile.metrics.version>1.1</microprofile.metrics.version>
+		<arquillian.version>1.1.13.Final</arquillian.version>
+
+		<!-- the below is used in arquillian.xml -->
+		<wlp>${wlp}</wlp>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+        <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
+        <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
+        <targetDirectory>${project.basedir}/target</targetDirectory>
+	</properties>
+
+   <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    	
+    <dependencies>
+		<dependency>
+			<groupId>org.eclipse.microprofile.metrics</groupId>
+			<artifactId>microprofile-metrics-api</artifactId>
+			<version>${microprofile.metrics.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.microprofile.metrics</groupId>
+			<artifactId>microprofile-metrics-rest-tck</artifactId>
+			<version>${microprofile.metrics.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.microprofile.metrics</groupId>
+			<artifactId>microprofile-metrics-api-tck</artifactId>
+			<version>${microprofile.metrics.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<version>1.2</version>
+			<scope>provided</scope>
+		</dependency>
+        <dependency>
+            <groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-wlp-managed-8.5</artifactId>
+            <version>1.0.0.Final-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+    		<groupId>javax.inject</groupId>
+    		<artifactId>javax.inject</artifactId>
+    		<version>1</version>
+		</dependency>
+ 	</dependencies>
+ 	
+	<build>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test</defaultGoal>
+		<plugins>
+		    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+                <version>2.17</version>
+				<configuration>
+					<systemPropertyVariables>
+						<wlp>${wlp}</wlp>
+						<tck_server>${tck_server}</tck_server>
+                        <tck_port>${tck_port}</tck_port>
+					</systemPropertyVariables>
+                    <dependenciesToScan>
+                        <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-rest-tck</dependency>
+                        <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-api-tck</dependency>
+                    </dependenciesToScan>
+                    <excludes>
+                       <exclude>**/TimerTest.java</exclude>
+                    </excludes>
+               </configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
