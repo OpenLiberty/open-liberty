@@ -22,7 +22,7 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
  */
 public class MessageLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
-    private TraceWriter traceWriter;
+    private TraceWriter traceWriterOriginal;
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
 
@@ -36,18 +36,22 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     }
 
     public void setFileLogHolder(TraceWriter trw) {
-        traceWriter = trw;
+        traceWriterOriginal = trw;
     }
 
     @Override
     public void setWriter(Object writer) {
-        this.traceWriter = (TraceWriter) writer;
+        this.traceWriterOriginal = (TraceWriter) writer;
     }
 
     @Override
     public void synchronousWrite(Object event) {
-        if (traceWriter == null)
+        TraceWriter traceWriter = null;
+        if (traceWriterOriginal == null)
             return;
+        else {
+            traceWriter = traceWriterOriginal;
+        }
         /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
