@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.Assert;
@@ -63,7 +65,7 @@ public class AppExtensionTest extends LoggingTest {
         server = LibertyServerFactory.getStartedLibertyServer("cdi12AppExtensionServer");
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         ShrinkHelper.exportDropinAppToServer(server, applicationExtension);
-        server.waitForStringInLogUsingMark("CWWKZ000[13]I.*applicationExtension"); // App started or updated
+        assertNotNull("applicationExtension started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*applicationExtension"));
 
     }
 

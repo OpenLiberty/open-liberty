@@ -12,6 +12,8 @@ package com.ibm.ws.cdi12.fat.tests;
 
 import java.net.MalformedURLException;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.Assert;
@@ -58,8 +60,9 @@ public class NonContextualInjectionPointTest extends LoggingTest {
                         .addClass("test.non.contextual.NonContextualBean")
                         .addClass("test.non.contextual.Bar")
                         .add(new FileAsset(new File("test-applications/appNonContextual.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
         ShrinkHelper.exportDropinAppToServer(server, appNonContextual);
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application appNonContextual started");
+        assertNotNull("appNonContextual started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*appNonContextual"));
     }
 
     @Test
