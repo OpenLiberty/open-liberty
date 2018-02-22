@@ -36,12 +36,10 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     @Override
     public void synchronousWrite(Object event) {
-        SystemLogHolder sysLogHolder = null;
-        if (sysLogHolderOriginal == null) {
+        SystemLogHolder sysLogHolder = sysLogHolderOriginal;
+        if (sysLogHolder == null) {
             return;
-        } else {
-            sysLogHolder = sysLogHolderOriginal;
-        }
+
         /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.

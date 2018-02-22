@@ -46,12 +46,10 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
 
     @Override
     public void synchronousWrite(Object event) {
-        TraceWriter traceWriter = null;
-        if (traceWriterOriginal == null)
+        TraceWriter traceWriter = traceWriterOriginal;
+        if (traceWriter == null)
             return;
-        else {
-            traceWriter = traceWriterOriginal;
-        }
+
         /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
