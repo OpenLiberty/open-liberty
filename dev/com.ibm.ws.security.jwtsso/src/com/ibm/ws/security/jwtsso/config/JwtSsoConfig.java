@@ -28,8 +28,6 @@ public interface JwtSsoConfig {
 
 	boolean isFallbackToLtpa();
 
-	String getGroupBaseDnOmitted();
-
 	String getJwtBuilderRef();
 
 	String getJwtConsumerRef();
