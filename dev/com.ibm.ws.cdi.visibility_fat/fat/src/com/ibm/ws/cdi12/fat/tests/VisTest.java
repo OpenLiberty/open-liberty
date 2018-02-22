@@ -220,7 +220,8 @@ public class VisTest extends LoggingTest {
                         .addAsModule(visTestWarAppClientLib17)
                         .addAsModule(visTestNonLib18)
                         .addAsLibrary(visTestFramework19)
-                        .addAsLibrary(visTestEarLib20);
+                        .addAsLibrary(visTestEarLib20)
+                        .addAsResource("com/ibm/ws/cdi12/fat/tests/permissions.xml", "permissions.xml");
 
        List paths = new ArrayList<String>();
        paths.add("publish/servers/visTestServer/apps");
