@@ -59,7 +59,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
         this.utilFactory = utilFactory;
 
-        if ( tc.isDebugEnabled() ) {
+        if (tc.isDebugEnabled()) {
             Tr.debug(methodName, tc, MessageFormat.format("[ {0} ] Created",
                                                           this.hashText));
             Tr.debug(methodName, tc, MessageFormat.format("[ {0} ] Util Factory [ {1} ]",
@@ -99,8 +99,8 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
         if (tc.isDebugEnabled()) {
             Tr.debug(methodName, tc, MessageFormat.format("[ {0} ] [ {1} ] Wrap [ {2} ] as [ {3} ]",
                                                           new Object[] { callingClassName, callingMethodName,
-                                                                        th.getClass().getName(),
-                                                                        wrappedException.getClass().getName() }));
+                                                                         th.getClass().getName(),
+                                                                         wrappedException.getClass().getName() }));
 
         }
 
@@ -108,11 +108,17 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     }
 
     //
-    
+
     @Override
     @Trivial
     public ClassSourceImpl_Options createOptions() {
-    	return new ClassSourceImpl_Options();
+        return new ClassSourceImpl_Options();
+    }
+
+    @Override
+    @Trivial
+    public ClassSourceImpl_Options createOptions(boolean useJandex) {
+        return new ClassSourceImpl_Options(useJandex);
     }
 
     //
@@ -127,31 +133,31 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
     @Override
     public ClassSourceImpl_Aggregate createAggregateClassSource(String name) throws ClassSource_Exception {
-    	return createAggregateClassSource( name, createOptions() );
+        return createAggregateClassSource(name, createOptions());
     }
 
     @Override
     public ClassSourceImpl_Aggregate createAggregateClassSource(String name, ClassSource_Options options) throws ClassSource_Exception {
         String methodName = "createAggregateClassSource";
         Util_InternMap classInternMap = getUtilFactory().createInternMap(Util_InternMap.ValueType.VT_CLASS_NAME, "classes and packages");
-        
+
         if (tc.isDebugEnabled()) {
             Tr.debug(methodName, tc, MessageFormat.format("UseJandex = [ {0} ]", Boolean.valueOf(options.getUseJandex())));
         }
         return createAggregateClassSource(classInternMap, name, options); // throws ClassSource_Exception
     }
-    
+
     //
 
     @Override
     public ClassSourceImpl_Aggregate createAggregateClassSource(
-    	Util_InternMap internMap, String name) throws ClassSource_Exception {
-    	return createAggregateClassSource(internMap, name, createOptions());
-    }    
+                                                                Util_InternMap internMap, String name) throws ClassSource_Exception {
+        return createAggregateClassSource(internMap, name, createOptions());
+    }
 
     @Override
     public ClassSourceImpl_Aggregate createAggregateClassSource(
-    	Util_InternMap internMap, String name, ClassSource_Options options) throws ClassSource_Exception {
+                                                                Util_InternMap internMap, String name, ClassSource_Options options) throws ClassSource_Exception {
         return new ClassSourceImpl_Aggregate(this, internMap, name, options);
     }
 
@@ -159,62 +165,66 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
     @Override
     public ClassSourceImpl_MappedContainer createContainerClassSource(
-    	Util_InternMap internMap, String name, Container container) throws ClassSource_Exception {
+                                                                      Util_InternMap internMap, String name, Container container) throws ClassSource_Exception {
         return createContainerClassSource(internMap, name, createOptions(), container);
     }
-    
+
     @Override
     public ClassSourceImpl_MappedContainer createContainerClassSource(
-    	Util_InternMap internMap, String name, ClassSource_Options options, Container container) throws ClassSource_Exception {
+                                                                      Util_InternMap internMap, String name, ClassSource_Options options,
+                                                                      Container container) throws ClassSource_Exception {
         return new ClassSourceImpl_MappedContainer(this, internMap, name, options, container);
-    }    
+    }
 
     @Override
     public ClassSourceImpl_MappedSimple createSimpleClassSource(
-    	Util_InternMap internMap, String name, ClassSource_MappedSimple.SimpleClassProvider provider) throws ClassSource_Exception {
+                                                                Util_InternMap internMap, String name,
+                                                                ClassSource_MappedSimple.SimpleClassProvider provider) throws ClassSource_Exception {
         return createSimpleClassSource(internMap, name, createOptions(), provider);
     }
-    
+
     @Override
     public ClassSourceImpl_MappedSimple createSimpleClassSource(
-    	Util_InternMap internMap, String name, ClassSource_Options options, ClassSource_MappedSimple.SimpleClassProvider provider) throws ClassSource_Exception {
+                                                                Util_InternMap internMap, String name, ClassSource_Options options,
+                                                                ClassSource_MappedSimple.SimpleClassProvider provider) throws ClassSource_Exception {
         return new ClassSourceImpl_MappedSimple(this, internMap, name, options, provider);
-    }
-    
-    @Override
-    public ClassSourceImpl_MappedDirectory createDirectoryClassSource(
-    	Util_InternMap internMap, String name, String dirPath) throws ClassSource_Exception {
-    	return createDirectoryClassSource(internMap, name, createOptions(), dirPath);
     }
 
     @Override
     public ClassSourceImpl_MappedDirectory createDirectoryClassSource(
-    	Util_InternMap internMap, String name, ClassSource_Options options, String dirPath) throws ClassSource_Exception {
+                                                                      Util_InternMap internMap, String name, String dirPath) throws ClassSource_Exception {
+        return createDirectoryClassSource(internMap, name, createOptions(), dirPath);
+    }
+
+    @Override
+    public ClassSourceImpl_MappedDirectory createDirectoryClassSource(
+                                                                      Util_InternMap internMap, String name, ClassSource_Options options,
+                                                                      String dirPath) throws ClassSource_Exception {
         return new ClassSourceImpl_MappedDirectory(this, internMap, name, options, dirPath); // throws ClassSource_Exception
     }
 
     @Override
     public ClassSourceImpl_MappedJar createJarClassSource(
-    	Util_InternMap internMap, String name, String jarPath) throws ClassSource_Exception {
-    	return createJarClassSource(internMap, name, createOptions(), jarPath); // throws ClassSource_Exception
+                                                          Util_InternMap internMap, String name, String jarPath) throws ClassSource_Exception {
+        return createJarClassSource(internMap, name, createOptions(), jarPath); // throws ClassSource_Exception
     }
 
     @Override
     public ClassSourceImpl_MappedJar createJarClassSource(
-    	Util_InternMap internMap, String name, ClassSource_Options options, String jarPath) throws ClassSource_Exception {
+                                                          Util_InternMap internMap, String name, ClassSource_Options options, String jarPath) throws ClassSource_Exception {
         return new ClassSourceImpl_MappedJar(this, internMap, name, options, jarPath); // throws ClassSource_Exception
     }
 
     @Override
     public ClassSourceImpl_ClassLoader createClassLoaderClassSource(
-    	Util_InternMap internMap, String name, ClassLoader classLoader) throws ClassSource_Exception {
+                                                                    Util_InternMap internMap, String name, ClassLoader classLoader) throws ClassSource_Exception {
         return createClassLoaderClassSource(internMap, name, createOptions(), classLoader); // throws ClassSource_Exception
     }
-    
+
     @Override
     public ClassSourceImpl_ClassLoader createClassLoaderClassSource(
-    	Util_InternMap internMap, String name, ClassSource_Options options, ClassLoader classLoader)
-    	throws ClassSource_Exception {
+                                                                    Util_InternMap internMap, String name, ClassSource_Options options,
+                                                                    ClassLoader classLoader) throws ClassSource_Exception {
 
         return new ClassSourceImpl_ClassLoader(this, internMap, name, options, classLoader); // throws ClassSource_Exception
     }
@@ -249,19 +259,17 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     public ClassSourceImpl_MappedDirectory createDirectoryClassSource(
-    	ClassSource_Aggregate aggregate, String name, String dirPath)
-    	throws ClassSource_Exception {
+                                                                      ClassSource_Aggregate aggregate, String name, String dirPath) throws ClassSource_Exception {
 
-        return createDirectoryClassSource( aggregate.getInternMap(), name, aggregate.getOptions(), dirPath );
+        return createDirectoryClassSource(aggregate.getInternMap(), name, aggregate.getOptions(), dirPath);
         // 'createDirectoryClassSource' throws ClassSource_Exception
     }
 
     public ClassSourceImpl_MappedDirectory addDirectoryClassSource(
-    	ClassSource_Aggregate aggregate, String name, String dirPath, ScanPolicy scanPolicy)
-    	throws ClassSource_Exception {
+                                                                   ClassSource_Aggregate aggregate, String name, String dirPath,
+                                                                   ScanPolicy scanPolicy) throws ClassSource_Exception {
 
-        ClassSourceImpl_MappedDirectory dirClassSource =
-        	createDirectoryClassSource(aggregate, name, dirPath);
+        ClassSourceImpl_MappedDirectory dirClassSource = createDirectoryClassSource(aggregate, name, dirPath);
         // throws ClassSource_Exception
 
         aggregate.addClassSource(dirClassSource, scanPolicy);
@@ -270,19 +278,16 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     }
 
     public ClassSourceImpl_MappedJar createJarClassSource(
-    	ClassSource_Aggregate aggregate, String name, String jarPath)
-    	throws ClassSource_Exception {
+                                                          ClassSource_Aggregate aggregate, String name, String jarPath) throws ClassSource_Exception {
 
-        return createJarClassSource( aggregate.getInternMap(), name, aggregate.getOptions(), jarPath);
+        return createJarClassSource(aggregate.getInternMap(), name, aggregate.getOptions(), jarPath);
         // 'createJarClassSource' throws ClassSource_Exception
     }
 
     public ClassSourceImpl_MappedJar addJarClassSource(
-    	ClassSource_Aggregate aggregate, String name, String jarPath, ScanPolicy scanPolicy)
-    	throws ClassSource_Exception {
+                                                       ClassSource_Aggregate aggregate, String name, String jarPath, ScanPolicy scanPolicy) throws ClassSource_Exception {
 
-        ClassSourceImpl_MappedJar jarClassSource =
-        	createJarClassSource(aggregate, name, jarPath);
+        ClassSourceImpl_MappedJar jarClassSource = createJarClassSource(aggregate, name, jarPath);
         // throws ClassSource_Exception
 
         aggregate.addClassSource(jarClassSource, scanPolicy);
@@ -291,21 +296,19 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     }
 
     public ClassSourceImpl_MappedSimple createSimpleClassSource(
-    	ClassSource_Aggregate aggregate, String name, ClassSource_MappedSimple.SimpleClassProvider provider)
-    	throws ClassSource_Exception {
+                                                                ClassSource_Aggregate aggregate, String name,
+                                                                ClassSource_MappedSimple.SimpleClassProvider provider) throws ClassSource_Exception {
 
-        return createSimpleClassSource( aggregate.getInternMap(), name, aggregate.getOptions(), provider);
+        return createSimpleClassSource(aggregate.getInternMap(), name, aggregate.getOptions(), provider);
         // 'createSimpleClassSource' throws ClassSource_Exception
     }
 
     public ClassSourceImpl_MappedSimple addSimpleClassSource(
-    	ClassSource_Aggregate aggregate,
-    	String name, ClassSource_MappedSimple.SimpleClassProvider provider,
-    	ScanPolicy scanPolicy)
-    	throws ClassSource_Exception {
+                                                             ClassSource_Aggregate aggregate,
+                                                             String name, ClassSource_MappedSimple.SimpleClassProvider provider,
+                                                             ScanPolicy scanPolicy) throws ClassSource_Exception {
 
-        ClassSourceImpl_MappedSimple simpleClassSource =
-        	createSimpleClassSource(aggregate, name, provider);
+        ClassSourceImpl_MappedSimple simpleClassSource = createSimpleClassSource(aggregate, name, provider);
         // throws ClassSource_Exception
 
         aggregate.addClassSource(simpleClassSource, scanPolicy);
@@ -316,19 +319,16 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     public ClassSourceImpl_ClassLoader createClassLoaderClassSource(
-    	ClassSource_Aggregate aggregate, String name, ClassLoader classLoader)
-    	throws ClassSource_Exception {
+                                                                    ClassSource_Aggregate aggregate, String name, ClassLoader classLoader) throws ClassSource_Exception {
 
         return createClassLoaderClassSource(aggregate.getInternMap(), name, aggregate.getOptions(), classLoader);
         // 'createSimpleClassSource' throws ClassSource_Exception
     }
 
     public ClassSourceImpl_ClassLoader addClassLoaderClassSource(
-    	ClassSource_Aggregate aggregate, String name, ClassLoader classLoader)
-    	throws ClassSource_Exception {
+                                                                 ClassSource_Aggregate aggregate, String name, ClassLoader classLoader) throws ClassSource_Exception {
 
-        ClassSourceImpl_ClassLoader classLoaderClassSource =
-        	createClassLoaderClassSource(aggregate, name, classLoader);
+        ClassSourceImpl_ClassLoader classLoaderClassSource = createClassLoaderClassSource(aggregate, name, classLoader);
         // throws ClassSource_Exception
 
         // class loader class sources may only be added as external class sources
@@ -342,19 +342,17 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     public ClassSourceImpl_MappedContainer createContainerClassSource(
-    	ClassSource_Aggregate aggregate, String name, Container container)
-    	throws ClassSource_Exception {
+                                                                      ClassSource_Aggregate aggregate, String name, Container container) throws ClassSource_Exception {
 
         return createContainerClassSource(aggregate.getInternMap(), name, aggregate.getOptions(), container);
         // 'createContainerClassSource' throws ClassSource_Exception
     }
 
     public ClassSourceImpl_MappedContainer addContainerClassSource(
-    	ClassSource_Aggregate aggregate, String name, Container container, ScanPolicy scanPolicy)
-    	throws ClassSource_Exception {
+                                                                   ClassSource_Aggregate aggregate, String name, Container container,
+                                                                   ScanPolicy scanPolicy) throws ClassSource_Exception {
 
-        ClassSourceImpl_MappedContainer containerClassSource =
-        	createContainerClassSource(aggregate, name, container);
+        ClassSourceImpl_MappedContainer containerClassSource = createContainerClassSource(aggregate, name, container);
         // throws ClassSource_Exception
 
         aggregate.addClassSource(containerClassSource, scanPolicy);
