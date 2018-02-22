@@ -114,7 +114,20 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
                 logger.logp(Level.FINE, CLASS_NAME, methodName, "existing mapping found. Servlet name = " + returnMapping.getServletName());
             }
             return returnMapping;
+
         }
+
+        return this.getCurrentHttpServletMapping(dispatchContext);
+    }
+
+    public HttpServletMapping getCurrentHttpServletMapping(WebAppDispatcherContext40 dispatchContext) {
+        String methodName = "getCurrentHttpServletMapping";
+
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.entering(CLASS_NAME, methodName);
+        }
+
+        HttpServletMapping returnMapping = null;
 
         if (dispatchContext.getMappingMatch() != null) {
 
