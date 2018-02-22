@@ -37,7 +37,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     @Override
     public void synchronousWrite(Object event) {
         SystemLogHolder sysLogHolder = sysLogHolderOriginal;
-        if (sysLogHolder == null) {
+        if (sysLogHolder == null)
             return;
 
         /*
