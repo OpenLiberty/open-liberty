@@ -652,8 +652,10 @@ public class SSLUtils {
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
 
         // if the grizzly-npn or jetty-alpn projects are on the bootclasspath, use them for ALPN
+        boolean needToRemoveEngine = false;
         if (connLink.getAlpnProtocol() == null) {
             JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
+            needToRemoveEngine = true;
         }
 
         int amountToWrite = 0;
@@ -677,286 +679,291 @@ public class SSLUtils {
             status = Status.OK;
         }
 
-        while (isHandshaking(engine) || Status.OK != status) {
-            if (bTrace && tc.isDebugEnabled()) {
-                Tr.debug(tc, "status=" + status + " HSstatus=" + hsstatus);
-            }
-            if (hsstatus == HandshakeStatus.FINISHED) {
-                // This is the last part of a change in SSLChannel in order to support
-                // client certificate mapping. This step cleans up the state in the Thread.
-                if (connLink.getChannel().isZOS) {
-                    jsseHelper.setSSLPropertiesOnThread(null);
+        try {
+            while (isHandshaking(engine) || Status.OK != status) {
+                if (bTrace && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "status=" + status + " HSstatus=" + hsstatus);
                 }
-                break; // out of while
-            }
-
-            // flush data out of the engine
-            if (hsstatus == HandshakeStatus.NEED_WRAP) {
-                if (bTrace && tc.isEventEnabled()) {
-                    Tr.event(tc, "before wrap: \r\n\tencBuf: "
-                                 + getBufferTraceInfo(encryptedAppBuffer));
-                }
-                result = engine.wrap(emptyBuffer, encryptedAppBuffer.getWrappedByteBuffer());
-                amountToWrite = result.bytesProduced();
-                if (0 < amountToWrite) {
-                    encryptedAppBuffer.flip();
-                }
-                hsstatus = result.getHandshakeStatus();
-                status = result.getStatus();
-                if (bTrace && tc.isEventEnabled()) {
-                    Tr.event(tc, "after wrap: \r\n\tencBuf: "
-                                 + getBufferTraceInfo(encryptedAppBuffer)
-                                 + "\r\n\tstatus=" + status
-                                 + " HSstatus=" + hsstatus
-                                 + " consumed=" + result.bytesConsumed()
-                                 + " produced=" + result.bytesProduced());
-                }
-
-                if (0 < amountToWrite) {
-                    // have to send this to peer
-                    if (bTrace && tc.isEventEnabled()) {
-                        Tr.event(tc, "Write bytes: " + amountToWrite);
+                if (hsstatus == HandshakeStatus.FINISHED) {
+                    // This is the last part of a change in SSLChannel in order to support
+                    // client certificate mapping. This step cleans up the state in the Thread.
+                    if (connLink.getChannel().isZOS) {
+                        jsseHelper.setSSLPropertiesOnThread(null);
                     }
-                    deviceWriteContext.setBuffer(encryptedAppBuffer);
-                    // Determine if this is an asynchronous handshake.
-                    if (handshakeCallback != null) {
-                        // Do an asynchronous write.
-                        SSLHandshakeIOCallback writeCallback = new SSLHandshakeIOCallback(connLink, netBuffer, decryptedNetBuffer, encryptedAppBuffer, result, handshakeCallback);
-                        VirtualConnection vc = deviceWriteContext.write(amountToWrite, writeCallback,
-                                                                        false, TCPRequestContext.USE_CHANNEL_TIMEOUT);
-                        // Check to see if write is already done.
-                        if (vc != null) {
-                            // Write is already done. The callback will not be used.
-                            encryptedAppBuffer.clear();
-                        } else {
-                            // Write is not done, wait for callback
-                            if (bTrace && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Write is not done.  Callback will be used.");
+                    break; // out of while
+                }
+
+                // flush data out of the engine
+                if (hsstatus == HandshakeStatus.NEED_WRAP) {
+                    if (bTrace && tc.isEventEnabled()) {
+                        Tr.event(tc, "before wrap: \r\n\tencBuf: "
+                                     + getBufferTraceInfo(encryptedAppBuffer));
+                    }
+                    result = engine.wrap(emptyBuffer, encryptedAppBuffer.getWrappedByteBuffer());
+                    amountToWrite = result.bytesProduced();
+                    if (0 < amountToWrite) {
+                        encryptedAppBuffer.flip();
+                    }
+                    hsstatus = result.getHandshakeStatus();
+                    status = result.getStatus();
+                    if (bTrace && tc.isEventEnabled()) {
+                        Tr.event(tc, "after wrap: \r\n\tencBuf: "
+                                     + getBufferTraceInfo(encryptedAppBuffer)
+                                     + "\r\n\tstatus=" + status
+                                     + " HSstatus=" + hsstatus
+                                     + " consumed=" + result.bytesConsumed()
+                                     + " produced=" + result.bytesProduced());
+                    }
+
+                    if (0 < amountToWrite) {
+                        // have to send this to peer
+                        if (bTrace && tc.isEventEnabled()) {
+                            Tr.event(tc, "Write bytes: " + amountToWrite);
+                        }
+                        deviceWriteContext.setBuffer(encryptedAppBuffer);
+                        // Determine if this is an asynchronous handshake.
+                        if (handshakeCallback != null) {
+                            // Do an asynchronous write.
+                            SSLHandshakeIOCallback writeCallback = new SSLHandshakeIOCallback(connLink, netBuffer, decryptedNetBuffer, encryptedAppBuffer, result, handshakeCallback);
+                            VirtualConnection vc = deviceWriteContext.write(amountToWrite, writeCallback,
+                                                                            false, TCPRequestContext.USE_CHANNEL_TIMEOUT);
+                            // Check to see if write is already done.
+                            if (vc != null) {
+                                // Write is already done. The callback will not be used.
+                                encryptedAppBuffer.clear();
+                            } else {
+                                // Write is not done, wait for callback
+                                if (bTrace && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Write is not done.  Callback will be used.");
+                                }
+                                result = null;
+                                break; // out of while
                             }
-                            result = null;
-                            break; // out of while
+                        } else {
+                            // Do a synchronous write.
+                            deviceWriteContext.write(amountToWrite, TCPRequestContext.USE_CHANNEL_TIMEOUT);
+                            encryptedAppBuffer.clear();
                         }
                     } else {
-                        // Do a synchronous write.
-                        deviceWriteContext.write(amountToWrite, TCPRequestContext.USE_CHANNEL_TIMEOUT);
+                        // No data was put in the encryptedAppBuffer. Need to clear it for future use.
                         encryptedAppBuffer.clear();
                     }
-                } else {
-                    // No data was put in the encryptedAppBuffer. Need to clear it for future use.
-                    encryptedAppBuffer.clear();
-                }
-            } // if NEED_WRAP
+                } // if NEED_WRAP
 
-            // ok, now know something more is needed
-            while (hsstatus == HandshakeStatus.NEED_TASK) {
-                Runnable task = engine.getDelegatedTask();
-                if (task != null) {
-                    // have a blocking task, go ahead and block this thread
-                    task.run();
-                    // then loop around and see if we have more to send to peer
-                    hsstatus = engine.getHandshakeStatus();
-                    if (bTrace && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "After task, hsstatus=" + hsstatus);
-                    }
-                } else {
-                    if (bTrace && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "No task, setting status to HS_NEED_WRAP");
-                    }
-                    // we were told there was something to do, but got no task
-                    hsstatus = HandshakeStatus.NEED_WRAP;
-                    // guess that there's some data to be sent now
-                }
-                // make a new result object wrapping this in case it is the last
-                // thing done on this pass (to restart correctly on next)
-                result = new SSLEngineResult(status, hsstatus, 0, 0);
-            } // while NEED_TASK
-
-            if (hsstatus == HandshakeStatus.NEED_UNWRAP || status == Status.BUFFER_UNDERFLOW) {
-                if (bTrace && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Get ready to decrypt data, netBuf: "
-                                 + getBufferTraceInfo(netBuffer));
-                }
-
-                // See if more data needs to be read, but the buffer is already full.
-                if ((netBuffer.limit() == netBuffer.capacity()) //PI52845 changed remaining for limit
-                    && (status == Status.BUFFER_UNDERFLOW)) {
-                    // In this case, we need to grow the buffer size.
-                    int size = netBuffer.capacity() + engine.getSession().getPacketBufferSize();
-                    WsByteBuffer tempBuffer = allocateByteBuffer(size, false);
-                    copyBuffer(netBuffer, tempBuffer, netBuffer.remaining());
-                    tempBuffer.flip();
-                    netBuffer.release(); //TODO: maybe port tWAS APAR PI07526
-                    netBuffer = tempBuffer;
-                    // TODO: this path is broken since we cannot tell the caller
-                    // that we are changing netBuffer
-                    if (bTrace && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Had to grow the netBuf: " + getBufferTraceInfo(netBuffer));
-                    }
-                }
-
-                // See if data is already available.
-                if (Status.BUFFER_UNDERFLOW == status
-                    || (!netBuffer.hasRemaining() && !firstPass)
-                    || (netBuffer.remaining() == netBuffer.capacity()
-                        && !(firstPass && Status.BUFFER_UNDERFLOW == initialStatus))) {
-                    // No (or not enough) data available. Need to read.
-                    deviceReadContext.setBuffer(netBuffer);
-                    // Check if there is anything in the buffer.
-                    if (!netBuffer.hasRemaining() || (netBuffer.remaining() == netBuffer.capacity())) {
-                        // Nothing in the buffer. Clear it, pushing back the limit to the capacity.
-                        netBuffer.clear();
-                        netBuffer.mark();
+                // ok, now know something more is needed
+                while (hsstatus == HandshakeStatus.NEED_TASK) {
+                    Runnable task = engine.getDelegatedTask();
+                    if (task != null) {
+                        // have a blocking task, go ahead and block this thread
+                        task.run();
+                        // then loop around and see if we have more to send to peer
+                        hsstatus = engine.getHandshakeStatus();
                         if (bTrace && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Nothing was in the buffer");
+                            Tr.debug(tc, "After task, hsstatus=" + hsstatus);
                         }
                     } else {
-                        // Data is in the buffer, but more is needed; BUFFER_UNDERFLOW case.
-                        // Mark the start of the data to be read. Note this isn't necessarily zero.
-                        netBuffer.mark();
-                        // Ensure the read starts after the data already in the buffer
-                        // and can extend all the way to the end of this buffer.
-                        netBuffer.position(netBuffer.limit());
-                        netBuffer.limit(netBuffer.capacity());
                         if (bTrace && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Existing data in netBuf: " + getBufferTraceInfo(netBuffer));
+                            Tr.debug(tc, "No task, setting status to HS_NEED_WRAP");
+                        }
+                        // we were told there was something to do, but got no task
+                        hsstatus = HandshakeStatus.NEED_WRAP;
+                        // guess that there's some data to be sent now
+                    }
+                    // make a new result object wrapping this in case it is the last
+                    // thing done on this pass (to restart correctly on next)
+                    result = new SSLEngineResult(status, hsstatus, 0, 0);
+                } // while NEED_TASK
+
+                if (hsstatus == HandshakeStatus.NEED_UNWRAP || status == Status.BUFFER_UNDERFLOW) {
+                    if (bTrace && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Get ready to decrypt data, netBuf: "
+                                     + getBufferTraceInfo(netBuffer));
+                    }
+
+                    // See if more data needs to be read, but the buffer is already full.
+                    if ((netBuffer.limit() == netBuffer.capacity()) //PI52845 changed remaining for limit
+                        && (status == Status.BUFFER_UNDERFLOW)) {
+                        // In this case, we need to grow the buffer size.
+                        int size = netBuffer.capacity() + engine.getSession().getPacketBufferSize();
+                        WsByteBuffer tempBuffer = allocateByteBuffer(size, false);
+                        copyBuffer(netBuffer, tempBuffer, netBuffer.remaining());
+                        tempBuffer.flip();
+                        netBuffer.release(); //TODO: maybe port tWAS APAR PI07526
+                        netBuffer = tempBuffer;
+                        // TODO: this path is broken since we cannot tell the caller
+                        // that we are changing netBuffer
+                        if (bTrace && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Had to grow the netBuf: " + getBufferTraceInfo(netBuffer));
                         }
                     }
-                    // Determine if this is an asynchronous handshake.
-                    if (handshakeCallback != null) {
-                        // Do an asynchronous read.
-                        if (bTrace && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Do async read");
-                        }
-                        SSLHandshakeIOCallback readCallback = new SSLHandshakeIOCallback(connLink, netBuffer, decryptedNetBuffer, encryptedAppBuffer, result, handshakeCallback);
-                        VirtualConnection vc = deviceReadContext.read(
-                                                                      1, readCallback, false, TCPRequestContext.USE_CHANNEL_TIMEOUT);
-                        // Check to see if read is already done.
-                        if (vc != null) {
-                            // Read is already done. The callback will not be used.
-                            // Prepare buffer for unwrap.
+
+                    // See if data is already available.
+                    if (Status.BUFFER_UNDERFLOW == status
+                        || (!netBuffer.hasRemaining() && !firstPass)
+                        || (netBuffer.remaining() == netBuffer.capacity()
+                            && !(firstPass && Status.BUFFER_UNDERFLOW == initialStatus))) {
+                        // No (or not enough) data available. Need to read.
+                        deviceReadContext.setBuffer(netBuffer);
+                        // Check if there is anything in the buffer.
+                        if (!netBuffer.hasRemaining() || (netBuffer.remaining() == netBuffer.capacity())) {
+                            // Nothing in the buffer. Clear it, pushing back the limit to the capacity.
+                            netBuffer.clear();
+                            netBuffer.mark();
                             if (bTrace && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Read already done.  No callback necessary.");
+                                Tr.debug(tc, "Nothing was in the buffer");
+                            }
+                        } else {
+                            // Data is in the buffer, but more is needed; BUFFER_UNDERFLOW case.
+                            // Mark the start of the data to be read. Note this isn't necessarily zero.
+                            netBuffer.mark();
+                            // Ensure the read starts after the data already in the buffer
+                            // and can extend all the way to the end of this buffer.
+                            netBuffer.position(netBuffer.limit());
+                            netBuffer.limit(netBuffer.capacity());
+                            if (bTrace && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Existing data in netBuf: " + getBufferTraceInfo(netBuffer));
+                            }
+                        }
+                        // Determine if this is an asynchronous handshake.
+                        if (handshakeCallback != null) {
+                            // Do an asynchronous read.
+                            if (bTrace && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Do async read");
+                            }
+                            SSLHandshakeIOCallback readCallback = new SSLHandshakeIOCallback(connLink, netBuffer, decryptedNetBuffer, encryptedAppBuffer, result, handshakeCallback);
+                            VirtualConnection vc = deviceReadContext.read(
+                                                                          1, readCallback, false, TCPRequestContext.USE_CHANNEL_TIMEOUT);
+                            // Check to see if read is already done.
+                            if (vc != null) {
+                                // Read is already done. The callback will not be used.
+                                // Prepare buffer for unwrap.
+                                if (bTrace && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Read already done.  No callback necessary.");
+                                }
+                                // Prepare buffer for unwrap. Flip to the former mark.
+                                netBuffer.limit(netBuffer.position());
+                                netBuffer.reset();
+                            } else {
+                                // Read is not done. Wait for callback
+                                if (bTrace && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Read is not done.  Callback will be used.");
+                                }
+                                result = null;
+                                break;
+                            }
+                        } else {
+                            // Do a synchronous read.
+                            if (bTrace && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Do sync read");
+                            }
+                            long bytesIn = 0L;
+                            while (bytesIn == 0L) {
+
+                                try {
+                                    bytesIn = deviceReadContext.read(1, TCPRequestContext.USE_CHANNEL_TIMEOUT);
+                                    if (bTrace && tc.isEventEnabled()) {
+                                        Tr.event(tc, "Read bytes: " + bytesIn);
+                                    }
+                                } catch (IOException x) {
+                                    // give probable cause to alert users to SSL configuration
+                                    // (like misconfigured certificates) problems.
+                                    String s = "IOException receiving data during SSL Handshake. One possible cause is that authentication may not be configured correctly";
+                                    Exception nx = new Exception(s, x);
+                                    FFDCFilter.processException(nx, CLASS_NAME, "882");
+                                    throw x;
+                                }
                             }
                             // Prepare buffer for unwrap. Flip to the former mark.
                             netBuffer.limit(netBuffer.position());
                             netBuffer.reset();
-                        } else {
-                            // Read is not done. Wait for callback
-                            if (bTrace && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Read is not done.  Callback will be used.");
-                            }
-                            result = null;
-                            break;
                         }
                     } else {
-                        // Do a synchronous read.
-                        if (bTrace && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Do sync read");
-                        }
-                        long bytesIn = 0L;
-                        while (bytesIn == 0L) {
-
-                            try {
-                                bytesIn = deviceReadContext.read(1, TCPRequestContext.USE_CHANNEL_TIMEOUT);
-                                if (bTrace && tc.isEventEnabled()) {
-                                    Tr.event(tc, "Read bytes: " + bytesIn);
-                                }
-                            } catch (IOException x) {
-                                // give probable cause to alert users to SSL configuration
-                                // (like misconfigured certificates) problems.
-                                String s = "IOException receiving data during SSL Handshake. One possible cause is that authentication may not be configured correctly";
-                                Exception nx = new Exception(s, x);
-                                FFDCFilter.processException(nx, CLASS_NAME, "882");
-                                throw x;
+                        // Check if we just returned from read callback.
+                        if (!netBuffer.hasRemaining() && firstPass) {
+                            if (bTrace && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Callback came back with data that needs to be flipped.");
                             }
+                            netBuffer.flip();
                         }
+                        if (bTrace && tc.isEventEnabled()) {
+                            Tr.event(tc, "Data already in netBuf: " + getBufferTraceInfo(netBuffer));
+                        }
+                    }
+
+                    // Adjust buffer to unwrap all available data.
+                    // Position will be nonzero in 2 cases
+                    // 1 - async callback finished a read and netBuffer should be flipped
+                    // 2 - data enough for multiple unwraps in a row was available. Don't flip.
+                    if ((0 != netBuffer.position())
+                        && (netBuffer.limit() == netBuffer.capacity())
+                        && firstPass && Status.BUFFER_UNDERFLOW != initialStatus) {
                         // Prepare buffer for unwrap. Flip to the former mark.
                         netBuffer.limit(netBuffer.position());
                         netBuffer.reset();
                     }
-                } else {
-                    // Check if we just returned from read callback.
-                    if (!netBuffer.hasRemaining() && firstPass) {
-                        if (bTrace && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Callback came back with data that needs to be flipped.");
-                        }
-                        netBuffer.flip();
-                    }
                     if (bTrace && tc.isEventEnabled()) {
-                        Tr.event(tc, "Data already in netBuf: " + getBufferTraceInfo(netBuffer));
+                        Tr.event(tc, "before unwrap: \r\n\tnetBuf: " + getBufferTraceInfo(netBuffer)
+                                     + "\r\n\tdecBuf: " + getBufferTraceInfo(decryptedNetBuffer));
                     }
+                    result = engine.unwrap(netBuffer.getWrappedByteBuffer(),
+                                           decryptedNetBuffer.getWrappedByteBuffer());
+                    // handshakes shouldn't produce output so no need to flip the dec buffer
+                    hsstatus = result.getHandshakeStatus();
+                    status = result.getStatus();
+                    if (bTrace && tc.isEventEnabled()) {
+                        Tr.event(tc, "after unwrap: \r\n\tnetBuf: " + getBufferTraceInfo(netBuffer)
+                                     + "\r\n\tdecBuf: " + getBufferTraceInfo(decryptedNetBuffer)
+                                     + "\r\n\tstatus=" + status
+                                     + " HSstatus=" + hsstatus
+                                     + " consumed=" + result.bytesConsumed()
+                                     + " produced=" + result.bytesProduced());
+                    }
+                    if (netBuffer.remaining() == 0) {
+                        netBuffer.clear();
+                    }
+                } // if NEED_UNWRAP || UNDERFLOW
+
+                if (status == Status.BUFFER_OVERFLOW) {
+                    // This should never happen since our code ensures the buffers are the size specified
+                    // in the SSL engine getPackageBufferSize and getApplicationBufferSize.
+                    if (bTrace && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "BUFFER_OVERFLOW occured during handshake: " + hsstatus);
+                    }
+                    throw new SSLException("BUFFER_OVERFLOW occured during handshake: " + hsstatus);
                 }
 
-                // Adjust buffer to unwrap all available data.
-                // Position will be nonzero in 2 cases
-                // 1 - async callback finished a read and netBuffer should be flipped
-                // 2 - data enough for multiple unwraps in a row was available. Don't flip.
-                if ((0 != netBuffer.position())
-                    && (netBuffer.limit() == netBuffer.capacity())
-                    && firstPass && Status.BUFFER_UNDERFLOW != initialStatus) {
-                    // Prepare buffer for unwrap. Flip to the former mark.
-                    netBuffer.limit(netBuffer.position());
-                    netBuffer.reset();
+                if (status == Status.CLOSED) {
+                    // This would happen if the handshake fails, initially or during renegotiation.
+                    if (bTrace && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Handshake terminated SSL engine: " + hsstatus);
+                    }
+                    throw new SSLException("Handshake terminated SSL engine: " + hsstatus);
                 }
-                if (bTrace && tc.isEventEnabled()) {
-                    Tr.event(tc, "before unwrap: \r\n\tnetBuf: " + getBufferTraceInfo(netBuffer)
-                                 + "\r\n\tdecBuf: " + getBufferTraceInfo(decryptedNetBuffer));
-                }
-                result = engine.unwrap(netBuffer.getWrappedByteBuffer(),
-                                       decryptedNetBuffer.getWrappedByteBuffer());
-                // handshakes shouldn't produce output so no need to flip the dec buffer
-                hsstatus = result.getHandshakeStatus();
-                status = result.getStatus();
-                if (bTrace && tc.isEventEnabled()) {
-                    Tr.event(tc, "after unwrap: \r\n\tnetBuf: " + getBufferTraceInfo(netBuffer)
-                                 + "\r\n\tdecBuf: " + getBufferTraceInfo(decryptedNetBuffer)
-                                 + "\r\n\tstatus=" + status
-                                 + " HSstatus=" + hsstatus
-                                 + " consumed=" + result.bytesConsumed()
-                                 + " produced=" + result.bytesProduced());
-                }
-                if (netBuffer.remaining() == 0) {
-                    netBuffer.clear();
-                }
-            } // if NEED_UNWRAP || UNDERFLOW
 
-            if (status == Status.BUFFER_OVERFLOW) {
-                // This should never happen since our code ensures the buffers are the size specified
-                // in the SSL engine getPackageBufferSize and getApplicationBufferSize.
-                if (bTrace && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "BUFFER_OVERFLOW occured during handshake: " + hsstatus);
-                }
-                throw new SSLException("BUFFER_OVERFLOW occured during handshake: " + hsstatus);
+                firstPass = false;
+            } // end of handshake while
+
+            if (bTrace && tc.isDebugEnabled()) {
+                Tr.debug(tc, "after handshake loop, status=" + status
+                             + " HSstatus=" + hsstatus
+                             + ", fromCallback=" + fromCallback
+                             + ", engine=" + engine.hashCode()
+                             + "\r\n\tnetBuf: " + getBufferTraceInfo(netBuffer)
+                             + "\r\n\tdecBuf: " + getBufferTraceInfo(decryptedNetBuffer));
             }
 
-            if (status == Status.CLOSED) {
-                // This would happen if the handshake fails, initially or during renegotiation.
-                if (bTrace && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Handshake terminated SSL engine: " + hsstatus);
-                }
-                throw new SSLException("Handshake terminated SSL engine: " + hsstatus);
+            if (fromCallback && null != result && null != handshakeCallback) {
+                // This method was called from the write or read callback.
+                // Need to claim complete through handshake callback.
+                handshakeCallback.complete(result);
+                // Set result to null so that caller knows action will be taken asynchronously.
+                result = null;
             }
-
-            firstPass = false;
-        } // end of handshake while
-
-        if (bTrace && tc.isDebugEnabled()) {
-            Tr.debug(tc, "after handshake loop, status=" + status
-                         + " HSstatus=" + hsstatus
-                         + ", fromCallback=" + fromCallback
-                         + ", engine=" + engine.hashCode()
-                         + "\r\n\tnetBuf: " + getBufferTraceInfo(netBuffer)
-                         + "\r\n\tdecBuf: " + getBufferTraceInfo(decryptedNetBuffer));
+        } finally {
+            if (needToRemoveEngine) {
+                JDK8AlpnNegotiator.getAndRemoveIbmAlpnChoice(engine, connLink);
+            }
         }
-
-        if (fromCallback && null != result && null != handshakeCallback) {
-            // This method was called from the write or read callback.
-            // Need to claim complete through handshake callback.
-            handshakeCallback.complete(result);
-            // Set result to null so that caller knows action will be taken asynchronously.
-            result = null;
-        }
-
         if (bTrace && tc.isEntryEnabled()) {
             Tr.exit(tc, "handleHandshake");
         }

@@ -88,7 +88,10 @@ public class SSLConnectionContextImpl implements SSLConnectionContext {
      * @see com.ibm.wsspi.tcpchannel.SSLConnectionContext#getSession()
      */
     public SSLSession getSession() {
-        return this.sslConnLink.getSSLEngine().getSession();
+        if (this.sslConnLink != null && this.sslConnLink.getSSLEngine() != null) {
+            return this.sslConnLink.getSSLEngine().getSession();
+        }
+        return null;
     }
 
     /*
