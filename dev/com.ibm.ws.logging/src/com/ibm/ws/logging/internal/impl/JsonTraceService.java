@@ -109,7 +109,6 @@ public class JsonTraceService extends BaseTraceService {
         if (consoleLogHandler == null) {
             consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
             collectorMgrPipelineUtils.setConsoleHandler(consoleLogHandler);
-            consoleLogHandler.setWriter(systemOut);
         }
 
         /*
@@ -120,6 +119,7 @@ public class JsonTraceService extends BaseTraceService {
             isMessageJsonConfigured = false;
             if (messageLogHandler != null) {
                 updateConduitSyncHandlerConnection(new ArrayList<String>(), messageLogHandler);
+                messageLogHandler.setWriter(null);
             }
         }
 
@@ -131,6 +131,7 @@ public class JsonTraceService extends BaseTraceService {
             isConsoleJsonConfigured = false;
             if (consoleLogHandler != null) {
                 updateConduitSyncHandlerConnection(new ArrayList<String>(), consoleLogHandler);
+                consoleLogHandler.setWriter(null);
             }
         }
 
@@ -162,7 +163,7 @@ public class JsonTraceService extends BaseTraceService {
             consoleLogHandler.modified(filterdConsoleSourceList);
             //Connect the conduits to the handler as necessary
             updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
-
+            consoleLogHandler.setWriter(systemOut);
             isConsoleJsonConfigured = true;
         }
     }

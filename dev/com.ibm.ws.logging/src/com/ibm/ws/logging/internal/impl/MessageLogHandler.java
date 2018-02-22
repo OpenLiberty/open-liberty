@@ -52,7 +52,9 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
          */
         String evensourcetType = getSourceTypeFromDataObject(event);
         String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
-        traceWriter.writeRecord(messageOutput);
+        if (traceWriter != null) {
+            traceWriter.writeRecord(messageOutput);
+        }
     }
 
 }
