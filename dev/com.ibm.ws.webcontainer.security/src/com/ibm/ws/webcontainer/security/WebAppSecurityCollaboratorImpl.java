@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -987,7 +987,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
         WebReply webReply = PERMIT_REPLY;
         boolean result = true;
-        WebRequest webRequest = new WebRequestImpl(req, resp, getSecurityMetadata(), webAppSecConfig);
+        WebRequest webRequest = new WebRequestImpl(req, resp, getSecurityMetadata(req), webAppSecConfig);
         webRequest.setRequestAuthenticate(true);
         AuthenticationResult authResult = null;
 
@@ -1430,7 +1430,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         String realRole = null;
         if (reqProc != null) {
             String servletName = reqProc.getName();
-            realRole = getSecurityMetadata().getSecurityRoleReferenced(servletName, role);
+            realRole = getSecurityMetadata(req).getSecurityRoleReferenced(servletName, role);
         } else {
             // PM98409 - when servlet reference is not available, use provided role name as real role
             realRole = role;
