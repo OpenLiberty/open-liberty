@@ -1,6 +1,7 @@
 package com.ibm.ws.wlp.mavenFeatures.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ public class LibertyFeature {
 	private final String shortName;
 	private final String name;
 	private final String description;
-	private final List<String> requiredFeatures;
+	private final Map<String, Collection<String>> requiredFeaturesWithTolerates;
 	private final String productVersion;
 	private final MavenCoordinates mavenCoordinates;
 
@@ -22,18 +23,18 @@ public class LibertyFeature {
 	 * @param shortName short name (if this is a public feature or a bundle)
 	 * @param name readable name
 	 * @param description readable description
-	 * @param requiredFeatures list of required features
+	 * @param requiredFeaturesWithTolerates map of each required feature+version to tolerated versions
 	 * @param productVersion Liberty version
 	 * @param mavenCoordinates Maven coordinates
 	 * @param isWebsphereLiberty If true then it is WebSphere Liberty, else Open Liberty
 	 */
-	public LibertyFeature(String symbolicName, String shortName, String name, String description, List<String> requiredFeatures, String productVersion, String mavenCoordinates, boolean isWebsphereLiberty) {
+	public LibertyFeature(String symbolicName, String shortName, String name, String description, Map<String, Collection<String>> requiredFeaturesWithTolerates, String productVersion, String mavenCoordinates, boolean isWebsphereLiberty) {
 		super();
 		this.symbolicName = symbolicName;
 		this.shortName = shortName;
 		this.name = name;
 		this.description = description;
-		this.requiredFeatures = requiredFeatures;
+		this.requiredFeaturesWithTolerates = requiredFeaturesWithTolerates;
 		this.productVersion = productVersion;
 		if (mavenCoordinates != null) {
 			this.mavenCoordinates = new MavenCoordinates(mavenCoordinates);
@@ -77,13 +78,28 @@ public class LibertyFeature {
 	public List<LibertyFeature> getRequiredFeatures(Map<String, LibertyFeature> allFeatures)
 			throws MavenRepoGeneratorException {
 		List<LibertyFeature> dependencies = new ArrayList<LibertyFeature>();
-		if (requiredFeatures != null) {
-			for (String requireFeature : requiredFeatures) {
+		if (requiredFeaturesWithTolerates != null) {
+			for (String requireFeature : requiredFeaturesWithTolerates.keySet()) {
+				Collection<String> toleratesVersions = null;
 				if (allFeatures.containsKey(requireFeature)) {
 					dependencies.add(allFeatures.get(requireFeature));
+				} else if ((toleratesVersions = requiredFeaturesWithTolerates.get(requireFeature)) != null) {
+					boolean tolerateFeatureFound = false;
+					for (String version : toleratesVersions) {
+						String tolerateFeatureAndVersion = requireFeature.substring(0, requireFeature.lastIndexOf("-")) + "-" + version;
+						if (allFeatures.containsKey(tolerateFeatureAndVersion)) {
+							dependencies.add(allFeatures.get(tolerateFeatureAndVersion));
+							tolerateFeatureFound = true;
+							break;
+						}
+					}
+					if (!tolerateFeatureFound) {
+						throw new MavenRepoGeneratorException(
+								"For feature " + symbolicName + ", cannot find required feature " + requireFeature + " or any of its tolerated versions: " + toleratesVersions);
+					}
 				} else {
 					throw new MavenRepoGeneratorException(
-							"Cannot find feature " + requireFeature + " which is required by " + symbolicName);
+							"For feature " + symbolicName + ", cannot find required feature " + requireFeature);
 				}
 			}
 		}

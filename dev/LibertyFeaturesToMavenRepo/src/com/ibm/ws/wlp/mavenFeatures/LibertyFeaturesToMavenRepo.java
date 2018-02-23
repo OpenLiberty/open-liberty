@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -369,13 +370,34 @@ public class LibertyFeaturesToMavenRepo extends Task {
 					}
 				}
 
-				List<String> requireFeatures = null;
+				// parse requireFeature
+				Map<String, Collection<String>> requireFeaturesWithTolerates = new HashMap<String, Collection<String>>();
 				if (wlpInfo.has(Constants.REQUIRE_FEATURE_KEY)) {
 					JSONArray requireFeatureArray = wlpInfo.getJSONArray(Constants.REQUIRE_FEATURE_KEY);
-					requireFeatures = new ArrayList<String>();
 					if (requireFeatureArray != null && requireFeatureArray.length() > 0) {
-						for (int requireFeatureIndex = 0; requireFeatureIndex < requireFeatureArray.length(); requireFeatureIndex++) {
-							requireFeatures.add(requireFeatureArray.getString(requireFeatureIndex));
+						for (int j = 0; j < requireFeatureArray.length(); j++) {
+							requireFeaturesWithTolerates.put(requireFeatureArray.getString(j), null);
+						}
+					}
+				}
+				
+				// parse requireFeatureWithTolerates and add to the above map (overwriting any existing null value)
+				if (wlpInfo.has(Constants.REQUIRE_FEATURE_WITH_TOLERATES_KEY)) {
+					JSONArray requireFeatureWithToleratesArray = wlpInfo.getJSONArray(Constants.REQUIRE_FEATURE_WITH_TOLERATES_KEY);
+					if (requireFeatureWithToleratesArray != null && requireFeatureWithToleratesArray.length() > 0) {
+						for (int j = 0; j < requireFeatureWithToleratesArray.length(); j++) {
+							JSONObject requireFeatureWithToleratesObject = requireFeatureWithToleratesArray.getJSONObject(j);
+							String requireFeature = requireFeatureWithToleratesObject.getString(Constants.FEATURE_KEY);
+							if (requireFeatureWithToleratesObject.has(Constants.TOLERATES_KEY)) {
+								JSONArray tolerateArray = requireFeatureWithToleratesObject.getJSONArray(Constants.TOLERATES_KEY);
+								Collection<String> tolerateVersions = new ArrayList<String>();
+								for (int k = 0; k < tolerateArray.length(); k++) {
+									tolerateVersions.add(tolerateArray.getString(k));
+								}
+								requireFeaturesWithTolerates.put(requireFeature, tolerateVersions);
+							} else {
+								requireFeaturesWithTolerates.put(requireFeature, null);
+							}
 						}
 					}
 				}
@@ -395,7 +417,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 					}
 				}
 
-				LibertyFeature feature = new LibertyFeature(symbolicName, shortName, name, description, requireFeatures, productVersion, mavenCoordinates, isWebsphereLiberty);
+				LibertyFeature feature = new LibertyFeature(symbolicName, shortName, name, description, requireFeaturesWithTolerates, productVersion, mavenCoordinates, isWebsphereLiberty);
 				
 				// If JSON does not have Maven coordinates, inject them
 				if (!wlpInfo.has(Constants.MAVEN_COORDINATES_KEY)) {

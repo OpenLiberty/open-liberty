@@ -10,6 +10,9 @@ public class Constants {
 	public static final String APPLIES_TO_KEY = "appliesTo";
 	public static final String APPLIES_TO_VALUE_PRODUCT_VERSION = "productVersion";
 	public static final String REQUIRE_FEATURE_KEY = "requireFeature";
+	public static final String REQUIRE_FEATURE_WITH_TOLERATES_KEY = "requireFeatureWithTolerates";
+	public static final String FEATURE_KEY = "feature";
+	public static final String TOLERATES_KEY = "tolerates";
 	public static final String INSTALL_POLICY_KEY = "installPolicy";
 	public static final String VISIBILITY_KEY = "visibility";
 	public static final String VISIBILITY_VALUE_PUBLIC = "PUBLIC";
