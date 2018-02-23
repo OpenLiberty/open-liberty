@@ -29,6 +29,6 @@ public class JwtSsoConstants {
 	public static final String CFG_KEY_JWTCONSUMERREF = "jwtConsumerRef";
 	public static final String GROUP_PREFIX = "group:";
 	public static final String TOKEN_TYPE_JWT = "JWT";
-	public static final String UNAUTHENTICATED = "JWT";
+	public static final String UNAUTHENTICATED = "UNAUTHENTICATED";
 
 }

@@ -29,7 +29,9 @@ javac.target: 1.8
 # for the exported API.
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
-Export-Package: \
+Export-Package: com.ibm.ws.security.jwtsso.config, \
+	com.ibm.ws.security.jwtsso.utils, \
+	com.ibm.ws.security.jwtsso.web
 
 
 Import-Package: \
@@ -38,9 +40,10 @@ Import-Package: \
 	com.ibm.ws.security.common.jwk.interfaces,\
 	com.ibm.websphere.kernel.server,\
 	org.osgi.service.component.*,\
-	com.ibm.ws.security.jwt.utils; \
-	com.ibm.ws.webcontainer.security; \
-	javax.management
+	com.ibm.ws.security.jwt.utils, \
+	com.ibm.ws.webcontainer.security, \
+	javax.management, \
+	*
 	
     
 

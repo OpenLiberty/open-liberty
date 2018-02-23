@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationData;
@@ -26,6 +27,7 @@ import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
+import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticateApi;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -44,6 +46,11 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 public class SSOAuthenticator implements WebAuthenticator {
 
     public static final String DEFAULT_SSO_COOKIE_NAME = "LtpaToken2";
+    private static final String Authorization_Header = "Authorization";
+    public final static String REQ_METHOD_POST = "POST";
+    public final static String REQ_CONTENT_TYPE_NAME = "Content-Type";
+    public final static String REQ_CONTENT_TYPE_APP_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String ACCESS_TOKEN = "access_token";
 
     private static final TraceComponent tc = Tr.register(SSOAuthenticator.class);
     private final AuthenticationService authenticationService;
@@ -105,6 +112,11 @@ public class SSOAuthenticator implements WebAuthenticator {
             return authResult;
         }
 
+        authResult = handleJwtSSO(req, res);
+        if (authResult != null) {
+            return authResult;
+        }
+
         String cookieName = ssoCookieHelper.getSSOCookiename();
         String[] hdrVals = CookieHelper.getCookieValues(cookies, cookieName);
         boolean useOnlyCustomCookieName = webAppSecurityConfig != null && webAppSecurityConfig.isUseOnlyCustomCookieName();
@@ -140,6 +152,148 @@ public class SSOAuthenticator implements WebAuthenticator {
 
         ssoCookieHelper.createLogoutCookies(req, res);
         return authResult;
+    }
+
+    /**
+     * @param cookies
+     * @return
+     */
+    private AuthenticationResult handleJwtSSO(HttpServletRequest req, HttpServletResponse res) {
+        // TODO Auto-generated method stub
+        String jwtssotoken = null;
+        String[] hdrVals = CookieHelper.getCookieValues(getCookies(req), "jwtToken");
+        String encodedjwtssotoken = null;
+        if (hdrVals != null) {
+            for (int n = 0; n < hdrVals.length; n++) {
+                String hdrVal = hdrVals[n];
+                if (hdrVal != null && hdrVal.length() > 0) {
+                    encodedjwtssotoken = hdrVal;
+                    break;
+                }
+            }
+        }
+        if (encodedjwtssotoken == null) { //jwt sso cookie is missing, look at the auth header
+            encodedjwtssotoken = getJwtBearerToken(req);
+        }
+        Subject tempSubject = null;
+        if (encodedjwtssotoken != null) {
+            tempSubject = JwtSSOTokenHelper.handleJwtSSOToken(encodedjwtssotoken);
+        }
+        if (tempSubject != null) {
+            return authenticateWithJwt(tempSubject, req, res);
+
+        }
+        return null;
+    }
+
+    private AuthenticationResult authenticateWithJwt(Subject subject, HttpServletRequest req, HttpServletResponse res) {
+        // TODO Auto-generated method stub
+        AuthenticationResult authResult = null;
+        try {
+            AuthenticationData authenticationData = createAuthenticationData(req,
+                                                                             res, subject);
+            Subject new_subject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND,
+                                                                     authenticationData, subject);
+            //authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject);
+            authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject, "jwtToken", null, AuditEvent.OUTCOME_SUCCESS);
+            // if DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER then do not
+            // callSSOCookie
+//            if (addLtpaCookieToResponse(new_subject, taiId)) {
+//                ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res);
+//            }
+            ssoCookieHelper.addJwtSsoCookiesToResponse(new_subject, req, res);
+        } catch (AuthenticationException e) {
+            authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
+        }
+        return authResult;
+
+    }
+
+    /**
+     * @param req
+     * @param res
+     * @param subject
+     * @return
+     */
+    @Trivial
+    private AuthenticationData createAuthenticationData(HttpServletRequest req, HttpServletResponse res, Subject subject) {
+        // TODO Auto-generated method stub
+
+        AuthenticationData authenticationData = new WSAuthenticationData();
+        authenticationData.set(AuthenticationData.HTTP_SERVLET_REQUEST, req);
+        authenticationData.set(AuthenticationData.HTTP_SERVLET_RESPONSE, res);
+        try {
+//            String jwtssoCookieString = JwtSSOTokenHelper.getJwtSSOToken(subject);
+//            Cookie jwtCookie = new Cookie("jwtToken", jwtssoCookieString); //TODO webAppSecConfig.getSSOCookieName()
+//            if (jwtCookie != null) {
+//                //authenticationData.set(AuthenticationData.TOKEN64, jwtCookie.getValue()); //TODO
+//            }
+//            if (subject != null) {
+//                // Allow TAI to login and create LTPA Cookie
+//                // Also prevent it from login again
+//                Cookie ltpaCookie = WebSecurityHelperImpl.getLTPACookie(subject);
+//                if (ltpaCookie != null) {
+//                    authenticationData.set(AuthenticationData.TOKEN64, ltpaCookie.getValue());
+//                }
+//            }
+        } catch (Exception e) {
+            // this is OK if TAI does not have a SSO Cookie
+        }
+        return authenticationData;
+    }
+
+    /**
+     * @param req
+     * @return
+     */
+    private String getJwtBearerToken(HttpServletRequest req) {
+        // TODO Auto-generated method stub
+        String token = getBearerTokenFromHeader(req);
+        if (token == null) {
+            token = getBearerTokenFromParameter(req);
+        }
+        return token;
+    }
+
+    /**
+     * @param req
+     * @return
+     */
+    private String getBearerTokenFromParameter(HttpServletRequest req) {
+
+        String param = null;
+        String reqMethod = req.getMethod();
+        if (REQ_METHOD_POST.equalsIgnoreCase(reqMethod)) {
+            String contentType = req.getHeader(REQ_CONTENT_TYPE_NAME);
+
+            if (REQ_CONTENT_TYPE_APP_FORM_URLENCODED.equals(contentType)) {
+                param = req.getParameter(ACCESS_TOKEN);
+            }
+        }
+        return param;
+    }
+
+    /**
+     * @param req
+     * @return
+     */
+    private String getBearerTokenFromHeader(HttpServletRequest req) {
+
+        String hdrValue = req.getHeader(Authorization_Header);
+        String bearerAuthzMethod = "Bearer ";
+        if (hdrValue != null && hdrValue.startsWith(bearerAuthzMethod)) {
+            hdrValue = hdrValue.substring(bearerAuthzMethod.length());
+        }
+        return hdrValue;
+    }
+
+    /**
+     * @param req
+     * @return
+     */
+    private Cookie[] getCookies(HttpServletRequest req) {
+        return (req.getCookies());
+
     }
 
     /**

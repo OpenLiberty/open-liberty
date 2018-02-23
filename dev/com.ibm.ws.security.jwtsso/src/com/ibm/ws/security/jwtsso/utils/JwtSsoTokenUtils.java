@@ -28,8 +28,11 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
+import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.jwt.utils.TokenBuilder;
+import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.DefaultJsonWebTokenImpl;
+import com.ibm.ws.security.mp.jwt.tai.TAIMappingHelper;
 
 /**
  * A class to aid in creation and consumption of JWT tokens.
@@ -102,9 +105,7 @@ public class JwtSsoTokenUtils {
 	 *         authenticated.
 	 */
 	public JsonWebToken buildTokenFromSecuritySubject() throws WSSecurityException {
-		if (!isValid) {
-			return null;
-		}
+
 		Subject subj = WSSubject.getRunAsSubject();
 		Set<Principal> principals = subj.getPrincipals();
 		// maybe we already have one, check.
@@ -113,16 +114,25 @@ public class JwtSsoTokenUtils {
 				return (JsonWebToken) p;
 			}
 		}
+		return buildTokenFromSecuritySubject(subj);
 
+	}
+
+	public JsonWebToken buildTokenFromSecuritySubject(Subject subject) {
+		// TODO Auto-generated method stub
+		if (!isValid) {
+			return null;
+		}
 		TokenBuilder tb = new TokenBuilder();
-		String tokenString = tb.createTokenString(builderId);
+		String tokenString = tb.createTokenString(builderId, subject);
 		if (tokenString == null) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "returning null because tokenString was null, creation failed.");
 			}
 			return null;
 		}
-		String userName = tb.getUserName();
+		String userName = tb.getUserName(subject);
+
 		if (userName == null || userName.compareTo(JwtSsoConstants.UNAUTHENTICATED) == 0) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "returning null because username = " + userName);
@@ -133,4 +143,42 @@ public class JwtSsoTokenUtils {
 
 	}
 
+	private boolean checkForClaim(JsonWebToken jwt, String claimName) {
+		return (jwt.containsClaim(claimName));
+
+	}
+
+	public Subject handleJwtSsoTokenValidation(String tokenstr) {
+		Subject tempSubject = null;
+		if (!isValid) {
+			return tempSubject;
+		}
+		JwtToken jwttoken = null;
+		try {
+			jwttoken = consumer.createJwt(tokenstr);
+		} catch (InvalidTokenException | InvalidConsumerException e) {
+			// ffdc
+			return tempSubject;
+		}
+		String decodedPayload = null;
+		if (jwttoken != null) {
+			String payload = JsonUtils.getPayload(tokenstr);
+			decodedPayload = JsonUtils.decodeFromBase64String(payload);
+		}
+
+		// JsonWebToken principal = buildSecurityPrincipalFromToken(tokenstr);
+		TAIMappingHelper mappingHelper;
+		try {
+			mappingHelper = new TAIMappingHelper(decodedPayload);
+			mappingHelper.createJwtPrincipalAndPopulateCustomProperties(jwttoken);
+			tempSubject = mappingHelper.createSubjectFromCustomProperties(jwttoken);
+
+		} catch (MpJwtProcessingException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+		}
+
+		return tempSubject;
+
+	}
 }

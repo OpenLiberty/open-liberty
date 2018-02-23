@@ -8,8 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.security.jwt.sso.token.utils;
+
+import javax.security.auth.Subject;
+
+import com.ibm.websphere.security.WSSecurityException;
+
 /**
- * @version 1.0.0
+ *
  */
-@org.osgi.annotation.versioning.Version("1.0.0")
-package com.ibm.ws.security.jwtsso.config;
+public interface JwtSSOToken {
+    void createJwtSSOToken(Subject subject) throws WSSecurityException;
+
+    String getJwtSSOToken(Subject subject);
+
+    Subject handleJwtSSOToken(String encodedjwt);
+
+}

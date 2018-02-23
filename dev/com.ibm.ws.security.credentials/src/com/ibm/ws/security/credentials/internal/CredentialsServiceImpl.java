@@ -22,6 +22,7 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.credentials.CredentialProvider;
 import com.ibm.ws.security.credentials.CredentialsService;
+import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
@@ -75,6 +76,8 @@ public class CredentialsServiceImpl implements CredentialsService {
             CredentialProvider provider = itr.next();
             provider.setCredential(subject);
         }
+        //create jwt sso token and add it to the subject
+        JwtSSOTokenHelper.createJwtSSOToken(subject);
     }
 
     /**
@@ -82,6 +85,8 @@ public class CredentialsServiceImpl implements CredentialsService {
      */
     @Override
     public void setBasicAuthCredential(Subject basicAuthSubject, String realm, String username, @Sensitive String password) throws CredentialException {
+        //@AV999
+        System.out.println("@AV999, stack from the thread = ");
         CredentialProvider provider = basicAuthCredentialProvider.getService();
         if (provider != null) {
             Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
