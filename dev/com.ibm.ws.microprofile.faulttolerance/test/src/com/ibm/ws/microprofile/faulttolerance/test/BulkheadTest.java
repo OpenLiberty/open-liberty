@@ -238,40 +238,37 @@ public class BulkheadTest {
     }
 
     @Test
-    public void testAsyncBulkheadQueueFull() throws InterruptedException, ExecutionException, TimeoutException {
+    public void testAsyncBulkheadDefaultsAndException() throws InterruptedException, ExecutionException, TimeoutException {
         BulkheadPolicy bulkhead = FaultToleranceProvider.newBulkheadPolicy();
-        bulkhead.setMaxThreads(2);
-        bulkhead.setQueueSize(2);
 
         ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
         builder.setBulkheadPolicy(bulkhead);
 
         Executor<Future<String>> executor = builder.buildAsync();
 
-        Future<String>[] futures = new Future[5];
+        Future<String>[] futures = new Future[21];
         try {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 20; i++) {
                 String id = "testAsyncBulkheadQueueFull" + i;
                 ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
                 AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(2000), id);
                 futures[i] = executor.execute(callable, context);
                 System.out.println(System.currentTimeMillis() + " Test " + context + " - submitted");
                 assertFalse(futures[i].isDone());
-                Thread.sleep(100);
             }
 
-            String id = "testAsyncBulkheadQueueFull4";
+            String id = "testAsyncBulkheadQueueFull20";
             ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
             AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(2000), id);
             try {
-                futures[4] = executor.execute(callable, context);
+                futures[20] = executor.execute(callable, context);
                 System.out.println(System.currentTimeMillis() + " Test " + id + " - submitted");
                 fail("Exception not thrown");
             } catch (BulkheadException e) {
                 //expected
             }
         } finally {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 21; i++) {
                 Future<String> future = futures[i];
                 if (future != null && !future.isDone()) {
                     future.cancel(true);
