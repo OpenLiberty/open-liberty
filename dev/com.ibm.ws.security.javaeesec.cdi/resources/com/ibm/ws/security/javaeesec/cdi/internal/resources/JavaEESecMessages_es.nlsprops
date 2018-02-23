@@ -40,7 +40,7 @@ JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Si la aplicaci\u00f3n proporciona 
 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: No se ha encontrado el bean IdentityStoreHandler. Utilice un registro de usuarios definido en en server.xml. El bean IdentityStoreHandler se crea cuando hay al menos un bean IdentityStore. Si la aplicaci\u00f3n tiene previsto utilizar un objeto IdentityStore, aseg\u00farese de que se haya configurado correctamente. 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=No se ha encontrado el bean IdentityStoreHandler. Si la aplicaci\u00f3n tiene previsto utilizar un objeto IdentityStore, aseg\u00farese de que se haya configurado correctamente. El bean IdentityStoreHandler se crea cuando hay al menos un bean IdentityStore.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Si la aplicaci\u00f3n tiene previsto utilizar un objeto IdentityStore, aseg\u00farese de que se haya configurado correctamente.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Si la aplicaci\u00f3n tiene previsto utilizar un objeto IdentityStore, aseg\u00farese de que se haya configurado correctamente. 
 
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: El despliegue de la aplicaci\u00f3n ha fallado porque se ha encontrado un elemento login-config en el archivo web.xml del m\u00f3dulo {0} de la aplicaci\u00f3n {1}. Para habilitar el bean HttpAuthenticationMechanism, elimine el elemento login-config del archivo web.xml.
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=El despliegue de la aplicaci\u00f3n ha fallado porque se han definido el elemento login-config y el bean HttpAuthenticationMechanism. Solo se puede utilizar en la aplicaci\u00f3n uno de estos mecanismos de autenticaci\u00f3n.

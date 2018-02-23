@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 #
 # -------------------------------------------------------------------------------------------------
 #0001-0050: app manager
@@ -89,7 +89,7 @@ APPLICATION_STOP_FAILED=CWWKZ0010E: P\u0159i zastaven\u00ed aplikace do\u0161lo 
 APPLICATION_STOP_FAILED.explanation=Server nem\u016f\u017ee zastavit aplikaci.
 APPLICATION_STOP_FAILED.useraction=Ujist\u011bte se, \u017ee aplikace je ve stavu, kdy ji lze zastavit.
 
-#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
 #{0} is file name
 #{1} is exception message
 FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: Do\u0161lo k v\u00fdjimce p\u0159i hled\u00e1n\u00ed souboru {0}. Zpr\u00e1va v\u00fdjimky: {1}
@@ -98,7 +98,7 @@ FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
 
 #{0} is application name
 APPLICATION_NOT_STARTED=CWWKZ0012I: Aplikace {0} nebyla spu\u0161t\u011bna.
-APPLICATION_NOT_STARTED.explanation=Aplikaci nebylo mo\u017en\u00e9 spustit z d\u016fvodu p\u0159edchoz\u00edch chyb. 
+APPLICATION_NOT_STARTED.explanation=Aplikaci nebylo mo\u017en\u00e9 spustit z d\u016fvodu p\u0159edchoz\u00edch chyb.
 APPLICATION_NOT_STARTED.useraction=Zkontrolujte konfiguraci aplikace a zkontrolujte chyby v protokolech p\u0159i spu\u0161t\u011bn\u00ed aplikace.
 
 #{0} the application name
@@ -134,7 +134,7 @@ PARTIAL_START.useraction=Vy\u0159e\u0161te probl\u00e9m s tou \u010d\u00e1st\u00
 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: Aplikace {0} nebyla aktualizov\u00e1na.
-APPLICATION_NOT_UPDATED.explanation=Aplikaci nebylo mo\u017en\u00e9 spustit z d\u016fvodu p\u0159edchoz\u00edch chyb. 
+APPLICATION_NOT_UPDATED.explanation=Aplikaci nebylo mo\u017en\u00e9 spustit z d\u016fvodu p\u0159edchoz\u00edch chyb.
 APPLICATION_NOT_UPDATED.useraction=Zkontrolujte konfiguraci aplikace a zkontrolujte chyby v protokolech p\u0159i spu\u0161t\u011bn\u00ed aplikace.
 
 #Existing message changed per resolution to design issue 117781
@@ -175,7 +175,7 @@ MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Monitor aplikac\u00ed nem\u016f\u01
 MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Spus\u0165te server se studen\u00fdm startem.
 
 #{0} is the start time in seconds
-APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorov\u00e1n\u00ed aplikac\u00ed v {0}. 
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorov\u00e1n\u00ed aplikac\u00ed v {0}.
 APPLICATION_MONITOR_STARTED.explanation=Server v adres\u00e1\u0159i monitoruje aplikace, kter\u00e9 se maj\u00ed implementovat.
 APPLICATION_MONITOR_STARTED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
@@ -192,7 +192,7 @@ MONITOR_DIR_CLEANUP_FAIL.useraction=Nen\u00ed-li p\u016fvodn\u00ed adres\u00e1\u
 
 #{0} is application name
 APPLICATION_MONITORING_FAIL=CWWKZ0060W: Nelze monitorovat aplikaci {0}.
-APPLICATION_MONITORING_FAIL.explanation=Byla nainstalov\u00e1na aplikace, ale nebylo na n\u00ed spu\u0161t\u011bno monitorov\u00e1n\u00ed, tak\u017ee pokud dojde k aktualizaci souboru v r\u00e1mci aplikace, server tuto zm\u011bnu nezjist\u00ed. 
+APPLICATION_MONITORING_FAIL.explanation=Byla nainstalov\u00e1na aplikace, ale nebylo na n\u00ed spu\u0161t\u011bno monitorov\u00e1n\u00ed, tak\u017ee pokud dojde k aktualizaci souboru v r\u00e1mci aplikace, server tuto zm\u011bnu nezjist\u00ed.
 APPLICATION_MONITORING_FAIL.useraction=P\u0159i aktualizaci soubor\u016f v t\u00e9to aplikaci bude t\u0159eba aplikaci odinstalovat a znovu nainstalovat na server.
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: Aplikace {0} v um\u00edst\u011bn\u00ed {1} je uvnit\u0159 monitorovan\u00e9ho adres\u00e1\u0159e {2}. Prvek aplikace bude ignorov\u00e1n.
@@ -202,3 +202,17 @@ APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Bu\u010f opravte prvek aplikace, 
 APPLICATION_UPDATED=CWWKZ0062I: Aplikace {0} byla aktualizov\u00e1na, ale nebyla restartov\u00e1na.
 APPLICATION_UPDATED.explanation=V uveden\u00e9 aplikace do\u0161lo k drobn\u00e9 zm\u011bn\u011b, kter\u00e1 je pova\u017eov\u00e1na za natolik malou, \u017ee nen\u00ed nutn\u00e9 aplikaci restartovat.
 APPLICATION_UPDATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Pou\u017eit\u00ed Jandex je povoleno pro v\u0161echny aplikace.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Pro v\u0161echny aplikace a v p\u0159\u00edpad\u011b, \u017ee jsou k dispozici indexy Jandex, jsou data t\u0159\u00eddy a anotace z\u00edsk\u00e1na z index\u016f Jandex.
+APPLICATION_JANDEX_ENABLED_ALL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is application name
+APPLICATION_JANDEX_ENABLED=CWWKZ0064I: Pou\u017eit\u00ed Jandex je povoleno pro aplikaci {0}.
+APPLICATION_JANDEX_ENABLED.explanation=Pro uvedenou aplikaci, kdy\u017e jsou k dispozici indexy Jandex, jsou data t\u0159\u00eddy a anotace z\u00edsk\u00e1na z index\u016f Jandex.
+APPLICATION_JANDEX_ENABLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is application name
+APPLICATION_JANDEX_DISABLED=CWWKZ0065I: Pou\u017eit\u00ed Jandex je pro aplikaci {0} zak\u00e1z\u00e1no.
+APPLICATION_JANDEX_DISABLED.explanation=Index Jandex je pro uvedenou aplikaci zak\u00e1z\u00e1n.
+APPLICATION_JANDEX_DISABLED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

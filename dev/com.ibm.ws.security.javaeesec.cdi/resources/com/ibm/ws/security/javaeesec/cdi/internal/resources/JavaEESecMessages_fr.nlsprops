@@ -32,15 +32,15 @@ JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=V\u00e9rifiez que la classe de d
 
 JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: Le nom Principal est Null ou l'objet Principal n'existe pas. V\u00e9rifiez que CredentialValidationResult contient un objet Principal valide.
 JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=L'objet Principal dans l'objet CredentialValidationResult indiqu\u00e9 n'est pas valide. Il est Null ou son nom n'est pas valide.
-JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=Si l'application fournit un \u00e9l\u00e9ment IdentityStore, v\u00e9rifiez qu'il renvoie un objet Principal valide dans CredentialValidationResult.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=Si l'application fournit un IdentityStore, v\u00e9rifiez qu'il renvoie un objet Principal valide dans CredentialValidationResult.
 
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: UniqueId est Null. V\u00e9rifiez que CredentialValidationResult contient un \u00e9l\u00e9ment UniqueId valide.
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=L'\u00e9l\u00e9ment UniqueId dans l'objet CredentialValidationResult a pour valeur Null.
-JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Si l'application fournit un \u00e9l\u00e9ment IdentityStore, v\u00e9rifiez qu'il renvoie un \u00e9l\u00e9ment UniqueId in CredentialValidationResult valide.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Si l'application fournit un IdentityStore, v\u00e9rifiez qu'il renvoie un \u00e9l\u00e9ment UniqueId in CredentialValidationResult valide.
 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: Le bean IdentityStoreHandler est introuvable. Utilisez un registre d'utilisateurs d\u00e9fini dans server.xml. Le bean IdentityStoreHandler est cr\u00e9\u00e9 lorsque existe au moins un bean IdentityStore. Si l'application doit utiliser un \u00e9l\u00e9ment IdentityStore, v\u00e9rifiez qu'il est configur\u00e9 correctement. 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=Le bean IdentityStoreHandler est introuvable. Si l'application doit utiliser un \u00e9l\u00e9ment IdentityStore, v\u00e9rifiez qu'il est configur\u00e9 correctement. Le bean IdentityStoreHandler est cr\u00e9\u00e9 lorsque existe au moins un bean IdentityStore.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Si l'application doit utiliser un \u00e9l\u00e9ment IdentityStore, v\u00e9rifiez qu'il est configur\u00e9 correctement.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Si l'application doit utiliser un \u00e9l\u00e9ment IdentityStore, v\u00e9rifiez qu'il est configur\u00e9 correctement. 
 
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: Le d\u00e9ploiement de l''application a \u00e9chou\u00e9 car un \u00e9l\u00e9ment login-config a \u00e9t\u00e9 d\u00e9tect\u00e9 dans le fichier web.xml du module {0} dans l''application {1}. Pour activer le bean HttpAuthenticationMechanism, supprimez du fichier web.xml l''\u00e9l\u00e9ment login-configbean.
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=Le d\u00e9ploiement de l'application a \u00e9chou\u00e9 car l'\u00e9l\u00e9ment login-config et le bean HttpAuthenticationMechanism ont \u00e9t\u00e9 d\u00e9finis. Un seul de ces m\u00e9canismes d'authentification peut \u00eatre utilis\u00e9 dans votre application.
@@ -60,7 +60,7 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=V\u00e9rifiez qu
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Les donn\u00e9es hach\u00e9es ne sont pas valides. {0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=La valeur hach\u00e9e dans la base de donn\u00e9es n'est pas valide.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=V\u00e9rifiez que les donn\u00e9es hach\u00e9es dans la base de donn\u00e9es ont \u00e9t\u00e9 hach\u00e9es par l'algorithme de hachage prise en charge par la classe d'impl\u00e9mentation PasswordHash.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=V\u00e9rifiez que les donn\u00e9es hach\u00e9es dans la base de donn\u00e9es ont \u00e9t\u00e9 hach\u00e9es par l'algorithme de hachage prise en charge par le classe d'impl\u00e9mentation PasswordHash.
 
 JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: L''attribut {0} n''est pas d\u00e9fini dans l''\u00e9l\u00e9ment webAppSecurity ; la fonction de remplacement par le conteneur de la configuration d''HttpAuthenticationMechanism ne fonctionnera pas correctement."
 JAVAEESEC_CDI_ERROR_NO_URL.explanation=Etant donn\u00e9 que l'attribut requis n'est pas d\u00e9fini, la fonction de remplacement par le conteneur de l'authentification par formulaire HttpAuthenticationMechanism ne fonctionne pas.

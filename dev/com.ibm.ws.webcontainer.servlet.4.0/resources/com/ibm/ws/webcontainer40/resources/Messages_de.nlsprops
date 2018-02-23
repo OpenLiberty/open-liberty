@@ -35,3 +35,15 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: Fehler beim Festlegen der Zeiche
 unsupported.response.encoding.[{0}].explanation=Die in der Antwort angegebene Antwortcodierung ist nicht g\u00fcltig. Dies ist ein Anwendungsfehler.
 unsupported.response.encoding.[{0}].useraction=Untersuchen Sie die Protokoll, um festzustellen, ob die angegebene Codierung g\u00fcltig ist.
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: Trailer k\u00f6nnen nicht gesetzt werden, wenn die Antwort festgeschrieben wird.
+set.trailer.fields.committed.response.explanation=Die Antwort wurde bereits festgeschrieben.
+set.trailer.fields.committed.response.useraction=Stellen Sie sicher, dass die Antwort nicht festgeschrieben wurde, bevor Trailer festgelegt werden.
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: Trailer k\u00f6nnen nicht festgelegt werden, wenn die HTTP-Version nicht 1.1 oder h\u00f6her ist.
+set.trailer.fields.incorrect.http.version.explanation=HTTP-Trailer werden nur in HTTP 1.1 oder h\u00f6her unterst\u00fctzt.
+set.trailer.fields.incorrect.http.version.useraction=Stellen Sie sicher, dass HTTP 1.1 oder h\u00f6her verwendet wird.
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Trailer k\u00f6nnen nicht gesetzt werden, wenn als Transfer-Encoding-Headerwert nicht "chunked" angegeben ist.
+set.trailer.fields.incorrect.transfer.encoding.explanation=Trailer werden nur unterst\u00fctzt, wenn als Transfer-Encoding-Headerwert "chunked" angegeben ist.
+set.trailer.fields.incorrect.transfer.encoding.useraction=Stellen Sie sicher, dass der Transfer-Encoding-Header den Wert "chunked" enth\u00e4lt.

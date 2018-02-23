@@ -307,7 +307,7 @@ info.javadump.request.received.explanation=Questo messaggio \u00e8 unicamente a 
 info.javadump.request.received.useraction=Non \u00e8 richiesta alcuna azione.
 
 info.javadump.created=CWWKE0068I: Dump Java creato: {0}
-info.javadump.created.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+info.javadump.created.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
 info.javadump.created.useraction=Non \u00e8 richiesta alcuna azione.
 
 warn.javadump.unsupported=CWWKE0069W: Dump Java di tipo {0} non supportato.

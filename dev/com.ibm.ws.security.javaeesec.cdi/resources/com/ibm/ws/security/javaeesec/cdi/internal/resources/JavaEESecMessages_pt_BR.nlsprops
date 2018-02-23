@@ -20,7 +20,7 @@
 
 JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: A implementa\u00e7\u00e3o para o m\u00f3dulo {0} no aplicativo {1} falhou porque m\u00faltiplas implementa\u00e7\u00f5es HttpAuthenticationMechanism foram localizadas. A lista de classes \u00e9 {2}. Mais provavelmente, esse \u00e9 um problema de empacotamento de aplicativo. Certifique-se de que haja apenas uma implementa\u00e7\u00e3o HttpAuthenticationMechanism em cada m\u00f3dulo.
 JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=A implementa\u00e7\u00e3o do aplicativo falhou porque mais de uma implementa\u00e7\u00e3o HttpAuthenticationMechanism foi localizada. Essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Certifique-se de que haja apenas uma implementa\u00e7\u00e3o HttpAuthenticationMechanism para cada m\u00f3dulo no aplicativo.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Certifique-se de que haja apenas uma implementa\u00e7\u00e3o HttpAuthenticationMechanism para cada m\u00f3dulo no aplicativo. 
 
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: O bean LoginToContinueProperties n\u00e3o existe. O login do formul\u00e1rio n\u00e3o est\u00e1 ativado. Certifique-se de que o aplicativo esteja anotado pela anota\u00e7\u00e3o LoginToContinue.
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=O bean LoginToContinueProperties que \u00e9 necess\u00e1rio para a autentica\u00e7\u00e3o de login do formul\u00e1rio n\u00e3o existe.
@@ -30,8 +30,8 @@ JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: A classe de credencial fornecid
 JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=A classe de credencial fornecida para a autentica\u00e7\u00e3o n\u00e3o \u00e9 suportada pela classe CustomFormHttpAuthenticationMechanism. Use javax.security.enterprise.credential.UsernamePasswordCredential ou javax.security.enterprise.credential.BasicAuthenticationCredential para autentica\u00e7\u00e3o.
 JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Certifique-se de que a classe de credencial suportada seja usada para autentica\u00e7\u00e3o de formul\u00e1rio customizado.
 
-JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: O nome do principal \u00e9 nulo ou o objeto do principal n\u00e3o existe. Certifique-se de que CredentialValidationResult contenha o objeto do principal v\u00e1lido.
-JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=O objeto do principal no objeto fornecido CredentialValidationResult n\u00e3o \u00e9 v\u00e1lido. Ele \u00e9 nulo ou n\u00e3o tem nome v\u00e1lido.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: O nome do principal \u00e9 nulo ou o objeto do principal n\u00e3o existe.  Certifique-se de que CredentialValidationResult contenha o objeto do principal v\u00e1lido.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=O objeto do principal no objeto fornecido CredentialValidationResult n\u00e3o \u00e9 v\u00e1lido.  Ele \u00e9 nulo ou n\u00e3o tem nome v\u00e1lido.
 JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=Se o aplicativo fornece uma IdentityStore, certifique-se de que ele retorne o objeto do principal v\u00e1lido em CredentialValidationResult.
 
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: O UniqueId \u00e9 nulo. Certifique-se de que CredentialValidationResult contenha UniqueId v\u00e1lido.
@@ -48,11 +48,11 @@ JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Para ativar o bean HttpAuthen
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: O nome da regi\u00e3o para autentica\u00e7\u00e3o b\u00e1sica n\u00e3o est\u00e1 configurado, portanto, o valor padr\u00e3o, defaultRealm, foi usado.
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Porque o nome da regi\u00e3o para a autentica\u00e7\u00e3o b\u00e1sica n\u00e3o est\u00e1 definido, o nome da regi\u00e3o foi configurado para o valor padr\u00e3o de defaultRealm.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Para configurar o nome da regi\u00e3o, defina-o em uma anota\u00e7\u00e3o BasicAuthenticationMechanismDefinition no aplicativo.  Como alternativa, quando o atributo overrideHttpAuthenticationMechanism estiver configurado como BASIC, configure o valor do atributo basicAuthenticationMechanismRealmName.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Para configurar o nome da regi\u00e3o, defina-o em uma anota\u00e7\u00e3o BasicAuthenticationMechanismDefinition no aplicativo. Como alternativa, quando o atributo overrideHttpAuthenticationMechanism estiver configurado como BASIC, configure o valor do atributo basicAuthenticationMechanismRealmName.
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: O valor {0} do par\u00e2metro de configura\u00e7\u00e3o {1} \u00e9 inv\u00e1lido.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=O valor do par\u00e2metro de configura\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lido.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Certifique-se de que o par\u00e2metro de configura\u00e7\u00e3o esteja configurado corretamente.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Certifique-se de que o par\u00e2metro de configura\u00e7\u00e3o esteja configurado corretamente. 
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: O valor {0} do par\u00e2metro de configura\u00e7\u00e3o {1} \u00e9 menor que o valor m\u00ednimo {2}.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=O valor do par\u00e2metro de configura\u00e7\u00e3o \u00e9 menor que o valor m\u00ednimo.
@@ -60,7 +60,7 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Certifique-se de
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Os dados com hash s\u00e3o inv\u00e1lidos. {0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=O valor com hash no banco de dados n\u00e3o \u00e9 v\u00e1lido.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Certifique-se de que os dados com hash no banco de dados receberam o hash pelo algoritmo hash que a classe de implementa\u00e7\u00e3o PasswordHash suporta.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Certifique-se de que os dados com hash no banco de dados receberam o hash pelo algoritmo hash que a classe de implementa\u00e7\u00e3o PasswordHash suporta. 
 
 JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: O atributo {0} n\u00e3o est\u00e1 configurado no elemento webAppSecurity, o cont\u00eainer que substitui HttpAuthenticationMechanism n\u00e3o funcionar\u00e1 corretamente".
 JAVAEESEC_CDI_ERROR_NO_URL.explanation=Como o atributo necess\u00e1rio n\u00e3o est\u00e1 configurado, o cont\u00eainer que substitui a autentica\u00e7\u00e3o de formul\u00e1rio HttpAuthenticationMechanism n\u00e3o est\u00e1 funcionando.

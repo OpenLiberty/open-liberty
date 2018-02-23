@@ -573,12 +573,17 @@ czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Zainicjowano procedur\u0119 uruchamiania serwera {0} \
 (ID procesu: {1}), jednak nie mo\u017cna stwierdzi\u0107, czy zosta\u0142a ona zako\u0144czona, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
-warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
+kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, \
+czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: Nie mo\u017cna zatrzyma\u0107 serwera {0}, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
-error.serverStopCommandPortDisabled.useraction=Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, mo\u017cna go zatrzyma\u0107 z poziomu konsoli operatora.  W przeciwnym razie proces serwera mo\u017cna zatrzyma\u0107 z poziomu pow\u0142oki.
+error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+error.serverStopCommandPortDisabled.useraction=Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, mo\u017cna go zatrzyma\u0107 \
+z poziomu konsoli operatora.  W przeciwnym razie proces serwera mo\u017cna zatrzyma\u0107 z poziomu pow\u0142oki.
 
 warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: Zako\u0144czono tworzenie \
 zrzutu serwera {0}. Czas: {1}.  Nie mo\u017cna uzyska\u0107 pewnych informacji, poniewa\u017c port komend serwera jest wy\u0142\u0105czony, \
@@ -656,7 +661,8 @@ error.zosProcStart.start.length.useraction=Skr\u00f3\u0107 nazw\u0119 serwera i 
 info.addProductExtension=CWWKE0108I: Rozszerzenie \
 produktu {0} zosta\u0142o programowo w\u0142\u0105czone. Identyfikator produktu rozszerzenia \
 to {1}. Miejsce instalacji rozszerzenia produktu to {2}.
-info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
+info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.  \
+Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
 com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
 info.addProductExtension.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
@@ -895,7 +901,7 @@ info.envProductExtension=CWWKE0940I: Rozszerzenie produktu {0} ma identyfikator 
 info.envProductExtension.explanation= Zmienna \u015brodowiskowa WLP_PRODUCT_EXT_DIR wskazuje po\u0142o\u017cenie rozszerzenia produktu. Serwer znalaz\u0142 to rozszerzenie produktu i u\u017cywa go.
 info.envProductExtension.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-warning.variable.invalid=CWWKE0941W: Deklaracja zmiennej {0} okre\u015blona w pliku server.env jest niepoprawna, poniewa\u017c zawiera znaki inne ni\u017c alfanumeryczne w nazwie zmiennej. Warto\u015b\u0107 nie b\u0119dzie u\u017cywana.  
+warning.variable.invalid=CWWKE0941W: Deklaracja zmiennej {0} okre\u015blona w pliku server.env jest niepoprawna, poniewa\u017c zawiera znaki inne ni\u017c alfanumeryczne w nazwie zmiennej. Warto\u015b\u0107 nie b\u0119dzie u\u017cywana. 
 warning.variable.invalid.explanation=W nazwach zmiennych okre\u015blonych w pliku server.env dozwolone s\u0105 tylko znaki alfanumeryczne.
 warning.variable.invalid.useraction=Zmodyfikuj nazw\u0119 zmiennej, u\u017cywaj\u0105c tylko znak\u00f3w alfanumerycznych, albo przenie\u015b definicj\u0119 zmiennej do pliku bootstrap.properties.
 

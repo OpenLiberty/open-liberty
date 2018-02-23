@@ -60,7 +60,7 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Assicurarsi che 
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: I dati hash non sono validi. {0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=Il valore hash nel database non \u00e8 valido.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Verificare che i dati hash nel database siano stati resi tali dall'algoritmo hash supportato dalla classe di implementazione PasswordHash.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Verificare che i dati hash nel database siano stati resi tali dall'algoritmo hash supportato dalla classe di implementazione PasswordHash. 
 
 JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: L''attributo {0} non \u00e8 impostato nell''elemento webAppSecurity, HttpAuthenticationMechanism sovrascritture contenitore non funzioner\u00e0 correttamente."
 JAVAEESEC_CDI_ERROR_NO_URL.explanation=Poich\u00e9 l'attributo richiesto non \u00e8 impostato, l'autenticazione modulo HttpAuthenticationMechanism sovrascritture contenitore non funziona.

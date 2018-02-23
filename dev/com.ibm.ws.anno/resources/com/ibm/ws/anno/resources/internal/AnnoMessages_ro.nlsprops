@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 # -------------------------------------------------------------------------------------------------
 # Base Anno scanning layer: 0001 to 0250   com.ibm.ws.anno.resources.internal.AnnoMessages
 # -------------------------------------------------------------------------------------------------
@@ -33,21 +33,23 @@
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The class name of the resource
 # # {2} the hashcode id of the resource
-ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: \u00cenchiderea sursei [{1}] [{2}] a e\u015fuat cu o excep\u0163ie.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: \u00cenchiderea sursei [{1}] [{2}] a e\u015fuat. Mesaj de eroare: {3}
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=\u00cenchiderea resursei a cauzat o excep\u0163ie.
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource
 # # {2} the name of the class associated with the resource
-ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: \u00cenchiderea sursei [{1}] pentru clasa [{2}] a e\u015fuat cu o excep\u0163ie.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: \u00cenchiderea resursei [{1}] pentru clasa [{2}] a e\u015fuat. Mesaj de eroare: {3}
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=\u00cenchiderea fluxului de intrare pentru resurs\u0103 a cauzat o excep\u0163ie.
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of the resource, includes the full path to the class
 # # {2} the name of the class associated with the resource
-ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]: Deschiderea resursei [{1}] pentru clasa [{2}] a e\u015fuat cu o excep\u0163ie.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]: \u00cenchiderea resursei [{1}] pentru clasa [{2}] a e\u015fuat.
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=Deschiderea fluxului de intrare pentru resurs\u0103 a cauzat o excep\u0163ie.
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
 
@@ -99,7 +101,7 @@ ANNO_CLASSSOURCE_EMPTY_DIR.useraction=Verifica\u0163i dac\u0103 directorul ar tr
 # # {3} the name of the container for {1}
 # # {4} the name of the class
 ANNO_CLASSSOURCE_NOT_FILE=CWWKC0009W: [ {0} ]: Resursa [{1}] a fost g\u0103sit\u0103 ca un director [{2}] sub root [{3}] pentru clasa[{4}].
-ANNO_CLASSSOURCE_NOT_FILE.explanation=Resursa era a\u015fteptat\u0103 ca un fi\u015fier, dar s-a dovedit a fi un director. 
+ANNO_CLASSSOURCE_NOT_FILE.explanation=Resursa era a\u015fteptat\u0103 ca un fi\u015fier, dar s-a dovedit a fi un director.
 ANNO_CLASSSOURCE_NOT_FILE.useraction=Nu este disponibil\u0103 nici o ac\u0163iune utilizator.
 
 # # {0} A hashcode id used to identify the object emitting the message
@@ -112,15 +114,16 @@ ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=Deschiderea fluxului de intrare pen
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
 
 # # {0} A hashcode id used to identify the object emitting the message
-# # {1} a resource name
-# # {2} a directory path
-# # {3} a class name
-ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: \u00cenchiderea resursei [{1}] sub root [{2}] pentru clasa [{3}] a e\u015fuat.
+# # {1} A resource name
+# # {2} A directory path
+# # {3} A class name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: \u00cenchiderea resursei [{1}] sub root [{2}] pentru clasa [{3}] a e\u015fuat. Mesaj eroare: {4}
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=\u00cenchiderea fluxului de intrare pentru resurs\u0103 a cauzat o excep\u0163ie.
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
 
 # # {0} A hashcode id used to identify the object emitting the message
-# # {1} a jar file path name
+# # {1} A jar file path name
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: [ {0} ]: Deschiderea [{1}] a e\u015fuat cu o excep\u0163ie.
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Fi\u015fierul a fost deschis ca un fi\u015fier jar, iar acest lucru a cauzat o excep\u0163ie.
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
@@ -131,26 +134,27 @@ ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi me
 ANNO_CLASSSOURCE_JAR_STATE_BAD=CWWKC0013W: [ {0} ]: Fi\u015fierul jar [{1}] care deschide num\u0103r\u0103torul [{2}] este \u00eentr-o stare incorect\u0103 de \u00eenchidere.
 ANNO_CLASSSOURCE_JAR_STATE_BAD.explanation=A survenit o eroare intern\u0103. Num\u0103rul utilizatorilor activi pentru fi\u015fierul jar nu se potrive\u015fte cu starea fi\u015fierului jar.
 ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
-                        
+
 # # {0} A hashcode id used to identify the object emitting the message
-# # {1} the name of a jar file
-ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]: \u00cenchiderea [{1}] a e\u015fuat cu o excep\u0163ie.
+# # {1} The name of a jar file
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]: \u00cenchiderea [{1}] a e\u015fuat.
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=O \u00eencercare de a \u00eenchide obiectul JarFile a cauzat apari\u0163ia unei excep\u0163ii.
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
-                
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} a resource name
-# # {2} a class name
-# # {3} a jar file path 
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ]: Deschiderea [{1}] pentru clasa [{2}] \u00een [{3}] a e\u015fuat cu o excep\u0163ie.
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=A fost detectat\u0103 o intrare pentru clas\u0103 \u00een fi\u015fierul jar, dar creare unui InputStream pentru clas\u0103 a cauzat o excep\u0163ie.  
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a resource name
 # # {2} a class name
-# # {3} a jar file path 
-ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: \u00cenchiderea resursei [{1}] pentru clasa [{2}] din [{3}] a e\u015fuat cu o excep\u0163ie.
+# # {3} a jar file path
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ]: Deschiderea [{1}] pentru clasa [{2}] \u00een [{3}] a e\u015fuat.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=A fost detectat\u0103 o intrare pentru clas\u0103 \u00een fi\u015fierul jar, dar creare unui InputStream pentru clas\u0103 a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} A class name
+# # {3} A jar file path
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: \u00cenchiderea resursei [{1}] pentru clasa [{2}] \u00een [{3}] a e\u015fuat. Mesaj de eroare: {4}
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=\u00cenchiderea fluxului de intrare pentru resurs\u0103 a cauzat o excep\u0163ie.
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
 
@@ -160,14 +164,14 @@ ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi m
 ANNO_ANNOINFO_NO_METHOD=CWWKC0017W: Adnotarea [{0}] clasei de adnotare [{1}] nu con\u0163ine metoda [{2}].
 ANNO_ANNOINFO_NO_METHOD.explanation=O metod\u0103 de potrivire nu poate fi g\u0103sit\u0103 pentru un parametru \u00eentr-o adnotare codat\u0103.
 ANNO_ANNOINFO_NO_METHOD.useraction=Nu este disponibil\u0103 nici o ac\u0163iune utilizator.
-                
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS1=CWWKC0018W: [{0}] Are deja [{1}] ca o clas\u0103 java distinct\u0103 [{2}].
 ANNO_CLASSINFO_EXISTS1.explanation=Un obiect info clas\u0103 pentru clas\u0103 exist\u0103 deja \u00een cache.
 ANNO_CLASSINFO_EXISTS1.useraction=Nu este disponibil\u0103 nici o ac\u0163iune utilizator.
-            
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS2=CWWKC0019W: [{0}] Are deja [{1}] ca o clas\u0103 java.
@@ -180,7 +184,7 @@ ANNO_CLASSINFO_EXISTS2.useraction=Nu este disponibil\u0103 nici o ac\u0163iune u
 ANNO_CLASSINFO_EXISTS3=CWWKC0020W: [{0}] Are deja [{1}] ca o clas\u0103 adnotat\u0103 distinct [{2}].
 ANNO_CLASSINFO_EXISTS3.explanation=Un obiect info clas\u0103 pentru clas\u0103 exist\u0103 deja \u00een cache.
 ANNO_CLASSINFO_EXISTS3.useraction=Nu este disponibil\u0103 nici o ac\u0163iune utilizator.
-            
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS4=CWWKC0021W: [{0}] Are deja [{1}] ca o clas\u0103 adnotat\u0103.
@@ -198,17 +202,17 @@ ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesaj
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_METHODEXISTS=CWWKC0023W: [ {0} ] Ad\u0103ugarea [{1}] suprascrie un obiect existent [{2}].
 ANNO_CLASSINFO_METHODEXISTS.explanation=Un obiect metod\u0103 pentru clas\u0103 exist\u0103 deja \u00een cache.
-ANNO_CLASSINFO_METHODEXISTS.useraction=Nu este necesar\u0103 nici o ac\u0163iune utilizator.     
+ANNO_CLASSINFO_METHODEXISTS.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_FIELDEXISTS=CWWKC0024W: [ {0} ] Ad\u0103ugarea [{1}] suprascrie un obiect existent [{2}].
 ANNO_CLASSINFO_FIELDEXISTS.explanation=\u00cen cache exist\u0103 deja un obiect c\u00e2mp pentru clas\u0103.
-ANNO_CLASSINFO_FIELDEXISTS.useraction=Nu este necesar\u0103 nici o ac\u0163iune utilizator.     
+ANNO_CLASSINFO_FIELDEXISTS.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
 
 # # {0} A hashcode id used to identify the object emitting the message
-# # {1} The name of a class 
+# # {1} The name of a class
 ANNO_CLASSINFO_CLASS_NOTFOUND=CWWKC0025W: [ {0} ] Clasa nu a fost g\u0103sit\u0103 [{1}].
 ANNO_CLASSINFO_CLASS_NOTFOUND.explanation=Procesul de scanare al adnot\u0103rilor nu a putut rezolva clasa. Acest lucru poate fi rezolvat de o \u00eencercare ulterioar\u0103 de scanare a clasei.
 ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=Verifica\u0163i dac\u0103 clasa este inclus\u0103 \u00een aplica\u0163ie sau \u00een cale de clase a aplica\u0163iei.
@@ -225,14 +229,14 @@ ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesa
 ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: [ {0} ]: \u00cenchiderea [{1}] a cauzat o excep\u0163ie.
 ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=\u00cenchiderea sursei clasei a cauzat o excep\u0163ie.
 ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
-       
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: [ {0} ]: Deschiderea unui flux de intrare pentru resursa [{1}] pentru clasa [{2}] a e\u015fuat cu o excep\u0163ie.
-ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Atunci c\u00e2nd procesul de scanare al adnot\u0103rilor a \u00eencercat s\u0103 deschid\u0103 un flux de intrare pentru clas\u0103, a ap\u0103rut o excep\u0163ie. 
+ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Atunci c\u00e2nd procesul de scanare al adnot\u0103rilor a \u00eencercat s\u0103 deschid\u0103 un flux de intrare pentru clas\u0103, a ap\u0103rut o excep\u0163ie.
 ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
-            
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the full resource name for the class
 # # {2} The class name
@@ -252,7 +256,7 @@ ANNO_CREATE_READER_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesaju
 ANNO_INFOVISIT_INVALID_STATE=CWWKC0031W: Eroare stare intern\u0103: Vizitator [ {0} ] Setare [ {1} ] cu [ {2} ].
 ANNO_INFOVISIT_INVALID_STATE.explanation=\u00cen timpul proces\u0103rii unei adnot\u0103ri a ap\u0103rut o eroare, obiectul vizitator este incorect
 ANNO_INFOVISIT_INVALID_STATE.useraction=CMSG0001
-                    
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A hashcode id used to identify the object that exists
 ANNO_INFOVISITOR_RESET1=CWWKC0032W: [ {0} ] Exist\u0103 un pachet rezidual [ {1} ]
@@ -270,13 +274,13 @@ ANNO_INFOVISITOR_RESET2.useraction=CMSG0002
 ANNO_INFOVISITOR_RESET3=CWWKC0034W: [ {0} ] Exist\u0103 o metod\u0103 rezidual\u0103 [ {1} ]
 ANNO_INFOVISITOR_RESET3.explanation=A survenit o eroare intern\u0103. \u00cen timpul reset-ului unui vizitator, au fost g\u0103site date reziduale.
 ANNO_INFOVISITOR_RESET3.useraction=CMSG0002
-                
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A hashcode id used to identify the object that exists
 ANNO_INFOVISITOR_RESET4=CWWKC0035W: [ {0} ] Exist\u0103 un c\u00e2mp rezidual\u0103 [ {1} ]
 ANNO_INFOVISITOR_RESET4.explanation=A survenit o eroare intern\u0103. \u00cen timpul reset-ului unui vizitator, au fost g\u0103site date reziduale.
 ANNO_INFOVISITOR_RESET4.useraction=CMSG0002
-   
+
 # # {0} A hashcode id used to identify the object emitting the message
 ANNO_INFOVISITOR_RESET5=CWWKC0036W: [ {0} ] Exist\u0103 o sttare halt rezidual\u0103.
 ANNO_INFOVISITOR_RESET5.explanation=A survenit o eroare intern\u0103. \u00cen timpul reset-ului unui vizitator, au fost g\u0103site date reziduale.
@@ -287,7 +291,7 @@ ANNO_INFOVISITOR_RESET5.useraction=CMSG0002
 ANNO_INFOVISITOR_RESET6=CWWKC0037W: [ {0} ] Exist\u0103 numele unei clase externe reziduale [ {1} ]
 ANNO_INFOVISITOR_RESET6.explanation=A survenit o eroare intern\u0103. \u00cen timpul reset-ului unui vizitator, au fost g\u0103site date reziduale.
 ANNO_INFOVISITOR_RESET6.useraction=CMSG0002
-                                       
+
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of a class package
 ANNO_INFOVISITOR_VISIT1=CWWKC0038W: [ {0} ] Pachetul pentru numele [ {1} ] este null.
@@ -372,7 +376,7 @@ ANNO_TARGETS_UNEXPECTED_NULL=CWWKC0056W: Eroare intern\u0103 scanare clas\u0103:
 ANNO_TARGETS_UNEXPECTED_NULL.explanation=CMSG0001
 ANNO_TARGETS_UNEXPECTED_NULL.useraction=CMSG0002
 
-ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Inconsisten\u0163\u0103 date interne: Maparea bidirec\u0163ional\u0103 [ {0} ] nu a mapat complet cheia [ {1} ] cu valoarea [ {2} ].  Rezultatul ad\u0103ug\u0103rii cheii a fost [ {3} ] \u00een timp ce rezultatul ad\u0103ug\u0103rii valorii a fost [ {4} ].  Rezultatele ar trebui s\u0103 fie acelea\u015fi. 
+ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Inconsisten\u0163\u0103 date interne: Maparea bidirec\u0163ional\u0103 [ {0} ] nu a mapat complet cheia [ {1} ] cu valoarea [ {2} ].  Rezultatul ad\u0103ug\u0103rii cheii a fost [ {3} ] \u00een timp ce rezultatul ad\u0103ug\u0103rii valorii a fost [ {4} ].  Rezultatele ar trebui s\u0103 fie acelea\u015fi.
 ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
 ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
 
@@ -397,15 +401,155 @@ ANNO_UTIL_UNRECOGNIZED_TYPE.explanation=CMSG0001
 ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
 
 # #{0} A hashcode id used to identify the object emitting the message
-# #{1} The name of the java exception which occurred 
+# #{1} The name of the java exception which occurred
 # #{2} The class name of the resource being closed
 # #{3} The hashcode id of the resource being closed
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: [ {0} ]: Ignorarea excep\u0163iei de \u00eenchidere extra {1} din {2} [ {3} ]
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=O excep\u0163ie a avut loc la \u00eencercarea de \u00eenchidere a resursei.
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
 
-# {0} The name of the class
-# {1} The name of the jar the class was in.
+# # {0} The name of the class
+# # {1} The name of the JAR file the class is in.
 ANNO_TARGETS_CORRUPT_CLASS=CWWKC0064I: Nu este posibil\u0103 procesarea clasei {0} \u00een {1} deoarece se pare c\u0103 adnotprile sunt corupte.
 ANNO_TARGETS_CORRUPT_CLASS.explanation=\u00cen timpul citirii unui fi\u015fier \u00een care se afla o clas\u0103 a ap\u0103rut o problem\u0103 \u00een determinarea existen\u0163ei macar a unei adnot\u0103ri de interest. Este posibil ca fi\u015fierul clas\u0103 s\u0103 fie invalid. Drept rezultat, adnot\u0103rile din aceast\u0103 clas\u0103 nu vor fi recunoscute.
 ANNO_TARGETS_CORRUPT_CLASS.useraction=Clasa poate fi \u00eenlocuit\u0103, \u00eenl\u0103turat\u0103 sau acest acest mesaj poate fi ignorat \u00een func\u0163ie de c\u00e2t de important\u0103 este clasa pentru func\u0163ia aplica\u0163iei.
+
+#### Added 07-Feb-2018:
+
+# # {0} A hashcode ID that identifies the object emitting the message
+# # {1} A hashcode ID that identifies the object causing the exception
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION=CWWKC0065W: [ {0} ]: Deschiderea sursei clasei copil [{1}] a determinat o excep\u0163ie. Mesaj de eroare: {2}
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.explanation=Deschiderea sursei clasei copil a determinat o excep\u0163ie.
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode ID that identifies the object emitting the message
+# # {1} A hashcode ID that identifies the object causing the exception
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION=CWWKC0066W: [ {0} ]: \u00cenchiderea sursei clasei copil [{1}] a e\u015fuat. Mesaj de eroare: {3}
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.explanation=\u00cenchiderea sursei clasei copil a determinat o excep\u0163ie.
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} An entry name
+# # {2} A class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION=CWWKC0067W: [ {0} ] Procesarea intr\u0103rii [{1}] pentru clasa [{2}] a determinat o excep\u0163ie. Mesaj de eroare: {3}
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.explanation=Procesarea de informa\u0163ii despre clas\u0103 citite dintr-o intrare a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A JAR entry name
+# # {2} A class name
+# # {3} A JAR file name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION=CWWKC0068W: [ {0} ]: \u00cenchiderea intr\u0103rii [{1}] pentru clasa [{2}] \u00een [{3}] a e\u015fuat. Mesaj de eroare: {4}
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.explanation=\u00cenchiderea intr\u0103rii a determinat o excep\u0163ie.
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A file name
+# # {2} A class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION=CWWKC0069W: [ {0} ] Procesarea fi\u015fierului [{1}] pentru clasa [{2}] a determinat o excep\u0163ie. Mesaj de eroare: {3}
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.explanation=Procesarea de informa\u0163ii despre clas\u0103 citite dintr-un fi\u015fier a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} A directory path
+# # {3} A class name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION=CWWKC0070W: [ {0} ]: \u00cenchiderea resursei [{1}] sub root [{2}] pentru clasa [{3}] a e\u015fuat. Mesaj eroare: {4}
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.explanation=\u00cenchiderea fi\u015fierului a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A JAR entry name
+# # {2} A class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION=CWWKC0071W: [ {0} ] Procesarea intr\u0103rii JAR [{1}] pentru clasa [{2}] a determinat o excep\u0163ie. Mesaj de eroare: {3}
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.explanation=Procesarea de informa\u0163ii despre clas\u0103 citite dintr-o intrare JAR a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A JAR entry name
+# # {2} A class name
+# # {3} A jar name
+# # {4} The error message from the exception
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION=CWWKC0072W: [ {0} ]: \u00cenchiderea intr\u0103rii JAR [{1}] pentru clasa [{2}] \u00een [{3}] a e\u015fuat. Mesaj de eroare: {4}
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.explanation=\u00cenchiderea fi\u015fierului a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} A class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION=CWWKC0073W: [ {0} ] Procesarea resursei [{1}] pentru clasa [{2}] a determinat o excep\u0163ie. Mesaj de eroare: {3}
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.explanation=Procesarea de informa\u0163ii despre clas\u0103 citite dintr-o resurs\u0103 a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The resource name
+# # {2} The class name
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION=CWWKC0074W: [ {0} ]: \u00cenchiderea resursei [{1}] pentru clasa [{2}] a e\u015fuat. Mesaj de eroare: {3}
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.explanation=\u00cenchiderea resursei a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} The target convertion type
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION=CWWKC0075W: [ {0} ]: Containerul din aceast\u0103 surs\u0103 de clas\u0103 a e\u015fuat convertirea la [{1}]. Mesaj de eroare: {2}
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.explanation=Fi\u015fierul nu a putut fi convertit \u00een noul tip de obiect.
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.useraction=Nu este disponibil\u0103 nici o ac\u0163iune utilizator.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} File name
+# # {2} A class name
+# # {3} A file name
+# # {4} The file path name of {1}
+# # {5} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION=CWWKC0076W: [ {0} ]: Conversia [{1}] \u00een [{2}] sub root [{3}] pentru prefixul [{4}] a e\u015fuat. Mesaj eroare: {5}
+ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.explanation=Intrarea nu a putut fi convertit\u0103 la noul tip de obiect.
+ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.useraction=Nu este disponibil\u0103 nici o ac\u0163iune utilizator.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} a class name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: [ {0} ] Procesarea informa\u0163iilor Jandex pentru clasa [{1}] a determinat o excep\u0163ie. Mesaj de eroare: {2}
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=Procesarea informa\u0163iilor Jandex ale unei clase a determinat o excep\u0163ie.
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Deschiderea resursei de indexuri Jandex [{1}] a e\u015fuat.  Mesaj de eroare: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=\u00cencercarea de a deschide resursa de indexuri Jandex a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] Citirea resursei de indexuri Jandex [{1}] a e\u015fuat.  Mesaj de eroare: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=\u00cencercarea de a citi indexul Jandex a e\u015fuat cu o excep\u0163ie.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] Deschiderea fi\u015fierului de indexuri Jandex [{1}] a e\u015fuat.  Mesaj de eroare: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=\u00cencercarea de a deschide resursa de indexuri Jandex a cauzat o excep\u0163ie.
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A hashcode id used to identify the object emitting the message
+# # {1} A resource name
+# # {2} The error message from the exception
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] Citirea fi\u015fierului de indexuri Jandex [{1}] a e\u015fuat.  Mesaj de eroare: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=\u00cencercarea de a citi indexul Jandex a e\u015fuat cu o excep\u0163ie.
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Vede\u0163i excep\u0163ia \u015fi mesajul FFDC asociat pentru informa\u0163ii suplimentare.
+
+# # {0} A class name
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Eroare intern\u0103 de scanare clas\u0103: procesarea duplicatelor de procesare Jandex a clasei [ {0} ].
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002

@@ -35,3 +35,17 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: Nezda\u0159ilo se nastavit k\u00
 unsupported.response.encoding.[{0}].explanation=K\u00f3dov\u00e1n\u00ed odezvy ur\u010den\u00e9 odezv\u011b je neplatn\u00e9. Jde o chybu aplikace.
 unsupported.response.encoding.[{0}].useraction=Prohl\u00e9dn\u011bte si protokoly a ur\u010dete, zda je ur\u010den\u00e9 k\u00f3dov\u00e1n\u00ed platn\u00e9.
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: V p\u0159\u00edpad\u011b, \u017ee je odezva potvrzena, nelze koncov\u00e9 \u010d\u00e1sti nastavit.
+set.trailer.fields.committed.response.explanation=Odpov\u011b\u010f ji\u017e byla potvrzena.
+set.trailer.fields.committed.response.useraction=Ujist\u011bte se, \u017ee odezva nebyla p\u0159ed nastaven\u00edm koncov\u00fdch \u010d\u00e1st\u00ed potvrzena.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: Koncov\u00e9 \u010d\u00e1sti nelze nastavit, pokud verze HTTP nen\u00ed 1.1 nebo vy\u0161\u0161\u00ed.
+set.trailer.fields.incorrect.http.version.explanation=Koncov\u00e9 \u010d\u00e1sti HTTP jsou podporov\u00e1ny pouze v HTTP 1.1 nebo vy\u0161\u0161\u00ed.
+set.trailer.fields.incorrect.http.version.useraction=Ujist\u011bte se, \u017ee se pou\u017e\u00edv\u00e1 HTTP verze 1.1 nebo vy\u0161\u0161\u00ed.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: V p\u0159\u00edpad\u011b, \u017ee hodnota z\u00e1hlav\u00ed Transfer-Encoding nen\u00ed "chunked", nesm\u00ed b\u00fdt koncov\u00e9 \u010d\u00e1sti nastaveny.
+set.trailer.fields.incorrect.transfer.encoding.explanation=Koncov\u00e9 \u010d\u00e1sti jsou podporov\u00e1na pouze v p\u0159\u00edpad\u011b, \u017ee je hodnota z\u00e1hlav\u00ed Transfer-Encoding "chunked".
+set.trailer.fields.incorrect.transfer.encoding.useraction=Ujist\u011bte se, \u017ee z\u00e1hlav\u00ed Transfer-Encoding obsahuje hodnotu "chunked".
