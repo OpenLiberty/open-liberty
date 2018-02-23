@@ -16,6 +16,8 @@ import java.util.Objects;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+
 /**
  * ApiResponses
  *
@@ -66,7 +68,7 @@ public class APIResponsesImpl extends LinkedHashMap<String, APIResponse> impleme
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class ApiResponses {\n");
-        sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+        sb = (super.toString() != null) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

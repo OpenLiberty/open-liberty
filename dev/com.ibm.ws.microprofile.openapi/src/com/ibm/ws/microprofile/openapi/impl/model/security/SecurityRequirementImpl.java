@@ -19,6 +19,8 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+
 /**
  * SecurityRequirement
  *
@@ -66,7 +68,7 @@ public class SecurityRequirementImpl extends LinkedHashMap<String, List<String>>
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class SecurityRequirement {\n");
-        sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+        sb = (super.toString() != null) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }
