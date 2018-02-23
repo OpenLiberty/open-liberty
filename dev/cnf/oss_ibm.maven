@@ -45,7 +45,7 @@ com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.0e7ebf85d3
 com.ibm.ws.org.apache.yoko:yoko-rmi-spec:1.5.0.0e7ebf85d3
 com.ibm.ws.org.apache.yoko:yoko-rmi-impl:1.5.0.0e7ebf85d3
 com.ibm.ws.org.apache.yoko:yoko-core:1.5.0.0e7ebf85d3
-com.ibm.ws.org.eclipse.platform:org.eclipse.osgi:3.12.50.v20170928-1321
+com.ibm.ws.org.eclipse.platform:org.eclipse.osgi:3.12.100.v20180210-1608
 com.ibm.ws.org.apache:xalan:2.7.0
 com.ibm.ws.javax.j2ee:standardtld:1.2
 com.ibm.ws.org.eclipse.equinox:console:1.1.200.v20150929-1405
@@ -86,3 +86,4 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.1-bd4
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.1-bd47e8f
 com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20180110-104032-383
 com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20180110-104402-374
+com.ibm.ws.lars:larsServer-memoryBackend:war:1.0.1

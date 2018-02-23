@@ -26,6 +26,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 
+@Trivial
 public class StampedValue {
 
     private static final TraceComponent tc = Tr.register(StampedValue.class);
@@ -54,14 +55,6 @@ public class StampedValue {
         this.config = config;
     }
 
-    protected SourcedValue resolveCurrent() {
-        return config.getSourcedValue(type, getKey());
-    }
-
-    public String getKey() {
-        return parentContainer.getKey();
-    }
-
     /**
      * Fetch the latest version of the property. If not up to date then resolve to the latest
      * value, inline.
@@ -72,29 +65,30 @@ public class StampedValue {
         boolean fromCache = true;
         int cacheVersion = stampedValue.getStamp();
         int latestVersion = parentContainer.getMasterVersion();
-        SourcedValue compositeValue = null;
+        String key = parentContainer.getKey();
+        SourcedValue sourcedValue = null;
         if (cacheVersion != latestVersion) {
             SourcedValue currentValue = stampedValue.getReference();
-            SourcedValue newValue = resolveCurrent();
+            SourcedValue newValue = config.getSourcedValue(type, key);
 
             if (stampedValue.compareAndSet(currentValue, newValue, cacheVersion, latestVersion)) {
-                compositeValue = newValue;
+                sourcedValue = newValue;
                 fromCache = false;
             }
         }
         if (fromCache) {
-            compositeValue = stampedValue.getReference();
+            sourcedValue = stampedValue.getReference();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            if (compositeValue != null) {
-                Tr.debug(tc, "get: Key={0}, Value={1}, Source={2}", getKey(), compositeValue.getValue(), compositeValue.getSource());
+            if (sourcedValue != null) {
+                Tr.debug(tc, "get: Key={0}, Value={1}", key, sourcedValue);
             } else {
-                Tr.debug(tc, "get: Key={0} not found", getKey());
+                Tr.debug(tc, "get: Key={0} not found", key);
             }
         }
 
-        return compositeValue;
+        return sourcedValue;
     }
 
     protected Type getType() {

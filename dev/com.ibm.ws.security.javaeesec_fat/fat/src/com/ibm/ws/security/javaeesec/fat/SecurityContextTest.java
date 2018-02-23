@@ -40,8 +40,7 @@ public class SecurityContextTest extends JavaEESecTestBase {
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected static Class<?> logClass = SecurityContextTest.class;
     protected String queryString = "/JavaEESecBasicAuthServlet";
-    protected static String[] warList = { "JavaEESecBasicAuthServlet.war", "JavaEESecAnnotatedBasicAuthServlet.war",
-                                          "JavaEEsecFormAuth.war", "JavaEEsecFormAuthRedirect.war" };
+    protected static String[] warList = { "JavaEESecBasicAuthServlet.war" };
     protected static String urlBase;
     protected static String JAR_NAME = "JavaEESecBase.jar";
 
@@ -59,9 +58,6 @@ public class SecurityContextTest extends JavaEESecTestBase {
 
         ServerHelper.setupldapServer();
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.basic");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecAnnotatedBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.annotatedbasic");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuth.war", true, JAR_NAME, false, "web.jar.base", "web.war.formlogin");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuthRedirect.war", true, JAR_NAME, false, "web.jar.base", "web.war.redirectformlogin");
 
         myServer.setServerConfigurationFile("securityContext.xml");
         myServer.startServer(true);

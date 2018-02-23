@@ -11,6 +11,7 @@
 package com.ibm.ws.logging.data;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class GenericData {
 
@@ -19,6 +20,10 @@ public class GenericData {
     private final ArrayList<Pair> pairs;
 
     private String sourceType;
+
+    private Level logRecordLevel = null;
+
+    private String loggerName = null;
 
     public GenericData() {
         pairs = new ArrayList<Pair>();
@@ -48,6 +53,22 @@ public class GenericData {
 
     public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
+    }
+
+    public void setLogRecordLevel(Level logRecordLevel) {
+        this.logRecordLevel = logRecordLevel;
+    }
+
+    public Level getLogRecordLevel() {
+        return logRecordLevel;
+    }
+
+    public void setLoggerName(String loggerName) {
+        this.loggerName = loggerName;
+    }
+
+    public String getLoggerName() {
+        return loggerName;
     }
 
     //Method created to accomodate some tests, must remove down the line

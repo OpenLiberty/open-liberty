@@ -14,12 +14,15 @@ import java.util.Comparator;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class ConfigSourceComparator implements Comparator<ConfigSource> {
 
     public static final ConfigSourceComparator INSTANCE = new ConfigSourceComparator();
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public int compare(ConfigSource o1, ConfigSource o2) {
         if (o1 == o2) {
             return 0;

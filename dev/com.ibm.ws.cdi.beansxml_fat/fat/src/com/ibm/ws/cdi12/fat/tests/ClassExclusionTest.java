@@ -10,25 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.io.File;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -47,61 +42,61 @@ public class ClassExclusionTest extends LoggingTest {
     public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12ClassExclusionTestServer");
 
     @BuildShrinkWrap
-    public static Archive[] buildShrinkWrap() {
-       WebArchive classExclusion = ShrinkWrap.create(WebArchive.class, "classExclusion.war")
-                        .addClass("cdi12.classexclusion.test.packageexcludedbyproperty.ExcludedByPropertyBean")
-                        .addClass("cdi12.classexclusion.test.ExcludedBean")
-                        .addClass("cdi12.classexclusion.test.packageprotectedbyclass.ProtectedByClassBean")
-                        .addClass("cdi12.classexclusion.test.excludedpackage.ExcludedPackageBean")
-                        .addClass("cdi12.classexclusion.test.IncludedBean")
-                        .addClass("cdi12.classexclusion.test.excludedpackagetree.subpackage.ExcludedPackageTreeBean")
-                        .addClass("cdi12.classexclusion.test.ProtectedByHalfComboBean")
-                        .addClass("cdi12.classexclusion.test.TestServlet")
-                        .addClass("cdi12.classexclusion.test.interfaces.IVetoedBean")
-                        .addClass("cdi12.classexclusion.test.interfaces.IExcludedPackageBean")
-                        .addClass("cdi12.classexclusion.test.interfaces.IProtectedByHalfComboBean")
-                        .addClass("cdi12.classexclusion.test.interfaces.IProtectedByClassBean")
-                        .addClass("cdi12.classexclusion.test.interfaces.IExcludedBean")
-                        .addClass("cdi12.classexclusion.test.interfaces.IIncludedBean")
-                        .addClass("cdi12.classexclusion.test.interfaces.IExcludedByPropertyBean")
-                        .addClass("cdi12.classexclusion.test.interfaces.IExcludedPackageTreeBean")
-                        .addClass("cdi12.classexclusion.test.interfaces.IExcludedByComboBean")
-                        .addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedBean")
-                        .addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedPackageTreeBean")
-                        .addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForVetoedBean")
-                        .addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedPackageBean")
-                        .addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedByPropertyBean")
-                        .addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedByComboBean")
-                        .addClass("cdi12.classexclusion.test.VetoedBean")
-                        .addClass("cdi12.classexclusion.test.exludedbycombopackagetree.subpackage.ExcludedByComboBean")
-                        .add(new FileAsset(new File("test-applications/classExclusion.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                        .add(new FileAsset(new File("test-applications/classExclusion.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+    public static Archive<?>[] buildShrinkWrap() {
+        WebArchive classExclusion = ShrinkWrap.create(WebArchive.class, "classExclusion.war");
+        classExclusion.addClass("cdi12.classexclusion.test.packageexcludedbyproperty.ExcludedByPropertyBean");
+        classExclusion.addClass("cdi12.classexclusion.test.ExcludedBean");
+        classExclusion.addClass("cdi12.classexclusion.test.packageprotectedbyclass.ProtectedByClassBean");
+        classExclusion.addClass("cdi12.classexclusion.test.excludedpackage.ExcludedPackageBean");
+        classExclusion.addClass("cdi12.classexclusion.test.IncludedBean");
+        classExclusion.addClass("cdi12.classexclusion.test.excludedpackagetree.subpackage.ExcludedPackageTreeBean");
+        classExclusion.addClass("cdi12.classexclusion.test.ProtectedByHalfComboBean");
+        classExclusion.addClass("cdi12.classexclusion.test.TestServlet");
+        classExclusion.addClass("cdi12.classexclusion.test.interfaces.IVetoedBean");
+        classExclusion.addClass("cdi12.classexclusion.test.interfaces.IExcludedPackageBean");
+        classExclusion.addClass("cdi12.classexclusion.test.interfaces.IProtectedByHalfComboBean");
+        classExclusion.addClass("cdi12.classexclusion.test.interfaces.IProtectedByClassBean");
+        classExclusion.addClass("cdi12.classexclusion.test.interfaces.IExcludedBean");
+        classExclusion.addClass("cdi12.classexclusion.test.interfaces.IIncludedBean");
+        classExclusion.addClass("cdi12.classexclusion.test.interfaces.IExcludedByPropertyBean");
+        classExclusion.addClass("cdi12.classexclusion.test.interfaces.IExcludedPackageTreeBean");
+        classExclusion.addClass("cdi12.classexclusion.test.interfaces.IExcludedByComboBean");
+        classExclusion.addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedBean");
+        classExclusion.addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedPackageTreeBean");
+        classExclusion.addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForVetoedBean");
+        classExclusion.addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedPackageBean");
+        classExclusion.addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedByPropertyBean");
+        classExclusion.addClass("cdi12.classexclusion.test.fallbackbeans.FallbackForExcludedByComboBean");
+        classExclusion.addClass("cdi12.classexclusion.test.VetoedBean");
+        classExclusion.addClass("cdi12.classexclusion.test.exludedbycombopackagetree.subpackage.ExcludedByComboBean");
+        classExclusion.add(new FileAsset(new File("test-applications/classExclusion.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
+        classExclusion.add(new FileAsset(new File("test-applications/classExclusion.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
-       EnterpriseArchive classExclusionEar = ShrinkWrap.create(EnterpriseArchive.class,"classExclusion.ear")
-                        .add(new FileAsset(new File("test-applications/classExclusion.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .add(new FileAsset(new File("test-applications/classExclusion.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                        .addAsModule(classExclusion);
+        EnterpriseArchive classExclusionEar = ShrinkWrap.create(EnterpriseArchive.class, "classExclusion.ear");
+        classExclusionEar.add(new FileAsset(new File("test-applications/classExclusion.ear/resources/META-INF/application.xml")), "/META-INF/application.xml");
+        classExclusionEar.add(new FileAsset(new File("test-applications/classExclusion.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
+        classExclusionEar.addAsModule(classExclusion);
 
-       JavaArchive TestVetoedAlternativeJar = ShrinkWrap.create(JavaArchive.class,"TestVetoedAlternative.jar")
-                        .addClass("com.ibm.cdi.test.vetoed.alternative.AppScopedBean")
-                        .addClass("com.ibm.cdi.test.vetoed.alternative.VetoedAlternativeBean")
-                        .add(new FileAsset(new File("test-applications/TestVetoedAlternative.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
+        JavaArchive testVetoedAlternativeJar = ShrinkWrap.create(JavaArchive.class, "TestVetoedAlternative.jar");
+        testVetoedAlternativeJar.addClass("com.ibm.cdi.test.vetoed.alternative.AppScopedBean");
+        testVetoedAlternativeJar.addClass("com.ibm.cdi.test.vetoed.alternative.VetoedAlternativeBean");
+        testVetoedAlternativeJar.add(new FileAsset(new File("test-applications/TestVetoedAlternative.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
 
-       WebArchive TestVetoedAlternativeWar = ShrinkWrap.create(WebArchive.class, "TestVetoedAlternative.war")
-                        .addAsManifestResource(new File("test-applications/TestVetoedAlternative.war/resources/META-INF/MANIFEST.MF"))
-                        .addClass("com.ibm.cdi.test.vetoed.alternative.WebServ")
-                        .add(new FileAsset(new File("test-applications/TestVetoedAlternative.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                        .add(new FileAsset(new File("test-applications/TestVetoedAlternative.war/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
+        WebArchive testVetoedAlternativeWar = ShrinkWrap.create(WebArchive.class, "TestVetoedAlternative.war");
+        testVetoedAlternativeWar.addAsManifestResource(new File("test-applications/TestVetoedAlternative.war/resources/META-INF/MANIFEST.MF"));
+        testVetoedAlternativeWar.addClass("com.ibm.cdi.test.vetoed.alternative.WebServ");
+        testVetoedAlternativeWar.add(new FileAsset(new File("test-applications/TestVetoedAlternative.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
+        testVetoedAlternativeWar.add(new FileAsset(new File("test-applications/TestVetoedAlternative.war/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
 
-       EnterpriseArchive TestVetoedAlternativeEar = ShrinkWrap.create(EnterpriseArchive.class,"TestVetoedAlternative.ear")
-                        .add(new FileAsset(new File("test-applications/TestVetoedAlternative.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(TestVetoedAlternativeJar)
-                        .addAsModule(TestVetoedAlternativeWar);
+        EnterpriseArchive testVetoedAlternativeEar = ShrinkWrap.create(EnterpriseArchive.class, "TestVetoedAlternative.ear");
+        testVetoedAlternativeEar.add(new FileAsset(new File("test-applications/TestVetoedAlternative.ear/resources/META-INF/application.xml")), "/META-INF/application.xml");
+        testVetoedAlternativeEar.addAsModule(testVetoedAlternativeJar);
+        testVetoedAlternativeEar.addAsModule(testVetoedAlternativeWar);
 
-       Archive[] archives = new Archive[2];
-       archives[0] = classExclusionEar;
-       archives[1] = TestVetoedAlternativeEar;
-       return archives;
+        Archive<?>[] archives = new Archive<?>[2];
+        archives[0] = classExclusionEar;
+        archives[1] = testVetoedAlternativeEar;
+        return archives;
     }
 
     /*

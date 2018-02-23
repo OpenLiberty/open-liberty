@@ -1,0 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs 'com.fasterxml.jackson.core:jackson-annotations:2.9.1'
+  requiredLibs 'com.fasterxml.jackson.core:jackson-core:2.9.1'
+  requiredLibs 'com.fasterxml.jackson.core:jackson-databind:2.9.1'
+  requiredLibs 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.1'
+  requiredLibs 'org.yaml:snakeyaml:1.18'
+}

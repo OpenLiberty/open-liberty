@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.AfterClass;
@@ -60,8 +62,9 @@ public class SimpleJSPTest extends LoggingTest {
                         .add(new FileAsset(new File("test-applications/simpleJSPApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
                         .add(new FileAsset(new File("test-applications/simpleJSPApp.war/resources/index.jsp")), "/index.jsp");
         server = SHARED_SERVER.getLibertyServer();
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
         ShrinkHelper.exportDropinAppToServer(server, simpleJSPApp);
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application simpleJSPApp started");
+        assertNotNull("simpleJSPApp started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*simpleJSPApp"));
     }
 
     @Test

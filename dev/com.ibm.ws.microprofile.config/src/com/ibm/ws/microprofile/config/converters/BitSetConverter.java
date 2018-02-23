@@ -14,11 +14,14 @@ import java.util.BitSet;
 
 import javax.xml.bind.DatatypeConverter;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  *
  */
 public class BitSetConverter extends BuiltInConverter {
 
+    @Trivial
     public BitSetConverter() {
         super(BitSet.class);
     }

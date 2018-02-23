@@ -11,6 +11,7 @@
 package com.ibm.ws.cdi12.fat.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -42,10 +44,19 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 public class JarInRarTest {
 
     private static LibertyServer server;
+    
+    private static boolean hasSetup = false;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        
+        server = LibertyServerFactory.getStartedLibertyServer("cdi12JarInRar");
 
+        if (hasSetup) {
+            // Server already set up, app should have already been deployed when the server was started up, make sure the app has started
+            assertNotNull("jarInRar started message", server.waitForStringInLogUsingMark("CWWKZ0001I.*jarInRar"));
+            return;
+        }
 
         JavaArchive jarInRarJar = ShrinkWrap.create(JavaArchive.class,"jarInRar.jar")
                         .addClass("com.ibm.ws.cdi12.fat.jarinrar.rar.Amigo")
@@ -64,9 +75,10 @@ public class JarInRarTest {
         EnterpriseArchive jarInRarEar = ShrinkWrap.create(EnterpriseArchive.class,"jarInRar.ear")
                         .addAsModule(jarInRarEjb)
                         .addAsModule(jarInRarRar);
-        server = LibertyServerFactory.getStartedLibertyServer("cdi12JarInRar");
+        
         ShrinkHelper.exportDropinAppToServer(server, jarInRarEar);
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*");
+        assertNotNull("jarInRar started message", server.waitForStringInLogUsingMark("CWWKZ0001I.*jarInRar"));
+        hasSetup = true;
     }
 
     @AfterClass

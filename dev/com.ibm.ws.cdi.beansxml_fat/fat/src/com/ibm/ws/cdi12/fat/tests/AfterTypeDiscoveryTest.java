@@ -11,25 +11,19 @@
 package com.ibm.ws.cdi12.fat.tests;
 
 import java.io.File;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -41,28 +35,29 @@ public class AfterTypeDiscoveryTest extends LoggingTest {
     public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12AfterTypeDiscoveryServer");
 
     @BuildShrinkWrap
-    public static Map<Archive,String> buildShrinkWrap() {
-       Map<Archive,String> archives = new HashMap<Archive,String>();
-       WebArchive afterTypeDiscoveryApp = ShrinkWrap.create(WebArchive.class, "afterTypeDiscoveryApp.war")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.GlobalState")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeNotAlternative")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.InterceptedAfterType")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeBeanDecorator")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeBean")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.InterceptedBean")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeExtension")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeAlternativeTwo")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeServlet")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeAlternativeInterface")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.UseAlternative")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeInterceptorImpl")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeAlternativeOne")
-                        .addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeInterface")
-                        .add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                        .add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
-                        .add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/META-INF/services/javax.enterprise.inject.spi.Extension")), "/META-INF/services/javax.enterprise.inject.spi.Extension");
-      archives.put(afterTypeDiscoveryApp, "publish/servers/cdi12AfterTypeDiscoveryServer/apps");
-      return archives;
+    public static Map<Archive<?>, String> buildShrinkWrap() {
+        Map<Archive<?>, String> archives = new HashMap<Archive<?>, String>();
+        WebArchive afterTypeDiscoveryApp = ShrinkWrap.create(WebArchive.class, "afterTypeDiscoveryApp.war");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.GlobalState");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeNotAlternative");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.InterceptedAfterType");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeBeanDecorator");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeBean");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.InterceptedBean");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeExtension");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeAlternativeTwo");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeServlet");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeAlternativeInterface");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.UseAlternative");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeInterceptorImpl");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeAlternativeOne");
+        afterTypeDiscoveryApp.addClass("com.ibm.ws.cdi12.aftertypediscovery.test.AfterTypeInterface");
+        afterTypeDiscoveryApp.add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
+        afterTypeDiscoveryApp.add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        afterTypeDiscoveryApp.add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/META-INF/services/javax.enterprise.inject.spi.Extension")),
+                                  "/META-INF/services/javax.enterprise.inject.spi.Extension");
+        archives.put(afterTypeDiscoveryApp, "publish/servers/cdi12AfterTypeDiscoveryServer/apps");
+        return archives;
     }
 
     /** {@inheritDoc} */

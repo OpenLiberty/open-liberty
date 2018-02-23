@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.AfterClass;
@@ -54,8 +56,9 @@ public class PackagePrivateAccessTest extends LoggingTest {
                         .addClass("jp.test.bean.MyBean")
                         .add(new FileAsset(new File("test-applications/packagePrivateAccessApp.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");    
         server = LibertyServerFactory.getStartedLibertyServer("packagePrivateAccessServer");
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
         ShrinkHelper.exportDropinAppToServer(server, packagePrivateAccessApp);
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application packagePrivateAccessApp started");
+        assertNotNull("packagePrivateAccessApp started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*packagePrivateAccessApp"));
     }
 
     @Test

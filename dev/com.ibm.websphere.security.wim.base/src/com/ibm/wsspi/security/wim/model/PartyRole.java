@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,9 +26,9 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for PartyRole complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="PartyRole">
  * &lt;complexContent>
@@ -40,47 +41,54 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The PartyRole object extends the RolePlayer object and defines a role. It defines two properties:
- * 
+ *
  * <ul>
  * <li><b>primaryRolePlayer</b>: a containment property which is used to link to the entity who is the primary
  * role player of the PartyRole.</li>
- * 
+ *
  * <li><b>relatedRolePlayers</b>: a containment property which is used to link to the other role players who
  * are related to the primary role player through this PartyRole.</li>
  * </ul>
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PartyRole", propOrder = {
-                                          "primaryRolePlayer",
-                                          "relatedRolePlayer"
+                                           "primaryRolePlayer",
+                                           "relatedRolePlayer"
 })
-public class PartyRole
-                extends com.ibm.wsspi.security.wim.model.RolePlayer
-{
+public class PartyRole extends com.ibm.wsspi.security.wim.model.RolePlayer {
+    private static final String PROP_PRIMARY_ROLE_PLAYER = "primaryRolePlayer";
+    private static final String PROP_RELATED_ROLE_PLAYER = "relatedRolePlayer";
 
     @XmlElement(required = true)
     protected com.ibm.wsspi.security.wim.model.RolePlayer primaryRolePlayer;
     protected List<com.ibm.wsspi.security.wim.model.RolePlayer> relatedRolePlayer;
+
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
     private static ArrayList superTypeList = null;
     private static HashSet subTypeList = null;
 
+    /** The set of multi-valued properties for this entity type. */
+    private static final Set<String> MULTI_VALUED_PROPERTIES;
+
     static {
         setDataTypeMap();
         setSuperTypes();
         setSubTypes();
+
+        MULTI_VALUED_PROPERTIES = new HashSet<String>();
+        MULTI_VALUED_PROPERTIES.add(PROP_RELATED_ROLE_PLAYER);
     }
 
     /**
      * Gets the value of the primaryRolePlayer property.
-     * 
+     *
      * @return
      *         possible object is {@link com.ibm.wsspi.security.wim.model.RolePlayer }
-     * 
+     *
      */
     public com.ibm.wsspi.security.wim.model.RolePlayer getPrimaryRolePlayer() {
         return primaryRolePlayer;
@@ -88,10 +96,10 @@ public class PartyRole
 
     /**
      * Sets the value of the primaryRolePlayer property.
-     * 
+     *
      * @param value
      *            allowed object is {@link com.ibm.wsspi.security.wim.model.RolePlayer }
-     * 
+     *
      */
     public void setPrimaryRolePlayer(com.ibm.wsspi.security.wim.model.RolePlayer value) {
         this.primaryRolePlayer = value;
@@ -103,24 +111,25 @@ public class PartyRole
 
     /**
      * Gets the value of the relatedRolePlayer property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the relatedRolePlayer property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getRelatedRolePlayer().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.RolePlayer }
-     * 
-     * 
+     *
+     *
      */
     public List<com.ibm.wsspi.security.wim.model.RolePlayer> getRelatedRolePlayer() {
         if (relatedRolePlayer == null) {
@@ -139,10 +148,10 @@ public class PartyRole
 
     @Override
     public Object get(String propName) {
-        if (propName.equals("primaryRolePlayer")) {
+        if (propName.equals(PROP_PRIMARY_ROLE_PLAYER)) {
             return getPrimaryRolePlayer();
         }
-        if (propName.equals("relatedRolePlayer")) {
+        if (propName.equals(PROP_RELATED_ROLE_PLAYER)) {
             return getRelatedRolePlayer();
         }
         return super.get(propName);
@@ -150,10 +159,10 @@ public class PartyRole
 
     @Override
     public boolean isSet(String propName) {
-        if (propName.equals("primaryRolePlayer")) {
+        if (propName.equals(PROP_PRIMARY_ROLE_PLAYER)) {
             return isSetPrimaryRolePlayer();
         }
-        if (propName.equals("relatedRolePlayer")) {
+        if (propName.equals(PROP_RELATED_ROLE_PLAYER)) {
             return isSetRelatedRolePlayer();
         }
         return super.isSet(propName);
@@ -161,10 +170,10 @@ public class PartyRole
 
     @Override
     public void set(String propName, Object value) {
-        if (propName.equals("primaryRolePlayer")) {
+        if (propName.equals(PROP_PRIMARY_ROLE_PLAYER)) {
             setPrimaryRolePlayer(((com.ibm.wsspi.security.wim.model.RolePlayer) value));
         }
-        if (propName.equals("relatedRolePlayer")) {
+        if (propName.equals(PROP_RELATED_ROLE_PLAYER)) {
             getRelatedRolePlayer().add(((com.ibm.wsspi.security.wim.model.RolePlayer) value));
         }
         super.set(propName, value);
@@ -172,7 +181,7 @@ public class PartyRole
 
     @Override
     public void unset(String propName) {
-        if (propName.equals("relatedRolePlayer")) {
+        if (propName.equals(PROP_RELATED_ROLE_PLAYER)) {
             unsetRelatedRolePlayer();
         }
         super.unset(propName);
@@ -189,8 +198,8 @@ public class PartyRole
         } else {
             {
                 List names = new ArrayList();
-                names.add("primaryRolePlayer");
-                names.add("relatedRolePlayer");
+                names.add(PROP_PRIMARY_ROLE_PLAYER);
+                names.add(PROP_RELATED_ROLE_PLAYER);
                 names.addAll(com.ibm.wsspi.security.wim.model.RolePlayer.getPropertyNames("RolePlayer"));
                 propertyNames = Collections.unmodifiableList(names);
                 return propertyNames;
@@ -202,8 +211,8 @@ public class PartyRole
         if (dataTypeMap == null) {
             dataTypeMap = new HashMap();
         }
-        dataTypeMap.put("primaryRolePlayer", "RolePlayer");
-        dataTypeMap.put("relatedRolePlayer", "RolePlayer");
+        dataTypeMap.put(PROP_PRIMARY_ROLE_PLAYER, "RolePlayer");
+        dataTypeMap.put(PROP_RELATED_ROLE_PLAYER, "RolePlayer");
     }
 
     @Override
@@ -254,4 +263,8 @@ public class PartyRole
         return WIMTraceHelper.trace(this);
     }
 
+    @Override
+    public boolean isMultiValuedProperty(String propName) {
+        return MULTI_VALUED_PROPERTIES.contains(propName) || super.isMultiValuedProperty(propName);
+    }
 }

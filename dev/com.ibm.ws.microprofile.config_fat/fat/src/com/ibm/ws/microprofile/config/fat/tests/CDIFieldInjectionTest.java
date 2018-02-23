@@ -19,12 +19,19 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11EE8;
+import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig12EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
+
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  *
  */
 public class CDIFieldInjectionTest extends LoggingTest {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(RepeatConfig11EE8.INSTANCE).andWith(RepeatConfig12EE8.INSTANCE);
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIConfigServer");

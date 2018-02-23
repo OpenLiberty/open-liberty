@@ -1,0 +1,92 @@
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile OpenAPI API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+callbackURLTemplateEmpty=Szablon adresu URL obiektu Callback jest pusty lub nie jest poprawnym adresem URL.
+callbackInvalidSubstitutionVariables=Obiekt Callback zawiera niepoprawne zmienne podstawiane: {0}.
+callbackMustBeRuntimeExpression=Obiekt Callback musi zawiera\u0107 poprawne wyra\u017cenie \u015brodowiska wykonawczego (zgodnie ze specyfikacj\u0105 interfejsu OpenAPI). Podana warto\u015b\u0107 wyra\u017cenia \u015brodowiska wykonawczego ({0}) nie jest poprawna.
+callbackInvalidURL=Obiekt Callback musi zawiera\u0107 poprawny adres URL. Podana warto\u015b\u0107 ({0}) adresu URL jest niepoprawna.
+callbackInvalidPathItem=Obiekt Callback musi zawiera\u0107 poprawny element \u015bcie\u017cki. Warto\u015b\u0107 elementu \u015bcie\u017cki powi\u0105zana z kluczem {0} nie jest poprawn\u0105 warto\u015bci\u0105.
+
+contactInvalidURL=Obiekt Contact musi zawiera\u0107 poprawny adres URL. Podana warto\u015b\u0107 ({0}) adresu URL jest niepoprawna.
+contactInvalidEmail=Obiekt Contact musi zawiera\u0107 poprawny adres e-mail. Podana warto\u015b\u0107 ({0}) adresu e-mail jest niepoprawna.
+
+exampleOnlyValueOrExternalValue=W przypadku obiektu Example {0} s\u0105 wype\u0142nione pola value i externalValue. Podaj warto\u015b\u0107 tylko w jednym z tych p\u00f3l.
+
+externalDocumentationInvalidURL=Obiekt ExternalDocumentation musi zawiera\u0107 poprawny adres URL. Podana warto\u015b\u0107 ({0}) adresu URL jest niepoprawna.
+
+infoTermsOfServiceInvalidURL=Obiekt Info musi zawiera\u0107 poprawny adres URL. Podana warto\u015b\u0107 ({0}) w polu termsOfService jest niepoprawna.
+invalidUrl=Obiekt {0} musi zawiera\u0107 poprawny adres URL. Warto\u015b\u0107 {1} okre\u015blona dla adresu URL jest niepoprawna.
+invalidUri=Obiekt {0} musi zawiera\u0107 poprawny identyfikator URI. Warto\u015b\u0107 {1} okre\u015blona dla identyfikatora URI jest niepoprawna.
+
+licenseInvalidURL=Obiekt License musi zawiera\u0107 poprawny adres URL. Podana warto\u015b\u0107 ({0}) adresu URL jest niepoprawna.
+
+mediaTypeExampleOrExamples=Obiekt MediaType nie mo\u017ce r\u00f3wnocze\u015bnie mie\u0107 podanych obu nast\u0119puj\u0105cych obiekt\u00f3w: Examples i Example.
+mediaTypeEncodingProperty=W\u0142a\u015bciwo\u015b\u0107 kodowania {0} podana w obiekcie MediaType nie istnieje w schemacie jako w\u0142a\u015bciwo\u015b\u0107.
+mediaTypeEmptySchema=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci podanej w\u0142a\u015bciwo\u015bci kodowania, poniewa\u017c odpowiadaj\u0105ca w\u0142a\u015bciwo\u015b\u0107 schematu ma warto\u015b\u0107 NULL.
+
+oAuthFlowInvalidURL=Obiekt OAuthFlow musi zawiera\u0107 poprawny adres URL. Podana warto\u015b\u0107 ({0}) adresu URL jest niepoprawna.
+nonApplicableField=Pola {0} o warto\u015bci {1} nie mo\u017cna zastosowa\u0107 dla elementu {2}.
+
+openAPIVersionInvalid=Obiekt OpenAPI musi zawiera\u0107 poprawn\u0105 wersj\u0119 specyfikacji interfejsu OpenAPI. Podana warto\u015b\u0107 ({0}) wersji specyfikacji interfejsu OpenAPI jest niepoprawna.
+openAPITagIsNotUnique=Obiekt OpenAPI musi zawiera\u0107 unikalne nazwy znacznik\u00f3w. Nazwa znacznika {0} nie jest unikalna.
+
+operationIdsMustBeUnique=Znaleziono wi\u0119cej ni\u017c jeden obiekt Operation z identyfikatorem operationId o warto\u015bci {0}. Identyfikatory musz\u0105 by\u0107 unikalne.
+
+parameterInFieldInvalid=Warto\u015b\u0107 w polu in obiektu Parameter {0} jest niepoprawna: {1}.
+parameterExampleOrExamples=W obiekcie Parameter {0} podano zar\u00f3wno obiekt Example, jak i obiekt Examples. Mo\u017cna poda\u0107 tylko jeden z nich.
+parameterSchemaOrContent=Obiekt Parameter {0} nie zawiera w\u0142a\u015bciwo\u015bci schema lub w\u0142a\u015bciwo\u015bci content.
+parameterSchemaAndContent=Obiekt Parameter {0} nie mo\u017ce r\u00f3wnocze\u015bnie zawiera\u0107 zar\u00f3wno w\u0142a\u015bciwo\u015bci schema, jak i w\u0142a\u015bciwo\u015bci content.
+parameterContentMapMustNotBeEmpty=Odwzorowanie w\u0142a\u015bciwo\u015bci content w obiekcie Parameter {0} mo\u017ce zawiera\u0107 tylko jeden wpis.
+
+pathItemInvalidRef=Obiekt PathItem ma niepoprawn\u0105 warto\u015b\u0107 s\u0142owa kluczowego $ref ({0}) w przypadku elementu \u015bcie\u017cki {1}. Odwo\u0142anie do elementu \u015bcie\u017cki musi by\u0107 odwo\u0142aniem zewn\u0119trznym.
+pathItemRequiredField=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. Parametr path {0} ze \u015bcie\u017cki {1} nie zawiera pola required lub nie ma ustawionej warto\u015bci true.
+pathItemDuplicate=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. \u015acie\u017cka {0} ma zdefiniowany zduplikowany parametr {1} na poziomie \u015bcie\u017cki: {2}.
+pathItemParameterNotDeclaredSingle=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. \u015acie\u017cka {0} ma zdefiniowany jeden parametr path, kt\u00f3ry nie jest zadeklarowany: {1}.
+pathItemParameterNotDeclaredMultiple=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. \u015acie\u017cka {0} ma zdefiniowane parametry path ({1}), kt\u00f3ry nie s\u0105 zadeklarowane: {2}.
+pathItemOperationRequiredField=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. Parametr path {0} z operacji {1} \u015bcie\u017cki {2} nie zawiera pola required lub nie ma ustawionej warto\u015bci true.
+pathItemOperationDuplicate=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. Operacja {0} ze \u015bcie\u017cki {1} ma zdefiniowany zduplikowany parametr {2}: {3}.
+pathItemOperationNullParameter=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. Lista parametr\u00f3w z operacji {0} \u015bcie\u017cki {1} zawiera parametr o warto\u015bci NULL.
+pathItemOperationParameterNotDeclaredSingle=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. Operacja {0} ze \u015bcie\u017cki {1} ma zdefiniowany jeden parametr path, kt\u00f3ry nie jest zadeklarowany: {2}.
+pathItemOperationParameterNotDeclaredMultiple=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. Operacja {0} ze \u015bcie\u017cki {1} ma zdefiniowane parametry path ({2}), kt\u00f3ry nie s\u0105 zadeklarowane: {3}.
+pathItemOperationNoPathParameterDeclared=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. Operacja {0} \u015bcie\u017cki {1} nie ma zdefiniowanego parametru path, kt\u00f3ry jest zadeklarowany: {2}.
+pathItemInvalidFormat=Obiekt PathItem musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. Format \u015bcie\u017cki {0} jest niepoprawny.
+
+pathsRequiresSlash=Obiekt Paths musi zawiera\u0107 poprawn\u0105 \u015bcie\u017ck\u0119. \u015acie\u017cka {0} nie rozpoczyna si\u0119 od uko\u015bnika.
+
+referenceExternalOrExtension=Warto\u015b\u0107 {0} jest odwo\u0142aniem zewn\u0119trznym lub rozszerzeniem. Sprawdzanie poprawno\u015bci nie jest dost\u0119pne.
+referenceNotPartOfModel=Podane odwo\u0142anie {0} nie jest cz\u0119\u015bci\u0105 komponent\u00f3w modelu.
+referenceNotValid=Podane odwo\u0142anie {0} nie jest poprawne.
+referenceNotValidFormat=Odwo\u0142anie {0} nie jest w poprawnym formacie.
+referenceNull=Obiekt komponent\u00f3w modelu {0} ma warto\u015b\u0107 NULL lub s\u0142owo kluczowe $ref {1} ma warto\u015b\u0107 NULL.
+referenceToObjectInvalid=Warto\u015b\u0107 {0} jest niepoprawnym odwo\u0142aniem do obiektu {1}.
+
+responseMustContainOneCode=Obiekt Responses musi zawiera\u0107 co najmniej jeden kod odpowiedzi.
+responseShouldContainSuccess=Obiekt Responses powinien zawiera\u0107 co najmniej jeden kod odpowiedzi, aby operacja mog\u0142a zako\u0144czy\u0107 si\u0119 pomy\u015blnie.
+
+securityRequirementNotDeclared=Nazwa {0} podana w przypadku obiektu SecurityRequirement nie odpowiada zadeklarowanemu schematowi zabezpiecze\u0144.
+securityRequirementScopeNamesRequired=W polu {0} obiektu SecurityRequirement powinna znajdowa\u0107 si\u0119 lista nazw zasi\u0119g\u00f3w wymaganych na potrzeby wykonania, ale jest w nim nast\u0119puj\u0105ca zawarto\u015b\u0107: {1}.
+securityRequirementFieldNotEmpty=Pole {0} obiektu SecurityRequirement powinno by\u0107 puste, ale jest w nim nast\u0119puj\u0105ca zawarto\u015b\u0107: {1}.
+securityRequirementIsEmpty=Obiekt SecurityRequirement nie mo\u017ce by\u0107 pusty.
+
+securitySchemeInFieldInvalid=W obiekcie SecurityScheme {0} wyst\u0105pi\u0142 b\u0142\u0105d. Jego pole in zawiera warto\u015b\u0107 {1}, a powinna to by\u0107 warto\u015b\u0107 query, header lub cookie .
+securitySchemeInvalidURL=Obiekt SecurityScheme musi zawiera\u0107 poprawny adres URL. Podana warto\u015b\u0107 ({0}) adresu URL jest niepoprawna.
+securitySchemeNonApplicableField=Co najmniej jednego zdefiniowanego pola nie mo\u017cna zastosowa\u0107 do instancji obiektu SecurityScheme typu {0}.
+
+serverVariableNotDefined=W obiekcie Server nie zdefiniowano zmiennej {0}.
+serverInvalidURL=Obiekt Server musi zawiera\u0107 poprawny adres URL. Podana warto\u015b\u0107 ({0}) adresu URL jest niepoprawna.
+
+requiredFieldMissing=Wyst\u0105pi\u0142 b\u0142\u0105d podczas sprawdzania poprawno\u015bci w nast\u0119puj\u0105cym miejscu: {0}. Brak wymaganego pola {1} lub ma ono ustawion\u0105 niepoprawn\u0105 warto\u015b\u0107.

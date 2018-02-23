@@ -19,6 +19,7 @@ import org.eclipse.microprofile.config.spi.Converter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
@@ -36,6 +37,7 @@ public class UserConverter<T> extends PriorityConverter {
      *
      * @param converter
      */
+    @Trivial
     public static <K> UserConverter<K> newInstance(Converter<K> converter) {
         return newInstance(getType(converter), converter);
     }
@@ -45,10 +47,12 @@ public class UserConverter<T> extends PriorityConverter {
      *
      * @param converter
      */
+    @Trivial
     public static <K> UserConverter<K> newInstance(Type type, Converter<K> converter) {
         return newInstance(type, getPriority(converter), converter);
     }
 
+    @Trivial
     public static <K> UserConverter<K> newInstance(Type type, int priority, Converter<K> converter) {
         return new UserConverter<K>(type, priority, converter);
     }
@@ -78,6 +82,7 @@ public class UserConverter<T> extends PriorityConverter {
      * @param converter
      * @return
      */
+    @Trivial
     private static int getPriority(Converter<?> converter) {
         int value = ConfigConstants.DEFAULT_CONVERTER_PRIORITY;
         //get Priority annotations from class only, not from the super-class
@@ -95,6 +100,7 @@ public class UserConverter<T> extends PriorityConverter {
      * @param converter
      * @return
      */
+    @Trivial
     private static Type getType(Converter<?> converter) {
         Type type = null;
 
@@ -120,8 +126,7 @@ public class UserConverter<T> extends PriorityConverter {
 
     @Override
     public String toString() {
-        //TODO this satisfies the current FAT tests that expect the converter class name in the message ... but we can do better, adding actual type and priority etc
-        return this.converter.getClass().getName();
+        return "User Converter for type " + getType() + "(" + getPriority() + ")";
     }
 
 }

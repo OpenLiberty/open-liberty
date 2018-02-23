@@ -1,0 +1,4 @@
+-Dwas.debug.mode=true
+-Dcom.ibm.websphere.ras.inject.at.transform=true
+-Dsun.reflect.noInflation=true
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777

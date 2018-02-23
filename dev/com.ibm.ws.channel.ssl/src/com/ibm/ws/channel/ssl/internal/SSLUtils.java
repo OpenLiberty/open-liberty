@@ -652,9 +652,10 @@ public class SSLUtils {
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
 
         // if the grizzly-npn or jetty-alpn projects are on the bootclasspath, use them for ALPN
+        /* http/2 not enabled for the 18001 release
         if (connLink.getAlpnProtocol() == null) {
             JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
-        }
+        } */
 
         int amountToWrite = 0;
         boolean firstPass = true;

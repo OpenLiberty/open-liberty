@@ -20,12 +20,13 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 /**
  *
  */
-public class EnvConfigSource extends AbstractConfigSource implements ConfigSource {
+public class EnvConfigSource extends InternalConfigSource implements ConfigSource {
 
     private static final TraceComponent tc = Tr.register(EnvConfigSource.class);
 
@@ -42,6 +43,7 @@ public class EnvConfigSource extends AbstractConfigSource implements ConfigSourc
 
         Map<String, String> props = AccessController.doPrivileged(new PrivilegedAction<Map<String, String>>() {
             @Override
+            @Trivial
             public Map<String, String> run() {
                 return System.getenv();
             }
@@ -50,6 +52,7 @@ public class EnvConfigSource extends AbstractConfigSource implements ConfigSourc
         return new ConcurrentHashMap<>(props);
     }
 
+    @Trivial
     public static int getEnvOrdinal() {
         String ordinalProp = getOrdinalEnvVar();
         int ordinal = ConfigConstants.ORDINAL_ENVIRONMENT_VARIABLES;
@@ -59,13 +62,20 @@ public class EnvConfigSource extends AbstractConfigSource implements ConfigSourc
         return ordinal;
     }
 
+    @Trivial
     private static String getOrdinalEnvVar() {
         String prop = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
+            @Trivial
             public String run() {
                 return System.getenv(ConfigConstants.ORDINAL_PROPERTY);
             }
         });
         return prop;
+    }
+
+    @Override
+    public String toString() {
+        return "Environment Variables Config Source";
     }
 }

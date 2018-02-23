@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.config.converters;
 
 import java.lang.reflect.Type;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
 /**
@@ -25,6 +26,7 @@ public abstract class BuiltInConverter extends PriorityConverter {
      * @param type The type to convert to
      * @param converter The actual converter
      */
+    @Trivial
     public BuiltInConverter(Type type) {
         super(type, ConfigConstants.BUILTIN_CONVERTER_PRIORITY);
     }

@@ -4,9 +4,9 @@
 
     <featureManager>
         <feature>osgiconsole-1.0</feature>
-        <feature>cdi-1.2</feature>
-        <feature>servlet-3.1</feature>
+        <feature>cdi-2.0</feature>
+        <feature>servlet-4.0</feature>
         <feature>componentTest-1.0</feature>
-    	<feature>mpConfig-1.1</feature>
+    	<feature>mpConfig-1.2</feature>
 	</featureManager>
 </server>

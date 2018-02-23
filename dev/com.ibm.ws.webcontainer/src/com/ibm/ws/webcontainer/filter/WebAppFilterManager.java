@@ -1139,6 +1139,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                             }
                         }
                         else {
+                            /* http/2 not enabled for the 18001 release
                             // Check if this is an HTTP2 upgrade request
                             if (httpInboundConnection != null && request instanceof HttpServletRequest) {
                                 H2Handler h2Handler = ((com.ibm.ws.webcontainer.osgi.webapp.WebApp) webApp).getH2Handler();
@@ -1150,7 +1151,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                         webApp.setUpgraded();
                                     }
                                 }
-                            }
+                            } */
                             requestProcessor.handleRequest(request, response);
                         }
                     }

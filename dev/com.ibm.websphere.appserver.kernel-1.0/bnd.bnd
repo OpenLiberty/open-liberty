@@ -87,7 +87,7 @@
 	com.ibm.ws.logging.hpel.osgi,\
 	com.ibm.ws.logging.hpel,\
 	com.ibm.ws.logging.osgi,\
-	com.ibm.ws.org.apache.commons.io.1.4,\
+	com.ibm.ws.org.apache.commons.io,\
 	com.ibm.ws.org.apache.felix.gogo.command,\
 	com.ibm.ws.org.apache.felix.gogo.runtime,\
 	com.ibm.ws.org.apache.felix.gogo.shell,\

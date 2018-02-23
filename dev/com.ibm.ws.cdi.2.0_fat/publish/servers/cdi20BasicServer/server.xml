@@ -26,5 +26,4 @@
         <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
     
-    <logging traceSpecification="JCDI=all=enabled:logservice=all=enabled:*=info=enabled"/>
 </server>

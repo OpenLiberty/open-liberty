@@ -13,11 +13,14 @@ package com.ibm.ws.microprofile.config.converters;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  *
  */
 public class URIConverter extends BuiltInConverter {
 
+    @Trivial
     public URIConverter() {
         super(URI.class);
     }

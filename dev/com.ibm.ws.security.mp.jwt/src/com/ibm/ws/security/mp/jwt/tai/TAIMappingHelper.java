@@ -233,6 +233,9 @@ public class TAIMappingHelper {
         }
         // Default realm to the issuer
         String realm = issuer;
+        if (isRealmEndsWithSlash(realm)) {
+            realm = updateRealm(realm);
+        }
 
         //        if (realm == null) {
         //            // runtime default
@@ -246,6 +249,23 @@ public class TAIMappingHelper {
             Tr.exit(tc, methodName, realm);
         }
         return realm;
+    }
+
+    /**
+     * @param realm
+     * @return
+     */
+    private boolean isRealmEndsWithSlash(String realm) {
+        return (realm != null && realm.length() > 1 && realm.endsWith("/"));
+    }
+
+    /**
+     * @param realm
+     * @return
+     */
+    private String updateRealm(String realm) {
+        // remove the trailing slash
+        return realm.substring(0, realm.length() - 1);
     }
 
     String getUniqueId(String realm) {

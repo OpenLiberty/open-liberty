@@ -21,10 +21,13 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * This CDI Bean controls the creation and destruction of Config instances injected by CDI.
  * They are all Dependent scope.
  */
+@Trivial
 public abstract class AbstractConfigBean<T> implements Bean<T>, PassivationCapable {
 
     private final HashSet<Type> types;

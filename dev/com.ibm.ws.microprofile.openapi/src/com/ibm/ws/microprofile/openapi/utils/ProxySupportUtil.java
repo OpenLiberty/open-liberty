@@ -32,8 +32,8 @@ public class ProxySupportUtil {
         String urlString;
         String refererHeader = request.getHeader(HTTP_HEADER_REFERER);
         if (refererHeader != null) {
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(tc, "Using referer header to generate servers: " + refererHeader);
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Using referer header to generate servers: " + refererHeader);
             }
             refererHeader = refererHeader.endsWith("/") ? refererHeader.substring(0, refererHeader.length() - 1) : refererHeader;
             if (!refererHeader.endsWith("/ui") && !refererHeader.endsWith("/openapi")) {
@@ -47,8 +47,8 @@ public class ProxySupportUtil {
             }
         } else {
             urlString = request.getRequestURL().toString();
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(tc, "Using request url to generate servers: " + urlString);
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Using request url to generate servers: " + urlString);
             }
         }
 
@@ -56,7 +56,7 @@ public class ProxySupportUtil {
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Failed to create URL for " + urlString + ": " + e.getMessage());
             }
         }

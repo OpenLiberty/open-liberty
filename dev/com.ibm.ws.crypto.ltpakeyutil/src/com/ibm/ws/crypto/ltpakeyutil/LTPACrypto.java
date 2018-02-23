@@ -226,7 +226,7 @@ final class LTPACrypto {
         BigInteger q = new BigInteger(key[4]);
         BigInteger d = e.modInverse((p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)));
         KeyFactory kFact = null;
-        kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
+        kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, LTPAKeyUtil.defaultJSSEProvider());
 
         BigInteger pep = new BigInteger(key[5]);
         BigInteger peq = new BigInteger(key[6]);
@@ -234,7 +234,7 @@ final class LTPACrypto {
         RSAPrivateCrtKeySpec privCrtKeySpec = new RSAPrivateCrtKeySpec(n, e, d, p, q, pep, peq, crtC);
         PrivateKey privKey = kFact.generatePrivate(privCrtKeySpec);
 
-        Signature rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM,LTPAKeyUtil.defaultJCEProvider());
+        Signature rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM,LTPAKeyUtil.defaultJSSEProvider());
         rsaSig.initSign(privKey);
         rsaSig.update(data, off, len);
         byte[] sig = rsaSig.sign();
@@ -487,10 +487,10 @@ final class LTPACrypto {
 
         BigInteger n = new BigInteger(key[0]);
         BigInteger e = new BigInteger(key[1]);
-        KeyFactory kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM,LTPAKeyUtil.defaultJCEProvider()); 
+        KeyFactory kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM,LTPAKeyUtil.defaultJSSEProvider()); 
         RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(n, e);
         PublicKey pubKey = kFact.generatePublic(pubKeySpec);
-        Signature rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM,LTPAKeyUtil.defaultJCEProvider()); 
+        Signature rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM,LTPAKeyUtil.defaultJSSEProvider()); 
         rsaSig.initVerify(pubKey);
         rsaSig.update(data, off, len);
         verified = rsaSig.verify(sig);

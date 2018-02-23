@@ -19,5 +19,5 @@ Subsystem-Name: MicroProfile Rest Client 1.0
  com.ibm.websphere.appserver.jsonp-1.0; ibm.tolerates:=1.1
 -bundles=com.ibm.ws.require.java8, \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2; apiJar=false; location:="lib/"
-kind=noship
+kind=ga
 edition=core

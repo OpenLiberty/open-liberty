@@ -110,7 +110,6 @@ public class HttpAuthenticationMechanismDBShortNameTest extends JavaEESecTestBas
      * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testJaspiAnnotatedDBBasicAuthValidUserInRole_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -141,7 +140,6 @@ public class HttpAuthenticationMechanismDBShortNameTest extends JavaEESecTestBas
      * <LI> Return code 403
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testJaspiAnnotatedDBBasicAuthValidUser_NoAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

@@ -23,8 +23,11 @@
 
 
     <dataSource id="jdbc/derby" jndiName="jdbc/derby"> 
+        <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+    	is required beyond a single server start, configure the databaseName with a file location such as:
+    	databaseName="${shared.config.dir}/data/derbydb" -->
         <properties.derby.embedded
-        databaseName="abc"
+        databaseName="memory:abc"
         createDatabase="true"
         user="dbuser1"
         password="{xor}Oz0vKDtu"
