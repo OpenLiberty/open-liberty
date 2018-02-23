@@ -76,7 +76,23 @@ public class ApplicationInfoFactoryImpl implements ApplicationInfoFactory {
     }
 
     @Override
-    public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName, Container container,
+    @Deprecated
+    public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName,
+                                                         Container container,
+                                                         ApplicationClassesContainerInfo appClassesContainerInfo,
+                                                         NestedConfigHelper configHelper) {
+        return createApplicationInfo(appName,
+                                     preferredName,
+                                     container,
+                                     appClassesContainerInfo,
+                                     configHelper,
+                                     false);
+    }
+
+    @Override
+    public ExtendedApplicationInfo createApplicationInfo(String appName,
+                                                         String preferredName,
+                                                         Container container,
                                                          ApplicationClassesContainerInfo appClassesContainerInfo,
                                                          NestedConfigHelper configHelper,
                                                          boolean useJandex) {
