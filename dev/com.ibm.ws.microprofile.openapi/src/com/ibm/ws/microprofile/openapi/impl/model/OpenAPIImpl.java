@@ -25,6 +25,9 @@ import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * OpenAPI
  *
@@ -258,15 +261,16 @@ public class OpenAPIImpl implements OpenAPI {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class OpenAPI {\n");
+        sb = (openapi != null) ? sb.append("    openapi: ").append(toIndentedString(openapi)).append("\n") : sb.append("");
+        sb = (info != null) ? sb.append("    info: ").append(toIndentedString(info)).append("\n") : sb.append("");
+        sb = (externalDocs != null) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
+        sb = (servers != null) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
+        sb = (security != null) ? sb.append("    security: ").append(toIndentedString(security)).append("\n") : sb.append("");
+        sb = (tags != null) ? sb.append("    tags: ").append(toIndentedString(tags)).append("\n") : sb.append("");
+        sb = (paths != null) ? sb.append("    paths: ").append(toIndentedString(paths)).append("\n") : sb.append("");
+        sb = (components != null) ? sb.append("    components: ").append(toIndentedString(components)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
-        sb.append("    openapi: ").append(toIndentedString(openapi)).append("\n");
-        sb.append("    info: ").append(toIndentedString(info)).append("\n");
-        sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n");
-        sb.append("    servers: ").append(toIndentedString(servers)).append("\n");
-        sb.append("    security: ").append(toIndentedString(security)).append("\n");
-        sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-        sb.append("    paths: ").append(toIndentedString(paths)).append("\n");
-        sb.append("    components: ").append(toIndentedString(components)).append("\n");
         sb.append("}");
         return sb.toString();
     }
