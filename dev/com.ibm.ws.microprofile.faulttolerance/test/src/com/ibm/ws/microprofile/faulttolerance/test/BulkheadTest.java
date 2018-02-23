@@ -281,4 +281,12 @@ public class BulkheadTest {
 
     }
 
+    @Test
+    public void testAsyncBulkheadDefaults() throws InterruptedException, ExecutionException, TimeoutException {
+        BulkheadPolicy bulkhead = FaultToleranceProvider.newBulkheadPolicy();
+
+        assertEquals(10, bulkhead.getMaxThreads());
+        assertEquals(10, bulkhead.getQueueSize());
+    }
+
 }
