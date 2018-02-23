@@ -13,11 +13,13 @@ package com.ibm.ws.microprofile.openapi.validation.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter.In;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.openapi.impl.model.ComponentsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.OperationImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.PathItemImpl;
@@ -694,4 +696,77 @@ public class PathItemValidatorTest {
         validator.validate(vh, context, key, pathItem);
         Assert.assertEquals(1, vh.getEventsSize());
     }
+
+    @Test
+    public void testPathItemRefParameter() {
+        String key = "/mypath/{username}";
+
+        ParameterImpl pathParam = new ParameterImpl();
+        pathParam.in(In.PATH).name("username").required(true);
+
+        Components component = new ComponentsImpl();
+        component.addParameter("refUsername", pathParam);
+
+        OpenAPIImpl model = new OpenAPIImpl();
+        model.setComponents(component);
+        Context context = new TestValidationContextHelper(model);
+
+        PathItemValidator validator = PathItemValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        PathItemImpl pathItem = new PathItemImpl();
+        pathItem.setSummary("This is a pathItem with ref parameter");
+
+        ParameterImpl refParam = new ParameterImpl();
+        refParam.ref("refUsername");
+        pathItem.addParameter(refParam);
+
+        OperationImpl postOp = new OperationImpl();
+        APIResponsesImpl postResponses = new APIResponsesImpl();
+        APIResponseImpl postResponse = new APIResponseImpl();
+        postResponses.addApiResponse("200", postResponse.description("Information updated successfully"));
+
+        postOp.setResponses(postResponses);
+        pathItem.setPOST(postOp);
+
+        validator.validate(vh, context, key, pathItem);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
+
+    @Test
+    public void testPathItemRefParameterInOperation() {
+        String key = "/mypath/{username}";
+
+        ParameterImpl pathParam = new ParameterImpl();
+        pathParam.in(In.PATH).name("username").required(true);
+
+        Components component = new ComponentsImpl();
+        component.addParameter("refUsername", pathParam);
+
+        OpenAPIImpl model = new OpenAPIImpl();
+        model.setComponents(component);
+        Context context = new TestValidationContextHelper(model);
+
+        PathItemValidator validator = PathItemValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        PathItemImpl pathItem = new PathItemImpl();
+        pathItem.setSummary("This is a pathItem with ref parameter");
+
+        OperationImpl postOp = new OperationImpl();
+        APIResponsesImpl postResponses = new APIResponsesImpl();
+        APIResponseImpl postResponse = new APIResponseImpl();
+        postResponses.addApiResponse("200", postResponse.description("Information updated successfully"));
+        postOp.setResponses(postResponses);
+
+        ParameterImpl refParam = new ParameterImpl();
+        refParam.ref("refUsername");
+        postOp.addParameter(refParam);
+
+        pathItem.setPOST(postOp);
+
+        validator.validate(vh, context, key, pathItem);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
+
 }
