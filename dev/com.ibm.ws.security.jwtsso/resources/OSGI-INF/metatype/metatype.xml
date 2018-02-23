@@ -38,7 +38,7 @@
          <AD id="setCookieSecureFlag"   name="%setCookieSecureFlag"  description="%setCookieSecureFlag.desc"
              required="false" type="Boolean" default="true" /> 
             
-         <AD id="includeLtpa"  name="%includeLtpaCookie" description="%includeLtpaCookie.desc"
+         <AD id="includeLtpaCookie"  name="%includeLtpaCookie" description="%includeLtpaCookie.desc"
              required="false"  type="Boolean" default="false" />
             
          <AD id="fallbackToLtpa"  name="%fallbackToLtpa" description="%fallbackToLtpa.desc"
