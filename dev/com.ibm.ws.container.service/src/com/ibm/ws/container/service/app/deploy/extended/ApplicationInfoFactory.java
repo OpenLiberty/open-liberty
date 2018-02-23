@@ -20,6 +20,12 @@ import com.ibm.wsspi.adaptable.module.Container;
  */
 public interface ApplicationInfoFactory {
 
+    @Deprecated
+    public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName,
+                                                         Container container,
+                                                         ApplicationClassesContainerInfo appClassesContainerInfo,
+                                                         NestedConfigHelper configHelper);
+
     public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName, Container container,
                                                          ApplicationClassesContainerInfo appClassesContainerInfo,
                                                          NestedConfigHelper configHelper,
