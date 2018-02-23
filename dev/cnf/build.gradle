@@ -334,8 +334,17 @@ task copyEsas(type: Copy) {
     dependsOn parent.subprojects.assemble
     dependsOn parent.subprojects.publishFeatureResources
     
- 	from cnf.fileTree(".").include("/release/dev/*/*/*.esa").files
+ 	//from cnf.fileTree(".").include("/release/dev/*/*/*.esa").files
+ 	from rootProject.fileTree(".").include("/*/build/libs/repo/*.esa").files
    	into "build/temp/esas"
+   
+}
+
+task copyMetadataFiles(type: Copy) {
+   // dependsOn parent.subprojects.assemble
+   // dependsOn parent.subprojects.publishFeatureResources   
+ 	from rootProject.fileTree(".").include("/*/build/libs/repo/*.esa.metadata.zip").files
+   	into "build/temp/metadata"
    
 }
 task createSingleJson {
@@ -343,6 +352,7 @@ task createSingleJson {
     dependsOn copyMavenLibs
   //  dependsOn publishFeatureResources
 	dependsOn copyEsas
+	dependsOn copyMetadataFiles
 	dependsOn parent.subprojects.assemble
 	//dependsOn parent.subprojects.publishFeatureResources
 	        
@@ -374,32 +384,30 @@ task createSingleJson {
                 
                 fileset(Dir:"${rootDir}/com.ibm.ws.logging.core/build/libs"){
                 	include (name:'com.ibm.ws.logging.core.jar')
-                }               
+                } 
+                fileset(dir: "${rootDir}/com.ibm.ws.jdbc_fat_v41/build/libs/autoFVT/lib") {
+                    include(name: 'javax.json-1.0.4.jar')
+               }
+                
+                           
              
             }
         }
-      //  SingleFileRepositoryConnection.createEmptyRepository(
-        //ant.touch(file:"SingleJson.json")
-        //"{basedir}/com.ibm.ws.repository.generator/build/esas"
-  
-      //  FileTree tree = fileTree(dir: 'cnf')
-      //  tree = fileTree('.') {
-      //  	include '**/*.esa'  
-    //   }
-      //  def files = tree.fileTree(dir:'cnf', inclues:'**/*.esa' ).filter { it.isFile() }.files.name
+     
       	def files = fileTree(dir:'build/temp/esas').matching{
       		include '**/*.esa' 
-      		//include '**/*.esa.metadata.zip'
+      		
       	}     
-      	//                   metadataFile:file('build/repo/${esa.name}.
-     
+      
      files.each {esa ->
-        	//println "inside"
+        	println "inside"
+        	
         	println esa.name
         	String basename=esa.name
+        	println file("build/temp/metadata/${basename}.metadata.zip").name
             ant.singleJsonRepo(assetFile:file(esa),
                    assetType:'FEATURE',
-                   metadataFile:file("build/repo/${basename}.metadata.zip"),
+                   metadataFile:file("build/temp/metadata/${basename}.metadata.zip"),
                   jsonFile: "build/temp/SingleJson.json")
         }
         
@@ -431,7 +439,7 @@ doLast {
         
         ant.featuresToMavenRepo(inputDirPath:'build/temp/esas',
                    outputDirPath:'build/temp/mavenArtifact',
-                   openLibertyJson:'build/temp/SingleJson.json')
+                   openLibertyJson:file("build/temp/SingleJson.json"))
        
         ant.delete() {
       		fileset(dir: 'build/temp/esas') {

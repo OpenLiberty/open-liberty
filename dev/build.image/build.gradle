@@ -217,6 +217,7 @@ task zipOpenLibertyMavenRepo(type: Zip){
 
 publish.dependsOn zipOpenLibertyMavenRepo
 
+/**
 task zipMavenRepoRequirements(type:Zip){
 	dependsOn parent.subprojects.assemble
 	doLast{
@@ -229,6 +230,7 @@ task zipMavenRepoRequirements(type:Zip){
 }
 
 publish.dependsOn zipMavenRepoRequirements
+**/
 
 clean.doLast {
     file('wlp').deleteDir()
