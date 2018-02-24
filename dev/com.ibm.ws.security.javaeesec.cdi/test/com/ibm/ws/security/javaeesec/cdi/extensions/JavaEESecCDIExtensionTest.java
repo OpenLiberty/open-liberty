@@ -55,6 +55,7 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapSearchScope;
 import javax.security.enterprise.identitystore.PasswordHash;
+import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1052,7 +1053,6 @@ public class JavaEESecCDIExtensionTest {
         List<Class> cls = new ArrayList<Class>();
         cls.add(ApplicationHAM.class);
         cls.add(CustomFormAuthenticationMechanism.class);
-//        cls.add(FormAuthenticationMechanism.class);
         cls.add(BasicHttpAuthenticationMechanism.class);
 
         final Map<String, ModuleProperties> mm = createModuleMap(cls);
@@ -1150,6 +1150,52 @@ public class JavaEESecCDIExtensionTest {
         j3ce.processCustomFormAuthMechNeeded(pba, bm);
     }
 
+    @Test
+    public void equalsDatabaseDefinitionStrings() {
+        String KEY[] = {"callerQuery", "dataSourceLookup", "groupsQuery",  JavaEESecConstants.PRIORITY_EXPRESSION, JavaEESecConstants.USE_FOR_EXPRESSION};
+        List<String> KEYS = Arrays.asList(KEY);
+        String VALUE1="value1";
+        String VALUE2="value2";
+        for (String key : KEYS) {
+            equalsDatabaseDefinitionTest(key, VALUE1, VALUE2);
+        }
+    }
+
+    @Test
+    public void equalsDatabaseDefinitionClasses() {
+        equalsDatabaseDefinitionTest("hashAlgorithm", CustomPasswordHash1.class, CustomPasswordHash2.class);
+    }
+
+    @Test
+    public void equalsDatabaseDefinitionIntegers() {
+        equalsDatabaseDefinitionTest(JavaEESecConstants.PRIORITY, new Integer(10), new Integer(20));
+    }
+
+    @Test
+    public void equalsDatabaseDefinitionHashAlgorithmParameters() {
+        String param1[] = {"key1=value1", "key2=value2", "key3=value3"};
+        String param2[] = {"key1=value3", "key2=value2", "key3=value1"};
+
+        equalsDatabaseDefinitionTest("hashAlgorithmParameters", param1, param2);
+    }
+
+    @Test
+    public void equalsDatabaseDefinitionUseFor() {
+        String key = JavaEESecConstants.USE_FOR;
+
+        equalsDatabaseDefinitionTest(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS }, new ValidationType[] { ValidationType.VALIDATE });
+        equalsDatabaseDefinitionTest(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE }, new ValidationType[] { ValidationType.PROVIDE_GROUPS });
+        equalsDatabaseDefinitionTest(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE }, new ValidationType[] { ValidationType.PROVIDE_GROUPS});
+
+        Map map1 = new HashMap<String, Object>();
+        map1.put(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE });
+        Map map2 = new HashMap<String, Object>();
+        map2.put(key, new ValidationType[] { ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS });
+        DatabaseIdentityStoreDefinition disd1 = getDatabaseDefinitionForEqualsTest(map1);
+        DatabaseIdentityStoreDefinition disd2 = getDatabaseDefinitionForEqualsTest(map2);
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
+        assertTrue("the result should be true.", j3ce.equalsDatabaseDefinition(disd1, disd2));
+    }
 
     private void equalsLdapDefinitionTest(String key, Object value1, Object value2) {
         LdapIdentityStoreDefinition lisd1, lisd2;
@@ -1162,6 +1208,19 @@ public class JavaEESecCDIExtensionTest {
         JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
         assertTrue("the result should be true.", j3ce.equalsLdapDefinition(lisd1, lisd1));
         assertFalse("the result should be false.", j3ce.equalsLdapDefinition(lisd1, lisd2));
+    }
+
+    private void equalsDatabaseDefinitionTest(String key, Object value1, Object value2) {
+        DatabaseIdentityStoreDefinition disd1, disd2;
+        Map map1 = new HashMap<String, Object>();
+        map1.put(key, value1);
+        Map map2 = new HashMap<String, Object>();
+        map2.put(key, value2);
+        disd1 = getDatabaseDefinitionForEqualsTest(map1);
+        disd2 = getDatabaseDefinitionForEqualsTest(map2);
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
+        assertTrue("the result should be true.", j3ce.equalsDatabaseDefinition(disd1, disd1));
+        assertFalse("the result should be false.", j3ce.equalsDatabaseDefinition(disd1, disd2));
     }
 
     public @interface InvalidAnnotation {}
@@ -1612,6 +1671,67 @@ public class JavaEESecCDIExtensionTest {
         return annotation;
     }
 
+    private DatabaseIdentityStoreDefinition getDatabaseDefinitionForEqualsTest(final Map<String, Object> overrides) {
+        DatabaseIdentityStoreDefinition annotation = new DatabaseIdentityStoreDefinition() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return null;
+            }
+
+            @Override
+            public String callerQuery() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.CALLER_QUERY)) ? (String) overrides.get(JavaEESecConstants.CALLER_QUERY) : "";
+            }
+
+            @Override
+            public String dataSourceLookup() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.DS_LOOKUP)) ? (String) overrides.get(JavaEESecConstants.DS_LOOKUP) : JavaEESecConstants.DEFAULT_DS_NAME;
+            }
+
+            @Override
+            public String groupsQuery() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.GROUPS_QUERY)) ? (String) overrides.get(JavaEESecConstants.GROUPS_QUERY) : "";
+            }
+
+            @Override
+            public Class<? extends PasswordHash> hashAlgorithm() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.PWD_HASH_ALGORITHM)) ? (Class<? extends PasswordHash>) overrides.get(JavaEESecConstants.PWD_HASH_ALGORITHM) : Pbkdf2PasswordHash.class;
+            }
+
+            @Override
+            public String[] hashAlgorithmParameters() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.PWD_HASH_PARAMETERS)) ? (String[]) overrides.get(JavaEESecConstants.PWD_HASH_PARAMETERS) : new String[] {};
+            }
+
+            @Override
+            public int priority() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY)) ? (Integer) overrides.get(JavaEESecConstants.PRIORITY) : 70;
+            }
+
+            @Override
+            public String priorityExpression() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.PRIORITY_EXPRESSION) : "";
+            }
+
+            @Override
+            public ValidationType[] useFor() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.USE_FOR)) ? (ValidationType[]) overrides.get(JavaEESecConstants.USE_FOR) : new ValidationType[] { ValidationType.PROVIDE_GROUPS,
+                                                                                                                                                                      ValidationType.VALIDATE };
+            }
+
+            @Override
+            public String useForExpression() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.USE_FOR_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.USE_FOR_EXPRESSION) : "";
+            }
+        };
+        return annotation;
+    }
+
     /**
      *
      *
@@ -1671,6 +1791,34 @@ public class JavaEESecCDIExtensionTest {
         public void cleanSubject(HttpServletRequest request,
                                  HttpServletResponse response,
                                  HttpMessageContext httpMessageContext) {
+        }
+    }
+
+    class CustomPasswordHash1 implements PasswordHash {
+        @Override
+        public  void initialize(Map<String,String> parameters) {
+        }
+        @Override
+        public String generate(char[] password) {
+            return null;
+        }
+        @Override
+        public boolean verify(char[] password, String hashedPassword) {
+            return true;
+        }
+    }
+
+    class CustomPasswordHash2 implements PasswordHash {
+        @Override
+        public  void initialize(Map<String,String> parameters) {
+        }
+        @Override
+        public String generate(char[] password) {
+            return null;
+        }
+        @Override
+        public boolean verify(char[] password, String hashedPassword) {
+            return false;
         }
     }
 }

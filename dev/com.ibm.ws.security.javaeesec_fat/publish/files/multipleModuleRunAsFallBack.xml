@@ -1,0 +1,27 @@
+<server description="JavaEESec Multiple Module FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+        <feature>jsf-2.3</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <application type="ear" id="multipleModuleRunAs" name="multipleModuleRunAs" location="multipleModuleRunAs.ear">
+        <application-bnd>
+            <security-role name="grantedgroup">
+                <group name="grantedgroup" access-id="grantedgroup"/>
+            </security-role>
+            <security-role name="javaeesec_runas">
+                <!-- invalid scenario, non existing user -->
+                <run-as userid="runasuser99" />
+            </security-role>
+            <security-role name="javaeesec_runas2">
+                <!-- invalid scenario, invalid password -->
+                <run-as userid="anotherrunasuser1" password="invalid" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <include location="../fatTestPorts.xml" />
+</server>

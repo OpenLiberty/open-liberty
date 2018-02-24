@@ -31,6 +31,7 @@ src: \
 	test-applications/securityContextHamApp.war/src,\
 	test-applications/SecurityEJBinWAR.jar/src,\
 	test-applications/ejbinwarservlet.war/src,\
+	test-applications/multipleDB.war/src,\
 	test-applications/securityContextEJBInWar.war/src
 
 javac.source: 1.8

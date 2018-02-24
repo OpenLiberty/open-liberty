@@ -27,6 +27,7 @@ import javax.enterprise.inject.spi.CDI;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.enterprise.credential.Credential;
+import javax.security.enterprise.credential.CallerOnlyCredential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
@@ -166,14 +167,21 @@ public class DatabaseIdentityStore implements IdentityStore {
         if (!validationTypes().contains(ValidationType.VALIDATE)) {
             return CredentialValidationResult.NOT_VALIDATED_RESULT;
         }
+        boolean callerOnly = false;
+        String caller;
+        ProtectedString password = null;
+        if (credential instanceof UsernamePasswordCredential) {
+            caller = ((UsernamePasswordCredential)credential).getCaller();
+            password = new ProtectedString(((UsernamePasswordCredential)credential).getPassword().getValue());
 
-        if (!(credential instanceof UsernamePasswordCredential)) {
+        } else if (credential instanceof CallerOnlyCredential) {
+            callerOnly = true;
+            caller = ((CallerOnlyCredential)credential).getCaller();
+        } else {
             Tr.warning(tc, "JAVAEESEC_WARNING_WRONG_CRED");
             return CredentialValidationResult.NOT_VALIDATED_RESULT;
         }
 
-        UsernamePasswordCredential cred = (UsernamePasswordCredential) credential;
-        String caller = cred.getCaller();
         if (caller == null) { // should be prevented when UsernamePasswordCredential is created.
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "A null caller was passed in");
@@ -181,7 +189,7 @@ public class DatabaseIdentityStore implements IdentityStore {
             return CredentialValidationResult.INVALID_RESULT;
         }
 
-        if (cred.getPassword().getValue() == null) {
+        if (!callerOnly && password == null) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "A null password was passed in for caller " + caller);
             }
@@ -190,7 +198,6 @@ public class DatabaseIdentityStore implements IdentityStore {
         ProtectedString dbPassword = null;
         PreparedStatement prep = null;
         try {
-
             Connection conn = getConnection(caller);
             try {
                 String callerQuery = idStoreDefinition.getCallerQuery();
@@ -219,13 +226,14 @@ public class DatabaseIdentityStore implements IdentityStore {
                         return CredentialValidationResult.INVALID_RESULT;
                     }
 
-                    String dbreturn = result.getString(1);
-                    if (dbreturn == null) {
-                        Tr.warning(tc, "JAVAEESEC_WARNING_NO_PWD", new Object[] { caller, idStoreDefinition.getCallerQuery() });
-                        return CredentialValidationResult.INVALID_RESULT;
+                    if (!callerOnly) {
+                        String dbreturn = result.getString(1);
+                        if (dbreturn == null) {
+                            Tr.warning(tc, "JAVAEESEC_WARNING_NO_PWD", new Object[] { caller, idStoreDefinition.getCallerQuery() });
+                            return CredentialValidationResult.INVALID_RESULT;
+                        }
+                        dbPassword = new ProtectedString(dbreturn.toCharArray());
                     }
-                    dbPassword = new ProtectedString(dbreturn.toCharArray());
-
                     if (result.next()) { // check if there are additional results.
                         Tr.warning(tc, "JAVAEESEC_WARNING_MULTI_CALLER", new Object[] { caller, idStoreDefinition.getCallerQuery() });
                         return CredentialValidationResult.INVALID_RESULT;
@@ -239,7 +247,7 @@ public class DatabaseIdentityStore implements IdentityStore {
             return CredentialValidationResult.INVALID_RESULT;
         }
 
-        if (passwordHash.verify(cred.getPassword().getValue(), String.valueOf(dbPassword.getChars()))) {
+        if (callerOnly || passwordHash.verify(password.getChars(), String.valueOf(dbPassword.getChars()))) {
             Set<String> groups = getCallerGroups(new CredentialValidationResult(null, caller, caller, caller, null));
             return new CredentialValidationResult(idStoreDefinition.getDataSourceLookup(), caller, caller, caller, groups);
         } else {
