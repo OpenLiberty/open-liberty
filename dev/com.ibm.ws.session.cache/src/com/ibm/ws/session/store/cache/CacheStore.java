@@ -30,10 +30,7 @@ public class CacheStore extends BackedStore {
     public CacheStore(SessionManagerConfig smc, String storeId, ServletContext sc, MemoryStoreHelper storeHelper, boolean isApplicationSessionStore, CacheStoreService cacheStoreService) {
         super(smc, storeId, sc, storeHelper, cacheStoreService);
 
-        if (_smc.isUsingMultirow())
-            _sessions = new CacheHashMapMR(this, smc, cacheStoreService);
-        else
-            _sessions = new CacheHashMap(this, smc, cacheStoreService);
+        _sessions = new CacheHashMap(this, smc, cacheStoreService);
 
         _isApplicationSessionStore = isApplicationSessionStore;
         ((BackedHashMap) _sessions).setIsApplicationSessionHashMap(isApplicationSessionStore);
