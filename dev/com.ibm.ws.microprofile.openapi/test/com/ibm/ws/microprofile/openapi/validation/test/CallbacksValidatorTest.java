@@ -83,13 +83,22 @@ public class CallbacksValidatorTest {
     @Test
     public void invalidUrlCallBack() {
         CallbackImpl c = new CallbackImpl();
-        c.addPathItem("h://abc.com/path", pathItem);
+        c.addPathItem("[]://abc.com/path", pathItem);
         vh.resetResults();
         validator.validate(vh, context, c);
         Assert.assertEquals("Callback with invalid url must have one error:" + vh, 1, vh.getEventsSize());
         String message = vh.getResult().getEvents().get(0).message;
         if (!message.contains("The Callback Object must contain a valid URL."))
             Assert.fail("Callback with invalid url reported an incorrect error:" + vh);
+    }
+
+    @Test
+    public void relativeUrlCallBack() {
+        CallbackImpl c = new CallbackImpl();
+        c.addPathItem("../../abc.com/path", pathItem);
+        vh.resetResults();
+        validator.validate(vh, context, c);
+        Assert.assertEquals("Callback with relative url must have no error:" + vh, 0, vh.getEventsSize());
     }
 
     @Test

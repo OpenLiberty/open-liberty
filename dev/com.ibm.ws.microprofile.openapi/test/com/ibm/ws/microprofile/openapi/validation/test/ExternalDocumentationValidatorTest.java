@@ -49,9 +49,21 @@ public class ExternalDocumentationValidatorTest {
         ExternalDocumentationImpl externalDocs = new ExternalDocumentationImpl();
 
         vh.resetResults();
-        externalDocs.setUrl("notAValidURL");
+        externalDocs.setUrl(":notAValidURL");
         validator.validate(vh, context, externalDocs);
         Assert.assertEquals(1, vh.getEventsSize());
+
+    }
+
+    @Test
+    public void testExternalDocumentationRelativeUrl() {
+
+        ExternalDocumentationImpl externalDocs = new ExternalDocumentationImpl();
+
+        vh.resetResults();
+        externalDocs.setUrl("/../relativeURL");
+        validator.validate(vh, context, externalDocs);
+        Assert.assertEquals(0, vh.getEventsSize());
 
     }
 

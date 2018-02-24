@@ -16,6 +16,9 @@ import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  *
  * @see "https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.md#infoObject"
@@ -171,13 +174,14 @@ public class InfoImpl implements Info {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Info {\n");
+        sb = (title != null) ? sb.append("    title: ").append(toIndentedString(title)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (termsOfService != null) ? sb.append("    termsOfService: ").append(toIndentedString(termsOfService)).append("\n") : sb.append("");
+        sb = (contact != null) ? sb.append("    contact: ").append(toIndentedString(contact)).append("\n") : sb.append("");
+        sb = (license != null) ? sb.append("    license: ").append(toIndentedString(license)).append("\n") : sb.append("");
+        sb = (version != null) ? sb.append("    version: ").append(toIndentedString(version)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
-        sb.append("    title: ").append(toIndentedString(title)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    termsOfService: ").append(toIndentedString(termsOfService)).append("\n");
-        sb.append("    contact: ").append(toIndentedString(contact)).append("\n");
-        sb.append("    license: ").append(toIndentedString(license)).append("\n");
-        sb.append("    version: ").append(toIndentedString(version)).append("\n");
         sb.append("}");
         return sb.toString();
     }
