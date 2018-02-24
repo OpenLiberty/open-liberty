@@ -60,7 +60,7 @@ import com.ibm.ws.artifact.fat_bvt.servlet.filesystem.FileSystemUtils;
 import com.ibm.ws.artifact.fat_bvt.servlet.filesystem.JarFileSystem;
 import com.ibm.ws.artifact.fat_bvt.servlet.filesystem.LooseFileSystem;
 import com.ibm.ws.artifact.fat_bvt.servlet.notification.NotificationTestRunner;
-import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
+// import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipCachingService;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
@@ -425,7 +425,8 @@ public class ArtifactAPIServlet extends HttpServlet {
         }
     }
 
-    private static final String ZFH_OPEN_COUNT_FIELD_NAME = "openCount";
+    // private static final String ZFH_OPEN_COUNT_FIELD_NAME = "openCount"; // TFB: When ZipReaper is installed, this field name changes.
+    private static final String ZFH_OPEN_COUNT_FIELD_NAME = "refs";
     private static final int ERROR_OPEN_COUNT = -1;
 
     private int getOpenCount(ZipFileHandle zfh) {
@@ -527,19 +528,28 @@ public class ArtifactAPIServlet extends HttpServlet {
 
         writer.println(methodName);
 
-        writer.println("ZipCache Service Parameters:");
+        // TFB: These parameters are only available when ZipReaper code is installed.
+        //
+        // writer.println("ZipCache Service Parameters:");
+        //
+        // int handleCacheSize = ZipCachingProperties.ZIP_CACHE_HANDLE_MAX;
+        // writer.println("  Max Zip Handles [ " + Integer.valueOf(handleCacheSize) + " ]");
+        //
+        // int entryCacheSize = ZipCachingProperties.ZIP_CACHE_ENTRY_MAX;
+        // writer.println("  Max Entry Cache Entry Size Limit [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT) + " ]");
+        // writer.println("  Max Entry Cache Size [ " + Integer.valueOf(entryCacheSize) + " ]");
+        //
+        // writer.println("  Max Pending Zip Closes [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING) + " ]");
+        //
+        // writer.println("  Min Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SHORT_INTERVAL) + " ]");
+        // writer.println("  Max Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL) + " ]");
 
-        int handleCacheSize = ZipCachingProperties.ZIP_CACHE_HANDLE_MAX;
-        writer.println("  Max Zip Handles [ " + Integer.valueOf(handleCacheSize) + " ]");
+        // TFB: When ZipReaper code is not installed, the handle and entry cache
+        //      sizes are per fixed constants of open-liberty/dev/com.ibm.ws.artifact.zip,
+        //      package com.ibm.ws.artifact.zip.cache.internal:
 
-        int entryCacheSize = ZipCachingProperties.ZIP_CACHE_ENTRY_MAX;
-        writer.println("  Max Entry Cache Entry Size Limit [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT) + " ]");
-        writer.println("  Max Entry Cache Size [ " + Integer.valueOf(entryCacheSize) + " ]");
-
-        writer.println("  Max Pending Zip Closes [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING) + " ]");
-
-        writer.println("  Min Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SHORT_INTERVAL) + " ]");
-        writer.println("  Max Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL) + " ]");
+        int handleCacheSize = 250; // ZipCachingServiceImpl.MAXCACHE
+        int entryCacheSize = 16; // ZipFileHandleImpl.MAX_CACHE_ENTRIES
 
         boolean pass = true;
 
@@ -563,7 +573,9 @@ public class ArtifactAPIServlet extends HttpServlet {
             int initialOpenCount = getOpenCount(handle);
             if ( initialOpenCount != 0 ) {
                 pass = false;
-                writer.println("FAIL: Handle [ " + canonicalPath + " ] initial open count is [ " + Integer.valueOf(initialOpenCount) + " ] but should be [ 0 ]");
+                writer.println("FAIL: Handle [ " + canonicalPath + " ]" +
+                               " initial open count is [ " + Integer.valueOf(initialOpenCount) + " ]" +
+                               " but should be [ " + Integer.valueOf(0) + " ]");
             }
 
             ArtifactContainer zipContainer =
@@ -572,7 +584,9 @@ public class ArtifactAPIServlet extends HttpServlet {
             int afterOpenCount = getOpenCount(handle);
             if ( afterOpenCount != 0 ) {
                 pass = false;
-                writer.println("FAIL: Handle [ " + canonicalPath + " ] open count after obtaining container is [ " + Integer.valueOf(initialOpenCount) + " ] but should be [ 0 ]");
+                writer.println("FAIL: Handle [ " + canonicalPath + " ]" +
+                               " open count after obtaining container is [ " + Integer.valueOf(initialOpenCount) + " ]" +
+                               " but should be [ " + Integer.valueOf(0) + " ]");
             }
 
             zipContainer.useFastMode();
@@ -580,22 +594,29 @@ public class ArtifactAPIServlet extends HttpServlet {
             int startFastModeOpenCount = getOpenCount(handle);
             if ( startFastModeOpenCount != 1 ) {
                 pass = false;
-                writer.println("FAIL: Handle [ " + canonicalPath + " ] open count after enabling fast mode is [ " + Integer.valueOf(initialOpenCount) + " ] but should be [ 1 ]");
+                writer.println("FAIL: Handle [ " + canonicalPath + " ]" +
+                               " open count after enabling fast mode is [ " + Integer.valueOf(initialOpenCount) + " ]" +
+                               " but should be [ 1 ]");
             }
 
             zipContainer.stopUsingFastMode();
 
             int stopFastModeOpenCount = getOpenCount(handle);
+
             if ( stopFastModeOpenCount != 0 ) {
                 pass = false;
-                writer.println("FAIL: Handle [ " + canonicalPath + " ] open count after disabling fast mode is [ " + Integer.valueOf(initialOpenCount) + " ] but should be [ 0 ]");
+                writer.println("FAIL: Handle [ " + canonicalPath + " ]" +
+                               " open count after disabling fast mode is [ " + Integer.valueOf(initialOpenCount) + " ]" +
+                               " but should be [ " + Integer.valueOf(0) + " ]");
             }
 
             zipContainer.stopUsingFastMode();
             int stopAgainFastModeOpenCount = getOpenCount(handle);
             if ( stopAgainFastModeOpenCount != 0 ) {
                 pass = false;
-                writer.println("FAIL: Handle [ " + canonicalPath + " ] open count after twice disabling fast mode is [ " + Integer.valueOf(initialOpenCount) + " ] but should be [ 0 ]");
+                writer.println("FAIL: Handle [ " + canonicalPath + " ]" +
+                               " open count after twice disabling fast mode is [ " + Integer.valueOf(initialOpenCount) + " ]" +
+                               " but should be [ " + Integer.valueOf(0) + " ]");
             }
 
             ArtifactEntry entry = zipContainer.getEntry("/META-INF/MANIFEST.MF");
@@ -604,7 +625,9 @@ public class ArtifactAPIServlet extends HttpServlet {
             int streamOpenOpenCount = getOpenCount(handle);
             if ( streamOpenOpenCount != 1 ) {
                 pass = false;
-                writer.println("FAIL: Handle [ " + canonicalPath + " ] open count after stream open is [ " + Integer.valueOf(initialOpenCount) + " ] but should be [ 1 ]");
+                writer.println("FAIL: Handle [ " + canonicalPath + " ]" +
+                               " open count after stream open is [ " + Integer.valueOf(initialOpenCount) + " ]" +
+                               " but should be [ " + Integer.valueOf(1) + " ]");
             }
 
             entryStream.close(); // throws IOException
@@ -612,7 +635,9 @@ public class ArtifactAPIServlet extends HttpServlet {
             int streamCloseOpenCount = getOpenCount(handle);
             if ( streamCloseOpenCount != 0 ) {
                 pass = false;
-                writer.println("FAIL: Handle [ " + canonicalPath + " ] open count after stream close is [ " + Integer.valueOf(initialOpenCount) + " ] but should be [ 0 ]");
+                writer.println("FAIL: Handle [ " + canonicalPath + " ]" +
+                               " open count after stream close is [ " + Integer.valueOf(initialOpenCount) + " ]" +
+                               " but should be [ " + Integer.valueOf(0) + " ]");
             }
 
             if ( entryCacheSize > 0 ) {
@@ -645,10 +670,12 @@ public class ArtifactAPIServlet extends HttpServlet {
 
                 if ( (zisBytes1 == null) || (zisBytes2 == null) ) {
                     pass = false;
-                    writer.println("FAIL: Handle [ " + canonicalPath + " ] entry [ " + ze.getName() + " ] did not obtain byte array input streams");
+                    writer.println("FAIL: Handle [ " + canonicalPath + " ] entry [ " + ze.getName() + " ]" +
+                                   " did not obtain byte array input streams");
                 } else if ( zisBytes1 != zisBytes2 ) {
                     pass = false;
-                    writer.println("FAIL: Handle [ " + canonicalPath + " ] entry [ " + ze.getName() + " ] did not obtain identical byte arrays");
+                    writer.println("FAIL: Handle [ " + canonicalPath + " ] entry [ " + ze.getName() + " ]" +
+                                   " did not obtain identical byte arrays");
                 }
 
             } else {
