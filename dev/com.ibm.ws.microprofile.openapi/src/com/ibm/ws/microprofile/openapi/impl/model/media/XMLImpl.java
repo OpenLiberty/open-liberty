@@ -14,6 +14,9 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.models.media.XML;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * XML
  *
@@ -152,12 +155,12 @@ public class XMLImpl implements XML {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class XML {\n");
-
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    namespace: ").append(toIndentedString(namespace)).append("\n");
-        sb.append("    prefix: ").append(toIndentedString(prefix)).append("\n");
-        sb.append("    attribute: ").append(toIndentedString(attribute)).append("\n");
-        sb.append("    wrapped: ").append(toIndentedString(wrapped)).append("\n");
+        sb = (name != null) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
+        sb = (namespace != null) ? sb.append("    namespace: ").append(toIndentedString(namespace)).append("\n") : sb.append("");
+        sb = (prefix != null) ? sb.append("    prefix: ").append(toIndentedString(prefix)).append("\n") : sb.append("");
+        sb = (attribute != null) ? sb.append("    attribute: ").append(toIndentedString(attribute)).append("\n") : sb.append("");
+        sb = (wrapped != null) ? sb.append("    wrapped: ").append(toIndentedString(wrapped)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

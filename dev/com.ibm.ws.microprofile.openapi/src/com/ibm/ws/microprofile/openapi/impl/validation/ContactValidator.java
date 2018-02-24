@@ -38,7 +38,7 @@ public class ContactValidator extends TypeValidator<Contact> {
         if (t != null) {
             String url = t.getUrl();
             if (url != null) {
-                if (!ValidatorUtils.isValidURL(url)) {
+                if (!ValidatorUtils.isValidURI(url)) {
                     final String message = Tr.formatMessage(tc, "contactInvalidURL", url);
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("url"), message));
                 }

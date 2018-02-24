@@ -17,6 +17,9 @@ import org.eclipse.microprofile.openapi.models.headers.Header;
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * Link
  *
@@ -232,14 +235,16 @@ public class LinkImpl implements Link {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Link {\n");
+        sb = (operationRef != null) ? sb.append("    operationRef: ").append(toIndentedString(operationRef)).append("\n") : sb.append("");
+        sb = (operationId != null) ? sb.append("    operationId: ").append(toIndentedString(operationId)).append("\n") : sb.append("");
+        sb = (parameters != null) ? sb.append("    parameters: ").append(OpenAPIUtils.mapToString(parameters)).append("\n") : sb.append("");
+        sb = (requestBody != null) ? sb.append("    requestBody: ").append(toIndentedString(requestBody)).append("\n") : sb.append("");
+        sb = (headers != null) ? sb.append("    headers: ").append(OpenAPIUtils.mapToString(headers)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = ($ref != null) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        sb = (server != null) ? sb.append("    server: ").append(toIndentedString(server)).append("\n") : sb.append("");
 
-        sb.append("    operationRef: ").append(toIndentedString(operationRef)).append("\n");
-        sb.append("    operationId: ").append(toIndentedString(operationId)).append("\n");
-        sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n");
-        sb.append("    requestBody: ").append(toIndentedString(requestBody)).append("\n");
-        sb.append("    headers: ").append(toIndentedString(headers)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    $ref: ").append(toIndentedString($ref)).append("\n");
         sb.append("}");
         return sb.toString();
     }
