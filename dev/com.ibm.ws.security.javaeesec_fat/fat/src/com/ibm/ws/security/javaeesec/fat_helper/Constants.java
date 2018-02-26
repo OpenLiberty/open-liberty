@@ -142,7 +142,8 @@ public class Constants {
     public final static String ejbisUserEmployeeTrue = "isUserInRole(Employee)= true";
     public final static String ejbisUserEmployeeFalse = "isUserInRole(Employee)= false";
     public final static String getEjbCallerPrincipal = "getCallerPrincipal()=";
-    public final static String ejbAuthorizationFailed = "EJBAccessException: CWWKS9400A: ";
+    public final static String ejbAccessException = "EJBAccessException: CWWKS9400A: ";
+    public final static String ejbAuthorizationFailed = "Error 403: AuthorizationFailed";
 
     // Values to be verified in servlet response
 
