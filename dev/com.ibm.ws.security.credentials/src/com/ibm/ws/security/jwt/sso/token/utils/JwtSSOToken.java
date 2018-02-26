@@ -8,32 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwtsso.config;
+package com.ibm.ws.security.jwt.sso.token.utils;
 
-import java.util.List;
+import javax.security.auth.Subject;
+
+import com.ibm.websphere.security.WSSecurityException;
 
 /**
- * see metatype.xml and metatype.properties for documentation
  *
  */
-public interface JwtSsoConfig {
+public interface JwtSSOToken {
+    void createJwtSSOToken(Subject subject) throws WSSecurityException;
 
-	boolean isHttpOnlyCookies();
+    String getJwtSSOToken(Subject subject);
 
-	boolean isSsoUseDomainFromURL();
-
-	List<String> getSsoDomainNames();
-
-	boolean isSetCookiePathToWebAppContextPath();
-
-	boolean isIncludeLtpaCookie();
-
-	boolean isFallbackToLtpa();
-
-	boolean isCookieSecured();
-
-	String getJwtBuilderRef();
-
-	String getJwtConsumerRef();
+    Subject handleJwtSSOToken(String encodedjwt);
 
 }
