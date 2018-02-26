@@ -18,7 +18,6 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.config.WSConfigurationHelper;
 import com.ibm.ws.container.service.app.deploy.ConnectorModuleInfo;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
@@ -44,7 +43,7 @@ public class ConnectorModuleMetatypeAdapter implements ContainerAdapter<Connecto
     private final ConcurrentHashMap<String, CountDownLatch> metatypeRemovedLatches = new ConcurrentHashMap<String, CountDownLatch>();
 
     protected void activate(ComponentContext context) {
-        bundleContext = PrivHelper.getBundleContext(context);
+        bundleContext = Utils.priv.getBundleContext(context);
     }
 
     protected void deactivate(ComponentContext context) {

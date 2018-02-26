@@ -13,6 +13,7 @@ package com.ibm.ws.jca.service;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -43,7 +44,7 @@ import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jca.internal.BootstrapContextImpl;
 import com.ibm.ws.jca.internal.ResourceAdapterMetaData;
 import com.ibm.ws.jca.internal.Utils;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -63,6 +64,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 //@Component(pid="com.ibm.ws.jca.connectionFactory.supertype")
 public class ConnectionFactoryService extends AbstractConnectionFactoryService implements ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ConnectionFactoryService.class);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /**
      * Name of reference to the ConnectionManagerService
@@ -390,7 +392,7 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
         if (connectionManagerRef == null)
             conMgrSvc = ConnectionManagerService.createDefaultService(jndiName);
         else
-            conMgrSvc = (ConnectionManagerService) PrivHelper.locateService(componentContext, CONNECTION_MANAGER);
+            conMgrSvc = (ConnectionManagerService) priv.locateService(componentContext, CONNECTION_MANAGER);
         conMgrSvc.addObserver(this);
         isInitialized.set(true);
 

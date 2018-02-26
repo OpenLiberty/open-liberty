@@ -56,6 +56,7 @@ import com.ibm.ws.jdbc.internal.JDBCDriverService;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
 import com.ibm.ws.rsadapter.impl.DatabaseHelper;
@@ -76,6 +77,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     private static final int BASE_PREFIX_LENGTH = BASE_PREFIX.length();
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + ".0.".length();
     private static final TraceComponent tc = Tr.register(DataSourceService.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /**
      * Name of reference to the ConnectionManagerService
@@ -305,7 +307,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 Tr.debug(this, tc, "recycle applications", appsToRecycle);
             
             ApplicationRecycleCoordinator appRecycleCoord = null;
-            appRecycleCoord = (ApplicationRecycleCoordinator) PrivHelper.locateService(componentContext,"appRecycleService");
+            appRecycleCoord = (ApplicationRecycleCoordinator) priv.locateService(componentContext,"appRecycleService");
             
             Set<String> members = new HashSet<String>(appsToRecycle);
             appsToRecycle.removeAll(members);
@@ -559,7 +561,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 Tr.debug(this, tc, DATASOURCE, id, jndiName, type);
 
             // Get the connection manager service for this data source. If none is configured, then use defaults.
-            conMgrSvc = (ConnectionManagerService) PrivHelper.locateService(componentContext,CONNECTION_MANAGER);
+            conMgrSvc = (ConnectionManagerService) priv.locateService(componentContext,CONNECTION_MANAGER);
 
             if (conMgrSvc == null) {
                 if (wProps.containsKey(DSConfig.CONNECTION_MANAGER_REF)) {
@@ -574,7 +576,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             // Obtain the data source from the JDBC driver
             // TODO: Switch to org.osgi.service.jdbc.DataSourceFactory for compatibility with OSGI JDBC drivers
-            jdbcDriverSvc = (JDBCDriverService) PrivHelper.locateService(componentContext,JDBC_DRIVER);
+            jdbcDriverSvc = (JDBCDriverService) priv.locateService(componentContext,JDBC_DRIVER);
 
             if (jdbcDriverSvc == null) {
                 Tr.error(tc, "DSRA4003.driver.null", jndiName == null ? id : jndiName);

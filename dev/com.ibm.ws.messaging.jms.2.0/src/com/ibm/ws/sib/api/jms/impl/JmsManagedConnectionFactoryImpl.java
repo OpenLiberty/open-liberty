@@ -11,6 +11,7 @@
 
 package com.ibm.ws.sib.api.jms.impl;
 
+import java.security.AccessController;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.api.jms.ApiJmsConstants;
 import com.ibm.websphere.sib.api.jms.JmsManagedConnectionFactory;
 import com.ibm.websphere.sib.exception.SIException;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.sib.api.jms.JmsInternalConstants;
 import com.ibm.ws.sib.api.jmsra.JmsJcaConnection;
 import com.ibm.ws.sib.api.jmsra.JmsJcaConnectionFactory;
@@ -38,6 +39,7 @@ import com.ibm.wsspi.sib.core.exception.SINotAuthorizedException;
 public class JmsManagedConnectionFactoryImpl implements JmsManagedConnectionFactory, ApiJmsConstants
 {
     private static final long serialVersionUID = 2796080016458361701L;
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     // ************************** TRACE INITIALISATION ***************************
 
@@ -244,7 +246,7 @@ public class JmsManagedConnectionFactoryImpl implements JmsManagedConnectionFact
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "isManaged");
         boolean isManaged;
-        String imP = PrivHelper.getProperty("com.ibm.ws.sib.api.isManaged");
+        String imP = priv.getProperty("com.ibm.ws.sib.api.isManaged");
 
         if (imP == null) {
             // no property available, so take the value from JCA

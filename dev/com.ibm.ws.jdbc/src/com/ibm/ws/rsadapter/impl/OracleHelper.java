@@ -278,7 +278,7 @@ public class OracleHelper extends DatabaseHelper {
         try {
             Class<?> c = OracleConnection.get();
             if (c == null)
-                OracleConnection.set(c = PrivHelper.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
+                OracleConnection.set(c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
 
             Map<String, Object> tempProps = new HashMap<String, Object>();
 
@@ -344,7 +344,7 @@ public class OracleHelper extends DatabaseHelper {
         try {
             Class<?> c = OracleConnection.get();
             if (c == null)
-                OracleConnection.set(c = PrivHelper.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
+                OracleConnection.set(c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
 
             if (c.isInstance(conn)) {
                 try {
@@ -397,7 +397,7 @@ public class OracleHelper extends DatabaseHelper {
         try {
             Class<?> c = OracleConnection.get();
             if (c == null)
-                OracleConnection.set(c = PrivHelper.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
+                OracleConnection.set(c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
 
             Method m;
             m = setDefaultExecuteBatch.get();
@@ -477,7 +477,7 @@ public class OracleHelper extends DatabaseHelper {
         try {
             Method m = clearDefines.get();
             if (m == null) {
-                Class<?> c = PrivHelper.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OraclePreparedStatement);
+                Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OraclePreparedStatement);
                 clearDefines.set(m = c.getMethod("clearDefines"));
             }
 
@@ -493,14 +493,14 @@ public class OracleHelper extends DatabaseHelper {
             if (m == null) {
                 Class<?> c = OracleConnection.get();
                 if (c == null)
-                    OracleConnection.set(c = PrivHelper.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
+                    OracleConnection.set(c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
                 getDefaultRowPrefetch.set(m = c.getMethod("getDefaultRowPrefetch"));
             }
             Object defaultRowPrefetch = m.invoke(stmt.getConnection());
 
             m = setRowPrefetch.get();
             if (m == null) {
-                Class<?> c = PrivHelper.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OraclePreparedStatement);
+                Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OraclePreparedStatement);
                 setRowPrefetch.set(m = c.getMethod("setRowPrefetch", int.class));
             }
             m.invoke(stmt, defaultRowPrefetch);
@@ -524,7 +524,7 @@ public class OracleHelper extends DatabaseHelper {
             try {
                 Method m = setLobPrefetchSize.get();
                 if (m == null) {
-                    Class<?> c = PrivHelper.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OraclePreparedStatement);
+                    Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OraclePreparedStatement);
                     setLobPrefetchSize.set(m = c.getMethod("setLobPrefetchSize", int.class));
                 }
                 m.invoke(stmt, 4000);
@@ -563,7 +563,7 @@ public class OracleHelper extends DatabaseHelper {
     public String getXAExceptionContents(XAException xae) {
         StringBuilder xsb = new StringBuilder(350);
         try {
-            Class<?> c = PrivHelper.loadClass(mcf.jdbcDriverLoader, "oracle.jdbc.xa.OracleXAException");
+            Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, "oracle.jdbc.xa.OracleXAException");
 
             if (c.isInstance(xae)) {
                 int xaerror = (Integer) c.getMethod("getXAError").invoke(xae);
@@ -856,7 +856,7 @@ public class OracleHelper extends DatabaseHelper {
             if (m == null) {
                 Class<?> c = OracleConnection.get();
                 if (c == null)
-                    OracleConnection.set(c = PrivHelper.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
+                    OracleConnection.set(c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_OracleConnection));
                 setEndToEndMetrics.set(m = c.getMethod("setEndToEndMetrics", String[].class, short.class));
             }
             m.invoke(WSJdbcTracer.getImpl(sqlConn), matrix, s);
@@ -869,7 +869,7 @@ public class OracleHelper extends DatabaseHelper {
 
     private void setTrace(boolean b) {
         try {
-            Class<?> c = PrivHelper.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_driver_OracleLog);
+            Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, oracle_jdbc_driver_OracleLog);
             c.getMethod("setTrace", boolean.class).invoke(null, b);
         } catch (RuntimeException x) {
             throw x;

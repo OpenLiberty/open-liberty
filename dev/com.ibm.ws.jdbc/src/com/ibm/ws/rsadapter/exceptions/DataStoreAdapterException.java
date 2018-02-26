@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.exceptions;
 
+import java.security.AccessController;
 import java.sql.*; 
 import java.util.Map; 
 
@@ -21,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 
 public class DataStoreAdapterException extends ResourceException {
@@ -28,6 +30,7 @@ public class DataStoreAdapterException extends ResourceException {
     private static final long serialVersionUID = -1282552127378991160L; 
 
     private static final TraceComponent tc = Tr.register(DataStoreAdapterException.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     // whether the exception has already been mapped
     private boolean beenMapped = false;
@@ -80,7 +83,7 @@ public class DataStoreAdapterException extends ResourceException {
                 {
                     // JDBCRuntimeVersion injected by declarative services is not accessible from here.
                     // This is an exception path, and should not be performance critical, so just grab it from the service registry again.
-                    JDBCRuntimeVersion jdbcRuntime = PrivHelper.getService(PrivHelper.getBundleContext(FrameworkUtil.getBundle(getClass())), JDBCRuntimeVersion.class);
+                    JDBCRuntimeVersion jdbcRuntime = priv.getService(priv.getBundleContext(FrameworkUtil.getBundle(getClass())), JDBCRuntimeVersion.class);
                     exception = jdbcRuntime.newBatchUpdateException((BatchUpdateException) exception, sqlex.getMessage() + " " + _message);
                 }
                 else if (exception instanceof DataTruncation)

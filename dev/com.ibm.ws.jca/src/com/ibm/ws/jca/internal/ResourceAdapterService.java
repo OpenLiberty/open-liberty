@@ -32,7 +32,6 @@ import com.ibm.ws.classloading.ClassProvider;
 import com.ibm.ws.classloading.LibertyClassLoader;
 import com.ibm.ws.jca.rar.ResourceAdapterBundleService;
 import com.ibm.ws.jca.utils.xml.metatype.Metatype;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.artifact.ArtifactContainer;
@@ -139,7 +138,7 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
 
         id = (String) context.getProperties().get(Constants.ID);
         rarFilePath = (String) context.getProperties().get(Constants.LOCATION);
-        bundleContext = PrivHelper.getBundleContext(context);
+        bundleContext = Utils.priv.getBundleContext(context);
         bundle = bundleContext.getBundle();
 
         // This is here so that the RAR class loader is set before providing it

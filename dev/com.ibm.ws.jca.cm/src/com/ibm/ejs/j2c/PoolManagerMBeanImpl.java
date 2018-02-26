@@ -32,7 +32,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 
 public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionManagerMBean {
     private static final TraceComponent tc = Tr.register(PoolManagerMBeanImpl.class, J2CConstants.traceSpec, J2CConstants.messageFile);
@@ -94,7 +93,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
         Hashtable<String, String> props = new Hashtable<String, String>();
         props.put("jmx.objectname", this.obn.toString());
 
-        this.reg = PrivHelper.registerService(bndCtx, ConnectionManagerMBean.class.getName(), this, props);
+        this.reg = ConnectionManagerServiceImpl.priv.registerService(bndCtx, ConnectionManagerMBean.class.getName(), this, props);
     }
 
     public void unregister() {

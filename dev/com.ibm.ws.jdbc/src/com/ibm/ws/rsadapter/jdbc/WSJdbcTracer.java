@@ -195,7 +195,7 @@ public class WSJdbcTracer implements InvocationHandler
             // - include SQL for PreparedStatement & CallableStatement
             final String query = methName.startsWith("prepare") && PreparedStatement.class.isAssignableFrom(returnType)
                            && args.length >= 1 && args[0] instanceof String ? (String) args[0] : null;
-            traceableResult = Proxy.newProxyInstance(PrivHelper.getClassLoader(returnType), new Class[] { returnType }, new WSJdbcTracer(tracer, writer, result, returnType, query, false));
+            traceableResult = Proxy.newProxyInstance(WSJdbcWrapper.priv.getClassLoader(returnType), new Class[] { returnType }, new WSJdbcTracer(tracer, writer, result, returnType, query, false));
         }
 
         // Trace exit after successful invocation.

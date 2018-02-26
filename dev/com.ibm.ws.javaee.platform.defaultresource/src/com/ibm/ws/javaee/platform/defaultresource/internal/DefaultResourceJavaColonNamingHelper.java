@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.platform.defaultresource.internal;
 
+import java.security.AccessController;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -27,14 +28,15 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.ws.container.service.naming.JavaColonNamespaceBindings;
 import com.ibm.ws.container.service.naming.JavaColonNamingHelper;
 import com.ibm.ws.container.service.naming.NamingConstants;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 @Component(service = JavaColonNamingHelper.class,
-           // Indication to injection that default resources are enabled.
+// Indication to injection that default resources are enabled.
            property = "javaCompDefault:Boolean=true")
 public class DefaultResourceJavaColonNamingHelper implements JavaColonNamingHelper, JavaColonNamespaceBindings.ClassNameProvider<DefaultResourceJavaColonNamingHelper.Binding> {
     private static final String JAVA_COMP_DEFAULT_NAME = com.ibm.ws.resource.ResourceFactory.JAVA_COMP_DEFAULT_NAME;
+    private final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private static final String REFERENCE_RESOURCE_FACTORIES = "resourceFactories";
 
@@ -50,14 +52,13 @@ public class DefaultResourceJavaColonNamingHelper implements JavaColonNamingHelp
 
         synchronized ResourceFactory getResourceFactory(final ComponentContext context) {
             if (factory == null) {
-                factory = PrivHelper.locateService(context, REFERENCE_RESOURCE_FACTORIES, reference);
+                factory = priv.locateService(context, REFERENCE_RESOURCE_FACTORIES, reference);
             }
             return factory;
         }
     }
 
-    private final JavaColonNamespaceBindings<Binding> bindings =
-                    new JavaColonNamespaceBindings<Binding>(NamingConstants.JavaColonNamespace.COMP, this);
+    private final JavaColonNamespaceBindings<Binding> bindings = new JavaColonNamespaceBindings<Binding>(NamingConstants.JavaColonNamespace.COMP, this);
     private ComponentContext context;
 
     @Activate

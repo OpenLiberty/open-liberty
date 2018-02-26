@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.adaptable.module.internal;
 
+import java.security.AccessController;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +30,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -49,6 +50,7 @@ import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 public class AdapterFactoryServiceImpl implements AdapterFactoryService {
 
     private final static String toType = "toType";
+    private final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private final ConcurrentServiceReferenceSetMap<String, ContainerAdapter<?>> containerHelperMap = new ConcurrentServiceReferenceSetMap<String, ContainerAdapter<?>>("containerHelper");
     private final ConcurrentServiceReferenceSetMap<String, EntryAdapter<?>> entryHelperMap = new ConcurrentServiceReferenceSetMap<String, EntryAdapter<?>>("entryHelper");
@@ -174,7 +176,8 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
     }
 
     @Override
-    public <T> T adapt(final Container root, final OverlayContainer rootOverlay, final ArtifactContainer artifactContainer, final Container containerToAdapt, final Class<T> t) throws UnableToAdaptException {
+    public <T> T adapt(final Container root, final OverlayContainer rootOverlay, final ArtifactContainer artifactContainer, final Container containerToAdapt,
+                       final Class<T> t) throws UnableToAdaptException {
         String key = t.getName();
         Iterator<ServiceAndServiceReferencePair<ContainerAdapter<?>>> i = containerHelperMap.getServicesWithReferences(key);
         if (i != null) {
@@ -184,8 +187,8 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                 try {
                     //consistency check, make sure that adapters idea of 't' matches ours
                     //has to be done because we are using string service properties to work round
-                    //type erasure for generics in service references in osgi                
-                    Class<?> clz = PrivHelper.loadClass(sr.getBundle(), t.getName());
+                    //type erasure for generics in service references in osgi
+                    Class<?> clz = priv.loadClass(sr.getBundle(), t.getName());
                     if (clz == t) {
                         ContainerAdapter<?> ca = sandr.getService();
                         if (ca != null) {
@@ -216,7 +219,7 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                     //consistency check, make sure that adapters idea of 't' matches ours
                     //has to be done because we are using string service properties to work round
                     //type erasure for generics in service references in osgi
-                    Class<?> clz = PrivHelper.loadClass(sr.getBundle(), t.getName());
+                    Class<?> clz = priv.loadClass(sr.getBundle(), t.getName());
                     if (clz == t) {
                         EntryAdapter<?> ea = sandr.getService();
                         if (ea != null) {

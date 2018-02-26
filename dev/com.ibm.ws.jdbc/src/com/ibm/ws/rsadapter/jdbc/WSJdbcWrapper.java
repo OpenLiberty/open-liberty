@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.security.AccessController;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLRecoverableException;
@@ -29,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl; 
@@ -52,6 +54,8 @@ import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
  */
 public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper 
 {
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+    
     /**
      * Represents the state of a JDBC wrapper.
      */
@@ -466,7 +470,7 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
                 // An implementation object is found. Create a new wrapper for it.
                 // And then add it to the map of dynamic wrappers.
 
-                result = Proxy.newProxyInstance(PrivHelper.getClassLoader(interfaceClass),
+                result = Proxy.newProxyInstance(priv.getClassLoader(interfaceClass),
                                                 new Class[] { interfaceClass },
                                                 this);
 
