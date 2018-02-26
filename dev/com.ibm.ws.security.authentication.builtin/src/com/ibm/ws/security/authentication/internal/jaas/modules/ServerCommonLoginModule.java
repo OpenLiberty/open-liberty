@@ -126,6 +126,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      * and set the credentials for the determined accessId.
      *
      * @throws Exception
+     *             TODO: setPrincipals and setCredentials
      */
     protected void setPrincipalAndCredentials(Subject subject,
                                               String securityName,
@@ -133,7 +134,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
                                               String newSecurityName,
                                               String accessId,
                                               String authMethod) throws Exception {
-        setPrincipal(subject, newSecurityName, accessId, authMethod, null);
+        setPrincipals(subject, newSecurityName, accessId, authMethod, null);
         if (urAuthenticatedId != null && !urAuthenticatedId.equals(securityName)) {
             Hashtable<String, String> subjectHash = new Hashtable<String, String>();
             subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, securityName);
@@ -308,6 +309,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
     }
 
     /**
+     * TODO: OSGI service for principal later
      * Set the relevant Principal for this login module into the Subject.
      * TODO: Get the PrincipalProvider and go through the PrincipalServices to add principal into the subject
      *
@@ -316,12 +318,15 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      * @param accessId
      * @param authMethod
      */
-    protected void setPrincipal(Subject subject, String newSecurityName, String accessId, String authMethod, Hashtable<String, ?> customProperties) throws Exception {
+    protected void setPrincipals(Subject subject, String newSecurityName, String accessId, String authMethod, Hashtable<String, ?> customProperties) throws Exception {
         Principal principal = new WSPrincipal(newSecurityName, accessId, authMethod);
         subject.getPrincipals().add(principal);
         if (customProperties != null) {
             addJaspicPrincipal(subject, customProperties);
+            addJsonWebToken(subject, customProperties);
         }
+        //TODO: call Aruna code to create the jsonWebToken Principal that include the token
+        // JwtSSOTokenHelper.createJwtSSOToken(subject);
     }
 
     /**
@@ -345,7 +350,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
         }
     }
 
-    private void addJsonWebToken(Subject subject, Hashtable<String, ?> customProperties) {
+    protected void addJsonWebToken(Subject subject, Hashtable<String, ?> customProperties) {
         if (customProperties != null && customProperties.get(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN) != null) {
             MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
             removeInternalAssertionHashtable(customProperties, jsonWebTokenProperties);

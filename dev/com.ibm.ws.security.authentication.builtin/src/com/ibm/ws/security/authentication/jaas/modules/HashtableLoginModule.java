@@ -184,7 +184,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                 username = userId;
                 uniqueUserId = ret;
                 setUpTemporarySubject();
-                addJsonWebToken(temporarySubject);
+//                addJsonWebToken(temporarySubject, customProperties);
                 updateSharedState();
                 return true;
             }
@@ -260,8 +260,8 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                                                        username);
             }
             setPrincipalAndCredentials(temporarySubject, username, null, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
-            addJaspicPrincipal(temporarySubject);
-            addJsonWebToken(temporarySubject);
+//            addJaspicPrincipal(temporarySubject);
+//            addJsonWebToken(temporarySubject);
             updateSharedState();
         } catch (Exception e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
@@ -329,8 +329,9 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       userRegistry.getRealm(),
                                                       uniqueUserId);
+
         setPrincipalAndCredentials(temporarySubject, username, urAuthenticatedId, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
-        addJaspicPrincipal(temporarySubject);
+        setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
     }
 
     /**
