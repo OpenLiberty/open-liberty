@@ -422,8 +422,19 @@ public class AuthenticateApi {
      * @param authResult
      */
     public void postProgrammaticAuthenticate(HttpServletRequest req, HttpServletResponse resp, AuthenticationResult authResult) {
+        postProgrammaticAuthenticate(req, resp, authResult, false);
+    }
+
+    /**
+     * This method set the caller and invocation subject and call the addSsoCookiesToResponse
+     *
+     * @param req
+     * @param resp
+     * @param authResult
+     */
+    public void postProgrammaticAuthenticate(HttpServletRequest req, HttpServletResponse resp, AuthenticationResult authResult, boolean alwaysSetCallerSubject) {
         Subject subject = authResult.getSubject();
-        if (new SubjectHelper().isUnauthenticated(subjectManager.getCallerSubject())) {
+        if (alwaysSetCallerSubject || new SubjectHelper().isUnauthenticated(subjectManager.getCallerSubject())) {
             subjectManager.setCallerSubject(subject);
         }
         subjectManager.setInvocationSubject(subject);

@@ -978,11 +978,16 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     @Override
     public boolean authenticate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Subject callerSubject = subjectManager.getCallerSubject();
-        if (!subjectHelper.isUnauthenticated(callerSubject)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "The underlying login mechanism has committed");
-            return true;
+
+        if (!isJaspiEnabled ||
+            !((JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi")).isProcessingNewAuthentication(req)) {
+            // if JSR-375 HttpAuthenticationMechanism is not enabled, and if there is a valid subject in the context, return it.
+            Subject callerSubject = subjectManager.getCallerSubject();
+            if (!subjectHelper.isUnauthenticated(callerSubject)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "The underlying login mechanism has committed");
+                return true;
+            }
         }
 
         WebReply webReply = PERMIT_REPLY;
@@ -999,7 +1004,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             authResult = authenticateRequest(webRequest);
         }
         if (authResult.getStatus() == AuthResult.SUCCESS) {
-            getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult);
+            getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult, true);
         } else {
             String realm = authResult.realm;
             if (realm == null) {
