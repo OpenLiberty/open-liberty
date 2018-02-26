@@ -13,20 +13,22 @@ package com.ibm.ws.security.jwtsso.utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-public class JwtSsoUtils {
-	private static final TraceComponent tc = Tr.register(JwtSsoUtils.class);
+public class JwtSsoConstants {
+	private static final TraceComponent tc = Tr.register(JwtSsoConstants.class);
 
 	public static final String CFG_KEY_COOKIENAME = "cookieName";
 	public static final String CFG_KEY_HTTPONLYCOOKIES = "httpOnlyCookies";
 	public static final String CFG_KEY_SSOUSEDOMAINFROMURL = "ssoUseDomainFromURL";
-	public static final String CFG_KEY_SSOREQUIRESSSL = "ssoRequiresSSL";
 	public static final String CFG_KEY_SSODOMAINNAMES = "ssoDomainNames";
 	public static final String CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH = "setCookiePathToWebAppContextPath";
 	public static final String CFG_KEY_INCLUDELTPACOOKIE = "includeLtpaCookie";
 	public static final String CFG_KEY_FALLBACKTOLTPA = "fallbackToLtpa";
+	public static final String CFG_KEY_COOKIESECUREFLAG = "setCookieSecureFlag";
 
-	public static final String CFG_KEY_GROUPBASEDNOMITTED = "groupBaseDnOmitted";
 	public static final String CFG_KEY_JWTBUILDERREF = "jwtBuilderRef";
 	public static final String CFG_KEY_JWTCONSUMERREF = "jwtConsumerRef";
+	public static final String GROUP_PREFIX = "group:";
+	public static final String TOKEN_TYPE_JWT = "JWT";
+	public static final String UNAUTHENTICATED = "JWT";
 
 }

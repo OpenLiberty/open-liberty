@@ -37,15 +37,28 @@ public class TokenBuilder {
 	private final static String GROUP_PREFIX = "group:";
 
 	/**
-	 * create an MP-JWT token using the Builder API.
+	 * create an MP-JWT token using the Builder API. Assumes the user is already
+	 * authenticated.
 	 *
 	 * @param jwtConfig
 	 *            - a builder configuration from server.xml
 	 * @return the token string, or null if a mandatory param was null or empty.
 	 */
 	public String createTokenString(JwtConfig config) {
+		return createTokenString(config.getId());
+	}
+
+	/**
+	 * create an MP-JWT token using the builder API. Assumes the user is already
+	 * authenticated.
+	 *
+	 * @param builderConfigId
+	 *            - the id of the builder element in server.xml
+	 * @return the token string, or null if a mandatory param was null or empty.
+	 */
+	public String createTokenString(String builderConfigId) {
 		try {
-			JwtBuilder builder = JwtBuilder.create(config.getId());
+			JwtBuilder builder = JwtBuilder.create(builderConfigId);
 
 			// all the "normal" stuff like issuer, aud, etc. is handled
 			// by the builder, we only need to add the mp-jwt things
@@ -72,7 +85,12 @@ public class TokenBuilder {
 		return (in != null && in.size() > 0);
 	}
 
-	private String getUserName() {
+	/**
+	 * get the username from the WSSubject
+	 *
+	 * @return the user name, UNAUTHENTICATED, or null if something went wrong.
+	 */
+	public String getUserName() {
 		Subject subject = null;
 		try {
 			subject = WSSubject.getRunAsSubject();

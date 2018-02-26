@@ -12,13 +12,15 @@ package com.ibm.ws.security.jwtsso.config;
 
 import java.util.List;
 
+/**
+ * see metatype.xml and metatype.properties for documentation
+ *
+ */
 public interface JwtSsoConfig {
 
 	boolean isHttpOnlyCookies();
 
 	boolean isSsoUseDomainFromURL();
-
-	boolean isSsoRequiresSSL();
 
 	List<String> getSsoDomainNames();
 
@@ -28,7 +30,7 @@ public interface JwtSsoConfig {
 
 	boolean isFallbackToLtpa();
 
-	String getGroupBaseDnOmitted();
+	boolean isCookieSecured();
 
 	String getJwtBuilderRef();
 
