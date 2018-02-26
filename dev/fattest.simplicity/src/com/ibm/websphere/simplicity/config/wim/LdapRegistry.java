@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ public class LdapRegistry extends ConfigElement {
     private LdapFilters domino50Filters;
     private LdapFilters edirectoryFilters;
     private ConfigElementList<FailoverServers> failoverServers;
+    private GroupConfiguration groupProperties;
     private String host;
     private LdapFilters idsFilters;
     private Boolean ignoreCase;
@@ -151,6 +152,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public ConfigElementList<FailoverServers> getFailoverServers() {
         return (failoverServers == null) ? (failoverServers = new ConfigElementList<FailoverServers>()) : failoverServers;
+    }
+
+    /**
+     * @return the groupProperties
+     */
+    public GroupConfiguration getGroupProperties() {
+        return groupProperties;
     }
 
     /**
@@ -422,6 +430,14 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @param groupProperties the groupProperties to set
+     */
+    @XmlElement(name = "groupProperties")
+    public void setGroupProperties(GroupConfiguration groupProperties) {
+        this.groupProperties = groupProperties;
+    }
+
+    /**
      * @param host the host to set
      */
     @XmlAttribute(name = "host")
@@ -641,6 +657,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (failoverServers != null) {
             sb.append("failoverServers=\"").append(failoverServers).append("\" ");;
+        }
+        if (groupProperties != null) {
+            sb.append("groupConfiguration=\"").append(groupProperties).append("\" ");;
         }
         if (host != null) {
             sb.append("host=\"").append(host).append("\" ");;

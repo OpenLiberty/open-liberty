@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -779,15 +779,15 @@ public class LdapHelper {
                 isUTCDate = true;
             }
 
-            if ("IBM Tivoli Directory Server".equalsIgnoreCase(ldapType)) {
+            if (LdapConstants.IDS_LDAP_SERVER.equalsIgnoreCase(ldapType)) {
                 if (isUTCDate) {
                     ldapValue = new SimpleDateFormat("yyyyMMddHHmmss.SSSSSS'Z'").format(date);
                 } else {
                     ldapValue = new SimpleDateFormat("yyyyMMddHHmmss.SSSSSSZ").format(date);
                 }
-            } else if ("Sun Java System Directory Server".equalsIgnoreCase(ldapType)
-                       || "IBM Lotus Domino".equalsIgnoreCase(ldapType)
-                       || "Novell eDirectory".equalsIgnoreCase(ldapType)) {
+            } else if (LdapConstants.SUN_LDAP_SERVER.equalsIgnoreCase(ldapType)
+                       || LdapConstants.DOMINO_LDAP_SERVER.equalsIgnoreCase(ldapType)
+                       || LdapConstants.NOVELL_LDAP_SERVER.equalsIgnoreCase(ldapType)) {
                 if (isUTCDate) {
                     ldapValue = new SimpleDateFormat("yyyyMMddHHmmss'Z'").format(date);
                 } else {

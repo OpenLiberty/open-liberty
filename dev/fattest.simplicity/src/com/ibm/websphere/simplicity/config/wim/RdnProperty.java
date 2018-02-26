@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,42 +18,29 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.ibm.websphere.simplicity.config.ConfigElement;
-import com.ibm.websphere.simplicity.config.ConfigElementList;
 
 /**
  * Configuration for the following nested elements:
  *
  * <ul>
- * <li>ldapRegistry --> ldapEntityType</li>
+ * <li>ldapRegistry --> ldapEntityType -- rdnProperty</li>
  * </ul>
  */
-public class LdapEntityType extends ConfigElement {
+public class RdnProperty extends ConfigElement {
 
     private String name;
     private Set<String> objectClasses;
-    private Set<String> searchBases;
-    private String searchFilter;
-    private ConfigElementList<RdnProperty> rdnProperties; // PRIVATE
 
-    public LdapEntityType() {}
+    public RdnProperty() {}
 
-    public LdapEntityType(String name, String searchFilter, String[] objectClasses, String[] searchBases) {
+    public RdnProperty(String name, String[] objectClasses) {
         this.name = name;
-        this.searchFilter = searchFilter;
 
         if (objectClasses != null && objectClasses.length > 0) {
             this.objectClasses = new TreeSet<String>();
 
             for (String objectClass : objectClasses) {
                 this.objectClasses.add(objectClass);
-            }
-        }
-
-        if (searchBases != null && searchBases.length > 0) {
-            this.searchBases = new TreeSet<String>();
-
-            for (String searchBase : searchBases) {
-                this.searchBases.add(searchBase);
             }
         }
     }
@@ -66,31 +53,10 @@ public class LdapEntityType extends ConfigElement {
     }
 
     /**
-     * @return the rdnProperties
-     */
-    public ConfigElementList<RdnProperty> getRdnProperties() {
-        return (rdnProperties == null) ? (rdnProperties = new ConfigElementList<RdnProperty>()) : rdnProperties;
-    }
-
-    /**
      * @return the objectClasses
      */
     public Set<String> getObjectClasses() {
         return (objectClasses == null) ? (objectClasses = new TreeSet<String>()) : objectClasses;
-    }
-
-    /**
-     * @return the searchBases
-     */
-    public Set<String> getSearchBases() {
-        return (searchBases == null) ? (searchBases = new TreeSet<String>()) : searchBases;
-    }
-
-    /**
-     * @return the searchFilter
-     */
-    public String getSearchFilter() {
-        return searchFilter;
     }
 
     /**
@@ -109,30 +75,6 @@ public class LdapEntityType extends ConfigElement {
         this.objectClasses = objectClasses;
     }
 
-    /**
-     * @param rdnProperties the rdnProperties to set
-     */
-    @XmlElement(name = "rdnProperty")
-    public void setRdnProperties(ConfigElementList<RdnProperty> rdnProperties) {
-        this.rdnProperties = rdnProperties;
-    }
-
-    /**
-     * @param searchBase the searchBase to set
-     */
-    @XmlElement(name = "searchBase")
-    public void setSearchBases(Set<String> searchBases) {
-        this.searchBases = searchBases;
-    }
-
-    /**
-     * @param searchFilter the searchFilter to set
-     */
-    @XmlAttribute(name = "searchFilter")
-    public void setSearchFilter(String searchFilter) {
-        this.searchFilter = searchFilter;
-    }
-
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -144,12 +86,6 @@ public class LdapEntityType extends ConfigElement {
         }
         if (objectClasses != null) {
             sb.append("objectClasses=\"").append(objectClasses).append("\" ");;
-        }
-        if (searchBases != null) {
-            sb.append("searchBases=\"").append(searchBases).append("\" ");;
-        }
-        if (searchFilter != null) {
-            sb.append("searchFilter=\"").append(searchFilter).append("\" ");;
         }
 
         sb.append("}");
