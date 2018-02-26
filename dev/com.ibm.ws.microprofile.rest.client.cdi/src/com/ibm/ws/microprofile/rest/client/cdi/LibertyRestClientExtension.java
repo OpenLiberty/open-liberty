@@ -33,11 +33,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "api.classes=" +
-                                                                                            "org.eclipse.microprofile.rest.client.inject.RegisterRestClient;" +
-                                                                                            "org.eclipse.microprofile.rest.client.inject.RestClient;",
-                                                                                            "service.vendor=IBM"
-})
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = 
+    { "api.classes=org.eclipse.microprofile.rest.client.inject.RegisterRestClient;" +
+                  "org.eclipse.microprofile.rest.client.inject.RestClient",
+      "bean.defining.annotations=org.eclipse.microprofile.rest.client.inject.RegisterRestClient",
+      "service.vendor=IBM"})
 public class LibertyRestClientExtension implements WebSphereCDIExtension, Extension {
     private final static TraceComponent tc = Tr.register(LibertyRestClientExtension.class);
 

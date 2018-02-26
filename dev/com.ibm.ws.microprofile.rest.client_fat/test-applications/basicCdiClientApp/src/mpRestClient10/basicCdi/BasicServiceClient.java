@@ -12,7 +12,6 @@ package mpRestClient10.basicCdi;
 
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -32,7 +31,6 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @RegisterProvider(UnknownWidgetExceptionMapper.class)
 @RegisterRestClient
 @Path("/")
-@Dependent
 public interface BasicServiceClient {
     @GET
     Set<String> getWidgetNames();
