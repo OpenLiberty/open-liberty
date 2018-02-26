@@ -85,7 +85,7 @@ public class TestMultiModuleConfigLoad extends LoggingTest {
                         .addAsLibrary(jar)
                         .setApplicationXML(RetryTesterServlet.class.getResource("multi-module-application.xml"));
 
-        ShrinkHelper.exportToServer(SHARED_SERVER.getLibertyServer(), "dropins", ear);
+        ShrinkHelper.exportToServer(SHARED_SERVER.getLibertyServer(), "dropins", ear, true);
         SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("FaultToleranceMultiModule");
     }
 

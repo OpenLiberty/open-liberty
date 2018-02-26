@@ -90,7 +90,8 @@ public class CDI12ExtensionTest extends LoggingTest {
 
         EnterpriseArchive helloWorldExension = ShrinkWrap.create(EnterpriseArchive.class,"helloWorldExension.ear")
                         .add(new FileAsset(new File("test-applications/helloWorldExension.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(helloWorldExtensionTest);
+                        .addAsModule(helloWorldExtensionTest)
+                        .addAsManifestResource(new FileAsset(new File("test-applications/helloWorldExtensionTest.war/resources/META-INF/permissions.xml")), "permissions.xml");
 
         /**
          * Install the user feature and the bundle

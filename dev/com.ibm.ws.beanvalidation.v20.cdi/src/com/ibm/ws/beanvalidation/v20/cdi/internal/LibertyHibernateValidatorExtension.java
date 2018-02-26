@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.util.ThreadContextAccessor;
 import com.ibm.wsspi.classloading.ClassLoadingService;
@@ -122,10 +123,9 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
                 delegate(null).beforeBeanDiscovery(beforeBeanDiscoveryEvent, beanManager);
             } catch (Exception e) {
                 delegateFailed = true;
-                // TODO: Once https://github.com/OpenLiberty/open-liberty/issues/1746 is implemented, we
-                // can use the proper bean ID in the warning message instead of the BeanManager toString()
+                String appName = getAppName();
                 if (tc.isWarningEnabled())
-                    Tr.warning(tc, "UNABLE_TO_REGISTER_WITH_CDI", beanManager.toString(), e);
+                    Tr.warning(tc, "UNABLE_TO_REGISTER_WITH_CDI", appName == null ? beanManager.toString() : appName, e);
             }
     }
 
@@ -192,6 +192,20 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
             throw new IllegalStateException("Failed to get the ClassLoadingService.");
         }
         return classLoadingService;
+    }
+
+    private String getAppName() {
+        // Get the CDIService
+        Bundle bundle = FrameworkUtil.getBundle(CDIService.class);
+        CDIService cdiService = AccessController.doPrivileged((PrivilegedAction<CDIService>) () -> {
+            BundleContext bCtx = bundle.getBundleContext();
+            ServiceReference<CDIService> svcRef = bCtx.getServiceReference(CDIService.class);
+            return svcRef == null ? null : bCtx.getService(svcRef);
+        });
+        if (cdiService == null) {
+            return null;
+        }
+        return cdiService.getCurrentApplicationContextID();
     }
 
     private void releaseLoader(ClassLoader tccl) {

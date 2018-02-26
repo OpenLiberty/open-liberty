@@ -12,6 +12,7 @@ package com.ibm.ws.cdi20.fat.tests;
 
 import java.io.File;
 
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -47,6 +48,7 @@ public class BuiltinAnnoLiteralsTest extends FATServletClient {
         // Include a simple index.jsp static file in the root of the WebArchive
         WebArchive app1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "builtinAnnoApp.web")
+                        .add(new FileAsset(new File("test-applications/" + APP_NAME + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
                                                "services/javax.enterprise.inject.spi.Extension")
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/beans.xml"),
