@@ -12,7 +12,6 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
 final class LTPADigSignature {
 
@@ -31,15 +30,11 @@ final class LTPADigSignature {
 
     static {
         try {
-            String jceProvider = LTPAKeyUtil.defaultJCEProvider();
-            md1JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, jceProvider);
-            md2JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, jceProvider);
+            md1JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+            md2JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
             md1 = MessageDigest.getInstance("SHA");
             md2 = MessageDigest.getInstance("SHA");
         } catch (NoSuchAlgorithmException e) {
-            // instrumented ffdc
-        }
-	catch (NoSuchProviderException ee) {
             // instrumented ffdc
         }
     }
