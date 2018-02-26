@@ -35,3 +35,17 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: Impossibile impostare la codific
 unsupported.response.encoding.[{0}].explanation=La codifica risposta specificata nella risposta non \u00e8 valida. Questo \u00e8 un errore dell'applicazione.
 unsupported.response.encoding.[{0}].useraction=Esaminare i log per determinare se la codifica specificata \u00e8 valida.
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: Impossibile impostare i trailer se \u00e8 st ato eseguito il commit della risposta.
+set.trailer.fields.committed.response.explanation=\u00c8 gi\u00e0 stato eseguito il commit della risposta.
+set.trailer.fields.committed.response.useraction=Verificare che non sia stato eseguito il commit della risposta prima dell'impostazione dei trailer.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: Impossibile impostare i trailer se la versione HTTP non \u00e8 1.1 o successive.
+set.trailer.fields.incorrect.http.version.explanation=I trailer HTTP sono supportati solo in HTTP 1.1 o successive.
+set.trailer.fields.incorrect.http.version.useraction=Assicurarsi che sia utilizzato HTTP 1.1 o successive.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Impossibile impostare i trailer se il valore dell'intestazione Transfer-Encoding non \u00e8 "chunked".
+set.trailer.fields.incorrect.transfer.encoding.explanation=I trailer sono supportati solo se il valore dell'intestazione Transfer-Encoding \u00e8 "chunked".
+set.trailer.fields.incorrect.transfer.encoding.useraction=Assicurarsi che l'intestazione Transfer-Encoding contenga il valore "chunked".

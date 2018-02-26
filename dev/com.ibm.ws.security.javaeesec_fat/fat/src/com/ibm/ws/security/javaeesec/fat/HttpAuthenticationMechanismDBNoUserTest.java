@@ -110,7 +110,6 @@ public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {
      * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -141,7 +140,6 @@ public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {
      * <LI> Return code 403
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testInvalidUser() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -163,7 +161,6 @@ public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {
      * <LI> Return code 403
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testValidUser_NoAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

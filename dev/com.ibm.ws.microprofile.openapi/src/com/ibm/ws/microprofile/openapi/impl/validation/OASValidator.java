@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.impl.validation;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.microprofile.openapi.models.Components;
@@ -27,7 +29,6 @@ import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
-import org.eclipse.microprofile.openapi.models.media.Encoding;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.XML;
@@ -44,7 +45,10 @@ import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
+import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent.Severity;
 import com.ibm.ws.microprofile.openapi.utils.DefaultOpenAPIModelVisitor;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
@@ -56,12 +60,16 @@ public final class OASValidator extends DefaultOpenAPIModelVisitor implements Va
 
     private OASValidationResult result;
     private final Set<String> operationIds = new HashSet<>();
+    private final Map<String, Set<String>> linkOperationIds = new HashMap<String, Set<String>>();
+    private static final TraceComponent tc = Tr.register(OASValidator.class);
 
     public OASValidationResult validate(OpenAPI model) {
         result = new OASValidationResult();
         operationIds.clear();
+        linkOperationIds.clear();
         OpenAPIModelWalker walker = new OpenAPIModelWalker(model);
         walker.accept(this);
+        validateLinkOperationIds();
         final OASValidationResult _result = result;
         result = null;
         return _result;
@@ -79,6 +87,29 @@ public final class OASValidator extends DefaultOpenAPIModelVisitor implements Va
     @Override
     public boolean addOperationId(String operationId) {
         return !operationIds.add(operationId);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void addLinkOperationId(String operationId, String location) {
+        if (linkOperationIds.containsKey(operationId)) {
+            linkOperationIds.get(operationId).add(location);
+        } else {
+            Set<String> locations = new HashSet<String>();
+            locations.add(location);
+            linkOperationIds.put(operationId, locations);
+        }
+    }
+
+    public void validateLinkOperationIds() {
+        for (String k : linkOperationIds.keySet()) {
+            if (!operationIds.contains(k)) {
+                final String message = Tr.formatMessage(tc, "linkOperationIdInvalid", k);
+                for (String location : linkOperationIds.get(k)) {
+                    addValidationEvent(new ValidationEvent(Severity.ERROR, location, message));
+                }
+            }
+        }
     }
 
     @Override
@@ -235,12 +266,6 @@ public final class OASValidator extends DefaultOpenAPIModelVisitor implements Va
     public void visitMediaType(Context context, String key, MediaType mediaType) {
         final MediaTypeValidator v = MediaTypeValidator.getInstance();
         v.validate(this, context, key, mediaType);
-    }
-
-    @Override
-    public void visitEncoding(Context context, String key, Encoding encoding) {
-        final EncodingValidator v = EncodingValidator.getInstance();
-        v.validate(this, context, key, encoding);
     }
 
     @Override

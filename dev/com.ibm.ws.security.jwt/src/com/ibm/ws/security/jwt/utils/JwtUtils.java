@@ -81,7 +81,6 @@ public class JwtUtils {
 	public static final String CFG_KEY_CLOCK_SKEW = "clockSkew";
 	public static final String CFG_KEY_VALIDATION_REQUIRED = "validationRequired";
 	public static final String CFG_KEY_SSL_REF = "sslRef";
-	public static final String CFG_KEY_TOKEN_ENDPOINT_HTTPS_REQD = "tokenEndpointHttpsRequired";
 
 	public static final String JCEPROVIDER_IBM = "IBMJCE";
 	public static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";

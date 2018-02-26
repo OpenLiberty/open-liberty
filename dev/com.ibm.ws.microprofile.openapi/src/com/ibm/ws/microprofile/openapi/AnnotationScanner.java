@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.info.AnnotationInfo;
@@ -48,15 +49,11 @@ public class AnnotationScanner {
                                                                              JAX_RS_APP_PATH_ANNOTATION_CLASS_NAME,
                                                                              OPENAPI_SCHEMA_ANNOTATION_CLASS_NAME);
 
-    private final ClassLoader webModuleClassLoader;
     private final WebAnnotations webAnnotations;
-    private Set<Class<?>> annotatedClasses;
-    private Set<Class<?>> scannedClasses;
     private String urlMapping;
     private final WebAppConfig appConfig;
 
     public AnnotationScanner(ClassLoader classLoader, Container containerToAdapt) throws UnableToAdaptException {
-        webModuleClassLoader = classLoader;
         webAnnotations = containerToAdapt.adapt(WebAnnotations.class);
         appConfig = containerToAdapt.adapt(WebModuleMetaData.class).getConfiguration();
     }
@@ -74,7 +71,9 @@ public class AnnotationScanner {
                 urlMapping = urlMapping.substring(0, urlMapping.length() - 2);
             if (urlMapping.endsWith("/"))
                 urlMapping = urlMapping.substring(0, urlMapping.length() - 1);
-            Tr.event(tc, "Found url mapping " + urlMapping + " in web.xml for " + sconfig.getServletName());
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Found url mapping " + urlMapping + " in web.xml for " + sconfig.getServletName());
+            }
             return urlMapping;
         }
         return null;
@@ -91,7 +90,9 @@ public class AnnotationScanner {
                 if (!annInfoVal.startsWith("/")) {
                     annInfoVal = "/" + annInfoVal;
                 }
-                Tr.event(tc, "Found url mapping " + annInfoVal + " in Application classs " + appName);
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Found url mapping " + annInfoVal + " in Application classs " + appName);
+                }
                 return annInfoVal;
             }
         }
@@ -102,7 +103,9 @@ public class AnnotationScanner {
         AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
         Set<String> applicationClasses = new HashSet<String>();
         applicationClasses.addAll(annotationTargets.getSubclassNames(JAX_RS_APPLICATION_CLASS_NAME));
-        Tr.event(tc, "Found application classes: ", applicationClasses);
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "Found application classes: ", applicationClasses);
+        }
         return applicationClasses;
 
     }
@@ -122,7 +125,9 @@ public class AnnotationScanner {
 
         IServletConfig servletConfig = appConfig.getServletInfo(JAX_RS_APPLICATION_CLASS_NAME);
         if (servletConfig != null) {
-            Tr.event(tc, "Found servlet " + JAX_RS_APPLICATION_CLASS_NAME);
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Found servlet for " + JAX_RS_APPLICATION_CLASS_NAME);
+            }
             return getUrlMappingFromServlet(servletConfig);
         }
         return null;
@@ -141,7 +146,9 @@ public class AnnotationScanner {
 
         IServletConfig servletConfig = appConfig.getServletInfo(appClassName);
         if (servletConfig != null) {
-            Tr.event(tc, appClassName + ": Found servlet " + servletConfig.getServletName() + " using servlet-name");
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, appClassName + ": Found servlet " + servletConfig.getServletName() + " using servlet-name");
+            }
             return getUrlMappingFromServlet(servletConfig);
         }
 
@@ -152,13 +159,17 @@ public class AnnotationScanner {
             //Check if <servlet-class> is application
             String servletClass = servletConfig.getClassName();
             if (servletClass != null && servletClass.equals(appClassName)) {
-                Tr.event(tc, appClassName + ": Found servlet " + servletConfig.getServletName() + " using sevlet-class");
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, appClassName + ": Found servlet " + servletConfig.getServletName() + " using sevlet-class");
+                }
                 return getUrlMappingFromServlet(servletConfig);
             }
             //check if application is specified through init-param
             String initParam = servletConfig.getInitParameter(JAX_RS_APPLICATION_INIT_PARAM);
             if (initParam != null && initParam.equals(appClassName)) {
-                Tr.event(tc, appClassName + ": Found servlet " + servletConfig.getServletName() + " using init-param");
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, appClassName + ": Found servlet " + servletConfig.getServletName() + " using init-param");
+                }
                 return getUrlMappingFromServlet(servletConfig);
             }
         }
@@ -176,77 +187,48 @@ public class AnnotationScanner {
             annotationTargets = webAnnotations.getAnnotationTargets();
             restAPIClasses = ANNOTATION_CLASS_NAMES.stream().flatMap(anno -> annotationTargets.getAnnotatedClasses(anno,
                                                                                                                    AnnotationTargets_Targets.POLICY_SEED).stream()).collect(Collectors.toSet());
-            Tr.event(tc, "Found annotated classes: ", restAPIClasses);
         } catch (UnableToAdaptException e) {
-            Tr.event(tc, "Unable to get annotated class names");
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Unable to get annotated class names");
+            }
         }
         return Collections.unmodifiableSet(restAPIClasses);
     }
 
-    /**
-     * Returns the set of classes in the web module that are annotated with
-     * Open API annotations that can be added to a class or <code>javax.ws.rs.Path</code>.
-     */
-    private synchronized Set<Class<?>> getAllAnnotatedClasses() {
-        if (this.annotatedClasses == null) {
-            Set<String> restAPIClasses = new HashSet<String>();
-            restAPIClasses = getAnnotatedClassesNames();
-            Set<Class<?>> classes = new HashSet<Class<?>>();
-            for (String className : restAPIClasses) {
-                try {
-                    classes.add(webModuleClassLoader.loadClass(className));
-                } catch (ClassNotFoundException e) {
-                    Tr.event(tc, "Failed to load class " + className + " returned from the annotation scanner.");
-                    Tr.error(tc, "FAILED_FINDING_CLASS", className, getClass().getName(), e.toString());
-                } catch (NoClassDefFoundError e) {
-                    Tr.event(tc, "Failed to load class " + className + " returned from the annotation scanner.");
-                    Tr.error(tc, "FAILED_FINDING_CLASS", className, getClass().getName(), e.toString());
-                }
-            }
-            this.annotatedClasses = Collections.unmodifiableSet(classes);
-        }
-        return this.annotatedClasses;
-    }
-
-    /**
-     *
-     * @param reader
-     * @return Set of object that represent scanned classes
-     * @throws UnableToAdaptException
-     */
-    public synchronized Set<Class<?>> getAnnotatedClasses() {
+    public String getURLMapping() {
+        this.urlMapping = null;
         try {
-            Set<Class<?>> scanClasses = new HashSet<>();
-            Set<Class<?>> annotated = getAllAnnotatedClasses();
             Set<String> appClassNames = getAllApplicationClasses();
-            this.urlMapping = null;
 
             if (appClassNames.size() < 2) {
                 String urlMapping = null;
                 if (appClassNames.size() == 0) {
-                    Tr.event(tc, "Found no Application classes. Trying to find default app servlet");
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Found no Application classes. Trying to find default app servlet");
+                    }
                     urlMapping = getServletForDefaultApplication();
                 }
                 if (appClassNames.size() == 1) {
-                    Tr.event(tc, "Found one Application class. Trying to find url mapping");
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Found one Application class. Trying to find url mapping");
+                    }
                     urlMapping = findServletMappingForApp(appClassNames.iterator().next());
                 }
                 this.urlMapping = urlMapping;
-                scanClasses.addAll(annotated);
             } else {
-                Tr.event(tc, "Found multiple Application classes. This is not supported at this time.");
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Found multiple Application classes. This is not supported at this time.");
+                }
             }
-
-            this.scannedClasses = Collections.unmodifiableSet(scanClasses);
-            Tr.event(tc, "Finished scanning for annotated classes");
-        } catch (UnableToAdaptException e) {
-            Tr.event(tc, "Unable to get annotated classes");
-            return null;
+        } catch (Exception e) {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Unable to get url mapping");
+            }
         }
-        return scannedClasses;
-    }
 
-    public String getURLMapping() {
+        if (OpenAPIUtils.isEventEnabled(tc)) {
+            Tr.event(tc, "urlMapping=" + this.urlMapping);
+        }
         return this.urlMapping;
     }
 }

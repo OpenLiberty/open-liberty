@@ -30,7 +30,9 @@ src: \
 	test-applications/DatabaseIdstoreDeferred.war/src,\
 	test-applications/securityContextHamApp.war/src,\
 	test-applications/SecurityEJBinWAR.jar/src,\
-	test-applications/ejbinwarservlet.war/src
+	test-applications/ejbinwarservlet.war/src,\
+	test-applications/multipleDB.war/src,\
+	test-applications/securityContextEJBInWar.war/src
 
 javac.source: 1.8
 javac.target: 1.8

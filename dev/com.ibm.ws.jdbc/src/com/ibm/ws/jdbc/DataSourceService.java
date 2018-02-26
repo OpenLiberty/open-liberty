@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc;
 
+import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Connection;
@@ -969,4 +970,9 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     /** {@inheritDoc} */
     @Override
     protected void checkAccess() throws ResourceException {}
+
+    @Override
+    public void setMQQueueManager(Serializable xaresinfo) throws Exception {
+        // no-op, not implemented for data sources        
+    }
 }

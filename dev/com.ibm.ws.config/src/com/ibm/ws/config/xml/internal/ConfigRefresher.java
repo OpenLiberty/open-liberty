@@ -196,6 +196,17 @@ class ConfigRefresher {
 
         configUpdatesDelivered.setResult(true);
         RuntimeUpdateManager runtimeUpdateManager = runtimeUpdateManagerTracker.getService();
+
+        if (runtimeUpdateManager == null) {
+            // If the service isn't available it's probably because the server is stopping. Just return here to avoid an NPE.
+            if (FrameworkState.isStopping()) {
+                return;
+            } else {
+                // This should never happen
+                throw new IllegalStateException("The RuntimeUpdateManager service could not be obtained");
+            }
+        }
+
         RuntimeUpdateNotification featureUpdatesCompleted = runtimeUpdateManager.getNotification(RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED);
         if (featureUpdatesCompleted != null) {
             featureUpdatesCompleted.waitForCompletion();

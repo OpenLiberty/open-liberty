@@ -43,6 +43,8 @@ import com.ibm.jbatch.container.ws.WSJobRepository;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.spi.BatchSecurityHelper;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 /**
  * {@inheritDoc}
@@ -52,6 +54,8 @@ public class WSJobRepositoryImpl implements WSJobRepository {
 
     private final static String CLASSNAME = WSJobRepositoryImpl.class.getName();
     private final static Logger logger = Logger.getLogger(CLASSNAME);
+
+    private static final TraceComponent tc = Tr.register(WSJobRepositoryImpl.class);
 
     private IPersistenceManagerService persistenceManagerService;
 
@@ -380,9 +384,12 @@ public class WSJobRepositoryImpl implements WSJobRepository {
     public WSJobInstance updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames) {
 
         if (authService == null) {
-            //issue a new message?
+            //issue a new message indicating security is not available
             // no auth service (ie security feature not present, so cannot perform group security
-            return persistenceManagerService.updateJobInstanceWithGroupNames(jobInstanceId, groupNames);
+            Tr.warning(tc, "BATCH_SECURITY_NOT_ACTIVE", jobInstanceId);
+
+            // no groups should be persisted - pass in an empty set
+            return persistenceManagerService.updateJobInstanceWithGroupNames(jobInstanceId, new HashSet<String>());
         } else {
             Set<String> normalizedNames = new HashSet<String>();
 

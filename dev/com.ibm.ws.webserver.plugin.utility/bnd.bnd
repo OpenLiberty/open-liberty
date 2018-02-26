@@ -30,7 +30,7 @@ instrument.disabled: true
 	com.ibm.websphere.filetransfer;version=latest,\
 	com.ibm.ws.jmx.connector.client.rest;version=latest,\
 	com.ibm.ws.http.plugin.merge;version=latest,\
-	com.ibm.ws.org.apache.commons.io.1.4;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.webserver.plugin.runtime.interfaces;version=latest,\
 	com.ibm.ws.webserver.plugin.utility.webserverPluginutil;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

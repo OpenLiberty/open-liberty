@@ -20,4 +20,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 TypeConverterTest.class,
                 ImplicitConverterTest.class,
 })
-public class FATSuite {}
+public class FATSuite {
+
+}

@@ -25,9 +25,9 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for GeographicLocation complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="GeographicLocation">
  * &lt;complexContent>
@@ -38,7 +38,7 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The GeographicalLocation object extends the Entity object, and is itself
  * extended by the Country and Locality objects, each of which define the properties
  * associated with their respective objects.
@@ -46,12 +46,10 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "GeographicLocation")
 @XmlSeeAlso({
-             Locality.class,
-             Country.class
+              Locality.class,
+              Country.class
 })
-public class GeographicLocation
-                extends Entity
-{
+public class GeographicLocation extends Entity {
 
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -66,13 +64,13 @@ public class GeographicLocation
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     @Override
     public Object get(String propName) {
@@ -81,10 +79,10 @@ public class GeographicLocation
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     @Override
     public boolean isSet(String propName) {
@@ -93,12 +91,12 @@ public class GeographicLocation
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
+     *
      */
     @Override
     public void set(String propName, Object value) {
@@ -107,10 +105,10 @@ public class GeographicLocation
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      */
     @Override
     public void unset(String propName) {
@@ -119,7 +117,7 @@ public class GeographicLocation
 
     /**
      * Gets the name of this model object, <b>GeographicLocation</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -131,10 +129,10 @@ public class GeographicLocation
 
     /**
      * Gets a list of all supported properties for this model object, <b>GeographicLocation</b>
-     * 
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -159,10 +157,10 @@ public class GeographicLocation
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -185,7 +183,7 @@ public class GeographicLocation
     /**
      * Gets a list of any model objects which this model object, <b>GeographicLocation</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -200,9 +198,9 @@ public class GeographicLocation
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -222,7 +220,7 @@ public class GeographicLocation
 
     /**
      * Gets a set of any model objects which extend this model object, <b>GeographicLocation</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -235,7 +233,7 @@ public class GeographicLocation
 
     /**
      * Returns this model object, <b>GeographicLocation</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -243,5 +241,4 @@ public class GeographicLocation
     public String toString() {
         return WIMTraceHelper.trace(this);
     }
-
 }

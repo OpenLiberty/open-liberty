@@ -107,8 +107,6 @@ public class OpentracingMockTracer implements Tracer {
         getTracer().inject(spanContext, format, carrier);
     }
 
-    //
-
     /**
      * <p>Subclass re-implementation: Implement to answer a JSON formatted list of
      * the finished spans of the wrapped tracer.</p>

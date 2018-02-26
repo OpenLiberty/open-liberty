@@ -904,11 +904,22 @@ jest d\u0142u\u017csza ni\u017c 8 znak\u00f3w i czy nie zawiera przecinka.
 error.server.pause.command.port.disabled=CWWKE0944E: Odebrano \u017c\u0105danie wstrzymania dla serwera {0}, ale port komend serwera jest wy\u0142\u0105czony. Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania. W\u0142\u0105cz port komend, a nast\u0119pnie spr\u00f3buj ponownie.
 error.server.pause.command.port.disabled.explanation=Port komend serwera jest wymagany do komunikacji \
 z dzia\u0142aj\u0105cym serwerem. Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna przetworzy\u0107 \u017c\u0105dania wstrzymania. Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
-error.server.pause.command.port.disabled.useraction=W\u0142\u0105cz port komend dla tego serwera. Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, wstrzymania mo\u017cna te\u017c za\u017c\u0105da\u0107 z poziomu konsoli operatora. 
+error.server.pause.command.port.disabled.useraction=W\u0142\u0105cz port komend dla tego serwera. Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, wstrzymania mo\u017cna te\u017c za\u017c\u0105da\u0107 z poziomu konsoli operatora.
+
 error.server.resume.command.port.disabled=CWWKE0945E: Odebrano \u017c\u0105danie wznowienia dla serwera {0}, ale port komend serwera jest wy\u0142\u0105czony. Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania. W\u0142\u0105cz port komend, a nast\u0119pnie spr\u00f3buj ponownie.
 error.server.resume.command.port.disabled.explanation=Port komend serwera jest wymagany do komunikacji \
 z dzia\u0142aj\u0105cym serwerem. Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna przetworzy\u0107 \u017c\u0105dania wznowienia. Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
-error.server.resume.command.port.disabled.useraction=W\u0142\u0105cz port komend dla tego serwera. Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, wznowienia mo\u017cna te\u017c za\u017c\u0105da\u0107 z poziomu konsoli operatora. 
+error.server.resume.command.port.disabled.useraction=W\u0142\u0105cz port komend dla tego serwera. Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, wznowienia mo\u017cna te\u017c za\u017c\u0105da\u0107 z poziomu konsoli operatora.
+
+warning.server.status.invalid.targets=CWWKE0946W: Odebrano \u017c\u0105danie statusu dla \
+konkretnych komponent\u00f3w, lecz lista komponent\u00f3w w opcji docelowej by\u0142a pusta. Nie podj\u0119to \u017cadnego dzia\u0142ania.
+warning.server.status.invalid.targets.explanation=U\u017cytkownik \
+wys\u0142a\u0142 \u017c\u0105danie statusu z pust\u0105 list\u0105 docelow\u0105 w opcji docelowej. \u017b\u0105danie zosta\u0142o wykonane, ale nie zosta\u0142o podj\u0119te \u017cadne dzia\u0142anie.
+warning.server.status.invalid.targets.useraction=Okre\u015bl list\u0119 \
+komponent\u00f3w dla opcji docelowej, aby sprawdzi\u0107 ich status. Aby sprawdzi\u0107 \
+zbiorczy status wszystkich komponent\u00f3w na serwerze obs\u0142uguj\u0105cych wstrzymanie, wy\u015blij \
+\u017c\u0105danie statusu bez opcji docelowej.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \

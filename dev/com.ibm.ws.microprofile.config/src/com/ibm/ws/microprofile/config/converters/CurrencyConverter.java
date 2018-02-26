@@ -12,11 +12,14 @@ package com.ibm.ws.microprofile.config.converters;
 
 import java.util.Currency;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  *
  */
 public class CurrencyConverter extends BuiltInConverter {
 
+    @Trivial
     public CurrencyConverter() {
         super(Currency.class);
     }

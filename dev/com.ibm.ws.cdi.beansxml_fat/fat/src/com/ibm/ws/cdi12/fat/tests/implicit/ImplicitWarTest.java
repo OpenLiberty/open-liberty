@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests.implicit;
  
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.AfterClass;
@@ -62,9 +64,9 @@ public class ImplicitWarTest {
                         .addClass("com.ibm.ws.cdi12.test.implicitWar.AnnotatedBean")
                         .addAsLibrary(utilLib);
 
+       server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitWarApp);
-
-       server.waitForStringInLogUsingMark("CWWKZ0001I.*Application implicitWarApp started");
+       assertNotNull("implicitWarApp started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitWarApp"));
     }
 
     @Rule

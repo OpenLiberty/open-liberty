@@ -35,25 +35,28 @@ public class OAuthFlowValidator extends TypeValidator<OAuthFlow> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, OAuthFlow t) {
-        //TODO - Need to validate 'REQUIRED' fields.
-        if (t.getAuthorizationUrl() != null) {
-            if (!ValidatorUtils.isValidURL(t.getAuthorizationUrl())) {
-                final String message = Tr.formatMessage(tc, "oAuthFlowInvalidURL", t.getAuthorizationUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("authorizationUrl"), message));
+
+        if (t != null) {
+
+            if (t.getAuthorizationUrl() != null) {
+                if (!ValidatorUtils.isValidURI(t.getAuthorizationUrl())) {
+                    final String message = Tr.formatMessage(tc, "oAuthFlowInvalidURL", t.getAuthorizationUrl());
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("authorizationUrl"), message));
+                }
             }
-        }
-        if (t.getTokenUrl() != null) {
-            if (!ValidatorUtils.isValidURL(t.getTokenUrl())) {
-                final String message = Tr.formatMessage(tc, "oAuthFlowInvalidURL", t.getTokenUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("tokenUrl"), message));
+            if (t.getTokenUrl() != null) {
+                if (!ValidatorUtils.isValidURI(t.getTokenUrl())) {
+                    final String message = Tr.formatMessage(tc, "oAuthFlowInvalidURL", t.getTokenUrl());
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("tokenUrl"), message));
+                }
             }
-        }
-        if (t.getRefreshUrl() != null) {
-            if (!ValidatorUtils.isValidURL(t.getRefreshUrl())) {
-                final String message = Tr.formatMessage(tc, "oAuthFlowInvalidURL", t.getRefreshUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("refreshUrl"), message));
+            if (t.getRefreshUrl() != null) {
+                if (!ValidatorUtils.isValidURI(t.getRefreshUrl())) {
+                    final String message = Tr.formatMessage(tc, "oAuthFlowInvalidURL", t.getRefreshUrl());
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("refreshUrl"), message));
+                }
             }
+            ValidatorUtils.validateRequiredField(t.getScopes(), context, "scopes").ifPresent(helper::addValidationEvent);
         }
-        ValidatorUtils.validateRequiredField(t.getScopes(), context, "scopes").ifPresent(helper::addValidationEvent);
     }
 }

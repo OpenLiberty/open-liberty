@@ -74,6 +74,7 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
 	com.ibm.ws.common.encoder;version=latest, \
 	com.ibm.ws.crypto.ltpakeyutil;version=latest, \
 	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

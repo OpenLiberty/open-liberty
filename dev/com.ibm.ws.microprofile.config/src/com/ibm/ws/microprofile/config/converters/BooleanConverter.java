@@ -12,20 +12,24 @@ package com.ibm.ws.microprofile.config.converters;
 
 import java.lang.reflect.Type;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  *
  */
 public class BooleanConverter extends BuiltInConverter {
 
+    @Trivial
     public BooleanConverter() {
         super(Boolean.class);
     }
 
     /**
      * allows primitive boolean converter to be an sub-class
-     * 
+     *
      * @param type
      */
+    @Trivial
     public BooleanConverter(Type type) {
         super(type);
     }

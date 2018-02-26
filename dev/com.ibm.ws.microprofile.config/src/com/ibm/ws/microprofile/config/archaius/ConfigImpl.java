@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,13 @@ import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.archaius.cache.ConfigCache;
 import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
 import com.ibm.ws.microprofile.config.impl.AbstractConfig;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
-import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class ConfigImpl extends AbstractConfig implements WebSphereConfig {
@@ -52,7 +53,7 @@ public class ConfigImpl extends AbstractConfig implements WebSphereConfig {
 
     /** {@inheritDoc} */
     @Override
-    public SourcedPropertyValue getSourcedValue(String propertyName, Type propertyType) {
+    public SourcedValue getSourcedValue(String propertyName, Type propertyType) {
         return this.cache.getSourcedValue(propertyName, propertyType);
     }
 
@@ -65,6 +66,7 @@ public class ConfigImpl extends AbstractConfig implements WebSphereConfig {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public String dump() {
         return composite.dump();
     }

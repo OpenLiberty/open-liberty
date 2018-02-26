@@ -24,6 +24,9 @@ import org.eclipse.microprofile.openapi.models.responses.APIResponses;
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * Operation
  *
@@ -324,19 +327,20 @@ public class OperationImpl implements Operation {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Operation {\n");
-
-        sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-        sb.append("    summary: ").append(toIndentedString(summary)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n");
-        sb.append("    operationId: ").append(toIndentedString(operationId)).append("\n");
-        sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n");
-        sb.append("    requestBody: ").append(toIndentedString(requestBody)).append("\n");
-        sb.append("    responses: ").append(toIndentedString(responses)).append("\n");
-        sb.append("    callbacks: ").append(toIndentedString(callbacks)).append("\n");
-        sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n");
-        sb.append("    security: ").append(toIndentedString(security)).append("\n");
-        sb.append("    servers: ").append(toIndentedString(servers)).append("\n");
+        sb = (tags != null) ? sb.append("    tags: ").append(toIndentedString(tags)).append("\n") : sb.append("");
+        sb = (summary != null) ? sb.append("    summary: ").append(toIndentedString(summary)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (externalDocs != null) ? sb.append("    externalDocs: ").append(toIndentedString(externalDocs)).append("\n") : sb.append("");
+        sb = (operationId != null) ? sb.append("    operationId: ").append(toIndentedString(operationId)).append("\n") : sb.append("");
+        sb = (parameters != null) ? sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n") : sb.append("");
+        sb = (requestBody != null) ? sb.append("    requestBody: ").append(toIndentedString(requestBody)).append("\n") : sb.append("");
+        sb = (responses != null) ? sb.append("    responses: ").append(toIndentedString(responses)).append("\n") : sb.append("");
+        sb = (callbacks != null) ? sb.append("    callbacks: ").append(OpenAPIUtils.mapToString(callbacks)).append("\n") : sb.append("");
+        sb = (deprecated != null) ? sb.append("    deprecated: ").append(toIndentedString(deprecated)).append("\n") : sb.append("");
+        sb = (security != null) ? sb.append("    security: ").append(toIndentedString(security)).append("\n") : sb.append("");
+        sb = (servers != null) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+        
         sb.append("}");
         return sb.toString();
     }

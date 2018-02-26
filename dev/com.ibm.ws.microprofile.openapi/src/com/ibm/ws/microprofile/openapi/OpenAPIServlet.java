@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.openapi.ApplicationProcessor.DocType;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 public class OpenAPIServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -55,14 +56,33 @@ public class OpenAPIServlet extends HttpServlet {
 
             response.setCharacterEncoding("UTF-8");
             if (format.equals("json")) {
-                response.setContentType(Constants.CONTENT_TYPE_JSON);
-                Writer writer = response.getWriter();
-                writer.write(applicationProcessor.getOpenAPIDocument(DocType.JSON));
+                String document = applicationProcessor.getOpenAPIDocument(request, DocType.JSON);
+                if (document != null) {
+                    response.setContentType(Constants.CONTENT_TYPE_JSON);
+                    Writer writer = response.getWriter();
+                    writer.write(document);
+                } else {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(this, tc, "Null document (json). Return 500.");
+                    }
+                    response.setStatus(500);
+                }
             } else {
-                Writer writer = response.getWriter();
-                writer.write(applicationProcessor.getOpenAPIDocument(DocType.YAML));
+                String document = applicationProcessor.getOpenAPIDocument(request, DocType.YAML);
+                if (document != null) {
+                    Writer writer = response.getWriter();
+                    writer.write(document);
+                } else {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(this, tc, "Null document (yaml). Return 500.");
+                    }
+                    response.setStatus(500);
+                }
             }
         } else {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(this, tc, "Invalid method. Return 405.");
+            }
             response.setStatus(405);
         }
 

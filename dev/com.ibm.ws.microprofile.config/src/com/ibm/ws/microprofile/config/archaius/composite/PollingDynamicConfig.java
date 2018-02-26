@@ -27,7 +27,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
@@ -44,8 +43,6 @@ public class PollingDynamicConfig implements Closeable {
 
     private volatile Map<String, String> current = new HashMap<String, String>();
     private final AtomicBoolean busy = new AtomicBoolean();
-    private final AtomicLong updateCounter = new AtomicLong();
-    private final AtomicLong errorCounter = new AtomicLong();
     private Future<?> future;
 
     private final ScheduledExecutorService executor;
@@ -140,15 +137,6 @@ public class PollingDynamicConfig implements Closeable {
         return future;
     }
 
-    private Map<String, String> getToAdd() {
-        Map<String, String> toAdd = new HashMap<>();
-        Map<String, String> props = source.getProperties();
-        if (props != null) {
-            toAdd.putAll(props);
-        }
-        return toAdd;
-    }
-
     /**
      * Go out and poll for updated values via callable.call()
      *
@@ -157,16 +145,29 @@ public class PollingDynamicConfig implements Closeable {
     private void update() throws Exception {
         // OK to ignore calls to update() if already busy updating
         if (busy.compareAndSet(false, true)) {
-            updateCounter.incrementAndGet();
             try {
-                current = getToAdd();
-                notifyConfigUpdated();
+                Map<String, String> updated = new HashMap<>();
+                Map<String, String> props = source.getProperties();
+                if (props != null) {
+                    updated.putAll(props);
+                }
+                if (!updated.equals(current)) {
+                    current = updated;
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "update: Contents of ConfigSource {0} has changed.", this);
+                    }
+
+                    notifyConfigUpdated();
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "update: Contents of ConfigSource {0} has NOT changed.", this);
+                    }
+                }
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "update: Exception updating dynamic source: {0}. Exception: {1}", this, e);
                 }
-
-                errorCounter.incrementAndGet();
 
                 throw e;
             } finally {
@@ -180,9 +181,11 @@ public class PollingDynamicConfig implements Closeable {
     public void close() {
         try {
             if (future != null) {
-                boolean cancelled = future.cancel(true);
-                if (!cancelled && TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
+                if (!(future.isDone() || future.isCancelled())) {
+                    boolean cancelled = future.cancel(true);
+                    if (!cancelled && TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                        Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
+                    }
                 }
                 future = null;
             }
@@ -197,6 +200,7 @@ public class PollingDynamicConfig implements Closeable {
      * @param key
      * @return True if the key is contained within this or any of it's child configurations
      */
+    @Trivial
     protected boolean containsKey(String key) {
         return current.containsKey(key);
     }
@@ -206,6 +210,7 @@ public class PollingDynamicConfig implements Closeable {
      *
      * @param key
      */
+    @Trivial
     protected String getRawProperty(String key) {
         return current.get(key);
     }
@@ -213,6 +218,7 @@ public class PollingDynamicConfig implements Closeable {
     /**
      * @return Return an iterator to all property names owned by this config
      */
+    @Trivial
     protected Iterator<String> getKeys() {
         return current.keySet().iterator();
     }
@@ -227,6 +233,7 @@ public class PollingDynamicConfig implements Closeable {
     /**
      * @return the source id
      */
+    @Trivial
     public String getSourceID() {
         return this.id;
     }

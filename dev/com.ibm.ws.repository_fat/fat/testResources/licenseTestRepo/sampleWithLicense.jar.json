@@ -1,0 +1,39 @@
+{
+   "description": "Test Sample",
+   "licenseId": "blah",
+   "licenseType": "UNSPECIFIED",
+   "name": "sampleWithLicense",
+   "provider": {
+      "name": "IBM",
+      "url": "http:\/\/www.ibm.com"
+   },
+   "type": "com.ibm.websphere.ProductSample",
+   "wlpInformation": {
+      "appliesTo": "com.ibm.websphere.appserver;",
+      "appliesToFilterInfo": [
+         {
+            "editions": [
+               "Liberty Core",
+               "Base",
+               "Express",
+               "Developers",
+               "ND",
+               "z\/OS"
+            ],
+            "productId": "com.ibm.websphere.appserver"
+         }
+      ],
+      "displayPolicy": "VISIBLE",
+      "downloadPolicy": "INSTALLER",
+      "installPolicy": "MANUAL",
+      "javaSEVersionRequirements": {
+         "minVersion": "1.6.0",
+         "versionDisplayString": "Java SE 6, Java SE 7"
+      },
+      "mainAttachmentSize": 1,
+      "typeLabel": "Product Sample",
+      "vanityRelativeURL": "Sample/sampleWithLicense",
+      "visibility": "PUBLIC",
+      "webDisplayPolicy": "VISIBLE"
+   }
+}

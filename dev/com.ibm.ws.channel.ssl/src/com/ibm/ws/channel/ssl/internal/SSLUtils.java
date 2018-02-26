@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2009 IBM Corporation and others.
+ * Copyright (c) 2003, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -652,7 +652,10 @@ public class SSLUtils {
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
 
         // if the grizzly-npn or jetty-alpn projects are on the bootclasspath, use them for ALPN
-        JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
+        /* http/2 not enabled for the 18001 release
+        if (connLink.getAlpnProtocol() == null) {
+            JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
+        } */
 
         int amountToWrite = 0;
         boolean firstPass = true;

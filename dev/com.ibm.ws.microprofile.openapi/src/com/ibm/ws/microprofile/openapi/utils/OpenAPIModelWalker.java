@@ -10,13 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.utils;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,9 +58,10 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
 import com.ibm.ws.microprofile.openapi.impl.parser.processors.SchemaProcessor;
 
 /**
- * This class does a complete traversal of the OpenAPI model
- * and reports each of the objects to the OpenAPIModelVisitor
- * passed in by the user.
+ * This class implements the visitor design pattern. It does
+ * a complete traversal of the OpenAPI model and reports each
+ * of the objects to the OpenAPIModelVisitor or OpenAPIModelFilter
+ * passed in by the user to the accept() methods.
  */
 public final class OpenAPIModelWalker {
 
@@ -70,33 +72,93 @@ public final class OpenAPIModelWalker {
     }
 
     public void accept(OpenAPIModelVisitor visitor) {
-        if (visitor != null) {
-            new Walker(openAPI, visitor).traverseOpenAPI();
+        accept(visitor, true);
+    }
+
+    public void accept(OpenAPIModelVisitor visitor, boolean previsit) {
+        if (visitor != null && openAPI != null) {
+            new Walker(openAPI, visitor, previsit).traverseOpenAPI();
         }
     }
 
+    public void accept(OpenAPIModelFilter visitor) {
+        accept(visitor, true);
+    }
+
+    public void accept(OpenAPIModelFilter visitor, boolean previsit) {
+        if (visitor != null && openAPI != null) {
+            new Walker(openAPI, visitor, previsit).traverseOpenAPI();
+        }
+    }
+
+    /**
+     * Current context of the OpenAPIModelWalker. An instance of Context
+     * is passed to every method of the visitor or filter.
+     */
     public interface Context {
 
+        /**
+         * Returns the OpenAPI model.
+         */
         public OpenAPI getModel();
 
+        /**
+         * Returns the parent of the current object being visited.
+         */
         public Object getParent();
 
+        /**
+         * Returns the location of the current object being visited.
+         * The format of this location is a JSON pointer.
+         */
         public String getLocation();
 
+        /**
+         * Returns the location of the current object being visited
+         * with the suffix parameter appended to the end of the
+         * string. The format of this location is a JSON pointer.
+         */
         public String getLocation(String suffix);
     }
 
+    /**
+     * This class is responsible for traversing the OpenAPI model. Generally each object
+     * in the model has a traverse() method associated with it that visits that object
+     * and recursively traverses through its children. The caller of each traverse()
+     * method checks the return value and is responsible for mutation of the parent
+     * object if the return value is different than the parameter that was passed in.
+     *
+     * Each traverse() method checks the "previsit" flag to determine whether it invokes
+     * the visitor/filter before or after it traverses through all of its children.
+     *
+     * This class contains many lambda expressions that iterate over maps and lists.
+     * The convention for maps is "(k, v) ->", where k is the key and v is the value of an
+     * entry in the map. The convention for lists is "(v) ->", where v is the value of an
+     * entry in the list.
+     */
     static final class Walker implements Context {
 
+        // The OpenAPI model being walked.
         private final OpenAPI openAPI;
-        private final OpenAPIModelVisitor visitor;
-        private final Deque<Object> ancestors = new ArrayDeque<>();
-        private final Deque<String> pathSegments = new ArrayDeque<>();
+        // The filter or visitor provided by the user of OpenAPIModelWalker.
+        private final OpenAPIModelFilter visitor;
+        // Flag indicating whether objects are visited before or after their children.
+        private final boolean previsit;
+        // A stack containing the ancestor objects of the object currently being traversed.
+        private final Deque<Object> ancestors = new LinkedList<>();
+        // A stack containing path segments for the object currently being traversed.
+        private final Deque<String> pathSegments = new LinkedList<>();
+        // A map containing all objects that have already been traversed.
         private final IdentityHashMap<Object, Object> traversedObjects = new IdentityHashMap<>();
 
-        public Walker(OpenAPI openAPI, OpenAPIModelVisitor visitor) {
+        public Walker(OpenAPI openAPI, OpenAPIModelVisitor visitor, boolean previsit) {
+            this(openAPI, new OpenAPIModelFilterAdapter(visitor), previsit);
+        }
+
+        public Walker(OpenAPI openAPI, OpenAPIModelFilter visitor, boolean previsit) {
             this.openAPI = openAPI;
             this.visitor = visitor;
+            this.previsit = previsit;
         }
 
         @Override
@@ -115,6 +177,8 @@ public final class OpenAPIModelWalker {
         }
 
         @Override
+        // Returns the location as a JSON pointer.
+        // See definition for JSON pointer here: https://tools.ietf.org/html/rfc6901
         public String getLocation(String suffix) {
             final Iterator<String> i = pathSegments.descendingIterator();
             final StringBuilder sb = new StringBuilder();
@@ -123,14 +187,22 @@ public final class OpenAPIModelWalker {
                 if (!first) {
                     sb.append('/');
                 }
-                sb.append(i.next());
+                sb.append(escapeJSONPointerPathSegment(i.next()));
                 first = false;
             }
             if (suffix != null && !suffix.isEmpty()) {
                 sb.append('/');
-                sb.append(suffix);
+                sb.append(escapeJSONPointerPathSegment(suffix));
             }
             return sb.toString();
+        }
+
+        // JSON pointer escaping rules:
+        //  * Replace ~ with ~0.
+        //  * Replace / with ~1.
+        private String escapeJSONPointerPathSegment(String pathSegment) {
+            pathSegment = String.valueOf(pathSegment);
+            return pathSegment.replace("~", "~0").replace("/", "~1");
         }
 
         // Traversal methods call this method to check whether
@@ -143,79 +215,76 @@ public final class OpenAPIModelWalker {
         }
 
         public void traverseOpenAPI() {
-            visitor.visitOpenAPI(this);
-            ancestors.push(openAPI);
             pathSegments.push("#");
+            if (previsit) {
+                visitor.visitOpenAPI(this);
+            }
+            ancestors.push(openAPI);
 
             final Components components = openAPI.getComponents();
             if (components != null) {
                 pathSegments.push("components");
-                traverseComponents(components);
+                final Components c = traverseComponents(components);
+                if (c != components) {
+                    openAPI.setComponents(c);
+                }
                 pathSegments.pop();
             }
 
             final Map<String, Object> extensions = openAPI.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    if (k != null && v != null) {
-                        pathSegments.push(k);
-                        traverseExtension(k, v);
-                        pathSegments.pop();
-                    }
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final ExternalDocumentation extDocs = openAPI.getExternalDocs();
             if (extDocs != null) {
                 pathSegments.push("externalDocs");
-                traverseExternalDocs(extDocs);
+                final ExternalDocumentation e = traverseExternalDocs(extDocs);
+                if (e != extDocs) {
+                    openAPI.setExternalDocs(e);
+                }
                 pathSegments.pop();
             }
 
             final Info info = openAPI.getInfo();
             if (info != null) {
                 pathSegments.push("info");
-                traverseInfo(info);
+                final Info i = traverseInfo(info);
+                if (i != info) {
+                    openAPI.setInfo(info);
+                }
                 pathSegments.pop();
             }
 
             final Paths paths = openAPI.getPaths();
             if (paths != null) {
                 pathSegments.push("paths");
-                traversePaths(paths);
+                final Paths p = traversePaths(paths);
+                if (p != paths) {
+                    openAPI.setPaths(p);
+                }
                 pathSegments.pop();
             }
 
             final List<SecurityRequirement> security = openAPI.getSecurity();
             if (security != null) {
-                pathSegments.push("security");
-                security.stream().forEach((v) -> {
-                    traverseSecurityRequirement(v);
-                });
-                pathSegments.pop();
+                processSecurityRequirements(security);
             }
 
             final List<Server> servers = openAPI.getServers();
             if (servers != null) {
-                pathSegments.push("servers");
-                servers.stream().forEach((v) -> {
-                    traverseServer(v);
-                });
-                pathSegments.pop();
+                processServers(servers);
             }
 
             final List<Tag> tags = openAPI.getTags();
             if (tags != null) {
-                pathSegments.push("tags");
-                tags.stream().forEach((v) -> {
-                    traverseTag(v);
-                });
-                pathSegments.pop();
+                processTags(tags);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                visitor.visitOpenAPI(this);
+            }
             pathSegments.pop();
 
             // Clean up
@@ -224,169 +293,127 @@ public final class OpenAPIModelWalker {
             traversedObjects.clear();
         }
 
-        public void traverseComponents(Components components) {
+        public Components traverseComponents(Components components) {
             if (isTraversed(components)) {
-                return;
+                return components;
             }
-            visitor.visitComponents(this, components);
+            if (previsit) {
+                components = visitor.visitComponents(this, components);
+                if (components == null) {
+                    return null;
+                }
+            }
             ancestors.push(components);
 
             final Map<String, Callback> callbacks = components.getCallbacks();
             if (callbacks != null) {
-                pathSegments.push("callbacks");
-                callbacks.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseCallback(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processCallbacks(callbacks);
             }
 
             final Map<String, Example> examples = components.getExamples();
             if (examples != null) {
-                pathSegments.push("examples");
-                examples.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExample(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExamples(examples);
             }
 
             final Map<String, Object> extensions = components.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final Map<String, Header> headers = components.getHeaders();
             if (headers != null) {
-                pathSegments.push("headers");
-                headers.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseHeader(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processHeaders(headers);
             }
 
             final Map<String, Link> links = components.getLinks();
             if (links != null) {
-                pathSegments.push("links");
-                links.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseLink(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processLinks(links);
             }
 
             final Map<String, Parameter> parameters = components.getParameters();
             if (parameters != null) {
-                pathSegments.push("parameters");
-                parameters.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseParameter(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processParameters(parameters);
             }
 
             final Map<String, RequestBody> requestBodies = components.getRequestBodies();
             if (requestBodies != null) {
-                pathSegments.push("requestBodies");
-                requestBodies.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseRequestBody(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processRequestBodies(requestBodies);
             }
 
             final Map<String, APIResponse> responses = components.getResponses();
             if (responses != null) {
-                pathSegments.push("responses");
-                responses.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseResponse(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processResponses(responses);
             }
 
             final Map<String, Schema> schemas = components.getSchemas();
             if (schemas != null) {
-                pathSegments.push("schemas");
-                schemas.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseSchema(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processSchemas(schemas, "schemas");
             }
 
             final Map<String, SecurityScheme> schemes = components.getSecuritySchemes();
             if (schemes != null) {
-                pathSegments.push("securitySchemes");
-                schemes.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseSecurityScheme(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processSecuritySchemes(schemes);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                components = visitor.visitComponents(this, components);
+            }
+            return components;
         }
 
-        public void traverseCallback(String key, Callback callback) {
+        public Callback traverseCallback(String key, Callback callback) {
             if (isTraversed(callback)) {
-                return;
+                return callback;
             }
-            visitor.visitCallback(this, key, callback);
+            if (previsit) {
+                callback = visitor.visitCallback(this, key, callback);
+                if (callback == null) {
+                    return null;
+                }
+            }
             ancestors.push(callback);
 
             final Map<String, Object> extensions = callback.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
+            final Map<String, PathItem> updates = map();
             callback.forEach((k, v) -> {
                 pathSegments.push(k);
-                traversePathItem(k, v);
+                final PathItem p = traversePathItem(k, v);
+                if (p != v) {
+                    updates.put(k, p);
+                }
                 pathSegments.pop();
             });
+            if (updates.size() > 0) {
+                updateMap(callback, updates);
+            }
 
             ancestors.pop();
+            if (!previsit) {
+                callback = visitor.visitCallback(this, key, callback);
+            }
+            return callback;
         }
 
-        public void traversePathItem(String key, PathItem item) {
+        public PathItem traversePathItem(String key, PathItem item) {
             if (isTraversed(item)) {
-                return;
+                return item;
             }
-            visitor.visitPathItem(this, key, item);
+            if (previsit) {
+                item = visitor.visitPathItem(this, key, item);
+                if (item == null) {
+                    return null;
+                }
+            }
             ancestors.push(item);
 
             final Map<String, Object> extensions = item.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final class OperationProperty {
@@ -398,538 +425,566 @@ public final class OpenAPIModelWalker {
                     this.name = name;
                 }
             }
-            final OperationProperty[] operations = { new OperationProperty(item.getDELETE(), "DELETE"),
-                                                     new OperationProperty(item.getGET(), "GET"),
-                                                     new OperationProperty(item.getHEAD(), "HEAD"),
-                                                     new OperationProperty(item.getOPTIONS(), "OPTIONS"),
-                                                     new OperationProperty(item.getPATCH(), "PATCH"),
-                                                     new OperationProperty(item.getPOST(), "POST"),
-                                                     new OperationProperty(item.getPUT(), "PUT"),
-                                                     new OperationProperty(item.getTRACE(), "TRACE") };
+            final OperationProperty[] operations = { new OperationProperty(item.getDELETE(), "delete"),
+                                                     new OperationProperty(item.getGET(), "get"),
+                                                     new OperationProperty(item.getHEAD(), "head"),
+                                                     new OperationProperty(item.getOPTIONS(), "options"),
+                                                     new OperationProperty(item.getPATCH(), "patch"),
+                                                     new OperationProperty(item.getPOST(), "post"),
+                                                     new OperationProperty(item.getPUT(), "put"),
+                                                     new OperationProperty(item.getTRACE(), "trace") };
+            final PathItem _item = item;
             Arrays.stream(operations).forEach((v) -> {
                 pathSegments.push(v.name);
-                traverseOperation(v.o);
+                final Operation o = traverseOperation(v.o);
+                if (o != v.o) {
+                    switch (v.name) {
+                        case "delete":
+                            _item.setDELETE(o);
+                            break;
+                        case "get":
+                            _item.setGET(o);
+                            break;
+                        case "head":
+                            _item.setHEAD(o);
+                            break;
+                        case "options":
+                            _item.setOPTIONS(o);
+                            break;
+                        case "patch":
+                            _item.setPATCH(o);
+                            break;
+                        case "post":
+                            _item.setPOST(o);
+                            break;
+                        case "put":
+                            _item.setPUT(o);
+                            break;
+                        case "trace":
+                            _item.setTRACE(o);
+                            break;
+                    }
+                }
                 pathSegments.pop();
             });
 
             final List<Parameter> parameters = item.getParameters();
             if (parameters != null) {
-                pathSegments.push("parameters");
-                parameters.stream().forEach((v) -> {
-                    traverseParameter(null, v);
-                });
-                pathSegments.pop();
+                processParameters(parameters);
             }
 
             final List<Server> servers = item.getServers();
             if (servers != null) {
-                pathSegments.push("servers");
-                servers.stream().forEach((v) -> {
-                    traverseServer(v);
-                });
-                pathSegments.pop();
+                processServers(servers);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                item = visitor.visitPathItem(this, key, item);
+            }
+            return item;
         }
 
-        public void traverseOperation(Operation operation) {
+        public Operation traverseOperation(Operation operation) {
             if (isTraversed(operation)) {
-                return;
+                return operation;
             }
-            visitor.visitOperation(this, operation);
+            if (previsit) {
+                operation = visitor.visitOperation(this, operation);
+                if (operation == null) {
+                    return null;
+                }
+            }
             ancestors.push(operation);
 
             final Map<String, Callback> callbacks = operation.getCallbacks();
             if (callbacks != null) {
-                pathSegments.push("callbacks");
-                callbacks.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseCallback(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processCallbacks(callbacks);
             }
 
             final Map<String, Object> extensions = operation.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final ExternalDocumentation extDocs = operation.getExternalDocs();
             if (extDocs != null) {
                 pathSegments.push("externalDocs");
-                traverseExternalDocs(extDocs);
+                final ExternalDocumentation e = traverseExternalDocs(extDocs);
+                if (e != extDocs) {
+                    operation.setExternalDocs(e);
+                }
                 pathSegments.pop();
             }
 
             final List<Parameter> parameters = operation.getParameters();
             if (parameters != null) {
-                pathSegments.push("parameters");
-                parameters.stream().forEach((v) -> {
-                    traverseParameter(null, v);
-                });
-                pathSegments.pop();
+                processParameters(parameters);
             }
 
             final RequestBody rb = operation.getRequestBody();
             if (rb != null) {
                 pathSegments.push("requestBody");
-                traverseRequestBody(null, rb);
+                final RequestBody r = traverseRequestBody(null, rb);
+                if (r != rb) {
+                    operation.setRequestBody(r);
+                }
                 pathSegments.pop();
             }
 
             final APIResponses responses = operation.getResponses();
             if (responses != null) {
                 pathSegments.push("responses");
-                traverseResponses(responses);
+                final APIResponses r = traverseResponses(responses);
+                if (r != responses) {
+                    operation.setResponses(r);
+                }
                 pathSegments.pop();
             }
 
             final List<SecurityRequirement> security = operation.getSecurity();
             if (security != null) {
-                pathSegments.push("security");
-                security.stream().forEach((v) -> {
-                    traverseSecurityRequirement(v);
-                });
-                pathSegments.pop();
+                processSecurityRequirements(security);
             }
 
             final List<Server> servers = operation.getServers();
             if (servers != null) {
-                pathSegments.push("servers");
-                servers.stream().forEach((v) -> {
-                    traverseServer(v);
-                });
-                pathSegments.pop();
+                processServers(servers);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                operation = visitor.visitOperation(this, operation);
+            }
+            return operation;
         }
 
-        public void traverseExample(String key, Example example) {
+        public Example traverseExample(String key, Example example) {
             if (isTraversed(example)) {
-                return;
+                return example;
             }
-            if (key != null) {
-                visitor.visitExample(this, key, example);
-            } else {
-                visitor.visitExample(this, example);
+            if (previsit) {
+                if (key != null) {
+                    example = visitor.visitExample(this, key, example);
+                } else {
+                    example = visitor.visitExample(this, example);
+                }
+                if (example == null) {
+                    return null;
+                }
             }
             ancestors.push(example);
 
             final Map<String, Object> extensions = example.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                if (key != null) {
+                    example = visitor.visitExample(this, key, example);
+                } else {
+                    example = visitor.visitExample(this, example);
+                }
+            }
+            return example;
         }
 
-        public void traverseHeader(String key, Header header) {
+        public Header traverseHeader(String key, Header header) {
             if (isTraversed(header)) {
-                return;
+                return header;
             }
-            visitor.visitHeader(this, key, header);
+            if (previsit) {
+                header = visitor.visitHeader(this, key, header);
+                if (header == null) {
+                    return null;
+                }
+            }
             ancestors.push(header);
 
             final Content content = header.getContent();
             if (content != null) {
-                pathSegments.push("content");
-                content.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseMediaType(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processContent(content);
             }
 
             final Map<String, Example> examples = header.getExamples();
             if (examples != null) {
-                pathSegments.push("examples");
-                examples.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExample(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExamples(examples);
             }
 
             final Map<String, Object> extensions = header.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final Schema schema = header.getSchema();
             if (schema != null) {
                 pathSegments.push("schema");
-                traverseSchema(null, schema);
+                final Schema s = traverseSchema(null, schema);
+                if (s != schema) {
+                    header.setSchema(s);
+                }
                 pathSegments.pop();
             }
 
             ancestors.pop();
+            if (!previsit) {
+                header = visitor.visitHeader(this, key, header);
+            }
+            return header;
         }
 
-        public void traverseMediaType(String key, MediaType mediaType) {
+        public MediaType traverseMediaType(String key, MediaType mediaType) {
             if (isTraversed(mediaType)) {
-                return;
+                return mediaType;
             }
-            visitor.visitMediaType(this, key, mediaType);
+            if (previsit) {
+                mediaType = visitor.visitMediaType(this, key, mediaType);
+                if (mediaType == null) {
+                    return null;
+                }
+            }
             ancestors.push(mediaType);
 
-            final Map<String, Encoding> encoding = mediaType.getEncoding();
-            if (encoding != null) {
-                pathSegments.push("encoding");
-                encoding.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseEncoding(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+            final Map<String, Encoding> encodings = mediaType.getEncoding();
+            if (encodings != null) {
+                processEncodings(encodings, "encoding");
             }
 
             final Map<String, Example> examples = mediaType.getExamples();
             if (examples != null) {
-                pathSegments.push("examples");
-                examples.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExample(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExamples(examples);
             }
 
             final Map<String, Object> extensions = mediaType.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final Schema schema = mediaType.getSchema();
             if (schema != null) {
                 pathSegments.push("schema");
-                traverseSchema(null, schema);
+                final Schema s = traverseSchema(null, schema);
+                if (s != schema) {
+                    mediaType.setSchema(schema);
+                }
                 pathSegments.pop();
             }
 
             ancestors.pop();
+            if (!previsit) {
+                mediaType = visitor.visitMediaType(this, key, mediaType);
+            }
+            return mediaType;
         }
 
-        public void traverseEncoding(String key, Encoding encoding) {
+        public Encoding traverseEncoding(String key, Encoding encoding) {
             if (isTraversed(encoding)) {
-                return;
+                return encoding;
             }
-            visitor.visitEncoding(this, key, encoding);
+            if (previsit) {
+                encoding = visitor.visitEncoding(this, key, encoding);
+                if (encoding == null) {
+                    return null;
+                }
+            }
             ancestors.push(encoding);
 
             final Map<String, Object> extensions = encoding.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final Map<String, Header> headers = encoding.getHeaders();
             if (headers != null) {
-                pathSegments.push("headers");
-                headers.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseHeader(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processHeaders(headers);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                encoding = visitor.visitEncoding(this, key, encoding);
+            }
+            return encoding;
         }
 
-        public void traverseLink(String key, Link link) {
+        public Link traverseLink(String key, Link link) {
             if (isTraversed(link)) {
-                return;
+                return link;
             }
-            visitor.visitLink(this, key, link);
+            if (previsit) {
+                link = visitor.visitLink(this, key, link);
+                if (link == null) {
+                    return null;
+                }
+            }
             ancestors.push(link);
 
             final Map<String, Object> extensions = link.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final Server server = link.getServer();
             if (server != null) {
                 pathSegments.push("server");
-                link.setServer(server);
+                final Server s = traverseServer(server);
+                if (s != server) {
+                    link.setServer(s);
+                }
                 pathSegments.pop();
             }
 
             ancestors.pop();
+            if (!previsit) {
+                link = visitor.visitLink(this, key, link);
+            }
+            return link;
         }
 
-        public void traverseParameter(String key, Parameter p) {
+        public Parameter traverseParameter(String key, Parameter p) {
             if (isTraversed(p)) {
-                return;
+                return p;
             }
-            if (key != null) {
-                visitor.visitParameter(this, key, p);
-            } else {
-                visitor.visitParameter(this, p);
+            if (previsit) {
+                if (key != null) {
+                    p = visitor.visitParameter(this, key, p);
+                } else {
+                    p = visitor.visitParameter(this, p);
+                }
+                if (p == null) {
+                    return null;
+                }
             }
             ancestors.push(p);
 
             final Content content = p.getContent();
             if (content != null) {
-                pathSegments.push("content");
-                content.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseMediaType(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processContent(content);
             }
 
             final Map<String, Example> examples = p.getExamples();
             if (examples != null) {
-                pathSegments.push("examples");
-                examples.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExample(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExamples(examples);
             }
 
             final Map<String, Object> extensions = p.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final Schema schema = p.getSchema();
             if (schema != null) {
                 pathSegments.push("schema");
-                traverseSchema(null, schema);
+                final Schema s = traverseSchema(null, schema);
+                if (s != schema) {
+                    p.setSchema(s);
+                }
                 pathSegments.pop();
             }
 
             ancestors.pop();
+            if (!previsit) {
+                if (key != null) {
+                    p = visitor.visitParameter(this, key, p);
+                } else {
+                    p = visitor.visitParameter(this, p);
+                }
+            }
+            return p;
         }
 
-        public void traverseRequestBody(String key, RequestBody rb) {
+        public RequestBody traverseRequestBody(String key, RequestBody rb) {
             if (isTraversed(rb)) {
-                return;
+                return rb;
             }
-            if (key != null) {
-                visitor.visitRequestBody(this, key, rb);
-            } else {
-                visitor.visitRequestBody(this, rb);
+            if (previsit) {
+                if (key != null) {
+                    rb = visitor.visitRequestBody(this, key, rb);
+                } else {
+                    rb = visitor.visitRequestBody(this, rb);
+                }
+                if (rb == null) {
+                    return null;
+                }
             }
             ancestors.push(rb);
 
             final Content content = rb.getContent();
             if (content != null) {
-                pathSegments.push("content");
-                content.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseMediaType(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processContent(content);
             }
 
             final Map<String, Object> extensions = rb.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                if (key != null) {
+                    rb = visitor.visitRequestBody(this, key, rb);
+                } else {
+                    rb = visitor.visitRequestBody(this, rb);
+                }
+            }
+            return rb;
         }
 
-        public void traverseResponses(APIResponses responses) {
+        public APIResponses traverseResponses(APIResponses responses) {
             if (isTraversed(responses)) {
-                return;
+                return responses;
             }
-            visitor.visitResponses(this, responses);
+            if (previsit) {
+                responses = visitor.visitResponses(this, responses);
+                if (responses == null) {
+                    return null;
+                }
+            }
             ancestors.push(responses);
 
+            final Map<String, APIResponse> updates = map();
             responses.forEach((k, v) -> {
                 pathSegments.push(k);
-                traverseResponse(k, v);
+                final APIResponse r = traverseResponse(k, v);
+                if (r != v) {
+                    updates.put(k, r);
+                }
                 pathSegments.pop();
             });
+            if (updates.size() > 0) {
+                updateMap(responses, updates);
+            }
 
             final APIResponse defaultResponse = responses.getDefault();
             if (defaultResponse != null) {
                 pathSegments.push("default");
-                traverseResponse("default", defaultResponse);
+                final APIResponse r = traverseResponse("default", defaultResponse);
+                if (r != defaultResponse) {
+                    responses.setDefaultValue(r);
+                }
                 pathSegments.pop();
             }
 
             ancestors.pop();
+            if (!previsit) {
+                responses = visitor.visitResponses(this, responses);
+            }
+            return responses;
         }
 
-        public void traverseResponse(String key, APIResponse response) {
+        public APIResponse traverseResponse(String key, APIResponse response) {
             if (isTraversed(response)) {
-                return;
+                return response;
             }
-            visitor.visitResponse(this, key, response);
+            if (previsit) {
+                response = visitor.visitResponse(this, key, response);
+                if (response == null) {
+                    return null;
+                }
+            }
             ancestors.push(response);
 
             final Content content = response.getContent();
             if (content != null) {
-                pathSegments.push("content");
-                content.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseMediaType(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processContent(content);
             }
 
             final Map<String, Object> extensions = response.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final Map<String, Header> headers = response.getHeaders();
             if (headers != null) {
-                pathSegments.push("headers");
-                headers.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseHeader(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processHeaders(headers);
             }
 
             final Map<String, Link> links = response.getLinks();
             if (links != null) {
-                pathSegments.push("links");
-                links.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseLink(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processLinks(links);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                response = visitor.visitResponse(this, key, response);
+            }
+            return response;
         }
 
-        public void traverseSchema(String key, Schema schema) {
+        public Schema traverseSchema(String key, Schema schema) {
             if (isTraversed(schema)) {
-                return;
+                return schema;
             }
-            if (key != null) {
-                visitor.visitSchema(this, key, schema);
-            } else {
-                visitor.visitSchema(this, schema);
+            if (previsit) {
+                if (key != null) {
+                    schema = visitor.visitSchema(this, key, schema);
+                } else {
+                    schema = visitor.visitSchema(this, schema);
+                }
+                if (schema == null) {
+                    return null;
+                }
             }
             ancestors.push(schema);
 
             final Object addProps = schema.getAdditionalProperties();
             if (addProps != null && addProps instanceof Schema) {
                 pathSegments.push("additionalProperties");
-                traverseSchema(null, (Schema) addProps);
+                final Schema s = traverseSchema(null, (Schema) addProps);
+                if (s != addProps) {
+                    schema.setAdditionalProperties(s);
+                }
                 pathSegments.pop();
             }
 
             final Discriminator d = schema.getDiscriminator();
             if (d != null) {
                 pathSegments.push("discriminator");
-                traverseDiscriminator(d);
+                final Discriminator disc = traverseDiscriminator(d);
+                if (disc != d) {
+                    schema.setDiscriminator(disc);
+                }
                 pathSegments.pop();
             }
 
             final Map<String, Object> extensions = schema.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final ExternalDocumentation extDocs = schema.getExternalDocs();
             if (extDocs != null) {
                 pathSegments.push("externalDocs");
-                traverseExternalDocs(extDocs);
+                final ExternalDocumentation e = traverseExternalDocs(extDocs);
+                if (e != extDocs) {
+                    schema.setExternalDocs(e);
+                }
                 pathSegments.pop();
             }
 
             final Schema notSchema = schema.getNot();
             if (notSchema != null) {
                 pathSegments.push("not");
-                traverseSchema(null, notSchema);
+                final Schema s = traverseSchema(null, notSchema);
+                if (s != notSchema) {
+                    schema.setNot(s);
+                }
                 pathSegments.pop();
             }
 
             final Map<String, Schema> schemas = schema.getProperties();
             if (schemas != null) {
-                pathSegments.push("properties");
-                schemas.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseSchema(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processSchemas(schemas, "properties");
             }
 
             final XML xml = schema.getXml();
             if (xml != null) {
                 pathSegments.push("xml");
-                traverseXML(xml);
+                final XML x = traverseXML(xml);
+                if (x != xml) {
+                    schema.setXml(x);
+                }
                 pathSegments.pop();
             }
 
@@ -977,88 +1032,134 @@ public final class OpenAPIModelWalker {
                 nestedSchemas = null;
             }
             if (nestedSchemas != null) {
+                final Schema _schema = schema;
                 nestedSchemas.stream().forEach((v) -> {
                     pathSegments.push(v.name);
-                    traverseSchema(null, v.s);
+                    final Schema s = traverseSchema(null, v.s);
+                    if (s != v.s) {
+                        switch (v.name) {
+                            case "items":
+                                _schema.setItems(s);
+                                break;
+                            case "allOf":
+                                final List<Schema> allOf = _schema.getAllOf();
+                                allOf.remove(v.s);
+                                if (s != null) {
+                                    allOf.add(s);
+                                }
+                                break;
+                            case "anyOf":
+                                final List<Schema> anyOf = _schema.getAnyOf();
+                                anyOf.remove(v.s);
+                                if (s != null) {
+                                    anyOf.add(s);
+                                }
+                                break;
+                            case "oneOf":
+                                final List<Schema> oneOf = _schema.getOneOf();
+                                oneOf.remove(v.s);
+                                if (s != null) {
+                                    oneOf.add(s);
+                                }
+                                break;
+                        }
+                    }
                     pathSegments.pop();
                 });
             }
 
             ancestors.pop();
+            if (!previsit) {
+                if (key != null) {
+                    schema = visitor.visitSchema(this, key, schema);
+                } else {
+                    schema = visitor.visitSchema(this, schema);
+                }
+            }
+            return schema;
         }
 
-        public void traverseDiscriminator(Discriminator d) {
+        public Discriminator traverseDiscriminator(Discriminator d) {
             if (isTraversed(d)) {
-                return;
+                return d;
             }
-            visitor.visitDiscriminator(this, d);
+            d = visitor.visitDiscriminator(this, d);
+            return d;
         }
 
-        public void traverseXML(XML xml) {
+        public XML traverseXML(XML xml) {
             if (isTraversed(xml)) {
-                return;
+                return xml;
             }
-            visitor.visitXML(this, xml);
+            if (previsit) {
+                xml = visitor.visitXML(this, xml);
+                if (xml == null) {
+                    return null;
+                }
+            }
             ancestors.push(xml);
 
             final Map<String, Object> extensions = xml.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                xml = visitor.visitXML(this, xml);
+            }
+            return xml;
         }
 
-        public void traverseSecurityScheme(String key, SecurityScheme scheme) {
+        public SecurityScheme traverseSecurityScheme(String key, SecurityScheme scheme) {
             if (isTraversed(scheme)) {
-                return;
+                return scheme;
             }
-            visitor.visitSecurityScheme(this, key, scheme);
+            if (previsit) {
+                scheme = visitor.visitSecurityScheme(this, key, scheme);
+                if (scheme == null) {
+                    return null;
+                }
+            }
             ancestors.push(scheme);
 
             final Map<String, Object> extensions = scheme.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final OAuthFlows authFlows = scheme.getFlows();
             if (authFlows != null) {
                 pathSegments.push("flows");
-                traverseOAuthFlows(authFlows);
+                final OAuthFlows o = traverseOAuthFlows(authFlows);
+                if (o != authFlows) {
+                    scheme.setFlows(o);
+                }
                 pathSegments.pop();
             }
 
             ancestors.pop();
+            if (!previsit) {
+                scheme = visitor.visitSecurityScheme(this, key, scheme);
+            }
+            return scheme;
         }
 
-        public void traverseOAuthFlows(OAuthFlows authFlows) {
+        public OAuthFlows traverseOAuthFlows(OAuthFlows authFlows) {
             if (isTraversed(authFlows)) {
-                return;
+                return authFlows;
             }
-            visitor.visitOAuthFlows(this, authFlows);
+            if (previsit) {
+                authFlows = visitor.visitOAuthFlows(this, authFlows);
+                if (authFlows == null) {
+                    return null;
+                }
+            }
             ancestors.push(authFlows);
 
             final Map<String, Object> extensions = authFlows.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final class OAuthFlowProperty {
@@ -1075,299 +1176,665 @@ public final class OpenAPIModelWalker {
                                                      new OAuthFlowProperty(authFlows.getClientCredentials(), "clientCredentials"),
                                                      new OAuthFlowProperty(authFlows.getImplicit(), "implicit"),
                                                      new OAuthFlowProperty(authFlows.getPassword(), "password") };
+            final OAuthFlows afs = authFlows;
             Arrays.stream(_authFlows).forEach((v) -> {
                 pathSegments.push(v.name);
-                traverseOAuthFlow(v.o);
+                final OAuthFlow o = traverseOAuthFlow(v.o);
+                if (o != v.o) {
+                    switch (v.name) {
+                        case "authorizationCode":
+                            afs.setAuthorizationCode(o);
+                            break;
+                        case "clientCredentials":
+                            afs.setClientCredentials(o);
+                            break;
+                        case "implicit":
+                            afs.setImplicit(o);
+                            break;
+                        case "password":
+                            afs.setPassword(o);
+                            break;
+                    }
+                }
                 pathSegments.pop();
             });
 
             ancestors.pop();
+            if (!previsit) {
+                authFlows = visitor.visitOAuthFlows(this, authFlows);
+            }
+            return authFlows;
         }
 
-        public void traverseOAuthFlow(OAuthFlow authFlow) {
+        public OAuthFlow traverseOAuthFlow(OAuthFlow authFlow) {
             if (isTraversed(authFlow)) {
-                return;
+                return authFlow;
             }
-            visitor.visitOAuthFlow(this, authFlow);
+            if (previsit) {
+                authFlow = visitor.visitOAuthFlow(this, authFlow);
+                if (authFlow == null) {
+                    return null;
+                }
+            }
             ancestors.push(authFlow);
 
             final Map<String, Object> extensions = authFlow.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final Scopes scopes = authFlow.getScopes();
             if (scopes != null) {
                 pathSegments.push("scopes");
-                traverseScopes(scopes);
+                final Scopes s = traverseScopes(scopes);
+                if (s == scopes) {
+                    authFlow.setScopes(s);
+                }
                 pathSegments.pop();
             }
 
             ancestors.pop();
+            if (!previsit) {
+                authFlow = visitor.visitOAuthFlow(this, authFlow);
+            }
+            return authFlow;
         }
 
-        public void traverseScopes(Scopes scopes) {
+        public Scopes traverseScopes(Scopes scopes) {
             if (isTraversed(scopes)) {
-                return;
+                return scopes;
             }
-            visitor.visitScopes(this, scopes);
+            if (previsit) {
+                scopes = visitor.visitScopes(this, scopes);
+                if (scopes == null) {
+                    return null;
+                }
+            }
             ancestors.push(scopes);
 
             final Map<String, Object> extensions = scopes.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
-        }
-
-        public void traverseExtension(String key, Object extension) {
-            visitor.visitExtension(this, key, extension);
-        }
-
-        public void traverseExternalDocs(ExternalDocumentation extDocs) {
-            if (isTraversed(extDocs)) {
-                return;
+            if (!previsit) {
+                scopes = visitor.visitScopes(this, scopes);
             }
-            visitor.visitExternalDocumentation(this, extDocs);
+            return scopes;
+        }
+
+        public Object traverseExtension(String key, Object extension) {
+            extension = visitor.visitExtension(this, key, extension);
+            return extension;
+        }
+
+        public ExternalDocumentation traverseExternalDocs(ExternalDocumentation extDocs) {
+            if (isTraversed(extDocs)) {
+                return extDocs;
+            }
+            if (previsit) {
+                extDocs = visitor.visitExternalDocumentation(this, extDocs);
+                if (extDocs == null) {
+                    return null;
+                }
+            }
             ancestors.push(extDocs);
 
             final Map<String, Object> extensions = extDocs.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                extDocs = visitor.visitExternalDocumentation(this, extDocs);
+            }
+            return extDocs;
         }
 
-        public void traverseInfo(Info info) {
+        public Info traverseInfo(Info info) {
             if (isTraversed(info)) {
-                return;
+                return info;
             }
-            visitor.visitInfo(this, info);
+            if (previsit) {
+                info = visitor.visitInfo(this, info);
+                if (info == null) {
+                    return null;
+                }
+            }
             ancestors.push(info);
 
             final Contact contact = info.getContact();
             if (contact != null) {
-                traverseContact(contact);
+                pathSegments.push("contact");
+                final Contact c = traverseContact(contact);
+                if (c != contact) {
+                    info.setContact(c);
+                }
+                pathSegments.pop();
             }
 
             final Map<String, Object> extensions = info.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final License license = info.getLicense();
             if (license != null) {
                 pathSegments.push("license");
-                traverseLicense(license);
+                final License l = traverseLicense(license);
+                if (l != license) {
+                    info.setLicense(l);
+                }
                 pathSegments.pop();
             }
 
             ancestors.pop();
+            if (!previsit) {
+                info = visitor.visitInfo(this, info);
+            }
+            return info;
         }
 
-        public void traverseContact(Contact contact) {
+        public Contact traverseContact(Contact contact) {
             if (isTraversed(contact)) {
-                return;
+                return contact;
             }
-            visitor.visitContact(this, contact);
+            if (previsit) {
+                contact = visitor.visitContact(this, contact);
+                if (contact == null) {
+                    return null;
+                }
+            }
             ancestors.push(contact);
 
             final Map<String, Object> extensions = contact.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                contact = visitor.visitContact(this, contact);
+            }
+            return contact;
         }
 
-        public void traverseLicense(License license) {
+        public License traverseLicense(License license) {
             if (isTraversed(license)) {
-                return;
+                return license;
             }
-            visitor.visitLicense(this, license);
+            if (previsit) {
+                license = visitor.visitLicense(this, license);
+                if (license == null) {
+                    return null;
+                }
+            }
             ancestors.push(license);
 
             final Map<String, Object> extensions = license.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                license = visitor.visitLicense(this, license);
+            }
+            return license;
         }
 
-        public void traversePaths(Paths paths) {
+        public Paths traversePaths(Paths paths) {
             if (isTraversed(paths)) {
-                return;
+                return paths;
             }
-            visitor.visitPaths(this, paths);
+            if (previsit) {
+                paths = visitor.visitPaths(this, paths);
+                if (paths == null) {
+                    return null;
+                }
+            }
             ancestors.push(paths);
 
+            final Map<String, PathItem> updates = map();
             paths.forEach((k, v) -> {
                 pathSegments.push(k);
-                traversePathItem(k, v);
+                final PathItem p = traversePathItem(k, v);
+                if (p != v) {
+                    updates.put(k, p);
+                }
                 pathSegments.pop();
             });
+            if (updates.size() > 0) {
+                updateMap(paths, updates);
+            }
 
             final Map<String, Object> extensions = paths.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                paths = visitor.visitPaths(this, paths);
+            }
+            return paths;
         }
 
-        public void traverseSecurityRequirement(SecurityRequirement sr) {
+        public SecurityRequirement traverseSecurityRequirement(SecurityRequirement sr) {
             if (isTraversed(sr)) {
-                return;
+                return sr;
             }
-            visitor.visitSecurityRequirement(this, sr);
+            sr = visitor.visitSecurityRequirement(this, sr);
+            return sr;
         }
 
-        public void traverseServer(Server server) {
+        public Server traverseServer(Server server) {
             if (isTraversed(server)) {
-                return;
+                return server;
             }
-            visitor.visitServer(this, server);
+            if (previsit) {
+                server = visitor.visitServer(this, server);
+                if (server == null) {
+                    return null;
+                }
+            }
             ancestors.push(server);
 
             final Map<String, Object> extensions = server.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final ServerVariables svs = server.getVariables();
             if (svs != null) {
                 pathSegments.push("variables");
-                traverseServerVariables(svs);
+                final ServerVariables s = traverseServerVariables(svs);
+                if (s != svs) {
+                    server.setVariables(s);
+                }
                 pathSegments.pop();
             }
+
             ancestors.pop();
+            if (!previsit) {
+                server = visitor.visitServer(this, server);
+            }
+            return server;
         }
 
-        public void traverseServerVariables(ServerVariables svs) {
+        public ServerVariables traverseServerVariables(ServerVariables svs) {
             if (isTraversed(svs)) {
-                return;
+                return svs;
             }
-            visitor.visitServerVariables(this, svs);
+            if (previsit) {
+                svs = visitor.visitServerVariables(this, svs);
+                if (svs == null) {
+                    return null;
+                }
+            }
             ancestors.push(svs);
 
+            final Map<String, ServerVariable> updates = map();
             svs.forEach((k, v) -> {
                 pathSegments.push(k);
-                traverseServerVariable(k, v);
+                final ServerVariable s = traverseServerVariable(k, v);
+                if (s != v) {
+                    updates.put(k, s);
+                }
                 pathSegments.pop();
             });
+            if (updates.size() > 0) {
+                updateMap(svs, updates);
+            }
 
             final Map<String, Object> extensions = svs.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                svs = visitor.visitServerVariables(this, svs);
+            }
+            return svs;
         }
 
-        public void traverseServerVariable(String key, ServerVariable sv) {
+        public ServerVariable traverseServerVariable(String key, ServerVariable sv) {
             if (isTraversed(sv)) {
-                return;
+                return sv;
             }
-            visitor.visitServerVariable(this, key, sv);
+            if (previsit) {
+                sv = visitor.visitServerVariable(this, key, sv);
+                if (sv == null) {
+                    return null;
+                }
+            }
             ancestors.push(sv);
 
             final Map<String, Object> extensions = sv.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             ancestors.pop();
+            if (!previsit) {
+                sv = visitor.visitServerVariable(this, key, sv);
+            }
+            return sv;
         }
 
-        public void traverseTag(Tag tag) {
+        public Tag traverseTag(Tag tag) {
             if (isTraversed(tag)) {
-                return;
+                return tag;
             }
-            visitor.visitTag(this, tag);
+            if (previsit) {
+                tag = visitor.visitTag(this, tag);
+                if (tag == null) {
+                    return null;
+                }
+            }
             ancestors.push(tag);
 
             final Map<String, Object> extensions = tag.getExtensions();
             if (extensions != null) {
-                pathSegments.push("extensions");
-                extensions.forEach((k, v) -> {
-                    pathSegments.push(k);
-                    traverseExtension(k, v);
-                    pathSegments.pop();
-                });
-                pathSegments.pop();
+                processExtensions(extensions);
             }
 
             final ExternalDocumentation extDocs = tag.getExternalDocs();
             if (extDocs != null) {
                 pathSegments.push("externalDocs");
-                traverseExternalDocs(extDocs);
+                final ExternalDocumentation e = traverseExternalDocs(extDocs);
+                if (e != extDocs) {
+                    tag.setExternalDocs(e);
+                }
                 pathSegments.pop();
             }
 
             ancestors.pop();
+            if (!previsit) {
+                tag = visitor.visitTag(this, tag);
+            }
+            return tag;
+        }
+
+        private void processParameters(final List<Parameter> parameters) {
+            pathSegments.push("parameters");
+            for (int i = 0; i < parameters.size(); ++i) {
+                final Parameter v = parameters.get(i);
+                final Parameter p = traverseParameter(null, v);
+                if (p != v) {
+                    i = updateList(parameters, i, p);
+                }
+            }
+            pathSegments.pop();
+        }
+
+        private void processSecurityRequirements(final List<SecurityRequirement> security) {
+            pathSegments.push("security");
+            for (int i = 0; i < security.size(); ++i) {
+                final SecurityRequirement v = security.get(i);
+                final SecurityRequirement s = traverseSecurityRequirement(v);
+                if (s != v) {
+                    i = updateList(security, i, s);
+                }
+            }
+            pathSegments.pop();
+        }
+
+        private void processServers(final List<Server> servers) {
+            pathSegments.push("servers");
+            for (int i = 0; i < servers.size(); ++i) {
+                final Server v = servers.get(i);
+                final Server s = traverseServer(v);
+                if (s != v) {
+                    i = updateList(servers, i, s);
+                }
+            }
+            pathSegments.pop();
+        }
+
+        private void processTags(final List<Tag> tags) {
+            pathSegments.push("tags");
+            for (int i = 0; i < tags.size(); ++i) {
+                final Tag v = tags.get(i);
+                final Tag t = traverseTag(v);
+                if (t != v) {
+                    i = updateList(tags, i, t);
+                }
+            }
+            pathSegments.pop();
+        }
+
+        private void processCallbacks(final Map<String, Callback> callbacks) {
+            pathSegments.push("callbacks");
+            final Map<String, Callback> updates = map();
+            callbacks.forEach((k, v) -> {
+                pathSegments.push(k);
+                final Callback c = traverseCallback(k, v);
+                if (c != v) {
+                    updates.put(k, c);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(callbacks, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processContent(final Content content) {
+            pathSegments.push("content");
+            final Map<String, MediaType> updates = map();
+            content.forEach((k, v) -> {
+                pathSegments.push(k);
+                final MediaType m = traverseMediaType(k, v);
+                if (m != v) {
+                    updates.put(k, m);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(content, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processEncodings(final Map<String, Encoding> encodings, String propertyName) {
+            pathSegments.push(propertyName);
+            final Map<String, Encoding> updates = map();
+            encodings.forEach((k, v) -> {
+                pathSegments.push(k);
+                final Encoding e = traverseEncoding(k, v);
+                if (e != v) {
+                    updates.put(k, e);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(encodings, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processExamples(final Map<String, Example> examples) {
+            pathSegments.push("examples");
+            final Map<String, Example> updates = map();
+            examples.forEach((k, v) -> {
+                pathSegments.push(k);
+                final Example e = traverseExample(k, v);
+                if (e != v) {
+                    updates.put(k, e);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(examples, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processExtensions(final Map<String, Object> extensions) {
+            pathSegments.push("extensions");
+            final Map<String, Object> updates = map();
+            extensions.forEach((k, v) -> {
+                if (k != null && v != null) {
+                    pathSegments.push(k);
+                    final Object o = traverseExtension(k, v);
+                    if (o != v) {
+                        updates.put(k, o);
+                    }
+                    pathSegments.pop();
+                }
+            });
+            if (updates.size() > 0) {
+                updateMap(extensions, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processHeaders(final Map<String, Header> headers) {
+            pathSegments.push("headers");
+            final Map<String, Header> updates = map();
+            headers.forEach((k, v) -> {
+                pathSegments.push(k);
+                final Header h = traverseHeader(k, v);
+                if (h != v) {
+                    updates.put(k, h);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(headers, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processLinks(final Map<String, Link> links) {
+            pathSegments.push("links");
+            final Map<String, Link> updates = map();
+            links.forEach((k, v) -> {
+                pathSegments.push(k);
+                final Link l = traverseLink(k, v);
+                if (l != v) {
+                    updates.put(k, l);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(links, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processParameters(final Map<String, Parameter> parameters) {
+            pathSegments.push("parameters");
+            final Map<String, Parameter> updates = map();
+            parameters.forEach((k, v) -> {
+                pathSegments.push(k);
+                final Parameter p = traverseParameter(k, v);
+                if (p != v) {
+                    updates.put(k, p);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(parameters, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processRequestBodies(final Map<String, RequestBody> requestBodies) {
+            pathSegments.push("requestBodies");
+            final Map<String, RequestBody> updates = map();
+            requestBodies.forEach((k, v) -> {
+                pathSegments.push(k);
+                final RequestBody r = traverseRequestBody(k, v);
+                if (r != v) {
+                    updates.put(k, r);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(requestBodies, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processResponses(final Map<String, APIResponse> responses) {
+            pathSegments.push("responses");
+            final Map<String, APIResponse> updates = map();
+            responses.forEach((k, v) -> {
+                pathSegments.push(k);
+                final APIResponse r = traverseResponse(k, v);
+                if (r != v) {
+                    updates.put(k, r);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(responses, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processSchemas(final Map<String, Schema> schemas, String propertyName) {
+            pathSegments.push(propertyName);
+            final Map<String, Schema> updates = map();
+            schemas.forEach((k, v) -> {
+                pathSegments.push(k);
+                final Schema s = traverseSchema(k, v);
+                if (s != v) {
+                    updates.put(k, s);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(schemas, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private void processSecuritySchemes(final Map<String, SecurityScheme> schemes) {
+            pathSegments.push("securitySchemes");
+            final Map<String, SecurityScheme> updates = map();
+            schemes.forEach((k, v) -> {
+                pathSegments.push(k);
+                final SecurityScheme s = traverseSecurityScheme(k, v);
+                if (s != v) {
+                    updates.put(k, s);
+                }
+                pathSegments.pop();
+            });
+            if (updates.size() > 0) {
+                updateMap(schemes, updates);
+            }
+            pathSegments.pop();
+        }
+
+        private <V> int updateList(List<V> list, int index, V update) {
+            if (update != null) {
+                list.set(index, update);
+                return index;
+            } else {
+                list.remove(index);
+                return index - 1;
+            }
+        }
+
+        private <K, V> Map<K, V> map() {
+            return new HashMap<>();
+        }
+
+        private <K, V> void updateMap(Map<K, V> map, Map<K, V> updates) {
+            updates.forEach((k, v) -> {
+                if (v != null) {
+                    map.put(k, v);
+                } else {
+                    map.remove(k);
+                }
+            });
         }
     }
 }

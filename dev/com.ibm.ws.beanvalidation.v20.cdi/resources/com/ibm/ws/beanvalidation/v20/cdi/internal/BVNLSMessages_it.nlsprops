@@ -42,5 +42,5 @@
 # -----------------------------------------------------------------------
 UNABLE_TO_REGISTER_WITH_CDI=CWNBV0200W: Impossibile registrare l''estensione Hibernate Validator CDI per l''applicazione {0}, pertanto l''integrazione CDI per la convalida bean non \u00e8 disponibile per questa applicazione. Si \u00e8 verificato il seguente problema durante la registrazione dell''estensione CDI: {1}
 UNABLE_TO_REGISTER_WITH_CDI.explanation=Un'estensione CDI viene fornita per il provider di convalida bean incorporato (Hibernate Validator), che \u00e8 supportato solo quando viene utilizzato il ValidationProvider incorporato e il validation.xml per l'applicazione \u00e8 valido.  
-UNABLE_TO_REGISTER_WITH_CDI.useraction=Vedere il problema principale alla fine del messaggio. Le cause possibili includono contenuto non valido in  META-INF/validation.xml o un <default-provider> diverso dal provider org.hibernate.validator.HibernateValidator.
+UNABLE_TO_REGISTER_WITH_CDI.useraction=Vedere il problema principale alla fine del messaggio.  Le cause possibili includono contenuto non valido in  META-INF/validation.xml o un <default-provider> diverso dal provider org.hibernate.validator.HibernateValidator.
 

@@ -1,0 +1,14 @@
+invalid-content {}
+.swagger-ui .headerbar {
+    background-color: red;
+}
+
+.swagger-ui .other-elements {
+    background-color: invalid-content;
+}
+
+invalid-content {
+ 
+.swagger-ui .headerbar .headerbar-wrapper {
+  background-image: url(images/custom-logo.png);
+}invalid-content

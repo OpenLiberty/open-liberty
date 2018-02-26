@@ -12,23 +12,18 @@ package com.ibm.ws.cdi12.fat.tests;
 
 import java.io.File;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -46,24 +41,27 @@ public class AlterableContextTest extends LoggingTest {
     public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12AlterableContextServer");
 
     @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
+    public static Archive<?> buildShrinkWrap() {
 
-          JavaArchive alterableContextExtension = ShrinkWrap.create(JavaArchive.class,"alterableContextExtension.jar")
-                        .addClass("com.ibm.ws.cdi12.alterablecontext.test.extension.DirtySingleton")
-                        .addClass("com.ibm.ws.cdi12.alterablecontext.test.extension.AlterableContextBean")
-                        .addClass("com.ibm.ws.cdi12.alterablecontext.test.extension.AlterableContextExtension")
-                        .add(new FileAsset(new File("test-applications/alterableContextExtension.jar/resources/META-INF/services/javax.enterprise.inject.spi.Extension")), "/META-INF/services/javax.enterprise.inject.spi.Extension")
-                        .add(new FileAsset(new File("test-applications/alterableContextExtension.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
-         
-          WebArchive alterableContextApp = ShrinkWrap.create(WebArchive.class, "alterableContextApp.war")
-                        .addClass("com.ibm.ws.cdi12.alterablecontext.test.AlterableContextTestServlet")
-                        .add(new FileAsset(new File("test-applications/alterableContextApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
-                        .addAsLibrary(alterableContextExtension);
+        JavaArchive alterableContextExtension = ShrinkWrap.create(JavaArchive.class, "alterableContextExtension.jar");
+        alterableContextExtension.addClass("com.ibm.ws.cdi12.alterablecontext.test.extension.DirtySingleton");
+        alterableContextExtension.addClass("com.ibm.ws.cdi12.alterablecontext.test.extension.AlterableContextBean");
+        alterableContextExtension.addClass("com.ibm.ws.cdi12.alterablecontext.test.extension.AlterableContextExtension");
+        alterableContextExtension.add(new FileAsset(new File("test-applications/alterableContextExtension.jar/resources/META-INF/services/javax.enterprise.inject.spi.Extension")),
+                                      "/META-INF/services/javax.enterprise.inject.spi.Extension");
+        alterableContextExtension.add(new FileAsset(new File("test-applications/alterableContextExtension.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
 
-          return ShrinkWrap.create(EnterpriseArchive.class,"alterableContextsApp.ear")
-                        .add(new FileAsset(new File("test-applications/alterableContextsApp.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                        .add(new FileAsset(new File("test-applications/alterableContextsApp.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(alterableContextApp);
+        WebArchive alterableContextApp = ShrinkWrap.create(WebArchive.class, "alterableContextApp.war");
+        alterableContextApp.addClass("com.ibm.ws.cdi12.alterablecontext.test.AlterableContextTestServlet");
+        alterableContextApp.add(new FileAsset(new File("test-applications/alterableContextApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        alterableContextApp.addAsLibrary(alterableContextExtension);
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "alterableContextsApp.ear");
+        ear.add(new FileAsset(new File("test-applications/alterableContextsApp.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
+        ear.add(new FileAsset(new File("test-applications/alterableContextsApp.ear/resources/META-INF/application.xml")), "/META-INF/application.xml");
+        ear.addAsModule(alterableContextApp);
+
+        return ear;
     }
 
     /** {@inheritDoc} */

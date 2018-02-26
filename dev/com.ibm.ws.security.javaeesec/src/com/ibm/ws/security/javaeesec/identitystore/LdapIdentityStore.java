@@ -28,6 +28,7 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapName;
 import javax.security.enterprise.credential.Credential;
+import javax.security.enterprise.credential.CallerOnlyCredential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
@@ -184,15 +185,20 @@ public class LdapIdentityStore implements IdentityStore {
         /*
          * Only support UserPasswordCredential.
          */
-        if (!(credential instanceof UsernamePasswordCredential)) {
+        if (!(credential instanceof UsernamePasswordCredential || credential instanceof CallerOnlyCredential)) {
             Tr.error(tc, "JAVAEESEC_WARNING_WRONG_CRED");
             return CredentialValidationResult.NOT_VALIDATED_RESULT;
         }
 
-        UsernamePasswordCredential cred = (UsernamePasswordCredential) credential;
-
         if (credential.isValid()) {
-            String user = cred.getCaller();
+            String user;
+            boolean usernameOnly = false;
+            if (credential instanceof UsernamePasswordCredential) {
+                user = ((UsernamePasswordCredential)credential).getCaller();
+            } else {
+                usernameOnly = true;
+                user = ((CallerOnlyCredential)credential).getCaller();
+            }
             String filter = idStoreDefinition.getCallerSearchFilter();
             String callerNameAttribute = idStoreDefinition.getCallerNameAttribute();
             String callerName = null;
@@ -216,8 +222,11 @@ public class LdapIdentityStore implements IdentityStore {
              */
             DirContext context = null;
             try {
-
-                context = bind(userDn, new ProtectedString(cred.getPassword().getValue()));
+                if (!usernameOnly) {
+                    context = bind(userDn, new ProtectedString(((UsernamePasswordCredential)credential).getPassword().getValue()));
+                } else {
+                    context = bind();
+                }
                 if (context == null) {
                     return CredentialValidationResult.INVALID_RESULT;
                 }

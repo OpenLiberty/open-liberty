@@ -37,6 +37,7 @@ import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.security.enterprise.authentication.mechanism.http.AutoApplySession;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
@@ -91,6 +92,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private boolean identityStoreRegistered = false;
     private final Map<String, ModuleProperties> moduleMap = new HashMap<String, ModuleProperties>(); // map of module name and list of authmechs.
     private final List<LdapIdentityStoreDefinition> ldapDefinitionList = new ArrayList<LdapIdentityStoreDefinition>();
+    private final List<DatabaseIdentityStoreDefinition> databaseDefinitionList = new ArrayList<DatabaseIdentityStoreDefinition>();
 
     public void processApplicationHAMClass(@Observes ProcessAnnotatedType<? extends HttpAuthenticationMechanism> processAnnotatedType, BeanManager beanManager) {
         processAnnotatedType(processAnnotatedType, beanManager);
@@ -162,7 +164,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         beforeBeanDiscovery.addAnnotatedType(rememberMeInterceptorInterceptorType, RememberMeInterceptor.class.getName());
     }
 
-    <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
+    public <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         try {
@@ -194,7 +196,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
     }
 
-    void processBean(@Observes ProcessBean<?> processBean, BeanManager beanManager) {
+    public void processBean(@Observes ProcessBean<?> processBean, BeanManager beanManager) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "processBean : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         if (!identityStoreHandlerRegistered) {
@@ -205,6 +207,33 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         if (!identityStoreRegistered) {
             if (isIdentityStore(processBean)) {
                 identityStoreRegistered = true;
+            }
+        }
+    }
+
+    public void processBasicHttpAuthMechNeeded(@Observes ProcessBeanAttributes<BasicHttpAuthenticationMechanism> processBeanAttributes, BeanManager beanManager) {
+        if (!existAuthMech(BasicHttpAuthenticationMechanism.class)) {
+            processBeanAttributes.veto();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "BasicHttpAuthenticationMechanism is disabled since another HttpAuthorizationMechanism is registered.");
+            }
+        }
+    }
+
+    public void processFormAuthMechNeeded(@Observes ProcessBeanAttributes<FormAuthenticationMechanism> processBeanAttributes, BeanManager beanManager) {
+        if (!existAuthMech(FormAuthenticationMechanism.class)) {
+            processBeanAttributes.veto();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "FormAuthenticationMechanism is disabled since another HttpAuthorizationMechanism is registered.");
+            }
+        }
+    }
+
+    public void processCustomFormAuthMechNeeded(@Observes ProcessBeanAttributes<CustomFormAuthenticationMechanism>  processBeanAttributes, BeanManager beanManager) {
+        if (!existAuthMech(CustomFormAuthenticationMechanism.class)) {
+            processBeanAttributes.veto();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "CustomFormAuthenticationMechanism is disabled since another HttpAuthorizationMechanism is registered.");
             }
         }
     }
@@ -603,14 +632,54 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 if (!m.getName().equals("equals"))
                     identityStoreProperties.put(m.getName(), m.invoke(annotation));
             }
-            DatabaseIdentityStoreBean bean = new DatabaseIdentityStoreBean(beanManager, getInstanceOfDBAnnotation(identityStoreProperties));
-            beansToAdd.add(bean);
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "registering the default DatabaseIdentityStore.");
+            DatabaseIdentityStoreDefinition databaseDefinition = getInstanceOfDBAnnotation(identityStoreProperties);
+            if (!containsDatabaseDefinition(databaseDefinition, databaseDefinitionList)) {
+                DatabaseIdentityStoreBean bean = new DatabaseIdentityStoreBean(beanManager, databaseDefinition);
+                beansToAdd.add(bean);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "registering the default DatabaseIdentityStore.");
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "the same annotation exists, skip registering..");
+            }
         } catch (InvocationTargetException | IllegalAccessException e) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "unexpected", e);
             }
+        }
+    }
+
+    private boolean containsDatabaseDefinition(DatabaseIdentityStoreDefinition dbDefinition, List<DatabaseIdentityStoreDefinition> dbDefinitionList) {
+        for (DatabaseIdentityStoreDefinition disd : dbDefinitionList) {
+            if (equalsDatabaseDefinition(dbDefinition, disd)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean equalsDatabaseDefinition(final DatabaseIdentityStoreDefinition disd1, final DatabaseIdentityStoreDefinition disd2) {
+        return disd1.callerQuery().equals(disd2.callerQuery()) &&
+               disd1.dataSourceLookup().equals(disd2.dataSourceLookup()) &&
+               disd1.groupsQuery().equals(disd2.groupsQuery()) &&
+               disd1.hashAlgorithm().equals(disd2.hashAlgorithm()) &&
+               equalsHashAlgorithmParameters(disd1.hashAlgorithmParameters(), disd2.hashAlgorithmParameters()) &&
+               (disd1.priority() == disd2.priority()) &&
+               disd1.priorityExpression().equals(disd2.priorityExpression()) &&
+               equalsUseFor(disd1.useFor(), disd2.useFor()) &&
+               disd1.useForExpression().equals(disd2.useForExpression());
+    }
+
+    private boolean equalsHashAlgorithmParameters(String[] params1,  String[] params2) {
+        // don't need to consider null.
+        if (params1 == params2) {
+            return true;
+        } else if (params1.length != params2.length) {
+            return false;
+        } else {
+            Set<String> set1 = new HashSet<String>(Arrays.asList(params1));
+            Set<String> set2 = new HashSet<String>(Arrays.asList(params2));
+            return set1.equals(set2);
         }
     }
 
@@ -1015,4 +1084,17 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return output;
     }
 
+    private boolean existAuthMech(Class authMechToExist) {
+        Map<Class<?>, Properties> authMechs = null;
+        Map<String, ModuleProperties> moduleMap = getModuleMap();
+        for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
+            authMechs = entry.getValue().getAuthMechMap();
+            for (Class<?> authMech : authMechs.keySet()) {
+                if (authMech.equals(authMechToExist)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

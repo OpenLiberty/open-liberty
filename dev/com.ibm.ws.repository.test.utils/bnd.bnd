@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Repository FAT shared tests
+Bundle-SymbolicName: com.ibm.ws.repository.test.utils
+Bundle-Description: Shared repository test utils
+
+WS-TraceGroup: repo.resource
+
+javac.source: 1.7
+javac.target: 1.7
+
+Export-Package: com.ibm.ws.lars.testutils*; version=1.0
+
+test.project: true
+publish.wlp.jar.disabled: true
+
+-buildpath: \
+    org.hamcrest:hamcrest-all;version=1.3, \
+    com.ibm.ws.repository;version=latest, \
+    com.ibm.ws.org.apache.commons.io.2.4;version=latest, \
+    fattest.simplicity;version=latest

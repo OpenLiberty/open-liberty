@@ -1610,9 +1610,11 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testNoNewMethods() throws Exception {
-        assertEquals("Methods have been added to CompletableFuture which need to be properly implemented on wrapper class ManagedCompletableFuture",
-                     104, // WARNING: do not update this value unless you have properly implemented the new methods on ManagedCompletableFuture!
-                     CompletableFuture.class.getMethods().length);
+        int methodCount = CompletableFuture.class.getMethods().length;
+        assertTrue("Methods have been added to CompletableFuture which need to be properly implemented on wrapper class ManagedCompletableFuture. " +
+                   "Expected 117 (Java 9) or 104 (Java 8). Found " + methodCount,
+                   // WARNING: do not update these values unless you have properly implemented (or added code to reject) the new methods on ManagedCompletableFuture!
+                   methodCount == 117 || methodCount == 104);
     }
 
     /**

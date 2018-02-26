@@ -313,3 +313,18 @@ display.unresolved.jsl.useraction=Accertarsi che il nome del file per il JSL sia
 JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: Il nome operationGroup {0} non \u00e8 stato risolto in un nome gruppo valido.
 JOB_GROUP_NAME_NOT_VALID.explanation=I tentativi di accedere al lavoro utilizzando l'accesso gruppo potrebbero non riuscire, se si tenta di utilizzare un nome gruppo non valido.
 JOB_GROUP_NAME_NOT_VALID.useraction=Correggere il nome gruppo nel file di configurazione del server.
+
+#BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} was not detected to be at the latest version {1}. The table was instead detected to have been created at version {2}. The createTables setting for the database store is set to {3}. 
+BATCH_TABLES_NOT_CURRENT=CWWKY0045W: \u00c8 stato rilevato che la tabella batch Java configurata {0} non \u00e8 all''ultima versione {1}. \u00c8 stato rilevato che la tabella \u00e8 stata creata alla versione {2}. L''impostazione createTables per l''archivio di database \u00e8 impostata su {3}. 
+BATCH_TABLES_NOT_CURRENT.explanation=\u00c8 stato rilevato che la tabella di runtime batch Java specificata non \u00e8 stata creata all'ultima versione.
+BATCH_TABLES_NOT_CURRENT.useraction=Controllare l'impostazione createTables per l'archivio del database. Se l'impostazione createTables \u00e8 impostata su true, determinare perch\u00e9 non si \u00e8 verificata la creazione automatica della tabella. Se impostata su false, l'amministratore (o DBA) dovr\u00e0 creare la tabella richiesta.
+
+#BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables were detected to have been created at the latest table version.
+BATCH_TABLES_CURRENT=CWWKY0046I: \u00c8 stato rilevato che le tabelle batch Java configurate sono state create all'ultima versione tabella.
+BATCH_TABLES_CURRENT.explanation=\u00c8 stato rilevato che le tabelle batch Java configurate sono state create all'ultima versione tabella, tramite la creazione automatica o tramite l'intervento manuale dell'amministratore.
+BATCH_TABLES_CURRENT.useraction=Nessuna azione richiesta.
+
+#BATCH_SECURITY_NOT_ACTIVE=CWWKY047W: Security is not enabled in this server, Group Security associated with job instance {0} will not be enabled.
+BATCH_SECURITY_NOT_ACTIVE=CWWKY0047W: La funzione di sicurezza non \u00e8 abilitata in questo server, non verr\u00e0 abilitata la sicurezza gruppo associata all''istanza lavoro {0}.
+BATCH_SECURITY_NOT_ACTIVE.explanation=La sicurezza non \u00e8 abilitata per questo server, quindi le associazioni di sicurezza gruppo batch non saranno rese persistenti per l'istanza lavoro di riferimento. Questo significa che i ruoli batchGroupAdmin e batchGroupMonitor non possono essere utilizzati per ottenere l'autorizzazione per operare su questo lavoro, ora o in qualsiasi momento in futuro. 
+BATCH_SECURITY_NOT_ACTIVE.useraction= Se si desidera applicare la sicurezza gruppo batch Java, abilitare la sicurezza per questo server.

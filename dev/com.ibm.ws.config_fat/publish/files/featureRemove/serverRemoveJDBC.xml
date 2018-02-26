@@ -23,7 +23,10 @@
     <application type="ear" id="myEJBEAR" name="myEJBEAR" location="sharedLibEJB.ear" />
 
     <dataSource id="dataSource" jndiName="jdbc/DictionaryDB" supplementalJDBCTrace="true">
-        <properties.derby.embedded createDatabase="create" databaseName="${server.config.dir}/dictionaryDB"/>
+        <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+    	is required beyond a single server start, configure the databaseName with a file location such as:
+    	databaseName="${shared.config.dir}/data/derbydb" -->
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dictionaryDB"/>
         <jdbcDriver libraryRef="myLib" />
     </dataSource>
 

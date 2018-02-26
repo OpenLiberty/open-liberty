@@ -65,6 +65,7 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
         List<Parameter> parameters = new ArrayList<>();
         Parameter parameter = null;
         ResolvedParameter extractParametersResult = new ResolvedParameter();
+        boolean paramAnnPresent = false;
         for (Annotation annotation : annotations) {
             if (annotation instanceof QueryParam) {
                 QueryParam param = (QueryParam) annotation;
@@ -97,6 +98,7 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
                 }
                 if (parameter == null) {
                     Parameter pp = new ParameterImpl();
+                    paramAnnPresent = true;
                     parameter = pp;
                 }
             } else {
@@ -118,7 +120,7 @@ public class DefaultParameterExtension extends AbstractOpenAPIExtension {
                                                                              classConsumes == null ? new String[0] : classConsumes.value(),
                                                                              methodConsumes == null ? new String[0] : methodConsumes.value());
             if (unknownParameter != null) {
-                if (unknownParameter.getIn() != null) {
+                if (unknownParameter.getIn() != null || paramAnnPresent) {
                     extractParametersResult.parameters.add(unknownParameter);
                 } else { // return as request body
                     extractParametersResult.requestBody = unknownParameter;

@@ -19,7 +19,13 @@ src: \
 
 javac.source: 1.8
 javac.target: 1.8
-	
+
+tested.features: mpFaultTolerance-1.0,\
+                 mpConfig-1.1,\
+                 mpConfig-1.2,\
+                 cdi-1.2,\
+                 cdi-2.0
+
 fat.project: true
 
 -buildpath: \
@@ -34,8 +40,8 @@ fat.project: true
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest,\
-	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.3;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\

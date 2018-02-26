@@ -772,6 +772,15 @@ error.server.resume.command.port.disabled=CWWKE0945E: Uma solicita\u00e7\u00e3o 
 error.server.resume.command.port.disabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o. A porta de comando est\u00e1 desativada para esse servidor, portanto, a solicita\u00e7\u00e3o para continuar n\u00e3o p\u00f4de ser processada. Observe que a porta de comando fica desativada por padr\u00e3o quando um servidor \u00e9 iniciado como uma tarefa iniciada no z/OS.
 error.server.resume.command.port.disabled.useraction=Ative a porta de comando para este servidor. Se o servidor estiver em execu\u00e7\u00e3o como uma tarefa iniciada no z/OS, esta continua\u00e7\u00e3o poder\u00e1, alternativamente, ser solicitada do console do operador.
 
+warning.server.status.invalid.targets=CWWKE0946W: Uma solicita\u00e7\u00e3o de status foi recebida para componentes \
+espec\u00edficos, mas a lista de componentes na op\u00e7\u00e3o de destino estava vazia. Nenhuma \
+a\u00e7\u00e3o foi tomada.
+warning.server.status.invalid.targets.explanation=Um usu\u00e1rio emitiu uma solicita\u00e7\u00e3o de status com uma lista de \
+metas vazia na op\u00e7\u00e3o de destino. A solicita\u00e7\u00e3o foi conclu\u00edda, mas nenhuma a\u00e7\u00e3o foi tomada.
+warning.server.status.invalid.targets.useraction=Especifique na op\u00e7\u00e3o de destino uma lista de componentes para \
+verificar seus status. Para verificar o status cumulativo de todos os componentes com capacidade de pausa no servidor, emita a \
+solicita\u00e7\u00e3o de status sem a op\u00e7\u00e3o de destino.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi \

@@ -94,6 +94,28 @@ no.such.element.CWMCG0015E=CWMCG0015E: \uad6c\uc131\uc5d0\uc11c {0} \ud2b9\uc131
 no.such.element.CWMCG0015E.explanation=\uad6c\uc131\ub41c \uc18c\uc2a4\uc5d0\uc11c \uc694\uccad\ub41c \ud2b9\uc131\uc774 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
 no.such.element.CWMCG0015E.useraction=\uae30\uc874 \uc18c\uc2a4 \uc911 \ud558\ub098\uc5d0 \ud2b9\uc131\uc744 \ucd94\uac00\ud558\uac70\ub098 \ud2b9\uc131\uc774 \ud3ec\ud568\ub41c \uc0c8 \uc18c\uc2a4\ub97c \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.
 
+# The server is unable to cancel the asynchronous update thread for the {0} Config Source.
+future.update.not.cancelled.CWMCG0016E=CWMCG0016E: \uc11c\ubc84\uac00 {0} \uad6c\uc131 \uc18c\uc2a4\uc5d0 \ub300\ud55c \ube44\ub3d9\uae30 \uc5c5\ub370\uc774\ud2b8 \uc2a4\ub808\ub4dc\ub97c \ucde8\uc18c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+future.update.not.cancelled.CWMCG0016E.explanation=\ucd94\ud6c4 \ube44\ub3d9\uae30 \uc5c5\ub370\uc774\ud2b8\ub97c \ucde8\uc18c\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4. \uc77c\ubc18\uc801\uc73c\ub85c \uc774\ub294 ConfigSource \uc778\uc2a4\ud134\uc2a4\uc5d0 \ub300\ud55c \uc7a5\uae30 \uc2e4\ud589 \uc5c5\ub370\uc774\ud2b8 \ud638\ucd9c\ub85c \uc778\ud574 \ubc1c\uc0dd\ud569\ub2c8\ub2e4.
+future.update.not.cancelled.CWMCG0016E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# No implicit String constructor methods found for the {0} class.
+implicit.string.constructor.method.not.found.CWMCG0017E=CWMCG0017E: {0} \ud074\ub798\uc2a4\uc5d0 \ub300\ud574 \ub0b4\uc7ac\uc801 \ubb38\uc790\uc5f4 \uc0dd\uc131\uc790 \uba54\uc18c\ub4dc\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+implicit.string.constructor.method.not.found.CWMCG0017E.explanation=\uc9c0\uc815\ub41c \ud074\ub798\uc2a4\uc5d0\uc11c \uc62c\ubc14\ub978 \ubb38\uc790\uc5f4 \uc0dd\uc131\uc790 \uba54\uc18c\ub4dc\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+implicit.string.constructor.method.not.found.CWMCG0017E.useraction=\uc9c0\uc815\ub41c \ud074\ub798\uc2a4\uc5d0 \uc62c\ubc14\ub978 \ubb38\uc790\uc5f4 \uc0dd\uc131\uc790 \uba54\uc18c\ub4dc\uac00 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc5b4\ub5a4 \uba54\uc18c\ub4dc\uac00 \uc62c\ubc14\ub978\uc9c0 \ud310\ubcc4\ud558\ub824\uba74 MicroProfile \uad6c\uc131 \uc2a4\ud399\uc744 \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# The {0} Generic Type Variable for the {1} conversion type is not supported.
+generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: {1} \ubcc0\ud658 \uc720\ud615\uc5d0 \ub300\ud55c {0} \uc77c\ubc18 \uc720\ud615 \ubcc0\uc218\ub294 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+generic.type.variables.notsupported.CWMCG0018E.explanation=List<T> \ub4f1\uc758 \uc77c\ubc18 \uc720\ud615 \ubcc0\uc218\ub97c \uc0ac\uc6a9\ud55c \ubcc0\ud658\uc774 \uc2dc\ub3c4\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+generic.type.variables.notsupported.CWMCG0018E.useraction=\uadf8 \ub300\uc2e0\uc5d0 List<String> \ub4f1\uc758 \uad6c\uccb4\uc801 \uc778\uc218 \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+# Environment Variables Config Source
+environment.variables.config.source=\ud658\uacbd \ubcc0\uc218 \uad6c\uc131 \uc18c\uc2a4
+# Properties File Config Source: {0}
+properties.file.config.source=\ud2b9\uc131 \ud30c\uc77c \uad6c\uc131 \uc18c\uc2a4: {0}
+# System Properties Config Source
+system.properties.config.source=\uc2dc\uc2a4\ud15c \ud2b9\uc131 \uad6c\uc131 \uc18c\uc2a4
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message
 #-----------------------------------------------------------------------------------------------------------------------------

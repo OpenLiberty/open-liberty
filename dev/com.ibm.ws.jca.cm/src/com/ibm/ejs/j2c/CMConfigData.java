@@ -137,4 +137,10 @@ public interface CMConfigData extends ResourceRefInfo, java.io.Serializable {
      */
     public int getBranchCoupling(); 
 
+    /**
+     * Returns a queue manager id.
+     * @return
+     */
+    public String getQmid();
+
 }

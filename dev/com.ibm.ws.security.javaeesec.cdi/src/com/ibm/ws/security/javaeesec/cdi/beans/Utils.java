@@ -45,7 +45,7 @@ public class Utils {
     private static final TraceComponent tc = Tr.register(Utils.class);
     private boolean logNoIDWarning = false;
 
-    protected Utils() {}
+    public Utils() {}
 
     protected boolean validateResult(CredentialValidationResult result) throws AuthenticationException {
         Principal principal = result.getCallerPrincipal();
@@ -76,7 +76,7 @@ public class Utils {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler(cdi);
         if (identityStoreHandler != null) {
-            status = validateWithIdentityStore(realmName, clientSubject, credential, identityStoreHandler, httpMessageContext);
+            status = validateWithIdentityStore(realmName, clientSubject, credential, identityStoreHandler);
         } else {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "IdentityStoreHandler bean is not found. Use a User Registry which is defined by server.xml.");
@@ -91,8 +91,7 @@ public class Utils {
         return status;
     }
 
-    private AuthenticationStatus validateWithIdentityStore(String realmName, Subject clientSubject, @Sensitive Credential credential, IdentityStoreHandler identityStoreHandler,
-                                                           HttpMessageContext httpMessageContext) {
+    public AuthenticationStatus validateWithIdentityStore(String realmName, Subject clientSubject, @Sensitive Credential credential, IdentityStoreHandler identityStoreHandler) {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         CredentialValidationResult result = identityStoreHandler.validate(credential);
         if (result.getStatus() == CredentialValidationResult.Status.VALID) {
@@ -201,7 +200,7 @@ public class Utils {
         return cred;
     }
 
-    private Hashtable<String, Object> createNewSubjectHashtable(final Subject clientSubject) {
+    public Hashtable<String, Object> createNewSubjectHashtable(final Subject clientSubject) {
         PrivilegedAction<Hashtable<String, Object>> action = new PrivilegedAction<Hashtable<String, Object>>() {
 
             @Override
@@ -215,7 +214,7 @@ public class Utils {
     }
 
     @SuppressWarnings("unchecked")
-    private IdentityStoreHandler getIdentityStoreHandler(CDI cdi) {
+    public IdentityStoreHandler getIdentityStoreHandler(CDI cdi) {
         IdentityStoreHandler identityStoreHandler = null;
         Instance<IdentityStoreHandler> storeHandlerInstance = cdi.select(IdentityStoreHandler.class);
         if (storeHandlerInstance.isUnsatisfied() == false && storeHandlerInstance.isAmbiguous() == false) {

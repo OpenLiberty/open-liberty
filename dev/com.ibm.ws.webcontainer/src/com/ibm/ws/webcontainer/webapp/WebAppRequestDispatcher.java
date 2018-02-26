@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2007 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -936,7 +936,7 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
     //    
 
     protected void setAttributes(ServletRequest request, DispatcherType dispatcherType, String requestURI, String servletPath, String pathInfo,
-                               String contextPath, String queryString, String mapping) {
+                               String contextPath, String queryString) {
         if (dispatcherType == DispatcherType.INCLUDE) {
             if (requestURI != null) {
                 request.setAttribute(REQUEST_URI_INCLUDE_ATTR, requestURI);
@@ -1097,11 +1097,6 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
         String old_context_path_async = null;
         String old_query_string_async = null;
         boolean async_attributes_saved = false;
-        
-        // for Servlet 4.0
-        String old_mapping = null;
-        String old_mapping_for = null;
-        String old_mapping_async = null;  
 
         boolean firedServletRequestCreated = false;
 
@@ -1199,7 +1194,6 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
             old_path_info = (String) request.getAttribute(PATH_INFO_INCLUDE_ATTR);
             old_context_path = (String) request.getAttribute(CONTEXT_PATH_INCLUDE_ATTR);
             old_query_string = (String) request.getAttribute(QUERY_STRING_INCLUDE_ATTR);
-            old_mapping = (String) request.getAttribute(MAPPING_INCLUDE_ATTR);
             include_attributes_saved = true; // PK34536
 
 
@@ -1209,7 +1203,6 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
                 old_path_info_for = (String) request.getAttribute(PATH_INFO_FORWARD_ATTR);
                 old_context_path_for = (String) request.getAttribute(CONTEXT_PATH_FORWARD_ATTR);
                 old_query_string_for = (String) request.getAttribute(QUERY_STRING_FORWARD_ATTR);
-                old_mapping_for = (String) request.getAttribute(MAPPING_FORWARD_ATTR);
             }
 
             forward_attributes_saved = true;
@@ -1220,7 +1213,6 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
                 old_path_info_async = (String) request.getAttribute(PATH_INFO_ASYNC_ATTR);
                 old_context_path_async = (String) request.getAttribute(CONTEXT_PATH_ASYNC_ATTR);
                 old_query_string_async = (String) request.getAttribute(QUERY_STRING_ASYNC_ATTR);
-                old_mapping_async = (String) request.getAttribute(MAPPING_ASYNC_ATTR);
             }
 
             async_attributes_saved = true;
@@ -1313,7 +1305,7 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
                     // these attributes have to be setting after calling map
                     // because map will set some of the path elements
                     setAttributes(request, dispatcherType, dispatchContext.getRequestURI(), dispatchContext.getServletPath(), dispatchContext
-                                  .getPathInfo(), webapp.getContextPath(), dispatchContext.getQueryString(), dispatchContext.getMappingValue());
+                                  .getPathInfo(), webapp.getContextPath(), dispatchContext.getQueryString());
                 } else {
                     //This custom property was added to try to maintain the V7 behavior of the following commented code.
                     // The old code never really worked, because unless you were using the same dispatcher
@@ -1335,7 +1327,7 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
                             logger.logp(Level.FINE, CLASS_NAME, dispatcherTypeString, "update forward or async attributes to uri before last dispatch");
                         }
                         setAttributes(request, dispatcherType, oldContext.getRequestURI(), oldContext.getServletPath(), oldContext.getPathInfo(),
-                                      oldContext.getContextPath(), oldContext.getQueryString(), dispatchContext.getMappingValue());
+                                      oldContext.getContextPath(), oldContext.getQueryString());
                     } else {
                         if (dispatcherType==DispatcherType.ASYNC){
                             if (old_req_uri_async==null){ // no need to set again if already set
@@ -1343,13 +1335,13 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { 
                                         logger.logp(Level.FINE, CLASS_NAME, dispatcherTypeString, "set async attributes based off of forward attributes");
                                     }
-                                    setAttributes(request, DispatcherType.ASYNC, old_req_uri_for, old_servlet_path_for,old_path_info_for,old_context_path_for,old_query_string_for,old_mapping_for);
+                                    setAttributes(request, DispatcherType.ASYNC, old_req_uri_for, old_servlet_path_for,old_path_info_for,old_context_path_for,old_query_string_for);
                                 } else {
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { 
                                         logger.logp(Level.FINE, CLASS_NAME, dispatcherTypeString, "set async attributes based off of old dispatch context");
                                     }
                                     setAttributes(request, DispatcherType.ASYNC, oldContext.getRequestURI(), oldContext.getServletPath(), oldContext.getPathInfo(),
-                                                  oldContext.getContextPath(), oldContext.getQueryString(), oldContext.getMappingValue());
+                                                  oldContext.getContextPath(), oldContext.getQueryString());
                                 }
                             }
                         } else {
@@ -1358,13 +1350,13 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { 
                                         logger.logp(Level.FINE, CLASS_NAME, dispatcherTypeString, "set forward attributes based off of async attributes");
                                     }
-                                    setAttributes(request, DispatcherType.FORWARD, old_req_uri_async, old_servlet_path_async,old_path_info_async,old_context_path_async,old_query_string_async,old_mapping_async);
+                                    setAttributes(request, DispatcherType.FORWARD, old_req_uri_async, old_servlet_path_async,old_path_info_async,old_context_path_async,old_query_string_async);
                                 } else {
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { 
                                         logger.logp(Level.FINE, CLASS_NAME, dispatcherTypeString, "set forward attributes based off of old dispatch context");
                                     }
                                     setAttributes(request, DispatcherType.FORWARD, oldContext.getRequestURI(), oldContext.getServletPath(), oldContext.getPathInfo(),
-                                                  oldContext.getContextPath(), oldContext.getQueryString(), oldContext.getMappingValue());
+                                                  oldContext.getContextPath(), oldContext.getQueryString());
                                 }
                             }
                         }
@@ -1484,12 +1476,12 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
 
             // reset include attributes
             if (include_attributes_saved) // PK34536
-                setAttributes(request, DispatcherType.INCLUDE, old_req_uri, old_servlet_path, old_path_info, old_context_path, old_query_string,old_mapping);
+                setAttributes(request, DispatcherType.INCLUDE, old_req_uri, old_servlet_path, old_path_info, old_context_path, old_query_string);
 
             if (dispatcherType==DispatcherType.FORWARD&&forward_attributes_saved){
                 if (!WCCustomProperties.KEEP_ORIGINAL_PATH_ELEMENTS) // PK34536
                     setAttributes(request, DispatcherType.FORWARD, old_req_uri_for, old_servlet_path_for, old_path_info_for, old_context_path_for,
-                                  old_query_string_for,old_mapping_for);
+                                  old_query_string_for);
                 else if (old_req_uri_for==null){// only need to reset if the last forward attributes were null, i.e. before the first async call
                     // Otherwise, it always reflects the original path elements so no need to reset.
                     clearAttributes(request, DispatcherType.FORWARD);
@@ -1498,7 +1490,7 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
             else if (dispatcherType==DispatcherType.ASYNC&&async_attributes_saved){
                 if (!WCCustomProperties.KEEP_ORIGINAL_PATH_ELEMENTS) // PK34536
                     setAttributes(request, DispatcherType.ASYNC, old_req_uri_async, old_servlet_path_async, old_path_info_async, old_context_path_async,
-                                  old_query_string_async,old_mapping_async);
+                                  old_query_string_async);
                 else if (old_req_uri_async==null){ // only need to reset if the last async attributes were null, i.e. before the first async call
                     // Otherwise, it always reflects the original path elements so no need to reset.
                     clearAttributes(request, DispatcherType.ASYNC);

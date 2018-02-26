@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Pour activer le bean HttpAuth
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: Le nom de domaine pour l'authentification de base n'ayant pas \u00e9t\u00e9 d\u00e9fini, la valeur par d\u00e9faut, defaultRealm, a \u00e9t\u00e9 utilis\u00e9e.
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Comme le nom de domaine pour l'authentification par d\u00e9faut n'a pas \u00e9t\u00e9 d\u00e9fini, il a \u00e9t\u00e9 d\u00e9fini \u00e0 la valeur par d\u00e9faut, \u00e0 \u00e0 savoir defaultRealm.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Pour sp\u00e9cifier le nom de domaine, d\u00e9finissez-le sur une annotation BasicAuthenticationMechanismDefinition dans l'application.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Pour d\u00e9finir le nom de domaine, sp\u00e9cifiez-le dans une annotation BasicAuthenticationMechanismDefinition dans l'application. Ou bien, lorsque l'attribut overrideHttpAuthenticationMechanism a pour valeur BASIC, d\u00e9finissez la valeur de l'attribut basicAuthenticationMechanismRealmName.
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: La valeur {0} du param\u00e8tre de configuration {1} n''est pas valide.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=La valeur du param\u00e8tre de configuration n'est pas valide.
@@ -61,6 +61,14 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=V\u00e9rifiez qu
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Les donn\u00e9es hach\u00e9es ne sont pas valides. {0}
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=La valeur hach\u00e9e dans la base de donn\u00e9es n'est pas valide.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=V\u00e9rifiez que les donn\u00e9es hach\u00e9es dans la base de donn\u00e9es ont \u00e9t\u00e9 hach\u00e9es par l'algorithme de hachage prise en charge par le classe d'impl\u00e9mentation PasswordHash.
+
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: L''attribut {0} n''est pas d\u00e9fini dans l''\u00e9l\u00e9ment webAppSecurity ; la fonction de remplacement par le conteneur de la configuration d''HttpAuthenticationMechanism ne fonctionnera pas correctement."
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=Etant donn\u00e9 que l'attribut requis n'est pas d\u00e9fini, la fonction de remplacement par le conteneur de l'authentification par formulaire HttpAuthenticationMechanism ne fonctionne pas.
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=L'attribut mentionn\u00e9 dans le message doit \u00eatre d\u00e9fini.
+
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: La valeur {0} de l''attribut contextRootForFormAuthenticationMechanism ne correspond pas \u00e0 la valeur de racine de contexte {1} de l''attribut {2} dans l''\u00e9l\u00e9ment webAppSecurity ; la fonction de remplacement par le conteneur de la configuration d''HttpAuthenticationMechanism ne fonctionnera pas correctement."
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=Etant donn\u00e9 que la valeur de racine de contexte ne correspond pas \u00e0 l'attribut sp\u00e9cifi\u00e9, la fonction de remplacement par le conteneur de l'authentification par formulaire HttpAuthenticationMechanism ne fonctionne pas."
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=L'attribut mentionn\u00e9 dans le message doit correspondre \u00e0 la racine de contexte sp\u00e9cifi\u00e9e.
 
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=Les it\u00e9rations {0} ne sont pas un nombre.

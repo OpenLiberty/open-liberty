@@ -12,13 +12,8 @@ package com.ibm.ws.session.store.cache;
 
 import java.util.Map;
 
-import javax.cache.Cache;
-import javax.cache.CacheException;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
-import javax.cache.configuration.CompleteConfiguration;
-import javax.cache.configuration.Configuration;
-import javax.cache.configuration.MutableConfiguration;
 import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
@@ -33,13 +28,12 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
-import com.ibm.ws.session.store.cache.serializable.SessionData;
-import com.ibm.ws.session.store.cache.serializable.SessionKey;
 import com.ibm.ws.session.utils.SessionLoader;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.session.IStore;
@@ -49,9 +43,11 @@ import com.ibm.wsspi.session.IStore;
  */
 @Component(name = "com.ibm.ws.session.cache", configurationPolicy = ConfigurationPolicy.OPTIONAL, service = { SessionStoreService.class })
 public class CacheStoreService implements SessionStoreService {
-    private Map<String, Object> configurationProperties;
+    
+    private static final TraceComponent tc = Tr.register(CacheStoreService.class);
+    
+    Map<String, Object> configurationProperties;
 
-    Cache<SessionKey, SessionData> cache;
     CacheManager cacheManager;
 
     private volatile boolean completedPassivation = true;
@@ -73,28 +69,21 @@ public class CacheStoreService implements SessionStoreService {
      * @param props service properties
      */
     @Activate
-    @FFDCIgnore(CacheException.class)
     protected void activate(ComponentContext context, Map<String, Object> props) {
         configurationProperties = props;
 
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
         CachingProvider provider = Caching.getCachingProvider(library.getClassLoader());
-        cacheManager = provider.getCacheManager(null, new CacheClassLoader(), null); // TODO When class loader is specified, it isn't being used for deserialization. Why?
-        cache = cacheManager.getCache("com.ibm.ws.session.cache");
-        if (cache == null) {
-            Configuration<SessionKey, SessionData> config = new MutableConfiguration<SessionKey, SessionData>().setTypes(SessionKey.class, SessionData.class);
-            try {
-                cache = cacheManager.createCache("com.ibm.ws.session.cache", config);
-            } catch (CacheException x) {
-                cache = cacheManager.getCache("com.ibm.ws.session.cache");
-                if (cache == null)
-                    throw x;
-            }
-        }
+        cacheManager = provider.getCacheManager(null, null, null);
     }
 
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
+        // Always use a separate cache entry for each session property.
+        // These are kept in a cache named com.ibm.ws.session.prop.{ENCODED_APP_ROOT}
+        // and are keyed by {SESSION_PROP_ID}.{PROPERTY_NAME}
+        smc.setUsingMultirow(true);
+
         IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
         store.setLoader(new SessionLoader(serializationService, classLoader, applicationSessionStore));
         setCompletedPassivation(false);

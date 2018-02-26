@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.config.interfaces.SourcedPropertyValue;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public abstract class AbstractConfig implements WebSphereConfig {
@@ -40,6 +40,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
      * @param converters
      * @param executor
      */
+    @Trivial
     public AbstractConfig(ConversionManager conversionManager, SortedSources sources) {
         this.sources = sources;
         this.conversionManager = conversionManager;
@@ -61,7 +62,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
     @Override
     public <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType) {
         assertNotClosed();
-        SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+        SourcedValue sourced = getSourcedValue(propertyName, propertyType);
         T value = null;
         if (sourced != null) {
             value = (T) sourced.getValue();
@@ -99,20 +100,18 @@ public abstract class AbstractConfig implements WebSphereConfig {
     @Override
     @Trivial
     public String toString() {
-        boolean dumpEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
-
-        assertNotClosed();
-
         StringBuilder sb = new StringBuilder();
-        sb.append("Config ");
+        sb.append("Config[");
         sb.append(hashCode());
-        if (dumpEnabled) {
-            sb.append(dump());
+        sb.append("](");
+
+        if (this.closed) {
+            sb.append("CLOSED");
         } else {
-            sb.append("(");
             sb.append(sources.size());
-            sb.append(" sources)");
+            sb.append(" sources");
         }
+        sb.append(")");
         return sb.toString();
     }
 
@@ -137,7 +136,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
         Object value = null;
         assertNotClosed();
         if (getKeySet().contains(propertyName)) {
-            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
             value = sourced.getValue();
         } else {
             if (optional) {
@@ -155,7 +154,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
         Object value = null;
         assertNotClosed();
         if (getKeySet().contains(propertyName)) {
-            SourcedPropertyValue sourced = getSourcedValue(propertyName, propertyType);
+            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
             value = sourced.getValue();
         } else {
             value = convertValue(defaultString, propertyType);

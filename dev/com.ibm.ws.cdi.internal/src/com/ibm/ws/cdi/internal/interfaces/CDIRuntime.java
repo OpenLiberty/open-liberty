@@ -140,13 +140,6 @@ public interface CDIRuntime extends CDIService {
     public MetaDataSlot getApplicationSlot();
 
     /**
-     * Get the unique id for the deployment of the current application.
-     *
-     * @return
-     */
-    public String getCurrentApplicationContextID();
-
-    /**
      * Gets the bean manager for the module to which the given Container belongs.
      *
      * @param moduleMetaData the ModuleMetaData for the module

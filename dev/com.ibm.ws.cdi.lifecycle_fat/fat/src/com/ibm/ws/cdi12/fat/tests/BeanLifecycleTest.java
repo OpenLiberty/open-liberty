@@ -12,20 +12,15 @@ package com.ibm.ws.cdi12.fat.tests;
 
 import java.io.File;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
@@ -59,42 +54,46 @@ public class BeanLifecycleTest extends LoggingTest {
     }
 
     @BuildShrinkWrap
-    public static Archive[] buildShrinkWrap() {
+    public static Archive<?>[] buildShrinkWrap() {
 
-        WebArchive scopeActivationDestructionTests = ShrinkWrap.create(WebArchive.class, "scopeActivationDestructionTests.war")
-                        .addClass("cdi12.scopedclasses.SessionScopedBean")
-                        .addClass("cdi12.scopedclasses.ConversationScopedBean")
-                        .addClass("cdi12.scopedclasses.RequestScopedBean")
-                        .addClass("cdi12.resources.GlobalState")
-                        .addClass("cdi12.resources.Move")
-                        .addClass("cdi12.resources.EndSessionServlet")
-                        .addClass("cdi12.resources.State")
-                        .addClass("cdi12.resources.BeanLifecycleServlet")
-                        .addClass("cdi12.resources.StateMachine")
-                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        WebArchive scopeActivationDestructionTests = ShrinkWrap.create(WebArchive.class, "scopeActivationDestructionTests.war");
+        scopeActivationDestructionTests.addClass("cdi12.scopedclasses.SessionScopedBean");
+        scopeActivationDestructionTests.addClass("cdi12.scopedclasses.ConversationScopedBean");
+        scopeActivationDestructionTests.addClass("cdi12.scopedclasses.RequestScopedBean");
+        scopeActivationDestructionTests.addClass("cdi12.resources.GlobalState");
+        scopeActivationDestructionTests.addClass("cdi12.resources.Move");
+        scopeActivationDestructionTests.addClass("cdi12.resources.EndSessionServlet");
+        scopeActivationDestructionTests.addClass("cdi12.resources.State");
+        scopeActivationDestructionTests.addClass("cdi12.resources.BeanLifecycleServlet");
+        scopeActivationDestructionTests.addClass("cdi12.resources.StateMachine");
+        scopeActivationDestructionTests.add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
+        scopeActivationDestructionTests.add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
-        WebArchive scopeActivationDestructionSecondApp = ShrinkWrap.create(WebArchive.class, "scopeActivationDestructionSecondApp.war")
-                        .addClass("cd12.secondapp.scopedclasses.SecondServlet")
-                        .addClass("cd12.secondapp.scopedclasses.ApplicationScopedBean")
-                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        WebArchive scopeActivationDestructionSecondApp = ShrinkWrap.create(WebArchive.class, "scopeActivationDestructionSecondApp.war");
+        scopeActivationDestructionSecondApp.addClass("cd12.secondapp.scopedclasses.SecondServlet");
+        scopeActivationDestructionSecondApp.addClass("cd12.secondapp.scopedclasses.ApplicationScopedBean");
+        scopeActivationDestructionSecondApp.add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
+        scopeActivationDestructionSecondApp.add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.war/resources/WEB-INF/beans.xml")),
+                                                "/WEB-INF/beans.xml");
 
-        EnterpriseArchive scopeActivationDestructionSecondAppEar = ShrinkWrap.create(EnterpriseArchive.class,"scopeActivationDestructionSecondApp.ear")
-                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(scopeActivationDestructionSecondApp);
-        EnterpriseArchive scopeActivationDestructionTestsEar = ShrinkWrap.create(EnterpriseArchive.class,"scopeActivationDestructionTests.ear")
-                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                        .add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(scopeActivationDestructionTests);
+        EnterpriseArchive scopeActivationDestructionSecondAppEar = ShrinkWrap.create(EnterpriseArchive.class, "scopeActivationDestructionSecondApp.ear");
+        scopeActivationDestructionSecondAppEar.add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.ear/resources/META-INF/permissions.xml")),
+                                                   "/META-INF/permissions.xml");
+        scopeActivationDestructionSecondAppEar.add(new FileAsset(new File("test-applications/scopeActivationDestructionSecondApp.ear/resources/META-INF/application.xml")),
+                                                   "/META-INF/application.xml");
+        scopeActivationDestructionSecondAppEar.addAsModule(scopeActivationDestructionSecondApp);
+        EnterpriseArchive scopeActivationDestructionTestsEar = ShrinkWrap.create(EnterpriseArchive.class, "scopeActivationDestructionTests.ear");
+        scopeActivationDestructionTestsEar.add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.ear/resources/META-INF/permissions.xml")),
+                                               "/META-INF/permissions.xml");
+        scopeActivationDestructionTestsEar.add(new FileAsset(new File("test-applications/scopeActivationDestructionTests.ear/resources/META-INF/application.xml")),
+                                               "/META-INF/application.xml");
+        scopeActivationDestructionTestsEar.addAsModule(scopeActivationDestructionTests);
 
-        Archive[] archives = new Archive[2];
+        Archive<?>[] archives = new Archive<?>[2];
         archives[0] = scopeActivationDestructionSecondAppEar;
         archives[1] = scopeActivationDestructionTestsEar;
         return archives;
     }
-
 
     private static boolean setUp = false;
 

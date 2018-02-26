@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -73,23 +73,29 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
     private Object metrics(InvocationContext context) throws Exception {
         Class<?> bean = context.getConstructor().getDeclaringClass();
 
-        // Registers the bean constructor metrics
-        registerMetrics(bean, context.getConstructor());
+        // We'll skip re-visiting methods that we already created.
+        // We don't skip Gauges because they should fail if re-registered
+        if (!extension.getBeansVisited().contains(bean)) {
+            extension.getBeansVisited().add(bean);
+            // Registers the bean constructor metrics
+            registerMetrics(bean, context.getConstructor());
 
-        // Registers the methods metrics over the bean type hierarchy
-        Class<?> type = bean;
-        do {
-            // TODO: discover annotations declared on implemented interfaces
-            for (Method method : type.getDeclaredMethods())
-                if (!method.isSynthetic() && !Modifier.isPrivate(method.getModifiers()))
-                    registerMetrics(bean, method);
-            type = type.getSuperclass();
-        } while (!Object.class.equals(type));
+            // Registers the methods metrics over the bean type hierarchy
+            Class<?> type = bean;
+            do {
+                // TODO: discover annotations declared on implemented interfaces
+                for (Method method : type.getDeclaredMethods())
+                    if (!method.isSynthetic() && !Modifier.isPrivate(method.getModifiers()))
+                        registerMetrics(bean, method);
+                type = type.getSuperclass();
+            } while (!Object.class.equals(type));
+
+        }
 
         Object target = context.proceed();
 
         // Registers the gauges over the bean type hierarchy after the target is constructed as it is required for the gauge invocations
-        type = bean;
+        Class<?> type = bean;
         do {
             // TODO: discover annotations declared on implemented interfaces
             for (Method method : type.getDeclaredMethods()) {
@@ -109,19 +115,19 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
         MetricResolver.Of<Counted> counted = resolver.counted(bean, element);
         if (counted.isPresent()) {
             registry.counter(counted.metadata());
-            extension.addMetricName(counted.metadata().getName());
+            extension.addMetricName(element, counted.metricAnnotation(), counted.metadata().getName());
         }
 
         MetricResolver.Of<Metered> metered = resolver.metered(bean, element);
         if (metered.isPresent()) {
             registry.meter(metered.metadata());
-            extension.addMetricName(metered.metadata().getName());
+            extension.addMetricName(element, metered.metricAnnotation(), metered.metadata().getName());
         }
 
         MetricResolver.Of<Timed> timed = resolver.timed(bean, element);
         if (timed.isPresent()) {
             registry.timer(timed.metadata());
-            extension.addMetricName(timed.metadata().getName());
+            extension.addMetricName(element, timed.metricAnnotation(), timed.metadata().getName());
         }
     }
 

@@ -334,3 +334,39 @@ display.unresolved.jsl.useraction=V\u00e9rifiez que le nom de fichier du JSL est
 JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: La r\u00e9solution du nom de groupe d''op\u00e9rations {0} n''est pas un nom de groupe valide.
 JOB_GROUP_NAME_NOT_VALID.explanation=Il se peut que les tentatives d'acc\u00e8s au travail \u00e0 l'aide d'un acc\u00e8s de groupe \u00e9chouent si un nom de groupe non valide est utilis\u00e9.
 JOB_GROUP_NAME_NOT_VALID.useraction=Corrigez le nom de groupe dans le fichier de configuration du serveur.
+
+#BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} was not detected to be at the latest version {1}. The table was instead detected to have been created at version {2}. The createTables setting for the database store is set to {3}. 
+BATCH_TABLES_NOT_CURRENT=CWWKY0045W: La version de la table de \
+traitement par lots Java configur\u00e9e {0} n''est pas la version la plus \
+r\u00e9cente {1}. La table a \u00e9t\u00e9 cr\u00e9\u00e9e avec la version {2}. Le param\u00e8tre createTables pour le \
+magasin de base de donn\u00e9es a pour valeur {3}. 
+BATCH_TABLES_NOT_CURRENT.explanation=La table d'ex\u00e9cution par \
+lots Java n'a pas \u00e9t\u00e9 cr\u00e9\u00e9e avec la version la plus r\u00e9cente.
+BATCH_TABLES_NOT_CURRENT.useraction=V\u00e9rifiez le param\u00e8tre createTables \
+pour le magasin de base de donn\u00e9es. \
+Si la valeur du param\u00e8tre createTables est true, d\u00e9terminez pourquoi la cr\u00e9ation \
+automatique de la table n'a pas eu lieu. \
+Si elle est false, l'administrateur (ou administrateur de base de donn\u00e9es) doit cr\u00e9er la \
+table requise.
+
+#BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables were detected to have been created at the latest table version.
+BATCH_TABLES_CURRENT=CWWKY0046I: Les tables de traitement par lots Java \
+configur\u00e9e ont \u00e9t\u00e9 cr\u00e9\u00e9es avec la version de table la plus r\u00e9cente.
+BATCH_TABLES_CURRENT.explanation=Les tables de traitement par lots Java \
+configur\u00e9es ont \u00e9t\u00e9 cr\u00e9\u00e9es avec la version de table la plus r\u00e9cente, via la fonction de \
+cr\u00e9ation automatique ou manuellement par un administrateur.
+BATCH_TABLES_CURRENT.useraction=Aucune action n'est requise.
+
+#BATCH_SECURITY_NOT_ACTIVE=CWWKY047W: Security is not enabled in this server, Group Security associated with job instance {0} will not be enabled.
+BATCH_SECURITY_NOT_ACTIVE=CWWKY0047W: La fonction de \
+s\u00e9curit\u00e9 n''est pas activ\u00e9e sur ce serveur ; la s\u00e9curit\u00e9 de groupe associ\u00e9e \u00e0 \
+l''instance de travail {0} ne sera pas activ\u00e9e.
+BATCH_SECURITY_NOT_ACTIVE.explanation=La s\u00e9curit\u00e9 n'est pas \
+activ\u00e9e pour ce serveur ; par cons\u00e9quent, les associations de s\u00e9curit\u00e9 de groupe \
+par lots ne seront pas conserv\u00e9es pour l'instance de travail r\u00e9f\u00e9renc\u00e9e. \
+Cela signifie que les r\u00f4les batchGroupAdmin et batchGroupMonitor ne peuvent pas \u00eatre \
+utilis\u00e9s pour b\u00e9n\u00e9ficier de droits sur ce travail, maintenant ou \u00e0 l'avenir.
+
+BATCH_SECURITY_NOT_ACTIVE.useraction= Si vous voulez \
+appliquer la s\u00e9curit\u00e9 \
+de groupe par lots Java, activez la s\u00e9curit\u00e9 pour ce serveur.

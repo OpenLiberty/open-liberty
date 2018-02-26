@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 #
 # -------------------------------------------------------------------------------------------------
 #0001-0050: app manager
@@ -89,7 +89,7 @@ APPLICATION_STOP_FAILED=CWWKZ0010E: A ap\u0103rut o excep\u0163ie \u00een timp c
 APPLICATION_STOP_FAILED.explanation=Serverul nu a putut opri aplica\u0163ia.
 APPLICATION_STOP_FAILED.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia este \u00eentr-o stare \u00een care poate fi oprit\u0103.
 
-#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
 #{0} is file name
 #{1} is exception message
 FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: A avut loc o excep\u0163ie \u00een timpul c\u0103ut\u0103rii fi\u015fierului {0}. Mesajul excep\u0163iei a fost: {1}
@@ -98,7 +98,7 @@ FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
 
 #{0} is application name
 APPLICATION_NOT_STARTED=CWWKZ0012I: Aplica\u0163ia {0} nu a fost pornit\u0103.
-APPLICATION_NOT_STARTED.explanation=Aplica\u0163ia nu a putut fi pornit\u0103 din cauza erorilor anterioare. 
+APPLICATION_NOT_STARTED.explanation=Aplica\u0163ia nu a putut fi pornit\u0103 din cauza erorilor anterioare.
 APPLICATION_NOT_STARTED.useraction=Verifica\u0163i configura\u0163ia aplica\u0163iei \u015fi verifica\u0163i istoricele pentru erori din timpul pornirii aplica\u0163iei.
 
 #{0} the application name
@@ -134,7 +134,7 @@ PARTIAL_START.useraction=Rezolva\u0163i problema cu partea aplica\u0163iei care 
 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: Aplica\u0163ia {0} nu a fost actualizat\u0103.
-APPLICATION_NOT_UPDATED.explanation=Aplica\u0163ia nu a putut fi pornit\u0103 din cauza erorilor anterioare. 
+APPLICATION_NOT_UPDATED.explanation=Aplica\u0163ia nu a putut fi pornit\u0103 din cauza erorilor anterioare.
 APPLICATION_NOT_UPDATED.useraction=Verifica\u0163i configura\u0163ia aplica\u0163iei \u015fi verifica\u0163i istoricele pentru erori din timpul pornirii aplica\u0163iei.
 
 #Existing message changed per resolution to design issue 117781
@@ -175,7 +175,7 @@ MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Monitorul de aplica\u0163ii nu a pu
 MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Porni\u0163i serverul cu o pornire la rece.
 
 #{0} is the start time in seconds
-APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorizarea {0} pentru aplica\u0163ii. 
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorizarea {0} pentru aplica\u0163ii.
 APPLICATION_MONITOR_STARTED.explanation=Serverul monitorizeaz\u0103 un director pentru ca aplica\u0163iile s\u0103 fie implementate.
 APPLICATION_MONITOR_STARTED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
@@ -192,7 +192,7 @@ MONITOR_DIR_CLEANUP_FAIL.useraction=Dac\u0103 vechiul director nu mai este neces
 
 #{0} is application name
 APPLICATION_MONITORING_FAIL=CWWKZ0060W: Nu poate monitoriza {0} aplica\u0163ia.
-APPLICATION_MONITORING_FAIL.explanation=O aplica\u0163ie a fost instalat\u0103 dar monitorizarea nu a fost pornit\u0103 pe ea deci dac\u0103 un fi\u015fier este actualizat \u00een aplica\u0163ie modificarea nu va fi detectat\u0103 de server. 
+APPLICATION_MONITORING_FAIL.explanation=O aplica\u0163ie a fost instalat\u0103 dar monitorizarea nu a fost pornit\u0103 pe ea deci dac\u0103 un fi\u015fier este actualizat \u00een aplica\u0163ie modificarea nu va fi detectat\u0103 de server.
 APPLICATION_MONITORING_FAIL.useraction=C\u00e2nd actualiza\u0163i fi\u015fierele \u00een aceast\u0103 aplica\u0163ie aplica\u0163ia va necsita s\u0103 fie dezinstalat\u0103 \u015fi reinstalat\u0103 \u00een server.
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: Aplica\u0163ia {0} de la loca\u0163ia {1} este \u00een\u0103untrul directorului monitorizat {2}. Elementul aplica\u0163iei va fi ignorat.
@@ -202,3 +202,17 @@ APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Fie corecta\u0163i elementul apli
 APPLICATION_UPDATED=CWWKZ0062I: Aplica\u0163ia {0} a fost actualizat\u0103, dar nu a fost repornit\u0103.
 APPLICATION_UPDATED.explanation=A ap\u0103rut o modificare minor\u0103 \u00een aplica\u0163ia specificat\u0103 \u015fi modificarea a fost considerat\u0103 suficient de minor\u0103 astfel \u00eenc\u00e2t nu trebuie repornit\u0103 aplica\u0163ia.
 APPLICATION_UPDATED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Utilizarea Jandex este activat\u0103 pentru toate aplica\u0163iile.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Pentru toate aplica\u0163iile, \u015fi atunci c\u00e2nd sunt disponibile indexuri Jandex, clasa \u015fi datele de adnotare sunt ob\u0163inute de la indexuri Jandex.
+APPLICATION_JANDEX_ENABLED_ALL.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is application name
+APPLICATION_JANDEX_ENABLED=CWWKZ0064I: Utilizarea Jandex este activat\u0103 pentru aplica\u0163ia {0}.
+APPLICATION_JANDEX_ENABLED.explanation=Pentru aplica\u0163ia specificat\u0103, c\u00e2nd sunt disponibile indexuri Jandex, clasa \u015fi datele de adnotare sunt ob\u0163inute de la indexuri Jandex.
+APPLICATION_JANDEX_ENABLED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is application name
+APPLICATION_JANDEX_DISABLED=CWWKZ0065I: Utilizarea Jandex este dezactivat\u0103 pentru aplica\u0163ia {0}.
+APPLICATION_JANDEX_DISABLED.explanation=Indexul Jandex este dezactivat pentru aplica\u0163ia specificat\u0103.
+APPLICATION_JANDEX_DISABLED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

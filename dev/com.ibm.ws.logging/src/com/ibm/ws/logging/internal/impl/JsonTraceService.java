@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -109,8 +109,10 @@ public class JsonTraceService extends BaseTraceService {
         if (consoleLogHandler == null) {
             consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
             collectorMgrPipelineUtils.setConsoleHandler(consoleLogHandler);
-            consoleLogHandler.setWriter(systemOut);
         }
+        //These two must be set here so that it can get the latest config for *every* update call
+        consoleLogHandler.setConsoleLogLevel(consoleLogLevel);
+        consoleLogHandler.setCopySystemStreams(copySystemStreams);
 
         /*
          * If messageFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
@@ -120,6 +122,7 @@ public class JsonTraceService extends BaseTraceService {
             isMessageJsonConfigured = false;
             if (messageLogHandler != null) {
                 updateConduitSyncHandlerConnection(new ArrayList<String>(), messageLogHandler);
+                messageLogHandler.setWriter(null);
             }
         }
 
@@ -131,6 +134,7 @@ public class JsonTraceService extends BaseTraceService {
             isConsoleJsonConfigured = false;
             if (consoleLogHandler != null) {
                 updateConduitSyncHandlerConnection(new ArrayList<String>(), consoleLogHandler);
+                consoleLogHandler.setWriter(null);
             }
         }
 
@@ -162,7 +166,7 @@ public class JsonTraceService extends BaseTraceService {
             consoleLogHandler.modified(filterdConsoleSourceList);
             //Connect the conduits to the handler as necessary
             updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
-
+            consoleLogHandler.setWriter(systemOut);
             isConsoleJsonConfigured = true;
         }
     }
@@ -224,7 +228,7 @@ public class JsonTraceService extends BaseTraceService {
             // preserve System.out vs. System.err
             publishTraceLogRecord(holder, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
         } else {
-            if (copySystemStreams) {
+            if (copySystemStreams && !isConsoleJsonConfigured) {
                 // Tee to console.log if we are copying System.out and System.err to system streams.
                 writeFilteredStreamOutput(holder, logRecord);
             }

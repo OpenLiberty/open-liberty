@@ -94,6 +94,28 @@ no.such.element.CWMCG0015E=CWMCG0015E: Vlastnost {0} nebyla nalezena v konfigura
 no.such.element.CWMCG0015E.explanation=Po\u017eadovan\u00e1 vlastnost neexistovala v \u017e\u00e1dn\u00e9m z nakonfigurovan\u00fdch zdroj\u016f.
 no.such.element.CWMCG0015E.useraction=P\u0159idejte vlastnost do jednoho z existuj\u00edc\u00edch zdroj\u016f nebo p\u0159idejte nov\u00fd zdroj, kter\u00fd obsahuje vlastnost.
 
+# The server is unable to cancel the asynchronous update thread for the {0} Config Source.
+future.update.not.cancelled.CWMCG0016E=CWMCG0016E: Server nem\u016f\u017ee stornovat podproces asynchronn\u00ed aktualizace pro zdroj konfigurace {0}.
+future.update.not.cancelled.CWMCG0016E.explanation=Pokus zru\u0161it budouc\u00ed asynchronn\u00ed aktualizaci se nezda\u0159il. Obvykle je to zp\u016fsobeno p\u0159eru\u0161iteln\u00fdm vol\u00e1n\u00edm  aktualizace na instanci ConfigSource.
+future.update.not.cancelled.CWMCG0016E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# No implicit String constructor methods found for the {0} class.
+implicit.string.constructor.method.not.found.CWMCG0017E=CWMCG0017E: Nebyly nalezeny \u017e\u00e1dn\u00e9 implicitn\u00ed metody konstruktoru \u0159et\u011bzce pro t\u0159\u00eddu {0}.
+implicit.string.constructor.method.not.found.CWMCG0017E.explanation=V uveden\u00e9 t\u0159\u00edd\u011b nebyly nalezeny \u017e\u00e1dn\u00e9 platn\u00e9 metody konstruktoru \u0159et\u011bzce.
+implicit.string.constructor.method.not.found.CWMCG0017E.useraction=Zkontrolujte, \u017ee m\u00e1 ur\u010den\u00e1 t\u0159\u00edda platnou metodu konstruktoru \u0159et\u011bzce. Chcete-li ur\u010dit, kter\u00e9 metody jsou platn\u00e9, pod\u00edvejte se do specifikace konfigurace MicroProfile.
+
+# The {0} Generic Type Variable for the {1} conversion type is not supported.
+generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: Prom\u011bnn\u00e1 generick\u00e9ho typu {0} pro typ p\u0159evodu {1} nen\u00ed podporov\u00e1na.
+generic.type.variables.notsupported.CWMCG0018E.explanation=Byl proveden pokus o p\u0159evod s pou\u017eit\u00edm prom\u011bnn\u00e9 generick\u00e9ho typu, nap\u0159. List<T>. Tato akce nen\u00ed podporov\u00e1na.
+generic.type.variables.notsupported.CWMCG0018E.useraction=M\u00edsto toho pou\u017eijte konkr\u00e9tn\u00ed typ argumentu, nap\u0159. List<String>.
+
+# Environment Variables Config Source
+environment.variables.config.source=Zdroj konfigurace prom\u011bnn\u00fdch prost\u0159ed\u00ed
+# Properties File Config Source: {0}
+properties.file.config.source=Zdroj konfigurace souboru vlastnost\u00ed: {0}
+# System Properties Config Source
+system.properties.config.source=Zdroj konfigurace syst\u00e9mov\u00fdch vlastnost\u00ed
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -35,3 +35,17 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: Nie powiod\u0142o si\u0119 ustaw
 unsupported.response.encoding.[{0}].explanation=Kodowanie odpowiedzi podane w odpowiedzi jest niepoprawne. Jest to b\u0142\u0105d aplikacji.
 unsupported.response.encoding.[{0}].useraction=Przejrzyj dzienniki i sprawd\u017a, czy podane kodowanie jest poprawne.
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: Pomocniczych zapis\u00f3w ko\u0144cowych nie mo\u017cna ustawia\u0107, je\u015bli odpowied\u017a zosta\u0142a zatwierdzona.
+set.trailer.fields.committed.response.explanation=Odpowied\u017a zosta\u0142a ju\u017c zatwierdzona.
+set.trailer.fields.committed.response.useraction=Przed ustawieniem pomocniczych zapis\u00f3w ko\u0144cowych nale\u017cy si\u0119 upewni\u0107, \u017ce odpowied\u017a nie zosta\u0142a zatwierdzona.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: Pomocniczych zapis\u00f3w ko\u0144cowych nie mo\u017cna ustawia\u0107, je\u015bli wersj\u0105 protoko\u0142u HTTP nie jest wersja 1.1 lub nowsza.
+set.trailer.fields.incorrect.http.version.explanation=Pomocnicze zapisy ko\u0144cowe HTTP s\u0105 obs\u0142ugiwane tylko dla protoko\u0142u HTTP w wersji 1.1 lub nowszej.
+set.trailer.fields.incorrect.http.version.useraction=Upewnij si\u0119, \u017ce u\u017cywany jest protok\u00f3\u0142 HTTP w wersji 1.1 lub nowszej.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Pomocniczych zapis\u00f3w ko\u0144cowych nie mo\u017cna ustawia\u0107, je\u015bli warto\u015bci\u0105 nag\u0142\u00f3wka Transfer-Encoding nie jest chunked.
+set.trailer.fields.incorrect.transfer.encoding.explanation=Pomocnicze zapisy ko\u0144cowe s\u0105 obs\u0142ugiwane tylko wtedy, gdy warto\u015bci\u0105 nag\u0142\u00f3wka Transfer-Encoding jest chunked.
+set.trailer.fields.incorrect.transfer.encoding.useraction=Upewnij si\u0119, \u017ce nag\u0142\u00f3wek Transfer-Encoding zawiera warto\u015b\u0107 chunked.
