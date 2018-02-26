@@ -40,6 +40,7 @@ public class HttpResponseImpl implements HttpResponse {
     private HttpOutputStreamImpl body = null;
     private HttpDispatcherLink connlink = null;
     private boolean useEE7Streams = false;
+    private boolean isLastStreamUsedEE7 = false;
 
     /**
      * Constructor.
@@ -186,6 +187,7 @@ public class HttpResponseImpl implements HttpResponse {
         if (null == this.body) {
             if (this.useEE7Streams) {
                 this.body = new HttpOutputStreamEE7(this.isc);
+                isLastStreamUsedEE7 = true;
             } else {
                 this.body = new HttpOutputStreamImpl(this.isc);
             }
@@ -196,6 +198,16 @@ public class HttpResponseImpl implements HttpResponse {
                     this.body.setContentLength(getContentLength());
                 }
             }
+        } else if (this.useEE7Streams && !isLastStreamUsedEE7) {
+            // check if useEE7Streams is in use and if the last stream used was not the EE7 stream
+            // then create a new HttpOutputStreamEE7
+            this.body = new HttpOutputStreamEE7(this.isc);
+            isLastStreamUsedEE7 = true;
+        } else if (!this.useEE7Streams && isLastStreamUsedEE7) {
+            // check if useEE7Streams is not in use and if the last stream used was the EE7 stream
+            // then create a new HttpOutputStreamImpl
+            this.body = new HttpOutputStreamImpl(this.isc);
+            isLastStreamUsedEE7 = false;
         }
         return this.body;
     }
@@ -326,7 +338,7 @@ public class HttpResponseImpl implements HttpResponse {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.http.HttpResponse#writeTrailers()
      */
     @Override
