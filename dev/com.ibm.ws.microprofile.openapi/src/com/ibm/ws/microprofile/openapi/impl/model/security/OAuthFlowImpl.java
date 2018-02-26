@@ -15,6 +15,9 @@ import java.util.Objects;
 import org.eclipse.microprofile.openapi.models.security.OAuthFlow;
 import org.eclipse.microprofile.openapi.models.security.Scopes;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * OAuthFlow
  *
@@ -136,10 +139,11 @@ public class OAuthFlowImpl implements OAuthFlow {
         StringBuilder sb = new StringBuilder();
         sb.append("class OAuthFlow {\n");
 
-        sb.append("    authorizationUrl: ").append(toIndentedString(authorizationUrl)).append("\n");
-        sb.append("    tokenUrl: ").append(toIndentedString(tokenUrl)).append("\n");
-        sb.append("    refreshUrl: ").append(toIndentedString(refreshUrl)).append("\n");
-        sb.append("    scopes: ").append(toIndentedString(scopes)).append("\n");
+        sb = (authorizationUrl != null) ? sb.append("    authorizationUrl: ").append(toIndentedString(authorizationUrl)).append("\n") : sb.append("");
+        sb = (tokenUrl != null) ? sb.append("    tokenUrl: ").append(toIndentedString(tokenUrl)).append("\n") : sb.append("");
+        sb = (refreshUrl != null) ? sb.append("    refreshUrl: ").append(toIndentedString(refreshUrl)).append("\n") : sb.append("");
+        sb = (scopes != null) ? sb.append("    scopes: ").append(toIndentedString(scopes)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

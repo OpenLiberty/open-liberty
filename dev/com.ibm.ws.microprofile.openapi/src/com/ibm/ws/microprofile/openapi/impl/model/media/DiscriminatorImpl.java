@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 public class DiscriminatorImpl implements Discriminator {
     private String propertyName;
     private Map<String, String> mapping;
@@ -77,9 +80,23 @@ public class DiscriminatorImpl implements Discriminator {
 
     @Override
     public String toString() {
-        return "Discriminator{" +
-               "propertyName='" + propertyName + '\'' +
-               ", mapping=" + mapping +
-               '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("class Discriminator {\n");
+        sb = (propertyName != null) ? sb.append("    propertyName: ").append(toIndentedString(propertyName)).append("\n") : sb.append("");
+        sb = (mapping != null) ? sb.append("    mapping: ").append(OpenAPIUtils.mapToString(mapping)).append("\n") : sb.append("");
+
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
     }
 }

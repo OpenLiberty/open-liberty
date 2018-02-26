@@ -20,6 +20,9 @@ import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * PathItem
  *
@@ -426,19 +429,22 @@ public class PathItemImpl implements PathItem {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class PathItem {\n");
-        sb.append("    summary: ").append(toIndentedString(summary)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    get: ").append(toIndentedString(get)).append("\n");
-        sb.append("    put: ").append(toIndentedString(put)).append("\n");
-        sb.append("    post: ").append(toIndentedString(post)).append("\n");
-        sb.append("    delete: ").append(toIndentedString(delete)).append("\n");
-        sb.append("    options: ").append(toIndentedString(options)).append("\n");
-        sb.append("    head: ").append(toIndentedString(head)).append("\n");
-        sb.append("    patch: ").append(toIndentedString(patch)).append("\n");
-        sb.append("    trace: ").append(toIndentedString(trace)).append("\n");
-        sb.append("    servers: ").append(toIndentedString(servers)).append("\n");
-        sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n");
-        sb.append("    $ref: ").append(toIndentedString($ref)).append("\n");
+
+        sb = (summary != null) ? sb.append("    summary: ").append(toIndentedString(summary)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (get != null) ? sb.append("    get: ").append(toIndentedString(get)).append("\n") : sb.append("");
+        sb = (put != null) ? sb.append("    put: ").append(toIndentedString(put)).append("\n") : sb.append("");
+        sb = (post != null) ? sb.append("    post: ").append(toIndentedString(post)).append("\n") : sb.append("");
+        sb = (delete != null) ? sb.append("    delete: ").append(toIndentedString(delete)).append("\n") : sb.append("");
+        sb = (options != null) ? sb.append("    options: ").append(toIndentedString(options)).append("\n") : sb.append("");
+        sb = (head != null) ? sb.append("    head: ").append(toIndentedString(head)).append("\n") : sb.append("");
+        sb = (patch != null) ? sb.append("    patch: ").append(toIndentedString(patch)).append("\n") : sb.append("");
+        sb = (trace != null) ? sb.append("    trace: ").append(toIndentedString(trace)).append("\n") : sb.append("");
+        sb = (servers != null) ? sb.append("    servers: ").append(toIndentedString(servers)).append("\n") : sb.append("");
+        sb = (parameters != null) ? sb.append("    parameters: ").append(toIndentedString(parameters)).append("\n") : sb.append("");
+        sb = ($ref != null) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+
         sb.append("}");
         return sb.toString();
     }

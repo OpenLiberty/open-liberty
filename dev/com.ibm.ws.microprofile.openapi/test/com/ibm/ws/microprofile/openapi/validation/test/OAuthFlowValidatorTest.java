@@ -58,7 +58,7 @@ public class OAuthFlowValidatorTest {
         TestValidationHelper vh = new TestValidationHelper();
 
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
-        oauthflow.setAuthorizationUrl("invalidUrl-example");
+        oauthflow.setAuthorizationUrl(":invalidUrl-example");
         ScopesImpl scopes = new ScopesImpl();
         scopes.addScope("test_scope", "read:test");
         oauthflow.setScopes(scopes);
@@ -69,12 +69,27 @@ public class OAuthFlowValidatorTest {
     }
 
     @Test
+    public void testOAuthFlowWithRelativeAuthorizationUrl() {
+        OAuthFlowValidator validator = OAuthFlowValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        OAuthFlowImpl oauthflow = new OAuthFlowImpl();
+        oauthflow.setAuthorizationUrl("/relativeUrl-example");
+        ScopesImpl scopes = new ScopesImpl();
+        scopes.addScope("test_scope", "read:test");
+        oauthflow.setScopes(scopes);
+
+        validator.validate(vh, context, oauthflow);
+        Assert.assertEquals(0, vh.getEventsSize());
+    }
+
+    @Test
     public void testOAuthFlowWithInvalidTokenUrl() {
         OAuthFlowValidator validator = OAuthFlowValidator.getInstance();
         TestValidationHelper vh = new TestValidationHelper();
 
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
-        oauthflow.setTokenUrl("invalidUrl-example");
+        oauthflow.setTokenUrl(":invalidUrl-example");
         ScopesImpl scopes = new ScopesImpl();
         scopes.addScope("test_scope", "read:test");
         oauthflow.setScopes(scopes);
@@ -90,7 +105,7 @@ public class OAuthFlowValidatorTest {
         TestValidationHelper vh = new TestValidationHelper();
 
         OAuthFlowImpl oauthflow = new OAuthFlowImpl();
-        oauthflow.setRefreshUrl("invalidUrl-example");
+        oauthflow.setRefreshUrl(":invalidUrl-example");
         ScopesImpl scopes = new ScopesImpl();
         scopes.addScope("test_scope", "read:test");
         oauthflow.setScopes(scopes);
