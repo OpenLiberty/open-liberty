@@ -39,6 +39,8 @@ public class TrLogServiceImpl implements LogService {
 
     public static final int LOG_EVENT = -5;
 
+	private static final Object COULD_NOT_OBTAIN_LOCK_EXCEPTION = "Could not obtain lock";
+
     static boolean publishEvents = false;
     static boolean publishDebugEvents = false;
 
@@ -152,7 +154,12 @@ public class TrLogServiceImpl implements LogService {
                     // the message.
                     if (t instanceof BundleException && t.getMessage() != null && t.getCause() == null) {
                         Tr.error(tc, "OSGI_BUNDLE_EXCEPTION", t.getMessage());
-                    } else {
+                    } else if (t instanceof IllegalStateException && COULD_NOT_OBTAIN_LOCK_EXCEPTION.equals(t.getMessage())) {
+                    		if ( tc.isDebugEnabled() ) {
+                    			Tr.debug(tc, "DS could not obtain a lock. This is not an error, but may indicate high system load", 
+                    					logEntry.getObjects(true));
+                    		}
+                    } else {                    
                         Tr.error(tc, "OSGI_ERROR_MSG", logEntry.getObjects(true));
                     }
                     break;
