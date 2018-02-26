@@ -99,6 +99,27 @@ public class WCApplicationHelper {
     }
 
     /*
+     * Helper method to create a jar and placed it to the specified directory which is relative from /publish/servers/ directory.
+     * this method supports adding jar file.
+     */
+    public static void createJarAllPackages(LibertyServer server, String dir, String jarName, boolean addJarResources, String... packageNames) throws Exception {
+        String baseDir = DIR_PUBLISH + server.getServerName() + "/" + dir + "/";
+        JavaArchive jar = null;
+        if (jarName != null) {
+            LOG.info("createJar : create jar " + jarName + ", jar includes resources : " + addJarResources);
+            jar = ShrinkWrap.create(JavaArchive.class, jarName);
+            if (packageNames != null) {
+                for (String packageName : packageNames) {
+                    jar.addPackage(packageName);
+                }
+            }
+            if (addJarResources)
+                ShrinkHelper.addDirectory(jar, "test-applications/" + jarName + "/resources");
+        }
+        ShrinkHelper.exportArtifact(jar, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
+    }
+
+    /*
      * Helper method to create a ear and placed it to the specified directory which is relative from /publish/servers/ directory.
      */
     public static void packageWarsToEar(LibertyServer server, String dir, String earName, boolean addEarResources, String... warFiles) throws Exception {

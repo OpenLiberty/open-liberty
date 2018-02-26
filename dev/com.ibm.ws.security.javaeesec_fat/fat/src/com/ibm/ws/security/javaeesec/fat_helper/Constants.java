@@ -183,4 +183,7 @@ public class Constants {
     public final static String DB_GROUP2 = "group2";
     public final static String DB_GROUP3 = "group3";
     public final static String DB_USER_NOPWD = "userNoPwd";
+    public final static String DB_CUSTOM_PWD1 = "blue1";
+    public final static String DB_CUSTOM_HASH = "_CUSTOM";
+    public final static String DB_CUSTOM_PWD1_HASH = "blue1" + DB_CUSTOM_HASH;
 }

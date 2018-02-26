@@ -40,6 +40,7 @@ import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 
 /**
@@ -70,7 +71,23 @@ public class DatabaseIdentityStore implements IdentityStore {
          */
         Instance<? extends PasswordHash> p2phi = CDI.current().select(this.idStoreDefinition.getHashAlgorithm());
         if (p2phi != null) {
-            passwordHash = p2phi.get();
+            if (p2phi.isUnsatisfied() == false && p2phi.isAmbiguous() == false) {
+                passwordHash = p2phi.get();
+            } else {
+                Tr.event(tc, "Try alternate bean lookup. isUnsatisfied() is " + p2phi.isUnsatisfied() + ", isAmbiguous() is " + p2phi.isAmbiguous());
+                Set<? extends PasswordHash> hashes = CDIHelper.getBeansFromCurrentModule(this.idStoreDefinition.getHashAlgorithm());
+                if (hashes.size() == 1) {
+                    passwordHash = hashes.iterator().next();
+                } else if (hashes.size() == 0) {
+                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { this.idStoreDefinition.getHashAlgorithm() });
+                    throw new IllegalArgumentException("Cannot load the password HashAlgorithm from the current module, the CDI bean was not found for: "
+                                                       + this.idStoreDefinition.getHashAlgorithm());
+                } else {
+                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { this.idStoreDefinition.getHashAlgorithm() });
+                    throw new IllegalArgumentException("Cannot load the password HashAlgorithm, " + hashes.size() + " CDI beans were found for: "
+                                                       + this.idStoreDefinition.getHashAlgorithm());
+                }
+            }
         } else {
             Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { this.idStoreDefinition.getHashAlgorithm() });
             throw new IllegalArgumentException("Cannot load the password HashAlgorithm, the CDI bean was not found for: " + this.idStoreDefinition.getHashAlgorithm());
