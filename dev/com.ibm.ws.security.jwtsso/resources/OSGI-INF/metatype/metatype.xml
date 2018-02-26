@@ -43,9 +43,11 @@
             
          <AD id="fallbackToLtpa"  name="%fallbackToLtpa" description="%fallbackToLtpa.desc"
              required="false"  type="Boolean" default="true" />
-            
-         <AD id="groupBaseDnOmitted" name="%groupBaseDnOmitted" description="%groupBaseDnOmitted"
+           
+         <!-- 
+             <AD id="groupBaseDnOmitted" name="%groupBaseDnOmitted" description="%groupBaseDnOmitted"
              required="false"  type="String"  />
+         -->
             
          <AD id="jwtBuilderRef" name="%jwtBuilderRef" description="%jwtBuilderRef.desc"
              required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.builder" />

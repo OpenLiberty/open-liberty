@@ -48,7 +48,6 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	private boolean setCookiePathToWebAppContextPath;
 	private boolean includeLtpaCookie;
 	private boolean fallbackToLtpa;
-	private String groupBaseDnOmitted;
 	private String jwtBuilderRef;
 	private String jwtConsumerRef;
 	private WebAppSecurityConfig webAppSecConfig;
@@ -86,11 +85,6 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	@Override
 	public boolean isFallbackToLtpa() {
 		return fallbackToLtpa;
-	}
-
-	@Override
-	public String getGroupBaseDnOmitted() {
-		return groupBaseDnOmitted;
 	}
 
 	@Override
@@ -181,7 +175,6 @@ public class JwtSsoComponent implements JwtSsoConfig {
 		setCookiePathToWebAppContextPath = (Boolean) props.get(JwtSsoUtils.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
 		includeLtpaCookie = (Boolean) props.get(JwtSsoUtils.CFG_KEY_INCLUDELTPACOOKIE);
 		fallbackToLtpa = (Boolean) props.get(JwtSsoUtils.CFG_KEY_FALLBACKTOLTPA);
-		groupBaseDnOmitted = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_GROUPBASEDNOMITTED));
 		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTBUILDERREF));
 		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTCONSUMERREF));
 
