@@ -97,6 +97,15 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                                             "class level.");
     }
 
+    @Override
+    protected String testName(FrameworkMethod method) {
+        String testName = super.testName(method);
+        if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null && !RepeatTestFilter.CURRENT_REPEAT_ACTION.equals("NO_MODIFICATION_ACTION")) {
+            testName = testName + "_" + RepeatTestFilter.CURRENT_REPEAT_ACTION;
+        }
+        return testName;
+    }
+
     private boolean hasTests = true;
 
     class FFDCInfo {
