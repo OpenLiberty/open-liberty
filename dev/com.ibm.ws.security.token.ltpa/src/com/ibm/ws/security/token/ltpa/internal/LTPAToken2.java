@@ -13,13 +13,11 @@ package com.ibm.ws.security.token.ltpa.internal;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 
-import com.ibm.ws.kernel.service.util.JavaInfo;
 import javax.crypto.BadPaddingException;
 
 import com.ibm.websphere.ras.Tr;
@@ -63,19 +61,11 @@ public class LTPAToken2 implements Token, Serializable {
     private final LTPAPublicKey publicKey;
     private String cipher = null;
 
-
     static {
         MessageDigest m1 = null, m2 = null;
         try {
-	    if (JavaInfo.vendor() == JavaInfo.Vendor.IBM) {
-	       m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
-	       m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
-	    }
-	    else {
-	       //MessageDigest SHA is in SUN, which is always at the top of provider list. No need to worry about other provider gets picked. 
-	       m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
-	       m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
-	    }
+            m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+            m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Error creating digest; " + e);
