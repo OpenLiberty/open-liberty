@@ -54,7 +54,7 @@ public class TestMultiModuleClassLoading extends LoggingTest {
                         .addAsModule(war2)
                         .setApplicationXML(TestServlet.class.getResource("application.xml"));
 
-        ShrinkHelper.exportToServer(SHARED_SERVER.getLibertyServer(), "dropins", ear, true);
+        ShrinkHelper.exportToServer(SHARED_SERVER.getLibertyServer(), "dropins", ear);
         SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("MultiModuleClassLoading");
     }
 
