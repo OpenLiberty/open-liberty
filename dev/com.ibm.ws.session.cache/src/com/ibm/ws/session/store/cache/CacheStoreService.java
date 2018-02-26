@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.session.store.cache;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.cache.CacheManager;
 import javax.cache.Caching;
@@ -47,6 +50,9 @@ public class CacheStoreService implements SessionStoreService {
     private static final TraceComponent tc = Tr.register(CacheStoreService.class);
     
     Map<String, Object> configurationProperties;
+    private static final String BASE_PREFIX = "properties";
+    private static final int BASE_PREFIX_LENGTH = BASE_PREFIX.length();
+    private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; //3 is the length of .0.
 
     CacheManager cacheManager;
 
@@ -71,10 +77,34 @@ public class CacheStoreService implements SessionStoreService {
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> props) {
         configurationProperties = props;
+        
+        Properties vendorProperties = new Properties();
+        
+        String uriValue = (String) props.get("uri");
+        URI uri = null;
+        if(uriValue != null)
+            try {
+                uri = new URI(uriValue);
+            } catch (URISyntaxException e) {
+                // TODO log error here
+            }
+        
+        for (Map.Entry<String, Object> entry : props.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            //properties start with properties.0.
+            if (key.length () > TOTAL_PREFIX_LENGTH && key.charAt(BASE_PREFIX_LENGTH) == '.' && key.startsWith(BASE_PREFIX)) {
+                key = key.substring(TOTAL_PREFIX_LENGTH);
+                if (!key.equals("config.referenceType")) 
+                    vendorProperties.setProperty(key, (String) value);
+            }
+            //TODO add support for JCache spec "properties" 
+        }
 
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
         CachingProvider provider = Caching.getCachingProvider(library.getClassLoader());
-        cacheManager = provider.getCacheManager(null, null, null);
+        cacheManager = provider.getCacheManager(uri, null, vendorProperties);
     }
 
     @Override
