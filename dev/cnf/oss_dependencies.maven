@@ -100,7 +100,6 @@ org.apache.ant:ant-junit:1.9.6
 org.apache.aries.jmx:org.apache.aries.jmx.api:1.1.5
 org.apache.aries.jmx:org.apache.aries.jmx.core.whiteboard:1.1.5
 org.apache.aries.jndi:org.apache.aries.jndi.api:1.1.0
-org.apache.aries.jndi:org.apache.aries.jndi.core:1.0.2
 org.apache.aries:org.apache.aries.util:1.1.3
 org.apache.commons:commons-compress:1.10
 org.apache.commons:commons-lang3:3.5
