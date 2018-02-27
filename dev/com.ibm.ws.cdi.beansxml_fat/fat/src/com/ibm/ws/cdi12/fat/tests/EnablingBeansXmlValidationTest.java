@@ -72,6 +72,7 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
         try {
 
             server.startServer(true);
+            assertNotNull("implicitBeanArchive started or updated message", server.waitForStringInLog("CWWKZ0001I"));
 
             if (!server.findStringsInLogs("WELD-001210").isEmpty()) {
                 /*

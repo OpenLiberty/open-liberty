@@ -48,14 +48,20 @@ public class ImplicitWarLibJarsTest extends LoggingTest {
 
     private static final LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12ImplicitServer");
 
-    @ClassRule
-    public static final TestRule startAndStopServerRule = ServerRules.startAndStopAutomatically(server);
+    private static boolean hasSetUp = false;
 
     @Rule
     public final TestRule runAll = TestRules.runAllUsingTestNames(server).usingApp("implicitBeanDiscovery").andServlet("");
 
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
+
+       server.startServer();
+
+       if (hasSetUp) {
+           assertNotNull("implicitBeanDiscovery started or updated message", server.waitForStringInLog("CWWKZ000[13]I.*implicitBeanDiscovery"));
+           return;
+       }
 
        JavaArchive implicitBeanAnnotatedMode = ShrinkWrap.create(JavaArchive.class,"implicitBeanAnnotatedMode.jar")
                         .addClass("com.ibm.ws.cdi12.test.implicitBean.AnnotatedModeBean")
@@ -77,11 +83,6 @@ public class ImplicitWarLibJarsTest extends LoggingTest {
                         .addClass("com.ibm.ws.cdi12.test.utils.ForwardingList")
                         .add(new FileAsset(new File("test-applications/utilLib.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
 
-       WebArchive implicitEJBInWar = ShrinkWrap.create(WebArchive.class, "implicitEJBInWar.war")
-                        .addClass("com.ibm.ws.cdi12.test.implicit.ejb.Web1Servlet")
-                        .addClass("com.ibm.ws.cdi12.test.implicit.ejb.SimpleEJB")
-                        .addAsLibrary(utilLib);
-
        WebArchive implicitBeanDiscovery = ShrinkWrap.create(WebArchive.class, "implicitBeanDiscovery.war")
                         .addClass("com.ibm.ws.cdi12.test.implicitBean.TestServlet")
                         .add(new FileAsset(new File("test-applications/implicitBeanDiscovery.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
@@ -91,10 +92,9 @@ public class ImplicitWarLibJarsTest extends LoggingTest {
                         .addAsLibrary(utilLib);
 
        server.setMarkToEndOfLog(server.getDefaultLogFile());
-       ShrinkHelper.exportDropinAppToServer(server, implicitEJBInWar);
        ShrinkHelper.exportDropinAppToServer(server, implicitBeanDiscovery);
-       assertNotNull("implicitBeanDiscovery started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitEJBInWar"));
        assertNotNull("implicitBeanDiscovery started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitBeanDiscovery"));
+       hasSetUp = true;
     }
 
     /**

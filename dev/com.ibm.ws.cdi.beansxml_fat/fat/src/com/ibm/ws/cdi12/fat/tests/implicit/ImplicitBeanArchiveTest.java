@@ -48,12 +48,17 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class ImplicitBeanArchiveTest extends LoggingTest {
 
     private static final LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12ImplicitServer");
-
-    @ClassRule
-    public static final TestRule startAndStopServerRule = ServerRules.startAndStopAutomatically(server);
+    private static boolean hasSetUp = false;
 
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
+
+       server.startServer();
+
+       if (hasSetUp){
+           assertNotNull("implicitBeanArchive started or updated message", server.waitForStringInLog("CWWKZ000[13]I.*implicitBeanArchive"));
+           return;
+       }
 
        JavaArchive archiveWithBeansXML = ShrinkWrap.create(JavaArchive.class,"archiveWithBeansXML.jar")
                         .addClass("com.ibm.ws.cdi12.test.beansXML.UnannotatedBeanInAllModeBeanArchive")
@@ -94,6 +99,7 @@ public class ImplicitBeanArchiveTest extends LoggingTest {
        server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitBeanArchive);
        assertNotNull("implicitBeanArchive started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitBeanArchive"));
+       hasSetUp = true; 
     }
 
     @Rule

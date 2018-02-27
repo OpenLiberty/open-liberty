@@ -45,6 +45,8 @@ public class NonContextualInjectionPointTest extends LoggingTest {
 
     private static LibertyServer server;
 
+    private static boolean hasSetup = false;
+
     @Override
     protected SharedServer getSharedServer() {
         return null;
@@ -52,7 +54,15 @@ public class NonContextualInjectionPointTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
         server = LibertyServerFactory.getStartedLibertyServer("nonContextualServer");
+
+        if (hasSetup){ 
+            assertNotNull("appNonContextual started or updated message", server.waitForStringInLog("CWWKZ000[13]I.*appNonContextual"));
+            return;
+        }
+        hasSetup = true;
+
         WebArchive appNonContextual = ShrinkWrap.create(WebArchive.class, "appNonContextual.war")
                         .addClass("test.non.contextual.Foo")
                         .addClass("test.non.contextual.TestServlet")

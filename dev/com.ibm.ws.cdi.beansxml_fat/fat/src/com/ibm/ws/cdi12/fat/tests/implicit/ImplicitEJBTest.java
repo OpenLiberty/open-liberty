@@ -44,11 +44,17 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class ImplicitEJBTest {
     private static final LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12ImplicitServer");
 
-    @ClassRule
-    public static final TestRule startAndStopServerRule = ServerRules.startAndStopAutomatically(server);
+    private static boolean hasSetUp = false;
 
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
+
+       server.startServer();
+
+       if (hasSetUp) {
+           assertNotNull("implicitEJBInWar started or updated message", server.waitForStringInLog("CWWKZ000[13]I.*implicitEJBInWar"));
+           return;
+       }
 
        JavaArchive utilLib = ShrinkWrap.create(JavaArchive.class,"utilLib.jar")
                         .addClass("com.ibm.ws.cdi12.test.utils.ChainableListImpl")
@@ -67,6 +73,7 @@ public class ImplicitEJBTest {
        server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitEJBInWar);
        assertNotNull("implicitEJBInWar started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitEJBInWar"));
+       hasSetUp = true;
     }
 
     @Rule
