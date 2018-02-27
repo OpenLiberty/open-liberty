@@ -21,19 +21,16 @@ package org.apache.cxf.jaxrs.client.spec;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.Response;
 
-import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.AbstractOutDatabindingInterceptor;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.jaxrs.client.ClientProviderFactory;
 import org.apache.cxf.jaxrs.model.ProviderInfo;
-import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.jaxrs.utils.InjectionUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
@@ -48,12 +45,13 @@ public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterc
         super(Phase.PRE_LOGICAL);
     }
 
+    @Override
     public void handleMessage(Message outMessage) throws Fault {
         ClientProviderFactory pf = ClientProviderFactory.getInstance(outMessage);
         if (pf == null) {
             return;
         }
-        
+
         // Liberty change start
         // create an empty proxy output stream that the filter can interact with
         // an save a reference for later
@@ -74,7 +72,6 @@ public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterc
 
                     Response response = outMessage.getExchange().get(Response.class);
                     if (response != null) {
-                        convertHeadersToStrings(outMessage);
                         outMessage.getInterceptorChain().abort();
 
                         Message inMessage = new MessageImpl();
@@ -91,12 +88,7 @@ public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterc
                     throw new ProcessingException(ex);
                 }
             }
-            convertHeadersToStrings(outMessage);
         }
     }
 
-    private static void convertHeadersToStrings(Message m) {
-        Map<String, List<Object>> headers = CastUtils.cast((Map<String, List<Object>>)m.get(Message.PROTOCOL_HEADERS));
-        HttpUtils.convertHeaderValuesToString(headers, false);
-    }
 }
