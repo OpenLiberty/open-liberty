@@ -357,7 +357,8 @@ task copyEsas(type: Sync){
    // dependsOn createGaESAList
     //dependsOn copyOtherEsa
 	//dependsOn copyOtherEsa2
-
+	File tempDir
+	tempDir=file('build/temp')
 	String features = ""
     rootProject.fileTree(dir: '.', include: '*/*.feature').visit { feature ->
   		if (feature.isDirectory() || !feature.getFile().getText().contains("kind=ga")) {
@@ -371,7 +372,7 @@ task copyEsas(type: Sync){
     features+="com.ibm.websphere.appserver.mpJwtPropagation-1.0" +"\n"
     features+="com.ibm.websphere.appserver.mpOpentracing-1.0" +"\n"
     
-    File gaEsa = new File('build/temp/', 'modifiedgaFeatures.txt')
+    File gaEsa = new File(tempDir, 'modifiedgaFeatures.txt')
     gaEsa.createNewFile()
     gaEsa.text = features
     
@@ -406,6 +407,7 @@ task copyMetadataFiles(type: Sync) {
 task createSingleJson {
     // Run after all feature ESAs have been built
     dependsOn copyMavenLibs
+    dependsOn createDir
   //  dependsOn publishFeatureResources
 	dependsOn copyEsas
 	dependsOn copyMetadataFiles
