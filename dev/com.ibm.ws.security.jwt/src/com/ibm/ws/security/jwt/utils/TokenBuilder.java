@@ -32,39 +32,55 @@ import com.ibm.ws.security.jwt.config.JwtConfig;
  */
 public class TokenBuilder {
 	private static TraceComponent tc = Tr.register(TokenBuilder.class);
-	private static final String USER_CLAIM = "usr"; // mp-jwt format
+	private static final String USER_CLAIM = "upn"; // mp-jwt format
 	private static final String GROUP_CLAIM = "groups"; // mp-jwt format
 	private final static String GROUP_PREFIX = "group:";
 
 	/**
-	 * create an MP-JWT token using the Builder API.
+	 * create an MP-JWT token using the Builder API. Assumes the user is already
+	 * authenticated.
 	 *
 	 * @param jwtConfig
 	 *            - a builder configuration from server.xml
 	 * @return the token string, or null if a mandatory param was null or empty.
 	 */
 	public String createTokenString(JwtConfig config) {
+		return createTokenString(config.getId());
+	}
+
+	/**
+	 * create an MP-JWT token using the builder API. Assumes the user is already
+	 * authenticated.
+	 *
+	 * @param builderConfigId
+	 *            - the id of the builder element in server.xml
+	 * @return the token string, or null if a mandatory param was null or empty.
+	 */
+	public String createTokenString(String builderConfigId) {
 		try {
-			JwtBuilder builder = JwtBuilder.create(config.getId());
+			return createTokenString(builderConfigId, WSSubject.getRunAsSubject());
 
-			// all the "normal" stuff like issuer, aud, etc. is handled
-			// by the builder, we only need to add the mp-jwt things
-			// that the builder is not already aware of.
-			String user = getUserName();
-			builder.subject(user);
-			builder.claim(USER_CLAIM, user);
-
-			ArrayList<String> groups = getGroups();
-			if (isValidList(groups)) {
-				builder.claim(GROUP_CLAIM, groups);
-			}
-
-			return builder.buildJwt().compact();
+			// JwtBuilder builder = JwtBuilder.create(builderConfigId);
+			//
+			// // all the "normal" stuff like issuer, aud, etc. is handled
+			// // by the builder, we only need to add the mp-jwt things
+			// // that the builder is not already aware of.
+			// String user = getUserName();
+			// builder.subject(user);
+			// builder.claim(USER_CLAIM, user);
+			//
+			// ArrayList<String> groups = getGroups();
+			// if (isValidList(groups)) {
+			// builder.claim(GROUP_CLAIM, groups);
+			// }
+			//
+			// return builder.buildJwt().compact();
 
 		} catch (Exception e) {
 			// ffdc
 			return null;
 		}
+
 	}
 
 	@Trivial
@@ -72,43 +88,67 @@ public class TokenBuilder {
 		return (in != null && in.size() > 0);
 	}
 
-	private String getUserName() {
-		Subject subject = null;
+	/**
+	 * get the username from the WSSubject
+	 *
+	 * @return the user name, UNAUTHENTICATED, or null if something went wrong.
+	 */
+	public String getUserName(Subject subject) {
+		// Subject subject = null;
 		try {
-			subject = WSSubject.getRunAsSubject();
+			// subject = WSSubject.getRunAsSubject();
 			WSCredential wsCred = getWSCredential(subject);
-			return wsCred.getSecurityName();
+			if (wsCred == null) {
+				wsCred = getPrivateWSCredential(subject);
+			}
+			return wsCred != null ? wsCred.getSecurityName() : null;
 		} catch (Exception e) {
 			// ffdc
 			return null;
 		}
 	}
 
-	private ArrayList<String> getGroups() {
-		Subject subject = null;
+	private WSCredential getPrivateWSCredential(Subject subject) {
+		WSCredential wsCredential = null;
+		Set<WSCredential> wsCredentials = subject.getPrivateCredentials(WSCredential.class);
+		Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+		if (wsCredentialsIterator.hasNext()) {
+			wsCredential = wsCredentialsIterator.next();
+		}
+		return wsCredential;
+	}
+
+	private ArrayList<String> getGroups(Subject subject) {
+		// Subject subject = null;
 		try {
-			subject = WSSubject.getRunAsSubject();
+			// subject = WSSubject.getRunAsSubject();
 			WSCredential wsCred = getWSCredential(subject);
-			@SuppressWarnings("unchecked")
-			ArrayList<String> groupIds = wsCred.getGroupIds();
-			ArrayList<String> groups = new ArrayList<String>();
-			Iterator<String> it = groupIds.listIterator();
-			while (it.hasNext()) {
-				String origGroup = it.next();
-				if (origGroup != null && origGroup.startsWith(GROUP_PREFIX)) {
-					int groupIndex = origGroup.indexOf("/");
-					if (groupIndex > 0) {
-						origGroup = origGroup.substring(groupIndex + 1);
-					}
-				}
-				groups.add(origGroup);
+			if (wsCred == null) {
+				wsCred = getPrivateWSCredential(subject);
 			}
-			return groups;
+			if (wsCred != null) {
+				@SuppressWarnings("unchecked")
+				ArrayList<String> groupIds = wsCred.getGroupIds();
+				ArrayList<String> groups = new ArrayList<String>();
+				Iterator<String> it = groupIds.listIterator();
+				while (it.hasNext()) {
+					String origGroup = it.next();
+					if (origGroup != null && origGroup.startsWith(GROUP_PREFIX)) {
+						int groupIndex = origGroup.indexOf("/");
+						if (groupIndex > 0) {
+							origGroup = origGroup.substring(groupIndex + 1);
+						}
+					}
+					groups.add(origGroup);
+				}
+				return groups;
+			}
 
 		} catch (Exception e) {
 			// ffdc
 			return null;
 		}
+		return null;
 	}
 
 	private WSCredential getWSCredential(Subject subject) {
@@ -119,6 +159,30 @@ public class TokenBuilder {
 			wsCredential = wsCredentialsIterator.next();
 		}
 		return wsCredential;
+	}
+
+	public String createTokenString(String builderId, Subject subject) {
+		try {
+			JwtBuilder builder = JwtBuilder.create(builderId);
+
+			// all the "normal" stuff like issuer, aud, etc. is handled
+			// by the builder, we only need to add the mp-jwt things
+			// that the builder is not already aware of.
+			String user = getUserName(subject);
+			builder.subject(user);
+			builder.claim(USER_CLAIM, user);
+
+			ArrayList<String> groups = getGroups(subject);
+			if (isValidList(groups)) {
+				builder.claim(GROUP_CLAIM, groups);
+			}
+
+			return builder.buildJwt().compact();
+
+		} catch (Exception e) {
+			// ffdc
+			return null;
+		}
 	}
 
 }

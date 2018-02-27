@@ -75,6 +75,8 @@ public class CredentialsServiceImpl implements CredentialsService {
             CredentialProvider provider = itr.next();
             provider.setCredential(subject);
         }
+        //create jwt sso token and add it to the subject
+//        JwtSSOTokenHelper.createJwtSSOToken(subject);
     }
 
     /**
@@ -82,6 +84,8 @@ public class CredentialsServiceImpl implements CredentialsService {
      */
     @Override
     public void setBasicAuthCredential(Subject basicAuthSubject, String realm, String username, @Sensitive String password) throws CredentialException {
+        //@AV999
+//        System.out.println("@AV999, stack from the thread = ");
         CredentialProvider provider = basicAuthCredentialProvider.getService();
         if (provider != null) {
             Hashtable<String, Object> hashtable = new Hashtable<String, Object>();

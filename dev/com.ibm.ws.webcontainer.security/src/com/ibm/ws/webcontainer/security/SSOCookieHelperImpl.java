@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
 import com.ibm.ws.security.util.ByteArray;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.StringUtil;
@@ -44,6 +45,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected static final ConcurrentMap<ByteArray, String> cookieByteStringCache = new ConcurrentHashMap<ByteArray, String>(20);
     private static int MAX_COOKIE_STRING_ENTRIES = 100;
     private String cookieName = null;
+    protected boolean isJwtCookie = false;
 
     private final WebAppSecurityConfig config;
 
@@ -69,6 +71,11 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         if (!allowToAddCookieToResponse(req))
             return;
+        //TDDO: call Aruna code to get the includeLTPACookie configuration and continue or not
+        addJwtSsoCookiesToResponse(subject, req, resp);
+        if (isJwtCookie) {
+            return;
+        }
         SingleSignonToken ssoToken = getDefaultSSOTokenFromSubject(subject);
         if (ssoToken == null) {
             return;
@@ -89,6 +96,38 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         Cookie ssoCookie = createCookie(req, cookieByteString);
         resp.addCookie(ssoCookie);
 
+    }
+
+    /**
+     * @param subject
+     * @param req
+     * @param resp
+     */
+    @Override
+    public void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+        // TODO Auto-generated method stub
+        //String cookieByteString =
+        String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
+        // TODO - cache
+        //updateCookieCache(cookieBytes, cookieByteString);
+        Cookie ssoCookie = createJwtCookie(req, cookieByteString); //TODO
+        resp.addCookie(ssoCookie);
+        isJwtCookie = true;
+    }
+
+    public Cookie createJwtCookie(HttpServletRequest req, String cookieValue) {
+        Cookie ssoCookie = new Cookie("jwtToken", cookieValue);
+        ssoCookie.setMaxAge(-1);
+        //The path has to be "/" so we will not have multiple cookies in the same domain
+        ssoCookie.setPath("/");
+        ssoCookie.setSecure(config.getSSORequiresSSL());
+        ssoCookie.setHttpOnly(config.getHttpOnlyCookies());
+
+        String domainName = getSSODomainName(req, config.getSSODomainList(), config.getSSOUseDomainFromURL());
+        if (domainName != null) {
+            ssoCookie.setDomain(domainName);
+        }
+        return ssoCookie;
     }
 
     /**
@@ -150,9 +189,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      */
     @Override
     public void removeSSOCookieFromResponse(HttpServletResponse resp) {
-	if (resp instanceof com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) {
-	    ((com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) resp).removeCookie(getSSOCookiename());
-	}
+        if (resp instanceof com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) {
+            ((com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) resp).removeCookie(getSSOCookiename());
+        }
     }
 
     /**

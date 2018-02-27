@@ -30,7 +30,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
-import com.ibm.ws.security.jwtsso.utils.JwtSsoUtils;
+import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
+import com.ibm.ws.security.jwtsso.utils.JwtSsoTokenUtils;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 
@@ -48,6 +49,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	private boolean setCookiePathToWebAppContextPath;
 	private boolean includeLtpaCookie;
 	private boolean fallbackToLtpa;
+	private boolean cookieSecureFlag;
 	private String jwtBuilderRef;
 	private String jwtConsumerRef;
 	private WebAppSecurityConfig webAppSecConfig;
@@ -60,11 +62,6 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	@Override
 	public boolean isSsoUseDomainFromURL() {
 		return WebConfigUtils.getWebAppSecurityConfig().getSSOUseDomainFromURL();
-	}
-
-	@Override
-	public boolean isSsoRequiresSSL() {
-		return WebConfigUtils.getWebAppSecurityConfig().getSSORequiresSSL();
 	}
 
 	@Override
@@ -88,6 +85,11 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	}
 
 	@Override
+	public boolean isCookieSecured() {
+		return cookieSecureFlag;
+	}
+
+	@Override
 	public String getJwtBuilderRef() {
 		return jwtBuilderRef;
 	}
@@ -95,6 +97,17 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	@Override
 	public String getJwtConsumerRef() {
 		return jwtConsumerRef;
+	}
+
+	/**
+	 * construct a tokenUtils instance. These should be constructed right before
+	 * use so any config changes will get picked up.
+	 * 
+	 * @return
+	 */
+	public JwtSsoTokenUtils getJwtSsoTokenUtils() {
+		JwtSsoTokenUtils result = new JwtSsoTokenUtils(jwtBuilderRef, jwtConsumerRef);
+		return result.isValid() ? result : null;
 	}
 
 	// todo: base sec is going to make WebAppSecurityConfig an osgi service, but
@@ -172,11 +185,13 @@ public class JwtSsoComponent implements JwtSsoConfig {
 		if (props == null || props.isEmpty()) {
 			return;
 		}
-		setCookiePathToWebAppContextPath = (Boolean) props.get(JwtSsoUtils.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
-		includeLtpaCookie = (Boolean) props.get(JwtSsoUtils.CFG_KEY_INCLUDELTPACOOKIE);
-		fallbackToLtpa = (Boolean) props.get(JwtSsoUtils.CFG_KEY_FALLBACKTOLTPA);
-		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTBUILDERREF));
-		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTCONSUMERREF));
+		setCookiePathToWebAppContextPath = (Boolean) props
+				.get(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
+		includeLtpaCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE);
+		fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_KEY_FALLBACKTOLTPA);
+		cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
+		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
+		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
 
 	}
 
