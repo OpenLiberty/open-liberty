@@ -114,6 +114,7 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         authResult = handleJwtSSO(req, res);
+        //sso cookie not there, validate problem, then check for fallback
         if (authResult != null) {
             return authResult;
         }

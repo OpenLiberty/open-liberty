@@ -71,6 +71,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         if (!allowToAddCookieToResponse(req))
             return;
+        //TDDO: call Aruna code to get the includeLTPACookie configuration and continue or not
         addJwtSsoCookiesToResponse(subject, req, resp);
         if (isJwtCookie) {
             return;

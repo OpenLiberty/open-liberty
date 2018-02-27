@@ -103,7 +103,9 @@ public class KeyStoreServiceImpl implements KeyStoreService {
     /** {@inheritDoc} */
     @Override
     public Collection<String> getTrustedCertEntriesInKeyStore(String keyStoreName) throws KeyStoreException {
+
         try {
+            WSKeyStore wsks = ksMgr.getKeyStore(keyStoreName);
             KeyStore ks = ksMgr.getJavaKeyStore(keyStoreName);
             if (ks != null) {
                 Collection<String> trustedCerts = new HashSet<String>();
@@ -112,6 +114,11 @@ public class KeyStoreServiceImpl implements KeyStoreService {
                     while (aliases.hasMoreElements()) {
                         String alias = aliases.nextElement();
                         if (ks.isCertificateEntry(alias)) {
+                            trustedCerts.add(alias);
+                            continue;
+                        }
+                        Key key = wsks.getKey(alias, null);
+                        if (key instanceof PrivateKey) {
                             trustedCerts.add(alias);
                         }
                     }
