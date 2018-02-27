@@ -130,22 +130,27 @@ task createGradleBootstrap {
         rootProject.fileTree(dir: '.', include: '**/*.feature').visit { feature ->
             if (feature.isDirectory()) return
 
-            Properties props = new Properties()
-            props.load(new FileInputStream(feature.getFile()))
-
             String text = feature.getFile().getText()
-            if (props['kind']=="ga" || props['kind']=="beta") {
-                String featureArtifactId = props['symbolicName']
-                String featureName = feature.name.substring(0, feature.name.size() - ".feature".length())
-                if (featureArtifactId == null) {
-                    featureArtifactId = featureName
+            if (text.contains("kind=ga") || text.contains("kind=beta")) {
+                String name = null
+                int index = text.indexOf("symbolicName=")
+                if (index != -1) {
+                    int endIndex = text.indexOf("\n", index)
+                    if (endIndex == -1) {
+                        endIndex = text.length()
+                    }
+                    // symbolicName= is length 13
+                    name = text.substring(index + 13, endIndex)
+                    name = name.replaceAll("\\s+", "")
+                } else {
+                    name = feature.name.substring(0, feature.name.size() - 8)
                 }
 
+                String featureName = feature.name.substring(0, feature.name.size() - 8)
                 String rev = projectPathToVersion.get(featureName)
                 if (rev != null) {
-                    depsList = depsList + '    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa\'\n'
-                    depsList = depsList + '    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa.metadata.zip\'\n'
-                    depsList = depsList + '    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@pom\'\n'
+                    depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa\'\n'
+                    depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa.metadata.zip\'\n'
                 }
             }
         }
@@ -314,19 +319,10 @@ task zipGradleBootstrap(type: Zip) {
     dependsOn createGaESAList
     dependsOn createIndex
     baseName 'gradle-bootstrap'
-    into 'prereq.published', {
-        from new File(project.buildDir, 'dependencies.gradle'),
-             new File(project.buildDir, 'gaFeatures.txt'),
-             new File(project.buildDir, 'excludeList.txt')
-    }
+    into 'prereq.published', { from new File(project.buildDir, 'dependencies.gradle'),
+                                    new File(project.buildDir, 'gaFeatures.txt'),
+                                    new File(project.buildDir, 'excludeList.txt') }
     from new File(project.buildDir, 'replacements')
-    into 'com.ibm.websphere.features.internal.openliberty', {
-        from rootProject.fileTree(dir: '.', include: '*/*.feature').collect {
-            if (!it.isDirectory()) {
-                it
-            }
-        }
-    }
 }
 
 task copyOtherEsa(type:Copy){
@@ -339,40 +335,64 @@ into "build/temp/metadata"
 
 }
 task copyOtherEsa2(type:Copy){
+
 from rootProject.fileTree(".").include("/com.ibm.websphere.appserver.mpJwtPropagation-1.0/build/libs/repo/*.esa").files
 into "build/temp/esas"
+
 }
 task copyOtherMetadata2(type:Copy){
+
 from rootProject.fileTree(".").include("/com.ibm.websphere.appserver.mpJwtPropagation-1.0/build/libs/repo/*.esa.metadata.zip").files
 into "build/temp/metadata"
 
+
 }
-task copyEsas(type: Copy){
+
+task copyEsas(type: Sync,dependsOn: 'createGaESAList'){
    	dependsOn parent.subprojects.assemble
     dependsOn parent.subprojects.publishFeatureResources
-    dependsOn createGaESAList
-    dependsOn copyOtherEsa
-	dependsOn copyOtherEsa2
-    File file = file('build/libs/gaFeatures.txt')
- 	file.readLines().each{
- 		//println "/${it}/build/libs/repo/${it}.esa"
+   // dependsOn createGaESAList
+    //dependsOn copyOtherEsa
+	//dependsOn copyOtherEsa2
+	String features = ""
+    rootProject.fileTree(dir: '.', include: '*/*.feature').visit { feature ->
+  		if (feature.isDirectory() || !feature.getFile().getText().contains("kind=ga")) {
+                return
+           }
+
+            String name = feature.name.substring(0, feature.name.size()-8)
+            features += name + "\n"
+        }
+    //add extra featurews
+    features+="com.ibm.websphere.appserver.mpJwtPropagation-1.0" +"\n"
+    features+="com.ibm.websphere.appserver.mpOpentracing-1.0" +"\n"
+        
+    File gaEsa = new File('build/temp/', 'modifiedgaFeatures.txt')
+    gaEsa.createNewFile()
+    gaEsa.text = features
+    
+    //File file = new File(project.buildDir, 'gaFeatures.txt')
+ 	gaEsa.readLines().each{
+ 		println "/${it}/build/libs/repo/${it}.esa"
         from rootProject.fileTree(".").include("/${it}/build/libs/repo/*.esa").files
    		into "build/temp/esas"
     }
+    
 }
 
-
-task copyMetadataFiles(type: Copy) {
+task copyMetadataFiles(type: Sync) {
     dependsOn parent.subprojects.assemble
     dependsOn parent.subprojects.publishFeatureResources 
-    dependsOn createGaESAList  
-    dependsOn copyOtherMetadata
-    dependsOn copyOtherMetadata2
-    File file = file('build/libs/gaFeatures.txt')
+   // dependsOn createGaESAList  
+  //  dependsOn copyOtherMetadata
+   // dependsOn copyOtherMetadata2
+ 
+    File file = file('build/temp/modifiedgaFeatures.txt')
  	file.readLines().each{
  		from rootProject.fileTree(".").include("/${it}/build/libs/repo/*.esa.metadata.zip").files
    		into "build/temp/metadata"
    	}
+
    
 }
 
