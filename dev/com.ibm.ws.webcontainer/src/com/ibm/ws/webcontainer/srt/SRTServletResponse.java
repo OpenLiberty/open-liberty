@@ -36,6 +36,7 @@ import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.genericbnf.PasswordNullifier;
+import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.core.Response;
@@ -978,6 +979,16 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
             // end 134537: part 3
             
             if(this._bufferedOut!= null && this._bufferedOut instanceof WCOutputStream){
+                HttpOutputStreamConnectWeb output = ((WCOutputStream) this._bufferedOut).getOutput();
+                output.setWebC_headersWritten(true);
+                
+                String remoteUser = _connContext.getRequest().getRemoteUser();
+                
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
+                    logger.logp(Level.FINE, CLASS_NAME, "commit", "Setting remote user : " + remoteUser);
+                }
+                //Set the remote user to the channel. This will first try to get the security remote user and then fall back on the channel
+                output.setWC_remoteUser(remoteUser);
                 (((WCOutputStream) this._bufferedOut).getOutput()).setWebC_headersWritten(true);
              }
 

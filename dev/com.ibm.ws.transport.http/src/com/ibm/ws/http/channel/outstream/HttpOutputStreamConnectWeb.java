@@ -21,4 +21,6 @@ public abstract class HttpOutputStreamConnectWeb extends HttpOutputStream {
 
     public abstract void setWebC_headersWritten(boolean headersWritten);
 
+    public abstract void setWC_remoteUser(String user);
+
 }

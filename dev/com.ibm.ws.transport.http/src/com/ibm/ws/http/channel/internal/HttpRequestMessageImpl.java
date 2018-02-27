@@ -1885,6 +1885,16 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         return getServiceContext().getStartNanoTime();
     }
 
+    public String getRemoteUser() {
+        String remoteUser = "";
+
+        if (getServiceContext() instanceof HttpInboundServiceContextImpl) {
+            remoteUser = ((HttpInboundServiceContextImpl) getServiceContext()).getRemoteUser();
+        }
+
+        return remoteUser;
+    }
+
     /*
      * isPushSupported
      * - called by WebContainer to determine whether or not push_promise is supported

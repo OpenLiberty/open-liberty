@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
@@ -665,6 +666,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
     @Override
     public void setWebC_headersWritten(boolean headersWritten) {
         this.WCheadersWritten = headersWritten;
+    }
+
+    @Override
+    public void setWC_remoteUser(String remoteUser) {
+        //Set the given user here to the ISC or the response message
+        if (isc instanceof HttpInboundServiceContextImpl) {
+            ((HttpInboundServiceContextImpl) isc).setRemoteUser(remoteUser);
+        }
     }
 
 }

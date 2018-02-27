@@ -2792,7 +2792,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         IWebAppSecurityCollaborator webAppSec=null;
-        if (getDispatchContext()!=null) {
+        if (getDispatchContext()!=null && getDispatchContext().getWebApp() != null) {
             webAppSec = CollaboratorHelperImpl.getCurrentSecurityCollaborator(getDispatchContext().getWebApp());
         } else {
             webAppSec = CollaboratorHelperImpl.getCurrentSecurityCollaborator();           
