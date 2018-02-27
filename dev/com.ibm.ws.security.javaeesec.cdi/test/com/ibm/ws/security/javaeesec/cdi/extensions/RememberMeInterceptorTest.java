@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import javax.interceptor.InvocationContext;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.CallerPrincipal;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.authentication.mechanism.http.RememberMe;
@@ -111,18 +112,8 @@ public class RememberMeInterceptorTest {
     public void testInterceptValidateRequestWithNoRemembeMeCookieAndAuthenticationSuccess() throws Exception {
         InvocationContext ic = createInvocationContext("validateRequest", mechanismWithDefaultRememberMe);
         withCookies(null).doesNotNotifyContainerAboutLogin();
-        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).withSecureRequest(true).generatesLoginToken().createsCookie(DEFAULT_COOKIE_NAME, COOKIE_VALUE, 86400, true, true);
-
-        AuthenticationStatus status = (AuthenticationStatus) interceptor.intercept(ic);
-
-        assertEquals("The AuthenticationStatus must be AuthenticationStatus.SUCCESS.", AuthenticationStatus.SUCCESS, status);
-    }
-
-    @Test
-    public void testInterceptValidateRequestWithNoRemembeMeCookieWithAuthenticationSuccessAndInsecureHttpRequest() throws Exception {
-        InvocationContext ic = createInvocationContext("validateRequest", mechanismWithDefaultRememberMe);
-        withCookies(null).doesNotNotifyContainerAboutLogin();
-        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).withSecureRequest(false).doesNotGenerateLoginToken().doesNotCreateCookie();
+        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).authenticationRequest(false).generatesLoginToken();
+        createsCookie(DEFAULT_COOKIE_NAME, COOKIE_VALUE, 86400, true, true);
 
         AuthenticationStatus status = (AuthenticationStatus) interceptor.intercept(ic);
 
@@ -134,11 +125,26 @@ public class RememberMeInterceptorTest {
         InvocationContext ic = createInvocationContext("validateRequest", new TestHttpAuthenticationMechanismWithRememberMeInsecure());
         withCookies(null).doesNotNotifyContainerAboutLogin();
         invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS);
-        generatesLoginToken().createsCookie(DEFAULT_COOKIE_NAME, COOKIE_VALUE, 86400, false, false);
+        authenticationRequest(false).generatesLoginToken().createsCookie(DEFAULT_COOKIE_NAME, COOKIE_VALUE, 86400, false, false);
 
         AuthenticationStatus status = (AuthenticationStatus) interceptor.intercept(ic);
 
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SUCCESS.", AuthenticationStatus.SUCCESS, status);
+    }
+
+    @Test
+    public void testInterceptValidateRequestWithNoRemembeMeCookieAndAuthenticationRequest() throws Exception {
+        assertAuthenticationRequestPath(mechanismWithDefaultRememberMe, true);
+    }
+
+    @Test
+    public void testInterceptValidateRequestWithNoRemembeMeCookieAndAuthenticationRequestAndRememberMeFalseInAnnotation() throws Exception {
+        assertAuthenticationRequestPath(new TestHttpAuthenticationMechanismWithIsRememberMeFalse(), true);
+    }
+
+    @Test
+    public void testInterceptValidateRequestWithNoRemembeMeCookieAndAuthenticationRequestRememberMeFalse() throws Exception {
+        assertAuthenticationRequestPath(mechanismWithDefaultRememberMe, false);
     }
 
     @Test
@@ -158,7 +164,8 @@ public class RememberMeInterceptorTest {
         InvocationContext ic = createInvocationContext("validateRequest", mechanismWithDefaultRememberMe);
         withCookies(DEFAULT_COOKIE_NAME, COOKIE_VALUE, CredentialValidationResult.INVALID_RESULT);
         doesNotNotifyContainerAboutLogin().removesCookie(DEFAULT_COOKIE_NAME);
-        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).withSecureRequest(true).generatesLoginToken().createsCookie(DEFAULT_COOKIE_NAME, COOKIE_VALUE, 86400, true, true);
+        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).authenticationRequest(false).generatesLoginToken();
+        createsCookie(DEFAULT_COOKIE_NAME, COOKIE_VALUE, 86400, true, true);
 
         AuthenticationStatus status = (AuthenticationStatus) interceptor.intercept(ic);
 
@@ -208,14 +215,14 @@ public class RememberMeInterceptorTest {
             }
         };
 
-        final HttpAuthenticationMechanism mechanismWithELExpresssion = new TestHttpAuthenticationMechanismWithRememberMeELExpressions();
-        final RememberMe rememberMe = mechanismWithELExpresssion.getClass().getAnnotation(RememberMe.class);
+        final HttpAuthenticationMechanism mechanismWithELExpression = new TestHttpAuthenticationMechanismWithRememberMeELExpressions();
+        final RememberMe rememberMe = mechanismWithELExpression.getClass().getAnnotation(RememberMe.class);
         final String cookieName = "CookieNameFromELExpression";
 
         mockery.checking(new Expectations() {
             {
                 one(elProcessor).defineBean("httpMessageContext", httpMessageContext);
-                one(elProcessor).defineBean("self", mechanismWithELExpresssion);
+                one(elProcessor).defineBean("self", mechanismWithELExpression);
                 one(elProcessor).eval(removeBrackets(rememberMe.isRememberMeExpression()));
                 will(returnValue(Boolean.TRUE));
                 one(elProcessor).eval(removeBrackets(rememberMe.cookieSecureOnlyExpression()));
@@ -229,9 +236,10 @@ public class RememberMeInterceptorTest {
             }
         });
 
-        InvocationContext ic = createInvocationContext("validateRequest", mechanismWithELExpresssion);
+        InvocationContext ic = createInvocationContext("validateRequest", mechanismWithELExpression);
         withCookies(null).doesNotNotifyContainerAboutLogin();
-        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).withSecureRequest(true).generatesLoginToken().createsCookie(cookieName, COOKIE_VALUE, 600, true, true);
+        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).authenticationRequest(false).generatesLoginToken();
+        createsCookie(cookieName, COOKIE_VALUE, 600, true, true);
 
         AuthenticationStatus status = (AuthenticationStatus) interceptor.intercept(ic);
 
@@ -344,11 +352,37 @@ public class RememberMeInterceptorTest {
         return this;
     }
 
-    private RememberMeInterceptorTest withSecureRequest(final boolean secure) {
+    private void assertAuthenticationRequestPath(HttpAuthenticationMechanism mechanism, boolean rememberMe) throws Exception {
+        InvocationContext ic = createInvocationContext("validateRequest", mechanism);
+        withCookies(null).doesNotNotifyContainerAboutLogin();
+        invokesNextInterceptor(ic, AuthenticationStatus.SUCCESS).authenticationRequest(true).authParamsRememberMe(rememberMe);
+        if (rememberMe) {
+            generatesLoginToken().createsCookie(DEFAULT_COOKIE_NAME, COOKIE_VALUE, 86400, true, true);
+        } else {
+            doesNotGenerateLoginToken().doesNotCreateCookie();
+        }
+    
+        AuthenticationStatus status = (AuthenticationStatus) interceptor.intercept(ic);
+    
+        assertEquals("The AuthenticationStatus must be AuthenticationStatus.SUCCESS.", AuthenticationStatus.SUCCESS, status);
+    }
+
+    private RememberMeInterceptorTest authenticationRequest(final boolean authenticationRequest) {
         mockery.checking(new Expectations() {
             {
-                one(request).isSecure();
-                will(returnValue(secure));
+                one(httpMessageContext).isAuthenticationRequest();
+                will(returnValue(authenticationRequest));
+            }
+        });
+        return this;
+    }
+
+    private RememberMeInterceptorTest authParamsRememberMe(boolean rememberMe) {
+        final AuthenticationParameters authenticationParameters = AuthenticationParameters.withParams().rememberMe(rememberMe);
+        mockery.checking(new Expectations() {
+            {
+                one(httpMessageContext).getAuthParameters();
+                will(returnValue(authenticationParameters));
             }
         });
         return this;
@@ -485,6 +519,14 @@ public class RememberMeInterceptorTest {
 
     @RememberMe(cookieSecureOnly = false, cookieHttpOnly = false)
     private class TestHttpAuthenticationMechanismWithRememberMeInsecure implements HttpAuthenticationMechanism {
+        @Override
+        public AuthenticationStatus validateRequest(HttpServletRequest arg0, HttpServletResponse arg1, HttpMessageContext arg2) throws AuthenticationException {
+            return null;
+        }
+    }
+
+    @RememberMe(isRememberMe = false)
+    private class TestHttpAuthenticationMechanismWithIsRememberMeFalse implements HttpAuthenticationMechanism {
         @Override
         public AuthenticationStatus validateRequest(HttpServletRequest arg0, HttpServletResponse arg1, HttpMessageContext arg2) throws AuthenticationException {
             return null;

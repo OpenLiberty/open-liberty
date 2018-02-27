@@ -17,10 +17,16 @@ import java.util.logging.Logger;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
+import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.SecurityContext;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
+import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
+import javax.servlet.http.HttpServletRequest;
+
+import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 
 /**
  * Base servlet which the JASPI test servlets extend.
@@ -207,6 +213,29 @@ public abstract class FlexibleBaseServlet extends FlexibleBaseNoJavaEESecServlet
             }
             writeLine(p.getBuffer(), "HttpAuthenticationMechanism : " + value);
         }
+    }
+
+    public class ProcessSecurityContextAuthenticateStep implements BaseServletStep {
+
+        @Override
+        public void invoke(BaseServletParms p) throws Exception {
+            writeLine(p.getBuffer(), "**************ProcessSecurityContextAuthenticateStep****************");
+
+            AuthenticationParameters authenticationParameters = new AuthenticationParameters();
+            authenticationParameters.credential(new UsernamePasswordCredential(Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd));
+            HttpServletRequest request = p.getRequest();
+
+            if ("true".equalsIgnoreCase(request.getParameter("rememberMe"))) {
+                writeLine(p.getBuffer(), "rememberMe: true");
+                authenticationParameters.setRememberMe(true);
+            } else {
+                writeLine(p.getBuffer(), "rememberMe: false");
+            }
+
+            AuthenticationStatus status = securityContext.authenticate(request, p.getResponse(), authenticationParameters);
+            writeLine(p.getBuffer(), "SecurityContext authenticate AuthenticationStatus: " + status);
+        }
+
     }
 
     private Class skipProxyClass(Class clz) {

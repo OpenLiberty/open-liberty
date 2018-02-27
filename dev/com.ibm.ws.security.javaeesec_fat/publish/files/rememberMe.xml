@@ -1,0 +1,37 @@
+<server description="Security API RememberMe FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <application type="war" id="JavaEESec" name="JavaEESec" location="JavaEESec.war">
+        <application-bnd>
+            <security-role name="javaeesec_basic">
+                <user name="jaspiuser1" access-id="defaultRealm/jaspiuser1" />
+                <group name="group1" />
+            </security-role>
+        </application-bnd>
+    </application>
+    
+    <application type="war" id="SecureOnlyFalseHttpOnlyFalseRememberMe" name="SecureOnlyFalseHttpOnlyFalseRememberMe" location="SecureOnlyFalseHttpOnlyFalseRememberMe.war">
+        <application-bnd>
+            <security-role name="javaeesec_basic">
+                <user name="jaspiuser1" access-id="defaultRealm/jaspiuser1" />
+                <group name="group1" />
+            </security-role>
+        </application-bnd>
+    </application>
+    
+    <application type="war" id="UnprotectedRememberMe" name="UnprotectedRememberMe" location="UnprotectedRememberMe.war">
+        <application-bnd>
+            <security-role name="javaeesec_basic">
+                <user name="jaspiuser1" access-id="defaultRealm/jaspiuser1" />
+                <group name="group1" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <include location="../fatTestPorts.xml" />
+</server>

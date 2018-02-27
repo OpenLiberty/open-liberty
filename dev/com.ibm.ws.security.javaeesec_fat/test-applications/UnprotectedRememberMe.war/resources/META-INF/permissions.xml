@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
+    version="7">
+    
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>wssecurity.getCallerSubject</name>
+   </permission>
+   
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>wssecurity.applicationReadCredential</name>
+   </permission>
+   
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>wssecurity.getRunAsSubject</name>
+   </permission>
+
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>* * "*"</name>
+      <actions>read</actions>
+   </permission>
+
+   <permission>
+      <class-name>java.util.PropertyPermission</class-name>
+      <name>org.glassfish.web.rfc2109_cookie_names_enforced</name>
+      <actions>read</actions>
+   </permission>
+
+<!-- Review code to determine if doPrivileged blocks are needed to avoid adding the following permissions -->
+   <permission>
+      <class-name>java.security.SecurityPermission</class-name>
+      <name>getProperty.authconfigprovider.factory</name>
+   </permission>
+   
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>createLoginContext.system.WEB_INBOUND</name>
+   </permission>
+   
+</permissions>
