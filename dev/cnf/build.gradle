@@ -354,7 +354,6 @@ task createDir{
 task copyEsas(type: Sync){
    	dependsOn parent.subprojects.assemble
     dependsOn parent.subprojects.publishFeatureResources
-    dependsOn createDir
    // dependsOn createGaESAList
     //dependsOn copyOtherEsa
 	//dependsOn copyOtherEsa2
@@ -384,6 +383,8 @@ task copyEsas(type: Sync){
     }
     
 }
+
+copyEsas.dependsOn createDir
 
 task copyMetadataFiles(type: Sync) {
     dependsOn parent.subprojects.assemble
