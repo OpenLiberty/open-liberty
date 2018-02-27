@@ -27,7 +27,6 @@ import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
-import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticateApi;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -51,6 +50,8 @@ public class SSOAuthenticator implements WebAuthenticator {
     public final static String REQ_CONTENT_TYPE_NAME = "Content-Type";
     public final static String REQ_CONTENT_TYPE_APP_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private static final String ACCESS_TOKEN = "access_token";
+    private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
+    private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
     private static final TraceComponent tc = Tr.register(SSOAuthenticator.class);
     private final AuthenticationService authenticationService;
@@ -135,7 +136,7 @@ public class SSOAuthenticator implements WebAuthenticator {
                         return authResult;
                     }
 
-                    AuthenticationData authenticationData = createAuthenticationData(req, res, ltpa64);
+                    AuthenticationData authenticationData = createAuthenticationData(req, res, ltpa64, LTPA_OID);
                     try {
                         Subject authenticatedSubject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, null);
                         authResult = new AuthenticationResult(AuthResult.SUCCESS, authenticatedSubject, ssoCookieHelper.getSSOCookiename(), null, AuditEvent.OUTCOME_SUCCESS);
@@ -175,25 +176,25 @@ public class SSOAuthenticator implements WebAuthenticator {
         if (encodedjwtssotoken == null) { //jwt sso cookie is missing, look at the auth header
             encodedjwtssotoken = getJwtBearerToken(req);
         }
-        Subject tempSubject = null;
-        if (encodedjwtssotoken != null) {
-            tempSubject = JwtSSOTokenHelper.handleJwtSSOToken(encodedjwtssotoken);
-        }
-        if (tempSubject != null) {
-            return authenticateWithJwt(tempSubject, req, res);
+//        Subject tempSubject = null;
+//        if (encodedjwtssotoken != null) {
+//            tempSubject = JwtSSOTokenHelper.handleJwtSSOToken(encodedjwtssotoken);
+//        }
+//        if (tempSubject != null) {
+//            return authenticateWithJwt(tempSubject, req, res);
+//
+//        }
+        return authenticateWithJwt(req, res, encodedjwtssotoken);
 
-        }
-        return null;
     }
 
-    private AuthenticationResult authenticateWithJwt(Subject subject, HttpServletRequest req, HttpServletResponse res) {
+    private AuthenticationResult authenticateWithJwt(HttpServletRequest req, HttpServletResponse res, String jwtToken) {
         // TODO Auto-generated method stub
         AuthenticationResult authResult = null;
         try {
-            AuthenticationData authenticationData = createAuthenticationData(req,
-                                                                             res, subject);
+            AuthenticationData authenticationData = createAuthenticationData(req, res, jwtToken, JWT_OID);
             Subject new_subject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND,
-                                                                     authenticationData, subject);
+                                                                     authenticationData, null);
             //authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject);
             authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject, "jwtToken", null, AuditEvent.OUTCOME_SUCCESS);
             // if DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER then do not
@@ -323,11 +324,12 @@ public class SSOAuthenticator implements WebAuthenticator {
      * @param ssoToken
      * @return authenticationData
      */
-    private AuthenticationData createAuthenticationData(HttpServletRequest req, HttpServletResponse res, String ltpaToken) {
+    private AuthenticationData createAuthenticationData(HttpServletRequest req, HttpServletResponse res, String ltpaToken, String oid) {
         AuthenticationData authenticationData = new WSAuthenticationData();
         authenticationData.set(AuthenticationData.HTTP_SERVLET_REQUEST, req);
         authenticationData.set(AuthenticationData.HTTP_SERVLET_RESPONSE, res);
         authenticationData.set(AuthenticationData.TOKEN64, ltpaToken);
+        authenticationData.set(AuthenticationData.AUTHENTICATION_MECH_OID, oid);
         return authenticationData;
     }
 

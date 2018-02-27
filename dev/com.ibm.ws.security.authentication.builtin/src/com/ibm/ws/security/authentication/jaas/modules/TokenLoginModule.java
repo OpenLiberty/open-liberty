@@ -23,13 +23,16 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
+import com.ibm.websphere.security.auth.callback.WSAuthMechOidCallbackImpl;
 import com.ibm.websphere.security.auth.callback.WSCredTokenCallbackImpl;
+import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.internal.jaas.modules.ServerCommonLoginModule;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.jaas.common.callback.AuthenticationHelper;
+import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.wsspi.security.ltpa.Token;
@@ -40,6 +43,8 @@ import com.ibm.wsspi.security.ltpa.Token;
 public class TokenLoginModule extends ServerCommonLoginModule implements LoginModule {
 
     private static final TraceComponent tc = Tr.register(TokenLoginModule.class);
+    private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
+    private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
     private String accessId = null;
     private Token recreatedToken;
 
@@ -57,6 +62,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         try {
             Callback[] callbacks = getRequiredCallbacks(callbackHandler);
             byte[] token = ((WSCredTokenCallbackImpl) callbacks[0]).getCredToken();
+            String authMechOid = ((WSAuthMechOidCallbackImpl) callbacks[1]).getAuthMechOid();
 
             // If we have insufficient data, abstain.
             if (token == null) {
@@ -65,16 +71,26 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
 
             setAlreadyProcessed();
 
-            byte[] credToken = AuthenticationHelper.copyCredToken(token);
-            TokenManager tokenManager = getTokenManager();
-            recreatedToken = tokenManager.recreateTokenFromBytes(credToken);
-            accessId = recreatedToken.getAttributes("u")[0];
-            if (AccessIdUtil.isServerAccessId(accessId)) {
-                setUpTemporaryServerSubject();
-            } else {
-                setUpTemporaryUserSubject();
+            if (authMechOid == null || authMechOid.equals(LTPA_OID)) {
+                byte[] credToken = AuthenticationHelper.copyCredToken(token);
+                TokenManager tokenManager = getTokenManager();
+                recreatedToken = tokenManager.recreateTokenFromBytes(credToken);
+                accessId = recreatedToken.getAttributes("u")[0];
+                if (AccessIdUtil.isServerAccessId(accessId)) {
+                    setUpTemporaryServerSubject();
+                } else {
+                    setUpTemporaryUserSubject();
+                }
+            } else if (authMechOid.equals(JWT_OID)) {
+                // TODO: call Aruna code
+                setUpTemporaryUserSubjectForJsonWebToken(token);
+
             }
             updateSharedState();
+//            byte[] credToken = AuthenticationHelper.copyCredToken(token);
+//            TokenManager tokenManager = getTokenManager();
+//            recreatedToken = tokenManager.recreateTokenFromBytes(credToken);
+//            accessId = recreatedToken.getAttributes("u")[0];
             return true;
         } catch (InvalidTokenException e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
@@ -87,7 +103,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
 
     /**
      * Gets the required Callback objects needed by this login module.
-     * 
+     *
      * @param callbackHandler
      * @return
      * @throws IOException
@@ -97,6 +113,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
     public Callback[] getRequiredCallbacks(CallbackHandler callbackHandler) throws IOException, UnsupportedCallbackException {
         Callback[] callbacks = new Callback[1];
         callbacks[0] = new WSCredTokenCallbackImpl("Credential Token");
+        callbacks[1] = new WSAuthMechOidCallbackImpl("AuthMechOid");
         callbackHandler.handle(callbacks);
         return callbacks;
     }
@@ -119,7 +136,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
      * be necessary to create a placeholder instead of a subject and modify the credentials
      * service to return a set of credentials or update the holder in order to place in
      * the shared state.
-     * 
+     *
      * @throws Exception
      */
     private void setUpTemporaryUserSubject() throws Exception {
@@ -128,6 +145,14 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         UserRegistry ur = getUserRegistry();
         String securityName = ur.getUserSecurityName(AccessIdUtil.getUniqueId(accessId));
         securityName = getSecurityName(securityName, securityName); // Special handling for LDAP under here.
+        setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
+    }
+
+    private void setUpTemporaryUserSubjectForJsonWebToken(byte[] token) throws Exception {
+        temporarySubject = new Subject();
+        String securityName = null; //TODO: call Aruna code to get the securityName
+        accessId = null; //TODO: call Aruna code to get the securityName
+        temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(Base64Coder.toString(token));
         setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
     }
 
