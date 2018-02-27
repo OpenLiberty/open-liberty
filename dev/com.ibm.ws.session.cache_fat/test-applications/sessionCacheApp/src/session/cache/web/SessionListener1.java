@@ -23,11 +23,15 @@ public class SessionListener1 implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent event) {
-        created.add(event.getSession().getId());
+        String sessionId = event.getSession().getId();
+        System.out.println("SessionListener1 notified of sessionCreated for " + sessionId);
+        created.add(sessionId);
     }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) {
-        destroyed.add(event.getSession().getId());
+        String sessionId = event.getSession().getId();
+        System.out.println("SessionListener1 notified of sessionDestroyed for " + sessionId);
+        destroyed.add(sessionId);
     }
 }
