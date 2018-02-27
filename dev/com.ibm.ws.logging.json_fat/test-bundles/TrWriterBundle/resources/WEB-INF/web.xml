@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app id="TrWriter">
+  <display-name>TrWriterWAB</display-name>
+  <description>This WAB tests logging using Tr</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  
+  <servlet id="TrWriterServlet">
+    <servlet-name>TrWriterServlet</servlet-name>
+    <display-name>TrWriterServlet</display-name>
+    <description>This servlet writes Tr messages</description>
+    <servlet-class>com.ibm.ws.logging.fat.bundle.TrWriterServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+   
+  <!-- SERVLET MAPPINGS -->      
+   
+  <servlet-mapping id="ServletMapping_TrWriterServlet">
+    <servlet-name>TrWriterServlet</servlet-name>
+    <url-pattern>/tr</url-pattern>
+  </servlet-mapping>    
+
+</web-app>

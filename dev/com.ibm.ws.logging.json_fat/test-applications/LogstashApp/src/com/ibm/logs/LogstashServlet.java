@@ -46,6 +46,10 @@ public class LogstashServlet extends HttpServlet {
             prefix = truncated.equals("true") ? "T: " : "F: ";
         }
 
+        // Test for system out and err
+        System.out.println("LogstashServlet System.out:" + logMessage);
+        System.err.println("LogstashServlet System.err:" + logMessage);
+
         for (int i = 0; i < 3; i++) {
             logger.logp(java.util.logging.Level.INFO, loggerName, "Method.Info", prefix + logMessage);
             logger.logp(java.util.logging.Level.FINE, loggerName, "Method.Info", prefix + logMessage);
