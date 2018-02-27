@@ -347,13 +347,18 @@ into "build/temp/metadata"
 
 
 }
+task createDir{
+	mkdir 'build/temp'
+}
 
-task copyEsas(type: Sync,dependsOn: 'createGaESAList'){
+task copyEsas(type: Sync){
    	dependsOn parent.subprojects.assemble
     dependsOn parent.subprojects.publishFeatureResources
+    dependsOn createDir
    // dependsOn createGaESAList
     //dependsOn copyOtherEsa
 	//dependsOn copyOtherEsa2
+
 	String features = ""
     rootProject.fileTree(dir: '.', include: '*/*.feature').visit { feature ->
   		if (feature.isDirectory() || !feature.getFile().getText().contains("kind=ga")) {
@@ -366,7 +371,7 @@ task copyEsas(type: Sync,dependsOn: 'createGaESAList'){
     //add extra featurews
     features+="com.ibm.websphere.appserver.mpJwtPropagation-1.0" +"\n"
     features+="com.ibm.websphere.appserver.mpOpentracing-1.0" +"\n"
-        
+    
     File gaEsa = new File('build/temp/', 'modifiedgaFeatures.txt')
     gaEsa.createNewFile()
     gaEsa.text = features
