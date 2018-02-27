@@ -505,7 +505,7 @@ doLast {
         }
 }
 
-//publish{dependsOn generateMavenArtifact}
+publish{dependsOn generateMavenArtifact}
 
 
 
