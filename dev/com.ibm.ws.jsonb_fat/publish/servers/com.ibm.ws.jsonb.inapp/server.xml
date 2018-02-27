@@ -23,8 +23,11 @@
 	</application>
 
     <library id="json">
+      <fileset dir="${shared.resource.dir}/johnzon" includes="johnzon-*.jar"/>
       <!-- Use Yasson for JSON-B and Johnzon for JSON-P -->
+      <!--  TODO: once https://github.com/eclipse-ee4j/jsonp/issues/78 is resolved, switch back to Yasson for JSON-B and Johnzon for JSON-P
       <fileset dir="${shared.resource.dir}/refImpls" includes="yasson-*.jar"/>
       <fileset dir="${shared.resource.dir}/johnzon" includes="johnzon-core-*.jar"/>
+      -->
     </library>
 </server>

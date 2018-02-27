@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.fat.extended;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -30,7 +27,6 @@ import jaxrs21.fat.jsonb.JsonBTestServlet;
 public class PackageJsonBTestWithFeature extends FATServletClient {
 
     private static final String appName = "jsonbapp";
-    public static final String JOHNZON_IMPL = "publish/files/johnzon/";
 
     @Server("jaxrs21.fat.packageJsonBWithFeature")
     @TestServlet(servlet = JsonBTestServlet.class, contextRoot = appName)
@@ -38,10 +34,7 @@ public class PackageJsonBTestWithFeature extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.buildDefaultApp(appName, "jaxrs21.fat.jsonb");
-        app.addAsLibraries(new File(JOHNZON_IMPL).listFiles());
-        ShrinkHelper.exportDropinAppToServer(server, app);
-        server.addInstalledAppForValidation(appName);
+        ShrinkHelper.defaultDropinApp(server, appName, "jaxrs21.fat.jsonb");
         server.startServer();
     }
 

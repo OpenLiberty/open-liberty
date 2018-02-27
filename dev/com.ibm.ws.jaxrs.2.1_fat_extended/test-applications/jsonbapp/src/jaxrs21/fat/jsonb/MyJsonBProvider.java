@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import javax.json.Json;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.Consumes;
@@ -41,6 +42,7 @@ public class MyJsonBProvider implements MessageBodyWriter<Object>, MessageBodyRe
             readable = true;
         }
         System.out.println("MyJsonBProvider:isReadable=" + readable);
+        verifyJohnzon();
         return readable;
     }
 
@@ -50,6 +52,7 @@ public class MyJsonBProvider implements MessageBodyWriter<Object>, MessageBodyRe
         Object obj = null;
         obj = this.jsonb.fromJson(entityStream, clazz);
         System.out.println("MyJsonBProvider:readFrom=" + obj);
+        verifyJohnzon();
         return obj;
     }
 
@@ -60,6 +63,7 @@ public class MyJsonBProvider implements MessageBodyWriter<Object>, MessageBodyRe
             writeable = true;
         }
         System.out.println("MyJsonBProvider:isWriteable=" + writeable);
+        verifyJohnzon();
         return writeable;
     }
 
@@ -67,11 +71,21 @@ public class MyJsonBProvider implements MessageBodyWriter<Object>, MessageBodyRe
     public void writeTo(Object obj, Class<?> type, Type genericType, Annotation[] annotations,
                         MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
         System.out.println("MyJsonBProvider:writeTo=" + obj);
+        verifyJohnzon();
         this.jsonb.toJson(obj, entityStream);
     }
 
     private boolean isJsonType(MediaType mediaType) {
         return mediaType.getSubtype().toLowerCase().startsWith("json")
                || mediaType.getSubtype().toLowerCase().contains("+json");
+    }
+
+    private void verifyJohnzon() {
+        String jsonpProvider = Json.createObjectBuilder().getClass().getCanonicalName();
+        String jsonbProvider = jsonb.getClass().getCanonicalName();
+        if (!jsonpProvider.contains("johnzon"))
+            throw new IllegalStateException("Test error! Expected to be using user-defined JSON-P provider (Johnzon) but instead was: " + jsonpProvider);
+        if (!jsonbProvider.contains("johnzon"))
+            throw new IllegalStateException("Test error! Expected to be using user-defined JSON-B provider (Johnzon) but instead was: " + jsonbProvider);
     }
 }

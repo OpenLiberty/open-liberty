@@ -26,4 +26,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	javax.validation:validation-api;version=2.0.0.Final 
+	javax.validation:validation-api;version=2.0.1.Final 
