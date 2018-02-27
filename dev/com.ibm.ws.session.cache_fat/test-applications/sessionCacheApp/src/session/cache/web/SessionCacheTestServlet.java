@@ -16,17 +16,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionListener;
 import javax.sql.DataSource;
 
 import componenttest.app.FATServlet;
@@ -34,7 +37,6 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/SessionCacheTestServlet")
 public class SessionCacheTestServlet extends FATServlet {
-
     /**
      * Evict the active session from memory, if any.
      */
@@ -42,6 +44,15 @@ public class SessionCacheTestServlet extends FATServlet {
         // We've configured the server to only hold a single session in memory.
         // By creating a new one, we flush the other one from memory.
         request.getSession();
+    }
+
+    /**
+     * Obtains the session id for the current session and writes it to the servlet response
+     */
+    public void getSessionId(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String sessionId = request.getSession().getId();
+        System.out.println("session id is " + sessionId);
+        response.getWriter().write("session id: [" + sessionId + "]");
     }
 
     /**
@@ -53,6 +64,34 @@ public class SessionCacheTestServlet extends FATServlet {
             System.out.println("Invalidating session: " + session.getId());
             session.invalidate();
         }
+    }
+
+    /**
+     * Test that HttpSessionListeners are notified when sessions are created and/or destroyed.
+     */
+    @SuppressWarnings("unchecked")
+    public void testHttpSessionListener(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String[] expectCreated = request.getParameterValues("sessionCreated");
+        String[] expectDestroyed = request.getParameterValues("sessionDestroyed");
+        String[] expectNotDestroyed = request.getParameterValues("sessionNotDestroyed");
+
+        String listenerClassName = "session.cache.web." + request.getParameter("listener"); // SessionListener1 or SessionListener2
+        Class<HttpSessionListener> sessionListenerClass = (Class<HttpSessionListener>) Class.forName(listenerClassName);
+
+        LinkedBlockingQueue<String> created = (LinkedBlockingQueue<String>) sessionListenerClass.getField("created").get(null);
+        LinkedBlockingQueue<String> destroyed = (LinkedBlockingQueue<String>) sessionListenerClass.getField("destroyed").get(null);
+
+        if (expectCreated != null)
+            for (String sessionId : expectCreated)
+                assertTrue(sessionId, created.contains(sessionId));
+
+        if (expectDestroyed != null)
+            for (String sessionId : expectDestroyed)
+                assertTrue(sessionId, destroyed.contains(sessionId));
+
+        if (expectNotDestroyed != null)
+            for (String sessionId : expectNotDestroyed)
+                assertFalse(sessionId, destroyed.contains(sessionId));
     }
 
     /**
@@ -166,6 +205,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String value = request.getParameter("value");
         session.setAttribute(key, value);
         System.out.println("Put entry: " + key + '=' + value);
+        response.getWriter().write("session id: [" + session.getId() + "]");
     }
 
     public void sessionGet(HttpServletRequest request, HttpServletResponse response) throws Throwable {
