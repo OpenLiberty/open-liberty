@@ -407,12 +407,12 @@ task copyMetadataFiles(type: Sync) {
 task createSingleJson {
     // Run after all feature ESAs have been built
     dependsOn copyMavenLibs
-    dependsOn createDir
+   // dependsOn createDir
   //  dependsOn publishFeatureResources
 	dependsOn copyEsas
 	dependsOn copyMetadataFiles
 	dependsOn parent.subprojects.assemble
-	//dependsOn parent.subprojects.publishFeatureResources
+	dependsOn parent.subprojects.publishFeatureResources
 	        
     doLast {
         
@@ -471,7 +471,7 @@ task createSingleJson {
         
     }
 }
-//publish{dependsOn createSingleJson}
+publish{dependsOn createSingleJson}
 
 task generateMavenArtifact {
 dependsOn parent.subprojects.assemble
