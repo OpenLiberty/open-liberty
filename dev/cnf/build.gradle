@@ -493,10 +493,12 @@ doLast {
                 fileset(Dir:"release/dev/com.ibm.websphere.javaee.jsonp.1.0/"){
                 	include (name:'*/*.jar')
                 }
-
-                fileset(dir:"${rootDir}/build.image/wlp/lib/"){
-                	include(name:'com.ibm.ws.org.glassfish.json.1.0_1.0.20.jar')
-                }
+				fileset(dir:"/cnf/release/dev/com.ibm.ws.org.glassfish.json.1.0/"){
+					include (name:'*/*.jar')
+				}
+            //    fileset(dir:"${rootDir}/build.image/wlp/lib/"){
+             //   	include(name:'com.ibm.ws.org.glassfish.json.1.0_1.0.20.jar')
+            //    }
                                      
             }
         }
