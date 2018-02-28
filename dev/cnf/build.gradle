@@ -154,6 +154,9 @@ task createGradleBootstrap {
                 }
             }
         }
+        //add the singleJson artifact
+       
+        depsList = depsList + 'compile \'' + org + ':json-artifact:' + project.version+'\''+'\n'
 
         File dependenciesFile = new File(project.buildDir, 'dependencies.gradle')
         dependenciesFile.createNewFile()
@@ -453,6 +456,9 @@ task createSingleJson {
 }
 publish{dependsOn createSingleJson}
 */
+
+
+
 task generateMavenArtifact {
 
 	dependsOn parent.subprojects.publishFeatureResources
@@ -465,6 +471,7 @@ task generateMavenArtifact {
 doLast {
  ant.taskdef(name:'singleJsonRepo', classname:'com.ibm.ws.repository.generator.SingleJsonRepositoryGenerator') {
             classpath {
+            
                 fileset(dir: "${rootDir}/com.ibm.ws.repository.generator/build/libs") {
                     include(name: 'com.ibm.ws.repository.generator.jar')
                 }
@@ -487,15 +494,24 @@ doLast {
                 	include(name: 'com.ibm.ws.kernel.boot.core.jar')     	
                 }
                 
-                fileset(Dir:"${rootDir}/com.ibm.ws.logging.core/build/libs"){
+                fileset(dir:"${rootDir}/com.ibm.ws.logging.core/build/libs"){
                 	include (name:'com.ibm.ws.logging.core.jar')
                 }
-                fileset(Dir:"release/dev/com.ibm.websphere.javaee.jsonp.1.0/"){
-                	include (name:'*/*.jar')
+               // fileset(dir: project("${rootDir}:com.ibm.websphere.javaee.jsonp.1.0").sourceSets.main.output
+
+                
+              //  fileset(dir:"release/dev/com.ibm.websphere.javaee.jsonp.1.0/"){
+              // 	include (name:'*/*.jar')
+              //  }
+                fileset(dir:"${rootDir}/com.ibm.websphere.javaee.jsonp.1.0/build/libs/"){
+                	include (name:'com.ibm.websphere.javaee.jsonp.1.0.jar')
                 }
-				fileset(dir:"release/dev/com.ibm.ws.org.glassfish.json.1.0/"){
-					include (name:'*/*.jar')
-				}
+                fileset(dir:"${rootDir}/com.ibm.ws.org.glassfish.json/build/libs/"){
+                	include (name:'com.ibm.ws.org.glassfish.json.1.0.jar')
+                }
+			//	fileset(dir:"release/dev/com.ibm.ws.org.glassfish.json.1.0/"){
+			//		include (name:'*/*.jar')
+			//	}
             //    fileset(dir:"${rootDir}/build.image/wlp/lib/"){
              //   	include(name:'com.ibm.ws.org.glassfish.json.1.0_1.0.20.jar')
             //    }
@@ -563,5 +579,10 @@ publishing {
         version project.version
         artifact zipGradleBootstrap
     }
+    newJsonArtifact(MavenPublication) {
+      artifactId 'json-artifact'
+      version project.version
+      artifact 'build/temp/SingleJson.json'
+  }
   }
 }

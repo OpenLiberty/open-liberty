@@ -21,9 +21,13 @@ javac.source: 1.7
 javac.target: 1.7
 
 Export-Package: \
-    com.ibm.ws.repository.generator;version=1.0
+    com.ibm.ws.repository.generator;version=1.0,\
+    com.ibm.ws.org.glassfish.json;version=1.0.20,\
+	com.ibm.websphere.javaee.jsonp.1.0;version=1.0.20
     
-    
+Private-Package:\
+	
+	
     
 -buildpath: \
     com.ibm.ws.repository;version=latest, \
