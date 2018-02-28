@@ -473,7 +473,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             if (jaccServiceRef.getService() != null) {
                 jaccServiceRef.getService().resetPolicyContextHandlerInfo();
             }
-    
+
             if (secObject != null) {
                 WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
                 if (webSecurityContext.getJaspiAuthContext() != null &&
@@ -987,7 +987,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
         WebReply webReply = PERMIT_REPLY;
         boolean result = true;
-        WebRequest webRequest = new WebRequestImpl(req, resp, getSecurityMetadata(req), webAppSecConfig);
+        WebRequest webRequest = new WebRequestImpl(req, resp, getSecurityMetadata(), webAppSecConfig);
         webRequest.setRequestAuthenticate(true);
         AuthenticationResult authResult = null;
 
@@ -1430,7 +1430,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         String realRole = null;
         if (reqProc != null) {
             String servletName = reqProc.getName();
-            realRole = getSecurityMetadata(req).getSecurityRoleReferenced(servletName, role);
+            realRole = getSecurityMetadata().getSecurityRoleReferenced(servletName, role);
         } else {
             // PM98409 - when servlet reference is not available, use provided role name as real role
             realRole = role;

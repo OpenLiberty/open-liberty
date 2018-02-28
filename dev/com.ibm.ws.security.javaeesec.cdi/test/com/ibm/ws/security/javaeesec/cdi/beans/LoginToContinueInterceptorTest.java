@@ -177,7 +177,7 @@ public class LoginToContinueInterceptorTest {
             }
 
             @Override
-            protected SecurityMetadata getSecurityMetadata(HttpServletRequest req) {
+            protected SecurityMetadata getSecurityMetadata() {
                 return smd;
             }
 
