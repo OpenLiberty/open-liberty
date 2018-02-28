@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1080,8 +1080,15 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     }
 
     public void stop(EJBModuleMetaDataImpl mmd) {
+
         String name = mmd.ivName;
         String appName = mmd.getEJBApplicationMetaData().getName();
+
+        if (!ejbRuntimeActive || metaDataService == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "EJBRuntime deactivated, cannot stop module " + name + " in application " + appName);
+            return;
+        }
 
         try {
             Tr.info(tc, "STOPPING_MODULE_CNTR4003I", name, appName);
