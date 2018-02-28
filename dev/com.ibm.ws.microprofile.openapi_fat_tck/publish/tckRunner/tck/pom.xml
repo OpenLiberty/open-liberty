@@ -14,8 +14,8 @@
     <properties>
         <microprofile.openapi.version>1.0.1</microprofile.openapi.version>
         <surefire.version>2.19.1</surefire.version>
-        <arquillian.version>1.1.14.Final</arquillian.version>
-        <arquillian-wlp.version>1.0.0.Beta2</arquillian-wlp.version>
+        <arquillian.version>1.1.13.Final</arquillian.version>
+        <arquillian-wlp.version>1.0.0.Final-SNAPSHOT</arquillian-wlp.version>
         
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
@@ -75,7 +75,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
+            <groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-wlp-managed-8.5</artifactId>
             <version>${arquillian-wlp.version}</version>
             <scope>test</scope>
