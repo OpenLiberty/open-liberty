@@ -325,11 +325,11 @@ public class SSOAuthenticator implements WebAuthenticator {
      * @param ssoToken
      * @return authenticationData
      */
-    private AuthenticationData createAuthenticationData(HttpServletRequest req, HttpServletResponse res, String ltpaToken, String oid) {
+    private AuthenticationData createAuthenticationData(HttpServletRequest req, HttpServletResponse res, String token, String oid) {
         AuthenticationData authenticationData = new WSAuthenticationData();
         authenticationData.set(AuthenticationData.HTTP_SERVLET_REQUEST, req);
         authenticationData.set(AuthenticationData.HTTP_SERVLET_RESPONSE, res);
-        authenticationData.set(AuthenticationData.TOKEN64, ltpaToken);
+        authenticationData.set(AuthenticationData.TOKEN64, token);
         authenticationData.set(AuthenticationData.AUTHENTICATION_MECH_OID, oid);
         return authenticationData;
     }
