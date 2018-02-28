@@ -442,13 +442,14 @@ task createSingleJson {
                 
                 fileset(Dir:"${rootDir}/com.ibm.ws.logging.core/build/libs"){
                 	include (name:'com.ibm.ws.logging.core.jar')
-                } 
-                fileset(dir: "${rootDir}/com.ibm.ws.jdbc_fat_v41/build/libs/autoFVT/lib") {
-                    include(name: 'javax.json-1.0.4.jar')
-               }
-                
-                           
-             
+                }
+                fileset(Dir:"${rootDir}/com.ibm.websphere.javaee.jsonp.1.0/generated/"){
+                	include (name:'com.ibm.websphere.javaee.jsonp.1.0.jar')
+                }
+                fileset(dir:"${rootDir}/build.image/wlp/lib/"){
+                	include(name:'com.ibm.ws.org.glassfish.json.1.0_1.0.20.jar')
+                }
+                                     
             }
         }
      
