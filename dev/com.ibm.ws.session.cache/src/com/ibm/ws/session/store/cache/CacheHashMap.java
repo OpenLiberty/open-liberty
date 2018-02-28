@@ -703,6 +703,7 @@ public class CacheHashMap extends BackedHashMap {
      *
      * @see com.ibm.ws.session.store.common.BackedHashMap#persistSession(com.ibm.ws.session.store.common.BackedSession, boolean)
      */
+    @FFDCIgnore(Exception.class) // FFDC logged manually with extra info
     @Override
     protected boolean persistSession(BackedSession d2, boolean propHit) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
