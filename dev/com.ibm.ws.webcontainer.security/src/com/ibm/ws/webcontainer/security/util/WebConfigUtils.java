@@ -25,6 +25,9 @@ import javax.servlet.http.HttpServletRequest;
  * This class contains methods for getting web app config information
  */
 public class WebConfigUtils {
+    private static ThreadLocal<MetaDataThreadContext> metaDataThredLocal = new MetaDataThreadLocal();
+
+
     public static final String ATTR_WEB_MODULE_METADATA = "com.ibm.ws.webcontainer.security.webmodulemetadata";
     
     /**
@@ -61,27 +64,48 @@ public class WebConfigUtils {
      */
     public static SecurityMetadata getSecurityMetadata() {
         SecurityMetadata secMetadata = null;
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        ModuleMetaData mmd = cmd.getModuleMetaData();
+        ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
         if (mmd instanceof WebModuleMetaData) {
             secMetadata = (SecurityMetadata)((WebModuleMetaData)mmd).getSecurityMetaData();
-        }
-        return secMetadata;
-    }
-
-    /**
-     * Get the security metadata
-     * 
-     * @return the security metadata
-     */
-    public static SecurityMetadata getSecurityMetadata(HttpServletRequest req) {
-        SecurityMetadata secMetadata = getSecurityMetadata();
-        if (secMetadata == null) {
-            WebModuleMetaData wmmd = (WebModuleMetaData)req.getAttribute(ATTR_WEB_MODULE_METADATA);
+        } else {
+            // ejb environment, check threadlocal.
+            WebModuleMetaData wmmd = getWebModuleMetaData();
             if (wmmd != null) {
                 secMetadata = (SecurityMetadata)wmmd.getSecurityMetaData();
             }
         }
         return secMetadata;
     }
+
+    public static void setWebModuleMetaData(Object key, WebModuleMetaData wmmd) {
+        MetaDataThreadContext mdtc = metaDataThredLocal.get();
+        if (mdtc == null) {
+            mdtc = new MetaDataThreadContext();
+            metaDataThredLocal.set(mdtc);
+        }
+        mdtc.setMetaData(key, wmmd);
+    }
+
+    public static WebModuleMetaData getWebModuleMetaData() {
+        MetaDataThreadContext mdtc = metaDataThredLocal.get();
+        if (mdtc != null) {
+            return mdtc.getMetaData();
+        }
+        return null;
+    }
+
+    public static void removeWebModuleMetaData(Object key) {
+        MetaDataThreadContext mdtc = metaDataThredLocal.get();
+        if (mdtc != null) {
+            mdtc.clearMetaData(key);
+        }
+    }
+
+    private static final class MetaDataThreadLocal extends ThreadLocal<MetaDataThreadContext> {
+        @Override
+        protected MetaDataThreadContext initialValue() {
+            return new MetaDataThreadContext();
+        }
+    }
+
 }

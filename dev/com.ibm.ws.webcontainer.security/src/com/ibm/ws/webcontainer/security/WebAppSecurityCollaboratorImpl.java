@@ -469,22 +469,28 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      */
     @Override
     public void postInvokeForSecureResponse(Object secObject) throws ServletException {
-        if (jaccServiceRef.getService() != null) {
-            jaccServiceRef.getService().resetPolicyContextHandlerInfo();
-        }
-
-        if (secObject != null) {
-            WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
-            if (webSecurityContext.getJaspiAuthContext() != null &&
-                webAuthenticatorRef != null) {
-                WebAuthenticator jaspiService = webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
-                if (jaspiService != null) {
-                    try {
-                        ((JaspiService) jaspiService).postInvoke(webSecurityContext);
-                    } catch (Exception e) {
-                        throw new ServletException(e);
+        try {
+            if (jaccServiceRef.getService() != null) {
+                jaccServiceRef.getService().resetPolicyContextHandlerInfo();
+            }
+    
+            if (secObject != null) {
+                WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
+                if (webSecurityContext.getJaspiAuthContext() != null &&
+                    webAuthenticatorRef != null) {
+                    WebAuthenticator jaspiService = webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
+                    if (jaspiService != null) {
+                        try {
+                            ((JaspiService) jaspiService).postInvoke(webSecurityContext);
+                        } catch (Exception e) {
+                            throw new ServletException(e);
+                        }
                     }
                 }
+            }
+        } finally {
+            if (secObject != null) {
+                removeModuleMetaDataFromThreadLocal(secObject);
             }
         }
     }
@@ -576,8 +582,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     private void performSecurityChecks(HttpServletRequest req, HttpServletResponse resp, Subject receivedSubject,
                                        WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
         String uriName = new URLHandler(webAppSecConfig).getServletURI(req);
-        SecurityMetadata securityMetadata = getSecurityMetadata(req);
-        setModuleMetadataToHttpServletRequest(req);
+        setModuleMetaDataToThreadLocal(webSecurityContext);
+        SecurityMetadata securityMetadata = getSecurityMetadata();
 
         savedSubject = receivedSubject;
 
@@ -981,7 +987,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
         WebReply webReply = PERMIT_REPLY;
         boolean result = true;
-        WebRequest webRequest = new WebRequestImpl(req, resp, getSecurityMetadata(req), webAppSecConfig);
+        WebRequest webRequest = new WebRequestImpl(req, resp, getSecurityMetadata(), webAppSecConfig);
         webRequest.setRequestAuthenticate(true);
         AuthenticationResult authResult = null;
 
@@ -1294,10 +1300,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         return WebConfigUtils.getSecurityMetadata();
     }
 
-    public SecurityMetadata getSecurityMetadata(HttpServletRequest req) {
-        return WebConfigUtils.getSecurityMetadata(req);
-    }
-
     protected void setSecurityMetadata(SecurityMetadata secMetadata) {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
@@ -1428,7 +1430,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         String realRole = null;
         if (reqProc != null) {
             String servletName = reqProc.getName();
-            realRole = getSecurityMetadata(req).getSecurityRoleReferenced(servletName, role);
+            realRole = getSecurityMetadata().getSecurityRoleReferenced(servletName, role);
         } else {
             // PM98409 - when servlet reference is not available, use provided role name as real role
             realRole = role;
@@ -1539,15 +1541,16 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         return id;
     }
 
-    private void setModuleMetadataToHttpServletRequest(HttpServletRequest req) {
-        if (req.getAttribute(WebConfigUtils.ATTR_WEB_MODULE_METADATA) == null) {
-            ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            WebModuleMetaData wmmd = (WebModuleMetaData)cmd.getModuleMetaData();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "set WebModuleMetaData : " + wmmd);
-            }
-            req.setAttribute(WebConfigUtils.ATTR_WEB_MODULE_METADATA, wmmd);
+    private void setModuleMetaDataToThreadLocal(Object key) {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData)cmd.getModuleMetaData();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "set WebModuleMetaData : " + wmmd);
         }
+        WebConfigUtils.setWebModuleMetaData(key, wmmd);
     }
 
+    private void removeModuleMetaDataFromThreadLocal(Object key) {
+        WebConfigUtils.removeWebModuleMetaData(key);
+    }
 }
