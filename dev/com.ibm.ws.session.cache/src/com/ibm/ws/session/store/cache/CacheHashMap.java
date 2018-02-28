@@ -788,7 +788,7 @@ public class CacheHashMap extends BackedHashMap {
                 long lastAccess = sessionInfo.getLastAccess();
                 short listenerCnt = sessionInfo.getListenerCount();
                 int maxInactive = sessionInfo.getMaxInactiveTime();
-                if ((listenerCnt == 0 || listenerCnt == 2)
+                if ((listenerCnt == 1 || listenerCnt == 3)
                                 && maxInactive >= 0
                                 && maxInactive < (start - lastAccess) / 1000) {
 
