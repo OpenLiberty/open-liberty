@@ -69,10 +69,18 @@ public class JsonWebTokenBean implements Bean<JsonWebToken>, PassivationCapable 
         JsonWebToken jsonWebToken = null;
 
         Subject subject = new SubjectManager().getCallerSubject();
-        Set<JsonWebToken> jsonWebTokenPrincipal = subject.getPrincipals(JsonWebToken.class);
+        if (subject != null) {
+            Set<JsonWebToken> jsonWebTokenPrincipal = subject.getPrincipals(JsonWebToken.class);
 
-        if (!jsonWebTokenPrincipal.isEmpty()) {
-            jsonWebToken = jsonWebTokenPrincipal.iterator().next();
+            if (!jsonWebTokenPrincipal.isEmpty()) {
+                jsonWebToken = jsonWebTokenPrincipal.iterator().next();
+            }
+        }
+
+        if (jsonWebToken == null) {
+            Tr.error(tc, "MPJWT_CDI_PRINCIPAL_UNAVAILABLE"); // CWWKS5604E
+            // limit info passed back to app.
+            throw new javax.enterprise.inject.CreationException();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

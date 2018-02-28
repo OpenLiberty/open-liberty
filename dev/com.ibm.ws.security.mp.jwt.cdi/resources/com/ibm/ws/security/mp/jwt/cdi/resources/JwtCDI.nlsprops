@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Ensure that the injection point has
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: The claim cannot be injected into the {0} injection point for the ApplicationScoped or SessionScoped scopes.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=The injection point annotated with the Claim qualifier for a raw type must belong to a class annotated with the RequestScoped scope annotation.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Ensure that the injection point is a member of a class in the RequestScoped scope for the claim you want to inject.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: A JsonWebToken Principal cannot be injected because one is not available. Protect the requesting resource so authentication occurs before the resource is accessed.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=Injection of a JsonWebToken was requested, but one is not available.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Ensure that user authentication has occurred prior to accessing the resource that is requesting injection. 
