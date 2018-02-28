@@ -135,7 +135,9 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
                                               String newSecurityName,
                                               String accessId,
                                               String authMethod) throws Exception {
-        setPrincipals(subject, newSecurityName, accessId, authMethod, null);
+        Principal principal = new WSPrincipal(newSecurityName, accessId, authMethod);
+        subject.getPrincipals().add(principal);
+//        setPrincipals(subject, newSecurityName, accessId, authMethod, null);
         if (urAuthenticatedId != null && !urAuthenticatedId.equals(securityName)) {
             Hashtable<String, String> subjectHash = new Hashtable<String, String>();
             subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, securityName);
@@ -143,6 +145,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
         }
         CredentialsService credentialsService = getCredentialsService();
         credentialsService.setCredentials(subject);
+        setPrincipals(subject, newSecurityName, accessId, authMethod, null);
     }
 
     /**
@@ -320,12 +323,12 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      * @param authMethod
      */
     protected void setPrincipals(Subject subject, String newSecurityName, String accessId, String authMethod, Hashtable<String, ?> customProperties) throws Exception {
-        Principal principal = new WSPrincipal(newSecurityName, accessId, authMethod);
-        subject.getPrincipals().add(principal);
+//        Principal principal = new WSPrincipal(newSecurityName, accessId, authMethod);
+//        subject.getPrincipals().add(principal);
         if (customProperties != null) {
             addJaspicPrincipal(subject, customProperties);
-            addJsonWebToken(subject, customProperties);
         }
+        addJsonWebToken(subject, customProperties);
 
     }
 

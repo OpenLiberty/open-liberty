@@ -59,6 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
     static final String KEY_DEFAULT_DELEGATION_PROVIDER = "defaultDelegationProvider";
     static final String KEY_CREDENTIALS_SERVICE = "credentialsService";
+    private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
 
     private final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
     private final AtomicServiceReference<UserRegistryService> userRegistryServiceRef = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTRY_SERVICE);
@@ -312,7 +313,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (authCacheService != null && authenticationData != null) {
             String ssoToken = (String) authenticationData.get(AuthenticationData.TOKEN64);
             if (ssoToken != null) {
-                subject = findSubjectByTokenContents(authCacheService, ssoToken, null, authenticationData);
+                //TODO: look up authCache with jwtToken
+                String oid = (String) authenticationData.get(AuthenticationData.AUTHENTICATION_MECH_OID);
+                if (oid != null && oid.equals(LTPA_OID)) {
+                    subject = findSubjectByTokenContents(authCacheService, ssoToken, null, authenticationData);
+                }
             } else {
                 byte[] ssoTokenBytes = (byte[]) authenticationData.get(AuthenticationData.TOKEN);
                 if (ssoTokenBytes != null) {

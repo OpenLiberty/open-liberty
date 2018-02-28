@@ -111,7 +111,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
      */
     @Override
     public Callback[] getRequiredCallbacks(CallbackHandler callbackHandler) throws IOException, UnsupportedCallbackException {
-        Callback[] callbacks = new Callback[1];
+        Callback[] callbacks = new Callback[2];
         callbacks[0] = new WSCredTokenCallbackImpl("Credential Token");
         callbacks[1] = new WSAuthMechOidCallbackImpl("AuthMechOid");
         callbackHandler.handle(callbacks);
