@@ -108,7 +108,9 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			
 			// for each LibertyFeature
 			for (LibertyFeature feature : allFeatures.values()) {
+				
 				// copy ESA to target dirs
+				System.out.println("This is the feature: "+ feature.getSymbolicName());
 				copyArtifact(inputDir, outputDir, feature, Constants.ArtifactType.ESA);
 
 				// generate POM in target dir with list of dependencies
@@ -297,6 +299,9 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		}
 
 		File sourceFile = new File(inputDir, feature.getSymbolicName() + type.getLibertyFileExtension());
+		System.out.println("This is the source file:" +sourceFile);
+		System.out.println("This is the inputDir:"+inputDir);
+		System.out.println("This is the name:" +feature.getSymbolicName() + type.getLibertyFileExtension() );
 		if (!sourceFile.exists()) {
 			throw new MavenRepoGeneratorException("Artifact source file " + sourceFile + " does not exist.");
 		}
