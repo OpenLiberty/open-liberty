@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package session.cache.web;
+package session.cache.web.listener1;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 @WebListener
-public class SessionListener1 implements HttpSessionListener {
+public class SessionListener implements HttpSessionListener {
     public static final LinkedBlockingQueue<String> created = new LinkedBlockingQueue<String>();
     public static final LinkedBlockingQueue<String> destroyed = new LinkedBlockingQueue<String>();
 
