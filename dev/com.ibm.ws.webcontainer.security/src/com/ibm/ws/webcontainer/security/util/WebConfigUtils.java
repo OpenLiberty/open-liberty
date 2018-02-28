@@ -63,23 +63,12 @@ public class WebConfigUtils {
      */
     public static SecurityMetadata getSecurityMetadata() {
         SecurityMetadata secMetadata = null;
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        ModuleMetaData mmd = cmd.getModuleMetaData();
+        ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
         if (mmd instanceof WebModuleMetaData) {
             secMetadata = (SecurityMetadata)((WebModuleMetaData)mmd).getSecurityMetaData();
-        }
-        return secMetadata;
-    }
-
-    /**
-     * Get the security metadata
-     * 
-     * @return the security metadata
-     */
-    public static SecurityMetadata getSecurityMetadata(HttpServletRequest req) {
-        SecurityMetadata secMetadata = getSecurityMetadata();
-        if (secMetadata == null) {
-            WebModuleMetaData wmmd = (WebModuleMetaData)req.getAttribute(ATTR_WEB_MODULE_METADATA);
+        } else {
+            // ejb environment, check threadlocal.
+            WebModuleMetaData wmmd = getWebModuleMetaData();
             if (wmmd != null) {
                 secMetadata = (SecurityMetadata)wmmd.getSecurityMetaData();
             }
