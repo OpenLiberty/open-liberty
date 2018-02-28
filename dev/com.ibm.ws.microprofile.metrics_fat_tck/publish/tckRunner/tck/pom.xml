@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-wlp-managed-8.5</artifactId>
-            <version>1.0.0.Final-SNAPSHOT</version>
+            <version>1.0.0-20180227</version>
             <scope>test</scope>
         </dependency>
         <dependency>
