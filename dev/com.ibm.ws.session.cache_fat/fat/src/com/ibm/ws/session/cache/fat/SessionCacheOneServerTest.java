@@ -33,13 +33,76 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        app = new SessionCacheApp(server);
+        app = new SessionCacheApp(server, "session.cache.web", "session.cache.web.listener1", "session.cache.web.listener2");
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    /**
+     * Verify that two HttpSessionListeners both receive events when sessions are created and destroyed.
+     */
+    @Test
+    public void testHttpSessionListeners() throws Exception {
+        List<String> session1 = new ArrayList<>();
+        String sessionId1 = app.sessionPut("testHttpSessionListeners-key1", (byte) 10, session1, true);
+        try {
+            // Registered HttpSessionListeners listener1 and listener2 must be notified of
+            // the creation of session1, and at this point must contain no record of it being destroyed,
+
+            app.invokeServlet("testHttpSessionListener&listener=listener1" +
+                              "&sessionCreated=" + sessionId1 +
+                              "&sessionNotDestroyed=" + sessionId1,
+                              null);
+
+            app.sessionGet("testHttpSessionListeners-key1", (byte) 10, session1);
+
+            app.invokeServlet("testHttpSessionListener&listener=listener2" +
+                              "&sessionCreated=" + sessionId1 +
+                              "&sessionNotDestroyed=" + sessionId1,
+                              null);
+        } finally {
+            // Invalidating the session should cause sessionDestroyed to be sent to the listeners
+            app.invalidateSession(session1);
+        }
+
+        List<String> session2 = new ArrayList<>();
+        String sessionId2 = app.sessionPut("testHttpSessionListeners-key2", true, session2, true);
+        try {
+            // Registered HttpSessionListeners listener1 and listener2 must be notified of
+            // the creation of session2, and at this point must contain no record of it being destroyed.
+            // They should however, indicate that session1 was destroyed,
+
+            app.invokeServlet("testHttpSessionListener&listener=listener1" +
+                              "&sessionCreated=" + sessionId2 +
+                              "&sessionDestroyed=" + sessionId1 +
+                              "&sessionNotDestroyed=" + sessionId2,
+                              null);
+
+            app.invokeServlet("testHttpSessionListener&listener=listener2" +
+                              "&sessionCreated=" + sessionId2 +
+                              "&sessionDestroyed=" + sessionId1 +
+                              "&sessionNotDestroyed=" + sessionId2,
+                              null);
+
+            app.sessionGet("testHttpSessionListeners-key2", true, session2);
+        } finally {
+            // Invalidating the session should cause sessionDestroyed to be sent to the listeners
+            app.invalidateSession(session2);
+        }
+
+        // Registered HttpSessionListeners listener1 and listener2 must be notified of
+        // the destruction of session2,
+
+        app.invokeServlet("testHttpSessionListener&listener=listener1" +
+                          "&sessionDestroyed=" + sessionId2,
+                          null);
+        app.invokeServlet("testHttpSessionListener&listener=listener2" +
+                          "&sessionDestroyed=" + sessionId2,
+                          null);
     }
 
     /**

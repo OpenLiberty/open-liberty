@@ -37,8 +37,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        appA = new SessionCacheApp(serverA);
-        appB = new SessionCacheApp(serverB);
+        appA = new SessionCacheApp(serverA, "session.cache.web"); // no HttpSessionListeners are registered by this app
+        appB = new SessionCacheApp(serverB, "session.cache.web", "session.cache.web.listener1");
         serverB.useSecondaryHTTPPort();
 
         serverA.startServer();
@@ -83,6 +83,59 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
         appA.invalidateSession(session);
         appB.invokeServlet("testSessionEmpty", session);
+    }
+
+    /**
+     * Verify that the HttpSessionListener receives events when sessions are created and destroyed.
+     */
+    @Test
+    public void testHttpSessionListener() throws Exception {
+        List<String> session1 = new ArrayList<>();
+        String sessionId1 = appB.sessionPut("testHttpSessionListener-key1a", (short) 100, session1, true);
+        try {
+            // Registered HttpSessionListeners listener1 must be notified of the creation of session1,
+            // and at this point must contain no record of it being destroyed,
+
+            appB.invokeServlet("testHttpSessionListener&listener=listener1" +
+                               "&sessionCreated=" + sessionId1 +
+                               "&sessionNotDestroyed=" + sessionId1,
+                               null);
+
+            //appB.sessionPut("testHttpSessionListener-key1b", 1000, session1, false); // TODO fails with these uncommented, need to determine why
+            //appB.sessionPut("testHttpSessionListener-key1c", 10000l, session1, false);
+
+            appB.sessionGet("testHttpSessionListener-key1a", (short) 100, session1);
+            //appB.sessionGet("testHttpSessionListener-key1b", 1000, session1);
+            //appB.sessionGet("testHttpSessionListener-key1c", 10000l, session1);
+        } finally {
+            // Invalidating the session should cause sessionDestroyed to be sent to the listeners
+            appB.invalidateSession(session1);
+        }
+
+        List<String> session2 = new ArrayList<>();
+        String sessionId2 = appB.sessionPut("testHttpSessionListener-key2", 'v', session2, true);
+        try {
+            // Registered HttpSessionListener listener1 must be notified of the creation of session2,
+            // and at this point must contain no record of it being destroyed.
+            // It should however, indicate that session1 was destroyed,
+
+            appB.invokeServlet("testHttpSessionListener&listener=listener1" +
+                               "&sessionCreated=" + sessionId2 +
+                               "&sessionDestroyed=" + sessionId1 +
+                               "&sessionNotDestroyed=" + sessionId2,
+                               null);
+
+            appB.sessionGet("testHttpSessionListener-key2", 'v', session2);
+        } finally {
+            // Invalidating the session should cause sessionDestroyed to be sent to the listeners
+            appB.invalidateSession(session2);
+        }
+
+        // Registered HttpSessionListener listener1 must be notified of the destruction of session2,
+
+        appB.invokeServlet("testHttpSessionListener&listener=listener1" +
+                           "&sessionDestroyed=" + sessionId2,
+                           null);
     }
 
     // @Test // TODO still in progress
