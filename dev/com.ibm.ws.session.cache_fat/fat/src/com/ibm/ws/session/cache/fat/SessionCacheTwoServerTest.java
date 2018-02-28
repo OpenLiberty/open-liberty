@@ -101,12 +101,12 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                                "&sessionNotDestroyed=" + sessionId1,
                                null);
 
-            //appB.sessionPut("testHttpSessionListener-key1b", 1000, session1, false); // TODO fails with these uncommented, need to determine why
-            //appB.sessionPut("testHttpSessionListener-key1c", 10000l, session1, false);
+            appB.sessionPut("testHttpSessionListener-key1b", 1000, session1, false);
+            appB.sessionPut("testHttpSessionListener-key1c", 10000l, session1, false);
 
             appB.sessionGet("testHttpSessionListener-key1a", (short) 100, session1);
-            //appB.sessionGet("testHttpSessionListener-key1b", 1000, session1);
-            //appB.sessionGet("testHttpSessionListener-key1c", 10000l, session1);
+            appB.sessionGet("testHttpSessionListener-key1b", 1000, session1);
+            appB.sessionGet("testHttpSessionListener-key1c", 10000l, session1);
         } finally {
             // Invalidating the session should cause sessionDestroyed to be sent to the listeners
             appB.invalidateSession(session1);

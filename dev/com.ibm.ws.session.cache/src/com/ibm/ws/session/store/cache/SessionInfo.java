@@ -82,13 +82,17 @@ class SessionInfo {
     }
 
     /**
-     * Create a copy of this instance which is backed by a copy of its ArrayList.
+     * Create a copy of this instance which is backed by a deep copy of its ArrayList.
      * 
      * @return the clone.
      */
     protected SessionInfo clone() {
         @SuppressWarnings("unchecked")
         ArrayList<Object> newList = (ArrayList<Object>) list.clone();
+        @SuppressWarnings("unchecked")
+        TreeSet<String> propIds = (TreeSet<String>) list.get(PROP_IDS);
+        if (propIds != null)
+            newList.set(PROP_IDS, propIds.clone());
         return new SessionInfo(newList);
     }
 
