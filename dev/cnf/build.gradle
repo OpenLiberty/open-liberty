@@ -403,12 +403,10 @@ task copyMetadataFiles(type: Sync) {
    
 }
 
-
+/**
 task createSingleJson {
     // Run after all feature ESAs have been built
     dependsOn copyMavenLibs
-   // dependsOn createDir
-  //  dependsOn publishFeatureResources
 	dependsOn copyEsas
 	dependsOn copyMetadataFiles
 	dependsOn parent.subprojects.assemble
@@ -417,6 +415,74 @@ task createSingleJson {
     doLast {
         
         ant.taskdef(name:'singleJsonRepo', classname:'com.ibm.ws.repository.generator.SingleJsonRepositoryGenerator') {
+            classpath {
+                fileset(dir: "${rootDir}/com.ibm.ws.repository.generator/build/libs") {
+                    include(name: 'com.ibm.ws.repository.generator.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.repository/build/libs") {
+                    include(name: 'com.ibm.ws.repository.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.repository.parsers/build/libs") {
+                    include(name: 'com.ibm.ws.repository.parsers.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.logging.core/build/libs") {
+                    include(name: 'com.ibm.ws.logging.core.jar')
+                }
+                fileset(dir: "${rootDir}/com.ibm.ws.kernel.feature.core/build/libs") {
+                    include(name: 'com.ibm.ws.kernel.feature.core.jar')
+                }
+                fileset(dir: "${rootDir}/cnf/mavenlibs") {
+                    include(name: '**.jar')
+               }
+                fileset(dir: "${rootDir}/com.ibm.ws.kernel.boot.core/build/libs/") {
+                	include(name: 'com.ibm.ws.kernel.boot.core.jar')     	
+                }
+                
+                fileset(Dir:"${rootDir}/com.ibm.ws.logging.core/build/libs"){
+                	include (name:'com.ibm.ws.logging.core.jar')
+                }
+                fileset(Dir:"${rootDir}/com.ibm.websphere.javaee.jsonp.1.0/generated/"){
+                	include (name:'com.ibm.websphere.javaee.jsonp.1.0.jar')
+                }
+                fileset(dir:"${rootDir}/build.image/wlp/lib/"){
+                	include(name:'com.ibm.ws.org.glassfish.json.1.0_1.0.20.jar')
+                }
+                                     
+            }
+        }
+     
+      	def files = fileTree(dir:'build/temp/esas').matching{
+*/      	
+//      	      		include '**/*.esa' 
+      		
+ /*    	}     
+      
+     files.each {esa ->
+        	println "inside"
+        	
+        	println esa.name
+        	String basename=esa.name
+        	println file("build/temp/metadata/${basename}.metadata.zip").name
+            ant.singleJsonRepo(assetFile:file(esa),
+                   assetType:'FEATURE',
+                   metadataFile:file("build/temp/metadata/${basename}.metadata.zip"),
+                  jsonFile: "build/temp/SingleJson.json")
+        }
+        
+    }
+}
+publish{dependsOn createSingleJson}
+*/
+task generateMavenArtifact {
+	dependsOn copyEsas
+	dependsOn copyMavenLibs
+	dependsOn copyMetadataFiles
+	dependsOn parent.subprojects.publishFeatureResources
+	dependsOn parent.subprojects.assemble
+//dependsOn createSingleJson
+
+doLast {
+ ant.taskdef(name:'singleJsonRepo', classname:'com.ibm.ws.repository.generator.SingleJsonRepositoryGenerator') {
             classpath {
                 fileset(dir: "${rootDir}/com.ibm.ws.repository.generator/build/libs") {
                     include(name: 'com.ibm.ws.repository.generator.jar')
@@ -469,16 +535,6 @@ task createSingleJson {
                    metadataFile:file("build/temp/metadata/${basename}.metadata.zip"),
                   jsonFile: "build/temp/SingleJson.json")
         }
-        
-    }
-}
-publish{dependsOn createSingleJson}
-
-task generateMavenArtifact {
-dependsOn parent.subprojects.assemble
-dependsOn createSingleJson
-
-doLast {
         ant.taskdef(name:'featuresToMavenRepo', classname:'com.ibm.ws.wlp.mavenFeatures.LibertyFeaturesToMavenRepo') {
             classpath {
                 fileset(dir: "${rootDir}/LibertyFeaturesToMavenRepo/") {
@@ -500,15 +556,15 @@ doLast {
                    outputDirPath:'build/temp/mavenArtifact',
                    openLibertyJson:file("build/temp/SingleJson.json"))
        
-        ant.delete() {
-      		fileset(dir: 'build/temp/esas') {
-	 			include(name: '**/*.esa')
-			}
-	 	}
+       // ant.delete() {
+      	//	fileset(dir: 'build/temp/esas') {
+	 	//		include(name: '**/*.esa')
+		//	}
+	 //	}
         
         }
 }
-
+//generateMavenArtifact.dependsOn createSingleJson
 publish{dependsOn generateMavenArtifact}
 
 
