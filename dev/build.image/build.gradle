@@ -207,14 +207,19 @@ task zipOpenLibertyAll(type: Zip) {
 }
 task zipOpenLibertyMavenRepo(type: Zip){
 	dependsOn parent.subprojects.assemble
-	doLast{
-		basename 'openliberty-mavenArtifact'
-		from "${baseDir}/cnf/build/temp/"
+	//dependsOn 'cnf:generateMavenArtifact'
+		
+	//	basename 'openliberty-mavenArtifact'
+		from "${rootDir}/cnf/build/temp/"
 		include "mavenArtifact/**"
+		archiveName 'openliberty-mavenArtifact.zip'
+		
     	destinationDir distsDir
-    }
-}
 
+}
+   // zipOpenLibertyMavenRepo.dependsOn project("${rootDir}/cnf").tasks.generateMavenArtifact
+
+zipOpenLibertyMavenRepo.dependsOn  ':cnf:generateMavenArtifact'
 publish.dependsOn zipOpenLibertyMavenRepo
 
 /**
