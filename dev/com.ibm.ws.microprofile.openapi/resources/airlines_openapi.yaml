@@ -1,0 +1,607 @@
+openapi: 3.0.0
+info:
+  title: Validation App
+  version: "1.0"
+  termsOfService: http://www.termsofservice.com
+  contact:
+    name: AirlinesRatingApp API Support
+    url:  http://www.contacts.com
+    email: airlines@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.license.com
+externalDocs:
+  description: instructions for how to deploy this app
+  url:  http://www.externaldocumentation.com
+servers:
+- url: http://localhost:9080
+tags:
+- name: Airlines
+  description: airlines app
+- name: airline
+  description: all the airlines methods
+- name: availability
+  description: all the availibility methods
+- name: bookings
+  description: all the bookings methods
+- name: reviews
+  description: all the review methods
+paths:
+  /:
+    get:
+      tags:
+      - airline
+      summary: Retrieve all available airlines
+      responses:
+        202:
+          description: failed operation
+          content:
+            applictaion/json:
+              schema:
+                $ref: '#/components/schemas/Flight'
+      operationId: getAirlines
+      servers:
+      - url: localhost:9080/oas3-airlines/airlines/id
+        description: view of all the bookings
+  /availability:
+    get:
+      tags:
+      - availability
+      summary: Retrieve all available flights
+      operationId: getFlights
+      parameters:
+      - name: departureDate
+        in: query
+        description: Customer departure date
+        required: true
+        schema:
+          type: string
+      - name: airportFrom
+        in: query
+        description: Airport the customer departs from
+        required: true
+        schema:
+          type: string
+      - name: returningDate
+        in: query
+        description: Customer return date
+        required: true
+        schema:
+          type: string
+      - name: airportTo
+        in: query
+        description: Airport the customer returns to
+        required: true
+        schema:
+          type: string
+      - name: numberOfAdults
+        in: query
+        description: Number of adults on the flight
+        required: true
+        schema:
+          minimum: 0
+          type: string
+      - name: numberOfChildren
+        in: query
+        description: Number of children on the flight
+        required: true
+        schema:
+          minimum: 0
+          type: string
+      responses:
+        202:
+          description: failed operation
+          content:
+            applictaion/json:
+              schema:
+                $ref: '#/components/schemas/Flight'
+        404:
+          description: No available flights found
+          content:
+            n/a: {}
+      servers:
+      - url: localhost:9080/oas3-airlines/availability
+        description: view of all the bookings
+  /bookings:
+    get:
+      tags:
+      - bookings
+      summary: Retrieve all bookings for current user
+      operationId: getBookings
+      responses:
+        200:
+          description: Bookings retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+        404:
+          description: No bookings found for the user.
+    post:
+      tags:
+      - bookings
+      summary: Create a booking
+      description: Create a new booking record with the booking information provided.
+      operationId: createBooking
+      requestBody:
+        description: Create a new booking with the provided information.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+            examples:
+              booking:
+                summary: External booking example
+                externalValue: http://foo.bar/examples/booking-example.json
+      responses:
+        201:
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                type: string
+                description: id of the new booking
+
+  /bookings/{id}:
+    get:
+      tags:
+      - bookings
+      summary: Get a booking with ID
+      operationId: getBooking
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: ID of the booking
+        schema:
+          type: integer
+      responses:
+        200:
+          description: booking retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        404:
+          description: No bookings found for the user.
+      servers:
+      - url: localhost:9080/oas3-airlines/bookings/{id}
+        description: view of all the bookings for this user
+        variables:
+          id:
+            default: "1"
+            description: id of the review
+    put:
+      tags:
+      - bookings
+      summary: Update a booking with ID
+      description: Updates the given booking with the given ID.
+      externalDocs:
+        description: instructions on how to use this method
+        url: http://www.externaldocumentation.com
+      operationId: updateBooking
+      deprecated: true
+      security:
+      - bookingoauth2:
+        - write:reviews
+      servers:
+      - url: localhost:9080/oas3-airlines/booking
+        description: view of all the reviews
+      parameters:
+      - name: id
+        in: path
+        style: simple
+        deprecrated: false
+        allowEmptyValue: true
+        explode: false
+        explode: false
+        description: ID of the booking
+        example: "1"
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: requestbody consists of a booking
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                departtureFlight:
+                  $ref: '#/components/schemas/Flight'
+                returningFlight:
+                  $ref: '#/components/schemas/Flight'
+                creditCard:
+                  $ref: '#/components/schemas/CreditCard'
+                airMiles:
+                  type: string
+                  example: 32126319
+                seatPreference:
+                  type: string
+                  example: window
+              encoding:
+                profileImage:
+                  contentType: text/plain
+                  style: simple
+                  explode: false
+                  allowReserved: true
+                  headers:
+                    X-Rate-Limit-Limit:
+                      description: The number of allowed requests in the current period
+                      schema:
+                        type: integer
+      responses:
+        200:
+          description: Booking updated
+        404:
+          description: Booking not found
+      callbacks:
+        testCallback:
+          http://localhost:9080/oas3-airlines/reviews: {}
+    delete:
+      tags:
+      - bookings
+      summary: Delete a booking with ID
+      operationId: deleteBooking
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Booking deleted successfully.
+        404:
+          description: Booking not found.
+  /reviews:
+    get:
+      tags:
+      - reviews
+      summary: get all the reviews
+      operationId: getReview
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                  - $ref: '#/components/schemas/Review'
+      servers:
+      - url: localhost:9080/oas3-airlines/reviews
+        description: endpoint for all the review related methods
+    post:
+      tags:
+      - reviews
+      summary: Create a Review
+      operationId: createReview
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'    
+        description: example review to add
+        required: true
+      responses:
+        201:
+          description: review created
+          content:
+            application/json:
+              schema:
+                type: string
+                description: id of the new review
+      callbacks:
+        testCallback:
+          http://localhost:9080/oas3-airlines/reviews: {}
+      security:
+      - reviewoauth2:
+        - write:reviews
+      servers:
+      - url: localhost:9080/oas3-airlines/reviews/{id}
+        description: view of all the reviews
+        variables:
+          id:
+            description: id of the review
+            default: "1"
+  /reviews/{id}:
+    get:
+      tags:
+      - reviews
+      summary: Get a review with ID
+      operationId: getReviewById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the booking
+        required: true
+        content:
+          '*/*':
+            schema:
+              type: integer
+      responses:
+        200:
+          description: Review retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        404:
+          description: Review not found
+      servers:
+      - url: localhost:9080/oas3-airlines/reviews/{id}
+        description: endpoint for all the review related methods
+        variables:
+          id:
+            default: "11"
+            description: id of the review
+    delete:
+      tags:
+      - reviews
+      summary: Delete a Review with ID
+      operationId: deleteReview
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Review deleted
+        404:
+          description: Review not found
+  /reviews/{user}:
+    get:
+      tags:
+      - reviews
+      summary: Get all reviews by user
+      operationId: getReviewByUser
+      parameters:
+      - name: user
+        in: path
+        description: username of the user for the reviews
+        required: true
+        content:
+          '*/*':
+            schema:
+              type: string
+            examples:
+              ?
+              : value: bsmith
+      responses:
+        200:
+          description: Review(s) retrieved
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/Review'
+                - $ref: '#/components/schemas/User'
+                discriminator:
+                  propertyName: pet_type
+                  mapping:
+                    review: '#/components/schemas/Review'
+                    user: '#/components/schemas/User'
+        404:
+          description: Review(s) not found
+  /reviews/{airline}:
+    get:
+      tags:
+      - reviews
+      summary: Get all reviews by airlines
+      operationId: getReviewByAirline
+      parameters:
+      - name: airline
+        in: path
+        description: name of the airlines for the reviews
+        required: true
+        content:
+          '*/*':
+            schema:
+              type: string
+            examples:
+              ?
+              : value: Acme Air
+      responses:
+        200:
+          description: Review(s) retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        404:
+          description: Review(s) not found
+  /reviews/{user}/{airlines}:
+    get:
+      tags:
+      - reviews
+      summary: Get all reviews for an airline by User
+      operationId: getReviewByAirlineAndUser
+      parameters:
+      - name: user
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: airlines
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Review(s) retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        404:
+          description: Review(s) not found
+components:
+  schemas:
+    User:
+      required:
+      - age
+      - email
+      - firstName
+      - lastName
+      - password
+      - phone
+      - sex
+      type: object
+      properties:
+        password:
+          type: string
+          example: bobSm37
+        firstName:
+          type: string
+          example: Bob
+        lastName:
+          type: string
+          example: Smith
+        sex:
+          type: string
+          example: M
+        age:
+          type: integer
+          example: 37
+        email:
+          type: string
+          example: bob@test.ca
+        phone:
+          type: string
+          example: 123-456-7890
+        id:
+          type: integer
+        username:
+          type: string
+        status:
+          title: User Status
+          type: integer
+    Airline:
+      required:
+      - contactPhone
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: Acme Air
+        contactPhone:
+          type: string
+          example: 1-888-1234-567
+    Flight:
+      required:
+      - airportFrom
+      - airportTo
+      - dateTime
+      - number
+      - price
+      - status
+      type: object
+      properties:
+        airline:
+          $ref: '#/components/schemas/Airline'
+        dateTime:
+          pattern: dateTime
+          type: string
+          example: 2016-03-05 18:00
+        number:
+          type: string
+          example: AC190
+        status:
+          type: string
+          example: On Schedule
+        airportFrom:
+          type: string
+          example: YYZ
+        airportTo:
+          type: string
+          example: LAX
+        price:
+          type: string
+          example: US$350
+    Booking:
+      required:
+      - airMiles
+      - seatPreference
+      type: object
+      properties:
+        departtureFlight:
+          $ref: '#/components/schemas/Flight'
+        returningFlight:
+          $ref: '#/components/schemas/Flight'
+        creditCard:
+          $ref: '#/components/schemas/CreditCard'
+        airMiles:
+          type: string
+          example: 32126319
+        seatPreference:
+          type: string
+          example: window
+    Review:
+      required:
+      - id
+      - rating
+      type: object
+      properties:
+        id:
+          type: string
+          example: 0
+        user:
+          $ref: '#/components/schemas/User'
+        airlines:
+          $ref: '#/components/schemas/Airline'
+        rating:
+          type: integer
+          example: 8
+        comment:
+          type: string
+          example: Great service!
+    CreditCard:
+      required:
+      - cardNumber
+      - cardholderName
+      - cvv
+      - expiryDate
+      - issuer
+      type: object
+      properties:
+        issuer:
+          type: string
+          example: VISA
+        cardholderName:
+          type: string
+          example: Joe Smith
+        cardNumber:
+          type: string
+          example: '**********1234'
+        cvv:
+          type: string
+          example: "0322"
+        expiryDate:
+          type: string
+          example: 04/19        
+  securitySchemes:
+    reviewoauth2:
+      type: oauth2
+      description: authentication needed to create and delete reviews
+      flows:
+        implicit:
+          authorizationUrl: https://example.com/api/oauth/dialog
+          scopes:
+            write:reviews: create a review
+    bookingoauth2:
+      type: oauth2
+      description: authentication needed to edit bookings
+      flows:
+        implicit:
+          authorizationUrl: https://example.com/api/oauth/dialog
+          scopes:
+            write:booking: edit a booking
