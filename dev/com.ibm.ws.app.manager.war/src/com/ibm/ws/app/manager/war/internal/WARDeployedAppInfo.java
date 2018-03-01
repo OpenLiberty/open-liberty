@@ -29,6 +29,7 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.DefaultNotification;
@@ -110,7 +111,7 @@ class WARDeployedAppInfo extends DeployedAppInfoBase {
                                                                                getContainer(),
                                                                                this,
                                                                                getConfigHelper(),
-                                                                               applicationInformation.getUseJandex());
+                                                                               (ApplicationInfoForContainer) applicationInformation);
         webContainerModuleInfo.moduleName = appInfo.getName();
         // ??? Contrary to the EE specs, we use the deployment name, not the EE
         // application name, as the default context root for compatibility.

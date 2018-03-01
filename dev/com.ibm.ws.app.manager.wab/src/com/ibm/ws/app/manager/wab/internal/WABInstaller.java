@@ -69,6 +69,7 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory;
+import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleContainerInfo;
@@ -398,7 +399,16 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
                     //need to create an app info for it
                     String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(modPath);
                     String moduleName = ModuleInfoUtils.getModuleName(wabContainer.adapt(WebApp.class), moduleURI);
-                    appInfo = applicationInfoFactorySRRef.getService().createApplicationInfo(modPath, moduleName, wabContainer, null, null, false);
+                    appInfo = applicationInfoFactorySRRef.getService().createApplicationInfo(modPath,
+                                                                                             moduleName,
+                                                                                             wabContainer,
+                                                                                             null,
+                                                                                             null,
+                                                                                             new ApplicationInfoForContainer() {
+                                                                                                 public boolean getUseJandex() {
+                                                                                                     return false;
+                                                                                                 }
+                                                                                             });
                     wab.setCreatedApplicationInfo();
                 }
                 wab.setApplicationInfo(appInfo);
