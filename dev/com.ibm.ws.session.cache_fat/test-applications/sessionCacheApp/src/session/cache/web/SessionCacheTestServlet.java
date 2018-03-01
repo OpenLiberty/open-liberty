@@ -75,7 +75,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String[] expectDestroyed = request.getParameterValues("sessionDestroyed");
         String[] expectNotDestroyed = request.getParameterValues("sessionNotDestroyed");
 
-        String listenerClassName = "session.cache.web." + request.getParameter("listener"); // SessionListener1 or SessionListener2
+        String listenerClassName = "session.cache.web." + request.getParameter("listener") + ".SessionListener"; // listener1 or listener2
         Class<HttpSessionListener> sessionListenerClass = (Class<HttpSessionListener>) Class.forName(listenerClassName);
 
         LinkedBlockingQueue<String> created = (LinkedBlockingQueue<String>) sessionListenerClass.getField("created").get(null);
@@ -203,7 +203,9 @@ public class SessionCacheTestServlet extends FATServlet {
             System.out.println("Re-using existing session with id=" + session == null ? null : session.getId());
         String key = request.getParameter("key");
         String value = request.getParameter("value");
-        session.setAttribute(key, value);
+        String type = request.getParameter("type");
+        Object val = toType(type, value);
+        session.setAttribute(key, val);
         System.out.println("Put entry: " + key + '=' + value);
         response.getWriter().write("session id: [" + session.getId() + "]");
     }
@@ -211,13 +213,30 @@ public class SessionCacheTestServlet extends FATServlet {
     public void sessionGet(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         String key = request.getParameter("key");
         String expectedValue = request.getParameter("expectedValue");
+        String type = request.getParameter("type");
+        Object expected = toType(type, expectedValue);
         HttpSession session = request.getSession(false);
         if (expectedValue == null && session == null) {
             System.out.println("Got no session and was expecting null value.");
             return;
         }
-        String actualValue = (String) session.getAttribute(key);
+        Object actualValue = session.getAttribute(key);
         System.out.println("Got entry: " + key + '=' + actualValue);
-        assertEquals(expectedValue, actualValue);
+        assertEquals(expected, actualValue);
+    }
+
+    /**
+     * Convert a String value to the specified type.
+     * This is valid for the primitive wrapper classes (such as java.lang.Integer)
+     * and any other type that has a single argument String constructor.
+     */
+    private static Object toType(String type, String s) throws Exception {
+        if (s == null || "null".equals(s))
+            return null;
+
+        if (Character.class.getName().equals(type))
+            return s.charAt(0);
+
+        return Class.forName(type).getConstructor(String.class).newInstance(s);
     }
 }

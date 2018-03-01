@@ -703,6 +703,7 @@ public class CacheHashMap extends BackedHashMap {
      *
      * @see com.ibm.ws.session.store.common.BackedHashMap#persistSession(com.ibm.ws.session.store.common.BackedSession, boolean)
      */
+    @FFDCIgnore(Exception.class) // FFDC logged manually with extra info
     @Override
     protected boolean persistSession(BackedSession d2, boolean propHit) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -787,7 +788,7 @@ public class CacheHashMap extends BackedHashMap {
                 long lastAccess = sessionInfo.getLastAccess();
                 short listenerCnt = sessionInfo.getListenerCount();
                 int maxInactive = sessionInfo.getMaxInactiveTime();
-                if ((listenerCnt == 0 || listenerCnt == 2)
+                if ((listenerCnt == 1 || listenerCnt == 3)
                                 && maxInactive >= 0
                                 && maxInactive < (start - lastAccess) / 1000) {
 
