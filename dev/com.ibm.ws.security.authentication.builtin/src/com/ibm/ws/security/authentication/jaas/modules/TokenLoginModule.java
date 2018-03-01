@@ -11,6 +11,7 @@
 package com.ibm.ws.security.authentication.jaas.modules;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -27,15 +28,18 @@ import com.ibm.websphere.security.auth.callback.WSAuthMechOidCallbackImpl;
 import com.ibm.websphere.security.auth.callback.WSCredTokenCallbackImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.AccessIdUtil;
+import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.internal.jaas.modules.ServerCommonLoginModule;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.jaas.common.callback.AuthenticationHelper;
 import com.ibm.ws.security.jaas.common.callback.JwtTokenCallback;
 import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.wsspi.security.ltpa.Token;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 /**
  * Handles token based authentication, such as Single Sign-on.
@@ -47,6 +51,14 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
     private String accessId = null;
     private Token recreatedToken;
+
+    private final String[] hashtableLoginProperties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
+                                                        AttributeNameConstants.WSCREDENTIAL_USERID,
+                                                        AttributeNameConstants.WSCREDENTIAL_SECURITYNAME,
+                                                        AttributeNameConstants.WSCREDENTIAL_REALM,
+                                                        AttributeNameConstants.WSCREDENTIAL_CACHE_KEY,
+                                                        AuthenticationConstants.INTERNAL_ASSERTION_KEY,
+                                                        AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
 
     /** {@inheritDoc} */
     @Override
@@ -151,10 +163,20 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
 
     private void setUpTemporaryUserSubjectForJsonWebToken(String jwtToken) throws Exception {
         temporarySubject = new Subject();
-        String securityName = "user1"; //TODO: call Aruna code to get the securityName
-        accessId = "user:https://localhost:9443/jwt/defaultJWT/user1,groupIds=[]"; //TODO: call Aruna code to get the securityName
+        //String securityName = "user1"; //TODO: call Aruna code to get the securityName
+        //accessId = "user:https://localhost:9443/jwt/defaultJWT/user1,groupIds=[]"; //TODO: call Aruna code to get the securityName
+//        SubjectHelper subjectHelper = new SubjectHelper();
+//        Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(subject, hashtableLoginProperties);
+
+        //String userId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_USERID);
         temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(jwtToken);
+
 //        temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(JsonUtils.convertToBase64(token.toString()));
+        SubjectHelper subjectHelper = new SubjectHelper();
+        //call Aruna code to get accessId, securityname and groups
+        Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(temporarySubject, hashtableLoginProperties);
+        accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+        String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
         setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
     }
 
