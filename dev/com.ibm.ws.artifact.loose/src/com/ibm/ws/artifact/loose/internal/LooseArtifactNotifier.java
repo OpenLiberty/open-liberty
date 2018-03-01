@@ -339,6 +339,7 @@ public class LooseArtifactNotifier implements ArtifactNotifier, FileMonitor {
         }
     }
 
+    @FFDCIgnore(IllegalStateException.class)
     private synchronized void updateNonRecurseFileMonitorService(Set<String> dirs, Set<String> files) {
         if (nonRecurseService == null) {
             nonRecurseServiceProperties.put(Constants.SERVICE_VENDOR, "IBM");
