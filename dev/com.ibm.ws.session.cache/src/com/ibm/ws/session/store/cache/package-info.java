@@ -9,5 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.1.0")
+@TraceOptions(messageBundle = "com.ibm.ws.session.store.cache.resources.WASSessionCache")
 package com.ibm.ws.session.store.cache;
 
+import com.ibm.websphere.ras.annotation.TraceOptions;

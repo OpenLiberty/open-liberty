@@ -18,12 +18,11 @@
   <Object ocdref="com.ibm.ws.session.cache"/>
  </Designate>
 
- <!-- TODO add NLS -->
  <OCD id="com.ibm.ws.session.cache" ibm:alias="httpSessionCache" name="internal" description="internal use only">
-  <AD id="libraryRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" name="internal" description="internal use only"/>
+  <AD id="libraryRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" name="%libraryRef" description="%libraryRef.desc"/>
   <AD id="library.target"              type="String"  default="(|(service.pid=${libraryRef})(&amp;(zero=${count(libraryRef)})(id=com.ibm.ws.session.cache.defaultprovider.library)))" ibm:final="true" name="internal" description="internal use only"/>  
   <AD id="service.ranking"             type="Integer" default="50" ibm:final="true" name="internal" description="internal use only"/> <!-- httpSessionDatabase takes precedence -->
-  <AD id="uri" type="String" ibm:type="location" required="false" name="internal" description="internal use only"/>
+  <AD id="uri" type="String" ibm:type="location" required="false" name="%uri" description="%uri.desc"/>
   <AD id="properties" name="internal" description="internal use only" required="false" type="String"  cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.session.cache.properties" ibm:flat="true"/>
  </OCD>
  
@@ -31,6 +30,6 @@
   	<Object ocdref="com.ibm.ws.session.cache.properties"/>
   </Designate>
  
- <OCD id="com.ibm.ws.session.cache.properties" name="internal" description="internal use only" ibmui:extraProperties="true" ibm:alias="properties" />
+ <OCD id="com.ibm.ws.session.cache.properties" name="%properties" description="%properties.desc" ibmui:extraProperties="true" ibm:alias="properties" />
  
 </metatype:MetaData>
