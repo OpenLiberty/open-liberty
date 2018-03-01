@@ -133,7 +133,7 @@ public class SessionCacheTestServlet extends FATServlet {
 
         session.setAttribute("testLastAccessedTime-key1", 2.71828);
 
-        // creation time should never change
+        // last accessed time should change
         assertNotSame(lastAccessedTime, session.getLastAccessedTime());
     }
 
