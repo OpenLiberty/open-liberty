@@ -198,35 +198,38 @@ public class SessionCacheTestServlet extends FATServlet {
         boolean createSession = Boolean.parseBoolean(request.getParameter("createSession"));
         HttpSession session = request.getSession(createSession);
         if (createSession)
-            System.out.println("Created a new session with id=" + session.getId());
+            System.out.println("Created a new session with sessionID=" + session.getId());
         else
-            System.out.println("Re-using existing session with id=" + session == null ? null : session.getId());
+            System.out.println("Re-using existing session with sessionID=" + session == null ? null : session.getId());
         String key = request.getParameter("key");
         String value = request.getParameter("value");
         String type = request.getParameter("type");
         Object val = toType(type, value);
         session.setAttribute(key, val);
-        System.out.println("Put entry: " + key + '=' + value);
-        response.getWriter().write("session id: [" + session.getId() + "]");
+        String sessionID = session.getId();
+        System.out.println("Put entry: " + key + '=' + value + " into sessionID=" + sessionID);
+        response.getWriter().write("session id: [" + sessionID + "]");
     }
 
     public void sessionGet(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         String key = request.getParameter("key");
-        String expectedValue = request.getParameter("expectedValue");
+        String rawExpectedValue = request.getParameter("expectedValue");
         String type = request.getParameter("type");
         boolean compareAsString = Boolean.parseBoolean(request.getParameter("compareAsString")); // useful if the class does not implement .equals
-        Object expected = toType(type, expectedValue);
+        Object expectedValue = toType(type, rawExpectedValue);
+
         HttpSession session = request.getSession(false);
         if (expectedValue == null && session == null) {
-            System.out.println("Got no session and was expecting null value.");
+            System.out.println("Session was null and was expecting null value.");
             return;
         }
         Object actualValue = session.getAttribute(key);
-        System.out.println("Got entry: " + key + '=' + actualValue);
+        System.out.println("Got entry: " + key + '=' + actualValue + " from sessionID=" + session.getId());
+
         if (compareAsString)
-            assertEquals(expected.toString(), actualValue.toString());
+            assertEquals(expectedValue.toString(), actualValue.toString());
         else
-            assertEquals(expected, actualValue);
+            assertEquals(expectedValue, actualValue);
     }
 
     /**
