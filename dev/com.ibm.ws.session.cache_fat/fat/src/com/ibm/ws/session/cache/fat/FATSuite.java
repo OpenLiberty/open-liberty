@@ -27,7 +27,8 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(Suite.class)
 @SuiteClasses({
                 SessionCacheOneServerTest.class,
-                SessionCacheTwoServerTest.class
+                SessionCacheTwoServerTest.class,
+                SessionCacheTimeoutTest.class
 })
 public class FATSuite {
 
