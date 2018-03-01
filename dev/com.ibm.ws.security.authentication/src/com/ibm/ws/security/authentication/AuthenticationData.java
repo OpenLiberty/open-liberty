@@ -74,6 +74,8 @@ public interface AuthenticationData {
      */
     public static final String AUTHENTICATION_MECH_OID = "AUTHENTICATION_MECH_OID";
 
+    public static final String JWT_TOKEN = "JWT_TOKEN";
+
     /**
      * Sets the key-value pair.
      *

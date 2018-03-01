@@ -107,6 +107,7 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.common.encoder,\
+	com.ibm.ws.security.common,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\

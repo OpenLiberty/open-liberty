@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationData;
@@ -217,32 +216,32 @@ public class SSOAuthenticator implements WebAuthenticator {
      * @param subject
      * @return
      */
-    @Trivial
-    private AuthenticationData createAuthenticationData(HttpServletRequest req, HttpServletResponse res, Subject subject) {
-        // TODO Auto-generated method stub
-
-        AuthenticationData authenticationData = new WSAuthenticationData();
-        authenticationData.set(AuthenticationData.HTTP_SERVLET_REQUEST, req);
-        authenticationData.set(AuthenticationData.HTTP_SERVLET_RESPONSE, res);
-        try {
-//            String jwtssoCookieString = JwtSSOTokenHelper.getJwtSSOToken(subject);
-//            Cookie jwtCookie = new Cookie("jwtToken", jwtssoCookieString); //TODO webAppSecConfig.getSSOCookieName()
-//            if (jwtCookie != null) {
-//                //authenticationData.set(AuthenticationData.TOKEN64, jwtCookie.getValue()); //TODO
-//            }
-//            if (subject != null) {
-//                // Allow TAI to login and create LTPA Cookie
-//                // Also prevent it from login again
-//                Cookie ltpaCookie = WebSecurityHelperImpl.getLTPACookie(subject);
-//                if (ltpaCookie != null) {
-//                    authenticationData.set(AuthenticationData.TOKEN64, ltpaCookie.getValue());
-//                }
-//            }
-        } catch (Exception e) {
-            // this is OK if TAI does not have a SSO Cookie
-        }
-        return authenticationData;
-    }
+//    @Trivial
+//    private AuthenticationData createAuthenticationData(HttpServletRequest req, HttpServletResponse res, Subject subject) {
+//        // TODO Auto-generated method stub
+//
+//        AuthenticationData authenticationData = new WSAuthenticationData();
+//        authenticationData.set(AuthenticationData.HTTP_SERVLET_REQUEST, req);
+//        authenticationData.set(AuthenticationData.HTTP_SERVLET_RESPONSE, res);
+//        try {
+////            String jwtssoCookieString = JwtSSOTokenHelper.getJwtSSOToken(subject);
+////            Cookie jwtCookie = new Cookie("jwtToken", jwtssoCookieString); //TODO webAppSecConfig.getSSOCookieName()
+////            if (jwtCookie != null) {
+////                //authenticationData.set(AuthenticationData.TOKEN64, jwtCookie.getValue()); //TODO
+////            }
+////            if (subject != null) {
+////                // Allow TAI to login and create LTPA Cookie
+////                // Also prevent it from login again
+////                Cookie ltpaCookie = WebSecurityHelperImpl.getLTPACookie(subject);
+////                if (ltpaCookie != null) {
+////                    authenticationData.set(AuthenticationData.TOKEN64, ltpaCookie.getValue());
+////                }
+////            }
+//        } catch (Exception e) {
+//            // this is OK if TAI does not have a SSO Cookie
+//        }
+//        return authenticationData;
+//    }
 
     /**
      * @param req
@@ -329,7 +328,12 @@ public class SSOAuthenticator implements WebAuthenticator {
         AuthenticationData authenticationData = new WSAuthenticationData();
         authenticationData.set(AuthenticationData.HTTP_SERVLET_REQUEST, req);
         authenticationData.set(AuthenticationData.HTTP_SERVLET_RESPONSE, res);
-        authenticationData.set(AuthenticationData.TOKEN64, token);
+        if (oid.equals(LTPA_OID)) {
+            authenticationData.set(AuthenticationData.TOKEN64, token);
+        } else {
+            authenticationData.set(AuthenticationData.JWT_TOKEN, token);
+        }
+
         authenticationData.set(AuthenticationData.AUTHENTICATION_MECH_OID, oid);
         return authenticationData;
     }

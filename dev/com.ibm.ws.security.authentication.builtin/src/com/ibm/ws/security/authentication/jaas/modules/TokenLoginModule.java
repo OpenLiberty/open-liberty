@@ -25,13 +25,13 @@ import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.websphere.security.auth.callback.WSAuthMechOidCallbackImpl;
 import com.ibm.websphere.security.auth.callback.WSCredTokenCallbackImpl;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.internal.jaas.modules.ServerCommonLoginModule;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.jaas.common.callback.AuthenticationHelper;
+import com.ibm.ws.security.jaas.common.callback.JwtTokenCallback;
 import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.token.TokenManager;
@@ -63,9 +63,9 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
             Callback[] callbacks = getRequiredCallbacks(callbackHandler);
             byte[] token = ((WSCredTokenCallbackImpl) callbacks[0]).getCredToken();
             String authMechOid = ((WSAuthMechOidCallbackImpl) callbacks[1]).getAuthMechOid();
-
+            String jwtToken = ((JwtTokenCallback) callbacks[2]).getToken();
             // If we have insufficient data, abstain.
-            if (token == null) {
+            if (token == null && jwtToken == null) {
                 return false;
             }
 
@@ -81,9 +81,9 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
                 } else {
                     setUpTemporaryUserSubject();
                 }
-            } else if (authMechOid.equals(JWT_OID)) {
-                // TODO: call Aruna code
-                setUpTemporaryUserSubjectForJsonWebToken(token);
+            } else if (authMechOid.equals(JWT_OID) && jwtToken != null) {
+                //Base64.decodeBase64(credToken64)
+                setUpTemporaryUserSubjectForJsonWebToken(jwtToken);
 
             }
             updateSharedState();
@@ -111,9 +111,10 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
      */
     @Override
     public Callback[] getRequiredCallbacks(CallbackHandler callbackHandler) throws IOException, UnsupportedCallbackException {
-        Callback[] callbacks = new Callback[2];
+        Callback[] callbacks = new Callback[3];
         callbacks[0] = new WSCredTokenCallbackImpl("Credential Token");
         callbacks[1] = new WSAuthMechOidCallbackImpl("AuthMechOid");
+        callbacks[2] = new JwtTokenCallback();
         callbackHandler.handle(callbacks);
         return callbacks;
     }
@@ -148,11 +149,12 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
     }
 
-    private void setUpTemporaryUserSubjectForJsonWebToken(byte[] token) throws Exception {
+    private void setUpTemporaryUserSubjectForJsonWebToken(String jwtToken) throws Exception {
         temporarySubject = new Subject();
-        String securityName = null; //TODO: call Aruna code to get the securityName
-        accessId = null; //TODO: call Aruna code to get the securityName
-        temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(Base64Coder.toString(token));
+        String securityName = "user1"; //TODO: call Aruna code to get the securityName
+        accessId = "user:https://localhost:9443/jwt/defaultJWT/user1,groupIds=[]"; //TODO: call Aruna code to get the securityName
+        temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(jwtToken);
+//        temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(JsonUtils.convertToBase64(token.toString()));
         setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
     }
 

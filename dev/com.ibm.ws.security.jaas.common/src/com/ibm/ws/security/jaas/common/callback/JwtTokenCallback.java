@@ -19,20 +19,20 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 /**
 *
 */
-public class TokenCallback implements Callback, Serializable {
+public class JwtTokenCallback implements Callback, Serializable {
     private static final long serialVersionUID = 1L;
-    private byte[] credToken;
+    private String credToken;
 
-    public TokenCallback() {
+    public JwtTokenCallback() {
         super();
     }
 
-    public void setToken(@Sensitive byte[] token) {
-        this.credToken = AuthenticationHelper.copyCredToken(token);
+    public void setToken(@Sensitive String token) {
+        this.credToken = new String(token);
     }
 
-    public @Sensitive byte[] getToken() {
-        return AuthenticationHelper.copyCredToken(credToken);
+    public @Sensitive String getToken() {
+        return credToken;
     }
 
 }

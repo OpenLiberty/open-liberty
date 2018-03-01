@@ -13,6 +13,7 @@ package com.ibm.ws.security.jaas.common.callback;
 import static com.ibm.ws.security.authentication.AuthenticationData.CERTCHAIN;
 import static com.ibm.ws.security.authentication.AuthenticationData.HTTP_SERVLET_REQUEST;
 import static com.ibm.ws.security.authentication.AuthenticationData.HTTP_SERVLET_RESPONSE;
+import static com.ibm.ws.security.authentication.AuthenticationData.JWT_TOKEN;
 import static com.ibm.ws.security.authentication.AuthenticationData.PASSWORD;
 import static com.ibm.ws.security.authentication.AuthenticationData.REALM;
 import static com.ibm.ws.security.authentication.AuthenticationData.TOKEN;
@@ -75,6 +76,9 @@ public class AuthenticationDataCallbackHandler implements CallbackHandler {
                     token = (byte[]) authenticationData.get(TOKEN);
                 }
                 ((TokenCallback) callback).setToken(token);
+            } else if (callback instanceof JwtTokenCallback) {
+                String token = (String) authenticationData.get(JWT_TOKEN);
+                ((JwtTokenCallback) callback).setToken(token);
             } else if (callback instanceof WSX509CertificateChainCallback) {
                 X509Certificate[] certChain = (X509Certificate[]) authenticationData.get(CERTCHAIN);
                 ((WSX509CertificateChainCallback) callback).setX509CertificateChain(certChain);
@@ -99,6 +103,9 @@ public class AuthenticationDataCallbackHandler implements CallbackHandler {
                     String credToken64 = (String) authenticationData.get(TOKEN64);
                     if (credToken64 != null) {
                         credToken = Base64Coder.base64DecodeString(credToken64);
+                        if (credToken == null) {
+                            credToken = credToken64.getBytes();
+                        }
                         ((WSCredTokenCallbackImpl) callback).setCredToken(credToken);
                     }
                 }
