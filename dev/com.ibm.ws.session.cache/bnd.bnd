@@ -21,7 +21,8 @@ javac.source: 1.8
 javac.target: 1.8
 
 Private-Package: \
-    com.ibm.ws.session.store.cache
+    com.ibm.ws.session.store.cache,\
+    com.ibm.ws.session.store.cache.resources
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF

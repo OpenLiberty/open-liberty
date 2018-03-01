@@ -7,14 +7,11 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-#################################################################################
-#
-#ISMESSAGEFILE FALSE
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.session.cache/resources/com/ibm/ws/session/store/cache/resources/WASSessionCache.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-#NLS_MESSAGEFORMAT_NONE
-#
 
-description=This feature enables persistence of HTTP sessions using JCache. Persisting \
- HTTP session data using JCache allows for high performance HTTP session persistence \
- without the use of a relational database. Failover of HTTP sessions can be achieved \
- by configuring multiple servers to persist data to the same location.
