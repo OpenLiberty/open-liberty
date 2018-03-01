@@ -332,7 +332,7 @@ task createDir{
 	mkdir 'build/temp'
 }
 
-task copyEsas(type: Copy){
+task copyEsas(type: Sync){
    	dependsOn parent.subprojects.assemble
     dependsOn parent.subprojects.publishFeatureResources
    // dependsOn createGaESAList
@@ -370,7 +370,7 @@ task copyEsas(type: Copy){
 
 copyEsas.dependsOn createDir
 
-task copyMetadataFiles(type: Copy) {
+task copyMetadataFiles(type: Sync) {
     dependsOn parent.subprojects.assemble
     dependsOn parent.subprojects.publishFeatureResources 
    // dependsOn createGaESAList  
@@ -469,7 +469,7 @@ task generateMavenArtifact {
 //dependsOn createSingleJson
 
 doLast {
- ant.taskdef(name:'singleJsonRepo', classname:'com.ibm.ws.repository.generator.SingleJsonRepositoryGenerator') {
+ 	ant.taskdef(name:'singleJsonRepo', classname:'com.ibm.ws.repository.generator.SingleJsonRepositoryGenerator') {
             classpath {
             
                 fileset(dir: "${rootDir}/com.ibm.ws.repository.generator/build/libs") {
@@ -523,7 +523,7 @@ doLast {
       		include '**/*.esa' 
       		
       	}     
-    // File jsonfile = file('build/temp/SingleJson.json')
+     File jsonfile = file('build/temp/SingleJson.json')
       
      files.each {esa ->
         	println "inside"
@@ -534,7 +534,7 @@ doLast {
             ant.singleJsonRepo(assetFile:file(esa),
                    assetType:'FEATURE',
                    metadataFile:file("build/temp/metadata/${basename}.metadata.zip"),
-                  jsonFile:file('build/temp/SingleJson.json'))
+                  jsonFile:file(jsonfile))
         }
         ant.taskdef(name:'featuresToMavenRepo', classname:'com.ibm.ws.wlp.mavenFeatures.LibertyFeaturesToMavenRepo') {
             classpath {
@@ -555,7 +555,7 @@ doLast {
                         
         ant.featuresToMavenRepo(inputDirPath:"${rootDir}/cnf/build/temp/esas",
                    outputDirPath:"${rootDir}/cnf/build/temp/mavenArtifact",
-                   openLibertyJson:file('build/temp/SingleJson.json'))
+                   openLibertyJson:file(jsonfile))
        
        // ant.delete() {
       	//	fileset(dir: 'build/temp/esas') {
