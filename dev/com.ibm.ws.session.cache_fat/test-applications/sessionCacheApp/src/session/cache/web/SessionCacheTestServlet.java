@@ -214,6 +214,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String key = request.getParameter("key");
         String expectedValue = request.getParameter("expectedValue");
         String type = request.getParameter("type");
+        boolean compareAsString = Boolean.parseBoolean(request.getParameter("compareAsString")); // useful if the class does not implement .equals
         Object expected = toType(type, expectedValue);
         HttpSession session = request.getSession(false);
         if (expectedValue == null && session == null) {
@@ -222,7 +223,21 @@ public class SessionCacheTestServlet extends FATServlet {
         }
         Object actualValue = session.getAttribute(key);
         System.out.println("Got entry: " + key + '=' + actualValue);
-        assertEquals(expected, actualValue);
+        if (compareAsString)
+            assertEquals(expected.toString(), actualValue.toString());
+        else
+            assertEquals(expected, actualValue);
+    }
+
+    /**
+     * Get a session attribute which is a StringBuffer and append characters,
+     * but don't set the attribute with the updated value.
+     */
+    public void testStringBufferAppendWithoutSetAttribute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String key = request.getParameter("key");
+        HttpSession session = request.getSession(true);
+        StringBuffer value = (StringBuffer) session.getAttribute(key);
+        value.append("Appended");
     }
 
     /**
