@@ -64,6 +64,8 @@ public abstract class AroundConstructTestBase extends LoggingTest {
     public static void setUp() throws Exception {
 
         if (hasSetup){ 
+            assertNotNull("aroundConstructApp started or updated message", server.waitForStringInLog("CWWKZ000[13]I.*aroundConstructApp"));
+            assertNotNull("postConstructErrorMessageApp started or updated message", server.waitForStringInLog("CWWKZ000[13]I.*postConstructErrorMessageApp"));
             return;
         }
         hasSetup = true;

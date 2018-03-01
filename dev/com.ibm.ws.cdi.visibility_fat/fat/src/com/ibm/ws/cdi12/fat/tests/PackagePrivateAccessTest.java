@@ -42,6 +42,8 @@ public class PackagePrivateAccessTest extends LoggingTest {
 
     private static LibertyServer server;
 
+    private static boolean hasSetup = false;
+
     @Override
     protected ShrinkWrapSharedServer getSharedServer() {
         return null;
@@ -49,16 +51,25 @@ public class PackagePrivateAccessTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        server = LibertyServerFactory.getStartedLibertyServer("packagePrivateAccessServer");
+
+        if (hasSetup) {
+            // Server already set up, app should have already been deployed when the server was started up, make sure the app has started
+            assertNotNull("packagePrivateAccessApp started or updated message", server.waitForStringInLog("CWWKZ000[13]I.*packagePrivateAccessApp"));
+            return;
+        }
+
         WebArchive packagePrivateAccessApp =  ShrinkWrap.create(WebArchive.class, "packagePrivateAccessApp.war")
                         .addClass("jp.test.RunServlet")
                         .addClass("jp.test.bean.MyBeanHolder")
                         .addClass("jp.test.bean.MyExecutor")
                         .addClass("jp.test.bean.MyBean")
                         .add(new FileAsset(new File("test-applications/packagePrivateAccessApp.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");    
-        server = LibertyServerFactory.getStartedLibertyServer("packagePrivateAccessServer");
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         ShrinkHelper.exportDropinAppToServer(server, packagePrivateAccessApp);
         assertNotNull("packagePrivateAccessApp started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*packagePrivateAccessApp"));
+        hasSetup = true;
     }
 
     @Test

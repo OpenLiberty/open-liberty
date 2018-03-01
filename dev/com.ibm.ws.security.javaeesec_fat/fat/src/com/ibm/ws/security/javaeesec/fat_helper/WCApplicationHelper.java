@@ -95,7 +95,7 @@ public class WCApplicationHelper {
             if (addJarResources)
                 ShrinkHelper.addDirectory(jar, "test-applications/" + jarName + "/resources");
         }
-        ShrinkHelper.exportArtifact(jar, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
+        ShrinkHelper.exportArtifact(jar, DIR_PUBLISH + server.getServerName() + "/" + dir, true, ShrinkHelper.ExportOptions.OVERWRITE);
     }
 
     /*
@@ -116,7 +116,7 @@ public class WCApplicationHelper {
             if (addJarResources)
                 ShrinkHelper.addDirectory(jar, "test-applications/" + jarName + "/resources");
         }
-        ShrinkHelper.exportArtifact(jar, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
+        ShrinkHelper.exportArtifact(jar, DIR_PUBLISH + server.getServerName() + "/" + dir, true, ShrinkHelper.ExportOptions.OVERWRITE);
     }
 
     /*
@@ -134,7 +134,7 @@ public class WCApplicationHelper {
             WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, new File(baseDir + warFile));
             ear.addAsModule(war);
         }
-        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
+        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, ShrinkHelper.ExportOptions.OVERWRITE);
     }
 
     public static EnterpriseArchive createEar(LibertyServer server, String dir, String earName, boolean addEarResources) throws Exception {
@@ -148,7 +148,7 @@ public class WCApplicationHelper {
     }
 
     public static void exportEar(LibertyServer server, String dir, EnterpriseArchive ear) throws Exception {
-        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
+        ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, ShrinkHelper.ExportOptions.OVERWRITE);
     }
 
     /*
@@ -251,14 +251,14 @@ public class WCApplicationHelper {
                 deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" + ear.getName());
                 ShrinkHelper.exportToServer(server, dir, ear);
             } else {
-                ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
+                ShrinkHelper.exportArtifact(ear, DIR_PUBLISH + server.getServerName() + "/" + dir, true, ShrinkHelper.ExportOptions.OVERWRITE);
             }
         } else {
             if (deploy) {
                 deleteFileIfExist("publish/servers/" + server.getServerName() + "/" + dir + "/" + war.getName());
                 ShrinkHelper.exportToServer(server, dir, war);
             } else {
-                ShrinkHelper.exportArtifact(war, DIR_PUBLISH + server.getServerName() + "/" + dir, true, true);
+                ShrinkHelper.exportArtifact(war, DIR_PUBLISH + server.getServerName() + "/" + dir, true, ShrinkHelper.ExportOptions.OVERWRITE);
             }
         }
     }

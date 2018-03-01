@@ -11,6 +11,8 @@
 package com.ibm.websphere.simplicity;
 
 import java.io.File;
+import java.util.List;
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -39,21 +41,56 @@ public class ShrinkHelper {
     /**
      * Export an artifact to servers/$server.getName()/$path/$a.getName() under two directories:
      * autoFVT/publish/... and wlp/usr/...
+     * If no ExportOptions.OVERWRITE is not provided this method will default to not overwriting the archive.
      */
-    public static void exportToServer(LibertyServer server, String path, Archive<?> a) throws Exception {
+    public static void exportToServer(LibertyServer server, String path, Archive<?> a, ExportOptions... exportOptions) throws Exception {
+
+        List<ExportOptions> listExportOptions = Arrays.asList(exportOptions);
+
+        if (listExportOptions.contains(ExportOptions.NO_OVERWRITE) && listExportOptions.contains(ExportOptions.OVERWRITE)){
+            throw new IllegalArgumentException("Mutually exclusive export options were provided");
+        }
+
         String serverDir = "publish/servers/" + server.getServerName();
-        exportArtifact(a, serverDir + '/' + path);
-        server.copyFileToLibertyServerRoot(serverDir + "/" + path, path, a.getName());
+        String localFilePath = serverDir + '/' + path;
+        File localFile = new File(localFilePath, a.getName());
+       
+        exportArtifact(a, localFilePath, exportOptions);
+
+        if (listExportOptions.contains(ExportOptions.OVERWRITE) || ! server.fileExistsInLibertyServerRoot(path + '/' + a.getName())) { 
+            Log.info(ShrinkHelper.class, "exportToServer", "Copying file " + a.getName() + " to liberty server");
+            server.copyFileToLibertyServerRoot(localFilePath, path, a.getName());
+        } else {
+            Log.info(ShrinkHelper.class, "exportToServer", "Not copying file " + a.getName() + " to liberty server because it already exists at the destination.");
+        }
     }
 
     /**
      * Export an artifact to clients/$client.getName()/$path/$a.getName() under two directories:
      * autoFVT/publish/... and wlp/usr/...
+     *
+     * If no ExportOptions.OVERWRITE is not provided this method will default to not overwriting the archive.
      */
-    public static void exportToClient(LibertyClient client, String path, Archive<?> a) throws Exception {
+    public static void exportToClient(LibertyClient client, String path, Archive<?> a, ExportOptions... exportOptions) throws Exception {
+
+        List<ExportOptions> listExportOptions = Arrays.asList(exportOptions);
+
+        if (listExportOptions.contains(ExportOptions.NO_OVERWRITE) && listExportOptions.contains(ExportOptions.OVERWRITE)){
+            throw new IllegalArgumentException("Mutually exclusive export options were provided");
+        }
+
         String clientDir = "publish/clients/" + client.getClientName();
-        exportArtifact(a, clientDir + '/' + path);
-        client.copyFileToLibertyClientRoot(clientDir + "/" + path, path, a.getName());
+        String localFilePath = clientDir + '/' + path;
+        File localFile = new File(localFilePath, a.getName());
+
+        exportArtifact(a, localFilePath, exportOptions);
+
+        if (listExportOptions.contains(ExportOptions.OVERWRITE) || ! client.fileExistsInLibertyClientRoot(path + '/' + a.getName())) { 
+            Log.info(ShrinkHelper.class, "exportToClient", "Copying file " + a.getName() + " to liberty client");
+            client.copyFileToLibertyClientRoot(localFilePath, path, a.getName());
+        } else {
+            Log.info(ShrinkHelper.class, "exportToClient", "Not copying file " + a.getName() + " to liberty client because it already exists at the destination.");
+        }
     }
 
     /**
@@ -115,7 +152,7 @@ public class ShrinkHelper {
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents) {
-            return exportArtifact(a, dest, printArchiveContents, false);
+            return exportArtifact(a, dest, printArchiveContents, ExportOptions.NO_OVERWRITE);
     }
 
     /**
@@ -126,19 +163,27 @@ public class ShrinkHelper {
      * @param a The archive to export as a file
      * @param dest The target folder to export the archive to (i.e. publish/files/apps)
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
-     * @param overWrite Wheather or not to overwrite an existing artifact
+     * @param ExportOptions options to customise the methods behaviour. Currently the two options are ExportOptions.NO_OVERWRITE and ExportOptions.OVERWRITE. The default is ExportOptions.NO_OVERWRITE
      */
-    public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents, boolean overWrite) {
+    public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents, ExportOptions... exportOptions) {
         Log.info(c, "exportArtifact", "Exporting shrinkwrap artifact: " + a.toString() + " to " + dest);
+
+        List<ExportOptions> listExportOptions = Arrays.asList(exportOptions);
+
+        if (listExportOptions.contains(ExportOptions.NO_OVERWRITE) && listExportOptions.contains(ExportOptions.OVERWRITE)){
+            throw new IllegalArgumentException("Mutually exclusive export options were provided");
+        }
+
         File outputFile = new File(dest, a.getName());
-        if (outputFile.exists() && ! overWrite) {
+        if (outputFile.exists() && ! listExportOptions.contains(ExportOptions.OVERWRITE)) {
             Log.info(ShrinkHelper.class, "exportArtifact", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
             return a;
         }
         outputFile.getParentFile().mkdirs();
         a.as(ZipExporter.class).exportTo(outputFile, true);
-        if (printArchiveContents)
+        if (printArchiveContents) {
             Log.info(ShrinkHelper.class, "exportArtifact", a.toString(true));
+        }
         return a;
     }
 
@@ -253,5 +298,9 @@ public class ShrinkHelper {
         ResourceAdapterArchive rar = buildDefaultRar(rarName, packages);
         ShrinkHelper.exportToServer(server, "connectors", rar);
         return rar;
+    }
+
+    public enum ExportOptions {
+        NO_OVERWRITE, OVERWRITE;
     }
 }

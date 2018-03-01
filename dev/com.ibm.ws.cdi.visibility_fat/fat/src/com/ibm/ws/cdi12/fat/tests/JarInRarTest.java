@@ -54,7 +54,7 @@ public class JarInRarTest {
 
         if (hasSetup) {
             // Server already set up, app should have already been deployed when the server was started up, make sure the app has started
-            assertNotNull("jarInRar started message", server.waitForStringInLogUsingMark("CWWKZ0001I.*jarInRar"));
+            assertNotNull("jarInRar started message", server.waitForStringInLog("CWWKZ0001I.*jarInRar"));
             return;
         }
 

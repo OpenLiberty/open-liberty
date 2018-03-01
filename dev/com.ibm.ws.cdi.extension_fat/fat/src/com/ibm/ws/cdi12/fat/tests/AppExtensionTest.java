@@ -43,6 +43,8 @@ public class AppExtensionTest extends LoggingTest {
 
     private static LibertyServer server;
 
+    private static boolean hasSetup = false;
+
     @Override
     protected SharedServer getSharedServer() {
         return null;
@@ -50,6 +52,14 @@ public class AppExtensionTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        server = LibertyServerFactory.getStartedLibertyServer("cdi12AppExtensionServer");
+
+        if (hasSetup){ 
+            assertNotNull("applicationExtension started or updated message", server.waitForStringInLog("CWWKZ000[13]I.*applicationExtension"));
+            return;
+        }
+        hasSetup = true;
 
         JavaArchive applicationExtensionJar = ShrinkWrap.create(JavaArchive.class,"applicationExtension.jar")
                         .addClass("test.PlainExtension")
@@ -62,7 +72,6 @@ public class AppExtensionTest extends LoggingTest {
                         .addClass("main.bean.InSameWarBean")
                         .addAsLibrary(applicationExtensionJar);
 
-        server = LibertyServerFactory.getStartedLibertyServer("cdi12AppExtensionServer");
         server.setMarkToEndOfLog(server.getDefaultLogFile());
         ShrinkHelper.exportDropinAppToServer(server, applicationExtension);
         assertNotNull("applicationExtension started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*applicationExtension"));

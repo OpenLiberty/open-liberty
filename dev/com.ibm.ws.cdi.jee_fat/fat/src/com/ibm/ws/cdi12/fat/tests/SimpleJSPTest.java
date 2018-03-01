@@ -41,6 +41,8 @@ import componenttest.topology.utils.HttpUtils;
 public class SimpleJSPTest extends LoggingTest {
     public static LibertyServer server;
 
+    private static boolean hasSetup = false;
+
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("cdi12BasicServer");
 
@@ -56,6 +58,13 @@ public class SimpleJSPTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        if (hasSetup){ 
+            assertNotNull("simpleJSPApp started or updated message", server.waitForStringInLog("CWWKZ000[13]I.*simpleJSPApp"));
+            return;
+        }
+        hasSetup = true;
+
         WebArchive simpleJSPApp = ShrinkWrap.create(WebArchive.class, "simpleJSPApp.war")
                         .addClass("com.ibm.ws.cdi12.test.jsp.SimpleJspBean")
                         .add(new FileAsset(new File("test-applications/simpleJSPApp.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
