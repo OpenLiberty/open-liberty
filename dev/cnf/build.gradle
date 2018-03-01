@@ -567,8 +567,8 @@ doLast {
         }
 }
 //generateMavenArtifact.dependsOn createSingleJson
-//publish{dependsOn copyEsas}
-//publish{dependsOn copyMetadataFiles}
+publish{dependsOn copyEsas}
+publish{dependsOn copyMetadataFiles}
 publish{dependsOn generateMavenArtifact}
 
 
