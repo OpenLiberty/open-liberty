@@ -23,6 +23,7 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -40,11 +41,11 @@ class EJBDeployedAppInfo extends DeployedAppInfoBase {
         super(applicationInformation, factory);
 
         String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(applicationInformation.getLocation());
-        ejbContainerModuleInfo = new EJBModuleContainerInfo(factory.ejbModuleHandler,
-                        factory.getModuleMetaDataExtenders().get("ejb"),
-                        factory.getNestedModuleMetaDataFactories().get("ejb"),
-                        applicationInformation.getContainer(), null,
-                        moduleURI, moduleClassesInfo);
+        ejbContainerModuleInfo = new EJBModuleContainerInfo(factory.ejbModuleHandler, 
+                                                            factory.getModuleMetaDataExtenders().get("ejb"), 
+                                                            factory.getNestedModuleMetaDataFactories().get("ejb"), 
+                                                            applicationInformation.getContainer(), null, 
+                                                            moduleURI, moduleClassesInfo);
         moduleContainerInfos.add(ejbContainerModuleInfo);
     }
 
@@ -78,7 +79,7 @@ class EJBDeployedAppInfo extends DeployedAppInfoBase {
                             .setProtectionDomain(protectionDomain);
 
             return createTopLevelClassLoader(containers, gwCfg, clCfg);
-        }
+        } 
         else {
             return null;
         }
@@ -91,7 +92,7 @@ class EJBDeployedAppInfo extends DeployedAppInfoBase {
                                                                                getContainer(),
                                                                                this,
                                                                                getConfigHelper(),
-                                                                               applicationInformation.getUseJandex());
+                                                                               (ApplicationInfoForContainer) applicationInformation);
         ejbContainerModuleInfo.moduleName = appInfo.getName();
         return appInfo;
     }

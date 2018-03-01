@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.management.NotificationBroadcasterSupport;
 
 import com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor;
+import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.application.handler.ApplicationHandler;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
@@ -24,7 +25,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 /**
  *
  */
-public class ApplicationInstallInfo implements ApplicationInformation<Object> {
+public class ApplicationInstallInfo implements ApplicationInformation<Object>, ApplicationInfoForContainer {
     private final ApplicationConfig _config;
     private final AtomicReference<Object> _handlerInfo = new AtomicReference<Object>();
     private final AtomicReference<Container> _container = new AtomicReference<Container>();

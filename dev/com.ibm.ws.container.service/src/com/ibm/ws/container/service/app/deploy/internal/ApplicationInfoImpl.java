@@ -12,6 +12,7 @@ package com.ibm.ws.container.service.app.deploy.internal;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
+import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.metadata.extended.MetaDataGetter;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
@@ -26,18 +27,18 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
     private final ApplicationMetaData appMetaData;
     private final Container appContainer;
     private final NestedConfigHelper configHelper;
-    private final boolean useJandex;
+    private final ApplicationInfoForContainer applicationInformation;
 
     //ApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper) {
     //    this(appName, j2eeName, appContainer, configHelper, null);
     //}
 
-    ApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper, boolean useJandex) {
+    ApplicationInfoImpl(String appName, J2EEName j2eeName, Container appContainer, NestedConfigHelper configHelper, ApplicationInfoForContainer applicationInformation) {
         this.appName = appName;
         this.appMetaData = new ApplicationMetaDataImpl(j2eeName);
         this.appContainer = appContainer;
         this.configHelper = configHelper;
-        this.useJandex = useJandex;
+        this.applicationInformation = applicationInformation;
     }
 
     @Override
@@ -52,7 +53,7 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
 
     @Override
     public boolean getUseJandex() {
-        return useJandex;
+        return applicationInformation.getUseJandex();
     }
 
     @Override
