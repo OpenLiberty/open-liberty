@@ -46,6 +46,7 @@ import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.metadata.extended.ModuleMetaDataExtender;
 import com.ibm.ws.container.service.metadata.extended.NestedModuleMetaDataFactory;
@@ -279,7 +280,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                                                        getContainer(),
                                                        this,
                                                        getConfigHelper(),
-                                                       applicationInformation.getUseJandex(),
+                                                       (ApplicationInfoForContainer) applicationInformation,
                                                        libDirContainer,
                                                        this);
     }
