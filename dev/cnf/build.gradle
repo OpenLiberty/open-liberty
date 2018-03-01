@@ -332,7 +332,7 @@ task createDir{
 	mkdir 'build/temp'
 }
 
-task copyEsas(type: Sync){
+task copyEsas(type: Copy){
    	dependsOn parent.subprojects.assemble
     dependsOn parent.subprojects.publishFeatureResources
    // dependsOn createGaESAList
@@ -370,7 +370,7 @@ task copyEsas(type: Sync){
 
 copyEsas.dependsOn createDir
 
-task copyMetadataFiles(type: Sync) {
+task copyMetadataFiles(type: Copy) {
     dependsOn parent.subprojects.assemble
     dependsOn parent.subprojects.publishFeatureResources 
    // dependsOn createGaESAList  
@@ -522,9 +522,10 @@ doLast {
       	def files = fileTree(dir:'build/temp/esas').matching{
       		include '**/*.esa' 
       		
-      	}     
+      	} 
+     
      File jsonfile = file('build/temp/SingleJson.json')
-      
+     
      files.each {esa ->
         	println "inside"
         	
