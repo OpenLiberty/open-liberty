@@ -13,6 +13,7 @@ package session.cache.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
@@ -37,6 +39,9 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/SessionCacheTestServlet")
 public class SessionCacheTestServlet extends FATServlet {
+    // Maximum number of nanoseconds for test to wait
+    static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
     /**
      * Evict the active session from memory, if any.
      */
@@ -67,6 +72,27 @@ public class SessionCacheTestServlet extends FATServlet {
     }
 
     /**
+     * Test that the reported creation time is reasonably close to the time that we create the session
+     * and that the session consistently returns the same value as the creation time.
+     */
+    public void testCreationTime(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        long now = System.currentTimeMillis();
+        HttpSession session = request.getSession(true);
+        long creationTime = session.getCreationTime();
+        long lastAccessedTime = session.getLastAccessedTime();
+        assertEquals(creationTime, lastAccessedTime);
+
+        // reported creation time should be reasonably close to when we requested the session be created
+        long diff = creationTime - now;
+        assertTrue("unexpectedly large difference from current time: " + diff, Math.abs(diff) < TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
+
+        session.setAttribute("testCreationTime-key1", 3.14159f);
+
+        // creation time should never change
+        assertEquals(creationTime, session.getCreationTime());
+    }
+
+    /**
      * Test that HttpSessionListeners are notified when sessions are created and/or destroyed.
      */
     @SuppressWarnings("unchecked")
@@ -92,6 +118,23 @@ public class SessionCacheTestServlet extends FATServlet {
         if (expectNotDestroyed != null)
             for (String sessionId : expectNotDestroyed)
                 assertFalse(sessionId, destroyed.contains(sessionId));
+    }
+
+    /**
+     * Test that the last accessed time changes when accessed at different times.
+     */
+    public void testLastAccessedTime(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpSession session = request.getSession(true);
+        long lastAccessedTime = session.getLastAccessedTime();
+
+        TimeUnit.MILLISECONDS.sleep(100); // ensure that the time changes before next access
+
+        assertEquals(lastAccessedTime, session.getLastAccessedTime());
+
+        session.setAttribute("testLastAccessedTime-key1", 2.71828);
+
+        // last accessed time should change
+        assertNotSame(lastAccessedTime, session.getLastAccessedTime());
     }
 
     /**

@@ -43,6 +43,16 @@ public class SessionCacheOneServerTest extends FATServletClient {
     }
 
     /**
+     * Verify that the time reported as the creation time of the session is reasonably close to when we created it.
+     */
+    @Test
+    public void testCreationTime() throws Exception {
+        List<String> session = new ArrayList<>();
+        app.invokeServlet("testCreationTime", session);
+        app.invalidateSession(session);
+    }
+
+    /**
      * Verify that two HttpSessionListeners both receive events when sessions are created and destroyed.
      */
     @Test
@@ -103,6 +113,16 @@ public class SessionCacheOneServerTest extends FATServletClient {
         app.invokeServlet("testHttpSessionListener&listener=listener2" +
                           "&sessionDestroyed=" + sessionId2,
                           null);
+    }
+
+    /**
+     * Test that the last accessed time changes when accessed at different times.
+     */
+    @Test
+    public void testLastAccessedTime() throws Exception {
+        List<String> session = new ArrayList<>();
+        app.invokeServlet("testLastAccessedTime", session);
+        app.invalidateSession(session);
     }
 
     /**
