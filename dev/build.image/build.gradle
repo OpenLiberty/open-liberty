@@ -218,7 +218,8 @@ task zipOpenLibertyMavenRepo(type: Zip){
 
 }
    // zipOpenLibertyMavenRepo.dependsOn project("${rootDir}/cnf").tasks.generateMavenArtifact
-
+zipOpenLibertyMavenRepo.dependsOn  ':cnf:copyEsas'
+zipOpenLibertyMavenRepo.dependsOn  ':cnf:copyMetadataFiles'
 zipOpenLibertyMavenRepo.dependsOn  ':cnf:generateMavenArtifact'
 publish.dependsOn zipOpenLibertyMavenRepo
 
