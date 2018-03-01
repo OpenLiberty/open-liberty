@@ -1,19 +1,27 @@
 <server>
 
     <featureManager>
-        <feature>bells-1.0</feature>
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
         <feature>jdbc-4.1</feature>
         <feature>jndi-1.0</feature>
-        <feature>sessionCache-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
-    <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
+     <!-- Use this config for sessionCache -->
+     <featureManager>
+        <feature>sessionCache-1.0</feature>
+    </featureManager>   
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="1s" reaperPollInterval="30"/>
     
-    <bell libraryRef="HazelcastLib"/>
+    <!-- Use this config for testing sessionDatabase
+    <featureManager>
+        <feature>sessionDatabase-1.0</feature>
+    </featureManager>
+    <httpSessionDatabase id="FATDB" dataSourceRef="DerbyDS"/>
+    <httpSession storageRef="FATDB" maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="1s" reaperPollInterval="30"/>
+     -->
 
     <library id="HazelcastLib">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
