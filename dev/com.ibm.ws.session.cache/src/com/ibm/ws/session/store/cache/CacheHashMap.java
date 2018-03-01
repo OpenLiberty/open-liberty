@@ -28,8 +28,8 @@ import java.util.regex.Pattern;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
-import javax.cache.configuration.Configuration;
 import javax.cache.configuration.MutableConfiguration;
+import javax.cache.configuration.OptionalFeature;
 import javax.cache.expiry.EternalExpiryPolicy;
 
 import com.ibm.websphere.ras.Tr;
@@ -120,9 +120,11 @@ public class CacheHashMap extends BackedHashMap {
         sessionInfoCache = cacheStoreService.cacheManager.getCache(infoCacheName, String.class, ArrayList.class);
         if (sessionInfoCache == null) {
             @SuppressWarnings("rawtypes")
-            Configuration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>()
+            MutableConfiguration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>()
                             .setTypes(String.class, ArrayList.class)
                             .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
+            if (cacheStoreService.cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE))
+                config = config.setStoreByValue(false);
             try {
                 sessionInfoCache = cacheStoreService.cacheManager.createCache(infoCacheName, config);
 
@@ -145,9 +147,11 @@ public class CacheHashMap extends BackedHashMap {
 
         sessionPropertyCache = cacheStoreService.cacheManager.getCache(propCacheName, String.class, byte[].class);
         if (sessionPropertyCache == null) {
-            Configuration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
+            MutableConfiguration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
                             .setTypes(String.class, byte[].class)
                             .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
+            if (cacheStoreService.cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE))
+                config = config.setStoreByValue(false);
             try {
                 sessionPropertyCache = cacheStoreService.cacheManager.createCache(propCacheName, config);
 
