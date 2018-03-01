@@ -29,7 +29,7 @@ public interface ApplicationInfoFactory {
     public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName, Container container,
                                                          ApplicationClassesContainerInfo appClassesContainerInfo,
                                                          NestedConfigHelper configHelper,
-                                                         boolean useJandex);
+                                                         ApplicationInfoForContainer applicationInformation);
 
     //public ExtendedApplicationInfo createApplicationInfo(String appMgrName, String preferredName, Container container,
     //                                                     ApplicationClassesContainerInfo appClassesContainerInfo,
@@ -38,7 +38,7 @@ public interface ApplicationInfoFactory {
     public ExtendedEARApplicationInfo createEARApplicationInfo(String appName, String preferredName, Container container,
                                                                ApplicationClassesContainerInfo appClassesContainerInfo,
                                                                NestedConfigHelper configHelper,
-                                                               boolean useJandex,
+                                                               ApplicationInfoForContainer applicationInformation,
                                                                Container libDirContainer, AppClassLoaderFactory classLoaderFactory);
 
     //public ExtendedEARApplicationInfo createEARApplicationInfo(String appMgrName, String preferredName, Container container,
