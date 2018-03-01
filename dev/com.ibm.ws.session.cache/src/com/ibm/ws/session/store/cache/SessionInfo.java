@@ -33,7 +33,7 @@ class SessionInfo {
      * String          - USER
      * TreeSet<String> - PROP_IDS
      */
-    private static int CREATION_TIME = 0, LAST_ACCESS = 1, MAX_INACTIVE_TIME = 2, LISTENER_COUNT = 3, USER = 4, PROP_IDS = 5, SIZE = 6; 
+    private static int CREATION_TIME = 0, LAST_ACCESS = 1, MAX_INACTIVE_TIME = 2, LISTENER_TYPES = 3, USER = 4, PROP_IDS = 5, SIZE = 6; 
 
     /**
      * The ArrayList backing this instance.
@@ -114,8 +114,8 @@ class SessionInfo {
         return (Long) list.get(LAST_ACCESS);
     }
 
-    short getListenerCount() {
-        return (Short) list.get(LISTENER_COUNT);
+    short getListenerTypes() {
+        return (Short) list.get(LISTENER_TYPES);
     }
 
     int getMaxInactiveTime() {
@@ -145,8 +145,8 @@ class SessionInfo {
         list.set(LAST_ACCESS, time);
     }
 
-    void setListenerCount(short count) {
-        list.set(LISTENER_COUNT, count);
+    void setListenerTypes(short count) {
+        list.set(LISTENER_TYPES, count);
     }
 
     void setMaxInactiveTime(int max) {
@@ -162,7 +162,7 @@ class SessionInfo {
         return new StringBuilder("SessionInfo for ").append(list.get(USER))
                         .append(" created ").append(list.get(CREATION_TIME))
                         .append(" accessed " ).append(list.get(LAST_ACCESS))
-                        .append(" listeners ").append(list.get(LISTENER_COUNT))
+                        .append(" listeners ").append(list.get(LISTENER_TYPES))
                         .append(" maxInactive ").append(list.get(MAX_INACTIVE_TIME))
                         .append(' ').append(list.get(PROP_IDS))
                         .toString();

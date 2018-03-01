@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,4 +140,23 @@ public class SessionCacheOneServerTest extends FATServletClient {
             app.invalidateSession(session);
         }
     }
+
+    /**
+     * Ensure that after waiting at least pollingRate + invalidationTimeout a session expires.
+     */
+    @Test
+    public void testInvalidationTimeout() throws Exception {
+        // Initialize a session with some data
+        List<String> session = new ArrayList<>();
+        String sessionID = app.sessionPut("foo", "bar", session, true);
+        app.sessionGet("foo", "bar", session);
+
+        // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
+        assertNotNull("Expected to find message from a session listener indicating the session expired",
+                      server.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
+
+        // Verify that repeating the same sessionGet() as before does not locate the expired session
+        app.sessionGet("foo", null, session);
+    }
+
 }
