@@ -42,7 +42,8 @@ public class ModulePropertiesUtils {
         if (wmmd != null) {
             return wmmd.getJ2EEName().getModule();
         } else {
-            // this condition happens during processing postinvoke, fallback.
+            // this condition happens during processing formlogin since FormLoginExtensionProcessor
+            // does not set WebModuleMetaData to the thread, use ComponentMetaData.
             ComponentMetaData cmd = getComponentMetaData();
             if (cmd != null) {
                 return cmd.getModuleMetaData().getJ2EEName().getModule();

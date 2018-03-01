@@ -48,13 +48,13 @@ public class MetaDataThreadContext {
     /**
      * Clears WebModuleMetaData if the key matches the stored one.
      */
-    public void clearMetaData(Object key) {        if (key == this.key) {
+    public void clearMetaData(Object key) {
+        if (key == this.key) {
             key = null;
             wmmd = null;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "MetaData was removed.");
             }
-        } else {
         }
     }
 
