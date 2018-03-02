@@ -123,7 +123,7 @@ public class HttpChannelConfig {
     /** PI11176 - Attempt to purge the data at the close of the connection */
     private boolean attemptPurgeData = false;
     /** PI57542 - Throw IOE for inbound connections */
-    private boolean throwIOEForInboundConnections = false;
+    private boolean throwIOEForInboundConnections = true;
     /** 738893 - Should the HTTP Channel skip adding the quotes to the cookie's path attribute */
     private boolean skipCookiePathQuotes = false;
     /** The amount of time the connection will be left open when HTTP/2 goes into an idle state */
@@ -1719,7 +1719,7 @@ public class HttpChannelConfig {
 
     /**
      * Query whether or not the HTTP Channel should purge remaining response data
-     * 
+     *
      * @return boolean
      */
     public boolean shouldPurgeRemainingResponseBody() {
