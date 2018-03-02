@@ -25,6 +25,7 @@ import javax.net.ssl.SSLException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.channel.ssl.internal.SSLAlpnNegotiatorJdk8.ThirdPartyAlpnNegotiator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.ssl.Constants;
@@ -651,12 +652,8 @@ public class SSLUtils {
         TCPWriteRequestContext deviceWriteContext = connLink.getDeviceWriteInterface();
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
 
-        // if the grizzly-npn or jetty-alpn projects are on the bootclasspath, use them for ALPN
-        boolean needToRemoveEngine = false;
-        if (connLink.getAlpnProtocol() == null) {
-            JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
-            needToRemoveEngine = true;
-        }
+        // check to see if any ALPN negotiator is on the classpath; if so, register the current engine and link
+        ThirdPartyAlpnNegotiator negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
 
         int amountToWrite = 0;
         boolean firstPass = true;
@@ -960,9 +957,7 @@ public class SSLUtils {
                 result = null;
             }
         } finally {
-            if (needToRemoveEngine) {
-                JDK8AlpnNegotiator.getAndRemoveIbmAlpnChoice(engine, connLink);
-            }
+            JDK8AlpnNegotiator.tryToRemoveAlpnNegotiator(negotiator, engine, connLink);
         }
         if (bTrace && tc.isEntryEnabled()) {
             Tr.exit(tc, "handleHandshake");
