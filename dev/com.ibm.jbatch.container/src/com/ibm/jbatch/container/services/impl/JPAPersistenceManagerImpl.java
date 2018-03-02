@@ -33,12 +33,13 @@ import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.JobExecution;
 import javax.batch.runtime.JobInstance;
 import javax.batch.runtime.StepExecution;
-import javax.management.Query;
-import javax.net.ssl.SSLEngineResult.Status;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.NotSupportedException;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 
 import org.osgi.service.component.ComponentContext;
@@ -2673,8 +2674,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             while (cause != null) {
                 final String causeMsg = cause.getMessage();
                 final String causeClassName = cause.getClass().getCanonicalName();
-                logger.fine("Next chained JobExecutionEntityV2 persistence exception: exc class = " + causeCN + "; causeMsg = " + causeMsg);
-                if ((cause instanceof SQLSyntaxErrorException || causeCN.contains("SqlSyntaxErrorException")) &&
+                logger.fine("Next chained JobExecutionEntityV2 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
+                if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                     causeMsg != null &&
                     causeMsg.contains("JOBPARAMETER")) {
                     // The table isn't there.
@@ -2740,8 +2741,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 while (cause != null) {
                     final String causeMsg = cause.getMessage();
                     final String causeClassName = cause.getClass().getCanonicalName();
-                    logger.fine("Next chained JobInstanceEntityV2 persistence exception: exc class = " + causeCN + "; causeMsg = " + causeMsg);
-                    if ((cause instanceof SQLSyntaxErrorException || causeCN.contains("SqlSyntaxErrorException")) &&
+                    logger.fine("Next chained JobInstanceEntityV2 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
+                    if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                         causeMsg != null &&
                         causeMsg.contains("UPDATETIME")) {
                         // The UPDATETIME column isn't there.
@@ -2781,8 +2782,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 while (cause != null) {
                     final String causeMsg = cause.getMessage();
                     final String causeClassName = cause.getClass().getCanonicalName();
-                    logger.fine("Next chained JobInstanceEntityV3 persistence exception: exc class = " + causeCN + "; causeMsg = " + causeMsg);
-                    if ((cause instanceof SQLSyntaxErrorException || causeCN.contains("SqlSyntaxErrorException")) &&
+                    logger.fine("Next chained JobInstanceEntityV3 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
+                    if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                         causeMsg != null &&
                         causeMsg.contains("GROUPASSOCIATION")) {
                         // The GROUPASSOCIATION support isn't there.
