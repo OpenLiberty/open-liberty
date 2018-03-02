@@ -190,7 +190,8 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
 
     @Override
     public Attachment updateAttachment(String assetId, AttachmentSummary summary) throws IOException, BadVersionException, RequestFailureException, SecurityException {
-        throw new UnsupportedOperationException("Single file repositories do not support attachments");
+        //  throw new UnsupportedOperationException("Single file repositories do not support attachments");
+        return null;
     }
 
     @Override
