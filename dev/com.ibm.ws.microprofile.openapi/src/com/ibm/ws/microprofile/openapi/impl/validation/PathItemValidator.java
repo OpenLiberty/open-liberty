@@ -71,7 +71,17 @@ public class PathItemValidator extends TypeValidator<PathItem> {
                         definedSharedCookieParameters = new HashSet<String>();
         List<Parameter> sharedParameters = path.getParameters();
         if (sharedParameters != null) {
-            for (Parameter parameter : sharedParameters) {
+            for (Parameter param : sharedParameters) {
+
+                Parameter parameter = param;
+                String reference = parameter.getRef();
+                if (reference != null && !reference.isEmpty()) {
+                    Object componentItem = ReferenceValidator.getInstance().validate(helper, context, null, reference);
+                    if (parameter.getClass().isInstance(componentItem)) {
+                        parameter = (Parameter) componentItem;
+                    }
+                }
+
                 if (isPathParameter(parameter)) {
                     if (!parameter.getRequired()) { //Path parameters must have the 'required' property set to true
                         final String message = Tr.formatMessage(tc, "pathItemRequiredField", parameter.getName(), pathStr);
@@ -121,8 +131,18 @@ public class PathItemValidator extends TypeValidator<PathItem> {
 
         List<Parameter> parameters = operation.getParameters();
         if (parameters != null && !parameters.isEmpty()) {
-            for (Parameter parameter : parameters) {
-                if (parameter != null) {
+            for (Parameter param : parameters) {
+                if (param != null) {
+
+                    Parameter parameter = param;
+                    String reference = parameter.getRef();
+                    if (reference != null && !reference.isEmpty()) {
+                        Object componentItem = ReferenceValidator.getInstance().validate(helper, context, null, reference);
+                        if (parameter.getClass().isInstance(componentItem)) {
+                            parameter = (Parameter) componentItem;
+                        }
+                    }
+
                     if (isPathParameter(parameter)) {
                         if (!parameter.getRequired()) {//Path parameters must have the 'required' property set to true
                             final String message = Tr.formatMessage(tc, "pathItemOperationRequiredField", parameter.getName(), operationType, path);

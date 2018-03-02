@@ -18,6 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -384,7 +386,12 @@ public class Bell implements LibraryChangeListener {
                 public Class<?> getProviderImplClass() {
                     Class<?> implClass = implClassRef.get();
                     if (implClass == null) {
-                        Object service = context.getService(reg.getReference());
+                        Object service = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                            @Override
+                            public Object run() {
+                                return context.getService(reg.getReference());
+                            }
+                        });
                         if (service != null)
                             implClassRef.set(implClass = service.getClass());
                     }

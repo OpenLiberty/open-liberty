@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.openapi.impl.validation.OASValidationResult.ValidationEvent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIModelWalker.Context;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  *
@@ -46,6 +47,7 @@ public class CallbackValidator extends TypeValidator<Callback> {
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 continue;
             }
+
             List<String> vars = RuntimeExpressionUtils.extractURLVars(urlTemplate);
             if (vars == null) {
                 message = Tr.formatMessage(tc, "callbackInvalidSubstitutionVariables", urlTemplate);
@@ -64,10 +66,19 @@ public class CallbackValidator extends TypeValidator<Callback> {
                     String templateVar = "{" + v + "}";
                     buildURL = buildURL.replace(templateVar, "e"); //buildURL.replace(templateVar, "e"); // Sample data
                 }
-                // validate remaining url
-                if (!ValidatorUtils.isValidURL(buildURL)) {
-                    message = Tr.formatMessage(tc, "callbackInvalidURL", urlTemplate);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+
+                if (urlTemplate.contains("{$")) {
+                    //Path within a Callback can contain variables (e.g. {$request.query.callbackUrl}/data ) which shouldn't be validated since they are not path params
+                    if (OpenAPIUtils.isDebugEnabled(tc)) {
+                        Tr.debug(tc, "Path contains variables. Skip validation of url: " + key);
+                    }
+                } else {
+                    // validate remaining url
+                    //validating buildURL as URI to account for relative paths
+                    if (!ValidatorUtils.isValidURI(buildURL)) {
+                        message = Tr.formatMessage(tc, "callbackInvalidURL", urlTemplate);
+                        helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+                    }
                 }
             }
             // validate Path item

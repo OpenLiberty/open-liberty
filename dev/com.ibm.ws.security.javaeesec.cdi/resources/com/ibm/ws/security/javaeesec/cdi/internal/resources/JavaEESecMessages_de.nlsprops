@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,8 +48,7 @@ JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Zum Aktivieren der HttpAuthen
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: Der Realmname f\u00fcr die Basisauthentifizierung wurde nicht festgelegt. Deshalb wurde der Standardwert defaultRealm verwendet.
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Da kein Realmname f\u00fcr die Basisauthentifizierung definiert ist, wurde der Realmname auf den Standardwert defaultRealm gesetzt.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Zum Festlegen des Realmnamens definieren Sie ihn in der Annotation BasicAuthenticationMechanismDefinition in der Anwendung.
-
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Zum Festlegen des Realmnamens definieren Sie ihn in der Annotation BasicAuthenticationMechanismDefinition in der Anwendung. Alternativ k\u00f6nnen Sie, wenn das Attribut overrideHttpAuthenticationMechanism auf BASIC gesetzt ist, den Wert des Attributs basicAuthenticationMechanismRealmName setzen.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: Der Wert {0} des Konfigurationsparameters {1} ist ung\u00fcltig.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=Der Wert des Konfigurationsparameters ist nicht g\u00fcltig.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Stellen Sie sicher, dass der Konfigurationsparameter ordnungsgem\u00e4\u00df definiert ist.
@@ -62,6 +61,12 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Die Hashdaten sind ung
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=Der Hashwert in der Datenbank ist nicht g\u00fcltig.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Stellen Sie sicher, dass die Hashdaten in der Datenbank mit dem Hashalgorithmus verschl\u00fcsselt wurden, der von der Implementierungsklasse PasswordHash unterst\u00fctzt wird.
 
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: Das Attribut {0} ist nicht im Element webAppSecurity definiert. Die Container\u00fcberschreibungsfunktion f\u00fcr den HTTP-Authentifizierungsmechanismus wird nicht ordnungsgem\u00e4\u00df funktionieren.
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=Da das erforderliche Attribut nicht festgelegt ist, funktioniert die Container\u00fcberschreibungsfunktion f\u00fcr den HTTP-Authentifizierungsmechanismus f\u00fcr die FORM-Authentifizierung nicht.
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=Das Attribut in der Nachricht muss festgelegt werden.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: Der Wert {0} des Attributs contextRootForFormAuthenticationMechanism stimmt nicht mit dem Stammkontextwert {1} des Attributs {2} im Element webAppSecurity \u00fcberein. Daher wird die Container\u00fcberschreibungsfunktion f\u00fcr den HTTP-Authentifizierungsmechanismus nicht ordnungsgem\u00e4\u00df funktionieren.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=Da der Stammkontextwert nicht mit dem angegebenen Attribut \u00fcbereinstimmt, wird die Container\u00fcberschreibungsfunktion f\u00fcr den HTTP-Authentifizierungsmechanismus f\u00fcr die FORM-Authentifizierung nicht funktionieren.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=Das Attribut in der Nachricht muss mit dem angegebenen Kontextstammverzeichnis \u00fcbereinstimmen.
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=Der Iterationswert {0} ist keine Zahl.
 JAVAEESEC_CDI_INVALID_ALGORITHM=Der Hashalgorithmus {0} wird nicht unterst\u00fctzt.

@@ -13,6 +13,4 @@
 		<feature>localConnector-1.0</feature>
 	</featureManager>
 
-    <logging traceSpecification="**=info:JCDI=all:com.ibm.ws.cdi*=all:com.ibm.ws.weld*=all:org.jboss.*=all:Injection=all"/>
-    
 </server>

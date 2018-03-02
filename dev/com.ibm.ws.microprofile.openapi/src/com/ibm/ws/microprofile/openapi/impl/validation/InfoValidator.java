@@ -39,7 +39,7 @@ public class InfoValidator extends TypeValidator<Info> {
             ValidatorUtils.validateRequiredField(t.getVersion(), context, "version").ifPresent(helper::addValidationEvent);
             ValidatorUtils.validateRequiredField(t.getTitle(), context, "title").ifPresent(helper::addValidationEvent);
             if (t.getTermsOfService() != null) {
-                if (!ValidatorUtils.isValidURL(t.getTermsOfService())) {
+                if (!ValidatorUtils.isValidURI(t.getTermsOfService())) {
                     final String message = Tr.formatMessage(tc, "infoTermsOfServiceInvalidURL", t.getTermsOfService());
                     helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("termsOfService"), message));
                 }

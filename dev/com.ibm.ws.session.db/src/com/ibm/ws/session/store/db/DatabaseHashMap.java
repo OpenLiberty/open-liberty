@@ -28,6 +28,7 @@ import java.sql.Statement;
 import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.sql.DataSource;
@@ -2387,7 +2388,7 @@ public class DatabaseHashMap extends BackedHashMap {
         byte[] objbuf = null;
 
         try {
-            Hashtable ht = null;
+            Map<Object, Object> ht = null;
             if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                 LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[SERIALIZE_APP_DATA], "get swappableData and convert to byte array");
             }

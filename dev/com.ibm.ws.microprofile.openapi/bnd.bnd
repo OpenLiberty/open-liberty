@@ -83,7 +83,7 @@ instrument.classesExcludes: \
 	com.ibm.websphere.appserver.spi.artifact;version=latest,\
 	com.ibm.ws.org.apache.commons.io.2.4;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3.3.5;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
 	com.fasterxml.jackson.core.jackson-core;version=2.9.1,\
 	com.fasterxml.jackson.core.jackson-annotations;version=2.9.1,\
 	com.fasterxml.jackson.core:jackson-databind;version=2.9.1,\

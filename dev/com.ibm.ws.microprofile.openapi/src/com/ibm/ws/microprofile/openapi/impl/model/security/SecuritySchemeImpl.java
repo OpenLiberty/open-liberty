@@ -15,6 +15,8 @@ import org.eclipse.microprofile.openapi.models.security.OAuthFlows;
 import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 /**
  * SecurityScheme
@@ -262,15 +264,16 @@ public class SecuritySchemeImpl implements SecurityScheme {
         StringBuilder sb = new StringBuilder();
         sb.append("class SecurityScheme {\n");
 
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    in: ").append(toIndentedString(in)).append("\n");
-        sb.append("    scheme: ").append(toIndentedString(scheme)).append("\n");
-        sb.append("    bearerFormat: ").append(toIndentedString(bearerFormat)).append("\n");
-        sb.append("    flows: ").append(toIndentedString(flows)).append("\n");
-        sb.append("    openIdConnectUrl: ").append(toIndentedString(openIdConnectUrl)).append("\n");
-        sb.append("    $ref: ").append(toIndentedString($ref)).append("\n");
+        sb = (type != null) ? sb.append("    type: ").append(toIndentedString(type)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (name != null) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
+        sb = (in != null) ? sb.append("    in: ").append(toIndentedString(in)).append("\n") : sb.append("");
+        sb = (scheme != null) ? sb.append("    scheme: ").append(toIndentedString(scheme)).append("\n") : sb.append("");
+        sb = (bearerFormat != null) ? sb.append("    bearerFormat: ").append(toIndentedString(bearerFormat)).append("\n") : sb.append("");
+        sb = (flows != null) ? sb.append("    flows: ").append(toIndentedString(flows)).append("\n") : sb.append("");
+        sb = (openIdConnectUrl != null) ? sb.append("    openIdConnectUrl: ").append(toIndentedString(openIdConnectUrl)).append("\n") : sb.append("");
+        sb = ($ref != null) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 #
 # -------------------------------------------------------------------------------------------------
 #0001-0050: app manager
@@ -89,7 +89,7 @@ APPLICATION_STOP_FAILED=CWWKZ0010E: Wyst\u0105pi\u0142 wyj\u0105tek podczas zatr
 APPLICATION_STOP_FAILED.explanation=Serwer nie m\u00f3g\u0142 zatrzyma\u0107 aplikacji.
 APPLICATION_STOP_FAILED.useraction=Sprawd\u017a, czy stan aplikacji umo\u017cliwia jej zatrzymanie.
 
-#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
 #{0} is file name
 #{1} is exception message
 FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wyszukiwania pliku {0}. Komunikat o wyj\u0105tku to: {1}
@@ -98,7 +98,7 @@ FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
 
 #{0} is application name
 APPLICATION_NOT_STARTED=CWWKZ0012I: Aplikacja {0} nie zosta\u0142a uruchomiona.
-APPLICATION_NOT_STARTED.explanation=Uruchomienie aplikacji by\u0142o niemo\u017cliwe z powodu wcze\u015bniejszych b\u0142\u0119d\u00f3w. 
+APPLICATION_NOT_STARTED.explanation=Uruchomienie aplikacji by\u0142o niemo\u017cliwe z powodu wcze\u015bniejszych b\u0142\u0119d\u00f3w.
 APPLICATION_NOT_STARTED.useraction=Przejrzyj konfiguracj\u0119 aplikacji i sprawd\u017a dzienniki pod k\u0105tem b\u0142\u0119d\u00f3w wyst\u0119puj\u0105cych podczas uruchamiania aplikacji.
 
 #{0} the application name
@@ -134,7 +134,7 @@ PARTIAL_START.useraction=Rozwi\u0105\u017c problem dotycz\u0105cy cz\u0119\u015b
 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: Aplikacja {0} nie zosta\u0142a zaktualizowana.
-APPLICATION_NOT_UPDATED.explanation=Uruchomienie aplikacji by\u0142o niemo\u017cliwe z powodu wcze\u015bniejszych b\u0142\u0119d\u00f3w. 
+APPLICATION_NOT_UPDATED.explanation=Uruchomienie aplikacji by\u0142o niemo\u017cliwe z powodu wcze\u015bniejszych b\u0142\u0119d\u00f3w.
 APPLICATION_NOT_UPDATED.useraction=Przejrzyj konfiguracj\u0119 aplikacji i sprawd\u017a dzienniki pod k\u0105tem b\u0142\u0119d\u00f3w wyst\u0119puj\u0105cych podczas uruchamiania aplikacji.
 
 #Existing message changed per resolution to design issue 117781
@@ -175,7 +175,7 @@ MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Monitor aplikacji nie mo\u017ce odc
 MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Uruchom serwer w trybie zimnego startu.
 
 #{0} is the start time in seconds
-APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorowanie aplikacji w katalogu {0}. 
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorowanie aplikacji w katalogu {0}.
 APPLICATION_MONITOR_STARTED.explanation=Serwer monitoruje wdra\u017canie aplikacji w katalogu.
 APPLICATION_MONITOR_STARTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
@@ -192,7 +192,7 @@ MONITOR_DIR_CLEANUP_FAIL.useraction=Je\u015bli stary katalog nie jest ju\u017c p
 
 #{0} is application name
 APPLICATION_MONITORING_FAIL=CWWKZ0060W: Nie mo\u017cna monitorowa\u0107 aplikacji {0}.
-APPLICATION_MONITORING_FAIL.explanation=Zainstalowano aplikacj\u0119, ale nie uruchomiono jej monitorowania. Dlatego zmiana spowodowana aktualizacj\u0105 pliku w obr\u0119bie aplikacji nie zostanie wykryta przez serwer. 
+APPLICATION_MONITORING_FAIL.explanation=Zainstalowano aplikacj\u0119, ale nie uruchomiono jej monitorowania. Dlatego zmiana spowodowana aktualizacj\u0105 pliku w obr\u0119bie aplikacji nie zostanie wykryta przez serwer.
 APPLICATION_MONITORING_FAIL.useraction=Aktualizacja plik\u00f3w w tej aplikacji spowoduje konieczno\u015b\u0107 zdeinstalowania tej aplikacji i jej ponownego zainstalowania na serwerze.
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: Aplikacja {0} w po\u0142o\u017ceniu {1} znajduje si\u0119 wewn\u0105trz katalogu monitorowanego {2}. Element aplikacji zostanie zignorowany.
@@ -202,3 +202,17 @@ APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Popraw element aplikacji lub zmie
 APPLICATION_UPDATED=CWWKZ0062I: Aplikacja {0} zosta\u0142a zaktualizowana, ale nie zosta\u0142a zrestartowana.
 APPLICATION_UPDATED.explanation=W okre\u015blonej aplikacji wyst\u0105pi\u0142a drugorz\u0119dna zmiana, a jej istotno\u015b\u0107 zosta\u0142a okre\u015blona jako na tyle niewielka, \u017ce nie ma potrzeby restartowania aplikacji.
 APPLICATION_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: U\u017cycie Jandex jest w\u0142\u0105czone dla wszystkich aplikacji.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Dla wszystkich aplikacji, gdy indeksy Jandex s\u0105 dost\u0119pne, dane klasy i adnotacji s\u0105 uzyskiwane z indeks\u00f3w Jandex.
+APPLICATION_JANDEX_ENABLED_ALL.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is application name
+APPLICATION_JANDEX_ENABLED=CWWKZ0064I: U\u017cycie Jandex jest w\u0142\u0105czone dla aplikacji {0}.
+APPLICATION_JANDEX_ENABLED.explanation=Dla okre\u015blonej aplikacji, gdy indeksy Jandex s\u0105 dost\u0119pne, dane klasy i adnotacji s\u0105 uzyskiwane z indeks\u00f3w Jandex.
+APPLICATION_JANDEX_ENABLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is application name
+APPLICATION_JANDEX_DISABLED=CWWKZ0065I: U\u017cycie Jandex jest wy\u0142\u0105czone dla aplikacji {0}.
+APPLICATION_JANDEX_DISABLED.explanation=Indeks Jandex jest wy\u0142\u0105czony dla okre\u015blonej aplikacji.
+APPLICATION_JANDEX_DISABLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

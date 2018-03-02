@@ -664,12 +664,16 @@ error.zosProcStart.jobname.invalid.useraction=Ellen\u0151rizze, hogy a feladatn\
 
 error.server.pause.command.port.disabled=CWWKE0944E: A(z) {0} kiszolg\u00e1l\u00f3ra sz\u00fcneteltet\u00e9si k\u00e9r\u00e9s \u00e9rkezett, de a kiszolg\u00e1l\u00f3 parancsportja le van tiltva. A k\u00e9r\u00e9s nem feldolgozhat\u00f3. Enged\u00e9lyezze a parancsportot, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
 error.server.pause.command.port.disabled.explanation=A kiszolg\u00e1l\u00f3 parancsportja sz\u00fcks\u00e9ges a kommunik\u00e1ci\u00f3hoz a fut\u00f3 kiszolg\u00e1l\u00f3val. A kiszolg\u00e1l\u00f3 parancsportja le van tiltva, ez\u00e9rt a k\u00e9rt sz\u00fcneteltet\u00e9s nem v\u00e9gezhet\u0151 el. Figyeljen arra, hogy a parancsport alap\u00e9rtelmez\u00e9sben tiltott, amikor a kiszolg\u00e1l\u00f3 z/OS rendszeren ind\u00edtott feladatk\u00e9nt ker\u00fcl ind\u00edt\u00e1sra.
-error.server.pause.command.port.disabled.useraction=Enged\u00e9lyezze a kiszolg\u00e1l\u00f3 parancsportj\u00e1t. \
-Ha a kiszolg\u00e1l\u00f3 z/OS rendszeren elind\u00edtott feladatk\u00e9nt fut, akkor ez a sz\u00fcneteltet\u00e9s az oper\u00e1tori konzolr\u00f3l is k\u00e9rhet\u0151. 
+error.server.pause.command.port.disabled.useraction=Enged\u00e9lyezze a kiszolg\u00e1l\u00f3 parancsportj\u00e1t. Ha a kiszolg\u00e1l\u00f3 z/OS rendszeren elind\u00edtott feladatk\u00e9nt fut, akkor ez a sz\u00fcneteltet\u00e9s az oper\u00e1tori konzolr\u00f3l is k\u00e9rhet\u0151.
+
 error.server.resume.command.port.disabled=CWWKE0945E: A(z) {0} kiszolg\u00e1l\u00f3ra folytat\u00e1si k\u00e9r\u00e9s \u00e9rkezett, de a kiszolg\u00e1l\u00f3 parancsportja le van tiltva. A k\u00e9r\u00e9s nem feldolgozhat\u00f3. Enged\u00e9lyezze a parancsportot, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
 error.server.resume.command.port.disabled.explanation=A kiszolg\u00e1l\u00f3 parancsportja sz\u00fcks\u00e9ges a kommunik\u00e1ci\u00f3hoz a fut\u00f3 kiszolg\u00e1l\u00f3val. A kiszolg\u00e1l\u00f3 parancsportja le van tiltva, ez\u00e9rt a folytat\u00e1si k\u00e9r\u00e9s nem dolgozhat\u00f3 fel. Figyeljen arra, hogy a parancsport alap\u00e9rtelmez\u00e9sben tiltott, amikor a kiszolg\u00e1l\u00f3 z/OS rendszeren ind\u00edtott feladatk\u00e9nt ker\u00fcl ind\u00edt\u00e1sra.
-error.server.resume.command.port.disabled.useraction=Enged\u00e9lyezze a kiszolg\u00e1l\u00f3 parancsportj\u00e1t. \
-Ha a kiszolg\u00e1l\u00f3 z/OS rendszeren elind\u00edtott feladatk\u00e9nt fut, akkor ez a folytat\u00e1s az oper\u00e1tori konzolr\u00f3l is k\u00e9rhet\u0151. 
+error.server.resume.command.port.disabled.useraction=Enged\u00e9lyezze a kiszolg\u00e1l\u00f3 parancsportj\u00e1t. Ha a kiszolg\u00e1l\u00f3 z/OS rendszeren elind\u00edtott feladatk\u00e9nt fut, akkor ez a folytat\u00e1s az oper\u00e1tori konzolr\u00f3l is k\u00e9rhet\u0151.
+
+warning.server.status.invalid.targets=CWWKE0946W: \u00c1llapotk\u00e9r\u00e9s \u00e9rkezett egyes \u00f6sszetev\u0151k folytat\u00e1s\u00e1ra, de a c\u00e9lbe\u00e1ll\u00edt\u00e1sban \u00fcres az \u00f6sszetev\u0151lista. Nem t\u00f6rt\u00e9nt m\u0171velet.
+warning.server.status.invalid.targets.explanation=Egy felhaszn\u00e1l\u00f3 \u00e1llapotk\u00e9r\u00e9st adott ki \u00fcres c\u00e9llist\u00e1val a c\u00e9lbe\u00e1ll\u00edt\u00e1sban. A k\u00e9r\u00e9s v\u00e9grehajt\u00e1sa megt\u00f6rt\u00e9nt, de nem t\u00f6rt\u00e9nt m\u0171velet.
+warning.server.status.invalid.targets.useraction=A c\u00e9lbe\u00e1ll\u00edt\u00e1sban adja meg az \u00f6sszetev\u0151k list\u00e1j\u00e1t, amelyek \u00e1llapot\u00e1t ellen\u0151rizni k\u00edv\u00e1nja. Az \u00f6sszes sz\u00fcneteltethet\u0151 \u00f6sszetev\u0151 \u00f6sszes\u00edtett \u00e1llapot\u00e1nak ellen\u0151rz\u00e9s\u00e9hez a kiszolg\u00e1l\u00f3n adjon ki c\u00e9lbe\u00e1ll\u00edt\u00e1s n\u00e9lk\u00fcli \u00e1llapotk\u00e9r\u00e9st.
+
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.
 info.serverStartedWithPID=A(z) {0} kiszolg\u00e1l\u00f3 {1} folyamatazonos\u00edt\u00f3val elindult.

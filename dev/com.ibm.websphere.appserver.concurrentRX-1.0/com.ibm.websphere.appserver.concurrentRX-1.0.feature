@@ -5,5 +5,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jaxrs-2.1))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.concurrent.rx
+# Do not release this feature until ManagedCompletableFuture has been properly rebased for Java 9 (see TODO comments in that file)
 kind=beta
 edition=core

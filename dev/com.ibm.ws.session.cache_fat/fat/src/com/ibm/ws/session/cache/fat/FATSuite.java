@@ -24,14 +24,12 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                CacheEntryPerSessionPropertyTest.class,
-                CacheEntryPerSessionTest.class,
-                MultiServerCacheEntryPerSessionPropertyTest.class,
-                MultiServerCacheEntryPerSessionTest.class
+                SessionCacheOneServerTest.class,
+                SessionCacheTwoServerTest.class
 })
 public class FATSuite {
 
-    public static void run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
+    public static String run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, path + '?' + FATServletClient.TEST_METHOD + '=' + testMethod);
 
         if (session != null)
@@ -53,6 +51,8 @@ public class FATSuite {
                         session.add(setCookie.split(";", 2)[0]);
                 }
             }
+
+            return servletResponse;
         } finally {
             con.disconnect();
         }

@@ -48,4 +48,10 @@
    </permission>
    
 
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>* * "*"</name>
+      <actions>read</actions>
+   </permission>
+
 </permissions>

@@ -48,7 +48,6 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.metadata.ConnectorModuleMetaData;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -86,7 +85,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
     protected void activate(ComponentContext context) {
         lock.writeLock().lock();
         try {
-            bundleContext = PrivHelper.getBundleContext(context);
+            bundleContext = Utils.priv.getBundleContext(context);
         } finally {
             lock.writeLock().unlock();
         }
@@ -128,7 +127,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.app.deploy.ModuleRuntimeContainer#createModuleMetaData(com.ibm.ws.container.service.app.deploy.ModuleInfo)
      */
     @Override
@@ -145,7 +144,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
 
     /**
      * Unregister listeners for configurations processed by the metatype provider
-     * 
+     *
      * @param id resource adapter id
      */
     private void removeServiceListeners(String id) {
@@ -183,7 +182,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
 
         /**
          * Construct a service listener that will listen for REGISTERED events.
-         * 
+         *
          * @param id
          * @param bootstrapContextFactoryPid
          * @param autoStart
@@ -235,17 +234,17 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
                     // properties for adminObject, jmsDestination, jmsQueue, jmsTopic
                     bundleContext.addServiceListener(listeners[1] = new ResourceListener(),
                                                      "(&(objectClass=com.ibm.ws.jca.service.AdminObjectService)(properties.0.config.referenceType=com.ibm.ws.jca.*.properties."
-                                                                     + id + ".*))");
+                                                                                            + id + ".*))");
 
                     // properties for connectionFactory, jmsConnectionFactory, jmsQueueConnectionFactory, jmsTopicConnectionFactory
                     bundleContext.addServiceListener(listeners[2] = new ResourceListener(),
                                                      "(&(objectClass=com.ibm.ws.jca.service.ConnectionFactoryService)(properties.0.config.referenceType=com.ibm.ws.jca.*onnectionFactory.properties."
-                                                                     + id + ".*))");
+                                                                                            + id + ".*))");
 
                     // properties for activationSpec, jmsActivationSpec
                     bundleContext.addServiceListener(listeners[3] = new ResourceListener(),
                                                      "(&(objectClass=com.ibm.ws.jca.service.EndpointActivationService)(properties.0.config.referenceType=com.ibm.ws.jca.*ctivationSpec.properties."
-                                                                     + id + ".*))");
+                                                                                            + id + ".*))");
                 }
             } finally {
                 lock.readLock().unlock();
@@ -283,7 +282,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
                         lock.readLock().lock();
                         try {
                             if (bundleContext != null)
-                                PrivHelper.getService(bundleContext, event.getServiceReference());
+                                Utils.priv.getService(bundleContext, event.getServiceReference());
                         } catch (Throwable x) {
                         } finally {
                             lock.readLock().unlock();
@@ -315,7 +314,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.app.deploy.ModuleRuntimeContainer#startModule(com.ibm.ws.container.service.app.deploy.ModuleInfo)
      */
     @Override
@@ -403,7 +402,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
                     Collection<ServiceReference<BootstrapContext>> refs;
                     lock.readLock().lock();
                     try {
-                        refs = bundleContext == null ? null : PrivHelper.getServiceReferences(bundleContext, BootstrapContext.class, "(id=" + id + ')');
+                        refs = bundleContext == null ? null : Utils.priv.getServiceReferences(bundleContext, BootstrapContext.class, "(id=" + id + ')');
                     } finally {
                         lock.readLock().unlock();
                     }
@@ -425,7 +424,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
 
     /**
      * Removes all generated metatype for the resource adapter and returns once services provided by the resource adapter are deactivated
-     * 
+     *
      * @see com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer#stopModule(com.ibm.ws.container.service.app.deploy.ModuleInfo)
      */
     @Override

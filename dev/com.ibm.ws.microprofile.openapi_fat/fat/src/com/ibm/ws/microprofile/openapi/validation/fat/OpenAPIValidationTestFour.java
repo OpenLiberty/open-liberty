@@ -121,8 +121,6 @@ public class OpenAPIValidationTestFour {
                       server.waitForStringInLog(" - Message: The URL template of Callback Object is empty and is not a valid URL, Location: #/paths/~1bookings/post/callbacks/getBookings"));
         assertNotNull("The Callback validator should have been triggered by the invalid substitution variables in the URL",
                       server.waitForStringInLog(" - Message: The Callback Object contains invalid substitution variables:*"));
-        assertNotNull("The Callback validator should have been triggered by the invalid URL",
-                      server.waitForStringInLog(" - Message: The Callback Object must contain a valid URL. The \"h://localhost:9080/oas3-airlines/booking\" value specified for the URL is not valid,*"));
         assertNotNull("The Callback validator should have been triggered by the invalid runtime expression",
                       server.waitForStringInLog(" - Message: The Callback Object must contain a valid runtime expression as defined in the OpenAPI Specification.*"));
     }

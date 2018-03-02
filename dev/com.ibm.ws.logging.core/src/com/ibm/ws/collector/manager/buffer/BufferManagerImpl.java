@@ -58,6 +58,16 @@ public class BufferManagerImpl extends BufferManager {
             RERWLOCK.writeLock().unlock();
         }
     }
+    
+    public BufferManagerImpl(int capacity, String sourceId, boolean isEMQ) {
+        super();
+        this.sourceId = sourceId;
+        this.capacity = capacity;
+        if (!isEMQ){
+          earlyMessageQueue = null; //don't need earlyMessageQueue
+          ringBuffer = new Buffer<Object>(capacity);
+        }
+      }
 
     @Override
     public void add(Object event) {

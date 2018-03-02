@@ -318,3 +318,18 @@ display.unresolved.jsl.useraction=Ujist\u011bte se, \u017ee n\u00e1zev souboru p
 JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: N\u00e1zev operationGroup {0} nebyl vy\u0159e\u0161en na platn\u00fd n\u00e1zev skupiny.
 JOB_GROUP_NAME_NOT_VALID.explanation=Pokusy o p\u0159\u00edstup, kdy\u017e \u00faloha pou\u017e\u00edv\u00e1 skupinov\u00fd p\u0159\u00edstup, mohly selhat, jestli\u017ee p\u0159i nich do\u0161lo k pou\u017eit\u00ed neplatn\u00e9ho n\u00e1zvu skupiny.
 JOB_GROUP_NAME_NOT_VALID.useraction=Opravte n\u00e1zev skupiny v konfigura\u010dn\u00edm souboru serveru.
+
+#BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} was not detected to be at the latest version {1}. The table was instead detected to have been created at version {2}. The createTables setting for the database store is set to {3}. 
+BATCH_TABLES_NOT_CURRENT=CWWKY0045W: Konfigurovan\u00e1 tabulka d\u00e1vky Java {0} nebyla zji\u0161t\u011bna v nejnov\u011bj\u0161\u00ed verzi {1}. M\u00edsto toho bylo zji\u0161t\u011bno, \u017ee tabulka byla vytvo\u0159ena ve verzi {2}. Nastaven\u00ed CreateTables pro datab\u00e1zov\u00e9 \u00falo\u017ei\u0161t\u011b je nastaveno na {3}. 
+BATCH_TABLES_NOT_CURRENT.explanation=Ur\u010den\u00e1 d\u00e1vkov\u00e1 b\u011bhov\u00e1 tabulka Java nebyla zji\u0161t\u011bna v nejnov\u011bj\u0161\u00ed verzi.
+BATCH_TABLES_NOT_CURRENT.useraction=Zkontrolujte nastaven\u00ed createTables pro datab\u00e1zov\u00e9 \u00falo\u017ei\u0161t\u011b. Je-li nastaven\u00ed createTables nastaveno na true, pak ur\u010dete, pro\u010d do\u0161lo k nezdaru automatick\u00e9ho vytvo\u0159en\u00ed tabulky. Je-li nastavena hodnota false, m\u011bl by administr\u00e1tor (nebo DBA) vytvo\u0159it po\u017eadovanou tabulku.
+
+#BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables were detected to have been created at the latest table version.
+BATCH_TABLES_CURRENT=CWWKY0046I: Bylo zji\u0161t\u011bno, \u017ee konfigurovan\u00e9 tabulky d\u00e1vky Java byly vytvo\u0159eny v nejnov\u011bj\u0161\u00ed verzi tabulky.
+BATCH_TABLES_CURRENT.explanation=Bylo zji\u0161t\u011bno, \u017ee konfigurovan\u00e9 tabulky d\u00e1vky Java byly vytvo\u0159eny v nejnov\u011bj\u0161\u00ed verzi tabulky, bu\u010f pomoc\u00ed automatick\u00e9ho vytvo\u0159en\u00ed, nebo prost\u0159ednictv\u00edm administr\u00e1tora, kter\u00fd je ru\u010dn\u011b vytvo\u0159il.
+BATCH_TABLES_CURRENT.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#BATCH_SECURITY_NOT_ACTIVE=CWWKY047W: Security is not enabled in this server, Group Security associated with job instance {0} will not be enabled.
+BATCH_SECURITY_NOT_ACTIVE=CWWKY0047W: Funkce zabezpe\u010den\u00ed nen\u00ed na tomto serveru povolena. Zabezpe\u010den\u00ed skupiny p\u0159idru\u017een\u00e9 k instanci \u00falohy {0} nebude povoleno.
+BATCH_SECURITY_NOT_ACTIVE.explanation=Zabezpe\u010den\u00ed nen\u00ed pro tento server povoleno, tak\u017ee p\u0159idru\u017een\u00ed zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed nebudou trvale uchov\u00e1na pro odkazovanou instanci \u00falohy. To znamen\u00e1, \u017ee role batchGroupAdmin a batchGroupMonitor nelze pou\u017e\u00edt k z\u00edsk\u00e1n\u00ed autorizace pro pr\u00e1ci v t\u00e9to \u00faloze, nyn\u00ed nebo kdykoli v budoucnu. 
+BATCH_SECURITY_NOT_ACTIVE.useraction= Pokud je po\u017eadov\u00e1no vynucen\u00ed zabezpe\u010den\u00ed d\u00e1vkov\u00e9ho zpracov\u00e1n\u00ed Java, povolte zabezpe\u010den\u00ed pro tento server.

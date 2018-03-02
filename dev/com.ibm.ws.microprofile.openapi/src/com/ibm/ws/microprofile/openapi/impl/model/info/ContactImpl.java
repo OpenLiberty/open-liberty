@@ -14,6 +14,9 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.models.info.Contact;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * Contact
  *
@@ -116,10 +119,11 @@ public class ContactImpl implements Contact {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Contact {\n");
+        sb = (name != null) ? sb.append("    name: ").append(toIndentedString(name)).append("\n") : sb.append("");
+        sb = (url != null) ? sb.append("    url: ").append(toIndentedString(url)).append("\n") : sb.append("");
+        sb = (email != null) ? sb.append("    email: ").append(toIndentedString(email)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    url: ").append(toIndentedString(url)).append("\n");
-        sb.append("    email: ").append(toIndentedString(email)).append("\n");
         sb.append("}");
         return sb.toString();
     }

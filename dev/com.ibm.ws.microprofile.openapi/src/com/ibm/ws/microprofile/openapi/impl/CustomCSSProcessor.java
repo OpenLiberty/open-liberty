@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.openapi.OASConfig;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -39,6 +40,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -291,6 +293,11 @@ public final class CustomCSSProcessor implements FileMonitor {
 
     protected void unsetLocationAdmin(WsLocationAdmin provider) {
         this.locationAdminProvider = null;
+    }
+
+    @Reference(service = ConfigProviderResolver.class, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setConfigProvider(ConfigProviderResolver configResolver) {
+        //makes sure config provider resolver is started
     }
 
     //

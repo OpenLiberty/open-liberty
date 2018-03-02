@@ -654,7 +654,7 @@ public class SSLUtils {
 
         // check to see if any ALPN negotiator is on the classpath; if so, register the current engine and link
         ThirdPartyAlpnNegotiator negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
-
+        
         int amountToWrite = 0;
         boolean firstPass = true;
         HandshakeStatus hsstatus = HandshakeStatus.NEED_WRAP;

@@ -85,10 +85,24 @@ public class InfoValidatorTest {
         InfoImpl info = new InfoImpl();
         info.setTitle("test");
         info.setVersion("1.0");
-        info.setTermsOfService("notValidURL");
+        info.setTermsOfService(":notValidURL");
         validator.validate(vh, context, info);
         Assert.assertEquals(1, vh.getEventsSize());
         Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Info Object must contain a valid URL"));
+    }
+
+    @Test
+    public void testInfoWithRelativeUrlForTermsOfService() {
+
+        InfoValidator validator = InfoValidator.getInstance();
+        TestValidationHelper vh = new TestValidationHelper();
+
+        InfoImpl info = new InfoImpl();
+        info.setTitle("test");
+        info.setVersion("1.0");
+        info.setTermsOfService("/relativeURL");
+        validator.validate(vh, context, info);
+        Assert.assertEquals(0, vh.getEventsSize());
     }
 
     @Test

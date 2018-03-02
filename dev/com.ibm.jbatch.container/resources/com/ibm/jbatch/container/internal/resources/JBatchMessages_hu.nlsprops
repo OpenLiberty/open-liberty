@@ -313,3 +313,18 @@ display.unresolved.jsl.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a
 JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: A(z) {0} operationGroup neve nem lett feloldva egy \u00e9rv\u00e9nyes csoportn\u00e9vre.
 JOB_GROUP_NAME_NOT_VALID.explanation=A feladat csoporthozz\u00e1f\u00e9r\u00e9sen kereszt\u00fcl t\u00f6rt\u00e9n\u0151 el\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rletek meghi\u00fasulhatnak egy \u00e9rv\u00e9nytelen csoportn\u00e9v haszn\u00e1lat\u00e1nak megk\u00eds\u00e9rl\u00e9sekor.
 JOB_GROUP_NAME_NOT_VALID.useraction=Jav\u00edtsa a csoportnevet a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlban.
+
+#BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} was not detected to be at the latest version {1}. The table was instead detected to have been created at version {2}. The createTables setting for the database store is set to {3}. 
+BATCH_TABLES_NOT_CURRENT=CWWKY0045W: A konfigur\u00e1lt {0} Java k\u00f6tegt\u00e1bla nem a leg\u00fajabb, {1}v\u00e1ltozat\u00fa. A t\u00e1bla a(z) {2} v\u00e1ltozattal lett l\u00e9trehozva. Az adatb\u00e1zis-t\u00e1rol\u00f3 createTables be\u00e1ll\u00edt\u00e1sa {3} \u00e9rt\u00e9kre van be\u00e1ll\u00edtva. 
+BATCH_TABLES_NOT_CURRENT.explanation=A megadott Java k\u00f6teg fut\u00e1si k\u00f6rnyezet t\u00e1bla nem a leg\u00fajabb v\u00e1ltozattal ker\u00fclt l\u00e9trehoz\u00e1sra.
+BATCH_TABLES_NOT_CURRENT.useraction=Ellen\u0151rizze az adatb\u00e1zis-t\u00e1rol\u00f3 createTables be\u00e1ll\u00edt\u00e1s\u00e1t. Ha a createTables be\u00e1ll\u00edt\u00e1s true \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, akkor hat\u00e1rozza meg, hogy a t\u00e1bla automatikus l\u00e9trehoz\u00e1sa mi\u00e9rt hi\u00fasult meg. Ha false \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, akkor az adminisztr\u00e1tornak (vagy az adatb\u00e1zis-adminisztr\u00e1tornak) kell l\u00e9trehoznia a sz\u00fcks\u00e9ges t\u00e1bl\u00e1t.
+
+#BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables were detected to have been created at the latest table version.
+BATCH_TABLES_CURRENT=CWWKY0046I: A konfigur\u00e1lt Java k\u00f6teg t\u00e1bl\u00e1k a legfrissebb t\u00e1bla v\u00e1ltozattal lettek l\u00e9trehozva.
+BATCH_TABLES_CURRENT.explanation=A konfigur\u00e1lt Java k\u00f6teg t\u00e1bl\u00e1k a legfrissebb t\u00e1bla v\u00e1ltozattal lettek l\u00e9trehozva, vagy automatikus l\u00e9trehoz\u00e1s \u00fatj\u00e1n, vagy egy adminisztr\u00e1tor k\u00e9zzel hozta l\u00e9tre azokat.
+BATCH_TABLES_CURRENT.useraction=Semmit sem kell tennie.
+
+#BATCH_SECURITY_NOT_ACTIVE=CWWKY047W: Security is not enabled in this server, Group Security associated with job instance {0} will not be enabled.
+BATCH_SECURITY_NOT_ACTIVE=CWWKY0047W: A biztons\u00e1gi szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve ezen a kiszolg\u00e1l\u00f3n, a(z) {0} feladattal t\u00e1rs\u00edtott Csoport biztons\u00e1g nem lesz enged\u00e9lyezve.
+BATCH_SECURITY_NOT_ACTIVE.explanation=Ezen a kiszolg\u00e1l\u00f3n nincs enged\u00e9lyezve a biztons\u00e1g, \u00edgy a k\u00f6teg csoport biztons\u00e1gi t\u00e1rs\u00edt\u00e1sai nem maradnak meg a hivatkozott feladatp\u00e9ld\u00e1ny eset\u00e9n. Ez azt jelenti, hogy a batchGroupAdmin \u00e9s a batchGroupMonitor szerepek nem haszn\u00e1lhat\u00f3k jogosults\u00e1g szerz\u00e9s\u00e9hez a feladaton v\u00e9gzett m\u0171veletekhez, most vagy a j\u00f6v\u0151ben b\u00e1rmikor. 
+BATCH_SECURITY_NOT_ACTIVE.useraction= Ha a Java k\u00f6teg csoport biztons\u00e1g k\u00e9nyszer\u00edt\u00e9se k\u00edv\u00e1natos, akkor enged\u00e9lyezze a biztons\u00e1got a kiszolg\u00e1l\u00f3n.

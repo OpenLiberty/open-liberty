@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ public class SourceManager {
         //temporary exception for audit Source  //must change later
         if (source.getSourceName().trim().equals("audit") && subscribers.isEmpty()) {
             //First subscriber, assign a buffer.
-            bufferMgr = new BufferManagerImpl(BUFFER_SIZE, sourceId);
+            bufferMgr = new BufferManagerImpl(BUFFER_SIZE, sourceId, false);
             //Inform the source that a buffer is now available
             //and it can start sending events to this buffer.
             source.setBufferManager(this.bufferMgr);

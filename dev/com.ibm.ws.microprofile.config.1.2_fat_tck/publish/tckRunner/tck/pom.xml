@@ -57,7 +57,7 @@
             <artifactId>microprofile-config-api</artifactId>
             <version>${microprofile.config.version}</version>
             <scope>system</scope>
-            <systemPath>${com.ibm.websphere.org.eclipse.microprofile.config.1.2_}</systemPath>
+            <systemPath>${com.ibm.websphere.org.eclipse.microprofile.config.1.2.1_}</systemPath>
         </dependency>
 
         <dependency>

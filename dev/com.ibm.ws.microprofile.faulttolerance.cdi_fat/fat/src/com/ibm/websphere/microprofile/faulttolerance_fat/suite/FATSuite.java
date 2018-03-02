@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,12 +30,14 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDICircuitBreaker
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIFallbackTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.SharedServer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                TxRetryTest.class,
                 CDIAsyncTest.class,
                 CDIBulkheadTest.class,
                 CDICircuitBreakerTest.class,
@@ -66,6 +68,14 @@ public class FATSuite {
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"));
 
         ShrinkHelper.exportArtifact(CDIFaultTolerance_war, "publish/servers/CDIFaultTolerance/dropins/");
+
+        String TX_APP_NAME = "TxFaultTolerance";
+
+        WebArchive txFaultTolerance_war = ShrinkWrap.create(WebArchive.class, TX_APP_NAME + ".war")
+                        .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.tx")
+                        .addAsLibraries(faulttolerance_jar);
+
+        ShrinkHelper.exportArtifact(txFaultTolerance_war, "publish/servers/TxFaultTolerance/dropins/");
     }
 
     @AfterClass

@@ -38,7 +38,7 @@ public class ExternalDocumentationValidator extends TypeValidator<ExternalDocume
         ValidatorUtils.validateRequiredField(t.getUrl(), context, "url").ifPresent(helper::addValidationEvent);
 
         if (t.getUrl() != null) {
-            if (!ValidatorUtils.isValidURL(t.getUrl())) {
+            if (!ValidatorUtils.isValidURI(t.getUrl())) {
                 final String message = Tr.formatMessage(tc, "externalDocumentationInvalidURL", t.getUrl());
                 helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("url"), message));
             }

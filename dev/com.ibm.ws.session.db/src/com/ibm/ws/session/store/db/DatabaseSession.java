@@ -12,6 +12,7 @@ package com.ibm.ws.session.store.db;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.transaction.UserTransaction;
@@ -28,7 +29,7 @@ public class DatabaseSession extends BackedSession {
     protected boolean usingMultirow = false;
 
     // The swappable data
-    Hashtable mSwappableData;
+    Map<Object, Object> mSwappableData;
 
     private static final int GET_SWAPPABLE_DATA = 0;
     private static final int GET_SWAPPABLE_LISTENERS = 1;
@@ -70,7 +71,7 @@ public class DatabaseSession extends BackedSession {
     /*
      * To get at the swappable data
      */
-    public Hashtable getSwappableData() {
+    public Map<Object, Object> getSwappableData() {
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[GET_SWAPPABLE_DATA]);
         }
@@ -185,7 +186,7 @@ public class DatabaseSession extends BackedSession {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[GET_MULTI_ROW_APP_DATA]);
         }
         populatedAppData = true;
-        Hashtable swappable = getSwappableData();
+        Map<Object, Object> swappable = getSwappableData();
         Hashtable props = (Hashtable) ((DatabaseHashMap) getSessions()).getAllValues(this);
         if (props != null) {
             Enumeration kys = props.keys();
@@ -217,7 +218,7 @@ public class DatabaseSession extends BackedSession {
      * setSwappableData
      */
     @Override
-    public void setSwappableData(Hashtable ht) {
+    public void setSwappableData(Map<Object, Object> ht) {
         mSwappableData = ht;
     }
 }

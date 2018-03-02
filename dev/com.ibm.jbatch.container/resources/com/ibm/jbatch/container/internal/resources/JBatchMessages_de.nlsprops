@@ -313,3 +313,17 @@ display.unresolved.jsl.useraction=Stellen Sie sicher, dass der Dateiname f\u00fc
 JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: Der Name der {0}-operationGroup wurde nicht in einen g\u00fcltigen Gruppennamen aufgel\u00f6st.
 JOB_GROUP_NAME_NOT_VALID.explanation=Der Versuch, auf mit Gruppenzugriff auf den Job zuzugreifen, schl\u00e4gt m\u00f6glicherweise fehl, wenn hierbei ein ung\u00fcltiger Gruppenname verwendet wird.
 JOB_GROUP_NAME_NOT_VALID.useraction=Korrigieren Sie den Gruppennamen in der Serverkonfigurationsdatei.
+
+#BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} was not detected to be at the latest version {1}. The table was instead detected to have been created at version {2}. The createTables setting for the database store is set to {3}. 
+BATCH_TABLES_NOT_CURRENT=CWWKY0045W: Es konnte nicht festgestellt werden, dass die konfigurierte Java-Stapeltabelle {0} mit der neuesten Version {1} erstellt wurde. Stattdessen wurde festgestellt, dass die Tabelle mit Version {2} erstellt wurde. Die createTables-Einstellung f\u00fcr den Datenbankspeicher ist auf {3} gesetzt. 
+BATCH_TABLES_NOT_CURRENT.explanation=Es konnte nicht festgestellt werden, dass die angegebene Java-Stapellaufzeittabelle mit der neuesten Version erstellt wurde.
+BATCH_TABLES_NOT_CURRENT.useraction=\u00dcberpr\u00fcfen Sie die createTables-Einstellung f\u00fcr den Datenbankspeicher. Wenn die createTables-Einstellung auf true gesetzt ist, ermitteln Sie, warum die automatische Erstellung der Tabelle nicht ausgef\u00fchrt werden konnte. Wenn diese Variable auf false gesetzt ist, sollte der Administrator (oder der Datenbankadministrator) die erforderliche Tabelle erstellen.
+#BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables were detected to have been created at the latest table version.
+BATCH_TABLES_CURRENT=CWWKY0046I: Es wurde festgestellt, dass die konfigurierten Java-Stapeltabellen mit der neuesten Tabellenversion erstellt wurden.
+BATCH_TABLES_CURRENT.explanation=Es wurde festgestellt, dass die konfigurierten Java-Stapeltabellen mit der neuesten Tabellenversion entweder mit der Funktion f\u00fcr automatisches Erstellen oder manuell durch den Administrator erstellt wurden.
+BATCH_TABLES_CURRENT.useraction=Es ist keine Aktion erforderlich.
+
+#BATCH_SECURITY_NOT_ACTIVE=CWWKY047W: Security is not enabled in this server, Group Security associated with job instance {0} will not be enabled.
+BATCH_SECURITY_NOT_ACTIVE=CWWKY0047W: Die Sicherheitsfunktion ist f\u00fcr diesen Server nicht aktiviert. Die Gruppensicherheit, die der Jobinstanz {0} zugeordnet ist, wird nicht aktiviert.
+BATCH_SECURITY_NOT_ACTIVE.explanation=Die Sicherheit ist f\u00fcr diesen Server nicht aktiviert, daher werden die Sicherheitszuordnungen der Stapelgruppe f\u00fcr die referenzierte Jobinstanz nicht persistent gespeichert. Das bedeutet, dass die Rollen batchGroupAdmin und batchGroupMonitor weder aktuell noch zu einem sp\u00e4teren Zeitpunkt verwendet werden k\u00f6nnen, um eine Bedienerberechtigung f\u00fcr diesen Job zu erhalten. 
+BATCH_SECURITY_NOT_ACTIVE.useraction= Wenn Sie die Java-Stapelgruppensicherheit aktivieren m\u00f6chten, aktivieren Sie die Sicherheit f\u00fcr diesen Server.

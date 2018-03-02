@@ -111,7 +111,6 @@ public class HttpAuthenticationMechanismDBAuthAliasTest extends JavaEESecTestBas
      * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testJaspiAnnotatedDBBasicAuthValidUserInRole_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

@@ -114,7 +114,20 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
                 logger.logp(Level.FINE, CLASS_NAME, methodName, "existing mapping found. Servlet name = " + returnMapping.getServletName());
             }
             return returnMapping;
+
         }
+
+        return this.getCurrentHttpServletMapping(dispatchContext);
+    }
+
+    public HttpServletMapping getCurrentHttpServletMapping(WebAppDispatcherContext40 dispatchContext) {
+        String methodName = "getCurrentHttpServletMapping";
+
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.entering(CLASS_NAME, methodName);
+        }
+
+        HttpServletMapping returnMapping = null;
 
         if (dispatchContext.getMappingMatch() != null) {
 
@@ -245,8 +258,18 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
             logger.logp(Level.FINE, CLASS_NAME, methodName, "create " + String.valueOf(create) + ", this -> " + this);
         }
-        _sessionCreated = true;
-        return super.getSession(create);
+
+        HttpSession session = super.getSession(create);
+
+        if (session != null) {
+            _sessionCreated = true;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, methodName, "_sessionCreated " + _sessionCreated + ", this -> " + this);
+        }
+
+        return session;
     }
 
     private Enumeration<String> getPushBuilderHeaders() {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,41 +19,30 @@
 # Message prefix block: CWWKS1900 - CWWKS1924
 # 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
 
-JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Es wurde kein IdentityStore-Objekt gefunden. Stellen Sie sicher, dass mindestens ein IdentityStore-Objekt durch Annotation in der Anwendung definiert ist.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Es wurde kein IdentityStore-Objekt gefunden. Dieses Objekt wird f\u00fcr die Authentifizierung und Berechtigung ben\u00f6tigt.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Stellen Sie sicher, dass die Anwendung ordnungsgem\u00e4\u00df annotiert ist, damit mindestens ein IdentityStore-Objekt verf\u00fcgbar ist.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Der konfigurierte IdentityStore wurde nicht gefunden. Vergewissern Sie sich, dass der \u00fcber die Anwendung konfigurierte IdentityStore verf\u00fcgbar ist.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Der f\u00fcr die Authentifizierung erforderliche IdentityStore wurde nicht gefunden.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=\u00dcberpr\u00fcfen Sie alle IdentityStore-Fehlernachrichten.
 
-JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Es wurde kein IdentityStore-Objekt gefunden, das die Benutzervalidierung unterst\u00fctzt. Stellen Sie sicher, dass mindestens ein IdentityStore-Objekt die Benutzervalidierung unterst\u00fctzt.
-JAVAEESEC_ERROR_NO_VALIDATION.explanation=Keines der IdentityStore-Objekt unterst\u00fctzt die Benutzervalidierung. Deshalb kann der Benutzer mit dem Sicherheitscode nicht authentifiziert werden.
-JAVAEESEC_ERROR_NO_VALIDATION.useraction=Stellen Sie sicher, dass mindestens ein IdentityStore-Objekt die Benutzervalidierung unterst\u00fctzt.
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Die Validierung des Benutzers wird von keinem IdentityStore unterst\u00fctzt. Stellen Sie sicher, dass mindestens ein IdentityStore-Objekt die Benutzervalidierung unterst\u00fctzt.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Es wurde kein IdentityStore f\u00fcr die Validierung des Benutzers gefunden. Daher kann der Benutzer nicht authentifiziert werden.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Stellen Sie sicher, dass mindestens ein IdentityStore die Validierung des Benutzers unterst\u00fctzt.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Das HttpAuthenticationMechanism-Objekt f\u00fcr das Modul {0} in der Anwendung {1} wurde nicht gefunden. Stellen Sie sicher, dass das Modul ein HttpAuthenticationMechanism-Objekt enth\u00e4lt.
-JAVAEESEC_ERROR_NO_HAM.explanation=Es wurde kein HttpAuthenticationMechanism-Objekt f\u00fcr die Authentifizierung gefunden. Es ist m\u00f6glich, dass kein Objekt vorhanden ist oder dass es mehrere Objekte gibt, die der angegebenen Bedingung entsprechen. Stellen Sie sicher, dass ein HttpAuthenticationMechanism-Objekt in der Anwendung vorhanden ist.
-JAVAEESEC_ERROR_NO_HAM.useraction=Stellen Sie sicher, dass ein HttpAuthenticationMechanism-Objekt in der Anwendung vorhanden ist.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Der HttpAuthenticationMechanism f\u00fcr das Modul {0} in der Anwendung {1} konnte nicht erstellt werden.
+JAVAEESEC_ERROR_NO_HAM.explanation=Der HttpAuthenticationMechanism kann nicht erstellt werden.
+JAVAEESEC_ERROR_NO_HAM.useraction=\u00dcberpr\u00fcfen Sie alle HttpAuthenticationMechanism-Fehlernachrichten.
 
-JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: Das ModuleProperties-Objekt f\u00fcr die Authentifizierung der Anwendung {0} wurde nicht gefunden. Wahrscheinlich enth\u00e4lt die Anwendung kein HttpAuthenticationMechanism-Objekt. Stellen Sie sicher, dass f\u00fcr jedes Modul ein HttpAuthenticationMechanism-Objekt definiert ist.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=Das ModuleProperties-Objekt, das f\u00fcr die Authentifizierung der Anwendung erforderlich ist, kann nicht identifiziert werden. Dieser Fehler ist gew\u00f6hnlich darauf zur\u00fcckzuf\u00fchren, dass kein HttpAuthenticationMechanism-Objekt in der Anwendung definiert ist.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Stellen Sie sicher, dass jedes Modul in der Anwendung ein HttpAuthenticationMechanism-Objekt enth\u00e4lt.
-
-JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Der Realmname f\u00fcr die Basisauthentifizierung ist nicht definiert. Es wird der Wert defaultRealm verwendet.
-JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Der Realmname f\u00fcr die Basisauthentifizierung ist nicht definiert und deshalb wird der Standardwert defaultRealm verwendet.
-JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Wenn der Realmname definiert werden muss, definieren Sie ihn mit der Annotation BasicAuthenticationMechanismDefinition in der Anwendung.
-
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Die Implementierung des Moduls {0} in der Anwendung {1} ist fehlgeschlagen, weil mehrere HttpAuthenticationMechanism-Implementierungen gefunden wurden. Die Liste der Klassen ist {2}. Wahrscheinlich handelt es sich um ein Problem bei der Anwendungspaketierung. Stellen Sie sicher, dass nur eine einzige HttpAuthenticationMechanism-Implementierung im Modul enthalten ist.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Die Anwendungsimplementierung ist fehlgeschlagen, weil mehrere HttpAuthenticationMechanism-Implementierungen gefunden wurden. Diese Bedingung ist nicht zul\u00e4ssig.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Stellen Sie sicher, dass nur eine einzige HttpAuthenticationMechanism-Implementierung f\u00fcr jedes Modul in der Anwendung enthalten ist.
-
-JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Es tritt ein Fehler auf, wenn das Programm die Konfiguration ''{0}'' f\u00fcr den Identit\u00e4tsspeicher aufl\u00f6st. Stellen Sie sicher, dass der EL-Ausdruck und das Ergebnis g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen. Der Standardwert ist ''{1}''.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Die Konfiguration des Identit\u00e4tsspeichers kann nicht in einen g\u00fcltigen Wert aufgel\u00f6st werden.
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Bei der Auswertung des EL-Ausdrucks (Expression Language) f\u00fcr das Attribut ''{0}'' der Identit\u00e4tsspeicherannotation ist ein Fehler aufgetreten. Stellen Sie sicher, dass der EL-Ausdruck und das Ergebnis g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen. Der Standardattributwert ''{1}'' wird verwendet.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Das Attribut des Identit\u00e4tsspeichers kann nicht in einen g\u00fcltigen Wert aufgel\u00f6st werden.
 JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Stellen Sie sicher, dass die Annotation einen g\u00fcltigen Konfigurationswert enth\u00e4lt. Wenn Sie EL-Ausdr\u00fccke verwenden, stellen Sie sicher, dass sie g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen.
 JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Ein hashAlgorithm-Parameter, der f\u00fcr den Hashalgorithmus {0} angegeben wurde, hat das falsche Format. Der empfangene Parameter ist {1}. Das erforderliche Format ist Name=Wert.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Eine Liste mit hashAlgorithm-Parametern hat das falsche Format und kann daher nicht syntaktisch analysiert werden.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Korrigieren Sie das hashAlgorithmParameters-Element in der DatabaseIdentityStore-Annotation. 
-JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: Die Abfrage ''{1}'' zum Abrufen des {0}-Callers f\u00fcr den DatabaseIdentityStore ist mit einem Fehler fehlgeschlagen: {2}
-JAVAEESEC_WARNING_GEN_DB.explanation=Die Suche nach dem angegebenen Caller ist mit einem Fehler fehlgeschlagen.
-JAVAEESEC_WARNING_GEN_DB.useraction=\u00dcberpr\u00fcfen Sie den angegebenen Fehler.
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: Die Berechtigungsnachweise f\u00fcr den Caller {0} konnten nicht validiert werden. Der DatabaseIdentityStore konnte die Abfrage ''{1}'' nicht ausf\u00fchren. Fehler: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=Die Suche nach dem Caller ist mit einem Fehler fehlgeschlagen.
+JAVAEESEC_ERROR_GEN_DB.useraction=Sehen Sie sich die Fehlernachricht an.
 
-JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Die Abfrage ''{1}'' zum Abrufen der Gruppen f\u00fcr den {0}-Caller ist f\u00fcr den DatabaseIdentityStore fehlgeschlagen. Die Teilliste der Gruppen ist {2}. Der Fehler ist {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Der DatabaseIdentityStore konnte die Abfrage ''{1}'' zum Abrufen der Gruppen f\u00fcr den Caller {0} nicht ausf\u00fchren. Die Teilliste der Gruppen ist {2}. Der Fehler ist {3}.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Die Suche nach Gruppen f\u00fcr den Caller ist mit einem Fehler fehlgeschlagen.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=\u00dcberpr\u00fcfen Sie den angegebenen Fehler. Es wird eine Teilliste von Gruppen zur\u00fcckgegeben.
 JAVAEESEC_WARNING_WRONG_CRED=CWWKS1920W: Der Berechtigungsnachweis, der dem IdentityStore bereitgestellt wird, ist kein UsernamePasswordCredential und kann nicht validiert werden.
@@ -73,4 +62,3 @@ JAVAEESEC_WARNING_NO_PWD.useraction=Wenn ein Kennwort erwartet wurde, \u00fcberp
 JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: Die Abfrage ''{1}'' hat mehrere Ergebnisse f\u00fcr den {0}-Caller f\u00fcr den DatabaseIdentityStore zur\u00fcckgegeben.
 JAVAEESEC_WARNING_MULTI_CALLER.explanation=F\u00fcr den angeforderten Caller wurden mehrere Ergebnisse zur\u00fcckgegeben. Die Caller-Abfrage sollte nur ein einziges Ergebnis zur\u00fcckgeben.
 JAVAEESEC_WARNING_MULTI_CALLER.useraction=\u00dcberpr\u00fcfen Sie die Caller-Abfrage und die Datenbankinhalte. \u00c4ndern Sie die Caller-Abfrage so, dass ein Ergebnis zur\u00fcckgegeben wird.
-#>>>>>>> Add messages for IdentityStore

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,45 +19,35 @@
 # Message prefix block: CWWKS1900 - CWWKS1924
 # 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
 
-JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Az IdentityStore objektum nem tal\u00e1lhat\u00f3. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb egy IdentityStore meg van adva feljegyz\u00e9ssel az alkalmaz\u00e1sban.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Az IdentityStore objektum nem tal\u00e1lhat\u00f3. Ez k\u00f6telez\u0151 a hiteles\u00edt\u00e9shez \u00e9s a felhatalmaz\u00e1shoz.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s megfelel\u0151en el van l\u00e1tva feljegyz\u00e9ssel, hogy enged\u00e9lyezzen legal\u00e1bb egy IdentityStore objektumot.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: A konfigur\u00e1lt IdentityStore nem tal\u00e1lhat\u00f3. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s \u00e1ltal konfigur\u00e1lt IdentityStore el\u00e9rhet\u0151.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=A hiteles\u00edt\u00e9shez sz\u00fcks\u00e9ges IdentityStore nem tal\u00e1lhat\u00f3.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Vizsg\u00e1lja ki az IdentityStore hiba\u00fczeneteit.
 
-JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Az IdentityStore objektum nem t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9st. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb egy IdentityStore t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9st.
-JAVAEESEC_ERROR_NO_VALIDATION.explanation=Egyik IdentityStore objektum sem t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9st, ez\u00e1ltal a biztons\u00e1gi k\u00f3d nem hiteles\u00edti a felhaszn\u00e1l\u00f3t.
-JAVAEESEC_ERROR_NO_VALIDATION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb egy IdentityStore t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9st.
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Egyetlen IdentityStore sem t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9t. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb egy IdentityStore t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9st.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Nem tal\u00e1lhat\u00f3 IdentityStore a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9hez, ez\u00e9rt a felhaszn\u00e1l\u00f3 nem hiteles\u00edthet\u0151.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb egy IdentityStore t\u00e1mogatja a felhaszn\u00e1l\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9t.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: A(z) {0} modul HttpAuthenticationMechanism objektuma a(z) {1} alkalmaz\u00e1sban nem tal\u00e1lhat\u00f3. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a modul tartalmaz HttpAuthenticationMechanism objektumot.
-JAVAEESEC_ERROR_NO_HAM.explanation=A HttpAuthenticationMechanism objektum nem azonos\u00edthat\u00f3 hiteles\u00edt\u00e9shez. Elk\u00e9pzelhet\u0151, hogy nincs objektum, vagy t\u00f6bb objektum van, amely megfelel a megadott felt\u00e9telnek. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van egy HttpAuthenticationMechanism az alkalmaz\u00e1sban.
-JAVAEESEC_ERROR_NO_HAM.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van egy HttpAuthenticationMechanism az alkalmaz\u00e1sban.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: A(z) {0} modul HttpAuthenticationMechanism objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} alkalmaz\u00e1sban.
+JAVAEESEC_ERROR_NO_HAM.explanation=A HttpAuthenticationMechanism nem hozhat\u00f3 l\u00e9tre.
+JAVAEESEC_ERROR_NO_HAM.useraction=Vizsg\u00e1lja ki a HttpAuthenticationMechanism hiba\u00fczeneteit.
 
-JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: A(z) {0} alkalmaz\u00e1s hiteles\u00edt\u00e9s\u00e9hez haszn\u00e1lt ModuleProperties objektum nem tal\u00e1lhat\u00f3, val\u00f3sz\u00edn\u0171leg az\u00e9rt,  mert az alkalmaz\u00e1s nem tartalmaz HttpAuthenticationMechanism objektumot. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindegyik modulhoz meg van hat\u00e1rozva egy HttpAuthenticationMechanism objektum.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=Az alkalmaz\u00e1s hiteles\u00edt\u00e9s\u00e9hez sz\u00fcks\u00e9ges ModuleProperties objektum nem ismerhet\u0151 fel. Ez a hiba \u00e1ltal\u00e1ban abb\u00f3l ad\u00f3dik, hogy a HttpAuthenticationMechanism objektum nincs meghat\u00e1rozva az alkalmaz\u00e1sban.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s mindegyik modulja tartalmaz HttpAuthenticationMechanism objektumot.
-
-JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Az alap hiteles\u00edt\u00e9s tartom\u00e1nyneve nincs be\u00e1ll\u00edtva, a defaultRealm ker\u00fcl alkalmaz\u00e1sra.
-JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Az alap hiteles\u00edt\u00e9s tartom\u00e1nyneve nincs be\u00e1ll\u00edtva, a defaultRealm alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra.
-JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Ha a tartom\u00e1nyneve be kell \u00e1ll\u00edtani, akkor azt a BasicAuthenticationMechanismDefinition feljegyz\u00e9ssel tegye meg az alkalmaz\u00e1sban.
-
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: A(z) {0} modul telep\u00edt\u00e9se a(z) {1} alkalmaz\u00e1sban nem siker\u00fclt, mart t\u00f6bb HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3. Az oszt\u00e1lyok list\u00e1ja: {2}. Ez nagy val\u00f3sz\u00edn\u0171s\u00e9ggel alkalmaz\u00e1scsomagol\u00e1si hiba. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindegyik modulban csak egy HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Az alkalmaz\u00e1stelep\u00edt\u00e9s meghi\u00fasult, mivel t\u00f6bb HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s l\u00e9tezik. Ez a felt\u00e9tel nem megengedett.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy mindegyik modulhoz csak egy HttpAuthenticationMechanism megval\u00f3s\u00edt\u00e1s tal\u00e1lhat\u00f3 az alkalmaz\u00e1sban.
-
-JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Hiba t\u00f6rt\u00e9nik, amikor a program feloldja az azonoss\u00e1gt\u00e1r ''{0}'' konfigur\u00e1ci\u00f3j\u00e1t.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. Az alap\u00e9rtelmezett \u00e9rt\u00e9k: ''{1}''.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Az azonoss\u00e1gt\u00e1r konfigur\u00e1ci\u00f3ja nem oldhat\u00f3 fel \u00e9rv\u00e9nyes \u00e9rt\u00e9kre.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a feljegyz\u00e9s \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ket tartalmazzon.  EL kifejez\u00e9sek haszn\u00e1lata eset\u00e9n gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy azok \u00e9rv\u00e9nyesek-e, \u00e9s hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k-e.
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Hiba t\u00f6rt\u00e9nt az Expression Language (EL) kifejez\u00e9s ki\u00e9rt\u00e9kel\u00e9sekor az azonoss\u00e1gt\u00e1rol\u00f3 feljegyz\u00e9s ''{0}'' attrib\u00fatum\u00e1hoz. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. Az alap\u00e9rtelmezett ''{1}'' attrib\u00fatum\u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Az azonoss\u00e1gt\u00e1rol\u00f3 Expression Language (EL) konfigur\u00e1ci\u00f3ja nem oldhat\u00f3 fel \u00e9rv\u00e9nyes \u00e9rt\u00e9kre.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a feljegyz\u00e9s \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ket tartalmazzon. EL kifejez\u00e9sek haszn\u00e1lata eset\u00e9n gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy azok \u00e9rv\u00e9nyesek-e, \u00e9s hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k-e.
 
 JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: A hashAlgorithm sz\u00e1m\u00e1ra megadott {0} hashAlgorithm param\u00e9ter nem megfelel\u0151 form\u00e1tumban van. A fogadott param\u00e9ter: {1}. A k\u00f6telez\u0151 form\u00e1tum n\u00e9v=\u00e9rt\u00e9k.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Egy hashAlgorithm param\u00e9terlista nem megfelel\u0151 form\u00e1tumban van, \u00e9s nem \u00e9rtelmezhet\u0151.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Jav\u00edtsa ki a hashAlgorithmParameters elemet a DatabaseIdentityStore feljegyz\u00e9sen.
 
-JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: A(z) ''{0}'' h\u00edv\u00f3t lek\u00e9r\u0151 {1} lek\u00e9rdez\u00e9s elakadt a DatabaseIdentityStore feljegyz\u00e9sen a k\u00f6vetkez\u0151 hib\u00e1val: {2}
-JAVAEESEC_WARNING_GEN_DB.explanation=A megadott h\u00edv\u00f3 keres\u00e9se hib\u00e1val akadt el.
-JAVAEESEC_WARNING_GEN_DB.useraction=Tekintse \u00e1t a megadott hib\u00e1t.
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: A(z) {0} h\u00edv\u00f3 hiteles\u00edt\u00e9si adatai nem \u00e9rv\u00e9nyes\u00edthet\u0151k. A DatabaseIdentityStore nem tudta v\u00e9grehajtani a(z) ''{1}'' lek\u00e9rdez\u00e9st a k\u00f6vetkez\u0151 hib\u00e1val: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=Keress meg a hib\u00e1val meghi\u00fasult h\u00edv\u00f3t.
+JAVAEESEC_ERROR_GEN_DB.useraction=Tekintse \u00e1t a hiba\u00fczenetet.
 
-JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: A(z) ''{0}'' h\u00edv\u00f3t lek\u00e9r\u0151 {1} lek\u00e9rdez\u00e9s meghi\u00fasult a DatabaseIdentityStore feljegyz\u00e9sen. A csoportok r\u00e9szleges list\u00e1ja: {2}. A hiba: {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: A DatabaseIdentityStore nem tudta v\u00e9grehajtani a(z) ''{1}''  lek\u00e9rdez\u00e9st a(z) {0} h\u00edv\u00f3 csom\u00f3portjainak beszerz\u00e9s\u00e9hez. A csoportok r\u00e9szleges list\u00e1ja: {2}. A hiba: {3}.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=A h\u00edv\u00f3 csoportjainak keres\u00e9se hib\u00e1val elakadt.
-JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Tekintse \u00e1t a megadott hib\u00e1t. A csoportok r\u00e9szleges list\u00e1ja ker\u00fclt visszaad\u00e1sra. 
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Tekintse \u00e1t a megadott hib\u00e1t. A csoportok r\u00e9szleges list\u00e1ja ker\u00fclt visszaad\u00e1sra.
+
 JAVAEESEC_WARNING_WRONG_CRED=CWWKS1920W: Az IdentityStore sz\u00e1m\u00e1ra megadott hiteles\u00edt\u00e9si adatok nem felhaszn\u00e1l\u00f3n\u00e9v/jelsz\u00f3 azonos\u00edt\u00f3k, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
 JAVAEESEC_WARNING_WRONG_CRED.explanation=Az IdentityStore sz\u00e1m\u00e1ra megadott hiteles\u00edt\u00e9si adatok nem felhaszn\u00e1l\u00f3n\u00e9v/jelsz\u00f3 azonos\u00edt\u00f3k, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
 JAVAEESEC_WARNING_WRONG_CRED.useraction=Vizsg\u00e1lja fel\u00fcl az IdentityStore sz\u00e1m\u00e1ra \u00e1tadott hiteles\u00edt\u00e9si adatok t\u00edpus\u00e1t.
@@ -77,5 +67,3 @@ JAVAEESEC_WARNING_NO_PWD.useraction=Ha a v\u00e1rt eredm\u00e9ny jelsz\u00f3 vol
 JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: A(z) ''{1}'' lek\u00e9rdez\u00e9s t\u00f6bb eredm\u00e9ny adott vissza a(z) {0} h\u00edv\u00f3nak a DatabaseIdentityStore feljegyz\u00e9sen.
 JAVAEESEC_WARNING_MULTI_CALLER.explanation=T\u00f6bb eredm\u00e9ny \u00e9rkezett vissza a lek\u00e9r\u0151 h\u00edv\u00f3nak. A h\u00edv\u00f3 lek\u00e9rdez\u00e9s csak egyetlen eredm\u00e9nyt adhat vissza.
 JAVAEESEC_WARNING_MULTI_CALLER.useraction=Tekintse \u00e1t a h\u00edv\u00f3 lek\u00e9rdez\u00e9st \u00e9s az adatb\u00e1zis tartalmakat. M\u00f3dos\u00edtsa a h\u00edv\u00f3 lek\u00e9rdez\u00e9st, hogy csak egy eredm\u00e9nyt adjon vissza.
-
-#>>>>>>> Add messages for IdentityStore

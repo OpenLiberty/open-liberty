@@ -35,3 +35,17 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: A v\u00e1lasz karakterk\u00f3dol
 unsupported.response.encoding.[{0}].explanation=A v\u00e1laszban megadott v\u00e1lasz karakterk\u00f3dol\u00e1s \u00e9rv\u00e9nytelen. Ez egy alkalmaz\u00e1shiba.
 unsupported.response.encoding.[{0}].useraction=Tekintse \u00e1t a napl\u00f3kat, \u00e9s \u00e1llap\u00edtsa meg, hogy a megadott k\u00f3dol\u00e1s \u00e9rv\u00e9nyes-e.
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: Nem \u00e1ll\u00edthat\u00f3k be befejez\u0151 r\u00e9szek, ha a v\u00e1lasz v\u00e9gleges\u00edtve van.
+set.trailer.fields.committed.response.explanation=A v\u00e1lasz m\u00e1r v\u00e9gleges\u00edtve lett.
+set.trailer.fields.committed.response.useraction=A befejez\u0151 r\u00e9szek be\u00e1ll\u00edt\u00e1sa el\u0151tt gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a v\u00e1lasz nem lett v\u00e9gleges\u00edtve.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: Nem \u00e1ll\u00edthat\u00f3k be befejez\u0151 r\u00e9szek, ha a HTTP v\u00e1ltozat nem 1.1 vagy \u00fajabb.
+set.trailer.fields.incorrect.http.version.explanation=A HTTP befejez\u0151 r\u00e9szek csak a HTTP 1.1 vagy \u00fajabb v\u00e1ltozatban t\u00e1mogatottak.
+set.trailer.fields.incorrect.http.version.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy HTTP 1.1 vagy \u00fajabb v\u00e1ltozat van haszn\u00e1latban.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Nem \u00e1ll\u00edthat\u00f3k be befejez\u0151 r\u00e9szek, ha a Transfer-Encoding fejl\u00e9c \u00e9rt\u00e9ke nem "chunked".
+set.trailer.fields.incorrect.transfer.encoding.explanation=A befejez\u0151 r\u00e9szek csak akkor t\u00e1mogatottak, ha a Transfer-Encoding fejl\u00e9c \u00e9rt\u00e9ke "chunked".
+set.trailer.fields.incorrect.transfer.encoding.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Transfer-Encoding fejl\u00e9c a "chunked" \u00e9rt\u00e9ket tartalmazza.

@@ -35,3 +35,17 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: Echec de la d\u00e9finition du c
 unsupported.response.encoding.[{0}].explanation=Le codage de r\u00e9ponse sp\u00e9cifi\u00e9 sur la r\u00e9ponse n'est pas valide. Il s'agit d'une erreur d'application.
 unsupported.response.encoding.[{0}].useraction=V\u00e9rifiez les fichiers journaux pour d\u00e9terminer si le codage sp\u00e9cifi\u00e9 est valide.
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: Les en-t\u00eates Trailer ne peuvent pas \u00eatre d\u00e9finis si la r\u00e9ponse a \u00e9t\u00e9 valid\u00e9e.
+set.trailer.fields.committed.response.explanation=La r\u00e9ponse a d\u00e9j\u00e0 \u00e9t\u00e9 valid\u00e9e.
+set.trailer.fields.committed.response.useraction=Assurez-vous que la r\u00e9ponse n'a pas \u00e9t\u00e9 valid\u00e9e avant la d\u00e9finition des en-t\u00eates Trailer.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: Les en-t\u00eates Trailer ne peuvent pas \u00eatre d\u00e9finis si la version HTTP n'est pas la version 1.1 ou une version ult\u00e9rieure.
+set.trailer.fields.incorrect.http.version.explanation=Les en-t\u00eates HTTP Trailer sont pris en charge dans HTTP 1.1 ou version ult\u00e9rieure.
+set.trailer.fields.incorrect.http.version.useraction=Assurez-vous qu'HTTP 1.1 ou version ult\u00e9rieure est utilis\u00e9.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Les en-t\u00eates Trailer ne peuvent pas \u00eatre d\u00e9finis si la valeur de l'en-t\u00eate Transfer-Encoding est diff\u00e9rente de "chunked".
+set.trailer.fields.incorrect.transfer.encoding.explanation=Les en-t\u00eates Trailer ne sont pris en charge que si la valeur de l'en-t\u00eate Transfer-Encoding est "chunked".
+set.trailer.fields.incorrect.transfer.encoding.useraction=Assurez-vous que l'en-t\u00eate Transfer-Encoding contient la valeur "chunked".
