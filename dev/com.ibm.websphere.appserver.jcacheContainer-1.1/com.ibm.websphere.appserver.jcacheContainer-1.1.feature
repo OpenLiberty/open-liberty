@@ -1,7 +1,7 @@
 -include= ~../cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jCacheContainer-1.1
+symbolicName=com.ibm.websphere.appserver.jcacheContainer-1.1
 visibility=public
-IBM-ShortName: jCacheContainer-1.1
+IBM-ShortName: jcacheContainer-1.1
 Manifest-Version: 1.0
 Subsystem-Name: JCache via Bells
 IBM-API-Package: \
