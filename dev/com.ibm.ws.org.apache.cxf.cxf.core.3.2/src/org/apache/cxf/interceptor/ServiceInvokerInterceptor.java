@@ -58,11 +58,11 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
             @Override
             public void run() {
                 Exchange runableEx = message.getExchange();
-                Object result = invoker.invoke(runableEx, getInvokee(message));
+                Message outMessage = null;
                 if (!exchange.isOneWay()) {
                     Endpoint ep = exchange.getEndpoint();
 
-                    Message outMessage = runableEx.getOutMessage();
+                    outMessage = runableEx.getOutMessage();
                     if (outMessage == null) {
                         // Liberty perf change - avoid resize operation to set init size 16 and factor 1
                         outMessage = new MessageImpl(16, 1);
@@ -71,6 +71,11 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
                         exchange.setOutMessage(outMessage);
                     }
                     copyJaxwsProperties(message, outMessage);
+                }
+
+                Object result = invoker.invoke(runableEx, getInvokee(message));
+
+                if (!exchange.isOneWay()) {
                     if (result != null) {
                         MessageContentsList resList = null;
                         if (result instanceof MessageContentsList) {
