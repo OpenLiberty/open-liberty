@@ -47,6 +47,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
@@ -974,7 +975,7 @@ public final class JAXRSUtils {
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
                 String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
                 String body = FormUtils.readBody(m.getContent(InputStream.class), enc);
-                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, decode);
+                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
                     && MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(mt)) {
@@ -985,6 +986,14 @@ public final class JAXRSUtils {
                     Tr.warning(tc, errorMsg.toString());
                     throw ExceptionUtils.toNotSupportedException(null, null);
                 }
+            }
+        }
+
+        if (decode) {
+            List<String> values = params.get(key);
+            if (values != null) {
+                values = values.stream().map(value -> HttpUtils.urlDecode(value)).collect(Collectors.toList());
+                params.replace(key, values);
             }
         }
 
