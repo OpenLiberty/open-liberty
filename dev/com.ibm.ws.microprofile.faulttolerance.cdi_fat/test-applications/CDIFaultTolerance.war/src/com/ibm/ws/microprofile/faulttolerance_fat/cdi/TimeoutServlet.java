@@ -57,7 +57,7 @@ public class TimeoutServlet extends FATServlet {
             long timeout = System.currentTimeMillis();
             long duration = timeout - start;
             if (duration > 3000) { //the default timeout is 1000ms, if it takes 3000ms to fail then there is something wrong
-                throw new AssertionError("TimeoutException not thrown quickly enough: " + timeout);
+                throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
             }
         } catch (ConnectException e) {
             throw new ServletException(e);
@@ -172,7 +172,7 @@ public class TimeoutServlet extends FATServlet {
             long timeout = System.currentTimeMillis();
             long duration = timeout - start;
             if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
-                throw new AssertionError("TimeoutException not thrown quickly enough: " + timeout);
+                throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
             }
         } catch (ConnectException e) {
             throw new ServletException(e);
@@ -200,7 +200,7 @@ public class TimeoutServlet extends FATServlet {
             long timeout = System.currentTimeMillis();
             long duration = timeout - start;
             if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
-                throw new AssertionError("TimeoutException not thrown quickly enough: " + timeout);
+                throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
             }
         } catch (ConnectException e) {
             throw new ServletException(e);
