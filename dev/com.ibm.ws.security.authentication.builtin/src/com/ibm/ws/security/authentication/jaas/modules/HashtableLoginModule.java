@@ -11,10 +11,7 @@
 package com.ibm.ws.security.authentication.jaas.modules;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -26,7 +23,6 @@ import javax.security.auth.spi.LoginModule;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
@@ -301,20 +297,20 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
      *
      * @param subject
      */
-    private void addJaspicPrincipal(Subject subject) throws Exception {
-        Principal jaspiPrincipal = (Principal) customProperties.get("com.ibm.wsspi.security.cred.jaspi.principal");
-        if (jaspiPrincipal != null) {
-            WSCredential wsCredential = null;
-            Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
-            Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
-            if (wsCredentialsIterator.hasNext()) {
-                wsCredential = wsCredentialsIterator.next();
-                if (wsCredential != null) // paranoid safety check (it's gm time)
-                    wsCredential.set("com.ibm.wsspi.security.cred.jaspi.principal", jaspiPrincipal);
-            }
-            subject.getPrincipals().add(jaspiPrincipal);
-        }
-    }
+//    private void addJaspicPrincipal(Subject subject) throws Exception {
+//        Principal jaspiPrincipal = (Principal) customProperties.get("com.ibm.wsspi.security.cred.jaspi.principal");
+//        if (jaspiPrincipal != null) {
+//            WSCredential wsCredential = null;
+//            Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+//            Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+//            if (wsCredentialsIterator.hasNext()) {
+//                wsCredential = wsCredentialsIterator.next();
+//                if (wsCredential != null) // paranoid safety check (it's gm time)
+//                    wsCredential.set("com.ibm.wsspi.security.cred.jaspi.principal", jaspiPrincipal);
+//            }
+//            subject.getPrincipals().add(jaspiPrincipal);
+//        }
+//    }
 
 //    private void addJsonWebToken(Subject subject) {
 //        if (customProperties != null && customProperties.get(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN) != null) {
