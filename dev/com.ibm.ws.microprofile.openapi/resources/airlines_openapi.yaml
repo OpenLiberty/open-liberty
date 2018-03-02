@@ -222,17 +222,17 @@ paths:
                 seatPreference:
                   type: string
                   example: window
-              encoding:
-                profileImage:
-                  contentType: text/plain
-                  style: simple
-                  explode: false
-                  allowReserved: true
-                  headers:
-                    X-Rate-Limit-Limit:
-                      description: The number of allowed requests in the current period
-                      schema:
-                        type: integer
+            encoding:
+              profileImage:
+                contentType: text/plain
+                style: form
+                explode: false
+                allowReserved: true
+                headers:
+                  X-Rate-Limit-Limit:
+                    description: The number of allowed requests in the current period
+                    schema:
+                      type: integer
       responses:
         200:
           description: Booking updated
@@ -331,6 +331,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
+          links:
+            ReviewId:
+              description: The id corresponding to a particular review
+              operationId: getReviewById
         404:
           description: Review not found
       servers:
@@ -605,3 +609,10 @@ components:
           authorizationUrl: https://example.com/api/oauth/dialog
           scopes:
             write:booking: edit a booking
+  links:
+    UserName:
+      description: The username corresponding to provided user id
+      operationId: getUserByUserName
+    ReviewId:
+      description: The id corresponding to a particular review
+      operationId: getReviewById
