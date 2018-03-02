@@ -8,19 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.sse.fat;
+/**
+ *
+ */
+package jaxrs21sse.jaxb;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+@XmlRootElement(name = "TestXML")
+public class TestXML {
+    @XmlElement
+    int x;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AlwaysPassesTest.class, // so we report at least 1 test on java 7 builds
-                BasicSseTest.class,
-                SseJaxbTest.class,
-                SseJsonbTest.class,
-})
-public class FATSuite {}
+    @XmlElement
+    int y;
+
+    public TestXML() {}
+
+    TestXML(int _x, int _y) {
+        x = _x;
+        y = _y;
+    }
+}
