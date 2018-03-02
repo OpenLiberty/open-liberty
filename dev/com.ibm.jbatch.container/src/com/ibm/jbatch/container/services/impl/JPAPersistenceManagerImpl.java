@@ -33,13 +33,12 @@ import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.JobExecution;
 import javax.batch.runtime.JobInstance;
 import javax.batch.runtime.StepExecution;
+import javax.management.Query;
+import javax.net.ssl.SSLEngineResult.Status;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.NotSupportedException;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 
 import org.osgi.service.component.ComponentContext;
@@ -2669,13 +2668,15 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
             return exec;
         } catch (PersistenceException e) {
+            logger.fine("Looking for JobExecutionEntityV2 table support, caught a persistence exception");
             Throwable cause = e.getCause();
             while (cause != null) {
-                logger.fine("Cause of V2 persistence exception: " + cause.toString());
-                logger.fine("Cause message of V2 persistence exception: " + cause.getMessage());
-                if ((cause instanceof SQLSyntaxErrorException || cause.getClass().getCanonicalName().contains("SqlSyntaxErrorException")) &&
-                    cause.getMessage() != null &&
-                    cause.getMessage().contains("JOBPARAMETER")) {
+                final String causeMsg = cause.getMessage();
+                final String causeClassName = cause.getClass().getCanonicalName();
+                logger.fine("Next chained JobExecutionEntityV2 persistence exception: exc class = " + causeCN + "; causeMsg = " + causeMsg);
+                if ((cause instanceof SQLSyntaxErrorException || causeCN.contains("SqlSyntaxErrorException")) &&
+                    causeMsg != null &&
+                    causeMsg.contains("JOBPARAMETER")) {
                     // The table isn't there.
                     logger.fine("The JOBPARAMETER table does not exist, job execution table version = 1");
                     executionVersion = 1;
@@ -2683,7 +2684,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 }
                 cause = cause.getCause();
             }
-            logger.fine("Unexpected exception while checking job execution table version, re-throwing");
+            logger.fine("Unexpected exception while checking for JobExecutionEntityV2 table version, re-throwing");
             throw e;
         } finally {
             em.close();
@@ -2734,14 +2735,15 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     }
                 }.runInNewOrExistingGlobalTran();
             } catch (PersistenceException pe) {
-                logger.fine("Looking for V2 table support, Caught a persistence exception");
+                logger.fine("Looking for JobInstanceEntityV2 table support, caught a persistence exception");
                 Throwable cause = pe.getCause();
                 while (cause != null) {
-                    logger.fine("Cause of V2 persistence exception: " + cause.toString());
-                    logger.fine("Cause message of V2 persistence exception: " + cause.getMessage());
-                    if ((cause instanceof SQLSyntaxErrorException || cause.getClass().getCanonicalName().contains("SqlSyntaxErrorException")) &&
-                        cause.getMessage() != null &&
-                        cause.getMessage().contains("UPDATETIME")) {
+                    final String causeMsg = cause.getMessage();
+                    final String causeClassName = cause.getClass().getCanonicalName();
+                    logger.fine("Next chained JobInstanceEntityV2 persistence exception: exc class = " + causeCN + "; causeMsg = " + causeMsg);
+                    if ((cause instanceof SQLSyntaxErrorException || causeCN.contains("SqlSyntaxErrorException")) &&
+                        causeMsg != null &&
+                        causeMsg.contains("UPDATETIME")) {
                         // The UPDATETIME column isn't there.
                         logger.fine("The UPDATETIME column does not exist, job instance table version = 1");
                         instanceVersion = 1;
@@ -2752,7 +2754,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
                 if (instanceVersion == null) {
                     // We did not determine an instance version
-                    logger.fine("Unexpected exception while checking job instance table version, re-throwing");
+                    logger.fine("Unexpected exception while checking for JobInstanceEntityV2 table version, re-throwing");
                     throw pe;
                 }
             }
@@ -2774,14 +2776,15 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
                 return exec;
             } catch (PersistenceException pe) {
-                logger.fine("Looking for V3 table support, Caught a persistence exception");
+                logger.fine("Looking for JobInstanceEntityV3 table support, caught a persistence exception");
                 Throwable cause = pe.getCause();
                 while (cause != null) {
-                    logger.fine("Cause of V3 persistence exception: " + cause.toString());
-                    logger.fine("Cause message of V3 persistence exception: " + cause.getMessage());
-                    if ((cause instanceof SQLSyntaxErrorException || cause.getClass().getCanonicalName().contains("SqlSyntaxErrorException")) &&
-                        cause.getMessage() != null &&
-                        cause.getMessage().contains("GROUPASSOCIATION")) {
+                    final String causeMsg = cause.getMessage();
+                    final String causeClassName = cause.getClass().getCanonicalName();
+                    logger.fine("Next chained JobInstanceEntityV3 persistence exception: exc class = " + causeCN + "; causeMsg = " + causeMsg);
+                    if ((cause instanceof SQLSyntaxErrorException || causeCN.contains("SqlSyntaxErrorException")) &&
+                        causeMsg != null &&
+                        causeMsg.contains("GROUPASSOCIATION")) {
                         // The GROUPASSOCIATION support isn't there.
                         logger.fine("The GROUPASSOCIATION table does not exist, job instance table version = 2");
                         instanceVersion = 2;
@@ -2790,7 +2793,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     cause = cause.getCause();
                 }
 
-                logger.fine("Unexpected exception while checking job instance table version, re-throwing");
+                logger.fine("Unexpected exception while checking for JobInstanceEntityV3 table version, re-throwing");
                 throw pe;
             }
         } finally {
