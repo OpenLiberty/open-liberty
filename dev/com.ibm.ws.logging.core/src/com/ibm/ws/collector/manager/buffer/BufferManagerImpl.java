@@ -11,9 +11,7 @@
 package com.ibm.ws.collector.manager.buffer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +20,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -30,29 +27,27 @@ public class BufferManagerImpl extends BufferManager {
 
     private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);	
     private Buffer<Object> ringBuffer;
-    private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
+    private final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     private Set<SynchronousHandler> synchronousHandlerSet = new HashSet<SynchronousHandler>();
     private final int capacity;
 
     private final String sourceId;
     /* Map to keep track of the next event for a handler */
     private final ConcurrentHashMap<String, HandlerStats> handlerEventMap = new ConcurrentHashMap<String, HandlerStats>();
-    private static List<BufferManager> bufferManagerList= new ArrayList<BufferManager>();
     
-    private Queue<Object> earlyMessageQueue;
-    private volatile static boolean EMQRemovedFlag = false;
+    protected Queue<Object> earlyMessageQueue;
     private static final int EARLY_MESSAGE_QUEUE_SIZE=400;
-    private static final int EMQ_TIMER = 60 * 5 * 1000; //5 Minute timer
+    
 
     public BufferManagerImpl(int capacity, String sourceId) {
         super();
         RERWLOCK.writeLock().lock();
         try {
-            bufferManagerList.add(this);
+            BufferManagerEMQHelper.bufferManagerList.add(this);
             ringBuffer=null;
             this.sourceId = sourceId;
             this.capacity = capacity;
-            if(!BufferManagerImpl.EMQRemovedFlag)
+            if(!BufferManagerEMQHelper.EMQRemovedFlag)
                 earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
         }finally {
             RERWLOCK.writeLock().unlock();
@@ -234,34 +229,7 @@ public class BufferManagerImpl extends BufferManager {
             RERWLOCK.writeLock().unlock();
         }
     }
-
-    public static void removeEMQTrigger(){
-        RERWLOCK.writeLock().lock();
-        try {
-            EMQRemovedFlag=true;
-            for(BufferManager i: bufferManagerList) {
-                ((BufferManagerImpl) i).removeEMQ();
-            }
-        }finally {
-            RERWLOCK.writeLock().unlock();
-        }
-    }
-
-    public static void removeEMQByTimer(){
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        BufferManagerImpl.removeEMQTrigger();
-                    }
-                },
-                BufferManagerImpl.EMQ_TIMER);
-    }
-    
-    public static boolean getEMQRemovedFlag() {
-        return EMQRemovedFlag;
-    }
-
+   
     public static class HandlerStats {
 
         private final String handlerId;
