@@ -20,8 +20,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -69,6 +72,24 @@ public class SessionCacheTestServlet extends FATServlet {
             System.out.println("Invalidating session: " + session.getId());
             session.invalidate();
         }
+    }
+
+    /**
+     * Verify that the session contains the specified attribute names.
+     */
+    public void testAttributeNames(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String[] expectedAttributes = request.getParameter("sessionAttributes").split(",");
+        boolean allowOtherAttributes = Boolean.parseBoolean(request.getParameter("allowOtherAttributes"));
+
+        HttpSession session = request.getSession(false);
+        Enumeration<String> attributeNames = session.getAttributeNames();
+
+        Collection<String> expected = Arrays.asList(expectedAttributes);
+        Collection<String> observed = Collections.list(attributeNames);
+        if (allowOtherAttributes)
+            assertTrue("Expected " + expected + ". Observed " + observed, observed.containsAll(expected));
+        else
+            assertEquals(new HashSet<String>(expected), new HashSet<String>(observed));
     }
 
     /**
