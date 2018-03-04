@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -59,6 +69,8 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
             public void run() {
                 Exchange runableEx = message.getExchange();
                 Message outMessage = null;
+                // Liberty change (OLGH2084):  Move invoke after OutMessage is set on Exchange to allow 
+                // events to flow, such as those containing JAXBElements. 
                 if (!exchange.isOneWay()) {
                     Endpoint ep = exchange.getEndpoint();
 
