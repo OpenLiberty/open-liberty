@@ -1316,6 +1316,8 @@ public abstract class RepositoryResourceImpl implements RepositoryResourceWritab
      * @throws RepositoryResourceException
      */
     public void moveToState(State state) throws RepositoryBackendException, RepositoryResourceException {
+        if (getState() == null)
+            return;
         int counter = 0;
         while (getState() != state) {
             counter++;
