@@ -10,20 +10,33 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.validation;
 
+import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.FATSuite;
 import com.ibm.ws.fat.util.SharedServer;
 
+import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
+@AllowedFFDC
 public class ValidationTest {
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = FATSuite.MULTI_MODULE_SERVER;
+    public static SharedServer SHARED_SERVER = new SharedServer("FaultToleranceMultiModule");
+
+    @AfterClass
+    public static void shutdown() throws Exception {
+        if (SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().stopServer("CWMFT50[01][0-9]E.*badMethod",
+                                                        "CWMFT5019W.*badMethod");
+        }
+    }
 
     @Test
     public void testAsyncMethodNotReturningFuture() throws Exception {

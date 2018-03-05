@@ -15,7 +15,6 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -33,7 +32,6 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.SharedServer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -51,8 +49,6 @@ import com.ibm.ws.fat.util.SharedServer;
 })
 
 public class FATSuite {
-
-    public static SharedServer MULTI_MODULE_SERVER = new SharedServer("FaultToleranceMultiModule");
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -76,14 +72,6 @@ public class FATSuite {
                         .addAsLibraries(faulttolerance_jar);
 
         ShrinkHelper.exportArtifact(txFaultTolerance_war, "publish/servers/TxFaultTolerance/dropins/");
-    }
-
-    @AfterClass
-    public static void shutdownMultiModuleServer() throws Exception {
-        if (MULTI_MODULE_SERVER.getLibertyServer().isStarted()) {
-            MULTI_MODULE_SERVER.getLibertyServer().stopServer("CWMFT50[01][0-9]E.*badMethod",
-                                                              "CWMFT5019W.*badMethod");
-        }
     }
 
 }

@@ -43,13 +43,16 @@ import componenttest.topology.utils.FATServletClient;
 public class ImplicitConverterTest extends FATServletClient {
 
     public static final String APP_NAME = "converterApp";
+    private static final String SERVER_NAME = "ConverterServer";
 
-    @Server("ConverterServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = ImplicitConverterServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()).andWith(FeatureReplacementAction.EE8_FEATURES());
+    public static RepeatTests r = RepeatTests
+                    .with(FeatureReplacementAction.EE7_FEATURES().forServers(SERVER_NAME))
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SERVER_NAME));
 
     @BeforeClass
     public static void setUp() throws Exception {

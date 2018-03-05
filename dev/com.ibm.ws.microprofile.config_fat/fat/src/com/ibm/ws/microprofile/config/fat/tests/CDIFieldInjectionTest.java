@@ -31,10 +31,12 @@ import componenttest.rules.repeater.RepeatTests;
 public class CDIFieldInjectionTest extends LoggingTest {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(RepeatConfig11EE8.INSTANCE).andWith(RepeatConfig12EE8.INSTANCE);
+    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIConfigServer");
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIConfigServer");
+    public static RepeatTests r = RepeatTests
+                    .with(RepeatConfig11EE8.INSTANCE.forServers(SHARED_SERVER.getServerName()))
+                    .andWith(RepeatConfig12EE8.INSTANCE.forServers(SHARED_SERVER.getServerName()));
 
     @BuildShrinkWrap
     public static Archive buildApp() {
