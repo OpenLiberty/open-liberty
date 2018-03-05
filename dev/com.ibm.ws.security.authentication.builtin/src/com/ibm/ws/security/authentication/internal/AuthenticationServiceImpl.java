@@ -60,7 +60,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     static final String KEY_DEFAULT_DELEGATION_PROVIDER = "defaultDelegationProvider";
     static final String KEY_CREDENTIALS_SERVICE = "credentialsService";
     private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
-    private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
     private final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
     private final AtomicServiceReference<UserRegistryService> userRegistryServiceRef = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTRY_SERVICE);
@@ -360,20 +359,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (subject == null) {
             String customCacheKey = null;
             String oid = (String) authenticationData.get(AuthenticationData.AUTHENTICATION_MECH_OID);
-            if (oid != null && oid.equals(LTPA_OID)) {
+            if (oid == null && oid.equals(LTPA_OID)) {
                 if (ssoTokenBytes == null && token != null) {
                     ssoTokenBytes = Base64Coder.base64DecodeString(token);
                 }
                 if (ssoTokenBytes == null) {
                     throw new AuthenticationException("Invalid LTPA Token");
                 }
-            } else if (oid != null && oid.equals(JWT_OID)) {
-                // Need a new method to gethe the customCacheKey
-                //JwtSSOTokenHelper.
+                customCacheKey = CustomCacheKeyProvider.getCustomCacheKey(authCacheService, ssoTokenBytes, authenticationData);
+
             }
-
-            customCacheKey = CustomCacheKeyProvider.getCustomCacheKey(authCacheService, ssoTokenBytes, authenticationData);
-
+//            else if (oid != null && oid.equals(JWT_OID)) {
+//                // Need a new method to get the the customCacheKey
+//                //JwtSSOTokenHelper.
+//                //customCacheKey = "s3eDVtuRqj7kIXsMUnLPDUtrUHPqtAHhAxwWOwTIUtc=";
+//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                    Tr.debug(tc, "UTLE>>> JTW TOKEN");
+//                }
+//            }
+            Tr.debug(tc, "UTLE>>> NEW ");
             if (customCacheKey != null) {
                 subject = authCacheService.getSubject(customCacheKey);
                 if (subject == null) {

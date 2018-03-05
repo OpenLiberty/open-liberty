@@ -10,16 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal.cache.keyproviders;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import javax.security.auth.Subject;
 
-import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
-import com.ibm.ws.security.authentication.internal.SSOTokenHelper;
-import com.ibm.wsspi.security.token.SingleSignonToken;
 
 /**
  * Provides the SSO token bytes as the cache key.
@@ -33,17 +27,9 @@ public class JwtSSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
     }
 
     private String getJwtSSOTokenBytes(final Subject subject) {
-        String base64EncodedSSOTokenBytes = null;
-        SingleSignonToken ssoToken = AccessController.doPrivileged(new PrivilegedAction<SingleSignonToken>() {
-
-            @Override
-            public SingleSignonToken run() {
-                return SSOTokenHelper.getSSOToken(subject);
-            }
-        });
-        if (ssoToken != null) {
-            base64EncodedSSOTokenBytes = Base64Coder.toString(Base64Coder.base64Encode(ssoToken.getBytes()));
-        }
-        return base64EncodedSSOTokenBytes;
+        String jwtSSOTokenCacheKey = "s3eDVtuRqj7kIXsMUnLPDUtrUHPqtAHhAxwWOwTIUtc=";
+        //TODO call aruna code to get the cache key
+        return jwtSSOTokenCacheKey;
+//        return null;
     }
 }

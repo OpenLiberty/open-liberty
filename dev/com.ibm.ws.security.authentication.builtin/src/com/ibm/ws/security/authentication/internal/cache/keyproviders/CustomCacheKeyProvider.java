@@ -45,6 +45,8 @@ public class CustomCacheKeyProvider implements CacheKeyProvider {
     private static final AtomicServiceReference<TokenManager> tokenManager = new AtomicServiceReference<TokenManager>("tokenManager");
     private final SubjectHelper subjectHelper = new SubjectHelper();
     private final static String OIDC_ACCESS_TOKEN = "oidc_access_token";
+    private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
+    private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
     protected void setTokenManager(ServiceReference<TokenManager> ref) {
         tokenManager.setReference(ref);
@@ -78,26 +80,34 @@ public class CustomCacheKeyProvider implements CacheKeyProvider {
     @FFDCIgnore({ InvalidTokenException.class, TokenExpiredException.class })
     public static String getCustomCacheKey(AuthCacheService authCacheService, byte[] ssoTokenBytes, AuthenticationData authenticationData) throws AuthenticationException {
         String customCacheKey = null;
-        TokenManager tokenManager = CustomCacheKeyProvider.tokenManager.getService();
-        if (tokenManager == null)
-            return null;
-        try {
-            Token recreatedToken = tokenManager.recreateTokenFromBytes(ssoTokenBytes);
-            String[] attrs = recreatedToken.getAttributes(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
-            if (attrs != null && attrs.length > 0) {
-                customCacheKey = attrs[0];
-            }
-            String[] accessTokens = recreatedToken.getAttributes(OIDC_ACCESS_TOKEN);
-            if (accessTokens != null && accessTokens.length > 0) {
-                HttpServletRequest req = (HttpServletRequest) authenticationData.get(AuthenticationData.HTTP_SERVLET_REQUEST);
-                req.setAttribute(OIDC_ACCESS_TOKEN, accessTokens[0]);
-            }
+        String oid = (String) authenticationData.get(AuthenticationData.AUTHENTICATION_MECH_OID);
+        if (oid == null && oid.equals(LTPA_OID)) {
+            TokenManager tokenManager = CustomCacheKeyProvider.tokenManager.getService();
+            if (tokenManager == null)
+                return null;
+            try {
+                Token recreatedToken = tokenManager.recreateTokenFromBytes(ssoTokenBytes);
+                String[] attrs = recreatedToken.getAttributes(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
+                if (attrs != null && attrs.length > 0) {
+                    customCacheKey = attrs[0];
+                }
+                String[] accessTokens = recreatedToken.getAttributes(OIDC_ACCESS_TOKEN);
+                if (accessTokens != null && accessTokens.length > 0) {
+                    HttpServletRequest req = (HttpServletRequest) authenticationData.get(AuthenticationData.HTTP_SERVLET_REQUEST);
+                    req.setAttribute(OIDC_ACCESS_TOKEN, accessTokens[0]);
+                }
 
-        } catch (InvalidTokenException e) {
-            throw new AuthenticationException(e.getMessage());
-        } catch (TokenExpiredException e) {
-            throw new AuthenticationException(e.getMessage());
+            } catch (InvalidTokenException e) {
+                throw new AuthenticationException(e.getMessage());
+            } catch (TokenExpiredException e) {
+                throw new AuthenticationException(e.getMessage());
+            }
+        } else if (oid != null && oid.equals(JWT_OID)) {
+            // Need a new method to get the the customCacheKey
+            //JwtSSOTokenHelper.
+            //customCacheKey = "s3eDVtuRqj7kIXsMUnLPDUtrUHPqtAHhAxwWOwTIUtc=";
         }
+
         return customCacheKey;
     }
 
@@ -111,6 +121,7 @@ public class CustomCacheKeyProvider implements CacheKeyProvider {
         if (customProperties != null) {
             customCacheKey = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
         }
+        //TODO: how's about jwt token
         if (customCacheKey == null) {
             SingleSignonToken ssoToken = AccessController.doPrivileged(new PrivilegedAction<SingleSignonToken>() {
 
