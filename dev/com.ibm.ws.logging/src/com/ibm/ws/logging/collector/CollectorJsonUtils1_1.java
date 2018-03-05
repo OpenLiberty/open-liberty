@@ -19,7 +19,6 @@ import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairList;
-import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.data.Pair;
 
 /**
@@ -288,13 +287,7 @@ public class CollectorJsonUtils1_1 {
 
     private static String jsonifyTraceAndMessage(int maxFieldLength, String wlpUserDir,
                                                  String serverName, String hostName, String eventType, Object event, String[] tags) {
-        GenericData genData = null;
-        if (event instanceof LogTraceData) {
-            LogTraceData logTraceData = (LogTraceData) event;
-            genData = logTraceData.getGenData();
-        } else {
-            genData = (GenericData) event;
-        }
+        GenericData genData = (GenericData) event;
         StringBuilder sb = new StringBuilder();
         boolean isFirstField = true;
         ArrayList<Pair> pairs = genData.getPairs();
@@ -316,11 +309,7 @@ public class CollectorJsonUtils1_1 {
                 key = kvp.getKey();
                 value = kvp.getValue();
 
-                if (key.equals(LogFieldConstants.SEVERITY) || key.equals(LogFieldConstants.COMPONENT) || key.equals(LogFieldConstants.CORRELATION_ID)
-                    || key.equals(LogFieldConstants.THREADNAME) || key.equals(LogFieldConstants.LEVELVALUE) || key.equals(LogFieldConstants.PRODUCT)
-                    || key.equals(LogFieldConstants.ORG) || key.equals(LogFieldConstants.OBJECT_ID) || key.equals(LogFieldConstants.THROWABLE)
-                    || key.equals(LogFieldConstants.THROWABLE_LOCALIZED)
-                    || key.equals(LogFieldConstants.FORMATTEDMSG)) {
+                if (key.equals(LogFieldConstants.SEVERITY)) {
 
                 }
 
