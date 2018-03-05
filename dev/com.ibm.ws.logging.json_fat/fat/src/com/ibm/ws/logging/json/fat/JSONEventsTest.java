@@ -161,6 +161,9 @@ public abstract class JSONEventsTest {
                 optionalKeyList.remove(key);
                 value = "" + jsonObj.get(key);
                 Log.finer(c, method, "key=" + key + ", value=" + value);
+            } else if (key.startsWith("ext_")) {
+                value = "" + jsonObj.get(key);
+                Log.finer(c, method, "key=" + key + ", value=" + value);
             } else {
                 invalidFields.add(key);
             }
