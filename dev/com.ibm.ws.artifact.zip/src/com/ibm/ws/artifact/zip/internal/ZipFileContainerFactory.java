@@ -38,7 +38,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
     static final TraceComponent tc = Tr.register(ZipFileContainerFactory.class);
 
     private boolean hasZipExtension(String name) {
-        return name.matches("(?i:(.*)\\.(ZIP|[SEJRW]AR|E[BS]A))");
+        return name.matches("(?i:(.*)\\.(ZIP|[SEJRW]AR|E[BS]A|SPR))");
     }
 
     /**
