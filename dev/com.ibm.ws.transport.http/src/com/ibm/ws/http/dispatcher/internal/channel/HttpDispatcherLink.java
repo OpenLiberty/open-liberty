@@ -135,9 +135,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         super.init(inVC);
         inVC.getStateMap().put(LINK_ID, this);
         this.myChannel = channel;
-        boolean useEE7Streams = HttpDispatcher.useEE7Streams();
-        this.request = new HttpRequestImpl(useEE7Streams);
-        this.response = new HttpResponseImpl(this, useEE7Streams);
+        this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());
+        this.response = new HttpResponseImpl(this);
 
     }
 
