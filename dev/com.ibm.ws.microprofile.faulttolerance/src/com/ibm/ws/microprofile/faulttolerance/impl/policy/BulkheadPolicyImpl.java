@@ -33,7 +33,7 @@ public class BulkheadPolicyImpl implements BulkheadPolicy {
     public BulkheadPolicyImpl() {
         try {
             maxThreads = (int) Bulkhead.class.getMethod("value").getDefaultValue();
-            maxThreads = (int) Bulkhead.class.getMethod("waitingTaskQueue").getDefaultValue();
+            queueSize = (int) Bulkhead.class.getMethod("waitingTaskQueue").getDefaultValue();
         } catch (NoSuchMethodException | SecurityException e) {
             throw new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT4998E", e), e);
         }
