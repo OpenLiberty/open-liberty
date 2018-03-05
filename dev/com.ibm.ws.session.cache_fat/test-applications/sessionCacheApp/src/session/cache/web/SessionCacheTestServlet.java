@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -286,6 +287,8 @@ public class SessionCacheTestServlet extends FATServlet {
         if (expectedValue == null && session == null) {
             System.out.println("Session was null and was expecting null value.");
             return;
+        } else if (session == null) {
+            fail("Was expecting to get " + key + '=' + expectedValue + ", but instead got a null session.");
         }
         Object actualValue = session.getAttribute(key);
         System.out.println("Got entry: " + key + '=' + actualValue + " from sessionID=" + session.getId());
