@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,6 +112,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     private final Object WebConnCanCloseSync = new Object();
     private boolean WebConnCanClose = true;
+    private final String h2InitError = "com.ibm.ws.transport.http.http2InitError";
 
     /**
      * Constructor.
@@ -1089,7 +1090,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // wait for protocol init on stream 1, where the initial upgrade request is serviced
-        return h2Link.getStream(1).waitForConnectionInit();
+        boolean rc = h2Link.getStream(1).waitForConnectionInit();
+
+        if (!rc) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "handleHTTP2UpgradeRequest connection initialization timed out waiting for client");
+            }
+            vc.getStateMap().put(h2InitError, true);
+        }
+        return rc;
     }
 
     public HttpInboundLink getHttpInboundLink2() {
