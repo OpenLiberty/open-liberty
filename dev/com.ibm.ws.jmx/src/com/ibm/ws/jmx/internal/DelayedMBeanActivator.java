@@ -1,21 +1,20 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.jmx.internal;
 
 import java.io.ObjectInputStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,8 +44,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.jmx.service.DelayedMBeanHelper;
@@ -56,19 +53,14 @@ import com.ibm.ws.kernel.boot.jmx.service.MBeanServerNotificationSupport;
 final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implements DelayedMBeanHelper {
 
     public static final String MBEAN_CLASSES = "com.ibm.ws.jmx.delayed.MBeanClasses";
-    //DelayedMBeanActivatorHelper helper = new DelayedMBeanActivatorHelper();
-    //private EventAdmin eventAdmin = helper.getEventAdmin();
 
     private volatile MBeanServerNotificationSupport notificationSupport;
     private final ConcurrentHashMap<ObjectName, DelayedMBeanHolder> delayedMBeanMap;
     private final BundleContext bundleContext;
-    private final EventAdmin eventAdmin;
 
-    DelayedMBeanActivator(BundleContext ctx, EventAdmin eventAdmin) {
+    DelayedMBeanActivator(BundleContext ctx) {
         delayedMBeanMap = new ConcurrentHashMap<ObjectName, DelayedMBeanHolder>();
         this.bundleContext = ctx;
-        this.eventAdmin = eventAdmin;
-
     }
 
     @Override
@@ -97,10 +89,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
             if (_notificationSupport != null) {
                 _notificationSupport.sendRegisterNotification(objectName);
             }
-            emitJMXRegisterDelayedMBeans(objectName, "registerMBean", "success", "Successful MBean registration");
             return true;
         }
-        emitJMXRegisterDelayedMBeans(objectName, "registerMBean", "failure", "Instance of MBean not found");
         return false;
     }
 
@@ -113,19 +103,14 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
             try {
                 registerMBeanIfDelayed(name);
             } catch (InstanceNotFoundException e) {
-                emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "Instance of MBean not found");
                 //TODO log appropriate message??
             } catch (NotCompliantMBeanException e) {
-                emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "Not compliant MBean");
                 //TODO log appropriate message??
             } catch (InstanceAlreadyExistsException e) {
-                emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "Instance of MBean already exists");
                 //TODO log appropriate message??
             } catch (MBeanRegistrationException e) {
-                emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "MBean registration failure");
                 //TODO log appropriate message??
             }
-            emitJMXRegisterDelayedMBeans(name, "registerMBean", "success", "Successful MBean registration");
         }
     }
 
@@ -169,8 +154,6 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
                         }
                     }
                 }
-                emitJMXRegisterDelayedMBeans(name, "registerMBean", "success", "Successful MBean registration");
-
                 return;
             }
             //this thread did not win on registering the mbean.  Unget the service
@@ -183,7 +166,6 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
                 waitForProcessingToComplete(mBeanHolder);
             }
         } else {
-            emitJMXRegisterDelayedMBeans(name, "registerMBean", "failure", "Instance of MBean not found");
             throw new InstanceNotFoundException(); //TODO appropriate message
         }
     }
@@ -195,7 +177,6 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
                 return unregisterMBeanIfDelayed(mBeanHolder, name);
             }
         }
-        emitJMXRegisterDelayedMBeans(name, "unregisterMBean", "failure", "Instance of MBean not found");
         return false;
     }
 
@@ -216,7 +197,6 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
             if (_notificationSupport != null) {
                 _notificationSupport.sendUnregisterNotification(name);
             }
-            emitJMXRegisterDelayedMBeans(name, "unregisterMBean", "success", "Successful MBean unregistration");
             return true;
         }
 
@@ -227,7 +207,6 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
             // Wait until it's done so that we can remove it from the MBeanServer if it was registered.
             waitForProcessingToComplete(mBeanHolder);
         }
-
         return false;
     }
 
@@ -248,7 +227,6 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     //
 
     @Override
-    @FFDCIgnore(InstanceNotFoundException.class)
     public void addNotificationListener(ObjectName name,
                                         NotificationListener listener,
                                         NotificationFilter filter,
@@ -256,27 +234,16 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationListener", "failure", "Non compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationListener", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         } catch (MBeanRegistrationException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationListener", "failure", "MBean registration failure");
             newInstanceNotFoundException(e);
         }
-        try {
-            super.addNotificationListener(name, listener, filter, handback);
-        } catch (InstanceNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationLister", "failure", "Instance of MBean not found");
-            throw e;
-        }
-        emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationListener", "success", "Successful add of notification listener");
-
+        super.addNotificationListener(name, listener, filter, handback);
     }
 
     @Override
-    @FFDCIgnore(InstanceNotFoundException.class)
     public void addNotificationListener(ObjectName name, ObjectName listener,
                                         NotificationFilter filter,
                                         Object handback) throws InstanceNotFoundException {
@@ -284,150 +251,53 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
             registerMBeanIfDelayed(name);
             registerMBeanIfDelayed(listener);
         } catch (NotCompliantMBeanException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationListener", "failure", "Non compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationListener", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         } catch (MBeanRegistrationException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationListener", "failure", "MBean registration failure");
             newInstanceNotFoundException(e);
         }
-        try {
-            super.addNotificationListener(name, listener, filter, handback);
-        } catch (InstanceNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationLister", "failure", "Instance of MBean not found");
-            throw e;
-        }
-        emitJMXNotificationEvent(name, listener, filter, handback, "addNotificationListener", "success", "Successful add of notification listener");
-
+        super.addNotificationListener(name, listener, filter, handback);
     }
 
     @Override
-    @FFDCIgnore({ ReflectionException.class, InstanceAlreadyExistsException.class, MBeanRegistrationException.class, MBeanException.class, NotCompliantMBeanException.class })
     public ObjectInstance createMBean(String className,
                                       ObjectName name) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException {
-        ObjectInstance oi = null;
         try {
             registerMBeanIfDelayed(name);
         } catch (InstanceNotFoundException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "Instance of MBean already exists");
             throw new InstanceAlreadyExistsException();//TODOD appropriate message
         }
-        try {
-            oi = super.createMBean(className, name);
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "success", "Successful create of MBean");
-        } catch (ReflectionException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "Class definition not found for MBean");
-            throw e;
-        } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "Instance of MBean already exists");
-            throw e;
-        } catch (MBeanRegistrationException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "MBean registration failure");
-            throw e;
-        } catch (MBeanException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "MBean constructor exception");
-            throw e;
-        } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanCreateAction(name, className, null, null, null, "createMBean", "failure", "Not compliant MBean");
-            throw e;
-        }
-        return oi;
+        return super.createMBean(className, name);
     }
 
     @Override
-    @FFDCIgnore({ ReflectionException.class, InstanceAlreadyExistsException.class, MBeanRegistrationException.class, MBeanException.class, NotCompliantMBeanException.class })
     public ObjectInstance createMBean(String className, ObjectName name,
                                       ObjectName loaderName) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException {
-        ObjectInstance oi = null;
         registerMBeanIfDelayed(name);
         registerMBeanIfDelayed(loaderName);
-        try {
-            oi = super.createMBean(className, name, loaderName);
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "success", "Successful create of MBean");
-        } catch (ReflectionException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "Class definition not found for MBean");
-            throw e;
-        } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "Instance of MBean already exists");
-            throw e;
-        } catch (MBeanRegistrationException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "MBean registration failure");
-            throw e;
-        } catch (MBeanException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "MBean constructor exception");
-            throw e;
-        } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, null, null, "createMBean", "failure", "Not compliant MBean");
-            throw e;
-        }
-        return oi;
+        return super.createMBean(className, name, loaderName);
     }
 
     @Override
-    @FFDCIgnore({ ReflectionException.class, InstanceAlreadyExistsException.class, MBeanRegistrationException.class, MBeanException.class, NotCompliantMBeanException.class })
     public ObjectInstance createMBean(String className, ObjectName name,
                                       Object[] params,
                                       String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException {
-        ObjectInstance oi = null;
         try {
             registerMBeanIfDelayed(name);
-
         } catch (InstanceNotFoundException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "Instance of MBean already exists");
             throw new InstanceAlreadyExistsException();//TODOD appropriate message
         }
-        try {
-            oi = super.createMBean(className, name, params, signature);
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "success", "Successful create of MBean");
-        } catch (ReflectionException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "Class definition not found for MBean");
-            throw e;
-        } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "Instance of MBean already exists");
-            throw e;
-        } catch (MBeanRegistrationException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "MBean registration failure");
-            throw e;
-        } catch (MBeanException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "MBean constructor exception");
-            throw e;
-        } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanCreateAction(name, className, null, params, signature, "createMBean", "failure", "Not compliant MBean");
-            throw e;
-        }
-        return oi;
+        return super.createMBean(className, name, params, signature);
     }
 
     @Override
-    @FFDCIgnore({ ReflectionException.class, InstanceAlreadyExistsException.class, MBeanRegistrationException.class, MBeanException.class, NotCompliantMBeanException.class })
     public ObjectInstance createMBean(String className, ObjectName name,
                                       ObjectName loaderName, Object[] params,
                                       String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException {
-        ObjectInstance oi = null;
         registerMBeanIfDelayed(name);
         registerMBeanIfDelayed(loaderName);
-        try {
-            oi = super.createMBean(className, name, loaderName, params, signature);
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "success", "Successful create of MBean");
-        } catch (ReflectionException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "Class definition not found for MBean");
-            throw e;
-        } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "Instance of MBean already exists");
-            throw e;
-        } catch (MBeanRegistrationException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "MBean registration failure");
-            throw e;
-        } catch (MBeanException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "MBean constructor exception");
-            throw e;
-        } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanCreateAction(name, className, loaderName, params, signature, "createMBean", "failure", "Not compliant MBean");
-            throw e;
-        }
-        return oi;
+        return super.createMBean(className, name, loaderName, params, signature);
     }
 
     @Override
@@ -458,66 +328,29 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    @FFDCIgnore({ MBeanException.class, AttributeNotFoundException.class, InstanceNotFoundException.class, ReflectionException.class })
     public Object getAttribute(ObjectName name, String attribute) throws MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanAttributeAction(name, attribute, "getAttribute", "failure", "Not compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanAttributeAction(name, attribute, "getAttribute", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         }
-        Object oi = null;
-        try {
-            oi = super.getAttribute(name, attribute);
-        } catch (MBeanException e) {
-            emitJMXMBeanAttributeAction(name, attribute, "getAttribute", "failure", "MBean constructor exception");
-            throw e;
-        } catch (AttributeNotFoundException e) {
-            emitJMXMBeanAttributeAction(name, attribute, "getAttribute", "failure", "Attribute not found");
-            throw e;
-        } catch (InstanceNotFoundException e) {
-            emitJMXMBeanAttributeAction(name, attribute, "getAttribute", "failure", "Instance of MBean not found");
-            throw e;
-        } catch (ReflectionException e) {
-            emitJMXMBeanAttributeAction(name, attribute, "getAttribute", "failure", "Class definition not found for MBean");
-            throw e;
-        }
-        emitJMXMBeanAttributeAction(name, attribute, "getAttribute", "success", "Successful retrieval of attribute");
-        return oi;
+        return super.getAttribute(name, attribute);
     }
 
     @Override
-    @FFDCIgnore({ InstanceNotFoundException.class, ReflectionException.class })
     public AttributeList getAttributes(ObjectName name, String[] attributes) throws InstanceNotFoundException, ReflectionException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanAttributeAction(name, attributes, "getAttributes", "failure", "Not compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanAttributeAction(name, attributes, "getAttributes", "failure", "Instance of MBean already exists.");
             newInstanceNotFoundException(e);
         } catch (MBeanRegistrationException e) {
-            emitJMXMBeanAttributeAction(name, attributes, "getAttributes", "failure", "MBean registration failure");
             newInstanceNotFoundException(e);
         }
-
-        AttributeList al = null;
-        try {
-            al = super.getAttributes(name, attributes);
-        } catch (InstanceNotFoundException e) {
-            emitJMXMBeanAttributeAction(name, attributes, "getAttributes", "failure", "Instance of MBean not found");
-            throw e;
-        } catch (ReflectionException e) {
-            emitJMXMBeanAttributeAction(name, attributes, "getAttributes", "failure", "Class definition not found for MBean");
-            throw e;
-        }
-
-        emitJMXMBeanAttributeAction(name, attributes, "getAttributes", "success", "Successful retrieval of attributes");
-        return al;
+        return super.getAttributes(name, attributes);
     }
 
     @Override
@@ -670,33 +503,16 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    @FFDCIgnore({ MBeanException.class, InstanceNotFoundException.class, ReflectionException.class })
     public Object invoke(ObjectName name, String operationName,
                          Object[] params, String[] signature) throws InstanceNotFoundException, MBeanException, ReflectionException {
-        Object oi = null;
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanInvokeEvent(name, operationName, params, signature, "invoke", "failure", "Not compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanInvokeEvent(name, operationName, params, signature, "invoke", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         }
-        try {
-            oi = super.invoke(name, operationName, params, signature);
-            emitJMXMBeanInvokeEvent(name, operationName, params, signature, "invoke", "success", "Successful MBean invoke operation");
-        } catch (ReflectionException e) {
-            emitJMXMBeanInvokeEvent(name, operationName, params, signature, "invoke", "failure", "Class definition not found for MBean");
-            throw e;
-        } catch (InstanceNotFoundException e) {
-            emitJMXMBeanInvokeEvent(name, operationName, params, signature, "invoke", "failure", "Instance of MBean not found");
-            throw e;
-        } catch (MBeanException e) {
-            emitJMXMBeanInvokeEvent(name, operationName, params, signature, "invoke", "failure", "MBean constructor exception");
-            throw e;
-        }
-        return oi;
+        return super.invoke(name, operationName, params, signature);
     }
 
     @Override
@@ -786,17 +602,9 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
 
     @Override
     public Set<ObjectInstance> queryMBeans(ObjectName name, QueryExp query) {
-        Set<ObjectInstance> oi = null;
         // REVISIT: It should be possible to answer this query without registering all the delayed MBeans.
         registerDelayedMBeans();
-        try {
-            oi = super.queryMBeans(name, query);
-        } catch (Exception e) {
-            emitJMXMBeanQueryEvent(name, query, "queryMBean", "failure", e.getMessage());
-            throw e;
-        }
-        emitJMXMBeanQueryEvent(name, query, "queryMBean", "success", "Successful query of MBeans");
-        return oi;
+        return super.queryMBeans(name, query);
     }
 
     @Override
@@ -846,92 +654,46 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    @FFDCIgnore({ InstanceAlreadyExistsException.class, MBeanRegistrationException.class, NotCompliantMBeanException.class })
     public ObjectInstance registerMBean(Object object, ObjectName name) throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
-        ObjectInstance oi = null;
         try {
             registerMBeanIfDelayed(name);
         } catch (InstanceNotFoundException e) {
-            emitJMXMBeanRegisterEvent(name, object, "registerMBean", "failure", "Instance of MBean not found");
             throw new InstanceAlreadyExistsException();//TODOD appropriate message
         }
-        try {
-            oi = super.registerMBean(object, name);
-            emitJMXMBeanRegisterEvent(name, object, "registerMBean", "success", "Successful MBean registration");
-        } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanRegisterEvent(name, object, "registerMBean", "failure", "Instance of MBean already exists");
-            throw e;
-        } catch (MBeanRegistrationException e) {
-            emitJMXMBeanRegisterEvent(name, object, "registerMBean", "failure", "MBean registration failure");
-            throw e;
-        } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanRegisterEvent(name, object, "registerMBean", "failure", "Not compliant MBean");
-            throw e;
-        }
-        return oi;
+        return super.registerMBean(object, name);
     }
 
     @Override
-    @FFDCIgnore({ InstanceNotFoundException.class, ListenerNotFoundException.class })
     public void removeNotificationListener(ObjectName name, ObjectName listener) throws InstanceNotFoundException, ListenerNotFoundException {
         try {
             registerMBeanIfDelayed(name);
             registerMBeanIfDelayed(listener);
         } catch (NotCompliantMBeanException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Non compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         } catch (MBeanRegistrationException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "MBean registration failure");
             newInstanceNotFoundException(e);
         }
-        try {
-            super.removeNotificationListener(name, listener);
-        } catch (InstanceNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of MBean not found");
-            throw e;
-        } catch (ListenerNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of notification listener not found");
-            throw e;
-        }
-
-        emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "success", "Successful remove of notification listener");
-
+        super.removeNotificationListener(name, listener);
     }
 
     @Override
-    @FFDCIgnore({ InstanceNotFoundException.class, ListenerNotFoundException.class })
     public void removeNotificationListener(ObjectName name,
                                            NotificationListener listener) throws InstanceNotFoundException, ListenerNotFoundException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Non compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         } catch (MBeanRegistrationException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "MBean registration failure");
             newInstanceNotFoundException(e);
         }
-        try {
-            super.removeNotificationListener(name, listener);
-        } catch (InstanceNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of MBean not found");
-            throw e;
-        } catch (ListenerNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of notification listener not found");
-            throw e;
-        }
-        emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "success", "Successful remove of notification listener");
-
+        super.removeNotificationListener(name, listener);
     }
 
     @Override
-    @FFDCIgnore({ InstanceNotFoundException.class, ListenerNotFoundException.class })
     public void removeNotificationListener(ObjectName name,
                                            ObjectName listener,
                                            NotificationFilter filter,
@@ -940,30 +702,16 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
             registerMBeanIfDelayed(name);
             registerMBeanIfDelayed(listener);
         } catch (NotCompliantMBeanException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "removeNotificationListener", "failure", "Non compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "removeNotificationListener", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         } catch (MBeanRegistrationException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "removeNotificationListener", "failure", "MBean registration failure");
             newInstanceNotFoundException(e);
         }
-        try {
-            super.removeNotificationListener(name, listener, filter, handback);
-        } catch (InstanceNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of MBean not found");
-            throw e;
-        } catch (ListenerNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of notification listener not found");
-            throw e;
-        }
-        emitJMXNotificationEvent(name, listener, filter, handback, "removeNotificationListener", "success", "Successful remove of notification listener");
-
+        super.removeNotificationListener(name, listener, filter, handback);
     }
 
     @Override
-    @FFDCIgnore({ InstanceNotFoundException.class, ListenerNotFoundException.class })
     public void removeNotificationListener(ObjectName name,
                                            NotificationListener listener,
                                            NotificationFilter filter,
@@ -971,26 +719,13 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "removeNotificationListener", "failure", "Non compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "removeNotificationListener", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         } catch (MBeanRegistrationException e) {
-            emitJMXNotificationEvent(name, listener, filter, handback, "removeNotificationListener", "failure", "MBean registration failure");
             newInstanceNotFoundException(e);
         }
-        try {
-            super.removeNotificationListener(name, listener, filter, handback);
-        } catch (InstanceNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of MBean not found");
-            throw e;
-        } catch (ListenerNotFoundException e) {
-            emitJMXNotificationEvent(name, listener, null, null, "removeNotificationListener", "failure", "Instance of notification listener not found");
-            throw e;
-        }
-        emitJMXNotificationEvent(name, listener, filter, handback, "removeNotificationListener", "success", "Successful remove of notification listener");
-
+        super.removeNotificationListener(name, listener, filter, handback);
     }
 
     @Override
@@ -999,14 +734,11 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanAttributeAction(name, attribute, "setAttribute", "failure", "Not compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanAttributeAction(name, attribute, "setAttribute", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         }
         super.setAttribute(name, attribute);
-        emitJMXMBeanAttributeAction(name, attribute, "setAttribute", "success", "Successful set of MBean attribute");
     }
 
     @Override
@@ -1014,126 +746,19 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
-            emitJMXMBeanAttributeAction(name, attributes, "setAttributes", "failure", "Not compliant MBean");
             newInstanceNotFoundException(e);
         } catch (InstanceAlreadyExistsException e) {
-            emitJMXMBeanAttributeAction(name, attributes, "setAttributes", "failure", "Instance of MBean already exists");
             newInstanceNotFoundException(e);
         } catch (MBeanRegistrationException e) {
-            emitJMXMBeanAttributeAction(name, attributes, "setAttributes", "failure", "MBean registration failure");
             newInstanceNotFoundException(e);
         }
-        emitJMXMBeanAttributeAction(name, attributes, "setAttributes", "success", "Sucessful set of MBean attributes");
         return super.setAttributes(name, attributes);
     }
 
     @Override
-    @FFDCIgnore({ InstanceNotFoundException.class, MBeanRegistrationException.class })
     public void unregisterMBean(ObjectName name) throws InstanceNotFoundException, MBeanRegistrationException {
-
-        try {
-            if (!unregisterMBeanIfDelayed(name)) {
-                super.unregisterMBean(name);
-            }
-        } catch (InstanceNotFoundException e) {
-            emitJMXMBeanRegisterEvent(name, null, "unregisterMBean", "failure", "Instance of MBean not found");
-            throw e;
-        } catch (MBeanRegistrationException e) {
-            emitJMXMBeanRegisterEvent(name, null, "unregisterMBean", "failure", "MBean registration failure");
-            throw e;
+        if (!unregisterMBeanIfDelayed(name)) {
+            super.unregisterMBean(name);
         }
-        emitJMXMBeanRegisterEvent(name, null, "unregisterMBean", "success", "Successful MBean unregistration");
-
     }
-
-    public void emitJMXNotificationEvent(ObjectName name, Object listener, NotificationFilter filter, Object handback, String action, String outcome, String outcomeReason) {
-        Map<String, Object> props = new HashMap<String, Object>();
-        props.put("name", name);
-        props.put("listener", listener);
-        props.put("filter", filter);
-        props.put("handback", handback);
-        props.put("action", action);
-        props.put("outcome", outcome);
-        props.put("outcomeReason", outcomeReason);
-        if (eventAdmin != null)
-            eventAdmin.postEvent(new Event("com/ibm/ws/jmx/QUEUED_AUDIT_WORK", props));
-
-    }
-
-    public void emitJMXRegisterDelayedMBeans(ObjectName name, String action, String outcome, String outcomeReason) {
-        Map<String, Object> props = new HashMap<String, Object>();
-        props.put("name", name);
-        props.put("action", action);
-        props.put("outcome", outcome);
-        props.put("outcomeReason", outcomeReason);
-        if (eventAdmin != null)
-            eventAdmin.postEvent(new Event("com/ibm/ws/jmx/QUEUED_AUDIT_WORK", props));
-    }
-
-    public void emitJMXMBeanAttributeAction(ObjectName name, Object attrs, String action, String outcome, String outcomeReason) {
-        Map<String, Object> props = new HashMap<String, Object>();
-        props.put("name", name);
-        props.put("attrs", attrs);
-        props.put("action", action);
-        props.put("outcome", outcome);
-        props.put("outcomeReason", outcomeReason);
-        if (eventAdmin != null)
-            eventAdmin.postEvent(new Event("com/ibm/ws/jmx/QUEUED_AUDIT_WORK", props));
-
-    }
-
-    public void emitJMXMBeanCreateAction(ObjectName name, String className, ObjectName loaderName, Object[] params, String[] signature, String action,
-                                         String outcome, String outcomeReason) {
-        Map<String, Object> props = new HashMap<String, Object>();
-        props.put("name", name);
-        props.put("className", className);
-        props.put("loaderName", loaderName);
-        props.put("params", params);
-        props.put("signature", signature);
-        props.put("action", action);
-        props.put("outcome", outcome);
-        props.put("outcomeReason", outcomeReason);
-        if (eventAdmin != null)
-            eventAdmin.postEvent(new Event("com/ibm/ws/jmx/QUEUED_AUDIT_WORK", props));
-
-    }
-
-    public void emitJMXMBeanInvokeEvent(ObjectName name, String operationName, Object[] params, String[] signature, String action, String outcome, String outcomeReason) {
-        Map<String, Object> props = new HashMap<String, Object>();
-        props.put("name", name);
-        props.put("operationName", operationName);
-        props.put("params", params);
-        props.put("signature", signature);
-        props.put("action", action);
-        props.put("outcome", outcome);
-        props.put("outcomeReason", outcomeReason);
-        if (eventAdmin != null)
-            eventAdmin.postEvent(new Event("com/ibm/ws/jmx/QUEUED_AUDIT_WORK", props));
-
-    }
-
-    public void emitJMXMBeanQueryEvent(ObjectName name, QueryExp query, String action, String outcome, String outcomeReason) {
-        Map<String, Object> props = new HashMap<String, Object>();
-        props.put("name", name);
-        props.put("query", query);
-        props.put("action", action);
-        props.put("outcome", outcome);
-        props.put("outcomeReason", outcomeReason);
-        if (eventAdmin != null)
-            eventAdmin.postEvent(new Event("com/ibm/ws/jmx/QUEUED_AUDIT_WORK", props));
-
-    }
-
-    public void emitJMXMBeanRegisterEvent(ObjectName name, Object object, String action, String outcome, String outcomeReason) {
-        Map<String, Object> props = new HashMap<String, Object>();
-        props.put("name", name);
-        props.put("object", object);
-        props.put("action", action);
-        props.put("outcome", outcome);
-        props.put("outcomeReason", outcomeReason);
-        if (eventAdmin != null)
-            eventAdmin.postEvent(new Event("com/ibm/ws/jmx/QUEUED_AUDIT_WORK", props));
-
-    }
-
 }

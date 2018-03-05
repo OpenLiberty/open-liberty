@@ -1,13 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.jmx.internal;
 
 import java.lang.management.ManagementFactory;
@@ -26,14 +27,12 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.event.EventAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jmx.PlatformMBeanService;
 import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
@@ -46,15 +45,7 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
 
     private ServiceTracker<Object, ServiceReference<?>> mbeanTracker;
     private MBeanServerPipeline pipeline;
-    private EventAdmin eventAdmin = null;
 
-    public ComponentContext cc = null;
-
-    //EventAdmin service
-    static final String KEY_EVENT_ADMIN = "eventAdmin";
-    private final AtomicServiceReference<EventAdmin> eventAdminRef = new AtomicServiceReference<EventAdmin>(KEY_EVENT_ADMIN);
-
-    //private ServiceReference<EventAdmin>eventAdminRef = eventAdmin;
     public DelayedMBeanActivatorHelper() {
         mBeanMap = new ConcurrentHashMap<ServiceReference<?>, ObjectName>();
     }
@@ -65,10 +56,8 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
      * @param compContext
      */
     protected void activate(ComponentContext compContext) {
-        cc = compContext;
-
         BundleContext ctx = compContext.getBundleContext();
-        mDelayedMBeanActivator = new DelayedMBeanActivator(ctx, this.eventAdmin);
+        mDelayedMBeanActivator = new DelayedMBeanActivator(ctx);
         pipeline.insert(mDelayedMBeanActivator);
         try {
             mbeanTracker = new ServiceTracker<Object, ServiceReference<?>>(ctx, ctx.createFilter("(jmx.objectname=*)"), this);
@@ -76,12 +65,9 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
         } catch (InvalidSyntaxException ise) {
 
         }
-        //eventAdminRef.activate(compContext);
-
     }
 
-    /*
-     * g*
+    /**
      * DS method to deactivate this component.
      *
      * @param compContext
@@ -91,8 +77,6 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
             mbeanTracker.close();
         }
         pipeline.remove(mDelayedMBeanActivator);
-        //eventAdminRef.deactivate(compContext);
-
     }
 
     @Override
@@ -194,18 +178,4 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
         unsetMBean(reference);
 
     }
-
-    @Reference(name = KEY_EVENT_ADMIN, service = EventAdmin.class)
-    protected void setEventAdminService(EventAdmin eventAdmin) {
-        this.eventAdmin = eventAdmin;
-    }
-
-    protected void unsetEventAdminService(EventAdmin eventAdmin) {
-        this.eventAdmin = null;
-    }
-
-    protected EventAdmin getEventAdmin() {
-        return this.eventAdmin;
-    }
-
 }
