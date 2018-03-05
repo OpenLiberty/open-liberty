@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         appA = new SessionCacheApp(serverA, "session.cache.web"); // no HttpSessionListeners are registered by this app
-        appB = new SessionCacheApp(serverB, "session.cache.web", "session.cache.web.listener1");
+        appB = new SessionCacheApp(serverB, "session.cache.web", "session.cache.web.cdi", "session.cache.web.listener1");
         serverB.useSecondaryHTTPPort();
 
         serverA.startServer();
@@ -180,6 +182,24 @@ public class SessionCacheTwoServerTest extends FATServletClient {
             appA.sessionGet("testModifyWithoutPut-key&compareAsString=true", new StringBuffer("MyNewValueAppended"), session);
         } finally {
             appA.invalidateSession(session);
+        }
+    }
+
+    /**
+     * Verify that SessionScoped CDI bean preserves its state across session calls.
+     */
+    @Test
+    public void testSessionScopedBean() throws Exception {
+        List<String> session = new ArrayList<>();
+        appB.sessionPut("testSessionScopedBean-key", 123.4f, session, true);
+        try {
+            String response1 = FATSuite.run(serverB, SessionCacheApp.APP_NAME + "/SessionCDITestServlet", "testUpdateSessionScopedBean&newValue=SSB1", session);
+            String response2 = FATSuite.run(serverB, SessionCacheApp.APP_NAME + "/SessionCDITestServlet", "testUpdateSessionScopedBean&newValue=SSB2", session);
+
+            assertTrue(response1, response1.contains("previous value for SessionScopedBean: [null]"));
+            assertTrue(response2, response2.contains("previous value for SessionScopedBean: [SSB1]"));
+        } finally {
+            appB.invalidateSession(session);
         }
     }
 }

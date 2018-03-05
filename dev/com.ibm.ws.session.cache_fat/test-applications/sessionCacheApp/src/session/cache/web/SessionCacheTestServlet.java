@@ -211,7 +211,7 @@ public class SessionCacheTestServlet extends FATServlet {
         ArrayList<String> attributeNames = Collections.list(session.getAttributeNames());
         String attributeNamesString = attributeNames.toString();
         assertTrue(attributeNamesString, attributeNames.containsAll(Arrays.asList("map", "str", "appObject")));
-        assertEquals(attributeNamesString, 3, attributeNames.size());
+        assertEquals(attributeNamesString, attributeNames.contains("WELD_S_HASH") ? 4 : 3, attributeNames.size());
     }
 
     public void testSerializeDataSource(HttpServletRequest request, HttpServletResponse response) throws Throwable {
