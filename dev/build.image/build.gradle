@@ -192,6 +192,38 @@ task zipOpenLibertyAll(type: Zip) {
         props.store(propsFile.newWriter(), null)
     }
 }
+task zipOpenLibertyMavenRepo(type: Zip){
+	dependsOn parent.subprojects.assemble
+	//dependsOn 'cnf:generateMavenArtifact'
+		
+	//	basename 'openliberty-mavenArtifact'
+		from "${rootDir}/cnf/build/temp/"
+		include "mavenArtifact/**"
+		archiveName 'openliberty-mavenArtifact.zip'
+		
+    	destinationDir distsDir
+
+}
+   // zipOpenLibertyMavenRepo.dependsOn project("${rootDir}/cnf").tasks.generateMavenArtifact
+zipOpenLibertyMavenRepo.dependsOn  ':cnf:copyEsas'
+zipOpenLibertyMavenRepo.dependsOn  ':cnf:copyMetadataFiles'
+zipOpenLibertyMavenRepo.dependsOn  ':cnf:generateMavenArtifact'
+publish.dependsOn zipOpenLibertyMavenRepo
+
+/**
+task zipMavenRepoRequirements(type:Zip){
+	dependsOn parent.subprojects.assemble
+	doLast{
+		basename 'openliberty-featureMavenRepo'
+		from "${baseDir}/cnf/build/temp/"
+		include "LibertyFeaturesToMavenRepo/**"
+    	destinationDir distsDir
+    }
+
+}
+
+publish.dependsOn zipMavenRepoRequirements
+**/
 
 clean.doLast {
     file('wlp').deleteDir()

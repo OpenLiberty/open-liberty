@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="LibertyFeaturesToMavenRepo" default="publish">
+  <import file="../ant_build/public_imports/standard_imports.xml" />
+
+  <target name="package" depends="compile">
+    <mkdir dir="${lib.dir}" />
+  	<copy todir="${classes.dir}">
+  	  <fileset dir="${src.dir}" includes="**/*.properties" />
+  	</copy>
+    <jar destfile="${lib.dir}/LibertyFeaturesToMavenRepo.jar">
+      <fileset dir="${classes.dir}" />
+    </jar>
+  </target>
+  
+  <target name="publish" depends="package" description="Manual target: copy jar to ant_build/lib">
+    <!-- MANUAL TARGET -->
+    <copy todir="lib" file="${lib.dir}/LibertyFeaturesToMavenRepo.jar" />
+  </target>
+
+
+  <!-- We don't want to run findbugs on this ant tool  -->
+  <target name="findbugs"/>
+
+  <target name="javadoc" />
+</project>

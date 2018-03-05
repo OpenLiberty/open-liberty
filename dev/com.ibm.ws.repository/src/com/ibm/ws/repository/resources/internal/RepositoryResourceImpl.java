@@ -1316,8 +1316,11 @@ public abstract class RepositoryResourceImpl implements RepositoryResourceWritab
      * @throws RepositoryResourceException
      */
     public void moveToState(State state) throws RepositoryBackendException, RepositoryResourceException {
+        if (getState() == null)
+            return;
         int counter = 0;
         while (getState() != state) {
+            System.out.println("This is the counter:" + counter);
             counter++;
             StateAction nextAction = getState().getNextAction(state);
             performLifeCycle(nextAction);
