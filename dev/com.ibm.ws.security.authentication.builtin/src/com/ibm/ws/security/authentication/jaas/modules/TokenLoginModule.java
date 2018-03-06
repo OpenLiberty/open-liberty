@@ -87,7 +87,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
 
     /**
      * Gets the required Callback objects needed by this login module.
-     * 
+     *
      * @param callbackHandler
      * @return
      * @throws IOException
@@ -109,7 +109,8 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         temporarySubject = new Subject();
         temporarySubject.getPrivateCredentials().add(recreatedToken);
         String securityName = AccessIdUtil.getUniqueId(accessId);
-        setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
+        setCredentials(temporarySubject, securityName, null);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
     }
 
     /**
@@ -119,7 +120,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
      * be necessary to create a placeholder instead of a subject and modify the credentials
      * service to return a set of credentials or update the holder in order to place in
      * the shared state.
-     * 
+     *
      * @throws Exception
      */
     private void setUpTemporaryUserSubject() throws Exception {
@@ -128,7 +129,8 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         UserRegistry ur = getUserRegistry();
         String securityName = ur.getUserSecurityName(AccessIdUtil.getUniqueId(accessId));
         securityName = getSecurityName(securityName, securityName); // Special handling for LDAP under here.
-        setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
+        setCredentials(temporarySubject, securityName, null);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
     }
 
     /** {@inheritDoc} */

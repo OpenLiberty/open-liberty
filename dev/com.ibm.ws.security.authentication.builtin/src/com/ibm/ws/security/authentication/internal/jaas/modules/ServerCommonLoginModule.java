@@ -120,19 +120,14 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
     }
 
     /**
-     * Set the relevant Principal for this login module into the Subject,
+     * Set the relevant Credentials for this login module into the Subject,
      * and set the credentials for the determined accessId.
      *
      * @throws Exception
      */
-    protected void setPrincipalAndCredentials(Subject subject,
-                                              String securityName,
-                                              String urAuthenticatedId,
-                                              String newSecurityName,
-                                              String accessId,
-                                              String authMethod) throws Exception {
-        Principal principal = new WSPrincipal(newSecurityName, accessId, authMethod);
-        subject.getPrincipals().add(principal);
+    protected void setCredentials(Subject subject,
+                                  String securityName,
+                                  String urAuthenticatedId) throws Exception {
         if (urAuthenticatedId != null && !urAuthenticatedId.equals(securityName)) {
             Hashtable<String, String> subjectHash = new Hashtable<String, String>();
             subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, securityName);
@@ -140,6 +135,17 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
         }
         CredentialsService credentialsService = getCredentialsService();
         credentialsService.setCredentials(subject);
+    }
+
+    /**
+     * @param subject
+     * @param securityName
+     * @param accessId
+     * @param authMethod
+     */
+    protected void setPrincipals(Subject subject, String securityName, String accessId, String authMethod) throws Exception {
+        Principal principal = new WSPrincipal(securityName, accessId, authMethod);
+        subject.getPrincipals().add(principal);
     }
 
     /**
@@ -271,8 +277,8 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
                 @Override
                 public Object run() throws Exception {
                     temporarySubject = new Subject();
-                    setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, authMethod);
-
+                    setPrincipals(temporarySubject, securityName, accessId, authMethod);
+                    setCredentials(temporarySubject, securityName, null);
                     // Commit the newly created elements into the original Subject
                     subject.getPrincipals().addAll(temporarySubject.getPrincipals());
                     subject.getPublicCredentials().addAll(temporarySubject.getPublicCredentials());
