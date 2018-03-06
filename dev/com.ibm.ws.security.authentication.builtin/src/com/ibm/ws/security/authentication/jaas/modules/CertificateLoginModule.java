@@ -248,7 +248,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         hashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, AccessIdUtil.getUniqueId(accessId));
         temporarySubject.getPublicCredentials().add(hashtable);
         setCredentials(temporarySubject, username, null);
-        setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
+        setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
         temporarySubject.getPublicCredentials().remove(hashtable);
     }
 
@@ -301,7 +301,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
                                                       ur.getRealm(),
                                                       ur.getUniqueUserId(username));
         setCredentials(temporarySubject, username, authenticatedId);
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
     }
 
     /** {@inheritDoc} */
