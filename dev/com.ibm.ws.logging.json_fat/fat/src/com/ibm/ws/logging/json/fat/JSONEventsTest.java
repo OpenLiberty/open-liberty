@@ -37,6 +37,12 @@ public abstract class JSONEventsTest {
     protected static final Class<?> c = JSONEventsTest.class;
 
     public static final String APP_NAME = "LogstashApp";
+    private static final String EXT_PREFIX = "ext_";
+    private final static String INT_SUFFIX = "_int";
+    private final static String FLOAT_SUFFIX = "_float";
+    private final static String BOOL_SUFFIX = "_bool";
+    private final static String TRUE_BOOL = "true";
+    private final static String FALSE_BOOL = "false";
 
     public abstract LibertyServer getServer();
 
@@ -60,6 +66,11 @@ public abstract class JSONEventsTest {
         if (!checkJsonMessage(jsonObj, messageKeysMandatoryList, messageKeysOptionalList)) {
             Log.info(c, method, "Message line:" + line);
             Assert.fail("Test failed with one or more errors");
+        }
+
+        if (!checkExtensions(jsonObj)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail("Test failed with one or more extension related errors");
         }
     }
 
@@ -114,7 +125,7 @@ public abstract class JSONEventsTest {
 
         if (!checkJsonMessage(jsonObj, ffdcKeysMandatoryList, ffdcKeysOptionalList)) {
             Log.info(c, method, "Message line:" + line);
-            Assert.fail("Test failed with one or more errors");
+            Assert.fail("Test failed with one or more extension related errors");
         }
 
     }
@@ -144,6 +155,37 @@ public abstract class JSONEventsTest {
             Assert.fail("Test failed with one or more errors");
         }
 
+        if (!checkExtensions(jsonObj)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail("Test failed with one or more extension related errors");
+        }
+    }
+
+    public boolean checkExtensions(JsonObject jsonObj) throws Exception {
+        boolean isValid = true;
+        for (String key : jsonObj.keySet()) {
+            if (key.startsWith(EXT_PREFIX)) {
+                String value = "" + jsonObj.get(key);
+
+                if (key.endsWith(INT_SUFFIX)) {
+                    isValid = verifyIntValue(value);
+                } else if (key.endsWith(FLOAT_SUFFIX)) {
+                    isValid = verifyFloatValue(value);
+                } else if (key.endsWith(BOOL_SUFFIX)) {
+                    if (value.equals(TRUE_BOOL) || value.equals(FALSE_BOOL)) {
+                        isValid = true;
+                    }
+                } else {
+                    isValid = true;
+                }
+
+                if (!isValid) {
+                    return false;
+                }
+            }
+        }
+
+        return isValid;
     }
 
     private boolean checkJsonMessage(JsonObject jsonObj, ArrayList<String> mandatoryKeyList, ArrayList<String> optionalKeyList) {
@@ -161,7 +203,7 @@ public abstract class JSONEventsTest {
                 optionalKeyList.remove(key);
                 value = "" + jsonObj.get(key);
                 Log.finer(c, method, "key=" + key + ", value=" + value);
-            } else if (key.startsWith("ext_")) {
+            } else if (key.startsWith(EXT_PREFIX)) {
                 value = "" + jsonObj.get(key);
                 Log.finer(c, method, "key=" + key + ", value=" + value);
             } else {
@@ -178,5 +220,64 @@ public abstract class JSONEventsTest {
             Log.info(c, method, "Invalid keys found:" + invalidFields.toString());
         }
         return isSucceeded;
+    }
+
+    private static boolean verifyIntValue(String value) {
+        boolean isValid = true;
+        char[] arr = value.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (i == 0) {
+                if (arr[i] == '-' && arr.length > 1) {
+                    continue;
+                }
+            }
+            if (arr[i] >= '0' && arr[i] <= '9') {
+                continue;
+            } else {
+                isValid = false;
+                break;
+            }
+        }
+        return isValid;
+    }
+
+    private static boolean verifyFloatValue(String s) {
+        boolean isValid = true;
+        boolean decimalFlag = false;
+        char[] arr = s.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (i == 0) {
+                // If the string has more than 1 characters, and the first position in the string has a -, then it is okay.
+                if (arr[i] == '-' && arr.length > 1) {
+                    continue;
+                }
+            }
+            // If a '.' is found
+            if (arr[i] == '.') {
+                // If the decimal is not in the first spot, not in the last spot and the onlt decimal found
+                if (i > 0 && i < arr.length - 1 && decimalFlag == false) {
+                    // Check if there is a digit before the decimal
+                    if (arr[i - 1] >= '0' && arr[i - 1] <= '9') {
+                        // Set decimal flag
+                        decimalFlag = true;
+                        continue;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    //if the decimal conditions are violated, then the number is invalid
+                    return false;
+                }
+            }
+            // Check if the current character is a digit
+            if (arr[i] >= '0' && arr[i] <= '9') {
+                continue;
+            } else {
+                return false;
+            }
+
+        }
+
+        return isValid;
     }
 }

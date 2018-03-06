@@ -38,8 +38,8 @@ public class CollectorJsonHelpers {
     private static String unchangingFieldsJson1_1 = null;
     private final static String TRUE_BOOL = "true";
     private final static String FALSE_BOOL = "false";
-    public final static String INT_SUFFIX = "_int";
-    public final static String FLOAT_SUFFIX = "_float";
+    private final static String INT_SUFFIX = "_int";
+    private final static String FLOAT_SUFFIX = "_float";
     private final static String BOOL_SUFFIX = "_bool";
 
     protected static String getEventType(String source, String location) {
