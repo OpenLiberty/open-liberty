@@ -13,8 +13,8 @@
 <project name="com.ibm.ws.kernel.feature_fat" default="buildandrun" basedir=".">
     <import file="../ant_build/public_imports/fat_imports.xml" />
 
-<!-- Set fattest.timeout to some absurd value (currently 4 hours.) SOE buckets can time out. -->
-    <property name="fattest.timeout" value="14400000"/>
+<!-- Set fattest.timeout to some absurd value (currently 5 hours.) SOE buckets can time out. -->
+    <property name="fattest.timeout" value="18000000"/>
 
     <!-- Run against full image - ensure that javaeeClient feature is available -->
     <property name="fat.image.type" value="use-full-image"/>    
