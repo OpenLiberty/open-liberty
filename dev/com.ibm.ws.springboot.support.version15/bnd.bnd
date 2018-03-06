@@ -26,6 +26,8 @@ Import-Package: \
 
 Include-Resource: springBoot15Starter.jar
 
+instrument.disabled: true
+
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot15Starter.jar; version:Version=1.5
 
 -buildpath: \

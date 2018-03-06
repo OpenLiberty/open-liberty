@@ -27,6 +27,8 @@ Import-Package: \
 
 Include-Resource: springBoot20Starter.jar
 
+instrument.disabled: true
+
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot20Starter.jar; version:Version=2.0
 
 -buildpath: \
