@@ -113,6 +113,7 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.sslref.badssl',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.failover',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tworealms',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups'
   ]
   servers.each { server ->
     copy { 
