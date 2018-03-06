@@ -8,5 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 ###############################################################################
-bootstrap.include=../testports.properties
-com.ibm.ws.logging.trace.specification=*=info:com.ibm.ws.session.*=all
+#CMVCPATHNAME com.ibm.ws.session.cache/resources/com/ibm/ws/session/store/cache/resources/WASSessionCache.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+

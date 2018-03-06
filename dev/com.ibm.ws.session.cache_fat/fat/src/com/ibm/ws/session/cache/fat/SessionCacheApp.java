@@ -43,7 +43,7 @@ public class SessionCacheApp {
 
     public <T> void sessionGet(String key, T expectedValue, List<String> session) throws Exception {
         String type = expectedValue == null ? String.class.getName() : expectedValue.getClass().getName();
-        invokeServlet("sessionGet&key=" + key + "&expectedValue=" + expectedValue + "&type=" + type + "&createSession", session);
+        invokeServlet("sessionGet&key=" + key + "&expectedValue=" + expectedValue + "&type=" + type, session);
     }
 
 }

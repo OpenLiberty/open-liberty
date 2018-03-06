@@ -13,16 +13,22 @@ package session.cache.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
@@ -37,6 +43,9 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/SessionCacheTestServlet")
 public class SessionCacheTestServlet extends FATServlet {
+    // Maximum number of nanoseconds for test to wait
+    static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
     /**
      * Evict the active session from memory, if any.
      */
@@ -67,6 +76,45 @@ public class SessionCacheTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that the session contains the specified attribute names.
+     */
+    public void testAttributeNames(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String[] expectedAttributes = request.getParameter("sessionAttributes").split(",");
+        boolean allowOtherAttributes = Boolean.parseBoolean(request.getParameter("allowOtherAttributes"));
+
+        HttpSession session = request.getSession(false);
+        Enumeration<String> attributeNames = session.getAttributeNames();
+
+        Collection<String> expected = Arrays.asList(expectedAttributes);
+        Collection<String> observed = Collections.list(attributeNames);
+        if (allowOtherAttributes)
+            assertTrue("Expected " + expected + ". Observed " + observed, observed.containsAll(expected));
+        else
+            assertEquals(new HashSet<String>(expected), new HashSet<String>(observed));
+    }
+
+    /**
+     * Test that the reported creation time is reasonably close to the time that we create the session
+     * and that the session consistently returns the same value as the creation time.
+     */
+    public void testCreationTime(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        long now = System.currentTimeMillis();
+        HttpSession session = request.getSession(true);
+        long creationTime = session.getCreationTime();
+        long lastAccessedTime = session.getLastAccessedTime();
+        assertEquals(creationTime, lastAccessedTime);
+
+        // reported creation time should be reasonably close to when we requested the session be created
+        long diff = creationTime - now;
+        assertTrue("unexpectedly large difference from current time: " + diff, Math.abs(diff) < TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
+
+        session.setAttribute("testCreationTime-key1", 3.14159f);
+
+        // creation time should never change
+        assertEquals(creationTime, session.getCreationTime());
+    }
+
+    /**
      * Test that HttpSessionListeners are notified when sessions are created and/or destroyed.
      */
     @SuppressWarnings("unchecked")
@@ -92,6 +140,23 @@ public class SessionCacheTestServlet extends FATServlet {
         if (expectNotDestroyed != null)
             for (String sessionId : expectNotDestroyed)
                 assertFalse(sessionId, destroyed.contains(sessionId));
+    }
+
+    /**
+     * Test that the last accessed time changes when accessed at different times.
+     */
+    public void testLastAccessedTime(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpSession session = request.getSession(true);
+        long lastAccessedTime = session.getLastAccessedTime();
+
+        TimeUnit.MILLISECONDS.sleep(100); // ensure that the time changes before next access
+
+        assertEquals(lastAccessedTime, session.getLastAccessedTime());
+
+        session.setAttribute("testLastAccessedTime-key1", 2.71828);
+
+        // last accessed time should change
+        assertNotSame(lastAccessedTime, session.getLastAccessedTime());
     }
 
     /**
@@ -198,31 +263,51 @@ public class SessionCacheTestServlet extends FATServlet {
         boolean createSession = Boolean.parseBoolean(request.getParameter("createSession"));
         HttpSession session = request.getSession(createSession);
         if (createSession)
-            System.out.println("Created a new session with id=" + session.getId());
+            System.out.println("Created a new session with sessionID=" + session.getId());
         else
-            System.out.println("Re-using existing session with id=" + session == null ? null : session.getId());
+            System.out.println("Re-using existing session with sessionID=" + session == null ? null : session.getId());
         String key = request.getParameter("key");
         String value = request.getParameter("value");
         String type = request.getParameter("type");
         Object val = toType(type, value);
         session.setAttribute(key, val);
-        System.out.println("Put entry: " + key + '=' + value);
-        response.getWriter().write("session id: [" + session.getId() + "]");
+        String sessionID = session.getId();
+        System.out.println("Put entry: " + key + '=' + value + " into sessionID=" + sessionID);
+        response.getWriter().write("session id: [" + sessionID + "]");
     }
 
     public void sessionGet(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         String key = request.getParameter("key");
-        String expectedValue = request.getParameter("expectedValue");
+        String rawExpectedValue = request.getParameter("expectedValue");
         String type = request.getParameter("type");
-        Object expected = toType(type, expectedValue);
+        boolean compareAsString = Boolean.parseBoolean(request.getParameter("compareAsString")); // useful if the class does not implement .equals
+        Object expectedValue = toType(type, rawExpectedValue);
+
         HttpSession session = request.getSession(false);
         if (expectedValue == null && session == null) {
-            System.out.println("Got no session and was expecting null value.");
+            System.out.println("Session was null and was expecting null value.");
             return;
+        } else if (session == null) {
+            fail("Was expecting to get " + key + '=' + expectedValue + ", but instead got a null session.");
         }
         Object actualValue = session.getAttribute(key);
-        System.out.println("Got entry: " + key + '=' + actualValue);
-        assertEquals(expected, actualValue);
+        System.out.println("Got entry: " + key + '=' + actualValue + " from sessionID=" + session.getId());
+
+        if (compareAsString)
+            assertEquals(expectedValue.toString(), actualValue.toString());
+        else
+            assertEquals(expectedValue, actualValue);
+    }
+
+    /**
+     * Get a session attribute which is a StringBuffer and append characters,
+     * but don't set the attribute with the updated value.
+     */
+    public void testStringBufferAppendWithoutSetAttribute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String key = request.getParameter("key");
+        HttpSession session = request.getSession(true);
+        StringBuffer value = (StringBuffer) session.getAttribute(key);
+        value.append("Appended");
     }
 
     /**

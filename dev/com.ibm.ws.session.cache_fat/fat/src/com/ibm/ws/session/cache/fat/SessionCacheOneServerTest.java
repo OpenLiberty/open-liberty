@@ -12,6 +12,10 @@ package com.ibm.ws.session.cache.fat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,6 +35,8 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     public static SessionCacheApp app = null;
 
+    public static final ExecutorService executor = Executors.newFixedThreadPool(10);
+
     @BeforeClass
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, "session.cache.web", "session.cache.web.listener1", "session.cache.web.listener2");
@@ -39,7 +45,67 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        executor.shutdownNow();
         server.stopServer();
+    }
+
+    /**
+     * Submit concurrent requests to put new attributes into a single session.
+     * Verify that all of the attributes (and no others) are added to the session, with their respective values.
+     */
+    @Test
+    public void testConcurrentPutNewAttributes() throws Exception {
+        final int NUM_THREADS = 9;
+
+        List<String> session = new ArrayList<>();
+
+        StringBuilder attributeNames = new StringBuilder("testConcurrentPutNewAttributes-key0");
+
+        List<Callable<Void>> puts = new ArrayList<Callable<Void>>();
+        List<Callable<Void>> gets = new ArrayList<Callable<Void>>();
+        for (int i = 1; i <= NUM_THREADS; i++) {
+            final int offset = i;
+            attributeNames.append(",testConcurrentPutNewAttributes-key").append(i);
+            puts.add(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    app.sessionPut("testConcurrentPutNewAttributes-key" + offset, 'A' + offset, session, true);
+                    return null;
+                }
+            });
+            gets.add(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    app.sessionGet("testConcurrentPutNewAttributes-key" + offset, 'A' + offset, session);
+                    return null;
+                }
+            });
+        }
+
+        app.sessionPut("testConcurrentPutNewAttributes-key0", 'A', session, true);
+        try {
+            List<Future<Void>> futures = executor.invokeAll(puts);
+            for (Future<Void> future : futures)
+                future.get(); // report any exceptions that might have occurred
+
+            app.invokeServlet("testAttributeNames&allowOtherAttributes=false&sessionAttributes=" + attributeNames, session);
+
+            futures = executor.invokeAll(gets);
+            for (Future<Void> future : futures)
+                future.get(); // report any exceptions that might have occurred
+        } finally {
+            app.invalidateSession(session);
+        }
+    }
+
+    /**
+     * Verify that the time reported as the creation time of the session is reasonably close to when we created it.
+     */
+    @Test
+    public void testCreationTime() throws Exception {
+        List<String> session = new ArrayList<>();
+        app.invokeServlet("testCreationTime", session);
+        app.invalidateSession(session);
     }
 
     /**
@@ -106,6 +172,16 @@ public class SessionCacheOneServerTest extends FATServletClient {
     }
 
     /**
+     * Test that the last accessed time changes when accessed at different times.
+     */
+    @Test
+    public void testLastAccessedTime() throws Exception {
+        List<String> session = new ArrayList<>();
+        app.invokeServlet("testLastAccessedTime", session);
+        app.invalidateSession(session);
+    }
+
+    /**
      * Ensure that various types of objects can be stored in a session,
      * serialized when the session is evicted from memory, and deserialized
      * when the session is accessed again.
@@ -138,4 +214,5 @@ public class SessionCacheOneServerTest extends FATServletClient {
             app.invalidateSession(session);
         }
     }
+
 }

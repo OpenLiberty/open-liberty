@@ -55,6 +55,7 @@ public class CacheStoreService implements SessionStoreService {
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; //3 is the length of .0.
 
     CacheManager cacheManager;
+    CachingProvider cachingProvider;
 
     private volatile boolean completedPassivation = true;
 
@@ -86,7 +87,7 @@ public class CacheStoreService implements SessionStoreService {
             try {
                 uri = new URI(uriValue);
             } catch (URISyntaxException e) {
-                // TODO log error here
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
             }
         
         for (Map.Entry<String, Object> entry : props.entrySet()) {
@@ -99,12 +100,11 @@ public class CacheStoreService implements SessionStoreService {
                 if (!key.equals("config.referenceType")) 
                     vendorProperties.setProperty(key, (String) value);
             }
-            //TODO add support for JCache spec "properties" 
         }
 
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
-        CachingProvider provider = Caching.getCachingProvider(library.getClassLoader());
-        cacheManager = provider.getCacheManager(uri, null, vendorProperties);
+        cachingProvider = Caching.getCachingProvider(library.getClassLoader());
+        cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
     }
 
     @Override

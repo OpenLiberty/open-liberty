@@ -154,4 +154,32 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appB.sessionGet("testMaxSessions-session1", null, session1);
         appA.sessionGet("testMaxSessions-session1", null, session1);
     }
+
+    // TODO will need to update this test & corresponding server config if the design ends up switching the default to ALL_SESSION_ATTRIBUTES
+    /**
+     * Test httpSessionCache's writeContents configuration.
+     * App B on server B uses the default of ONLY_UPDATED_ATTRIBUTES, which means that an update made locally to an attribute
+     * without performing a putAttribute will not be written to the persistent store even though it remains in the local cache.
+     * App A on server A uses ALL_SESSION_ATTRIBUTES, which means that an update made locally to an attribute
+     * without performing a putAttribute will be written to the persistent store.
+     */
+    @Test
+    public void testModifyWithoutPut() throws Exception {
+        List<String> session = new ArrayList<>();
+        appA.sessionPut("testModifyWithoutPut-key", new StringBuffer("MyValue"), session, true);
+        try {
+            appB.invokeServlet("testStringBufferAppendWithoutSetAttribute&key=testModifyWithoutPut-key", session);
+            // appA should not see the update because it does not get written to the persistent store without a putAttribute per writeContents=ONLY_UPDATED_ATTRIBUTES
+            appA.sessionGet("testModifyWithoutPut-key&compareAsString=true", new StringBuffer("MyValue"), session);
+
+            appB.sessionPut("testModifyWithoutPut-key", new StringBuffer("MyNewValue"), session, false);
+            appA.invokeServlet("testStringBufferAppendWithoutSetAttribute&key=testModifyWithoutPut-key", session);
+            // appB should see the update because it is written to the persistent store despite lack of a putAttribute. This is due to writeContents=ALL_SESSION_ATTRIBUTES
+            appB.sessionGet("testModifyWithoutPut-key&compareAsString=true", new StringBuffer("MyNewValueAppended"), session);
+            // appA sees the update which is made locally in the in-memory cache as well as to the persistent store
+            appA.sessionGet("testModifyWithoutPut-key&compareAsString=true", new StringBuffer("MyNewValueAppended"), session);
+        } finally {
+            appA.invalidateSession(session);
+        }
+    }
 }
