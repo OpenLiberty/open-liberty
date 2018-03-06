@@ -33,6 +33,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.jar.JarFile;
@@ -166,16 +169,16 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
 
         @Override
-        public <T> void configure(ServerConfiguration config, T helperParam, Class<T> helperParamType) {
-            ContainerInstanceFactory<T> helper = factory.getHelper(helperParamType);
-            if (helper == null) {
-                throw new IllegalStateException("No configuration helper found for: " + helperParamType);
+        public <T> void configure(ServerConfiguration config, T helperParam, Class<T> type) {
+            ContainerInstanceFactory<T> containerInstanceFactory = factory.getContainerInstanceFactory(type);
+            if (containerInstanceFactory == null) {
+                throw new IllegalStateException("No configuration helper found for: " + type);
             }
             if (!serverConfig.compareAndSet(null, config)) {
                 throw new IllegalStateException("Server configuration already set.");
             }
             try {
-                if (!configInstance.compareAndSet(null, helper.intialize(SpringBootApplicationImpl.this, id, helperParam))) {
+                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, helperParam))) {
                     throw new IllegalStateException("Config instance already created.");
                 }
             } catch (IOException | UnableToAdaptException | MetaDataException e) {
@@ -286,6 +289,8 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private final AtomicReference<ServiceRegistration<SpringBootConfigFactory>> springBootConfigReg = new AtomicReference<>();
     private final AtomicInteger nextConfigId = new AtomicInteger(0);
     private final int id;
+    private final Set<Runnable> shutdownHooks = new CopyOnWriteArraySet<>();
+    private final AtomicBoolean uninstalled = new AtomicBoolean();
 
     public SpringBootApplicationImpl(ApplicationInformation<DeployedAppInfo> applicationInformation, SpringBootApplicationFactory factory, int id) throws UnableToAdaptException {
         super(applicationInformation, factory);
@@ -446,6 +451,14 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     @Override
     public void destroyApplicationInfo(ExtendedApplicationInfo appInfo) {
         appInfoFactory.destroyApplicationInfo(appInfo);
+    }
+
+    @Override
+    public boolean uninstallApp() {
+        if (uninstalled.getAndSet(true)) {
+            return true;
+        }
+        return super.uninstallApp();
     }
 
     private String getVirtualHostConfig(String id) {
@@ -630,5 +643,45 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     @Override
     public SpringBootConfig createSpringBootConfig() {
         return new SpringBootConfigImpl(nextConfigId.getAndIncrement());
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory#addShutdownHook(java.lang.Runnable)
+     */
+    @Override
+    public void addShutdownHook(Runnable hook) {
+        shutdownHooks.add(hook);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory#removeShutdownHook(java.lang.Runnable)
+     */
+    @Override
+    public void removeShutdownHook(Runnable hook) {
+        shutdownHooks.remove(hook);
+    }
+
+    void callShutdownHooks() {
+        for (Runnable hook : shutdownHooks) {
+            try {
+                hook.run();
+            } catch (Throwable t) {
+                // auto FFDC here and continue on
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory#rootContextClosed()
+     */
+    @Override
+    public void rootContextClosed() {
+        uninstallApp();
     }
 }

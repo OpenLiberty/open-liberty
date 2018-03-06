@@ -23,21 +23,43 @@ import org.osgi.framework.ServiceReference;
  * A factory for creating Spring Boot configurations for configuring an embedded
  * container. The embedded container can be a web container or some other type
  * of container, for example, a reactive container.
+ * <p>
+ * A factory is a singleton for a Spring Boot application.
  */
 public interface SpringBootConfigFactory {
     /**
      * Creates a new Spring Boot configuration.
-     * 
+     *
      * @return a new Spring Boot configuration.
      */
     SpringBootConfig createSpringBootConfig();
 
     /**
+     * Adds a hook that will be called when the application is requested to stop.
+     *
+     * @param hook the shutdown hook to add
+     */
+    void addShutdownHook(Runnable hook);
+
+    /**
+     * Removes a shutdown hook.
+     *
+     * @param hook the shutdown hook to remove
+     */
+    void removeShutdownHook(Runnable hook);
+
+    /**
+     * Informs the factory that the root application context
+     * of the Spring Boot application has been closed
+     */
+    void rootContextClosed();
+
+    /**
      * Finds the Spring Boot configuration factory for a Spring Boot application based
      * on the class loader of a given token object.
-     * 
+     *
      * @param token an object with a class that is loaded by the class loader of
-     *            the Spring Boot application
+     *                  the Spring Boot application
      * @return The Spring Boot configuration factory for a Spring Boot application.
      */
     static SpringBootConfigFactory findFactory(Object token) {

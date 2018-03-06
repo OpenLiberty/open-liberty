@@ -124,6 +124,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     public void stopModule(ExtendedModuleInfo moduleInfo) {
         SpringBootModuleInfo springBootModuleInfo = (SpringBootModuleInfo) moduleInfo;
         springBootModuleInfo.getSpringBootApplication().unregisterSpringConfigFactory();
+        springBootModuleInfo.getSpringBootApplication().callShutdownHooks();
     }
 
 }

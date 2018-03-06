@@ -11,6 +11,7 @@
 package com.ibm.ws.app.manager.springboot.container;
 
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
+import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 
 /**
  * Spring Boot configuration that configures a embedded container such as a
@@ -21,17 +22,21 @@ public interface SpringBootConfig {
      * Configures an embedded configuration based on the given server
      * configuration. The given server configuration is intended to
      * configure an http endpoint for the Spring Boot application.
-     *
+     * <p>
      * For web container configuration it is expected that the
      * ServletContext will be fully initialized by the exit of
      * this method. The http endpoint must not be listening
      * on the configured port until start is called.
+     * <p>
+     * A {@link ContainerInstanceFactory} is looked up according
+     * to the factoryParamType and called to create instances
+     * for the configuration.
      *
-     * @param config liberty server configuration
-     * @param helperParam a helper specific parameter
-     * @param helperParamtype the helper specific parameter type
+     * @param config           liberty server configuration
+     * @param factoryParam     a factory specific parameter
+     * @param factoryParamtype the helper specific parameter type
      */
-    <T> void configure(ServerConfiguration config, T helperParam, Class<T> helperParamtype);
+    <T> void configure(ServerConfiguration config, T factoryParam, Class<T> factoryParamType);
 
     /**
      * Starts the http endpoint for this configuration

@@ -137,7 +137,7 @@ public class SpringBootApplicationFactory extends DeployedAppInfoFactoryBase {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> ContainerInstanceFactory<T> getHelper(Class<T> helperType) {
-        return (ContainerInstanceFactory<T>) containerInstanceFactories.get(helperType);
+    public <T> ContainerInstanceFactory<T> getContainerInstanceFactory(Class<T> type) {
+        return (ContainerInstanceFactory<T>) containerInstanceFactories.get(type);
     }
 }
