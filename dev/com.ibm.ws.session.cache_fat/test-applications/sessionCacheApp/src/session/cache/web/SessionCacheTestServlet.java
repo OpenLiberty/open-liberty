@@ -27,6 +27,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -73,6 +74,24 @@ public class SessionCacheTestServlet extends FATServlet {
             System.out.println("Invalidating session: " + session.getId());
             session.invalidate();
         }
+    }
+
+    /**
+     * Verify that a session attribute has any of the specified values.
+     */
+    public void testAttributeIsAnyOf(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String key = request.getParameter("key");
+        String expectedValues = request.getParameter("values");
+        String type = request.getParameter("type");
+        Set<Object> expected = new HashSet<Object>();
+        for (String v : expectedValues.split(","))
+            expected.add(toType(type, v));
+
+        HttpSession session = request.getSession(false);
+        Object actualValue = session.getAttribute(key);
+        System.out.println("Got entry: " + key + '=' + actualValue + " from sessionID=" + session.getId());
+
+        assertTrue("value is " + actualValue + ", was expecting any of " + expected, expected.contains(actualValue));
     }
 
     /**

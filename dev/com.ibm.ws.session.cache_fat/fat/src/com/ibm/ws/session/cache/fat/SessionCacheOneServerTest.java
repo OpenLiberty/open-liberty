@@ -12,6 +12,8 @@ package com.ibm.ws.session.cache.fat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -93,6 +95,57 @@ public class SessionCacheOneServerTest extends FATServletClient {
             futures = executor.invokeAll(gets);
             for (Future<Void> future : futures)
                 future.get(); // report any exceptions that might have occurred
+        } finally {
+            app.invalidateSession(session);
+        }
+    }
+
+    /**
+     * Submit concurrent requests to replace the value of the same attributes within a single session.
+     */
+    @Test
+    public void testConcurrentReplaceAttributes() throws Exception {
+        final int NUM_ATTRS = 2;
+        final int NUM_THREADS = 8;
+
+        List<String> session = new ArrayList<>();
+
+        Map<String, String> expectedValues = new TreeMap<String, String>();
+        List<Callable<Void>> puts = new ArrayList<Callable<Void>>();
+        for (int i = 1; i <= NUM_ATTRS; i++) {
+            final String key = "testConcurrentReplaceAttributes-key" + i;
+            StringBuilder sb = new StringBuilder();
+
+            for (int j = 1; j <= NUM_THREADS / NUM_ATTRS; j++) {
+                final int value = i * 100 + j;
+                if (j > 1)
+                    sb.append(',');
+                sb.append(value);
+
+                puts.add(new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        app.sessionPut(key, value, session, false);
+                        return null;
+                    }
+                });
+            }
+
+            expectedValues.put(key, sb.toString());
+        }
+
+        app.sessionPut("testConcurrentReplaceAttributes-key1", 100, session, true);
+        try {
+            app.sessionPut("testConcurrentReplaceAttributes-key2", 200, session, false);
+
+            List<Future<Void>> futures = executor.invokeAll(puts);
+            for (Future<Void> future : futures)
+                future.get(); // report any exceptions that might have occurred
+
+            app.invokeServlet("testAttributeNames&allowOtherAttributes=false&sessionAttributes=testConcurrentReplaceAttributes-key1,testConcurrentReplaceAttributes-key2", session);
+
+            for (Map.Entry<String, String> expected : expectedValues.entrySet())
+                app.invokeServlet("testAttributeIsAnyOf&type=java.lang.Integer&key=" + expected.getKey() + "&values=" + expected.getValue(), session);
         } finally {
             app.invalidateSession(session);
         }
