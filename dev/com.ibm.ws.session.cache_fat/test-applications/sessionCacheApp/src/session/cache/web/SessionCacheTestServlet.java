@@ -324,6 +324,12 @@ public class SessionCacheTestServlet extends FATServlet {
             assertEquals(expectedValue, actualValue);
     }
 
+    public void sessionRemoveAttribute(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String key = request.getParameter("key");
+        HttpSession session = request.getSession(false);
+        session.removeAttribute(key);
+    }
+
     /**
      * Get a session attribute which is a StringBuffer and append characters,
      * but don't set the attribute with the updated value.
