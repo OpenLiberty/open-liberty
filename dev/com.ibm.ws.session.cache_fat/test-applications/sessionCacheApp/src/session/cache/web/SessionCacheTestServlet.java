@@ -209,9 +209,15 @@ public class SessionCacheTestServlet extends FATServlet {
         assertTrue("indirect AppObject not deserialized properly", object.deserialized);
 
         ArrayList<String> attributeNames = Collections.list(session.getAttributeNames());
+        int weldCount = 0;
+        for (int i = attributeNames.size(); i-- > 0;) {
+            String name = attributeNames.get(i);
+            if (name.startsWith("WELD_S_") || name.contains(".weld."))
+                weldCount++;
+        }
         String attributeNamesString = attributeNames.toString();
         assertTrue(attributeNamesString, attributeNames.containsAll(Arrays.asList("map", "str", "appObject")));
-        assertEquals(attributeNamesString, attributeNames.contains("WELD_S_HASH") ? 4 : 3, attributeNames.size());
+        assertEquals(attributeNamesString, weldCount + 3, attributeNames.size());
     }
 
     public void testSerializeDataSource(HttpServletRequest request, HttpServletResponse response) throws Throwable {

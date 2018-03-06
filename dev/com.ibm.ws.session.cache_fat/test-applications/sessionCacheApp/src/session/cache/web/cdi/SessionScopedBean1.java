@@ -17,8 +17,18 @@ import javax.inject.Named;
 
 @Named
 @SessionScoped
-public class SessionScopedBean implements Serializable {
+public class SessionScopedBean1 implements Serializable {
     private static final long serialVersionUID = 1L;
+    private String stringValue;
 
-    String stringValue;
+    public SessionScopedBean1() {}
+
+    public String getStringValue() {
+        return stringValue;
+    }
+
+    public void setStringValue(String str) {
+        System.out.println("SessionScopedBean.setStringValue: [" + stringValue + "] -> [" + str + "]");
+        stringValue = str;
+    }
 }

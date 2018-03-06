@@ -11,8 +11,13 @@
 package session.cache.web.cdi;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.cache.Cache;
+import javax.cache.Caching;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +30,12 @@ import componenttest.app.FATServlet;
 @WebServlet("/SessionCDITestServlet")
 public class SessionCDITestServlet extends FATServlet {
     @Inject
-    SessionScopedBean bean;
+    SessionScopedBean1 bean1;
+
+    @Inject
+    SessionScopedBean2 bean2;
+
+    private static final AtomicInteger counter = new AtomicInteger();
 
     /**
      * Update a session scoped CDI bean with a new value supplied via the "newValue" parameter,
@@ -38,12 +48,17 @@ public class SessionCDITestServlet extends FATServlet {
         String sessionId = session.getId();
         System.out.println("session id is " + sessionId);
 
-        String previousValue = bean.stringValue;
+        PrintWriter responseWriter = response.getWriter();
+        responseWriter.write("session id: [" + sessionId + "]");
+
+        String previousValue = bean1.getStringValue();
         System.out.println("previous value: " + previousValue);
-        bean.stringValue = newValue;
+        bean1.setStringValue(newValue);
         System.out.println("made update to: " + newValue);
 
-        response.getWriter().write("previous value for SessionScopedBean: [" + previousValue + "]");
+        responseWriter.write("previous value for SessionScopedBean: [" + previousValue + "]");
+
+        bean2.setStr("It is " + counter.incrementAndGet());
 
         for (Enumeration<String> attrs = session.getAttributeNames(); attrs.hasMoreElements();) {
             String name = attrs.nextElement();
@@ -51,4 +66,28 @@ public class SessionCDITestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Directly read entries from the session property cache and writes to the servlet output so that
+     * the caller can confirm that the values are written to the cache.
+     */
+    public void testWeldSessionAttributes(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String sessionId = request.getParameter("sessionId");
+        String key0 = sessionId + ".WELD_S#0";
+        String key1 = sessionId + ".WELD_S#1";
+
+        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.prop.default_host%2FsessionCacheApp", String.class, byte[].class);
+        byte[] value0 = cache.get(key0);
+        byte[] value1 = cache.get(key1);
+        cache.close();
+
+        String strValue0 = Arrays.toString(value0);
+        String strValue1 = Arrays.toString(value1);
+
+        System.out.println("bytes for " + key0 + ": " + strValue0);
+        System.out.println("bytes for " + key1 + ": " + strValue1);
+
+        PrintWriter responseWriter = response.getWriter();
+        responseWriter.write("bytes for WELD_S#0: " + strValue0);
+        responseWriter.write("bytes for WELD_S#1: " + strValue1);
+    }
 }
