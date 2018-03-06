@@ -384,7 +384,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             return artifactContainer;
         } catch (NoSuchAlgorithmException | IOException e) {
             // Log error and continue to use the container for the SPR file
-            Tr.error(tc, "warning.could.not.expand.application", applicationInformation.getName(), e.getMessage());
+            Tr.error(tc, "warning.could.not.thin.application", applicationInformation.getName(), e.getMessage());
         }
         return null;
     }
