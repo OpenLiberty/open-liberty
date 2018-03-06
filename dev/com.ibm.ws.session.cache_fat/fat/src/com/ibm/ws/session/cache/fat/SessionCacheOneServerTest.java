@@ -37,7 +37,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     public static SessionCacheApp app = null;
 
-    public static final ExecutorService executor = Executors.newFixedThreadPool(10);
+    public static final ExecutorService executor = Executors.newFixedThreadPool(12);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -164,6 +164,70 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
             for (Map.Entry<String, String> expected : expectedValues.entrySet())
                 app.invokeServlet("testAttributeIsAnyOf&type=java.lang.Integer&key=" + expected.getKey() + "&values=" + expected.getValue(), session);
+        } finally {
+            app.invalidateSession(session);
+        }
+    }
+
+    /**
+     * Submit concurrent requests to add/update/get/remove a session attribute.
+     * There will be no guarantee whether or not the session attribute exists at the end of the test,
+     * but if it does exist, it must have one of the values that was set during the test.
+     */
+    @Test
+    public void testConcurrentSetGetAndRemove() throws Exception {
+        final int NUM_THREADS = 12;
+
+        List<String> session = new ArrayList<>();
+
+        // The test case only adds even values, so expect results include null (attribute doesn't exist) or an even value
+        final StringBuilder expectedValues = new StringBuilder("null");
+        for (int i = 0; i < NUM_THREADS; i += 2) {
+            expectedValues.append(',');
+            expectedValues.append(1000 + i);
+        }
+
+        List<Callable<Void>> requests = new ArrayList<Callable<Void>>();
+        for (int i = 0; i < NUM_THREADS; i++) {
+            final int value = 1000 + i;
+            switch (i % 4) {
+                case 0:
+                case 2:
+                    requests.add(new Callable<Void>() {
+                        @Override
+                        public Void call() throws Exception {
+                            app.sessionPut("testConcurrentSetGetAndRemove-key", value, session, false);
+                            return null;
+                        }
+                    });
+                    break;
+                case 1:
+                    requests.add(new Callable<Void>() {
+                        @Override
+                        public Void call() throws Exception {
+                            app.invokeServlet("testAttributeIsAnyOf&type=java.lang.Integer&key=testConcurrentSetGetAndRemove-key&values=" + expectedValues, session);
+                            return null;
+                        }
+                    });
+                    break;
+                default: // 3
+                    requests.add(new Callable<Void>() {
+                        @Override
+                        public Void call() throws Exception {
+                            app.invokeServlet("sessionRemoveAttribute&key=testConcurrentSetGetAndRemove-key", session);
+                            return null;
+                        }
+                    });
+            }
+        }
+
+        app.invokeServlet("getSessionId", session); // creates the session
+        try {
+            List<Future<Void>> futures = executor.invokeAll(requests);
+            for (Future<Void> future : futures)
+                future.get(); // report any exceptions that might have occurred
+
+            app.invokeServlet("testAttributeIsAnyOf&type=java.lang.Integer&key=testConcurrentSetGetAndRemove-key&values=" + expectedValues, session);
         } finally {
             app.invalidateSession(session);
         }
