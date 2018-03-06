@@ -25,10 +25,7 @@ Import-Package: \
     com.ibm.ws.app.manager.module.internal, \
     *
 
-Include-Resource: OSGI-INF=resources/OSGI-INF, \
- springBoot20Starter.jar
-
-instrument.classesExcludes: com/ibm/ws/springboot/support/version20/osgi/internal/resources/*.class
+Include-Resource: springBoot20Starter.jar
 
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot20Starter.jar; version:Version=2.0
 

@@ -24,10 +24,7 @@ Import-Package: \
     com.ibm.ws.app.manager.module.internal, \
     *
 
-Include-Resource: OSGI-INF=resources/OSGI-INF, \
- springBoot15Starter.jar
-
-instrument.classesExcludes: com/ibm/ws/springboot/support/version15/osgi/internal/resources/*.class
+Include-Resource: springBoot15Starter.jar
 
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot15Starter.jar; version:Version=1.5
 
