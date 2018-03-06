@@ -27,8 +27,11 @@ public class CollectorJsonHelpers {
     private static String start_accesslog_json_1_1 = null;
     private static String start_gc_json = null;
     private static String start_gc_json_1_1 = null;
-    private static String middle_gc_json = null;
-    private static String middle_gc_json_1_1 = null;
+    private static String message_event_type_field_json = "\"type\":\"liberty_message\"";
+    private static String trace_event_type_field_json = "\"type\":\"liberty_trace\"";
+    private static String accesslog_event_type_field_json = "\"type\":\"liberty_accesslog\"";
+    private static String ffdc_event_type_field_json = "\"type\":\"liberty_ffdc\"";
+    private static String gc_event_type_field_json = "\"type\":\"liberty_gc\"";
 
     protected static String getEventType(String source, String location) {
         if (source.equals(CollectorConstants.GC_SOURCE) && location.equals(CollectorConstants.MEMORY)) {
@@ -147,329 +150,194 @@ public class CollectorJsonHelpers {
         }
     }
 
-    protected static boolean startMessageJson(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                              boolean isFirstField) {
+    private static String unchanging_fields_json = null;
+
+    private static void addUnchangingFields(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
+        if (unchanging_fields_json != null) {
+            sb.append(unchanging_fields_json);
+        } else {
+            StringBuilder temp = new StringBuilder(512);
+            addToJSON(temp, "host", hostName, false, false, false, false);
+            addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, false);
+            addToJSON(temp, "serverName", serverName, false, false, false, false);
+            unchanging_fields_json = temp.toString();
+            sb.append(unchanging_fields_json);
+        }
+    }
+
+    private static String unchanging_fields_json_1_1 = null;
+
+    private static void addUnchangingFields1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
+        if (unchanging_fields_json_1_1 != null) {
+            sb.append(unchanging_fields_json_1_1);
+        } else {
+            StringBuilder temp = new StringBuilder(512);
+            addToJSON(temp, "host", hostName, false, false, false, false);
+            addToJSON(temp, "ibm_userDir", wlpUserDir, false, true, false, false);
+            addToJSON(temp, "ibm_serverName", serverName, false, false, false, false);
+            unchanging_fields_json_1_1 = temp.toString();
+            sb.append(unchanging_fields_json_1_1);
+        }
+    }
+
+    protected static StringBuilder startMessageJson(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_message_json != null) {
-            if (!start_message_json.isEmpty()) {
-                sb.append(start_message_json);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", "liberty_message", false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "serverName", serverName, false, false, false, isFirstField);
-
-            start_message_json = temp.toString();
             sb.append(start_message_json);
+        } else {
+            sb.append("{");
+            sb.append(message_event_type_field_json);
+            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
+
+            start_message_json = sb.toString();
         }
 
-        return isFirstField;
+        return sb;
     }
 
-    protected static boolean startTraceJson(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                            boolean isFirstField) {
+    protected static StringBuilder startTraceJson(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_trace_json != null) {
-            if (!start_trace_json.isEmpty()) {
-                sb.append(start_trace_json);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", "liberty_trace", false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "serverName", serverName, false, false, false, isFirstField);
-
-            start_trace_json = temp.toString();
             sb.append(start_trace_json);
+        } else {
+            sb.append("{");
+            sb.append(trace_event_type_field_json);
+            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
+
+            start_trace_json = sb.toString();
         }
 
-        return isFirstField;
+        return sb;
     }
 
-    protected static boolean startFFDCJson(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                           boolean isFirstField) {
+    protected static StringBuilder startFFDCJson(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_ffdc_json != null) {
-            if (!start_ffdc_json.isEmpty()) {
-                sb.append(start_ffdc_json);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", "liberty_ffdc", false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "serverName", serverName, false, false, false, isFirstField);
-
-            start_ffdc_json = temp.toString();
             sb.append(start_ffdc_json);
+        } else {
+            sb.append("{");
+            sb.append(ffdc_event_type_field_json);
+            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
+
+            start_ffdc_json = sb.toString();
         }
 
-        return isFirstField;
+        return sb;
     }
 
-    protected static boolean startAccessLogJson(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                                boolean isFirstField) {
+    protected static StringBuilder startAccessLogJson(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_accesslog_json != null) {
-            if (!start_accesslog_json.isEmpty()) {
-                sb.append(start_accesslog_json);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", "liberty_ffdc", false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "serverName", serverName, false, false, false, isFirstField);
-
-            start_accesslog_json = temp.toString();
             sb.append(start_accesslog_json);
+        } else {
+            sb.append("{");
+            sb.append(accesslog_event_type_field_json);
+            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
+
+            start_accesslog_json = sb.toString();
         }
 
-        return isFirstField;
+        return sb;
     }
 
-    protected static boolean startGenDataGCJson(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                                boolean isFirstField) {
+    protected static StringBuilder startGCJson(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_gc_json != null) {
-            if (!start_gc_json.isEmpty()) {
-                sb.append(start_gc_json);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", "liberty_ffdc", false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "serverName", serverName, false, false, false, isFirstField);
-
-            start_gc_json = temp.toString();
             sb.append(start_gc_json);
+        } else {
+            sb.append("{");
+            sb.append(gc_event_type_field_json);
+            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
+
+            start_gc_json = sb.toString();
         }
 
-        return isFirstField;
+        return sb;
     }
 
-    protected static boolean startMessageJson1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                                 boolean isFirstField) {
+    protected static StringBuilder startMessageJson1_1(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_message_json_1_1 != null) {
-            if (!start_message_json_1_1.isEmpty()) {
-                sb.append(start_message_json_1_1);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", "liberty_message", false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_userDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_serverName", serverName, false, false, false, isFirstField);
-
-            start_message_json_1_1 = temp.toString();
             sb.append(start_message_json_1_1);
+        } else {
+            sb.append("{");
+            sb.append(message_event_type_field_json);
+            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+
+            start_message_json_1_1 = sb.toString();
         }
 
-        return isFirstField;
+        return sb;
     }
 
-    protected static boolean startTraceJson1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                               boolean isFirstField) {
+    protected static StringBuilder startTraceJson1_1(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_trace_json_1_1 != null) {
-            if (!start_trace_json_1_1.isEmpty()) {
-                sb.append(start_trace_json_1_1);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", "liberty_trace", false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_userDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_serverName", serverName, false, false, false, isFirstField);
-
-            start_trace_json_1_1 = temp.toString();
             sb.append(start_trace_json_1_1);
+        } else {
+            sb.append("{");
+            sb.append(trace_event_type_field_json);
+            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+
+            start_trace_json_1_1 = sb.toString();
         }
 
-        return isFirstField;
+        return sb;
     }
 
-    protected static boolean startFFDCJson1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                              boolean isFirstField) {
+    protected static StringBuilder startFFDCJson1_1(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_ffdc_json_1_1 != null) {
-            if (!start_ffdc_json_1_1.isEmpty()) {
-                sb.append(start_ffdc_json_1_1);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", CollectorConstants.FFDC_EVENT_TYPE, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_userDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_serverName", serverName, false, false, false, isFirstField);
-
-            start_ffdc_json_1_1 = temp.toString();
             sb.append(start_ffdc_json_1_1);
+        } else {
+            sb.append("{");
+            sb.append(ffdc_event_type_field_json);
+            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+
+            start_ffdc_json_1_1 = sb.toString();
         }
 
-        return isFirstField;
+        return sb;
     }
 
-    protected static boolean startAccessLogJson1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                                   boolean isFirstField) {
+    protected static StringBuilder startAccessLogJson1_1(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_accesslog_json_1_1 != null) {
-            if (!start_accesslog_json_1_1.isEmpty()) {
-                sb.append(start_accesslog_json_1_1);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", CollectorConstants.ACCESS_LOG_EVENT_TYPE, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_userDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_serverName", serverName, false, false, false, isFirstField);
-
-            start_accesslog_json_1_1 = temp.toString();
             sb.append(start_accesslog_json_1_1);
+        } else {
+            sb.append("{");
+            sb.append(accesslog_event_type_field_json);
+            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
+
+            start_accesslog_json_1_1 = sb.toString();
         }
 
-        return isFirstField;
+        return sb;
     }
 
-    protected static boolean startGenDataGCJson1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName,
-                                                   boolean isFirstField) {
+    protected static StringBuilder startGCJson1_1(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
         if (start_gc_json_1_1 != null) {
-            if (!start_gc_json_1_1.isEmpty()) {
-                sb.append(start_gc_json_1_1);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", CollectorConstants.GC_EVENT_TYPE, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_userDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_serverName", serverName, false, false, false, isFirstField);
-
-            start_gc_json_1_1 = temp.toString();
             sb.append(start_gc_json_1_1);
-        }
-
-        return isFirstField;
-    }
-
-    protected static boolean startGCJson1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName, long timestamp, String sequenceNum,
-                                            boolean isFirstField) {
-        String datetime = dateFormatTL.get().format(timestamp);
-
-        /* Common fields for all event types */
-
-        isFirstField = isFirstField & !addToJSON(sb, "ibm_datetime", datetime, false, false, false, isFirstField);
-
-        middleGCJson1_1(sb, hostName, wlpUserDir, serverName, timestamp, sequenceNum, isFirstField);
-
-        isFirstField = isFirstField & !addToJSON(sb, "ibm_sequence", sequenceNum, false, false, false, isFirstField);
-        return isFirstField;
-    }
-
-    protected static boolean middleGCJson1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName, long timestamp, String sequenceNum,
-                                             boolean isFirstField) {
-
-        if (middle_gc_json_1_1 != null) {
-            if (!middle_gc_json_1_1.isEmpty()) {
-                if (!isFirstField) {
-                    sb.append(",");
-                }
-                sb.append(middle_gc_json_1_1);
-                isFirstField = false;
-            }
         } else {
-            StringBuilder temp = new StringBuilder(512);
+            sb.append("{");
+            sb.append(gc_event_type_field_json);
+            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
 
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", CollectorConstants.GC_EVENT_TYPE, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_userDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "ibm_serverName", serverName, false, false, false, isFirstField);
-
-            middle_gc_json_1_1 = temp.toString();
-            sb.append(middle_gc_json_1_1);
+            start_gc_json_1_1 = sb.toString();
         }
 
-        return isFirstField;
-    }
-
-    protected static boolean startGCJson(StringBuilder sb, String hostName, String wlpUserDir, String serverName, long timestamp, String sequenceNum,
-                                         boolean isFirstField) {
-        String datetime = dateFormatTL.get().format(timestamp);
-
-        /* Common fields for all event types */
-
-        isFirstField = isFirstField & !addToJSON(sb, "datetime", datetime, false, false, false, isFirstField);
-
-        middleGCJson(sb, hostName, wlpUserDir, serverName, timestamp, sequenceNum,
-                     isFirstField);
-
-        isFirstField = isFirstField & !addToJSON(sb, "sequence", sequenceNum, false, false, false, isFirstField);
-        return isFirstField;
-    }
-
-    protected static boolean middleGCJson(StringBuilder sb, String hostName, String wlpUserDir, String serverName, long timestamp, String sequenceNum,
-                                          boolean isFirstField) {
-
-        if (middle_gc_json != null) {
-            if (!middle_gc_json.isEmpty()) {
-                if (!isFirstField) {
-                    sb.append(",");
-                }
-                sb.append(middle_gc_json);
-                isFirstField = false;
-            }
-        } else {
-            StringBuilder temp = new StringBuilder(512);
-
-            /* Common fields for all event types */
-
-            isFirstField = isFirstField & !addToJSON(temp, "type", CollectorConstants.GC_EVENT_TYPE, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "host", hostName, false, false, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, isFirstField);
-            isFirstField = isFirstField & !addToJSON(temp, "serverName", serverName, false, false, false, isFirstField);
-
-            middle_gc_json = temp.toString();
-            sb.append(middle_gc_json);
-        }
-
-        return isFirstField;
+        return sb;
     }
 
     protected static String formatMessage(String message, int maxLength) {
@@ -489,7 +357,7 @@ public class CollectorJsonHelpers {
     }
 
     protected static String jsonifyTags(String[] tags) {
-        StringBuilder sb = new StringBuilder(512);
+        StringBuilder sb = new StringBuilder(64);
 
         sb.append("[");
         for (int i = 0; i < tags.length; i++) {
