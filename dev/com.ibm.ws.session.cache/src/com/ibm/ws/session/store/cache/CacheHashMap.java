@@ -494,8 +494,8 @@ public class CacheHashMap extends BackedHashMap {
                             throw new RuntimeException(x);
                         }
                     oldValue = sessionInfoCache.get(id);
-                    if (oldValue == null)
-                        throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?
+                    if (oldValue == null) 
+                        {break;} // TODO implement code path where cache entry for session is expired. Delete the property entries?
                     SessionInfo sessionInfo = new SessionInfo(oldValue).clone();
                     if (propsToWrite != null)
                         sessionInfo.addSessionPropertyIds(propsToWrite);

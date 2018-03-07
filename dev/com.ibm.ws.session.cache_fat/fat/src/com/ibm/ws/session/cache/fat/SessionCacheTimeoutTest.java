@@ -64,6 +64,17 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         appOnelistener.sessionGet("testInvalidationTimeout-foo", null, session);
     }
 
+    /**
+     * Test that a session can still be used if it was valid when a servlet call began, even after timeout.
+     * This mimics SessionDB behavior.
+     */
+    @Test
+    public void testServletTimeout() throws Exception {
+        List<String> session = new ArrayList<>();
+        appOnelistener.sessionPut("testInvalidationTimeout-foo2", "bar", session, true);
+        appOnelistener.sessionGetTimeout("testInvalidationTimeout-foo2", "bar", session);
+    }
+
     @Test
     public void testRefreshInvalidation() throws Exception {
         int refreshes = TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL ? 15 : 3;

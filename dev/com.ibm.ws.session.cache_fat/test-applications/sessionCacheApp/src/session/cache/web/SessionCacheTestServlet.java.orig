@@ -35,10 +35,9 @@ import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionListener;
 import javax.sql.DataSource;
-
-import com.ibm.websphere.simplicity.config.HttpSession;
 
 import componenttest.app.FATServlet;
 
@@ -325,12 +324,12 @@ public class SessionCacheTestServlet extends FATServlet {
             assertEquals(expectedValue, actualValue);
     }
 
+<<<<<<< HEAD
     public void sessionRemoveAttribute(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         String key = request.getParameter("key");
         HttpSession session = request.getSession(false);
         session.removeAttribute(key);
-    }
-
+=======
     public void sessionGetTimeout(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         String key = request.getParameter("key");
         String rawExpectedValue = request.getParameter("expectedValue");
@@ -340,6 +339,7 @@ public class SessionCacheTestServlet extends FATServlet {
         HttpSession session = request.getSession(false);
         Thread.sleep(45 * 1000);
         Object actualValue = session.getAttribute(key);
+>>>>>>> Issue 2165: Removing invalid use of MemorySessions
     }
 
     /**
