@@ -335,6 +335,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                     ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
                 }
             }
+            //TODO: call Aruna code to add a custom cache key in the jwtSSOToken
         }
 
         return true;

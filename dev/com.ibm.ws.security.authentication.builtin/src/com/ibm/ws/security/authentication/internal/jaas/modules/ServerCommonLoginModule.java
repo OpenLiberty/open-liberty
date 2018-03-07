@@ -319,7 +319,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
     }
 
     private void addJaspicPrincipal(Subject subject, Hashtable<String, ?> customProperties) throws Exception {
-        Principal jaspiPrincipal = (Principal) customProperties.get("com.ibm.wsspi.security.cred.jaspi.principal");
+        Principal jaspiPrincipal = (Principal) customProperties.get(AuthenticationConstants.JASPI_PRINCIPAL);
         if (jaspiPrincipal != null) {
             WSCredential wsCredential = null;
             Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
@@ -327,7 +327,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
             if (wsCredentialsIterator.hasNext()) {
                 wsCredential = wsCredentialsIterator.next();
                 if (wsCredential != null) // paranoid safety check (it's gm time)
-                    wsCredential.set("com.ibm.wsspi.security.cred.jaspi.principal", jaspiPrincipal);
+                    wsCredential.set(AuthenticationConstants.JASPI_PRINCIPAL, jaspiPrincipal);
             }
             subject.getPrincipals().add(jaspiPrincipal);
         }
