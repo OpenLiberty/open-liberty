@@ -37,6 +37,7 @@ import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
+import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtService;
 import com.ibm.ws.security.mp.jwt.SslRefInfo;
@@ -79,9 +80,6 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String KEY_AUDIENCE = "audiences";
     String[] audience = null;
 
-    //    public static final String KEY_SIGNATURE_ALGORITHM = "signatureAlgorithm";
-    String signatureAlgorithm = "RS256";
-
     public static final String CFG_KEY_HOST_NAME_VERIFICATION_ENABLED = "hostNameVerificationEnabled";
     protected boolean hostNameVerificationEnabled = false;
 
@@ -105,6 +103,12 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
     public static final String CFG_KEY_mapToUserRegistry = "mapToUserRegistry";
     protected boolean mapToUserRegistry = false;
+
+    public static final String CFG_KEY_SIGALG = "signatureAlgorithm";
+
+    String signatureAlgorithm = "RS256";
+    @com.ibm.websphere.ras.annotation.Sensitive
+    private String sharedKey;
 
     protected CommonConfigUtils configUtils = new CommonConfigUtils();
 
@@ -167,6 +171,8 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         this.mapToUserRegistry = configUtils.getBooleanConfigAttribute(props, CFG_KEY_mapToUserRegistry, mapToUserRegistry);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
         consumerUtils = null; // the parameters in consumerUtils may have been changed during dynamic changing
+        this.signatureAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_SIGALG);
+        sharedKey = JwtUtils.processProtectedString(props, JwtUtils.CFG_KEY_SHARED_KEY);
 
         debug();
         if (tc.isDebugEnabled()) {
@@ -187,6 +193,8 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
             Tr.debug(tc, "mapToUserRegistry:" + mapToUserRegistry);
             //Tr.debug(tc, "authFilterRef = " + authFilterRef);
             Tr.debug(tc, "sslRef = " + sslRef);
+            Tr.debug(tc, "sigAlg = " + signatureAlgorithm);
+            Tr.debug(tc, "sharedKey" + sharedKey == null ? "null" : "*********");
         }
     }
 
@@ -211,7 +219,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     /** {@inheritDoc} */
     @Override
     public String getSharedKey() {
-        return null;
+        return sharedKey;
     }
 
     /** {@inheritDoc} */
