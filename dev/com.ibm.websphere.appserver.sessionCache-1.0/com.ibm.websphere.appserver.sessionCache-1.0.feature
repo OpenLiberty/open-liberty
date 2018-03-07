@@ -16,5 +16,5 @@ Subsystem-Name: JCache Session Persistence
   com.ibm.ws.session, \
   com.ibm.ws.session.cache, \
   com.ibm.ws.session.store
-kind=noship
-edition=full
+kind=beta
+edition=core
