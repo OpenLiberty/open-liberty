@@ -46,9 +46,4 @@ public class SessionCacheApp {
         invokeServlet("sessionGet&key=" + key + "&expectedValue=" + expectedValue + "&type=" + type, session);
     }
 
-    public <T> void sessionGetTimeout(String key, T expectedValue, List<String> session) throws Exception {
-        String type = expectedValue == null ? String.class.getName() : expectedValue.getClass().getName();
-        invokeServlet("sessionGetTimeout&key=" + key + "&expectedValue=" + expectedValue + "&type=" + type, session);
-    }
-
 }
