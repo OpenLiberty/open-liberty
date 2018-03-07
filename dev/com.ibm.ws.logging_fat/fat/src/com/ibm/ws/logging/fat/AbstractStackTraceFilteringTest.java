@@ -46,7 +46,7 @@ public class AbstractStackTraceFilteringTest {
             HttpURLConnection con = HttpUtils.getHttpConnection(url, expectedResponseCode, CONN_TIMEOUT);
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String line = br.readLine();
-            // Make sure the server gave us something back 
+            // Make sure the server gave us something back
             assertNotNull(line);
             con.disconnect();
         } catch (IOException e) {
@@ -75,6 +75,11 @@ public class AbstractStackTraceFilteringTest {
     protected void assertConsoleLogCountEquals(String message, String stringToCheckFor, int count) throws Exception {
         assertEquals(message, count,
                      server.findStringsInFileInLibertyServerRoot(stringToCheckFor, CONSOLE_LOG).size());
+
+    }
+
+    protected void assertConsoleLogCountGreaterThan(String message, String stringToCheckFor, int count) throws Exception {
+        assertTrue(message, server.findStringsInFileInLibertyServerRoot(stringToCheckFor, CONSOLE_LOG).size() > count);
 
     }
 

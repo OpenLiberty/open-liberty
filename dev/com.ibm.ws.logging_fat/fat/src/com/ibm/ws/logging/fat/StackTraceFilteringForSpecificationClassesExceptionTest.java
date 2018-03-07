@@ -48,7 +48,7 @@ public class StackTraceFilteringForSpecificationClassesExceptionTest extends Abs
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer(MAIN_EXCEPTION);
+            server.stopServer(MAIN_EXCEPTION, "SRVE0777E");
         }
     }
 
@@ -68,8 +68,8 @@ public class StackTraceFilteringForSpecificationClassesExceptionTest extends Abs
         assertConsoleLogCountEquals("The console stack should only have one [internal classes] in it per stack trace.",
                                     INTERNAL_CLASSES_REGEXP, errorCount);
         // The javax.servlet methods shouldn't be stripped out, because they're spec used by the app
-        final int servletFrames = 9;
-        assertConsoleLogCountEquals("The console log should have several frames from the specification javax.servlet classes", "javax.servlet", servletFrames);
+        final int servletFrames = 5;
+        assertConsoleLogCountGreaterThan("The console log should have several frames from the specification javax.servlet classes", "javax.servlet", servletFrames);
 
         assertConsoleLogContains("The console log should have the user class in it", "SpecUsingServlet");
 

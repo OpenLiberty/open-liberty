@@ -42,7 +42,7 @@ public class StackTraceFilteringForUserFeatureExceptionTest extends AbstractStac
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(MAIN_EXCEPTION);
 
         server.uninstallUserBundle(BUNDLE_NAME);
         server.uninstallUserFeature(FEATURE_NAME);
