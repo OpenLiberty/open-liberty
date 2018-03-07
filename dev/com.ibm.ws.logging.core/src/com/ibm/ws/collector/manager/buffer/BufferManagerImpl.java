@@ -29,6 +29,7 @@ public class BufferManagerImpl extends BufferManager {
     private Buffer<Object> ringBuffer;
     private final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     private Set<SynchronousHandler> synchronousHandlerSet = new HashSet<SynchronousHandler>();
+
     private final int capacity;
 
     private final String sourceId;
@@ -62,7 +63,7 @@ public class BufferManagerImpl extends BufferManager {
           earlyMessageQueue = null; //don't need earlyMessageQueue
           ringBuffer = new Buffer<Object>(capacity);
         }
-      }
+    }
 
     @Override
     public void add(Object event) {
@@ -71,23 +72,6 @@ public class BufferManagerImpl extends BufferManager {
 
         RERWLOCK.readLock().lock();
         try {
-
-            /*
-             * Check if we have any synchronous handlers, and write directly to
-             * them
-             */
-            if (!synchronousHandlerSet.isEmpty()) {
-                /*
-                 * There can be many Reader locks, but only one writer lock. This
-                 * ReaderWriter lock is needed to avoid CMException when the add()
-                 * method is forwarding log events to synchronous handlers and an
-                 * addSyncHandler or removeSyncHandler is called
-                 */
-                for (SynchronousHandler synchronousHandler : synchronousHandlerSet) {
-                    synchronousHandler.synchronousWrite(event);
-                }
-
-            }
             
             if(ringBuffer !=  null){
                 ringBuffer.add(event);
@@ -101,6 +85,9 @@ public class BufferManagerImpl extends BufferManager {
 
         } finally {
             RERWLOCK.readLock().unlock();
+            for (SynchronousHandler synchronousHandler : synchronousHandlerSet) {
+            		synchronousHandler.synchronousWrite(event);
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -188,7 +175,9 @@ public class BufferManagerImpl extends BufferManager {
                     syncHandler.synchronousWrite(message);
                 }
             }
-            synchronousHandlerSet.add(syncHandler);
+            Set<SynchronousHandler> synchronousHandlerSetCopy=new HashSet<SynchronousHandler>(synchronousHandlerSet);
+            synchronousHandlerSetCopy.add(syncHandler);
+            synchronousHandlerSet=synchronousHandlerSetCopy;
         } finally {
             RERWLOCK.writeLock().unlock();
         }
@@ -203,7 +192,9 @@ public class BufferManagerImpl extends BufferManager {
          */
         RERWLOCK.writeLock().lock();
         try {
-            synchronousHandlerSet.remove(syncHandler);
+            Set<SynchronousHandler> synchronousHandlerSetCopy=new HashSet<SynchronousHandler>(synchronousHandlerSet);
+            synchronousHandlerSetCopy.remove(syncHandler);
+            synchronousHandlerSet=synchronousHandlerSetCopy;
         } finally {
             RERWLOCK.writeLock().unlock();
         }

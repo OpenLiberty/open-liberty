@@ -137,7 +137,8 @@ public class AppValidator {
                 RemoteFile logFile = server.getDefaultLogFile();
                 server.setMarkToEndOfLog(logFile);
 
-                ShrinkHelper.exportToServer(server, "dropins", app);
+                ShrinkHelper.exportArtifact(app, "tmp/apps");
+                server.copyFileToLibertyServerRoot("tmp/apps", "dropins", archiveName);
 
                 for (String stringToFind : stringsToFind) {
                     String logLine = server.waitForStringInLogUsingMark(stringToFind + "|" + APP_START_CODE + "|" + APP_FAIL_CODE);

@@ -17,6 +17,7 @@ import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,6 +53,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import web.war.annotatedbasic.deferred.LdapSettingsBean;
+import web.war.database.deferred.DatabaseSettingsBean;
 
 /**
  * Test for {@link LdapIdentityStore} configured with deferred EL expressions.
@@ -1306,5 +1308,44 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         FileOutputStream fout = new FileOutputStream(server.getServerRoot() + "/LdapSettingsBean.props");
         props.store(fout, "");
         fout.close();
+
+        if (!overrides.isEmpty()) {
+            for (int i = 0; i < 3; i++) { // if the build machines are struggling, we can have timing issues reading in updated values.
+                Properties checkProps = new Properties();
+                checkProps.load(new FileReader(server.getServerRoot() + "/LdapSettingsBean.props"));
+
+                boolean allprops = true;
+                for (String prop : overrides.keySet()) {
+                    String fileProp = (String) checkProps.get(prop);
+                    if (fileProp == null) {
+                        Log.info(DatabaseSettingsBean.class, "updateLdapSettingsBean", "could not find " + prop + " in LdapSettingsBean.props");
+                        allprops = false;
+                        break;
+                    } else if (!fileProp.equals(overrides.get(prop))) {
+                        Log.info(DatabaseSettingsBean.class, "updateLdapSettingsBean", "did not change " + prop + " to " + overrides.get(prop) + " yet.");
+                        allprops = false;
+                        break;
+                    } else {
+                        Log.info(DatabaseSettingsBean.class, "updateLdapSettingsBean", prop + " set to " + fileProp);
+                    }
+                }
+
+                if (allprops) {
+                    Log.info(DatabaseSettingsBean.class, "updateLdapSettingsBean", "LdapSettingsBean.props are good.");
+                    break;
+                }
+
+                if (i == 3) {
+                    throw new IllegalStateException("Failed to update LdapSettingsBean.props for EL testing");
+                }
+
+                Log.info(DatabaseSettingsBean.class, "updateLdapSettingsBean", "sleep and check LdapSettingsBean.props again.");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+
+                }
+            }
+        }
     }
 }

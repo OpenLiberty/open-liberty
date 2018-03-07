@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests;
 
+import java.io.File;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -20,7 +22,6 @@ import org.junit.Test;
 
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.classloading.DummyServlet;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.classloading.TestServlet;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.FATSuite;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
@@ -32,12 +33,13 @@ import componenttest.rules.repeater.RepeatTests;
 public class TestMultiModuleClassLoading extends LoggingTest {
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = FATSuite.MULTI_MODULE_SERVER;
+    public static SharedServer SHARED_SERVER = new SharedServer("FaultToleranceMultiModule");
 
     //run against both EE8 and EE7 features
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE7_FEATURES());
+    public static RepeatTests r = RepeatTests
+                    .with(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()))
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SHARED_SERVER.getServerName()));
 
     @BeforeClass
     public static void setupApp() throws Exception {
@@ -56,12 +58,15 @@ public class TestMultiModuleClassLoading extends LoggingTest {
 
         ShrinkHelper.exportToServer(SHARED_SERVER.getLibertyServer(), "dropins", ear);
         SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("MultiModuleClassLoading");
+        SHARED_SERVER.startIfNotStarted();
     }
 
     @AfterClass
     public static void removeApp() throws Exception {
         SHARED_SERVER.getLibertyServer().deleteFileFromLibertyServerRoot("dropins/MultiModuleClassLoading.ear");
+        new File("publish/servers/" + SHARED_SERVER.getServerName() + "/dropins/MultiModuleClassLoading.ear").delete();
         SHARED_SERVER.getLibertyServer().removeInstalledAppForValidation("MultiModuleClassLoading");
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     @Override

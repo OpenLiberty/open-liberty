@@ -246,7 +246,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         @Override
         public void preShutdown() {
             for (LibertyApplicationBusListener listener : listeners) {
-                listener.postShutdown(bus);
+                listener.preShutdown(bus);
             }
         }
     }
