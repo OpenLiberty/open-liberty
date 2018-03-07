@@ -14,11 +14,14 @@ import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  *
  */
 public class InstantConverter extends BuiltInConverter {
 
+    @Trivial
     public InstantConverter() {
         super(Instant.class);
     }

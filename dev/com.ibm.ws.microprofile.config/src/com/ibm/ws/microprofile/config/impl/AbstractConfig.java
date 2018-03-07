@@ -40,6 +40,7 @@ public abstract class AbstractConfig implements WebSphereConfig {
      * @param converters
      * @param executor
      */
+    @Trivial
     public AbstractConfig(ConversionManager conversionManager, SortedSources sources) {
         this.sources = sources;
         this.conversionManager = conversionManager;
@@ -99,20 +100,18 @@ public abstract class AbstractConfig implements WebSphereConfig {
     @Override
     @Trivial
     public String toString() {
-        boolean dumpEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
-
-        assertNotClosed();
-
         StringBuilder sb = new StringBuilder();
-        sb.append("Config ");
+        sb.append("Config[");
         sb.append(hashCode());
-        if (dumpEnabled) {
-            sb.append(dump());
+        sb.append("](");
+
+        if (this.closed) {
+            sb.append("CLOSED");
         } else {
-            sb.append("(");
             sb.append(sources.size());
-            sb.append(" sources)");
+            sb.append(" sources");
         }
+        sb.append(")");
         return sb.toString();
     }
 

@@ -77,7 +77,6 @@
 	com.ibm.ws.crypto.certificateutil,\
 	com.ibm.ws.crypto.ltpakeyutil,\
 	com.ibm.ws.jmx.scripting.client,\
-	com.ibm.ws.kernel.boot.archive,\
 	com.ibm.ws.kernel.boot.ws-launch,\
 	com.ibm.ws.kernel.cmdline,\
 	com.ibm.ws.kernel.feature.featurelist,\
@@ -87,7 +86,7 @@
 	com.ibm.ws.logging.hpel.osgi,\
 	com.ibm.ws.logging.hpel,\
 	com.ibm.ws.logging.osgi,\
-	com.ibm.ws.org.apache.commons.io.1.4,\
+	com.ibm.ws.org.apache.commons.io,\
 	com.ibm.ws.org.apache.felix.gogo.command,\
 	com.ibm.ws.org.apache.felix.gogo.runtime,\
 	com.ibm.ws.org.apache.felix.gogo.shell,\

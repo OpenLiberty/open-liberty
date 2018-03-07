@@ -23,10 +23,11 @@ import org.junit.rules.TestName;
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11EE8;
+import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig12EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -37,11 +38,12 @@ public class ConvertersTest extends AbstractConfigApiTest {
     private final static String testClassName = "ConvertersTest";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("ConvertersServer");
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("ConvertersServer");
+    public static RepeatTests r = RepeatTests
+                    .with(RepeatConfig11EE8.INSTANCE.forServers(SHARED_SERVER.getServerName()))
+                    .andWith(RepeatConfig12EE8.INSTANCE.forServers(SHARED_SERVER.getServerName()));
 
     @BuildShrinkWrap
     public static Archive buildApp() {

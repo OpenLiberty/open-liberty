@@ -10,11 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.impl.core.util;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.openapi.annotations.extensions.Extension;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * The <code>BaseReaderUtils</code> class is utility class which helps read annotations to the OpenApi.
@@ -31,33 +34,19 @@ public final class BaseReaderUtils {
      * @param extensions is an array of extensions
      * @return the map with extensions
      */
+    @FFDCIgnore(IOException.class)
     public static Map<String, Object> parseExtensions(Extension[] extensions) {
         final Map<String, Object> map = new HashMap<String, Object>();
         for (Extension extension : extensions) {
             final String name = extension.name();
             final String key = name.length() > 0 ? StringUtils.prependIfMissing(name, "x-") : name;
-
-            /*
-             * for (ExtensionProperty property : extension.properties()) {
-             * final String propertyName = property.name();
-             * final String propertyValue = property.value();
-             * if (StringUtils.isNotBlank(propertyName) && StringUtils.isNotBlank(propertyValue)) {
-             * if (key.isEmpty()) {
-             * map.put(StringUtils.prependIfMissing(propertyName, "x-"), propertyValue);
-             * } else {
-             * Object value = map.get(key);
-             * if (value == null || !(value instanceof Map)) {
-             * value = new HashMap<String, Object>();
-             * map.put(key, value);
-             * }
-             *
-             * @SuppressWarnings("unchecked")
-             * final Map<String, Object> mapValue = (Map<String, Object>) value;
-             * mapValue.put(propertyName, propertyValue);
-             * }
-             * }
-             * }
-             */
+            Object value = null;
+            try {
+                value = Json.mapper().readTree(extension.value());
+            } catch (IOException e) {
+                value = extension.value();
+            }           
+            map.put(key, value);
         }
 
         return map;

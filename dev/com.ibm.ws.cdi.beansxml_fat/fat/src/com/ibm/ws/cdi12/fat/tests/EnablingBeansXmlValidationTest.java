@@ -62,7 +62,6 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
         LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12BeansXmlValidationServer");
         ShrinkHelper.exportDropinAppToServer(server, invalidBeansXml);
         hasSetUp = true;
-        server.waitForStringInLogUsingMark("CWWKZ0001I");
     }        
 
     @Test

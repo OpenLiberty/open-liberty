@@ -55,7 +55,7 @@ public class ServerValidator extends TypeValidator<Server> {
     /**
      * Ensures that all the serverVariables are defined
      *
-     * @param helper the helper to send valitation messages
+     * @param helper the helper to send validation messages
      * @param variables the set of variables to validate
      */
     private void validateServerVariables(ValidationHelper helper, Context context, Set<String> variables, Server t) {

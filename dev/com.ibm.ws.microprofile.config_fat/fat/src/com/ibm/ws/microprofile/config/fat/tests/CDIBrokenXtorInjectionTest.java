@@ -16,19 +16,19 @@ import java.util.List;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.BuildShrinkWrap;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
-/**
- *
- */
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+
+@Mode(TestMode.FULL)
 public class CDIBrokenXtorInjectionTest extends LoggingTest {
 
     @ClassRule
@@ -46,7 +46,8 @@ public class CDIBrokenXtorInjectionTest extends LoggingTest {
 
     @Test
     public void testConstructorUnnamed() throws Exception {
-        List<String> errors = getSharedServer().getLibertyServer().findStringsInLogs("ConfigUnnamedConstructorInjectionBean.*The property name must be specified for Constructor and Method configuration property injection");
+        List<String> errors = getSharedServer().getLibertyServer()
+                        .findStringsInLogs("ConfigUnnamedConstructorInjectionBean.*The property name must be specified for Constructor and Method configuration property injection");
         assertTrue(errors.size() > 0);
     }
 

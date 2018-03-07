@@ -1204,7 +1204,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     @SuppressWarnings("unchecked")
     private void setPropertyValue(Entity entity, Attribute attr, String propName, LdapAttribute ldapAttr) throws WIMException {
         String dataType = entity.getDataType(propName);
-        boolean isMany = entity.get(propName) instanceof List<?>;
+        boolean isMany = entity.isMultiValuedProperty(propName);
 
         String syntax = LDAP_ATTR_SYNTAX_STRING;
 
@@ -1216,178 +1216,27 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         }
 
         try {
-            if (DATA_TYPE_STRING.equals(dataType)) {
-                boolean octet = LDAP_ATTR_SYNTAX_OCTETSTRING.equalsIgnoreCase(syntax);
-                if (isMany) {
-                    for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
-                        Object ldapValue = enu.nextElement();
-                        if (ldapValue != null) {
-                            ((List) entity.get(propName)).add(getString(octet, ldapValue));
-                        }
-                    }
-                } else {
-                    Object ldapValue = attr.get();
+
+            if (isMany) {
+                for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
+                    Object ldapValue = enu.nextElement();
                     if (ldapValue != null) {
-                        entity.set(propName, getString(octet, ldapValue));
-                    }
-                }
-            } else if (DATA_TYPE_DATE_TIME.equals(dataType)) {
-                if (isMany) {
-                    for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
-                        Object ldapValue = enu.nextElement();
-                        if (ldapValue != null) {
-                            ((List) entity.get(propName)).add(getDateString(ldapValue));
-                        }
-                    }
-                } else {
-                    Object ldapValue = attr.get();
-                    if (ldapValue != null) {
-                        entity.set(propName, getDateString(ldapValue));
-                    }
-                }
-            } else if (DATA_TYPE_DATE_OBJECT.equals(dataType)) {
-                if (isMany) {
-                    for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
-                        Object ldapValue = enu.nextElement();
-                        if (ldapValue != null) {
-                            ((List) entity.get(propName)).add(getDateObject(ldapValue));
-                        }
-                    }
-                } else {
-                    Object ldapValue = attr.get();
-                    if (ldapValue != null) {
-                        entity.set(propName, getDateObject(ldapValue));
-                    }
-                }
-            } else if (DATA_TYPE_INT.equals(dataType)) {
-                if (isMany) {
-                    for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
-                        Object ldapValue = enu.nextElement();
-                        if (ldapValue != null) {
-                            ((List) entity.get(propName)).add(Integer.parseInt(ldapValue.toString()));
-                        }
-                    }
-                } else {
-                    Object ldapValue = attr.get();
-                    if (ldapValue != null) {
-                        entity.set(propName, Integer.parseInt(ldapValue.toString()));
-                    }
-                }
-            } else if (DATA_TYPE_IDENTIFIER_TYPE.equals(dataType)) {
-                try {
-                    if (isMany) {
-                        for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
-                            String ldapValue = (String) enu.nextElement();
-                            if (ldapValue != null) {
-                                LdapEntry ldapEntry = iLdapConn.getEntityByIdentifier(ldapValue, null, null, null, null, false, false);
-                                ((List) entity.get(propName)).add(createIdentiferFromLdapEntry(ldapEntry));
-                            }
-                        }
-                    } else {
-                        String ldapValue = (String) attr.get();
-                        if (ldapValue != null) {
-                            LdapEntry ldapEntry = iLdapConn.getEntityByIdentifier(ldapValue, null, null, null, null, false, false);
-                            entity.set(propName, createIdentiferFromLdapEntry(ldapEntry));
-                        }
-                    }
-                } catch (WIMException we) {
-                    if (WIMMessageKey.LDAP_ENTRY_NOT_FOUND.equalsIgnoreCase(we.getMessageKey())) {
-                        throw new WIMSystemException(WIMMessageKey.INVALID_PROPERTY_VALUE, Tr.formatMessage(
-                                                                                                            tc,
-                                                                                                            WIMMessageKey.INVALID_PROPERTY_VALUE,
-                                                                                                            WIMMessageHelper.generateMsgParms(propName,
-                                                                                                                                              entity.getIdentifier().getExternalName())));
-                    } else {
-                        throw we;
-                    }
-                }
-            } else if (DATA_TYPE_BASE_64_BINARY.equals(dataType)) {
-                if (isMany) {
-                    for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
-                        Object ldapValue = enu.nextElement();
-                        if (ldapValue != null) {
-                            ((List) entity.get(propName)).add(ldapValue);
-                        }
-                    }
-                } else {
-                    Object ldapValue = attr.get();
-                    if (ldapValue != null) {
-                        entity.set(propName, ldapValue);
-                    }
-                }
-            } else if (DATA_TYPE_LANG_TYPE.equals(dataType)) {
-                if (isMany) {
-                    for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
-                        Object ldapValue = enu.nextElement();
-                        if (ldapValue != null) {
-                            LangType lang = new LangType();
-                            lang.setValue(String.valueOf(ldapValue));
-                            ((List) entity.get(propName)).add(lang);
-                        }
-                    }
-                } else {
-                    Object ldapValue = attr.get();
-                    if (ldapValue != null) {
-                        LangType lang = new LangType();
-                        lang.setValue(String.valueOf(ldapValue));
-                        entity.set(propName, lang);
-                    }
-                }
-            } else if (DATA_TYPE_BOOLEAN.equals(dataType)) {
-                if (isMany) {
-                    for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
-                        Object ldapValue = enu.nextElement();
-                        if (ldapValue != null) {
-                            ((List) entity.get(propName)).add(Boolean.parseBoolean(ldapValue.toString()));
-                        }
-                    }
-                } else {
-                    Object ldapValue = attr.get();
-                    if (ldapValue != null) {
-                        entity.set(propName, Boolean.parseBoolean(ldapValue.toString()));
-                    }
-                }
-            } else if (DATA_TYPE_LONG.equals(dataType)) { //PI05723
-                if (isMany) {
-                    for (NamingEnumeration enu = attr.getAll(); enu.hasMoreElements();) {
-                        Object ldapValue = enu.nextElement();
-                        if (ldapValue != null) {
-                            ((List) entity.get(propName)).add(new Long(ldapValue.toString()));
-                        }
-                    }
-                } else {
-                    Object ldapValue = attr.get();
-                    if (ldapValue != null) {
-                        entity.set(propName, Long.parseLong(ldapValue.toString()));
+                        entity.set(propName, processPropertyValue(entity, propName, dataType, syntax, ldapValue));
                     }
                 }
             } else {
-                if (tc.isEventEnabled()) {
-                    Tr.event(tc, "Datatype for " + propName + " was null, process without casting");
-                }
-
-                if (isMany) {
-                    for (NamingEnumeration<?> enu = attr.getAll(); enu.hasMoreElements();) {
-                        Object ldapValue = enu.nextElement();
-                        if (ldapValue != null) {
-                            ((List) entity.get(propName)).add(ldapValue);
-                        }
-                    }
-                } else {
-                    Object ldapValue = attr.get();
-                    if (ldapValue != null) {
-                        entity.set(propName, ldapValue);
-                    }
+                Object ldapValue = attr.get();
+                if (ldapValue != null) {
+                    entity.set(propName, processPropertyValue(entity, propName, dataType, syntax, ldapValue));
                 }
             }
+
         } catch (NamingException e) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Unexpected on " + propName + " with dataType " + dataType, e);
             }
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                          tc,
-                                                                                          WIMMessageKey.NAMING_EXCEPTION,
-                                                                                          WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         } catch (ClassCastException ce) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Failed to cast property " + propName + " to " + dataType, ce);
@@ -1400,6 +1249,59 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             }
             if (tc.isErrorEnabled())
                 Tr.error(tc, WIMMessageKey.INVALID_PROPERTY_DATA_TYPE, WIMMessageHelper.generateMsgParms(propName));
+        }
+
+    }
+
+    /**
+     * Process the value of a property.
+     *
+     * @param entity The entity to process the value for.
+     * @param propName The property name to process.
+     * @param dataType The data type of the property.
+     * @param syntax The syntax for the property.
+     * @param ldapValue The value from the LDAP server.
+     * @return The processed value.
+     * @throws WIMException If there was an issue processing the property's value.
+     */
+    private Object processPropertyValue(Entity entity, String propName, final String dataType, final String syntax, Object ldapValue) throws WIMException {
+        if (DATA_TYPE_STRING.equals(dataType)) {
+            boolean octet = LDAP_ATTR_SYNTAX_OCTETSTRING.equalsIgnoreCase(syntax);
+            return getString(octet, ldapValue);
+        } else if (DATA_TYPE_DATE_TIME.equals(dataType)) {
+            return getDateString(ldapValue);
+        } else if (DATA_TYPE_DATE_OBJECT.equals(dataType)) {
+            return getDateObject(ldapValue);
+        } else if (DATA_TYPE_INT.equals(dataType)) {
+            return Integer.parseInt(ldapValue.toString());
+        } else if (DATA_TYPE_IDENTIFIER_TYPE.equals(dataType)) {
+            try {
+                String stringValue = (String) ldapValue;
+                LdapEntry ldapEntry = iLdapConn.getEntityByIdentifier(stringValue, null, null, null, null, false, false);
+                return createIdentiferFromLdapEntry(ldapEntry);
+            } catch (WIMException we) {
+                if (WIMMessageKey.LDAP_ENTRY_NOT_FOUND.equalsIgnoreCase(we.getMessageKey())) {
+                    String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_PROPERTY_VALUE, WIMMessageHelper.generateMsgParms(propName, entity.getIdentifier().getExternalName()));
+                    throw new WIMSystemException(WIMMessageKey.INVALID_PROPERTY_VALUE, msg);
+                } else {
+                    throw we;
+                }
+            }
+        } else if (DATA_TYPE_BASE_64_BINARY.equals(dataType)) {
+            return ldapValue;
+        } else if (DATA_TYPE_LANG_TYPE.equals(dataType)) {
+            LangType lang = new LangType();
+            lang.setValue(String.valueOf(ldapValue));
+            return lang;
+        } else if (DATA_TYPE_BOOLEAN.equals(dataType)) {
+            return Boolean.parseBoolean(ldapValue.toString());
+        } else if (DATA_TYPE_LONG.equals(dataType)) { //PI05723
+            return Long.parseLong(ldapValue.toString());
+        } else {
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "Datatype for " + propName + " was null, process without casting");
+            }
+            return ldapValue;
         }
     }
 

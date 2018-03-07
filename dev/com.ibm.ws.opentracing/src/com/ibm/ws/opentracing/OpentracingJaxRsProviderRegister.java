@@ -16,6 +16,10 @@ import java.util.Set;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -47,10 +51,20 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister {
 
     private OpentracingContainerFilter containerFilter;
     private OpentracingClientFilter clientFilter;
+    private OpentracingFilterHelper helper;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setOpentracingFilterHelper(OpentracingFilterHelper helper) {
+        this.helper = helper;
+    }
+
+    protected void unsetOpentracingFilterHelper(OpentracingFilterHelper helper) {
+        this.helper = null;
+    }
 
     @Trivial
     protected void setContainerFilter() {
-        containerFilter = new OpentracingContainerFilter();
+        containerFilter = new OpentracingContainerFilter(helper);
     }
 
     @Trivial
@@ -65,7 +79,7 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister {
 
     @Trivial
     protected void setClientFilter() {
-        clientFilter = new OpentracingClientFilter();
+        clientFilter = new OpentracingClientFilter(helper);
     }
 
     @Trivial
@@ -85,12 +99,12 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister {
     public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
         String methodName = "installProvider";
 
-        if ( clientSide ) {
+        if (clientSide) {
             OpentracingClientFilter useClientFilter = getClientFilter();
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName, "Client Filter", useClientFilter);
             }
-            if ( useClientFilter != null ) {
+            if (useClientFilter != null) {
                 providers.add(useClientFilter);
             } else {
                 // Ignore: The component is not active.
@@ -98,10 +112,10 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister {
 
         } else {
             OpentracingContainerFilter useContainerFilter = getContainerFilter();
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName, "Container Filter", useContainerFilter);
             }
-            if ( useContainerFilter != null ) {
+            if (useContainerFilter != null) {
                 providers.add(useContainerFilter);
             } else {
                 // Ignore: The component is not active.

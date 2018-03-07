@@ -10,16 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.tests;
 
-
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.File;
 
-import org.jboss.shrinkwrap.api.Archive;	
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.BeforeClass;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,8 +26,6 @@ import org.junit.rules.TestName;
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 /**
@@ -47,10 +43,10 @@ public class SharedLibTest extends AbstractConfigApiTest {
     }
 
     @BuildShrinkWrap
-    public static Map<Archive,String> buildApps() {
+    public static Map<Archive, String> buildApps() {
         String APP_NAME = "sharedLibUser";
 
-        //TODO differentiate the pacakage names for these two jars. 
+        //TODO differentiate the pacakage names for these two jars.
         JavaArchive sharedLib_jar = ShrinkWrap.create(JavaArchive.class, "sharedLib.jar")
                         .addClass("com.ibm.ws.microprofile.archaius.impl.fat.tests.PingableSharedLibClass")
                         .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.json"), "microprofile-config.json")
@@ -64,8 +60,8 @@ public class SharedLibTest extends AbstractConfigApiTest {
                         .addAsLibrary(sharedLibUser_jar)
                         .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml");
- 
-        Map<Archive,String> toReturn = new HashMap<Archive,String>();
+
+        Map<Archive, String> toReturn = new HashMap<Archive, String>();
         toReturn.put(sharedLib_jar, "publish/servers/SharedLibUserServer/shared");
         toReturn.put(sharedLibUser_war, "publish/servers/SharedLibUserServer/apps");
         return toReturn;

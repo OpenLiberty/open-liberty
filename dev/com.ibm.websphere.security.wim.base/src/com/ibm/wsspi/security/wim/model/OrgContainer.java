@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,9 +25,9 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for OrgContainer complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="OrgContainer">
  * &lt;complexContent>
@@ -54,34 +55,49 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The OrgContainer object represents either and Organization or OrganizationalUnit, and
  * extends the Party object.
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OrgContainer", propOrder = {
-                                             "o",
-                                             "ou",
-                                             "dc",
-                                             "cn",
-                                             "telephoneNumber",
-                                             "facsimileTelephoneNumber",
-                                             "postalAddress",
-                                             "l",
-                                             "localityName",
-                                             "st",
-                                             "stateOrProvinceName",
-                                             "street",
-                                             "postalCode",
-                                             "businessAddress",
-                                             "description",
-                                             "businessCategory",
-                                             "seeAlso"
+                                              "o",
+                                              "ou",
+                                              "dc",
+                                              "cn",
+                                              "telephoneNumber",
+                                              "facsimileTelephoneNumber",
+                                              "postalAddress",
+                                              "l",
+                                              "localityName",
+                                              "st",
+                                              "stateOrProvinceName",
+                                              "street",
+                                              "postalCode",
+                                              "businessAddress",
+                                              "description",
+                                              "businessCategory",
+                                              "seeAlso"
 })
-public class OrgContainer
-                extends Party
-{
+public class OrgContainer extends Party {
+    private static final String PROP_O = "o";
+    private static final String PROP_OU = "ou";
+    private static final String PROP_DC = "dc";
+    private static final String PROP_CN = "cn";
+    private static final String PROP_TELEPHONE_NUMBER = "telephoneNumber";
+    private static final String PROP_FACSIMILE_TELEPHONE_NUMBER = "facsimileTelephoneNumber";
+    private static final String PROP_POSTAL_ADDRESS = "postalAddress";
+    private static final String PROP_L = "l";
+    private static final String PROP_LOCALITY_NAME = "localityName";
+    private static final String PROP_ST = "st";
+    private static final String PROP_STATE_OR_PROVINCE_NAME = "stateOrProvinceName";
+    private static final String PROP_STREET = "street";
+    private static final String PROP_POSTAL_CODE = "postalCode";
+    private static final String PROP_BUSINESS_ADDRESS = "businessAddress";
+    private static final String PROP_DESCRIPTION = "description";
+    private static final String PROP_BUSINESS_CATEGORY = "businessCategory";
+    private static final String PROP_SEE_ALSO = "seeAlso";
 
     protected String o;
     protected String ou;
@@ -100,23 +116,41 @@ public class OrgContainer
     protected List<String> description;
     protected List<String> businessCategory;
     protected List<String> seeAlso;
+
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
     private static ArrayList superTypeList = null;
     private static HashSet subTypeList = null;
 
+    /** The set of multi-valued properties for this entity type. */
+    private static final Set<String> MULTI_VALUED_PROPERTIES;
+
     static {
         setDataTypeMap();
         setSuperTypes();
         setSubTypes();
+
+        MULTI_VALUED_PROPERTIES = new HashSet<String>();
+        MULTI_VALUED_PROPERTIES.add(PROP_TELEPHONE_NUMBER);
+        MULTI_VALUED_PROPERTIES.add(PROP_FACSIMILE_TELEPHONE_NUMBER);
+        MULTI_VALUED_PROPERTIES.add(PROP_POSTAL_ADDRESS);
+        MULTI_VALUED_PROPERTIES.add(PROP_L);
+        MULTI_VALUED_PROPERTIES.add(PROP_LOCALITY_NAME);
+        MULTI_VALUED_PROPERTIES.add(PROP_ST);
+        MULTI_VALUED_PROPERTIES.add(PROP_STATE_OR_PROVINCE_NAME);
+        MULTI_VALUED_PROPERTIES.add(PROP_STREET);
+        MULTI_VALUED_PROPERTIES.add(PROP_POSTAL_CODE);
+        MULTI_VALUED_PROPERTIES.add(PROP_DESCRIPTION);
+        MULTI_VALUED_PROPERTIES.add(PROP_BUSINESS_CATEGORY);
+        MULTI_VALUED_PROPERTIES.add(PROP_SEE_ALSO);
     }
 
     /**
      * Gets the value of the o property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getO() {
         return o;
@@ -124,10 +158,10 @@ public class OrgContainer
 
     /**
      * Sets the value of the o property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setO(String value) {
         this.o = value;
@@ -139,10 +173,10 @@ public class OrgContainer
 
     /**
      * Gets the value of the ou property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getOu() {
         return ou;
@@ -150,10 +184,10 @@ public class OrgContainer
 
     /**
      * Sets the value of the ou property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setOu(String value) {
         this.ou = value;
@@ -165,10 +199,10 @@ public class OrgContainer
 
     /**
      * Gets the value of the dc property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getDc() {
         return dc;
@@ -176,10 +210,10 @@ public class OrgContainer
 
     /**
      * Sets the value of the dc property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setDc(String value) {
         this.dc = value;
@@ -191,10 +225,10 @@ public class OrgContainer
 
     /**
      * Gets the value of the cn property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getCn() {
         return cn;
@@ -202,10 +236,10 @@ public class OrgContainer
 
     /**
      * Sets the value of the cn property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setCn(String value) {
         this.cn = value;
@@ -217,24 +251,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the telephoneNumber property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the telephoneNumber property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getTelephoneNumber().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getTelephoneNumber() {
         if (telephoneNumber == null) {
@@ -253,24 +288,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the facsimileTelephoneNumber property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the facsimileTelephoneNumber property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getFacsimileTelephoneNumber().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getFacsimileTelephoneNumber() {
         if (facsimileTelephoneNumber == null) {
@@ -289,24 +325,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the postalAddress property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the postalAddress property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getPostalAddress().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getPostalAddress() {
         if (postalAddress == null) {
@@ -325,24 +362,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the l property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the l property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getL().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getL() {
         if (l == null) {
@@ -361,24 +399,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the localityName property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the localityName property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getLocalityName().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getLocalityName() {
         if (localityName == null) {
@@ -397,24 +436,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the st property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the st property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getSt().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getSt() {
         if (st == null) {
@@ -433,24 +473,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the stateOrProvinceName property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the stateOrProvinceName property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getStateOrProvinceName().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getStateOrProvinceName() {
         if (stateOrProvinceName == null) {
@@ -469,24 +510,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the street property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the street property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getStreet().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getStreet() {
         if (street == null) {
@@ -505,24 +547,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the postalCode property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the postalCode property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getPostalCode().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getPostalCode() {
         if (postalCode == null) {
@@ -541,10 +584,10 @@ public class OrgContainer
 
     /**
      * Gets the value of the businessAddress property.
-     * 
+     *
      * @return
      *         possible object is {@link AddressType }
-     * 
+     *
      */
     public AddressType getBusinessAddress() {
         return businessAddress;
@@ -552,10 +595,10 @@ public class OrgContainer
 
     /**
      * Sets the value of the businessAddress property.
-     * 
+     *
      * @param value
      *            allowed object is {@link AddressType }
-     * 
+     *
      */
     public void setBusinessAddress(AddressType value) {
         this.businessAddress = value;
@@ -567,24 +610,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the description property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the description property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getDescription().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getDescription() {
         if (description == null) {
@@ -603,24 +647,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the businessCategory property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the businessCategory property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getBusinessCategory().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getBusinessCategory() {
         if (businessCategory == null) {
@@ -639,24 +684,25 @@ public class OrgContainer
 
     /**
      * Gets the value of the seeAlso property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the seeAlso property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getSeeAlso().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getSeeAlso() {
         if (seeAlso == null) {
@@ -675,55 +721,55 @@ public class OrgContainer
 
     @Override
     public Object get(String propName) {
-        if (propName.equals("o")) {
+        if (propName.equals(PROP_O)) {
             return getO();
         }
-        if (propName.equals("ou")) {
+        if (propName.equals(PROP_OU)) {
             return getOu();
         }
-        if (propName.equals("dc")) {
+        if (propName.equals(PROP_DC)) {
             return getDc();
         }
-        if (propName.equals("cn")) {
+        if (propName.equals(PROP_CN)) {
             return getCn();
         }
-        if (propName.equals("telephoneNumber")) {
+        if (propName.equals(PROP_TELEPHONE_NUMBER)) {
             return getTelephoneNumber();
         }
-        if (propName.equals("facsimileTelephoneNumber")) {
+        if (propName.equals(PROP_FACSIMILE_TELEPHONE_NUMBER)) {
             return getFacsimileTelephoneNumber();
         }
-        if (propName.equals("postalAddress")) {
+        if (propName.equals(PROP_POSTAL_ADDRESS)) {
             return getPostalAddress();
         }
-        if (propName.equals("l")) {
+        if (propName.equals(PROP_L)) {
             return getL();
         }
-        if (propName.equals("localityName")) {
+        if (propName.equals(PROP_LOCALITY_NAME)) {
             return getLocalityName();
         }
-        if (propName.equals("st")) {
+        if (propName.equals(PROP_ST)) {
             return getSt();
         }
-        if (propName.equals("stateOrProvinceName")) {
+        if (propName.equals(PROP_STATE_OR_PROVINCE_NAME)) {
             return getStateOrProvinceName();
         }
-        if (propName.equals("street")) {
+        if (propName.equals(PROP_STREET)) {
             return getStreet();
         }
-        if (propName.equals("postalCode")) {
+        if (propName.equals(PROP_POSTAL_CODE)) {
             return getPostalCode();
         }
-        if (propName.equals("businessAddress")) {
+        if (propName.equals(PROP_BUSINESS_ADDRESS)) {
             return getBusinessAddress();
         }
-        if (propName.equals("description")) {
+        if (propName.equals(PROP_DESCRIPTION)) {
             return getDescription();
         }
-        if (propName.equals("businessCategory")) {
+        if (propName.equals(PROP_BUSINESS_CATEGORY)) {
             return getBusinessCategory();
         }
-        if (propName.equals("seeAlso")) {
+        if (propName.equals(PROP_SEE_ALSO)) {
             return getSeeAlso();
         }
         return super.get(propName);
@@ -731,55 +777,55 @@ public class OrgContainer
 
     @Override
     public boolean isSet(String propName) {
-        if (propName.equals("o")) {
+        if (propName.equals(PROP_O)) {
             return isSetO();
         }
-        if (propName.equals("ou")) {
+        if (propName.equals(PROP_OU)) {
             return isSetOu();
         }
-        if (propName.equals("dc")) {
+        if (propName.equals(PROP_DC)) {
             return isSetDc();
         }
-        if (propName.equals("cn")) {
+        if (propName.equals(PROP_CN)) {
             return isSetCn();
         }
-        if (propName.equals("telephoneNumber")) {
+        if (propName.equals(PROP_TELEPHONE_NUMBER)) {
             return isSetTelephoneNumber();
         }
-        if (propName.equals("facsimileTelephoneNumber")) {
+        if (propName.equals(PROP_FACSIMILE_TELEPHONE_NUMBER)) {
             return isSetFacsimileTelephoneNumber();
         }
-        if (propName.equals("postalAddress")) {
+        if (propName.equals(PROP_POSTAL_ADDRESS)) {
             return isSetPostalAddress();
         }
-        if (propName.equals("l")) {
+        if (propName.equals(PROP_L)) {
             return isSetL();
         }
-        if (propName.equals("localityName")) {
+        if (propName.equals(PROP_LOCALITY_NAME)) {
             return isSetLocalityName();
         }
-        if (propName.equals("st")) {
+        if (propName.equals(PROP_ST)) {
             return isSetSt();
         }
-        if (propName.equals("stateOrProvinceName")) {
+        if (propName.equals(PROP_STATE_OR_PROVINCE_NAME)) {
             return isSetStateOrProvinceName();
         }
-        if (propName.equals("street")) {
+        if (propName.equals(PROP_STREET)) {
             return isSetStreet();
         }
-        if (propName.equals("postalCode")) {
+        if (propName.equals(PROP_POSTAL_CODE)) {
             return isSetPostalCode();
         }
-        if (propName.equals("businessAddress")) {
+        if (propName.equals(PROP_BUSINESS_ADDRESS)) {
             return isSetBusinessAddress();
         }
-        if (propName.equals("description")) {
+        if (propName.equals(PROP_DESCRIPTION)) {
             return isSetDescription();
         }
-        if (propName.equals("businessCategory")) {
+        if (propName.equals(PROP_BUSINESS_CATEGORY)) {
             return isSetBusinessCategory();
         }
-        if (propName.equals("seeAlso")) {
+        if (propName.equals(PROP_SEE_ALSO)) {
             return isSetSeeAlso();
         }
         return super.isSet(propName);
@@ -787,55 +833,55 @@ public class OrgContainer
 
     @Override
     public void set(String propName, Object value) {
-        if (propName.equals("o")) {
+        if (propName.equals(PROP_O)) {
             setO(((String) value));
         }
-        if (propName.equals("ou")) {
+        if (propName.equals(PROP_OU)) {
             setOu(((String) value));
         }
-        if (propName.equals("dc")) {
+        if (propName.equals(PROP_DC)) {
             setDc(((String) value));
         }
-        if (propName.equals("cn")) {
+        if (propName.equals(PROP_CN)) {
             setCn(((String) value));
         }
-        if (propName.equals("telephoneNumber")) {
+        if (propName.equals(PROP_TELEPHONE_NUMBER)) {
             getTelephoneNumber().add(((String) value));
         }
-        if (propName.equals("facsimileTelephoneNumber")) {
+        if (propName.equals(PROP_FACSIMILE_TELEPHONE_NUMBER)) {
             getFacsimileTelephoneNumber().add(((String) value));
         }
-        if (propName.equals("postalAddress")) {
+        if (propName.equals(PROP_POSTAL_ADDRESS)) {
             getPostalAddress().add(((String) value));
         }
-        if (propName.equals("l")) {
+        if (propName.equals(PROP_L)) {
             getL().add(((String) value));
         }
-        if (propName.equals("localityName")) {
+        if (propName.equals(PROP_LOCALITY_NAME)) {
             getLocalityName().add(((String) value));
         }
-        if (propName.equals("st")) {
+        if (propName.equals(PROP_ST)) {
             getSt().add(((String) value));
         }
-        if (propName.equals("stateOrProvinceName")) {
+        if (propName.equals(PROP_STATE_OR_PROVINCE_NAME)) {
             getStateOrProvinceName().add(((String) value));
         }
-        if (propName.equals("street")) {
+        if (propName.equals(PROP_STREET)) {
             getStreet().add(((String) value));
         }
-        if (propName.equals("postalCode")) {
+        if (propName.equals(PROP_POSTAL_CODE)) {
             getPostalCode().add(((String) value));
         }
-        if (propName.equals("businessAddress")) {
+        if (propName.equals(PROP_BUSINESS_ADDRESS)) {
             setBusinessAddress(((AddressType) value));
         }
-        if (propName.equals("description")) {
+        if (propName.equals(PROP_DESCRIPTION)) {
             getDescription().add(((String) value));
         }
-        if (propName.equals("businessCategory")) {
+        if (propName.equals(PROP_BUSINESS_CATEGORY)) {
             getBusinessCategory().add(((String) value));
         }
-        if (propName.equals("seeAlso")) {
+        if (propName.equals(PROP_SEE_ALSO)) {
             getSeeAlso().add(((String) value));
         }
         super.set(propName, value);
@@ -843,40 +889,40 @@ public class OrgContainer
 
     @Override
     public void unset(String propName) {
-        if (propName.equals("telephoneNumber")) {
+        if (propName.equals(PROP_TELEPHONE_NUMBER)) {
             unsetTelephoneNumber();
         }
-        if (propName.equals("facsimileTelephoneNumber")) {
+        if (propName.equals(PROP_FACSIMILE_TELEPHONE_NUMBER)) {
             unsetFacsimileTelephoneNumber();
         }
-        if (propName.equals("postalAddress")) {
+        if (propName.equals(PROP_POSTAL_ADDRESS)) {
             unsetPostalAddress();
         }
-        if (propName.equals("l")) {
+        if (propName.equals(PROP_L)) {
             unsetL();
         }
-        if (propName.equals("localityName")) {
+        if (propName.equals(PROP_LOCALITY_NAME)) {
             unsetLocalityName();
         }
-        if (propName.equals("st")) {
+        if (propName.equals(PROP_ST)) {
             unsetSt();
         }
-        if (propName.equals("stateOrProvinceName")) {
+        if (propName.equals(PROP_STATE_OR_PROVINCE_NAME)) {
             unsetStateOrProvinceName();
         }
-        if (propName.equals("street")) {
+        if (propName.equals(PROP_STREET)) {
             unsetStreet();
         }
-        if (propName.equals("postalCode")) {
+        if (propName.equals(PROP_POSTAL_CODE)) {
             unsetPostalCode();
         }
-        if (propName.equals("description")) {
+        if (propName.equals(PROP_DESCRIPTION)) {
             unsetDescription();
         }
-        if (propName.equals("businessCategory")) {
+        if (propName.equals(PROP_BUSINESS_CATEGORY)) {
             unsetBusinessCategory();
         }
-        if (propName.equals("seeAlso")) {
+        if (propName.equals(PROP_SEE_ALSO)) {
             unsetSeeAlso();
         }
         super.unset(propName);
@@ -893,23 +939,23 @@ public class OrgContainer
         } else {
             {
                 List names = new ArrayList();
-                names.add("o");
-                names.add("ou");
-                names.add("dc");
-                names.add("cn");
-                names.add("telephoneNumber");
-                names.add("facsimileTelephoneNumber");
-                names.add("postalAddress");
-                names.add("l");
-                names.add("localityName");
-                names.add("st");
-                names.add("stateOrProvinceName");
-                names.add("street");
-                names.add("postalCode");
-                names.add("businessAddress");
-                names.add("description");
-                names.add("businessCategory");
-                names.add("seeAlso");
+                names.add(PROP_O);
+                names.add(PROP_OU);
+                names.add(PROP_DC);
+                names.add(PROP_CN);
+                names.add(PROP_TELEPHONE_NUMBER);
+                names.add(PROP_FACSIMILE_TELEPHONE_NUMBER);
+                names.add(PROP_POSTAL_ADDRESS);
+                names.add(PROP_L);
+                names.add(PROP_LOCALITY_NAME);
+                names.add(PROP_ST);
+                names.add(PROP_STATE_OR_PROVINCE_NAME);
+                names.add(PROP_STREET);
+                names.add(PROP_POSTAL_CODE);
+                names.add(PROP_BUSINESS_ADDRESS);
+                names.add(PROP_DESCRIPTION);
+                names.add(PROP_BUSINESS_CATEGORY);
+                names.add(PROP_SEE_ALSO);
                 names.addAll(Party.getPropertyNames("Party"));
                 propertyNames = Collections.unmodifiableList(names);
                 return propertyNames;
@@ -921,23 +967,23 @@ public class OrgContainer
         if (dataTypeMap == null) {
             dataTypeMap = new HashMap();
         }
-        dataTypeMap.put("o", "String");
-        dataTypeMap.put("ou", "String");
-        dataTypeMap.put("dc", "String");
-        dataTypeMap.put("cn", "String");
-        dataTypeMap.put("telephoneNumber", "String");
-        dataTypeMap.put("facsimileTelephoneNumber", "String");
-        dataTypeMap.put("postalAddress", "String");
-        dataTypeMap.put("l", "String");
-        dataTypeMap.put("localityName", "String");
-        dataTypeMap.put("st", "String");
-        dataTypeMap.put("stateOrProvinceName", "String");
-        dataTypeMap.put("street", "String");
-        dataTypeMap.put("postalCode", "String");
-        dataTypeMap.put("businessAddress", "AddressType");
-        dataTypeMap.put("description", "String");
-        dataTypeMap.put("businessCategory", "String");
-        dataTypeMap.put("seeAlso", "String");
+        dataTypeMap.put(PROP_O, "String");
+        dataTypeMap.put(PROP_OU, "String");
+        dataTypeMap.put(PROP_DC, "String");
+        dataTypeMap.put(PROP_CN, "String");
+        dataTypeMap.put(PROP_TELEPHONE_NUMBER, "String");
+        dataTypeMap.put(PROP_FACSIMILE_TELEPHONE_NUMBER, "String");
+        dataTypeMap.put(PROP_POSTAL_ADDRESS, "String");
+        dataTypeMap.put(PROP_L, "String");
+        dataTypeMap.put(PROP_LOCALITY_NAME, "String");
+        dataTypeMap.put(PROP_ST, "String");
+        dataTypeMap.put(PROP_STATE_OR_PROVINCE_NAME, "String");
+        dataTypeMap.put(PROP_STREET, "String");
+        dataTypeMap.put(PROP_POSTAL_CODE, "String");
+        dataTypeMap.put(PROP_BUSINESS_ADDRESS, "AddressType");
+        dataTypeMap.put(PROP_DESCRIPTION, "String");
+        dataTypeMap.put(PROP_BUSINESS_CATEGORY, "String");
+        dataTypeMap.put(PROP_SEE_ALSO, "String");
     }
 
     @Override
@@ -989,4 +1035,8 @@ public class OrgContainer
         return WIMTraceHelper.trace(this);
     }
 
+    @Override
+    public boolean isMultiValuedProperty(String propName) {
+        return MULTI_VALUED_PROPERTIES.contains(propName) || super.isMultiValuedProperty(propName);
+    }
 }

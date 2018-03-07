@@ -1,0 +1,78 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+    testApp
+}
+
+// Define G:A:V coordinates of each dependency
+dependencies {
+  requiredLibs 'commons-logging:commons-logging:1.1.3'
+  requiredLibs project(':com.ibm.ws.repository')
+  requiredLibs project(':com.ibm.ws.repository_fat_shared')
+  requiredLibs project(':com.ibm.ws.repository.test.utils')
+  testApp 'com.ibm.ws.lars:larsServer-memoryBackend:1.0.1@war'
+}
+
+
+
+task prepareTestWorkingDir {
+    dependsOn 'prepareTestResources'
+    doLast {
+        mkdir('build/test-working')
+    }
+}
+
+autoFVT.dependsOn prepareTestWorkingDir
+
+File testResourcesDir = file('fat/testResources')
+
+task prepareTestResources (type:Copy) {
+    from testResourcesDir
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    exclude '**/*.zip'
+    exclude '**/*.jar'
+    exclude '**/*.esa'
+}
+
+if (testResourcesDir.exists()) {
+    testResourcesDir.eachDirRecurse({ dir ->
+        if (dir.name.endsWith('.esa') || dir.name.endsWith('.jar') || dir.name.endsWith('.zip')) {
+            String relativeTargetPath = dir.parentFile.absolutePath.minus(testResourcesDir.absolutePath)
+            String taskNamePath = relativeTargetPath.replaceAll("[\\\\/]","-")
+            Task task = task "create-${taskNamePath}-${dir.name}" (type: Zip) {
+                archiveName = dir.name
+                from dir
+                destinationDir = new File(autoFvtDir, 'lib/LibertyFATTestFiles' + relativeTargetPath)
+            }
+            prepareTestResources.dependsOn task
+            prepareTestResources.outputs.files(task)
+        }
+    })
+}
+
+// Create the zip repo for FileClientLicenseTest
+task createLicenseRepoZip (type:Zip) {
+    destinationDir = new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    archiveName = 'licenseTestRepo.zip'
+    from new File(autoFvtDir, 'lib/LibertyFATTestFiles/licenseTestRepo')
+    
+    // This needs to be done after all the test resource archives have been created
+    dependsOn prepareTestResources
+}
+prepareTestWorkingDir.dependsOn createLicenseRepoZip
+
+// Copy the test application dependency into the publish server directory
+task copyTestApp (type: Copy) {
+    from configurations.testApp
+    into new File(autoFvtDir, 'publish/servers/FATServer/apps')
+}
+autoFVT.dependsOn copyTestApp

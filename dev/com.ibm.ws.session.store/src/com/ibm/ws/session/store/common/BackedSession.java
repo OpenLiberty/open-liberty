@@ -15,6 +15,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 
 //import javax.ejb.EJBHome;
@@ -381,7 +382,7 @@ public abstract class BackedSession extends MemorySession {
      * refillAttrNames
      * sets attribute names based on what is contained in swappable data
      */
-    protected void refillAttrNames(Hashtable swappable) {
+    protected void refillAttrNames(Map<Object, Object> swappable) {
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[REFILL_ATTR_NAMES]);
         }
@@ -411,7 +412,7 @@ public abstract class BackedSession extends MemorySession {
     /*
      * setSwappableData
      */
-    public abstract void setSwappableData(Hashtable ht);
+    public abstract void setSwappableData(Map<Object, Object> ht);
 
     protected abstract SerializationService getSerializationService();
 
@@ -884,7 +885,7 @@ public abstract class BackedSession extends MemorySession {
         invalidate(false);
     }
 
-    public abstract Hashtable getSwappableData();
+    public abstract Map<Object, Object> getSwappableData();
 
     public abstract boolean getSwappableListeners(short listener);
 }

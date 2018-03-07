@@ -21,15 +21,12 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.osgi.service.component.annotations.Component;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.opentracing.ActiveSpan;
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
+import io.opentracing.ActiveSpan.Continuation;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
@@ -44,20 +41,23 @@ import io.opentracing.tag.Tags;
  *
  * <p>This implementation is stateless. A single client filter is used by all clients.</p>
  */
-@Component
 public class OpentracingClientFilter implements ClientRequestFilter, ClientResponseFilter {
     private static final TraceComponent tc = Tr.register(OpentracingClientFilter.class);
 
-    //
-
     /**
-     * <p>The property used to store the client span ID for the outgoing request.</p>
+     * <p>The property used to store the continuation for the outgoing request.</p>
      *
      * <p>See {@link OpentracingContainerFilter#SERVER_SPAN_PROP_ID} for more information.</p>
      */
-    public static final String CLIENT_SPAN_PROP_ID = OpentracingClientFilter.class.getName() + ".Span";
+    public static final String CLIENT_CONTINUATION_PROP_ID = OpentracingClientFilter.class.getName() + ".Span";
 
     public static final String CLIENT_SPAN_SKIPPED_ID = OpentracingClientFilter.class.getName() + ".Skipped";
+
+    private final OpentracingFilterHelper helper;
+
+    OpentracingClientFilter(OpentracingFilterHelper helper) {
+        this.helper = helper;
+    }
 
     /**
      * <p>Handle an outgoing request.</p>
@@ -93,62 +93,42 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             Tr.debug(tc, methodName + " outgoing URL", outgoingURL);
         }
 
-        ActiveSpan priorIncomingSpan = tracer.activeSpan();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName + " parent", priorIncomingSpan);
-        }
-
         /*
          * Removing filter processing until microprofile spec for it is approved. Expect to add this code
-         * back in in 1Q18 - smf
+         * back in 1Q18 - smf
          */
 //        boolean process = OpentracingService.process(outgoingUri, SpanFilterType.OUTGOING);
         boolean process = true;
 
-        SpanContext nextContext;
-
         if (process) {
-            // "The default operation name of the new Span for the outgoing request is
-            // <HTTP method>"
-            // https://github.com/eclipse/microprofile-opentracing/blob/master/spec/src/main/asciidoc/microprofile-opentracing.asciidoc#client-span-name
-            String operationName = clientRequestContext.getMethod();
-            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(operationName);
+            String buildSpanName = helper != null ? helper.getBuildSpanName(clientRequestContext) : outgoingURL;
+            Tracer.SpanBuilder spanBuilder = tracer.buildSpan(buildSpanName);
 
             spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CLIENT);
             spanBuilder.withTag(Tags.HTTP_URL.getKey(), outgoingURL);
             spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), clientRequestContext.getMethod());
 
-            if (priorIncomingSpan != null) {
-                spanBuilder.asChildOf(priorIncomingSpan.context());
-            } else {
-                // spanBuilder.ignoreActiveSpan();
-                //
-                // TODO:
-                // The work-around, which is a call 'spanBuilder.ignoreActiveSpan()',
-                // and which is used in the container filter, is not needed here.
-                //
-                // The code is a bit muddled, though, as the mock span defaults to
-                // look for and use the active span as the parent span, which means
-                // the call 'spanBuilder.asChildOf' may not be necessary.
+            try (ActiveSpan activeSpan = spanBuilder.startActive()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + " activeSpan", activeSpan);
+                }
+
+                tracer.inject(
+                              activeSpan.context(),
+                              Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
+
+                Continuation continuation = activeSpan.capture();
+
+                clientRequestContext.setProperty(CLIENT_CONTINUATION_PROP_ID, continuation);
             }
-
-            Span newOutoingSpan = spanBuilder.startManual();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " outgoingSpan", newOutoingSpan);
-            }
-
-            nextContext = newOutoingSpan.context();
-
-            // Note the use of the span stored under the client property: This is to
-            // create the association of the outgoing request to the incoming response.
-            clientRequestContext.setProperty(CLIENT_SPAN_PROP_ID, newOutoingSpan);
         } else {
-            nextContext = priorIncomingSpan.context();
+            ActiveSpan currentActiveSpan = tracer.activeSpan();
+            if (currentActiveSpan != null) {
+                tracer.inject(
+                              currentActiveSpan.context(),
+                              Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
+            }
         }
-
-        tracer.inject(
-                      nextContext,
-                      Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
 
         clientRequestContext.setProperty(CLIENT_SPAN_SKIPPED_ID, !process);
     }
@@ -177,34 +157,31 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             return;
         }
 
-        Span priorOutgoingSpan = (Span) clientRequestContext.getProperty(CLIENT_SPAN_PROP_ID);
+        Continuation continuation = (Continuation) clientRequestContext.getProperty(CLIENT_CONTINUATION_PROP_ID);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName, priorOutgoingSpan);
+            Tr.debug(tc, methodName, continuation);
         }
 
-        if (priorOutgoingSpan == null) {
+        if (continuation == null) {
             Tr.error(tc, "OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST");
             return;
         }
 
-        try {
+        clientRequestContext.removeProperty(CLIENT_CONTINUATION_PROP_ID);
+
+        try (ActiveSpan activeSpan = continuation.activate()) {
             Integer httpStatus = Integer.valueOf(clientResponseContext.getStatus());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + " httpStatus", httpStatus);
             }
 
-            priorOutgoingSpan.setTag(Tags.HTTP_STATUS.getKey(), httpStatus);
+            activeSpan.setTag(Tags.HTTP_STATUS.getKey(), httpStatus);
             if (clientResponseContext.getStatus() >= 400) {
-                priorOutgoingSpan.setTag(Tags.ERROR.getKey(), true);
+                activeSpan.setTag(Tags.ERROR.getKey(), true);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, methodName + " error", Boolean.TRUE);
+                    Tr.debug(tc, methodName + " error", clientResponseContext.getStatus());
                 }
             }
-
-            priorOutgoingSpan.finish();
-
-        } finally {
-            clientRequestContext.removeProperty(CLIENT_SPAN_PROP_ID);
         }
     }
 

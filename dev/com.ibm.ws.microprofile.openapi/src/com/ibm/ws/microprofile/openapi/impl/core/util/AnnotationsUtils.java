@@ -282,6 +282,16 @@ public abstract class AnnotationsUtils {
         if (schema.enumeration().length > 0) {
             schemaObject.setEnumeration(Arrays.asList(schema.enumeration()));
         }
+        if (schema.maxItems() != Integer.MIN_VALUE) {
+            schemaObject.setMaxItems(schema.maxItems());
+        }
+        if (schema.minItems() != Integer.MAX_VALUE) {
+            schemaObject.setMinItems(schema.minItems());
+        }
+        if (schema.uniqueItems()) {
+            schemaObject.setUniqueItems(true);
+        }
+
         if (!schema.not().equals(Void.class)) {
             Class<?> schemaImplementation = schema.not();
             Schema notSchemaObject = resolveSchemaFromType(schemaImplementation, components);
@@ -322,9 +332,9 @@ public abstract class AnnotationsUtils {
         Map<String, Schema> schemaMap;
         if (schemaImplementation != Void.class) {
             Schema schemaObject = new SchemaImpl();
-            if (schemaImplementation.getName().startsWith("java.lang")) {
-                //schemaObject.setType(schemaImplementation.getSimpleName().toLowerCase());
-                //TODO: support simple type to schema mapping
+            PrimitiveType pt = PrimitiveType.fromType(schemaImplementation);
+            if (pt != null) {
+                schemaObject = pt.createProperty();
             } else {
                 ResolvedSchema resolvedSchema = ModelConverters.getInstance().readAllAsResolvedSchema(schemaImplementation);
                 if (resolvedSchema != null) {
@@ -332,7 +342,17 @@ public abstract class AnnotationsUtils {
                     schemaMap.forEach((key, schema) -> {
                         components.addSchema(key, schema);
                     });
-                    schemaObject.setRef(COMPONENTS_REF + ((SchemaImpl) resolvedSchema.schema).getName());
+                    Schema property = new SchemaImpl((SchemaImpl) resolvedSchema.schema);
+                    boolean inline = false;
+                    if (annotationSchema != null && annotationSchema.type() != org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY
+                        && AnnotationsUtils.hasSchemaAnnotation(annotationSchema)) {
+                        inline = overrideSchemaFromAnnotation(property, annotationSchema);
+                    }
+                    if (!inline)
+                        schemaObject.setRef(COMPONENTS_REF + ((SchemaImpl) resolvedSchema.schema).getName());
+                    else {
+                        schemaObject = property;
+                    }
                 }
             }
             if (StringUtils.isBlank(schemaObject.getRef()) && schemaObject.getType() == null) {
@@ -354,35 +374,16 @@ public abstract class AnnotationsUtils {
             } else {
                 return Optional.of(schemaObject);
             }
-
         } else {
-            Optional<Schema> schemaFromAnnotation = AnnotationsUtils.getSchemaFromAnnotation(annotationSchema, components);
-            if (schemaFromAnnotation.isPresent()) {
-                if (StringUtils.isBlank(schemaFromAnnotation.get().getRef()) && schemaFromAnnotation.get().getType() == null) {
-                    // default to string
-                    schemaFromAnnotation.get().setType(SchemaType.STRING);
-                }
-                return Optional.of(schemaFromAnnotation.get());
-            }
-//                else {
-//                Optional<Schema> arraySchemaFromAnnotation = AnnotationsUtils.getArraySchema(annotationContent.array());
-//                if (arraySchemaFromAnnotation.isPresent()) {
-//                    if (StringUtils.isBlank(arraySchemaFromAnnotation.get().getItems().getRef()) && arraySchemaFromAnnotation.get().getItems().getType() == null) {
-//                        // default to string
-//                        arraySchemaFromAnnotation.get().getItems().setType(SchemaType.STRING);
-//                    }
-//                    return Optional.of(arraySchemaFromAnnotation.get());
-//                }
-//            }
+            return AnnotationsUtils.getSchemaFromAnnotation(annotationSchema, components);
         }
-        return Optional.empty();
     }
 
     public static Schema resolveSchemaFromType(Class<?> schemaImplementation, Components components) {
         Schema schemaObject = new SchemaImpl();
-        if (schemaImplementation.getName().startsWith("java.lang")) {
-            // TODO
-            // schemaObject.setType(schemaImplementation.getSimpleName().toLowerCase());
+        PrimitiveType pt = PrimitiveType.fromType(schemaImplementation);
+        if (pt != null) {
+            schemaObject = pt.createProperty();
         } else {
             ResolvedSchema resolvedSchema = ModelConverters.getInstance().readAllAsResolvedSchema(schemaImplementation);
             Map<String, Schema> schemaMap;
@@ -923,5 +924,95 @@ public abstract class AnnotationsUtils {
             return null;
         }
         return cls.getAnnotation(org.eclipse.microprofile.openapi.annotations.media.Schema.class);
+    }
+
+    public static boolean overrideSchemaFromAnnotation(Schema schema, org.eclipse.microprofile.openapi.annotations.media.Schema annSchema) {
+        boolean overriden = false;
+        if (annSchema.deprecated()) {
+            schema.setDeprecated(true);
+            overriden = true;
+        }
+        if (annSchema.exclusiveMaximum()) {
+            schema.setExclusiveMaximum(annSchema.exclusiveMaximum());
+            overriden = true;
+        }
+        if (annSchema.exclusiveMinimum()) {
+            schema.setExclusiveMinimum(annSchema.exclusiveMinimum());
+            overriden = true;
+        }
+        if (annSchema.nullable()) {
+            schema.setNullable(annSchema.nullable());
+            overriden = true;
+        }
+        if (annSchema.readOnly()) {
+            schema.setReadOnly(annSchema.readOnly());
+            overriden = true;
+        }
+        if (annSchema.uniqueItems()) {
+            schema.setUniqueItems(annSchema.uniqueItems());
+            overriden = true;
+        }
+        if (annSchema.writeOnly()) {
+            schema.setWriteOnly(annSchema.writeOnly());
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.defaultValue())) {
+            schema.setDefaultValue(annSchema.defaultValue());
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.description())) {
+            schema.setDescription(annSchema.description());
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.example())) {
+            schema.setExample((annSchema.example()));
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.format())) {
+            schema.setFormat((annSchema.format()));
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.maximum())) {
+            try {
+                schema.setMaximum(new BigDecimal(annSchema.maximum()));
+            } catch (NumberFormatException e) {
+            }
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.minimum())) {
+            try {
+                schema.setMinimum(new BigDecimal(annSchema.minimum()));
+            } catch (NumberFormatException e) {
+            }
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.pattern())) {
+            schema.setPattern(annSchema.pattern());
+            overriden = true;
+        }
+        if (StringUtils.isNotBlank(annSchema.title())) {
+            schema.setTitle(annSchema.title());
+            overriden = true;
+        }
+        if (annSchema.maxItems() != Integer.MIN_VALUE) {
+            schema.setMaxItems(annSchema.maxItems());
+            overriden = true;
+        }
+        if (annSchema.minItems() != Integer.MAX_VALUE) {
+            schema.setMaxItems(annSchema.minItems());
+            overriden = true;
+        }
+
+        if (annSchema.maxProperties() != 0) {
+            schema.setMaxProperties(annSchema.maxProperties());
+            overriden = true;
+        }
+
+        if (annSchema.minProperties() != 0) {
+            schema.setMinProperties(annSchema.minProperties());
+            overriden = true;
+        }
+
+        return overriden;
     }
 }

@@ -48,11 +48,14 @@ public class ModelDeserializer extends JsonDeserializer<Schema> {
             } else if (type != null) {
                 if (type.textValue().equals("object")) {
                     JsonNode additionalProperties = node.get("additionalProperties");
-                    if (additionalProperties != null) {
+                    if (additionalProperties != null && additionalProperties.isObject()) {
                         Schema innerSchema = Json.mapper().convertValue(additionalProperties, Schema.class);
                         Schema ms = Json.mapper().convertValue(node, Schema.class);
                         ms.setAdditionalProperties(innerSchema);
                         schema = ms;
+                    } else if (additionalProperties != null && additionalProperties.isBoolean()) {
+                        schema = Json.mapper().convertValue(node, Schema.class);
+                        schema.setAdditionalProperties(additionalProperties.booleanValue());
                     } else {
                         schema = Json.mapper().convertValue(node, Schema.class);
                     }

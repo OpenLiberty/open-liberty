@@ -33,7 +33,7 @@ public class CDITimeoutTest extends LoggingTest {
     //run against both EE8 and EE7 features
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE7_FEATURES());
+                    .andWith(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()));
 
     @Test
     public void testTimeout() throws Exception {

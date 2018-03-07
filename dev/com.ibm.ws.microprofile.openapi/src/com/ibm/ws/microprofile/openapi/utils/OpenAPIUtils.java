@@ -10,11 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Map;
+
 import org.eclipse.microprofile.openapi.OASFilter;
 import org.eclipse.microprofile.openapi.OASModelReader;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.openapi.AnnotationScanner;
@@ -28,14 +35,17 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 public class OpenAPIUtils {
     private static final TraceComponent tc = Tr.register(OpenAPIUtils.class);
 
+    @Trivial
     public static boolean isDebugEnabled(TraceComponent tc) {
         return TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
     }
 
+    @Trivial
     public static boolean isEventEnabled(TraceComponent tc) {
         return TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled();
     }
 
+    @Trivial
     public static boolean isDumpEnabled(TraceComponent tc) {
         return TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
     }
@@ -94,6 +104,7 @@ public class OpenAPIUtils {
                 Tr.event(tc, "Failed to access class for model: " + OASModelReaderClassName);
             }
         }
+        Tr.error(tc, "OPENAPI_MODEL_READER_LOAD_ERROR", OASModelReaderClassName);
         return null;
     }
 
@@ -124,6 +135,49 @@ public class OpenAPIUtils {
                 Tr.event(tc, "Failed to access class for filter: " + OASFilterClassName);
             }
         }
+        Tr.error(tc, "OPENAPI_FILTER_LOAD_ERROR", OASFilterClassName);
         return null;
+    }
+
+    /**
+     * Get the resource at the specified URL as an InputStream
+     *
+     * @param url - resource location
+     * @param acceptValue - Request property for 'Accept' header
+     */
+    public static InputStream getUrlAsStream(URL url, String acceptValue) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        if (acceptValue != null && !acceptValue.trim().isEmpty()) {
+            connection.setRequestProperty("Accept", acceptValue);
+        }
+        final int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            return connection.getInputStream();
+        } else {
+            if (isEventEnabled(tc)) {
+                Tr.event(tc, "Did not find resource at " + url + ".  ResponseCode: " + responseCode);
+            }
+        }
+        return null;
+    }
+  
+    /**
+     * Print map to string
+     *
+     * @param map - the map to be printed to String
+     */
+    public static String mapToString(Map<String, ?> map) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\n");
+        for (String key : map.keySet()) {
+            if (map.get(key) != null) {
+                sb.append(key + ": " + map.get(key) + "\n ");
+            } else {
+                continue;
+            }
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }

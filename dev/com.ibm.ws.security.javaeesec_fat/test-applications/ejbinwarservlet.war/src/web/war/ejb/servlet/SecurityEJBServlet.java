@@ -54,26 +54,11 @@ public class SecurityEJBServlet extends SecurityEJBBaseServlet {
 
     //Inject Stateless/Singleton EJB interfaces for Pure Annotation Tests - PureAnnA0xTest.
 
-    @EJB(beanName = "SecurityEJBA01Bean")
-    private SecurityEJBInterface injectedEJB01;
-
     @EJB(beanName = "SecurityEJBA02Bean")
     private SecurityEJBInterface injectedEJB02;
 
     @EJB(beanName = "SecurityEJBA03Bean")
     private SecurityEJBInterface injectedEJB03;
-
-    @EJB(beanName = "SecurityEJBA05Bean")
-    private SecurityEJBInterface injectedEJB05;
-
-    @EJB(beanName = "SecurityEJBA06Bean")
-    private SecurityEJBInterface injectedEJB06;
-
-    @EJB(beanName = "SecurityEJBA07Bean")
-    private SecurityEJBInterface injectedEJB07;
-
-    @EJB(beanName = "SecurityEJBA08Bean")
-    private SecurityEJBInterface injectedEJB08;
 
     protected Map<String, Invoke> methodMap = new HashMap<String, Invoke>();
 
@@ -82,13 +67,8 @@ public class SecurityEJBServlet extends SecurityEJBBaseServlet {
 
         Map<String, SecurityEJBInterface> beanMap = new HashMap<String, SecurityEJBInterface>();
         if (beanMap.size() == 0) {
-            beanMap.put("ejb01", injectedEJB01);
             beanMap.put("ejb02", injectedEJB02);
             beanMap.put("ejb03", injectedEJB03);
-            beanMap.put("ejb05", injectedEJB05);
-            beanMap.put("ejb06", injectedEJB06);
-            beanMap.put("ejb07", injectedEJB07);
-            beanMap.put("ejb08", injectedEJB08);
         }
         return beanMap;
     }

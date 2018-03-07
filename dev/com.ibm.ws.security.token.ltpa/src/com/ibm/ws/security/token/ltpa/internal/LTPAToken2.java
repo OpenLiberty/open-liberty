@@ -13,7 +13,6 @@ package com.ibm.ws.security.token.ltpa.internal;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -65,8 +64,8 @@ public class LTPAToken2 implements Token, Serializable {
     static {
         MessageDigest m1 = null, m2 = null;
         try {
-	    m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
-	    m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, LTPAKeyUtil.defaultJCEProvider());
+            m1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+            m2 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Error creating digest; " + e);

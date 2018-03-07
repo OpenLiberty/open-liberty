@@ -16,6 +16,6 @@ Subsystem-Name: MicroProfile Config 1.2
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.ws.microprofile.config.1.2; apiJar=false; location:="lib/", \
  com.ibm.ws.org.apache.commons.lang3.3.5; apiJar=false; location:="lib/"
-kind=beta
+kind=ga
 edition=core
 

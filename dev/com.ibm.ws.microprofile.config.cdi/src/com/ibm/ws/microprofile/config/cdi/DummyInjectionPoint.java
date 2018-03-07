@@ -22,11 +22,14 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * DummyInjectionPoint is used to obtain a reference to the current InjectionPoint. It takes advantage of non-portable behaviour in Weld
  * where Weld will wrap an instance of this class in a proxy which returns the real information we want. None of the values returned by
  * this class are ever really used.
  */
+@Trivial
 public class DummyInjectionPoint implements InjectionPoint {
 
     /** {@inheritDoc} */

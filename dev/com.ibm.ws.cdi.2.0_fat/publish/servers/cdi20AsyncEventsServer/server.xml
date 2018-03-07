@@ -25,5 +25,4 @@
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
     
     <application location="asyncEventsApp.war" />
-    <logging traceSpecification="JCDI=all=enabled:logservice=all=enabled:*=info=enabled"/>
 </server>

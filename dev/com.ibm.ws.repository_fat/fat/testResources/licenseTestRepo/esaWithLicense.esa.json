@@ -1,0 +1,54 @@
+{
+   "description": "Test ESA",
+   "licenseId": "http:\/\/www.ibm.com\/licenses\/wlp-featureterms-v1",
+   "licenseType": "UNSPECIFIED",
+   "name": "esaWithLicense",
+   "provider": {
+      "name": "IBM",
+      "url": "http:\/\/www.ibm.com"
+   },
+   "type": "com.ibm.websphere.Feature",
+   "wlpInformation": {
+      "appliesTo": "com.ibm.websphere.appserver; productVersion=8.5.5.6",
+      "appliesToFilterInfo": [
+         {
+            "editions": [
+               "Liberty Core",
+               "Base",
+               "Express",
+               "Developers",
+               "ND",
+               "z\/OS"
+            ],
+            "hasMaxVersion": "true",
+            "maxVersion": {
+               "compatibilityLabel": "8.5.5.6",
+               "inclusive": true,
+               "label": "8.5.5",
+               "value": "8.5.5.6"
+            },
+            "minVersion": {
+               "compatibilityLabel": "8.5.5.6",
+               "inclusive": true,
+               "label": "8.5.5",
+               "value": "8.5.5.6"
+            },
+            "productId": "com.ibm.websphere.appserver"
+         }
+      ],
+      "displayPolicy": "HIDDEN",
+      "downloadPolicy": "INSTALLER",
+      "installPolicy": "MANUAL",
+      "javaSEVersionRequirements": {
+         "minVersion": "1.6.0",
+         "versionDisplayString": "Java SE 6, Java SE 7"
+      },
+      "mainAttachmentSize": 15011,
+      "provideFeature": [
+         "com.ibm.websphere.appserver.appLifecycle-1.0"
+      ],
+      "typeLabel": "Feature",
+      "visibility": "PROTECTED",
+      "webDisplayPolicy": "HIDDEN"
+   }
+}

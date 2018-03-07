@@ -13,10 +13,6 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 public final class LTPAKeyUtil {
 
-  public static final String IBMJCE_NAME = "IBMJCE";
-  public static final String SUNJCE_NAME = "SunJCE";
-  public static String defaultJCEProvider=null;
-
   public static byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
     return LTPACrypto.encrypt(data, key, cipher);
   }
@@ -51,22 +47,6 @@ public final class LTPAKeyUtil {
 
   public static byte[] generate3DESKey() {
     return LTPACrypto.generate3DESKey();
-  }
-
-  //In case hardware crypto provider is configured in front of JCE provider, LTPA encryption and decryption fails. This method is to find JCE provider for encrypt/decrypt to use. 
-  public static String defaultJCEProvider()
-  {
-     if (defaultJCEProvider == null) {
-	 String javaVendor = System.getProperty("java.vendor");
-	 
-	 if (javaVendor.contains("IBM")) {
-	     defaultJCEProvider = IBMJCE_NAME;
-	 }
-	 else {
-	     defaultJCEProvider = SUNJCE_NAME;
-	 }
-     }
-     return defaultJCEProvider;
   }
 
 }

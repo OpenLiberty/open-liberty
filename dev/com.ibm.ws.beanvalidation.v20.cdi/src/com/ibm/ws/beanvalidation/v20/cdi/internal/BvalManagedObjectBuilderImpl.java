@@ -49,7 +49,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.BVNLSConstants;
 import com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder;
 import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
@@ -76,7 +75,7 @@ public class BvalManagedObjectBuilderImpl implements BvalManagedObjectBuilder {
 
     @Override
     public ValidatorFactory injectValidatorFactoryResources(Configuration<?> config, ClassLoader appClassLoader) {
-        if (isCurrentModuleCDIEnabled()) {
+        if (cdiService.getServiceWithException().isCurrentModuleCDIEnabled()) {
             createManagedConstraintValidatorFactory(config, appClassLoader);
             createManagedMessageInterpolator(config, appClassLoader);
             createManagedTraversableResolver(config, appClassLoader);
@@ -88,12 +87,6 @@ public class BvalManagedObjectBuilderImpl implements BvalManagedObjectBuilder {
                 Tr.debug(tc, "Current module is not CDI enabled, skipping creating CDI enhanced objects.");
         }
         return config.buildValidatorFactory();
-    }
-
-    private boolean isCurrentModuleCDIEnabled() {
-        //TODO: Update to use CDIService.isCurrentModuleCDIEnabled() when issue 1440 is resolved.
-        CDIRuntime cdiRuntime = (CDIRuntime) cdiService.getServiceWithException();
-        return cdiRuntime.isCurrentModuleCDIEnabled();
     }
 
     @Activate

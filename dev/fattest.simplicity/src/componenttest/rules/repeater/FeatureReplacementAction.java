@@ -26,6 +26,8 @@ import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.LibertyClientFactory;
+import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Test repeat action that removes and adds features during setup.
@@ -237,7 +239,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
             serverConfigs.addAll(findFile(filesFolder, ".xml"));
         } else {
             for (String serverName : servers)
-                serverConfigs.add(new File(pathToAutoFVTTestServers + serverName));
+                serverConfigs.add(new File(pathToAutoFVTTestServers + serverName + "/server.xml"));
         }
         // Find all of the client configurations to replace features in
         Set<File> clientConfigs = new HashSet<>();
@@ -309,11 +311,28 @@ public class FeatureReplacementAction implements RepeatTestAction {
             }
             Log.info(c, m, "Resulting features: " + features);
 
-            if (isServerConfig)
+            if (isServerConfig) {
+                Log.info(c, m, "Config: " + serverConfig);
                 ServerConfigurationFactory.toFile(configFile, serverConfig);
-            else
+            } else
                 ClientConfigurationFactory.toFile(configFile, clientConfig);
         }
+
+        // Make sure config update is pushed to the wlp version of the server & client
+        if (serverConfigs.size() > 0) {
+            for (String serverName : servers) {
+                if (!serverName.equals(ALL_SERVERS))
+                    LibertyServerFactory.getLibertyServer(serverName);
+            }
+        }
+
+        if (clientConfigs.size() > 0) {
+            for (String clientName : clients) {
+                if (!clientName.equals(ALL_CLIENTS))
+                    LibertyClientFactory.getLibertyClient(clientName);
+            }
+        }
+
     }
 
     private static String getReplacementFeature(String originalFeature, Set<String> featuresToAdd) {

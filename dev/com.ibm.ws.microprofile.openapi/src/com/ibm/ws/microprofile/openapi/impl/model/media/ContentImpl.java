@@ -17,6 +17,8 @@ import java.util.Objects;
 import org.eclipse.microprofile.openapi.models.media.Content;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+
 /**
  * Content
  *
@@ -52,7 +54,7 @@ public class ContentImpl extends LinkedHashMap<String, MediaType> implements Con
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Content {\n");
-        sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+        sb = (super.toString() != null) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

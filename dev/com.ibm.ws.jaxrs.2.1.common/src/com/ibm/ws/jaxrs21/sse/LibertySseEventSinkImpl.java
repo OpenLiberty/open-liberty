@@ -31,6 +31,7 @@ import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * This class implements the <code>SseEventSink</code> that is injected into
@@ -89,44 +90,71 @@ public class LibertySseEventSinkImpl implements SseEventSink {
     /* (non-Javadoc)
      * @see javax.ws.rs.sse.SseEventSink#send(javax.ws.rs.sse.OutboundSseEvent)
      */
+    @FFDCIgnore({WebApplicationException.class, IOException.class})
     @Override
     public CompletionStage<?> send(OutboundSseEvent event) {
         final CompletableFuture<?> future = new CompletableFuture<>();
 
-        if (!closed && writer != null) {
-            try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-                writer.writeTo(event, event.getClass(), null, new Annotation [] {}, event.getMediaType(), null, os);
+        if (!closed) {
+            if (writer != null) {
+                ByteArrayOutputStream os = null;
+                try {
+                    os = new ByteArrayOutputStream();
+                    writer.writeTo(event, event.getClass(), null, new Annotation [] {}, event.getMediaType(), null, os);
 
-                String eventContents = os.toString();
+                    String eventContents = os.toString();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "send - sending " + eventContents);
+                    }
+
+                    if (!response.isCommitted()) {
+                        response.setHeader("Content-Type", MediaType.SERVER_SENT_EVENTS);
+                        response.flushBuffer();
+                    }
+
+                    //TODO: this seems like a bug, but most SSE clients seem to expect a named event
+                    //      so for now, we will provide one if one is not provided by the user
+                    if (event.getName() == null) {
+                        response.getOutputStream().print("    UnnamedEvent\n");
+                    }
+                    response.getOutputStream().println(eventContents);
+                    response.getOutputStream().flush();
+
+                    return CompletableFuture.completedFuture(eventContents);
+                } catch (WebApplicationException ex) {
+                    handleException(ex, future, event);
+                } catch (IOException ex) {
+                    handleException(ex, future, event);
+                } finally {
+                    if (os != null) {
+                        try {
+                            os.close();
+                        } catch (IOException ex) {
+                            //ignore
+                        }
+                    }
+                }
+            } else {  //no writer
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "send - sending " + eventContents);
+                    Tr.debug(tc, "No MessageBodyWriter - returning null for event:  " + event);
                 }
-                
-                if (!response.isCommitted()) {
-                    response.setHeader("Content-Type", MediaType.SERVER_SENT_EVENTS);
-                    response.flushBuffer();
-                }
-                
-                //TODO: this seems like a bug, but most SSE clients seem to expect a named event
-                //      so for now, we will provide one if one is not provided by the user
-                if (event.getName() == null) {
-                    response.getOutputStream().print("    UnnamedEvent\n");
-                }
-                response.getOutputStream().println(eventContents);
-                response.getOutputStream().flush();
-                
-                return CompletableFuture.completedFuture(eventContents);
-            } catch (WebApplicationException | IOException ex) {
-                //TODO: convert to warning?
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "send - failed sending event " + event);
-                    future.completeExceptionally(ex);
-                }
-            }
+                future.complete(null);
+            }  
         } else {
-            future.complete(null);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "SseEventSink is closed - failed sending event:  " + event);
+            }
+            throw new IllegalStateException("SseEventSink is closed.");  
         }
 
         return future;
+    }
+    
+    private void handleException(Throwable t, CompletableFuture future, OutboundSseEvent event) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "send - failed sending event " + event);
+        }
+        future.completeExceptionally(t);
+        close();
     }
 }

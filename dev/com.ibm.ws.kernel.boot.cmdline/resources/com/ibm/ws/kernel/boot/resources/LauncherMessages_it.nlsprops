@@ -676,6 +676,10 @@ error.server.resume.command.port.disabled=CWWKE0945E: \u00c8 stata ricevuta una 
 error.server.resume.command.port.disabled.explanation=La porta comandi del server \u00e8 obbligatoria per la comunicazione con il server in esecuzione. La porta comandi \u00e8 disabilitata per questo server, quindi la richiesta di ripresa non pu\u00f2 essere elaborata. Si noti che, per impostazione predefinita, la porta comandi \u00e8 disabilitata quando un server viene avviato come attivit\u00e0 avviata su z/OS.
 error.server.resume.command.port.disabled.useraction=Abilitare la porta comandi per questo server. Se il server \u00e8 in esecuzione come un'attivit\u00e0 avviata su z/OS, in alternativa questa ripresa pu\u00f2 essere richiesta dalla console dell'operatore.
 
+warning.server.status.invalid.targets=CWWKE0946W: \u00c8 stata ricevuta una richiesta di stato per componenti specifici, ma l'elenco di componenti sull'opzione di destinazione \u00e8 vuoto. Non \u00e8 stata intrapresa alcuna azione.
+warning.server.status.invalid.targets.explanation=Un utente ha emesso una richiesta di stato con un elenco di destinazione vuoto sull'opzione di destinazione. La richiesta \u00e8 stata completata, ma non \u00e8 stata intrapresa alcuna azione.
+warning.server.status.invalid.targets.useraction=Specificare nell'opzione di destinazione un elenco di componenti di cui controllare lo stato. Per controllare lo stato cumulativo di tutti i componenti sospendibili nel server, emettere una richiesta di stato senza l'opzione di destinazione.
+
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
 info.serverStartedWithPID=Server {0} avviato con ID processo {1}.

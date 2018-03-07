@@ -143,6 +143,9 @@
         <AD id="outboundSSLRef" name="%default.outboundSSLRef" description="%default.outboundSSLRef.desc" 
             required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
             
+        <AD id="httpHostNameVerification" name="%default.httpHostNameVerification" description="%default.httpHostNameVerification.desc" 
+            required="false" type="String" default="false" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+            
     </OCD>
 
     <Designate pid="com.ibm.ws.ssl.default">

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests;
 
+import java.io.File;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -18,18 +20,19 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.AppRetryCountingBean;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.CountingException;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.RequestRetryCountingBean;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.RetryTesterServlet;
 import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.configload.WarRetryCountingBean;
-import com.ibm.websphere.microprofile.faulttolerance_fat.suite.FATSuite;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -41,16 +44,18 @@ import componenttest.rules.repeater.RepeatTests;
  * Note that normally config is retrieved based on the thread context classloader. However, when we load the config for FaultTolerance annotations, we use the annotated class's
  * classloader instead. This avoids a situation where one bean in an application library jar would need to have a different config depending on which module called it.
  */
+@RunWith(FATRunner.class)
 public class TestMultiModuleConfigLoad extends LoggingTest {
 
     // Field is required to declare the shared server as a class rule
     @ClassRule
-    public static SharedServer SHARED_SERVER = FATSuite.MULTI_MODULE_SERVER;
+    public static SharedServer SHARED_SERVER = new SharedServer("FaultToleranceMultiModule");
 
     //run against both EE8 and EE7 features
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE7_FEATURES());
+    public static RepeatTests r = RepeatTests
+                    .with(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()))
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SHARED_SERVER.getServerName()));
 
     @BeforeClass
     public static void appSetup() throws Exception {
@@ -87,12 +92,15 @@ public class TestMultiModuleConfigLoad extends LoggingTest {
 
         ShrinkHelper.exportToServer(SHARED_SERVER.getLibertyServer(), "dropins", ear);
         SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("FaultToleranceMultiModule");
+        SHARED_SERVER.startIfNotStarted();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         SHARED_SERVER.getLibertyServer().deleteFileFromLibertyServerRoot("dropins/FaultToleranceMultiModule.ear");
+        new File("publish/servers/" + SHARED_SERVER.getServerName() + "/dropins/FaultToleranceMultiModule.ear").delete();
         SHARED_SERVER.getLibertyServer().removeInstalledAppForValidation("FaultToleranceMultiModule");
+        SHARED_SERVER.getLibertyServer().stopServer();
     }
 
     @Override

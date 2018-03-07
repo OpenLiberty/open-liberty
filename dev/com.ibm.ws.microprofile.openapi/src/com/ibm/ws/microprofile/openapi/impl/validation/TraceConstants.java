@@ -14,6 +14,6 @@ package com.ibm.ws.microprofile.openapi.impl.validation;
  *
  */
 public interface TraceConstants {
-    String TRACE_GROUP = "OpenAPI";
+    String TRACE_GROUP = "MPOPENAPI";
     String TRACE_VALIDATION = "com.ibm.ws.microprofile.openapi.impl.validation.resources.ValidationMessages";
 }

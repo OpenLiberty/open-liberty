@@ -40,7 +40,7 @@ import componenttest.topology.utils.FATServletClient;
  * get used.
  * <li> Specifies an @RunWith(FATRunner.class) annotation. Traditionally this has been
  * added to bytecode automatically by ant.
- * <li> Uses the @TestServlet annotation to define test servlets. Notice that no @Test
+ * <li> Uses the @TestServlet annotation to define test servlets. Notice that not all @Test
  * methods are defined in this class. All of the @Test methods are defined on the test
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */

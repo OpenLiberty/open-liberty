@@ -11,8 +11,11 @@
 
 package com.ibm.ws.sib.utils;
 
+import java.security.AccessController;
+
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
 /**
@@ -26,6 +29,7 @@ public final class RuntimeInfo {
     public final static String SIB_PROPERTY_PREFIX = "sib" + SIB_PROPERTY_SEPARATOR;
 
     private static final TraceComponent tc = SibTr.register(RuntimeInfo.class, UtConstants.MSG_GROUP, UtConstants.MSG_BUNDLE);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private static boolean _isClustered;
     private static boolean _isServer;
@@ -49,7 +53,7 @@ public final class RuntimeInfo {
         }
 
         if (!_isClustered && !_isServer) {
-            if ("client".equals(PrivHelper.getProperty("com.ibm.ws.container"))) {
+            if ("client".equals(priv.getProperty("com.ibm.ws.container"))) {
                 _isClientContainer = true;
             } else if (thinClientPropertySet) {
                 _isThinClient = true;
@@ -168,7 +172,7 @@ public final class RuntimeInfo {
      * @return boolean
      */
     public static boolean is64bit() {
-        String bitsize = PrivHelper.getProperty("sun.arch.data.model", "32");
+        String bitsize = priv.getProperty("sun.arch.data.model", "32");
         boolean is64bit = bitsize.equals("64");
         return is64bit;
     }

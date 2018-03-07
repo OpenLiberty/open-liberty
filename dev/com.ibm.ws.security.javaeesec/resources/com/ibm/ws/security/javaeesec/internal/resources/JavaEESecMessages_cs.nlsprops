@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,43 +19,32 @@
 # Message prefix block: CWWKS1900 - CWWKS1924
 # 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
 
-JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Objekt IdentityStore nebyl nalezen. Ujist\u011bte se, \u017ee je anotac\u00ed v aplikaci nadefinov\u00e1n alespo\u0148 jeden objekt IdentityStore.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Objekt IdentityStore nebyl nalezen. Je po\u017eadov\u00e1n pro ov\u011b\u0159en\u00ed a autorizaci.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Ujist\u011bte se, \u017ee je aplikace spr\u00e1vn\u011b anotov\u00e1na, aby bylo mo\u017en\u00e9 povolit alespo\u0148 jeden objekt IdentityStore.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: Nakonfigurovan\u00fd objekt IdentityStore nebyl nalezen. Ujist\u011bte se, \u017ee objekt IdentityStore nakonfigurovan\u00fd aplikac\u00ed je k dispozici.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=Objekt IdentityStore nezbytn\u00fd pro ov\u011b\u0159en\u00ed nebyl nalezen.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Zkontrolujte chybov\u00e9 zpr\u00e1vy z objektu IdentityStore.
 
 JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: \u017d\u00e1dn\u00fd objekt IdentityStore nepodporuje ov\u011b\u0159en\u00ed platnosti u\u017eivatele. Ujist\u011bte se, \u017ee alespo\u0148 jeden objekt IdentityStore podporuje ov\u011b\u0159en\u00ed platnosti u\u017eivatele.
-JAVAEESEC_ERROR_NO_VALIDATION.explanation=\u017d\u00e1dn\u00fd z objekt\u016f IdentityStore nepodporuje ov\u011b\u0159en\u00ed platnosti u\u017eivatele, proto k\u00f3d zabezpe\u010den\u00ed neov\u011b\u0159uje u\u017eivatele.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Nebyl nalezen objekt IdentityStore k ov\u011b\u0159en\u00ed u\u017eivatele, a proto nelze u\u017eivatele ov\u011b\u0159it.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Ujist\u011bte se, \u017ee alespo\u0148 jeden objekt IdentityStore podporuje ov\u011b\u0159en\u00ed platnosti u\u017eivatele.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Objekt HttpAuthenticationMechanism pro modul {0} v aplikaci {1} nebyl nalezen. Ujist\u011bte se, \u017ee modul obsahuje objekt HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM.explanation=Objekt HttpAuthenticationMechanism nelze identifikovat pro ov\u011b\u0159en\u00ed. Je mo\u017en\u00e9, \u017ee objekt neexistuje nebo \u017ee ur\u010den\u00e9 podm\u00ednce odpov\u00edd\u00e1 v\u00edce objekt\u016f. Ujist\u011bte se, \u017ee v aplikaci existuje alespo\u0148 jeden objekt HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM.useraction=Ujist\u011bte se, \u017ee v aplikaci existuje alespo\u0148 jeden objekt HttpAuthenticationMechanism.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: HttpAuthenticationMechanism pro modul {0} v aplikaci {1} nelze vytvo\u0159it.
+JAVAEESEC_ERROR_NO_HAM.explanation=HttpAuthenticationMechanism nelze vytvo\u0159it.
+JAVAEESEC_ERROR_NO_HAM.useraction=Zkontrolujte chybov\u00e9 zpr\u00e1vy z HttpAuthenticationMechanism.
 
-JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: Objekt ModuleProperties pro ov\u011b\u0159en\u00ed aplikaci {0} nelze nal\u00e9zt, pravd\u011bpodobn\u011b proto, \u017ee aplikace neobsahuje objekt HttpAuthenticationMechanism. Ujist\u011bte se, \u017ee je nadefinov\u00e1n pro ka\u017ed\u00fd modul jeden objekt HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=Objekt ModuleProperties, kter\u00fd je nezbytn\u00fd pro ov\u011b\u0159en\u00ed aplikace, nelze identifikovat. K t\u00e9to chyb\u011b obvykle dojde, kdy\u017e objekt HttpAuthenticationMechanism nen\u00ed nadefinov\u00e1n v aplikaci.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Ujist\u011bte se, \u017ee ka\u017ed\u00fd modul v aplikaci obsahuje objekt HttpAuthenticationMechanism.
-
-JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: N\u00e1zev sf\u00e9ry pro z\u00e1kladn\u00ed ov\u011b\u0159en\u00ed nen\u00ed nastaven, pou\u017eije se hodnota defaultRealm.
-JAVAEESEC_WARNING_NO_REALM_NAME.explanation=N\u00e1zev sf\u00e9ry pro z\u00e1kladn\u00ed ov\u011b\u0159en\u00ed nen\u00ed nastaven, pou\u017eije se v\u00fdchoz\u00ed hodnota defaultRealm.
-JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Pokud n\u00e1zev oblasti vy\u017eaduje nastaven\u00ed, nastavte jej v aplikaci pomoc\u00ed anotace BasicAuthenticationMechanismDefinition.
-
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Implementace pro modul {0} v aplikaci {1} se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism. Seznam t\u0159\u00edd je {2}. S nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed se jedn\u00e1 o probl\u00e9m balen\u00ed aplikace. Ujist\u011bte se, \u017ee v ka\u017ed\u00e9m modulu existuje pouze jedna implementace HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Implementace aplikace se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism. Tato situace nen\u00ed povolena.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Ujist\u011bte se, \u017ee v aplikaci pro ka\u017ed\u00fd modul existuje pouze jedna implementace HttpAuthenticationMechanism.
-
-JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Do\u0161lo k chyb\u011b p\u0159i \u0159e\u0161en\u00ed konfigurace ''{0}'' pro \u00falo\u017ei\u0161t\u011b identit. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. V\u00fdchoz\u00ed hodnota je ''{1}''.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=Konfiguraci \u00falo\u017ei\u0161t\u011b identit nelze vy\u0159e\u0161it na platnou hodnotu.
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Do\u0161lo k chyb\u011b p\u0159i vyhodnocov\u00e1n\u00ed v\u00fdrazu modulu Expression Language (EL) pro atribut ''{0}'' anotace \u00falo\u017ei\u0161t\u011b identit. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. Pou\u017eije se v\u00fdchoz\u00ed hodnota atributu ''{1}''.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=V\u00fdraz modulu Expression Language atributu \u00falo\u017ei\u0161t\u011b identit nelze vy\u0159e\u0161it na platnou hodnotu.
 JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Ujist\u011bte se, \u017ee anotace obsahuje platnou konfigura\u010dn\u00ed hodnotu. Pou\u017e\u00edv\u00e1te-li v\u00fdrazy EL, ujist\u011bte se, \u017ee jsou platn\u00e9 a \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9.
 
 JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Parametr hashAlgorithm poskytnut\u00fd pro algoritmus hashAlgorithm {0} je v chybn\u00e9m form\u00e1tu. P\u0159ijat\u00fd parametr je {1}. Po\u017eadovan\u00fd form\u00e1t je n\u00e1zev=hodnota.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Seznam parametr\u016f hashAlgorithm je v chybn\u00e9m form\u00e1tu a nelze jej analyzovat.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Opravte prvek hashAlgorithmParameters v anotaci DatabaseIdentityStore.
 
-JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: Dotaz ''{1}'' pro z\u00edsk\u00e1n\u00ed volaj\u00edc\u00edho {0} se nezda\u0159il v \u00falo\u017ei\u0161ti DatabaseIdentityStore s chybou: {2}
-JAVAEESEC_WARNING_GEN_DB.explanation=Vyhled\u00e1v\u00e1n\u00ed poskytnut\u00e9ho volaj\u00edc\u00edho se nezda\u0159ilo s chybou.
-JAVAEESEC_WARNING_GEN_DB.useraction=Zkontrolujte uvedenou chybu.
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: Nelze ov\u011b\u0159it pov\u011b\u0159en\u00ed pro volaj\u00edc\u00edho {0}. \u00dalo\u017ei\u0161ti DatabaseIdentityStore se nezda\u0159ilo prov\u00e9st dotaz ''{1}'' s chybou: {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=Vyhled\u00e1v\u00e1n\u00ed volaj\u00edc\u00edho se nezda\u0159ilo s chybou.
+JAVAEESEC_ERROR_GEN_DB.useraction=Zkontrolujte chybovou zpr\u00e1vu.
 
-JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Dotaz ''{1}'' pro z\u00edsk\u00e1n\u00ed skupiny pro volaj\u00edc\u00edho {0} se nezda\u0159ilo v \u00falo\u017ei\u0161ti DatabaseIdentityStore. D\u00edl\u010d\u00ed seznam skupin je {2}. Chyba: {3}
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: \u00dalo\u017ei\u0161ti DatabaseIdentityStore se nezda\u0159ilo prov\u00e9st dotaz ''{1}'' k z\u00edsk\u00e1n\u00ed skupin pro volaj\u00edc\u00edho {0}. D\u00edl\u010d\u00ed seznam skupin je {2}. Chyba: {3}
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Vyhled\u00e1v\u00e1n\u00ed skupin pro volaj\u00edc\u00edho se nezda\u0159ilo s chybou.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Zkontrolujte uvedenou chybu. Vr\u00e1t\u00ed se d\u00edl\u010d\u00ed seznam skupin.
 
@@ -78,5 +67,3 @@ JAVAEESEC_WARNING_NO_PWD.useraction=Pokud bylo o\u010dek\u00e1v\u00e1no heslo, z
 JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: Dotaz ''{1}'' vr\u00e1til v\u00edce v\u00fdsledk\u016f pro volaj\u00edc\u00edho {0} v \u00falo\u017ei\u0161ti DatabaseIdentityStore.
 JAVAEESEC_WARNING_MULTI_CALLER.explanation=Pro po\u017eadovan\u00e9ho volaj\u00edc\u00edho bylo vr\u00e1ceno v\u00edce v\u00fdsledk\u016f. Dotaz volaj\u00edc\u00edho by m\u011bl vr\u00e1tit pouze jeden v\u00fdsledek.
 JAVAEESEC_WARNING_MULTI_CALLER.useraction=Zrevidujte dotaz volaj\u00edc\u00edho a obsah datab\u00e1ze. Zm\u011b\u0148te dotaz volaj\u00edc\u00edho tak, aby vr\u00e1til jeden v\u00fdsledek.
-
-#>>>>>>> Add messages for IdentityStore

@@ -12,18 +12,6 @@
     configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.config12.tck">
         <packages>
-            <method-selectors>
-                <method-selector>
-                    <script language="beanshell">
-                    <![CDATA[
-                        !method.getDeclaringClass().getSimpleName().startsWith("ClassConverterTest") &&
-                        !method.getDeclaringClass().getSimpleName().startsWith("ImplicitConverterTest") &&
-                        !method.getName().contains("testDuckConversionWithMultipleConverters") &&
-                        !method.getName().contains("testEnvironmentConfigSource")
-                    ]]>
-                    </script>
-                </method-selector>
-            </method-selectors>
             <package name="org.eclipse.microprofile.config.tck.*"></package>
         </packages>
     </test>

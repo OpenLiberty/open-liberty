@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,6 +113,8 @@ public class H2InboundLink extends HttpInboundLink {
     H2WorkQInterface writeQ = null;
 
     int h2NextPromisedStreamId = 0;
+
+    private String authority = null;
 
     private H2HeaderTable readContextTable = null;
     private H2HeaderTable writeContextTable = null;
@@ -1110,7 +1112,7 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public boolean significantlyPastCloseTime(int streamID) {
-        if (streamTable.contains(streamID))
+        if (streamTable.containsKey(streamID))
             return false;
         if (closeTable.containsKey(streamID)) {
             H2StreamProcessor streamProcessor = closeTable.get(streamID);
@@ -1149,6 +1151,24 @@ public class H2InboundLink extends HttpInboundLink {
 
     public int getHighestClientStreamId() {
         return highestClientStreamId;
+    }
+
+    /**
+     * Set the authority string to use for the :authority header
+     *
+     * @param String
+     */
+    protected void setAuthority(String a) {
+        this.authority = a;
+    }
+
+    /**
+     * Get the server authority string to use for the :authority header. Needed for push promise frames.
+     *
+     * @return authority String
+     */
+    public String getAuthority() {
+        return this.authority;
     }
 
 }

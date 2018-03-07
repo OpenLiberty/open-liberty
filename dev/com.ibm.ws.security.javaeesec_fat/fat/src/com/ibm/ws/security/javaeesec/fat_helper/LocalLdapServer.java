@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,16 +26,20 @@ public class LocalLdapServer {
     public static final String ADMINUSER = "admin";
     public static final String USER1 = "user1";
     public static final String USER2 = "user2";
+    public static final String RUNASUSER1 = "runasuser1";
     public static final String INVALIDUSER = "invalidUSER";
     public static final String ANOTHERUSER1 = "anotheruser1";
     public static final String ANOTHERUSER2 = "anotheruser2";
+    public static final String ANOTHERRUNASUSER1 = "anotherrunasuser1";
     public static final String PASSWORD = "s3cur1ty";
     public static final String ANOTHERPASSWORD = "an0thers3cur1ty";
     public static final String INVALIDPASSWORD = "invalid";
     public static final String GROUP1 = "group1";
     public static final String GROUP2 = "group2";
+    public static final String RUNASGROUP1 = "runasgroup1";
     public static final String ANOTHERGROUP1 = "anothergroup1";
     public static final String ANOTHERGROUP2 = "anothergroup2";
+    public static final String ANOTHERRUNASGROUP1 = "anotherrunasgroup1";
     public static final String GRANTEDGROUP = "grantedgroup";  // this group is allowed to access the servlet. this group is added if user id contains "user"
     public static final String GRANTEDGROUP2 = "grantedgroup2";
 
@@ -59,12 +63,15 @@ public class LocalLdapServer {
         addUser(ldapServer, USERS_BASE, USER1, PASSWORD);
         addUser(ldapServer, USERS_BASE, USER2, PASSWORD);
         addUser(ldapServer, USERS_BASE, INVALIDUSER, PASSWORD);
+        addUser(ldapServer, USERS_BASE, RUNASUSER1, PASSWORD);
 
         String GROUPS_BASE = "ou=" + GROUPS + "," + BASE_DN;
         String[] GROUP1_MEMBERS ={"uid=" + USER1 + "," + USERS_BASE, "uid=" + USER2 + "," + USERS_BASE};
         addGroup(ldapServer, GROUPS_BASE, GROUP1, GROUP1_MEMBERS);
         String[] GROUP2_MEMBERS ={"uid=" + USER2 + "," + USERS_BASE};
         addGroup(ldapServer, GROUPS_BASE, GROUP2, GROUP2_MEMBERS);
+        String[] RUNASGROUP1_MEMBERS ={"uid=" + RUNASUSER1 + "," + USERS_BASE};
+        addGroup(ldapServer, GROUPS_BASE, RUNASGROUP1, RUNASGROUP1_MEMBERS);
 
         String ANOTHERUSERS_BASE = "ou=" + ANOTHERUSERS + "," + BASE_DN;
         addUser(ldapServer, ANOTHERUSERS_BASE, ADMINUSER, ANOTHERPASSWORD);
@@ -72,12 +79,15 @@ public class LocalLdapServer {
         addUser(ldapServer, ANOTHERUSERS_BASE, USER2, ANOTHERPASSWORD);
         addUser(ldapServer, ANOTHERUSERS_BASE, ANOTHERUSER1, ANOTHERPASSWORD);
         addUser(ldapServer, ANOTHERUSERS_BASE, INVALIDUSER, ANOTHERPASSWORD);
+        addUser(ldapServer, ANOTHERUSERS_BASE, ANOTHERRUNASUSER1, ANOTHERPASSWORD);
 
         String ANOTHERGROUPS_BASE = "ou=" + ANOTHERGROUPS + "," + BASE_DN;
         String[] ANOTHERGROUP1_MEMBERS ={"uid=" + USER1 + "," + ANOTHERUSERS_BASE, "uid=" + USER2 + "," + ANOTHERUSERS_BASE, "uid=" + ANOTHERUSER1 + "," + ANOTHERUSERS_BASE, "uid=" + ANOTHERUSER2 + "," + ANOTHERUSERS_BASE};
         addGroup(ldapServer, ANOTHERGROUPS_BASE, ANOTHERGROUP1, ANOTHERGROUP1_MEMBERS);
         String[] ANOTHERGROUP2_MEMBERS ={"uid=" + USER2 + "," + ANOTHERUSERS_BASE};
         addGroup(ldapServer, ANOTHERGROUPS_BASE, ANOTHERGROUP2, ANOTHERGROUP2_MEMBERS);
+        String[] ANOTHERRUNASGROUP1_MEMBERS ={"uid=" + ANOTHERRUNASUSER1 + "," + ANOTHERUSERS_BASE};
+        addGroup(ldapServer, ANOTHERGROUPS_BASE, ANOTHERRUNASGROUP1, ANOTHERRUNASGROUP1_MEMBERS);
 
     }
 

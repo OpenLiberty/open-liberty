@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests.implicit;
  
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.AfterClass;
@@ -88,10 +90,11 @@ public class ImplicitWarLibJarsTest extends LoggingTest {
                         .addAsLibrary(implicitBeanExplicitArchive)
                         .addAsLibrary(utilLib);
 
+       server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitEJBInWar);
        ShrinkHelper.exportDropinAppToServer(server, implicitBeanDiscovery);
-
-       server.waitForStringInLogUsingMark("CWWKZ0001I.*Application implicitBeanDiscovery started");
+       assertNotNull("implicitBeanDiscovery started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitEJBInWar"));
+       assertNotNull("implicitBeanDiscovery started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitBeanDiscovery"));
     }
 
     /**

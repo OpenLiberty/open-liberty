@@ -130,27 +130,22 @@ task createGradleBootstrap {
         rootProject.fileTree(dir: '.', include: '**/*.feature').visit { feature ->
             if (feature.isDirectory()) return
 
+            Properties props = new Properties()
+            props.load(new FileInputStream(feature.getFile()))
+
             String text = feature.getFile().getText()
-            if (text.contains("kind=ga") || text.contains("kind=beta")) {
-                String name = null
-                int index = text.indexOf("symbolicName=")
-                if (index != -1) {
-                    int endIndex = text.indexOf("\n", index)
-                    if (endIndex == -1) {
-                        endIndex = text.length()
-                    }
-                    // symbolicName= is length 13
-                    name = text.substring(index + 13, endIndex)
-                    name = name.replaceAll("\\s+", "")
-                } else {
-                    name = feature.name.substring(0, feature.name.size() - 8)
+            if (props['kind']=="ga" || props['kind']=="beta") {
+                String featureArtifactId = props['symbolicName']
+                String featureName = feature.name.substring(0, feature.name.size() - ".feature".length())
+                if (featureArtifactId == null) {
+                    featureArtifactId = featureName
                 }
 
-                String featureName = feature.name.substring(0, feature.name.size() - 8)
                 String rev = projectPathToVersion.get(featureName)
                 if (rev != null) {
-                    depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa\'\n'
-                    depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa.metadata.zip\'\n'
+                    depsList = depsList + '    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa\'\n'
+                    depsList = depsList + '    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa.metadata.zip\'\n'
+                    depsList = depsList + '    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@pom\'\n'
                 }
             }
         }
@@ -319,10 +314,19 @@ task zipGradleBootstrap(type: Zip) {
     dependsOn createGaESAList
     dependsOn createIndex
     baseName 'gradle-bootstrap'
-    into 'prereq.published', { from new File(project.buildDir, 'dependencies.gradle'),
-                                    new File(project.buildDir, 'gaFeatures.txt'),
-                                    new File(project.buildDir, 'excludeList.txt') }
+    into 'prereq.published', {
+        from new File(project.buildDir, 'dependencies.gradle'),
+             new File(project.buildDir, 'gaFeatures.txt'),
+             new File(project.buildDir, 'excludeList.txt')
+    }
     from new File(project.buildDir, 'replacements')
+    into 'com.ibm.websphere.features.internal.openliberty', {
+        from rootProject.fileTree(dir: '.', include: '*/*.feature').collect {
+            if (!it.isDirectory()) {
+                it
+            }
+        }
+    }
 }
 
 publishing {

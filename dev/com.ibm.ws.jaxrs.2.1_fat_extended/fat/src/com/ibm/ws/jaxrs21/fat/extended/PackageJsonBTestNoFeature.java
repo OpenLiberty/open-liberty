@@ -30,7 +30,7 @@ import jaxrs21.fat.jsonb.JsonBTestServlet;
 public class PackageJsonBTestNoFeature extends FATServletClient {
 
     private static final String appName = "jsonbapp";
-    public static final String JOHNZON_IMPL = "publish/files/johnzon/";
+    public static final String JOHNZON_IMPL = "publish/shared/resources/johnzon/";
     public static final String JSONB_API = "publish/files/jsonbapi/";
 
     @Server("jaxrs21.fat.packageJsonBNoFeature")
@@ -49,6 +49,6 @@ public class PackageJsonBTestNoFeature extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWKC0044W");
+        server.stopServer("CWWKC0044W"); // TODO: remove CWWKC004W once OL issue #1635 is resolved
     }
 }

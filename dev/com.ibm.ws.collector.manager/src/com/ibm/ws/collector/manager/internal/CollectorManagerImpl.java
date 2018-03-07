@@ -382,6 +382,13 @@ public class CollectorManagerImpl implements CollectorManager {
     }
 
     private synchronized void startSourceWithBufferManager(String sourceId, Handler handler) {
+        /*
+         * An active Buffer already exists. This must mean we subscribed two handlers wanting
+         * the same source really quickly back-to-back before the source was set into CollectorManager
+         */
+        if (activeBuffMgrServices.containsKey(sourceId)) {
+            return;
+        }
         //result[0] is sourceName
         //result[1] is location
         String[] result = sourceId.split("\\|");

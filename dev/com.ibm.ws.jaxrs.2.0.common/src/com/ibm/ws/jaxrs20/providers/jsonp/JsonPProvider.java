@@ -16,6 +16,8 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,13 +52,26 @@ public class JsonPProvider implements MessageBodyReader, MessageBodyWriter {
 
     static {
         try {
-            ClassLoadingService clSvc = LibertyJaxRsThreadPoolAdapter.getClassLoadingServiceref().getService();
-            ClassLoader cl = clSvc == null ? Thread.currentThread().getContextClassLoader() : clSvc.createThreadContextClassLoader(JsonPProvider.class.getClassLoader());
+            final ClassLoadingService clSvc = LibertyJaxRsThreadPoolAdapter.getClassLoadingServiceref().getService();
+            final ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
+                @Override
+                public ClassLoader run() {
+                    return clSvc == null ? Thread.currentThread().getContextClassLoader() : clSvc.createThreadContextClassLoader(JsonPProvider.class.getClassLoader());
+                }
+            });
 
             loadClass(cl);
 
             if (clSvc != null) {
-                clSvc.destroyThreadContextClassLoader(cl);
+                AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+                    @Override
+                    public Void run() {
+                        clSvc.destroyThreadContextClassLoader(cl);
+                        return null;
+                    }
+                });
             }
         } catch (NoClassDefFoundError e) {
             ClassLoader cl = Thread.currentThread().getContextClassLoader();

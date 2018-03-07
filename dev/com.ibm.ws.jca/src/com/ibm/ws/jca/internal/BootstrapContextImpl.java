@@ -71,7 +71,6 @@ import com.ibm.ws.jca.security.JCASecurityContext;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
 import com.ibm.ws.jca.utils.metagen.MetatypeGenerator;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.FutureMonitor;
@@ -314,7 +313,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
 
             // Normally it's a bad practice to do this in activate. But here we have a requirement to keep the
             // reference count until some subsequent processing occurs after deactivate.
-            contextSvc = PrivHelper.getService(componentContext, contextSvcRef);
+            contextSvc = Utils.priv.getService(componentContext, contextSvcRef);
 
             jcasu = new JcaServiceUtilities();
             raThreadContextDescriptor = captureRaThreadContext(contextSvc);
@@ -433,9 +432,9 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                     if (value instanceof String) {
                         if (!type.isAssignableFrom(value.getClass()))
                             if (SSLSocketFactory.class.equals(type)) {
-                                BundleContext bundleContext = PrivHelper.getBundleContext(componentContext);
-                                ServiceReference<SSLHelper> sslHelperRef = PrivHelper.getServiceReference(bundleContext, SSLHelper.class);
-                                SSLHelper sslHelper = PrivHelper.getService(bundleContext, SSLHelper.class);
+                                BundleContext bundleContext = Utils.priv.getBundleContext(componentContext);
+                                ServiceReference<SSLHelper> sslHelperRef = Utils.priv.getServiceReference(bundleContext, SSLHelper.class);
+                                SSLHelper sslHelper = Utils.priv.getService(bundleContext, SSLHelper.class);
                                 try {
                                     value = sslHelper.getSSLSocketFactory((String) value);
                                 } finally {
@@ -731,13 +730,13 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             } else if (value != null && reference != null) {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "use bundle context");
-                BundleContext bundleContext = PrivHelper.getBundleContext(componentContext);
+                BundleContext bundleContext = Utils.priv.getBundleContext(componentContext);
                 String filter = FilterUtils.createPropertyFilter(ID, (String) value);
-                Collection<ServiceReference<AdminObjectService>> refs = PrivHelper.getServiceReferences(bundleContext, AdminObjectService.class, filter);
+                Collection<ServiceReference<AdminObjectService>> refs = Utils.priv.getServiceReferences(bundleContext, AdminObjectService.class, filter);
                 if (refs.isEmpty()) {
                     // See if it matches a jndiName if they didn't specify a valid id
                     filter = FilterUtils.createPropertyFilter(AdminObjectService.JNDI_NAME, (String) value);
-                    refs = PrivHelper.getServiceReferences(bundleContext, AdminObjectService.class, filter);
+                    refs = Utils.priv.getServiceReferences(bundleContext, AdminObjectService.class, filter);
                     if (refs.isEmpty()) {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "An administered object for " + value + " was not found.  This is ok if one was not provided.");
@@ -750,7 +749,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                 if (isJNDIName) {
                     value = reference.getProperty(AdminObjectService.JNDI_NAME);
                 } else {
-                    AdminObjectService destinationSvc = PrivHelper.getService(bundleContext, reference);
+                    AdminObjectService destinationSvc = Utils.priv.getService(bundleContext, reference);
                     value = destinationSvc.createResource(null);
                     // Do not unget the service because we are not done using it.
                     // This is similar to a JNDI lookup of an admin object which does not unget the service upon returning it to the app.
@@ -911,7 +910,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     public Class<?> loadClass(final String className) throws ClassNotFoundException {
         ClassLoader raClassLoader = resourceAdapterSvc.getClassLoader();
         if (raClassLoader != null) {
-            return PrivHelper.loadClass(raClassLoader, className);
+            return Utils.priv.loadClass(raClassLoader, className);
         } else {
             // TODO when SIB has converted from bundle to real rar file, then this can be removed
             // and if the rar file does not exist, then a Tr.error should be issued

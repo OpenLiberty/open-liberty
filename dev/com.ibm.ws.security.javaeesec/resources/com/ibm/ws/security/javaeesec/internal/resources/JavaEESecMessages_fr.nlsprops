@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,43 +19,32 @@
 # Message prefix block: CWWKS1900 - CWWKS1924
 # 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
 
-JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: L'objet IdentityStore est introuvable. V\u00e9rifiez qu'au moins un objet IdentityStore est d\u00e9fini par annotation dans l'application.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=L'objet IdentityStore est introuvable. Il est requis pour l'authentification et l'autorisation.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=V\u00e9rifiez que l'application est annot\u00e9e correctement en vue d'activer au moins un objet IdentityStore.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: L'objet IdentityStore configur\u00e9 est introuvable. Assurez-vous que l'objet IdentityStore configur\u00e9 par l'application est disponible.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=L'objet IdentityStore requis pour l'authentification est introuvable.
+JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Examinez les \u00e9ventuels messages d'erreur \u00e9mis par l'objet IdentityStore.
 
-JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Aucun objet IdentityStore ne prend en charge la validation utilisateur. Assurez-vous qu'au moins un objet IdentityStore prend en charge la validation utilisateur.
-JAVAEESEC_ERROR_NO_VALIDATION.explanation=Aucun objet IdentityStore ne prenant en charge la validation utilisateur, le code de s\u00e9curit\u00e9 n'authentifie pas l'utilisateur.
-JAVAEESEC_ERROR_NO_VALIDATION.useraction=Assurez-vous qu'au moins un objet IdentityStore prend en charge la validation utilisateur.
+JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: Aucun objet IdentityStore ne prend en charge la validation de l'utilisateur. Assurez-vous qu'au moins un objet IdentityStore prend en charge la validation utilisateur.
+JAVAEESEC_ERROR_NO_VALIDATION.explanation=Aucun objet IdentityStore n'a \u00e9t\u00e9 trouv\u00e9 pour valider l'utilisateur ; par cons\u00e9quent, l'utilisateur ne peut pas \u00eatre authentifi\u00e9.
+JAVAEESEC_ERROR_NO_VALIDATION.useraction=Assurez-vous qu'au moins un objet IdentityStore prend en charge la validation de l'utilisateur.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: L''objet HttpAuthenticationMechanism pour le module {0} dans l''application {1} est introuvable. V\u00e9rifiez que le module contient un objet HttpAuthenticationMechanism.
-JAVAEESEC_ERROR_NO_HAM.explanation=L'objet HttpAuthenticationMechanism ne peut pas \u00eatre identifi\u00e9 pour l'authentification. Il se peut qu'un tel objet n'existe pas ou que plusieurs objets correspondent \u00e0 la condition sp\u00e9cifi\u00e9e. Assurez-vous de la pr\u00e9sence d'un objet HttpAuthenticationMechanism dans l'application.
-JAVAEESEC_ERROR_NO_HAM.useraction=Assurez-vous de la pr\u00e9sence d'un objet HttpAuthenticationMechanism dans l'application.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: L''objet HttpAuthenticationMechanism pour le module {0} dans l''application {1} n''a pas pu \u00eatre cr\u00e9\u00e9.
+JAVAEESEC_ERROR_NO_HAM.explanation=L'objet HttpAuthenticationMechanism ne peut pas \u00eatre cr\u00e9\u00e9.
+JAVAEESEC_ERROR_NO_HAM.useraction=Examinez les \u00e9ventuels messages d'erreur \u00e9mis par l'objet HttpAuthenticationMechanism.
 
-JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: L''objet ModuleProperties pour authentification de l''application {0} est introuvable, probablement parce que celle-ci ne contient pas d''objet HttpAuthenticationMechanism. V\u00e9rifiez qu''un objet HttpAuthenticationMechanism est d\u00e9fini pour chaque module.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=L'objet ModuleProperties, lequel est requis pour authentifier l'application, ne peut pas \u00eatre identifi\u00e9. En g\u00e9n\u00e9ral, cette erreur r\u00e9sulte d'un objet HttpAuthenticationMechanism qui n'est plus d\u00e9fini dans l'application.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=V\u00e9rifiez que chaque module dans l'application contient un objet HttpAuthenticationMechanism.
-
-JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: Le nom de domaine pour l'authentification de base n'a pas \u00e9t\u00e9 d\u00e9fini, la valeur defaultRealm sera utilis\u00e9e.
-JAVAEESEC_WARNING_NO_REALM_NAME.explanation=Le nom de domaine pour l'authentification de base n'a pas \u00e9t\u00e9 d\u00e9fini, la valeur par d\u00e9faut defaultRealm sera utilis\u00e9e.
-JAVAEESEC_WARNING_NO_REALM_NAME.useraction=Si le nom de domaine doit \u00eatre d\u00e9finie, sp\u00e9cifiez-le \u00e0 l'aide de l'annotation BasicAuthenticationMechanismDefinition dans l'application.
-
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1915E: Le d\u00e9ploiement du module {0} dans l''application {1} a \u00e9chou\u00e9 car plusieurs impl\u00e9mentations HttpAuthenticationMechanism ont \u00e9t\u00e9 trouv\u00e9es. Liste des classes : {2}. Il s''agit probablement d''un probl\u00e8me de packaging de l''application. V\u00e9rifiez qu''une seule impl\u00e9mentation HttpAuthenticationMechanism est pr\u00e9sente dans chaque module.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Le d\u00e9ploiement de l'application a \u00e9chou\u00e9 car plusieurs impl\u00e9mentations HttpAuthenticationMechanism ont \u00e9t\u00e9 d\u00e9tect\u00e9es. Cette condition n'est pas autoris\u00e9e.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=V\u00e9rifiez qu'une seule impl\u00e9mentation HttpAuthenticationMechanism est pr\u00e9sente pour chaque module dans l'application.
-
-JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Une erreur est survenue lors de la r\u00e9solution de la configuration ''{0}'' par le programme pour le magasin d''identit\u00e9s. Assurez-vous que l''expression EL et le r\u00e9sultat sont valides et que les beans r\u00e9f\u00e9renc\u00e9s qui sont utilis\u00e9s dans l''expression peuvent \u00eatre r\u00e9solus. La valeur par d\u00e9faut est ''{1}''.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=La r\u00e9solution de la configuration du magasin d'identit\u00e9s ne g\u00e9n\u00e8re pas une valeur valide.
+#Note to translator, do not translate EL.
+JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Une erreur est survenue lors de l''\u00e9valuation de l''expression EL (Expression Language) pour l''attribut ''{0}'' de l''annotation de magasin d''identit\u00e9s. Assurez-vous que l''expression EL et le r\u00e9sultat sont valides et que les beans r\u00e9f\u00e9renc\u00e9s qui sont utilis\u00e9s dans l''expression peuvent \u00eatre r\u00e9solus. La valeur d''attribut par d\u00e9faut ''{1}'' sera utilis\u00e9e.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=La r\u00e9solution de l'expression EL (Expression Language) de l'attribut de magasin d'identit\u00e9s ne g\u00e9n\u00e8re pas une valeur valide.
 JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Assurez-vous que l'annotation contient une valeur de configuration valide. Si vous utilisez des expressions EL, v\u00e9rifiez qu'elles sont valides et que les beans r\u00e9f\u00e9renc\u00e9s qui sont utilis\u00e9s dans l'expression peuvent \u00eatre r\u00e9solus.
 
 JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Le format d''un param\u00e8tre hashAlgorithm fourni pour l''\u00e9l\u00e9ment hashAlgorithm, {0}, est incorrect. Le param\u00e8tre re\u00e7u est {1}. Le format requis est nom=valeur.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Le format d'une liste de param\u00e8tres hashAlgorithm est incorrect et la liste ne peut pas \u00eatre analys\u00e9e.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Corrigez l'\u00e9l\u00e9ment hashAlgorithmParameters dans l'annotation DatabaseIdentityStore.
 
-JAVAEESEC_WARNING_GEN_DB=CWWKS1918W: La requ\u00eate ''{1}'' pour l''obtention de l''appelant {0} a \u00e9chou\u00e9 dans DatabaseIdentityStore avec l''erreur suivante : {2}
-JAVAEESEC_WARNING_GEN_DB.explanation=La recherche de l'appelant indiqu\u00e9 a \u00e9chou\u00e9 avec une erreur.
-JAVAEESEC_WARNING_GEN_DB.useraction=Prenez connaissance de l'erreur fournie.
+JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: Impossible de valider les donn\u00e9es d''identification de l''appelant {0}. L''ex\u00e9cution de la requ\u00eate ''{1}'' par l''objet DatabaseIdentityStore a \u00e9chou\u00e9 avec l''erreur suivante : {2}
+JAVAEESEC_ERROR_GEN_DB.explanation=La recherche de l'appelant a \u00e9chou\u00e9 avec une erreur.
+JAVAEESEC_ERROR_GEN_DB.useraction=Consultez le message d'erreur.
 
-JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: La requ\u00eate ''{1}'' pour l''obtention des groupes pour l''appelant {0} a \u00e9chou\u00e9 dans DatabaseIdentityStore. La liste partielle des groupes est {2}. L''erreur est {3}.
+JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: L''objet DatabaseIdentityStore n''est pas parvenu \u00e0 ex\u00e9cuter la requ\u00eate ''{1}'' afin d''obtenir les groupes pour l''appelant {0}. La liste partielle des groupes est {2}. L''erreur est {3}.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=La recherche des groupes pour l'appelant a \u00e9chou\u00e9 avec une erreur.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Prenez connaissance de l'erreur fournie. Une liste partielle des groupes est renvoy\u00e9e.
 
@@ -78,5 +67,3 @@ JAVAEESEC_WARNING_NO_PWD.useraction=Si un mot de passe est attendu, v\u00e9rifie
 JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: La requ\u00eate ''{1}'' a renvoy\u00e9 plusieurs r\u00e9sultats pour l''appelant {0} dans DatabaseIdentityStore.
 JAVAEESEC_WARNING_MULTI_CALLER.explanation=Plusieurs r\u00e9sultats ont \u00e9t\u00e9 renvoy\u00e9s pour l'appelant demand\u00e9. La requ\u00eate de l'appelant ne doit renvoyer qu'un seul r\u00e9sultat.
 JAVAEESEC_WARNING_MULTI_CALLER.useraction=V\u00e9rifiez la requ\u00eate de l'appelant et le contenu de la base de donn\u00e9es. Changez la requ\u00eate de l'appelant pour qu'elle ne renvoie qu'un seul r\u00e9sultat.
-
-#>>>>>>> Add messages for IdentityStore

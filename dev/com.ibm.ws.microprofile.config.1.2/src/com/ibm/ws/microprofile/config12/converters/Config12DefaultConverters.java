@@ -11,6 +11,7 @@
 
 package com.ibm.ws.microprofile.config12.converters;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.converters.DefaultConverters;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 
@@ -37,6 +38,7 @@ public class Config12DefaultConverters {
     /**
      * @return defaultConverters
      */
+    @Trivial
     public static PriorityConverterMap getDefaultConverters() {
         return defaultConverters;
     }

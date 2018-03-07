@@ -1736,10 +1736,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             Map<String, ProductInfo> products = ProductInfo.getAllProductInfo();
             StringBuilder builder = new StringBuilder();
             for (ProductInfo productInfo : products.values()) {
-                if (builder.length() != 0) {
-                    builder.append(", ");
+                if (productInfo.getReplacedBy() == null) {
+                    if (builder.length() != 0) {
+                        builder.append(", ");
+                    }
+                    builder.append(productInfo.getDisplayName());
                 }
-                builder.append(productInfo.getDisplayName());
             }
             result = builder.toString();
         } catch (ProductInfoParseException e) {

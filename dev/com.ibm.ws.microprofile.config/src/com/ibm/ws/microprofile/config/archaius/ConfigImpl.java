@@ -14,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.archaius.cache.ConfigCache;
 import com.ibm.ws.microprofile.config.archaius.composite.CompositeConfig;
 import com.ibm.ws.microprofile.config.impl.AbstractConfig;
@@ -65,6 +66,7 @@ public class ConfigImpl extends AbstractConfig implements WebSphereConfig {
 
     /** {@inheritDoc} */
     @Override
+    @Trivial
     public String dump() {
         return composite.dump();
     }

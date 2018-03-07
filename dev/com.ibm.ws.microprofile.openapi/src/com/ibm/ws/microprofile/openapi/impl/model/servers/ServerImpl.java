@@ -15,6 +15,9 @@ import java.util.Objects;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * Server
  *
@@ -118,9 +121,10 @@ public class ServerImpl implements Server {
         StringBuilder sb = new StringBuilder();
         sb.append("class Server {\n");
 
-        sb.append("    url: ").append(toIndentedString(url)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    variables: ").append(toIndentedString(variables)).append("\n");
+        sb = (url != null) ? sb.append("    url: ").append(toIndentedString(url)).append("\n") : sb.append("");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (variables != null) ? sb.append("    variables: ").append(toIndentedString(variables)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

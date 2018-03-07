@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,11 +41,13 @@ import com.ibm.ws.http.channel.h2internal.frames.FrameWindowUpdate;
 import com.ibm.ws.http.channel.h2internal.frames.utils;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.H2Headers;
+import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.http.channel.values.MethodValues;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 
@@ -85,6 +87,9 @@ public class H2StreamProcessor {
 
     // the anticipated content length, as passed in from a content-length header
     private int expectedContentLength = -1;
+
+    // set to true if this stream services a request with the CONNECT method
+    private boolean isConnectStream = false;
 
     // objects to track http2 connection initialization
     private boolean connection_preface_settings_ack_rcvd = false;
@@ -200,8 +205,9 @@ public class H2StreamProcessor {
      * @param Frame
      * @param Direction.WRITING_OUT or Direction.READING_IN
      * @throws ProtocolException
+     * @throws StreamClosedException
      */
-    public synchronized void processNextFrame(Frame frame, Constants.Direction direction) throws ProtocolException {
+    public synchronized void processNextFrame(Frame frame, Constants.Direction direction) throws ProtocolException, StreamClosedException {
 
         // Make it easy to follow frame processing in the trace by searching for "processNextFrame-" to see all fraame processing
         boolean doDebugWhile = false;
@@ -228,22 +234,17 @@ public class H2StreamProcessor {
                 }
             } else if (direction.equals(Constants.Direction.READ_IN)) {
                 // handle a frame recieved after stream closure
-                if (frame.getFrameType() == FrameTypes.PRIORITY) {
-                    // Ignore PRIORITY in all closed situations
+                if (frame.getFrameType() == FrameTypes.PRIORITY || frame.getFrameType() == FrameTypes.RST_STREAM) {
+                    // Ignore PRIORITY and RST_STREAM in all closed situations
                     return;
                 }
+                if (muxLink.closeTable.containsKey(this.myID)) {
+                    throw new StreamClosedException(frame.getFrameType() + " frame received on a closed stream");
+                } else {
+                    throw new ProtocolException(frame.getFrameType() + " frame received on a closed stream");
 
-                if (muxLink.significantlyPastCloseTime(myID)) {
-                    // stream is old, client should know stream was closed
-                    throw new ProtocolException("Stream is already closed");
                 }
 
-                if (frame.getFrameType() == FrameTypes.DATA || frame.getFrameType() == FrameTypes.HEADERS) {
-                    throw new ProtocolException("DATA or HEADERS frame received on a closed stream");
-                } else if (frame.getFrameType() == FrameTypes.RST_STREAM) {
-                    // ignore
-                    return;
-                }
             }
         }
 
@@ -264,6 +265,7 @@ public class H2StreamProcessor {
 
             // if looping to RESET, then load it up now
             if (addFrame == ADDITIONAL_FRAME.RESET) {
+                updateStreamState(StreamState.HALF_CLOSED_LOCAL);
                 currentFrame = new FrameRstStream(myID, addFrameException.getErrorCode(), false);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processNextFrame: exception encountered.  Sending RST_STREAM on stream "
@@ -274,6 +276,7 @@ public class H2StreamProcessor {
 
             // if looping to GOAWAY, then load it up now
             if (addFrame == ADDITIONAL_FRAME.GOAWAY) {
+                updateStreamState(StreamState.HALF_CLOSED_LOCAL);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processNextFrame: addFrame GOAWAY: HighestClientStreamId: " + muxLink.getHighestClientStreamId());
                 }
@@ -298,6 +301,10 @@ public class H2StreamProcessor {
             try {
                 currentFrame.validate(muxLink.getConnectionSettings());
             } catch (Http2Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processNextFrame: " + currentFrame.getFrameType() + " received on stream " + this.myID +
+                                 " is not a valid frame: " + e.getErrorString());
+                }
                 if (addFrame == ADDITIONAL_FRAME.FIRST_TIME || addFrame == ADDITIONAL_FRAME.RESET ||
                     addFrame == ADDITIONAL_FRAME.GOAWAY) {
                     if (e.isConnectionError()) {
@@ -521,9 +528,9 @@ public class H2StreamProcessor {
         if (currentFrame.getFrameType() == FrameTypes.GOAWAY
             || currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
             writeFrameSync();
-            this.updateStreamState(StreamState.CLOSED);
 
             if (currentFrame.getFrameType() == FrameTypes.GOAWAY) {
+                this.updateStreamState(StreamState.CLOSED);
                 muxLink.closeConnectionLink(null);
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -577,6 +584,9 @@ public class H2StreamProcessor {
      */
     private void updateStreamState(StreamState state) {
         this.state = state;
+        if (StreamState.CLOSED.equals(state)) {
+            muxLink.triggerStreamClose(this);
+        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "current stream state for stream " + this.myID + " : " + this.state);
         }
@@ -753,7 +763,7 @@ public class H2StreamProcessor {
 
     }
 
-    public void sendGOAWAYFrame(Http2Exception e) throws ProtocolException {
+    public void sendGOAWAYFrame(Http2Exception e) throws Http2Exception {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sendGOAWAYFrame: " + " :close: H2InboundLink hc: " + muxLink.hashCode());
@@ -843,7 +853,6 @@ public class H2StreamProcessor {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processRstFrame: error received from peer: " + utils.getErrorFromCode(error));
         }
-        muxLink.triggerStreamClose(this);
         this.updateStreamState(StreamState.CLOSED);
     }
 
@@ -858,10 +867,6 @@ public class H2StreamProcessor {
     private void processIdle(Constants.Direction direction) throws CompressionException, FlowControlException, ProtocolException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processIdle entry: stream " + myID);
-        }
-        if (currentFrame.getFrameType() == FrameTypes.HEADERS ||
-            currentFrame.getFrameType() == FrameTypes.PUSH_PROMISE) {
-            muxLink.updateHighestStreamId(myID);
         }
         // Can only receive HEADERS or PRIORITY frame in Idle state
         if (direction == Constants.Direction.READ_IN) {
@@ -976,7 +981,7 @@ public class H2StreamProcessor {
             writeFrameSync();
             if (currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
                 endStream = true;
-                updateStreamState(StreamState.CLOSED);
+                updateStreamState(StreamState.HALF_CLOSED_LOCAL);
             }
         } else if (currentFrame.getFrameType() == FrameTypes.RST_STREAM ||
                    currentFrame.flagEndStreamSet()) {
@@ -988,8 +993,9 @@ public class H2StreamProcessor {
     /**
      * @param direction
      * @throws CompressionException
+     * @throws ProtocolException
      */
-    private void processHalfClosedRemote(Constants.Direction direction) throws FlowControlException, CompressionException {
+    private void processHalfClosedRemote(Constants.Direction direction) throws FlowControlException, CompressionException, ProtocolException {
         // A stream can transition from this state to "closed" by sending a
         // frame that contains an END_STREAM flag or when either peer sends a
         // RST_STREAM frame.
@@ -998,8 +1004,6 @@ public class H2StreamProcessor {
             if ((currentFrame.getFrameType() == FrameTypes.RST_STREAM || currentFrame.flagEndStreamSet())
                 && writeCompleted) {
                 endStream = true;
-                muxLink.triggerStreamClose(this);
-                updateStreamState(StreamState.CLOSED);
 
             } else if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
                 if (currentFrame.flagEndHeadersSet()) {
@@ -1089,9 +1093,9 @@ public class H2StreamProcessor {
             setHeadersComplete();
             try {
                 processCompleteHeaders(true);
-            } catch (CompressionException ce) {
+            } catch (Http2Exception he) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProcessCompleteHeaders CompressionException: " + ce);
+                    Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProcessCompleteHeaders Exception: " + he);
                 }
                 // Free the buffer
                 buf.release();
@@ -1100,9 +1104,9 @@ public class H2StreamProcessor {
                 currentFrame = new FrameRstStream(myID, Constants.CANCEL, false);
                 try {
                     processNextFrame(currentFrame, Constants.Direction.WRITING_OUT);
-                } catch (ProtocolException pe) {
+                } catch (Http2Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProtocolException when sending a reset frame: " + pe);
+                        Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProtocolException when sending a reset frame: " + e);
                     }
                 }
 
@@ -1117,7 +1121,13 @@ public class H2StreamProcessor {
             }
 
             // If all is well, start a new thread to pass along this frame to wc
-            setReadyForRead();
+            try {
+                setReadyForRead();
+            } catch (ProtocolException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.exit(tc, "H2StreamProcessor.sendRequestToWc(): " + e);
+                }
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1138,8 +1148,13 @@ public class H2StreamProcessor {
                 // (spec) If a DATA frame is received whose stream is not in "open" or "half-closed (local)" state, the
                 // recipient MUST respond with a stream error (Section 5.4.2) of type  STREAM_CLOSED.
 
+                if (state == StreamState.IDLE) {
+                    throw new ProtocolException("DATA Frame Received in the wrong state of: " + state);
+                }
                 if (!(state == StreamState.OPEN || state == StreamState.HALF_CLOSED_LOCAL)) {
-                    throw new StreamClosedException("DATA Frame Received in the wrong state of: " + state);
+                    StreamClosedException se = new StreamClosedException("DATA Frame Received in the wrong state of: " + state);
+                    se.setConnectionError(false);
+                    throw se;
                 }
                 break;
 
@@ -1147,10 +1162,16 @@ public class H2StreamProcessor {
                 // (non-spec) HEADERS frame is only read by the server side if the connection was in idle state,
                 // meaning the client/remote side is starting a new stream and sending a request on it, or if the
                 // stream was in open state, meaning that trailer headers were sent
-                if (state != StreamState.IDLE && state != StreamState.OPEN) {
+                if (state == StreamState.HALF_CLOSED_REMOTE || state == StreamState.CLOSED) {
+                    throw new StreamClosedException("HEADERS Frame Received in the wrong state of: " + state);
+                } else if (state != StreamState.IDLE && state != StreamState.OPEN) {
                     throw new ProtocolException("HEADERS Frame Received in the wrong state of: " + state);
                 } else if (state == StreamState.OPEN && !currentFrame.flagEndStreamSet()) {
                     throw new ProtocolException("second HEADERS frame received with no EOS set");
+                } else if (isConnectStream) {
+                    ProtocolException pe = new ProtocolException("HEADERS frame received on a CONNECT stream");
+                    pe.setConnectionError(false);
+                    throw pe;
                 }
                 break;
 
@@ -1193,8 +1214,16 @@ public class H2StreamProcessor {
                 break;
 
             case CONTINUATION:
-                if (!isContinuationFrameExpected()) {
+                if (state == StreamState.IDLE) {
+                    throw new ProtocolException("CONTINUATION Frame Received in the wrong state of: " + state);
+                } else if (state == StreamState.CLOSED) {
+                    throw new StreamClosedException("CONTINUATION Frame Received in the wrong state of: " + state);
+                } else if (!isContinuationFrameExpected()) {
                     throw new ProtocolException("CONTINUATION Frame Received when not in a Continuation State");
+                } else if (isConnectStream) {
+                    ProtocolException pe = new ProtocolException("CONTINUATION frame received on a CONNECT stream");
+                    pe.setConnectionError(false);
+                    throw pe;
                 }
                 break;
 
@@ -1334,7 +1363,7 @@ public class H2StreamProcessor {
      * @throws CompressionException
      * @throws ProtocolException
      */
-    private void processCompleteHeaders(boolean isPush) throws CompressionException {
+    private void processCompleteHeaders(boolean isPush) throws CompressionException, ProtocolException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processCompleteHeaders entry: stream " + myID);
         }
@@ -1408,7 +1437,16 @@ public class H2StreamProcessor {
             }
             // only set headers on the link once
             if ((isPush || !processTrailerHeaders) && h2HttpInboundLinkWrap.getHeadersLength() == 0) {
-                //Add all decoded pseudo-headers / headers to the H2 inbound link wrap
+                if (!isValidH2Request(pseudoHeaders)) {
+                    this.setContinuationFrameExpected(false);
+                    ProtocolException e = new ProtocolException("An invalid request was received on stream-id: " + myID);
+                    e.setConnectionError(false); // mark this as a stream error so we'll generate an RST_STREAM
+                    throw e;
+                }
+                if (pseudoHeaders.get(HpackConstants.AUTHORITY) != null) {
+                    muxLink.setAuthority(pseudoHeaders.get(HpackConstants.AUTHORITY));
+                }
+                //Add all decoded pseudo-headers and headers
                 this.h2HttpInboundLinkWrap.setReadHeaders(headers);
                 this.h2HttpInboundLinkWrap.setReadPseudoHeaders(pseudoHeaders);
             }
@@ -1417,6 +1455,29 @@ public class H2StreamProcessor {
                 Tr.debug(tc, "processCompleteHeaders no header block set: stream " + myID);
             }
         }
+    }
+
+    /**
+     * Check to see if the passed headers contain values for :method, :scheme, and :path
+     * If the CONNECT method header was found, :path and :scheme are not allowed, and :authority is required
+     *
+     * @param HashMap<String, String> headers
+     * @return true if :method, :scheme, and :path are found
+     */
+    private boolean isValidH2Request(HashMap<String, String> pseudoHeaders) {
+        if (MethodValues.CONNECT.getName().equals(pseudoHeaders.get(HpackConstants.METHOD))) {
+            if (pseudoHeaders.get(HpackConstants.PATH) == null && pseudoHeaders.get(HpackConstants.SCHEME) == null
+                && pseudoHeaders.get(HpackConstants.AUTHORITY) != null) {
+                this.isConnectStream = true;
+                return true;
+            }
+            return false;
+        }
+        if (pseudoHeaders.get(HpackConstants.METHOD) != null && pseudoHeaders.get(HpackConstants.PATH) != null &&
+            pseudoHeaders.get(HpackConstants.SCHEME) != null) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -1452,11 +1513,14 @@ public class H2StreamProcessor {
 
     /**
      * Tell the HTTP inbound link that we have data ready for it to read
+     *
+     * @throws ProtocolException
      */
-    private void setReadyForRead() {
+    private void setReadyForRead() throws ProtocolException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setReadyForRead entry: stream id:" + myID);
         }
+        muxLink.updateHighestStreamId(myID);
         if (headersCompleted) {
             ExecutorService executorService = CHFWBundle.getExecutorService();
             Http2Ready readyThread = new Http2Ready(h2HttpInboundLinkWrap);
@@ -1613,7 +1677,7 @@ public class H2StreamProcessor {
             Tr.debug(tc, "writeFrameSync entry: stream: " + myID + " write out the following frame: " + currentFrame);
         }
 
-        if (isStreamClosed()) {
+        if (!currentFrame.getFrameType().equals(FrameTypes.GOAWAY) && isStreamClosed()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "writeFrameSync exit - stream " + myID + " is closed");
             }

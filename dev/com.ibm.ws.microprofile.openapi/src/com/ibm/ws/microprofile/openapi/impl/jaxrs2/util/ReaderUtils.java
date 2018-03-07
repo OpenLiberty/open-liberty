@@ -245,4 +245,44 @@ public class ReaderUtils {
         }
         return null;
     }
+
+    public static void copyParamValues(Parameter to, Parameter from) {
+        if (from.getIn() != null) {
+            to.setIn(from.getIn());
+        }
+        if (from.getAllowEmptyValue() != null) {
+            to.setAllowEmptyValue(from.getAllowEmptyValue());
+        }
+        if (from.getAllowReserved() != null) {
+            to.setAllowReserved(from.getAllowReserved());
+        }
+        if (from.getDeprecated() != null) {
+            to.setDeprecated(from.getDeprecated());
+        }
+        if (from.getDescription() != null) {
+            to.setDescription(from.getDescription());
+        }
+        if (from.getStyle() != null) {
+            to.setStyle(from.getStyle());
+        }
+        if (to.getSchema() == null) {
+            to.setSchema(from.getSchema());
+        }
+        if (to.getContent() == null) {
+            to.setContent(from.getContent());
+        }
+        if (from.getExample() != null) {
+            to.setExample(from.getExample());
+        }
+        if (from.getRequired() != null) {
+            to.setRequired(from.getRequired());
+        }
+        if (from.getExplode() != null) {
+            to.setExplode(from.getExplode());
+        }
+        if (from.getExamples() != null) {
+            to.setExamples(from.getExamples());
+        }
+
+    }
 }

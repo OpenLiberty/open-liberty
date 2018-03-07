@@ -11,7 +11,6 @@
 package com.ibm.ws.collector.manager.buffer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
@@ -22,7 +21,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -32,12 +30,14 @@ public class BufferManagerImpl extends BufferManager {
     private Buffer<Object> ringBuffer;
     private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     private Set<SynchronousHandler> synchronousHandlerSet = new HashSet<SynchronousHandler>();
+
     private final int capacity;
 
     private final String sourceId;
     /* Map to keep track of the next event for a handler */
     private final ConcurrentHashMap<String, HandlerStats> handlerEventMap = new ConcurrentHashMap<String, HandlerStats>();
     private static List<BufferManager> bufferManagerList= new ArrayList<BufferManager>();
+    
     
     private Queue<Object> earlyMessageQueue;
     private volatile static boolean EMQRemovedFlag = false;
@@ -58,6 +58,16 @@ public class BufferManagerImpl extends BufferManager {
             RERWLOCK.writeLock().unlock();
         }
     }
+    
+    public BufferManagerImpl(int capacity, String sourceId, boolean isEMQ) {
+        super();
+        this.sourceId = sourceId;
+        this.capacity = capacity;
+        if (!isEMQ){
+          earlyMessageQueue = null; //don't need earlyMessageQueue
+          ringBuffer = new Buffer<Object>(capacity);
+        }
+    }
 
     @Override
     public void add(Object event) {
@@ -66,23 +76,6 @@ public class BufferManagerImpl extends BufferManager {
 
         RERWLOCK.readLock().lock();
         try {
-
-            /*
-             * Check if we have any synchronous handlers, and write directly to
-             * them
-             */
-            if (!synchronousHandlerSet.isEmpty()) {
-                /*
-                 * There can be many Reader locks, but only one writer lock. This
-                 * ReaderWriter lock is needed to avoid CMException when the add()
-                 * method is forwarding log events to synchronous handlers and an
-                 * addSyncHandler or removeSyncHandler is called
-                 */
-                for (SynchronousHandler synchronousHandler : synchronousHandlerSet) {
-                    synchronousHandler.synchronousWrite(event);
-                }
-
-            }
             
             if(ringBuffer !=  null){
                 ringBuffer.add(event);
@@ -96,6 +89,9 @@ public class BufferManagerImpl extends BufferManager {
 
         } finally {
             RERWLOCK.readLock().unlock();
+            for (SynchronousHandler synchronousHandler : synchronousHandlerSet) {
+            		synchronousHandler.synchronousWrite(event);
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -183,7 +179,9 @@ public class BufferManagerImpl extends BufferManager {
                     syncHandler.synchronousWrite(message);
                 }
             }
-            synchronousHandlerSet.add(syncHandler);
+            Set<SynchronousHandler> synchronousHandlerSetCopy=new HashSet<SynchronousHandler>(synchronousHandlerSet);
+            synchronousHandlerSetCopy.add(syncHandler);
+            synchronousHandlerSet=synchronousHandlerSetCopy;
         } finally {
             RERWLOCK.writeLock().unlock();
         }
@@ -198,7 +196,9 @@ public class BufferManagerImpl extends BufferManager {
          */
         RERWLOCK.writeLock().lock();
         try {
-            synchronousHandlerSet.remove(syncHandler);
+            Set<SynchronousHandler> synchronousHandlerSetCopy=new HashSet<SynchronousHandler>(synchronousHandlerSet);
+            synchronousHandlerSetCopy.remove(syncHandler);
+            synchronousHandlerSet=synchronousHandlerSetCopy;
         } finally {
             RERWLOCK.writeLock().unlock();
         }

@@ -40,4 +40,11 @@ public interface SourcedValue {
 
     @Override
     public String toString();
+
+    /**
+     * Get the property key
+     *
+     * @return the key
+     */
+    String getKey();
 }
