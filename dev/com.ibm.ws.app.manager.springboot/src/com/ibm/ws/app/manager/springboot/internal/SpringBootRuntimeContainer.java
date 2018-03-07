@@ -12,6 +12,8 @@ package com.ibm.ws.app.manager.springboot.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -87,6 +89,12 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     private void invokeSpringMain(Future<Boolean> mainInvokeResult, SpringBootModuleInfo springBootModuleInfo) {
 
         final Method main;
+        ClassLoader newTccl = springBootModuleInfo.getClassLoader();
+        ClassLoader previousTccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            Thread.currentThread().setContextClassLoader(newTccl);
+            return null;
+        });
         try {
             SpringBootApplicationImpl springBootApp = springBootModuleInfo.getSpringBootApplication();
             springBootApp.registerSpringConfigFactory();
@@ -97,11 +105,21 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             futureMonitor.setResult(mainInvokeResult, e);
             return;
+        } finally {
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                Thread.currentThread().setContextClassLoader(previousTccl);
+                return null;
+            });
         }
 
         // Execute the main method asynchronously.
         // The mainInvokeResult is tracked to monitor completion
         executor.execute(() -> {
+            ClassLoader execPreviousTccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                Thread.currentThread().setContextClassLoader(newTccl);
+                return null;
+            });
             try {
                 // TODO figure out how to pass arguments
                 main.invoke(null, new Object[] { new String[0] });
@@ -111,6 +129,11 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
             } catch (IllegalAccessException | IllegalArgumentException e) {
                 // Auto FFDC here this should not happen
                 futureMonitor.setResult(mainInvokeResult, e);
+            } finally {
+                AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                    Thread.currentThread().setContextClassLoader(execPreviousTccl);
+                    return null;
+                });
             }
         });
     }
