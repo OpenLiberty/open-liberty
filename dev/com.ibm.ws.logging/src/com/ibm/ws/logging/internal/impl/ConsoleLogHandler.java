@@ -149,4 +149,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     public void setBTS(BaseTraceService BTS) {
         this.BTS = BTS;
     }
+
+    @Override
+    public void setWriter(Object writer) {
+        this.sysLogHolder = (SystemLogHolder) writer;
+    }
 }

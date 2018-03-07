@@ -121,6 +121,7 @@ public class BaseTraceService implements TrService {
 
     protected static RecursionCounter counterForTraceRouter = new RecursionCounter();
     protected static RecursionCounter counterForTraceSource = new RecursionCounter();
+    protected static RecursionCounter counterForLogSource = new RecursionCounter();
 
     /**
      * Trivial interface for writing "trace" records (this includes logging to messages.log)
@@ -604,7 +605,8 @@ public class BaseTraceService implements TrService {
         }
         invokeMessageRouters(routedMessage);
         if (logSource != null) {
-            logSource.publish(routedMessage);
+            publishToLogSource(routedMessage);
+            //logSource.publish(routedMessage);
         }
         //send events to handlers
         if (TraceComponent.isAnyTracingEnabled()) {
@@ -722,7 +724,6 @@ public class BaseTraceService implements TrService {
 
             formattedMsg = formatter.formatMessage(logRecord);
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
-
             RoutedMessage routedMessage = null;
             if (externalMessageRouter.get() != null) {
                 String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
@@ -752,7 +753,8 @@ public class BaseTraceService implements TrService {
 
             // logSource only receives "normal" messages and messages that are not hidden.
             if (logSource != null) {
-                logSource.publish(routedMessage);
+                publishToLogSource(routedMessage);
+                //logSource.publish(routedMessage);
             }
         }
 
@@ -764,6 +766,19 @@ public class BaseTraceService implements TrService {
         // Proceed to trace processing for all other log records
         if (TraceComponent.isAnyTracingEnabled()) {
             publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
+        }
+    }
+
+    /**
+     * @param routedMessage
+     */
+    private void publishToLogSource(RoutedMessage routedMessage) {
+        try {
+            if (!(counterForTraceSource.incrementCount() > 2)) {
+                logSource.publish(routedMessage);
+            }
+        } finally {
+            counterForTraceSource.decrementCount();
         }
     }
 

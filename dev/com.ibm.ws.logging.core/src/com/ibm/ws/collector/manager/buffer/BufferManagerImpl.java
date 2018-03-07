@@ -26,7 +26,8 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 public class BufferManagerImpl extends BufferManager {
 
-    private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);	
+   // private static final TraceComponent tc = Tr.register("comx.ibm.ws.collector.manager.buffer.BufferManagerImpl" , BufferManagerImpl.class, "Null");	
+	private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);	
     private Buffer<Object> ringBuffer;
     private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     private Set<SynchronousHandler> synchronousHandlerSet = new HashSet<SynchronousHandler>();

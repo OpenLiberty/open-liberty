@@ -29,7 +29,6 @@ import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
-import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
 import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
@@ -77,6 +76,7 @@ public class LogSource implements Source, WsLogHandler {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Setting buffer manager " + this);
         }
+        //BaseTraceService.rawSystemOut.println("LogSource.setBufferManager - Setting buffer manager " + bufferMgr);
         this.bufferMgr = bufferMgr;
     }
 
@@ -111,17 +111,17 @@ public class LogSource implements Source, WsLogHandler {
     @Trivial
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
-        if (!ThreadLocalHandler.get()) {
+        //if (!ThreadLocalHandler.get()) {
+        LogRecord logRecord = routedMessage.getLogRecord();
 
-            LogRecord logRecord = routedMessage.getLogRecord();
-            if (logRecord != null && bufferMgr != null) {
-                LogTraceData parsedMessage = parse(routedMessage);
-                if (!BufferManagerImpl.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
-                    BufferManagerImpl.removeEMQTrigger();
-                }
-                bufferMgr.add(parsedMessage);
+        if (logRecord != null && bufferMgr != null) {
+            LogTraceData parsedMessage = parse(routedMessage);
+            if (!BufferManagerImpl.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
+                BufferManagerImpl.removeEMQTrigger();
             }
+            bufferMgr.add(parsedMessage);
         }
+        //}
     }
 
     private String extractMessage(RoutedMessage routedMessage, LogRecord logRecord) {
@@ -133,11 +133,10 @@ public class LogSource implements Source, WsLogHandler {
     }
 
     public LogTraceData parse(RoutedMessage routedMessage) {
-
         GenericData genData = new GenericData();
         LogRecord logRecord = routedMessage.getLogRecord();
         String messageVal = extractMessage(routedMessage, logRecord);
-
+        //BaseTraceService.rawSystemOut.println("LogSource: message val - " + messageVal);
         long dateVal = logRecord.getMillis();
         genData.addPair("ibm_datetime", dateVal);
 
@@ -206,13 +205,13 @@ public class LogSource implements Source, WsLogHandler {
         LogTraceData logData = new LogTraceData(genData);
         logData.setLevelValue(logRecord.getLevel().intValue());
         logData.setLogLevel(LogFormatUtils.mapLevelToRawType(logRecord));
-
         return logData;
 
     }
 
     /* Overloaded method for test, should be removed down the line */
     public LogTraceData parse(RoutedMessage routedMessage, LogRecord logRecord) {
+        //BaseTraceService.rawSystemOut.println("LogSource: Nothing should come through this parse");
         return parse(routedMessage);
 
     }

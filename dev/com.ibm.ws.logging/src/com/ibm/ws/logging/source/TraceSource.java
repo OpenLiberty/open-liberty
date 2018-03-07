@@ -98,11 +98,11 @@ public class TraceSource implements Source, WsTraceHandler {
     @Override
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
-        if (!ThreadLocalHandler.get()) {
-            if (routedMessage.getLogRecord() != null && bufferMgr != null) {
-                bufferMgr.add(parse(routedMessage, null));
-            }
+        //if (!ThreadLocalHandler.get()) {
+        if (routedMessage.getLogRecord() != null && bufferMgr != null) {
+            bufferMgr.add(parse(routedMessage, null));
         }
+        // }
     }
 
     public LogTraceData parse(RoutedMessage routedMessage, Object id) {

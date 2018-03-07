@@ -112,13 +112,16 @@ public class SourceManager {
             //Last subscriber, unassign the buffer
             //Inform the source that buffer will no longer be available
             //and it should stop sending events to this buffer.
-            source.unsetBufferManager(bufferMgr);
+
             /*
              * Temporary Fix, can not set bufferMgr to null if this SrcMgr belongs
              * to LogSource or TraceSource
              */
-            if (!sourceId.contains(CollectorConstants.MESSAGES_SOURCE) && !sourceId.contains(CollectorConstants.TRACE_SOURCE))
+            if (!sourceId.contains(CollectorConstants.MESSAGES_SOURCE) && !sourceId.contains(CollectorConstants.TRACE_SOURCE)) {
+                source.unsetBufferManager(bufferMgr);
                 bufferMgr = null;
+            }
+
             return true;
         }
         return false;
