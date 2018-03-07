@@ -2,7 +2,8 @@
 
     <featureManager>
         <feature>bells-1.0</feature>
-        <feature>servlet-3.1</feature>
+        <feature>cdi-2.0</feature>
+        <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
         <feature>sessionCache-1.0</feature>
         <feature>timedexit-1.0</feature>
@@ -22,7 +23,6 @@
     <library id="HazelcastLibB">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
     </library>
-    
     
     <variable name="hazelcast" value="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
     <javaPermission codebase="${hazelcast}" className="java.io.FilePermission" actions="read" name="hazelcast.xml"/>
