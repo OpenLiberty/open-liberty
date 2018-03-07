@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <!-- Application scoped config properties -->
+ <Designate factoryPid="com.ibm.ws.appconfig.appProperties">
+  <Object ocdref="com.ibm.ws.appconfig.appProperties" />
+ </Designate>
+ <OCD id="com.ibm.ws.appconfig.appProperties" ibm:childAlias="appProperties" ibm:any="1" ibm:parentPid="com.ibm.ws.app.manager" ibm:supportHiddenExtensions="true" name="%appProperties" description="%appProperties.desc" ibm:action="generateSchema">
+ <!-- all properties are custom -->
+ </OCD>
+
+</metatype:MetaData>

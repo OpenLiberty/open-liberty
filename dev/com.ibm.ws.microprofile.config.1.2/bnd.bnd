@@ -27,15 +27,15 @@ testsrc: test/src
 Export-Package: \
     !com.ibm.ws.microprofile.config.resources, \
     com.ibm.ws.microprofile.config.*, \
+    !com.ibm.ws.microprofile.config12.resources, \
     com.ibm.ws.microprofile.config12.*
 
-Private-Package: \
-    com.ibm.ws.microprofile.config.resources
+Private-Package: com.ibm.ws.microprofile.config.resources, \
+                 com.ibm.ws.microprofile.config12.resources
 
 Import-Package: \
         org.eclipse.microprofile.config;version="[1.0,2)", \
         org.eclipse.microprofile.config.spi;version="[1.2,2)", \
-        !com.ibm.ws.microprofile.config.*, \
         *
 
 WS-TraceGroup: APPCONFIG
