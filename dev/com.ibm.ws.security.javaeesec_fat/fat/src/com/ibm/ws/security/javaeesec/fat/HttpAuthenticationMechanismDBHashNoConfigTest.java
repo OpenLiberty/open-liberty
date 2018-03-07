@@ -118,7 +118,7 @@ public class HttpAuthenticationMechanismDBHashNoConfigTest extends JavaEESecTest
         // check based on user
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
                                                           Constants.DB_CUSTOM_PWD1,
-                                                          HttpServletResponse.SC_FORBIDDEN);
+                                                          HttpServletResponse.SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
