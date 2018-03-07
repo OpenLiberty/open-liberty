@@ -79,12 +79,14 @@ public class RememberMeTest extends JavaEESecTestBase {
                                                "web.war.mechanisms",
                                                "web.war.mechanisms.rememberme.secureonlyfalse",
                                                "web.war.identitystores",
+                                               "web.war.identitystores.scoped.application",
                                                "web.war.identitystores.rememberme");
 
         WCApplicationHelper.addWarToServerApps(myServer, "UnprotectedRememberMe.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets.unprotected.rememberme",
                                                "web.war.mechanisms",
                                                "web.war.mechanisms.rememberme",
                                                "web.war.identitystores",
+                                               "web.war.identitystores.scoped.application",
                                                "web.war.identitystores.rememberme");
 
         myServer.setServerConfigurationFile("rememberMe.xml");
