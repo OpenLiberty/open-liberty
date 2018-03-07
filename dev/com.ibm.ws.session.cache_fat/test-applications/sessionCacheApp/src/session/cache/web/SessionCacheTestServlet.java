@@ -342,6 +342,14 @@ public class SessionCacheTestServlet extends FATServlet {
     }
 
     /**
+     * Set the maxInactiveInterval for the given session to 1 second
+     */
+    public void setMaxInactiveInterval(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpSession session = request.getSession(false);
+        session.setMaxInactiveInterval(1);
+    }
+
+    /**
      * Convert a String value to the specified type.
      * This is valid for the primitive wrapper classes (such as java.lang.Integer)
      * and any other type that has a single argument String constructor.

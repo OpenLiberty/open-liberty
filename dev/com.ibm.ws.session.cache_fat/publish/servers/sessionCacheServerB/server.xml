@@ -16,7 +16,7 @@
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
     
-    <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="10m"/>
 
     <bell libraryRef="HazelcastLibB" service="javax.cache.spi.CachingProvider"/>
 

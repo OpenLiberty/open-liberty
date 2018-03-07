@@ -12,6 +12,7 @@ package com.ibm.ws.session.cache.fat;
 
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -240,5 +241,29 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         } finally {
             appB.invalidateSession(session);
         }
+    }
+
+    /**
+     * Ensure that if setMaxInactiveInterval(int interval) is called on a session
+     * that that value overrides the invalidation time configured in server.xml
+     * for the given session.
+     */
+    @Test
+    public void testMaxInactiveInterval() throws Exception {
+        List<String> session = new ArrayList<>();
+        appA.sessionPut("testMaxInactiveInterval-key", 55901, session, true);
+        appB.sessionGet("testMaxInactiveInterval-key", 55901, session);
+        appA.invokeServlet("setMaxInactiveInterval", session); //set max inactive interval to 1 second
+
+        for (int attempt = 0; attempt < 5; attempt++) {
+            try {
+                Thread.sleep(3000); //wait for 3 seconds
+                appB.invokeServlet("testSessionEmpty", session);
+                return; //testSessionEmpty passed so the session has been invalidated
+            } catch (AssertionError e) {
+                //We are likely on a slow machine, we'll try again
+            }
+        }
+        fail("The session was not invalidated after 5 attempts.  This is likely due to a slow machine.");
     }
 }
