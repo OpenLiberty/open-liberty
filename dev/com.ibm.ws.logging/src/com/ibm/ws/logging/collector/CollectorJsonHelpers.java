@@ -17,21 +17,23 @@ import java.text.SimpleDateFormat;
  */
 public class CollectorJsonHelpers {
 
-    private static String start_message_json = null;
-    private static String start_message_json_1_1 = null;
-    private static String start_trace_json = null;
-    private static String start_trace_json_1_1 = null;
-    private static String start_ffdc_json = null;
-    private static String start_ffdc_json_1_1 = null;
-    private static String start_accesslog_json = null;
-    private static String start_accesslog_json_1_1 = null;
-    private static String start_gc_json = null;
-    private static String start_gc_json_1_1 = null;
-    private static String message_event_type_field_json = "\"type\":\"liberty_message\"";
-    private static String trace_event_type_field_json = "\"type\":\"liberty_trace\"";
-    private static String accesslog_event_type_field_json = "\"type\":\"liberty_accesslog\"";
-    private static String ffdc_event_type_field_json = "\"type\":\"liberty_ffdc\"";
-    private static String gc_event_type_field_json = "\"type\":\"liberty_gc\"";
+    private static String startMessageJson = null;
+    private static String startMessageJson1_1 = null;
+    private static String startTraceJson = null;
+    private static String startTraceJson1_1 = null;
+    private static String startFFDCJson = null;
+    private static String startFFDCJson1_1 = null;
+    private static String startAccessLogJson = null;
+    private static String startAccessLogJson1_1 = null;
+    private static String startGCJson = null;
+    private static String startGCJson1_1 = null;
+    private static final String messageEventTypeFieldJson = "\"type\":\"liberty_message\"";
+    private static final String traceEventTypeFieldJson = "\"type\":\"liberty_trace\"";
+    private static final String accessLogEventTypeFieldJson = "\"type\":\"liberty_accesslog\"";
+    private static final String ffdcEventTypeFieldJson = "\"type\":\"liberty_ffdc\"";
+    private static final String gcEventTypeFieldJson = "\"type\":\"liberty_gc\"";
+    private static String unchangingFieldsJson = null;
+    private static String unchangingFieldsJson1_1 = null;
 
     protected static String getEventType(String source, String location) {
         if (source.equals(CollectorConstants.GC_SOURCE) && location.equals(CollectorConstants.MEMORY)) {
@@ -150,47 +152,40 @@ public class CollectorJsonHelpers {
         }
     }
 
-    private static String unchanging_fields_json = null;
-
     private static void addUnchangingFields(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
-        if (unchanging_fields_json != null) {
-            sb.append(unchanging_fields_json);
-        } else {
+        if (unchangingFieldsJson == null) {
             StringBuilder temp = new StringBuilder(512);
             addToJSON(temp, "host", hostName, false, false, false, false);
             addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, false);
             addToJSON(temp, "serverName", serverName, false, false, false, false);
-            unchanging_fields_json = temp.toString();
-            sb.append(unchanging_fields_json);
+            unchangingFieldsJson = temp.toString();
         }
+        sb.append(unchangingFieldsJson);
     }
 
-    private static String unchanging_fields_json_1_1 = null;
-
     private static void addUnchangingFields1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
-        if (unchanging_fields_json_1_1 != null) {
-            sb.append(unchanging_fields_json_1_1);
-        } else {
+        if (unchangingFieldsJson1_1 == null) {
             StringBuilder temp = new StringBuilder(512);
             addToJSON(temp, "host", hostName, false, false, false, false);
             addToJSON(temp, "ibm_userDir", wlpUserDir, false, true, false, false);
             addToJSON(temp, "ibm_serverName", serverName, false, false, false, false);
-            unchanging_fields_json_1_1 = temp.toString();
-            sb.append(unchanging_fields_json_1_1);
+            unchangingFieldsJson1_1 = temp.toString();
         }
+        sb.append(unchangingFieldsJson1_1);
+
     }
 
     protected static StringBuilder startMessageJson(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_message_json != null) {
-            sb.append(start_message_json);
+        if (startMessageJson != null) {
+            sb.append(startMessageJson);
         } else {
             sb.append("{");
-            sb.append(message_event_type_field_json);
+            sb.append(messageEventTypeFieldJson);
             addUnchangingFields(sb, hostName, wlpUserDir, serverName);
 
-            start_message_json = sb.toString();
+            startMessageJson = sb.toString();
         }
 
         return sb;
@@ -199,14 +194,14 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startTraceJson(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_trace_json != null) {
-            sb.append(start_trace_json);
+        if (startTraceJson != null) {
+            sb.append(startTraceJson);
         } else {
             sb.append("{");
-            sb.append(trace_event_type_field_json);
+            sb.append(traceEventTypeFieldJson);
             addUnchangingFields(sb, hostName, wlpUserDir, serverName);
 
-            start_trace_json = sb.toString();
+            startTraceJson = sb.toString();
         }
 
         return sb;
@@ -215,14 +210,14 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startFFDCJson(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_ffdc_json != null) {
-            sb.append(start_ffdc_json);
+        if (startFFDCJson != null) {
+            sb.append(startFFDCJson);
         } else {
             sb.append("{");
-            sb.append(ffdc_event_type_field_json);
+            sb.append(ffdcEventTypeFieldJson);
             addUnchangingFields(sb, hostName, wlpUserDir, serverName);
 
-            start_ffdc_json = sb.toString();
+            startFFDCJson = sb.toString();
         }
 
         return sb;
@@ -231,14 +226,14 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startAccessLogJson(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_accesslog_json != null) {
-            sb.append(start_accesslog_json);
+        if (startAccessLogJson != null) {
+            sb.append(startAccessLogJson);
         } else {
             sb.append("{");
-            sb.append(accesslog_event_type_field_json);
+            sb.append(accessLogEventTypeFieldJson);
             addUnchangingFields(sb, hostName, wlpUserDir, serverName);
 
-            start_accesslog_json = sb.toString();
+            startAccessLogJson = sb.toString();
         }
 
         return sb;
@@ -247,14 +242,14 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startGCJson(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_gc_json != null) {
-            sb.append(start_gc_json);
+        if (startGCJson != null) {
+            sb.append(startGCJson);
         } else {
             sb.append("{");
-            sb.append(gc_event_type_field_json);
+            sb.append(gcEventTypeFieldJson);
             addUnchangingFields(sb, hostName, wlpUserDir, serverName);
 
-            start_gc_json = sb.toString();
+            startGCJson = sb.toString();
         }
 
         return sb;
@@ -263,14 +258,14 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startMessageJson1_1(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_message_json_1_1 != null) {
-            sb.append(start_message_json_1_1);
+        if (startMessageJson1_1 != null) {
+            sb.append(startMessageJson1_1);
         } else {
             sb.append("{");
-            sb.append(message_event_type_field_json);
+            sb.append(messageEventTypeFieldJson);
             addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
 
-            start_message_json_1_1 = sb.toString();
+            startMessageJson1_1 = sb.toString();
         }
 
         return sb;
@@ -279,14 +274,14 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startTraceJson1_1(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_trace_json_1_1 != null) {
-            sb.append(start_trace_json_1_1);
+        if (startTraceJson1_1 != null) {
+            sb.append(startTraceJson1_1);
         } else {
             sb.append("{");
-            sb.append(trace_event_type_field_json);
+            sb.append(traceEventTypeFieldJson);
             addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
 
-            start_trace_json_1_1 = sb.toString();
+            startTraceJson1_1 = sb.toString();
         }
 
         return sb;
@@ -295,14 +290,14 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startFFDCJson1_1(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_ffdc_json_1_1 != null) {
-            sb.append(start_ffdc_json_1_1);
+        if (startFFDCJson1_1 != null) {
+            sb.append(startFFDCJson1_1);
         } else {
             sb.append("{");
-            sb.append(ffdc_event_type_field_json);
+            sb.append(ffdcEventTypeFieldJson);
             addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
 
-            start_ffdc_json_1_1 = sb.toString();
+            startFFDCJson1_1 = sb.toString();
         }
 
         return sb;
@@ -311,14 +306,14 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startAccessLogJson1_1(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_accesslog_json_1_1 != null) {
-            sb.append(start_accesslog_json_1_1);
+        if (startAccessLogJson1_1 != null) {
+            sb.append(startAccessLogJson1_1);
         } else {
             sb.append("{");
-            sb.append(accesslog_event_type_field_json);
+            sb.append(accessLogEventTypeFieldJson);
             addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
 
-            start_accesslog_json_1_1 = sb.toString();
+            startAccessLogJson1_1 = sb.toString();
         }
 
         return sb;
@@ -327,14 +322,14 @@ public class CollectorJsonHelpers {
     protected static StringBuilder startGCJson1_1(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
-        if (start_gc_json_1_1 != null) {
-            sb.append(start_gc_json_1_1);
+        if (startGCJson1_1 != null) {
+            sb.append(startGCJson1_1);
         } else {
             sb.append("{");
-            sb.append(gc_event_type_field_json);
+            sb.append(gcEventTypeFieldJson);
             addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
 
-            start_gc_json_1_1 = sb.toString();
+            startGCJson1_1 = sb.toString();
         }
 
         return sb;
