@@ -30,7 +30,7 @@ Service-Component: \
     zipCachingService=com.ibm.ws.artifact.zip.cache.ZipCachingService;\
     globalClassloadingConfiguration=com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;\
     dynamic:='containerFactory';\
-    properties:="service.vendor=IBM,category=JAR,handlesType=java.io.File|com.ibm.wsspi.artifact.ArtifactEntry,handlesEntries=.zip|.jar|.sar|.war|.ear|.rar|.eba|.esa",\
+    properties:="service.vendor=IBM,category=JAR,handlesType=java.io.File|com.ibm.wsspi.artifact.ArtifactEntry,handlesEntries=.zip|.jar|.sar|.war|.ear|.rar|.eba|.esa|.spr",\
    com.ibm.ws.artifact.zip.cache.service;\
     implementation:=com.ibm.ws.artifact.zip.cache.internal.ZipCachingServiceImpl;\
     provide:=com.ibm.ws.artifact.zip.cache.ZipCachingService;\
