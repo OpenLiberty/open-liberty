@@ -121,6 +121,8 @@ public class H2StreamProcessor {
     private long actualReadCount = 0;
     private CountDownLatch readLatch = new CountDownLatch(1);
 
+    private boolean rstStreamSent = false;
+
     /**
      * Constructor
      *
@@ -215,9 +217,23 @@ public class H2StreamProcessor {
             Tr.debug(tc, "processNextFrame-entry:  stream: " + myID + " frame type: " + frame.getFrameType().toString() + " direction: " + direction.toString()
                          + " H2InboundLink hc: " + muxLink.hashCode());
         }
+        // if we've already sent a reset frame on this stream , process any window size changes then ignore the new frame
+        if (rstStreamSent) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "{0} frame received on stream {1} after RST_STREAM sent", frame.getFrameType(), myID);
+            }
+            try {
+                updateStreamReadWindow();
+            } catch (Http2Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "hit an exception updating the read window on stream {0}", myID);
+                }
+            }
+            return;
+        }
         if (isStreamClosed()) {
             // stream is already closed
-            if (direction.equals(Constants.Direction.WRITING_OUT)) {
+            if (direction.equals(Constants.Direction.WRITING_OUT) && !this.continuationExpected) {
                 // handle a write requested after stream closure
                 if (muxLink.significantlyPastCloseTime(myID)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -232,10 +248,12 @@ public class H2StreamProcessor {
                     // ignore
                     return;
                 }
-            } else if (direction.equals(Constants.Direction.READ_IN)) {
+            } else if (direction.equals(Constants.Direction.READ_IN) &&
+                       !frame.getFrameType().equals(FrameTypes.PUSH_PROMISE)) {
                 // handle a frame recieved after stream closure
-                if (frame.getFrameType() == FrameTypes.PRIORITY || frame.getFrameType() == FrameTypes.RST_STREAM) {
-                    // Ignore PRIORITY and RST_STREAM in all closed situations
+                if (frame.getFrameType() == FrameTypes.PRIORITY || frame.getFrameType() == FrameTypes.RST_STREAM
+                    || frame.getFrameType() == FrameTypes.WINDOW_UPDATE) {
+                    // Ignore PRIORITY RST_STREAM and WINDOW_UPDATE in all closed situations
                     return;
                 }
                 if (muxLink.closeTable.containsKey(this.myID)) {
@@ -528,9 +546,10 @@ public class H2StreamProcessor {
         if (currentFrame.getFrameType() == FrameTypes.GOAWAY
             || currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
             writeFrameSync();
+            rstStreamSent = true;
+            this.updateStreamState(StreamState.CLOSED);
 
             if (currentFrame.getFrameType() == FrameTypes.GOAWAY) {
-                this.updateStreamState(StreamState.CLOSED);
                 muxLink.closeConnectionLink(null);
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -721,7 +740,7 @@ public class H2StreamProcessor {
      * If this stream is receiving a DATA frame, the local read window needs to be updated. If the read window drops below a threshold,
      * a WINDOW_UPDATE frame will be sent for both the connection and stream to update the windows.
      */
-    private void updateStreamReadWindow() throws FlowControlException {
+    private void updateStreamReadWindow() throws Http2Exception {
         if (currentFrame instanceof FrameData) {
             long frameSize = currentFrame.getPayloadLength();
             streamReadWindowSize -= frameSize; // decrement stream read window
@@ -734,22 +753,30 @@ public class H2StreamProcessor {
 
                 int windowChange = (int) (muxLink.maxReadWindowSize - this.streamReadWindowSize);
                 Frame savedFrame = currentFrame; // save off the current frame
-                currentFrame = new FrameWindowUpdate(myID, windowChange, false);
-                writeFrameSync();
+                if (!this.isStreamClosed()) {
+                    currentFrame = new FrameWindowUpdate(myID, windowChange, false);
+                    writeFrameSync();
+                    currentFrame = savedFrame;
+                }
                 long windowSizeIncrement = muxLink.maxReadWindowSize - muxLink.connectionReadWindowSize;
-                currentFrame = new FrameWindowUpdate(0, (int) windowSizeIncrement, false);
-                writeFrameSync();
-                currentFrame = savedFrame;
+                FrameWindowUpdate wuf = new FrameWindowUpdate(0, (int) windowSizeIncrement, false);
+                this.muxLink.getStream(0).processNextFrame(wuf, Direction.WRITING_OUT);
             }
         }
     }
 
+    /**
+     * Updates the initial window size for this stream. If any data frames are waiting for an increased window size,
+     * write them out if the new window size allows it.
+     *
+     * @param newSize - new window size
+     */
     protected void updateInitialWindowsUpdateSize(int newSize) {
         // this method should only be called by the thread that came in on processNewFrame.
         // newSize should be treated as an unsigned 32-bit int
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "updateInitialWindowsUpdateSize entry: newSize: " + newSize);
+            Tr.debug(tc, "updateInitialWindowsUpdateSize entry: stream {0} newSize: {1}", myID, newSize);
         }
 
         long diff = newSize - streamWindowUpdateWriteInitialSize;
@@ -761,6 +788,23 @@ public class H2StreamProcessor {
             Tr.debug(tc, "streamWindowUpdateWriteLimit updated to: " + streamWindowUpdateWriteLimit);
         }
 
+        // if any data frames were waiting for a window update, write them out now
+        if (dataWaitingForWindowUpdate != null &&
+            !this.isWindowLimitExceeded(this.dataWaitingForWindowUpdate.peek())) {
+            waitingForWindowUpdate = false;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "updateInitialWindowsUpdateSize stream {0} can begin resume writing out DATA frames", myID);
+            }
+            FrameData dataFrame = dataWaitingForWindowUpdate.remove();
+            if (this.dataWaitingForWindowUpdate.isEmpty()) {
+                this.dataWaitingForWindowUpdate = null;
+            }
+            try {
+                processNextFrame(dataFrame, Constants.Direction.WRITING_OUT);
+            } catch (Http2Exception h2e) {
+                this.muxLink.close(this.muxLink.initialVC, h2e);
+            }
+        }
     }
 
     public void sendGOAWAYFrame(Http2Exception e) throws Http2Exception {
@@ -897,7 +941,7 @@ public class H2StreamProcessor {
             if (frameType == FrameTypes.HEADERS) {
                 updateStreamState(StreamState.OPEN);
                 if (!currentFrame.flagEndHeadersSet()) {
-                    setContinuationFrameExpected(true);
+//                    setContinuationFrameExpected(true);
                 }
             }
             writeFrameSync();
@@ -921,6 +965,7 @@ public class H2StreamProcessor {
                 // if this is a header frame, it must be trailer data
                 getHeadersFromFrame();
                 if (currentFrame.flagEndHeadersSet()) {
+                    setContinuationFrameExpected(false);
                     processCompleteHeaders(false);
                     setHeadersComplete();
                     if (currentFrame.flagEndStreamSet()) {
@@ -942,13 +987,13 @@ public class H2StreamProcessor {
 
             } else if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
                 if (currentFrame.flagEndHeadersSet()) {
-                    setContinuationFrameExpected(false);
+//                    setContinuationFrameExpected(false);
                     if (currentFrame.flagEndStreamSet()) {
                         endStream = true;
                         updateStreamState(StreamState.HALF_CLOSED_LOCAL);
                     }
                 } else {
-                    setContinuationFrameExpected(true);
+//                    setContinuationFrameExpected(true);
                     if (currentFrame.flagEndStreamSet()) {
                         endStream = true;
                     }
@@ -1001,16 +1046,17 @@ public class H2StreamProcessor {
         // RST_STREAM frame.
         if (direction == Direction.WRITING_OUT) {
             boolean writeCompleted = writeFrameSync();
-            if ((currentFrame.getFrameType() == FrameTypes.RST_STREAM || currentFrame.flagEndStreamSet())
-                && writeCompleted) {
-                endStream = true;
-
-            } else if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
+            if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
                 if (currentFrame.flagEndHeadersSet()) {
                     setContinuationFrameExpected(false);
                 } else {
                     setContinuationFrameExpected(true);
                 }
+            }
+            if ((currentFrame.getFrameType() == FrameTypes.RST_STREAM || currentFrame.flagEndStreamSet() && !continuationExpected)
+                && writeCompleted) {
+                endStream = true;
+                updateStreamState(StreamState.CLOSED);
             }
         } else if (currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
             endStream = true;
@@ -1506,7 +1552,9 @@ public class H2StreamProcessor {
         }
         buf.flip();
         if (expectedContentLength != -1 && buf.limit() != expectedContentLength) {
-            throw new ProtocolException("content-length header did not match the expected amount of data received");
+            ProtocolException pe = new ProtocolException("content-length header did not match the expected amount of data received");
+            pe.setConnectionError(false); // stream error
+            throw pe;
         }
         moveDataIntoReadBufferArray(buf);
     }
@@ -1671,6 +1719,8 @@ public class H2StreamProcessor {
     /**
      * Write out the frame that's currently set on this stream; first, check to make sure that
      * we're actually writing out a write frame, as we expect.
+     *
+     * @return true if a write request was successfully passed on to the underlying link
      */
     private boolean writeFrameSync() throws FlowControlException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1792,12 +1842,18 @@ public class H2StreamProcessor {
                 Tr.debug(tc, "waitForConnectionInit: waiting for the H2 connection to complete initialization on " + streamId());
             }
             // the connection isn't initialized yet; wait on the init lock
-            muxLink.initLock.await();
-            // check to see if the initialization failed
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "waitForConnectionInit: stop waiting, H2 connection initialized " + streamId());
+            boolean rc = muxLink.initLock.await(10, java.util.concurrent.TimeUnit.SECONDS);
+            if (rc) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "waitForConnectionInit: stop waiting, H2 connection initialized " + streamId());
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "waitForConnectionInit: stop waiting, timed out waiting for client ");
+                }
+                muxLink.close(muxLink.initialVC, new ProtocolException("http/2 protocol initialization failed"));
             }
-            return true;
+            return rc;
         } catch (InterruptedException e) {
             // server error handled in caller
             return false;

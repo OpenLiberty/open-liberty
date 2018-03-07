@@ -40,11 +40,6 @@ Export-Package: \
     com.ibm.ws.http.dispatcher.classify, \
     com.ibm.ws.http.channel.outstream, \
     com.ibm.ws.http.channel.inputstream, \
-    com.ibm.ws.http.channel.h2internal, \
-    com.ibm.ws.http.channel.h2internal.frames, \
-    com.ibm.ws.http.channel.h2internal.exceptions, \
-    com.ibm.ws.http.channel.h2internal.hpack, \
-    com.ibm.ws.http.channel.h2internal.huffman, \
     com.ibm.ws.http.logging.source
 
 Private-Package: \
