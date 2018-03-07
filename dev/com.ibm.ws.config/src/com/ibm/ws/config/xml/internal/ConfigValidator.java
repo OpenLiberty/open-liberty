@@ -213,7 +213,7 @@ class ConfigValidator {
         logRegistryEntry(registryEntry);
 
         String validationMessage = generateCollisionMessage(pid, id, registryEntry, conflictedElementLists);
-        Tr.warning(tc, "warn.config.validate.failed", validationMessage);
+        Tr.audit(tc, "info.config.conflict", validationMessage);
         return false;
     }
 
