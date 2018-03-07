@@ -20,7 +20,6 @@ public final class SpringConstants {
     public static final String SPRING_BOOT_SUPPORT_CAPABILITY = "spring.boot.support";
     public static final String SPRING_BOOT_SUPPORT_CAPABILITY_JARS = "jars";
     public static final String SPRING_SHARED_LIB_CACHE_DIR = "lib.index.cache/";
-    public static final String SPRING_LIB_INDEX_FILE = "META-INF/spring.lib.index";
     public static final String SPRING_THIN_APPS_DIR = WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR + "apps/spring.thin.apps/";
     public static final String SPRING_BOOT_CONFIG_NAMESPACE = "liberty.springboot.config";
     public static final String SPRING_BOOT_CONFIG_BUNDLE_PREFIX = "springBootVirtualHost@";

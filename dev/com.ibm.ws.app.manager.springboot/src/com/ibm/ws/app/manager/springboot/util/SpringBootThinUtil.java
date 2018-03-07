@@ -30,8 +30,6 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.ibm.ws.app.manager.springboot.internal.SpringConstants;
-
 /**
  * A utility class for thinning an uber jar by separating application code in a separate jar
  * and libraries(dependencies) in a zip or a directory.
@@ -45,6 +43,7 @@ public class SpringBootThinUtil {
     private final String springBootLibPath;
     private final List<String> libEntries = new ArrayList<>();
     private final Set<String> hashPrefixes = new HashSet<>();
+    public static final String SPRING_LIB_INDEX_FILE = "META-INF/spring.lib.index";
 
     public SpringBootThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache, boolean putLibCacheInDirectory) throws IOException {
         this.sourceFatJar = new JarFile(sourceFatJar);
@@ -171,7 +170,7 @@ public class SpringBootThinUtil {
     }
 
     private void addLibIndexFileToThinJar(JarOutputStream thinJar) throws IOException {
-        thinJar.putNextEntry(new ZipEntry(SpringConstants.SPRING_LIB_INDEX_FILE));
+        thinJar.putNextEntry(new ZipEntry(SPRING_LIB_INDEX_FILE));
         try {
             for (String libEntry : libEntries) {
                 thinJar.write(libEntry.getBytes(StandardCharsets.UTF_8));
