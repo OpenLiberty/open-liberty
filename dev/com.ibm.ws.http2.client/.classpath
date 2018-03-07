@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/com.ibm.ws.channelfw"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/hamcrest-all.jar"/>
+	<classpathentry kind="lib" path="/ant_build/lib/jmock-junit4.jar"/>
+	<classpathentry kind="lib" path="/ant_build/lib/jmock.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/jmock/legacy/cglib-nodep.jar"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/jmock/legacy/jmock-legacy.jar"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/jmock/legacy/objenesis.jar"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/httpclient/4.3.1/commons-codec-1.6.jar"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/httpclient/4.3.1/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/httpclient/4.3.1/httpclient-4.3.1.jar"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/httpclient/4.3.1/httpcore-4.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.runtime.update"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.com.google.gson"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.com.google.guava"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.transport.http"/>
+	<classpathentry kind="lib" path="/home/wtlucy/.m2/repository/org/osgi/org.osgi.service.component.annotations/1.3.0/org.osgi.service.component.annotations-1.3.0.jar" sourcepath="/home/wtlucy/.m2/repository/org/osgi/org.osgi.service.component.annotations/1.3.0/org.osgi.service.component.annotations-1.3.0.jar">
+		<attributes>
+			<attribute name="bsn" value="org.osgi.service.component.annotations"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.security.wim.repository_test.custom"/>
+			<attribute name="version" value="latest"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/annotations/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/home/wtlucy/.m2/repository/org/osgi/org.osgi.service.component/1.3.0/org.osgi.service.component-1.3.0.jar" sourcepath="/home/wtlucy/.m2/repository/org/osgi/org.osgi.service.component/1.3.0/org.osgi.service.component-1.3.0.jar">
+		<attributes>
+			<attribute name="bsn" value="org.osgi:org.osgi.service.component"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.websphere.org.osgi.service.component"/>
+			<attribute name="version" value="1.3.0"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/dto/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
