@@ -109,8 +109,8 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         temporarySubject = new Subject();
         temporarySubject.getPrivateCredentials().add(recreatedToken);
         String securityName = AccessIdUtil.getUniqueId(accessId);
-        setCredentials(temporarySubject, securityName, null);
         setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
+        setCredentials(temporarySubject, securityName, null);
     }
 
     /**
@@ -129,8 +129,8 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         UserRegistry ur = getUserRegistry();
         String securityName = ur.getUserSecurityName(AccessIdUtil.getUniqueId(accessId));
         securityName = getSecurityName(securityName, securityName); // Special handling for LDAP under here.
-        setCredentials(temporarySubject, securityName, null);
         setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
+        setCredentials(temporarySubject, securityName, null);
     }
 
     /** {@inheritDoc} */

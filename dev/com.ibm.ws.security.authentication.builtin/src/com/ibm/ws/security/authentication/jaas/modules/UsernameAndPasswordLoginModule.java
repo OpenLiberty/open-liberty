@@ -126,8 +126,8 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       userRegistry.getRealm(),
                                                       userRegistry.getUniqueUserId(urAuthenticatedId));
-        setCredentials(temporarySubject, username, urAuthenticatedId);
         setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_PASSWORD, null);
+        setCredentials(temporarySubject, username, urAuthenticatedId);
     }
 
     /** {@inheritDoc} */
