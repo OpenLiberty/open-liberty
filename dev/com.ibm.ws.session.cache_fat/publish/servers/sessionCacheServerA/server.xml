@@ -9,7 +9,7 @@
     
     <include location="../fatTestPorts.xml"/>
     
-    <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="10m"/>
 
     <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES"/>
 
