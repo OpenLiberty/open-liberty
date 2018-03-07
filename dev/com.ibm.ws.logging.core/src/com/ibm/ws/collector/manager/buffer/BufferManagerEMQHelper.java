@@ -35,4 +35,8 @@ public class BufferManagerEMQHelper {
     public static boolean getEMQRemovedFlag() {
         return EMQRemovedFlag;
     }
+
+    public synchronized static void addBufferManagerList(BufferManager bufferManager) {
+        bufferManagerList.add(bufferManager);
+    }
 }

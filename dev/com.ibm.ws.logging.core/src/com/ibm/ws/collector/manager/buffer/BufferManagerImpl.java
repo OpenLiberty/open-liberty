@@ -43,11 +43,11 @@ public class BufferManagerImpl extends BufferManager {
         super();
         RERWLOCK.writeLock().lock();
         try {
-            BufferManagerEMQHelper.bufferManagerList.add(this);
+            BufferManagerEMQHelper.addBufferManagerList(this);
             ringBuffer=null;
             this.sourceId = sourceId;
             this.capacity = capacity;
-            if(!BufferManagerEMQHelper.EMQRemovedFlag)
+            if(!BufferManagerEMQHelper.getEMQRemovedFlag())
                 earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
         }finally {
             RERWLOCK.writeLock().unlock();
