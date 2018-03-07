@@ -77,12 +77,11 @@ public final class LibIndexCache {
     }
 
     /**
-     * @param originalLibName
      * @param value
      * @return
      * @throws UnableToAdaptException
      */
-    public Container getLibraryContainer(String hash, String originalLibName) throws UnableToAdaptException {
+    public Container getLibraryContainer(String hash) throws UnableToAdaptException {
         File libFile = getLibrary(hash);
         if (libFile == null) {
             return null;

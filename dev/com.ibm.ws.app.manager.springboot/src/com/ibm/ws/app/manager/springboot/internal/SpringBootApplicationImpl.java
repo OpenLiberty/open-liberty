@@ -518,7 +518,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         List<ContainerInfo> result = new ArrayList<>();
         Map<String, String> indexMap = readIndex(indexFile);
         for (Map.Entry<String, String> entry : indexMap.entrySet()) {
-            Container libContainer = libIndexCache.getLibraryContainer(entry.getValue(), entry.getKey());
+            Container libContainer = libIndexCache.getLibraryContainer(entry.getValue());
             if (libContainer == null) {
                 throw new UnableToAdaptException("No library found for:" + entry.getKey() + "=" + entry.getValue());
             }
@@ -677,7 +677,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory#rootContextClosed()
      */
     @Override
