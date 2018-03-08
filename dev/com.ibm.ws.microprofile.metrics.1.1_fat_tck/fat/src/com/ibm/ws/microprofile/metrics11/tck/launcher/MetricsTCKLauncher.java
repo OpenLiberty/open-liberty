@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -33,6 +34,7 @@ import componenttest.topology.utils.MvnUtils;
  * There is a detailed output on specific
  */
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 1.8)
 public class MetricsTCKLauncher {
     private static Class<?> c = MetricsTCKLauncher.class;
 
