@@ -40,6 +40,7 @@ import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.metadata.MetaDataService;
+import com.ibm.ws.http2.upgrade.H2UpgradeHandler;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -53,7 +54,6 @@ import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer31.session.IHttpSessionContext31;
 import com.ibm.ws.webcontainer31.upgrade.H2HandlerImpl;
 import com.ibm.ws.webcontainer31.upgrade.H2UpgradeHandlerWrapper;
-import com.ibm.wsspi.http.ee8.H2UpgradeHandler;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 

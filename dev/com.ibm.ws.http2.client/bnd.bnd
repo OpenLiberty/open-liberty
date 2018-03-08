@@ -22,18 +22,37 @@ javac.source: 1.8
 javac.target: 1.8
 
 Export-Package: \
+  com.ibm.ws.genericbnf.internal, \
   com.ibm.ws.http2.test, \
   com.ibm.ws.http2.test.connection, \
   com.ibm.ws.http2.test.frames, \
   com.ibm.ws.http2.test.helpers, \
   com.ibm.ws.http2.test.exceptions, \
   com.ibm.ws.http2.test.listeners, \
+  com.ibm.ws.http.channel.internal, \
+  com.ibm.ws.http.channel.internal.cookies, \
+  com.ibm.ws.http.channel.internal.inbound, \
+  com.ibm.ws.http.channel.internal.outbound, \
+  com.ibm.ws.http.channel.internal.values, \
   com.ibm.ws.http.channel.h2internal, \
   com.ibm.ws.http.channel.h2internal.exceptions, \
   com.ibm.ws.http.channel.h2internal.frames, \
   com.ibm.ws.http.channel.h2internal.hpack, \
   com.ibm.ws.http.channel.h2internal.huffman, \
-  com.ibm.ws.http.channel.h2internal.priority
+  com.ibm.ws.http.channel.h2internal.priority, \
+  com.ibm.ws.http.dispatcher.internal, \
+  com.ibm.ws.http.dispatcher.internal.channel, \
+  com.ibm.ws.http.internal, \
+  com.ibm.ws.http.logging.internal
+  
+Import-Package: \
+  !com.ibm.ws.http.channel.h2internal, \
+  !com.ibm.ws.http.channel.h2internal.exceptions, \
+  !com.ibm.ws.http.channel.h2internal.frames, \
+  !com.ibm.ws.http.channel.h2internal.hpack, \
+  !com.ibm.ws.http.channel.h2internal.huffman, \
+  !com.ibm.ws.http.channel.h2internal.priority, \
+  *
     
 -dsannotations: com.ibm.ws.http2.test.CFWManager
 

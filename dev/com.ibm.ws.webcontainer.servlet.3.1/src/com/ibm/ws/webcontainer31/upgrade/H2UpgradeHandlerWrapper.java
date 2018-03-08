@@ -15,10 +15,10 @@ import javax.servlet.http.WebConnection;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http2.upgrade.H2UpgradeHandler;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConnectionUpgrade;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
-import com.ibm.wsspi.http.ee8.H2UpgradeHandler;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 
 /**

@@ -29,7 +29,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class Http2FullModeTests extends FATServletClient {
 
     private static final String CLASS_NAME = Http2FullModeTests.class.getName();

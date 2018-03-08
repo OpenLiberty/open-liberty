@@ -31,7 +31,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class MultiSessionTests extends FATServletClient {
 
     private static final String CLASS_NAME = MultiSessionTests.class.getName();

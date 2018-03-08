@@ -22,9 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http2.upgrade.H2UpgradeHandler;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.wsspi.http.HttpInboundConnection;
-import com.ibm.wsspi.http.ee8.H2UpgradeHandler;
 import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 
 /**
