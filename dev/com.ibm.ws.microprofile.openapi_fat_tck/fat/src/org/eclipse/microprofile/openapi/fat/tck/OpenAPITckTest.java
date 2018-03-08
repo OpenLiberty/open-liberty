@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -33,7 +34,7 @@ import com.ibm.websphere.simplicity.log.Log;
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  * There is a detailed output on specific
  */
-@SuppressWarnings("restriction")
+@MaximumJavaLevel(javaLevel = 1.8)
 @RunWith(FATRunner.class)
 public class OpenAPITckTest {
 
