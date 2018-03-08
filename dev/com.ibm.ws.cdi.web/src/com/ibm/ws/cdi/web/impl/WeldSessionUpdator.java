@@ -15,6 +15,8 @@ import javax.servlet.http.HttpSession;
 
 public class WeldSessionUpdator implements Filter {
 
+	private static final WELD_SESSION_ATTRIBUTE_PREFIX = "WELD_S#";
+
 	public WeldSessionUpdator() {
 	}
 
@@ -32,7 +34,7 @@ public class WeldSessionUpdator implements Filter {
 			hashCodeMap = new HashMap<>();
 			for (Enumeration<String> e = session.getAttributeNames(); e.hasMoreElements(); ) {
 				String key = e.nextElement();
-				if (key.startsWith("WELD#")) {
+				if (key.startsWith(WELD_SESSION_ATTRIBUTE_PREFIX)) {
 					hashCodeMap.put(key, session.getAttribute(key).hashCode());
 				}
 			}
@@ -43,7 +45,7 @@ public class WeldSessionUpdator implements Filter {
 		if (session != null) {
 			for (Enumeration<String> e = session.getAttributeNames(); e.hasMoreElements(); ) {
 				String key = e.nextElement();
-				if (key.startsWith("WELD#")) {
+				if (key.startsWith(WELD_SESSION_ATTRIBUTE_PREFIX)) {
 					Object o = hashCodeMap.get(key);
 					int prevHash = hashCodeMap.get(key);
 					if (prevHash != o.hashCode()) {
