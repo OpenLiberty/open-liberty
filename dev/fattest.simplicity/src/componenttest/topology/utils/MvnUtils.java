@@ -30,16 +30,20 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.ibm.websphere.simplicity.PortType;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.Props;
 
 import componenttest.topology.impl.LibertyServer;
@@ -215,9 +219,12 @@ public class MvnUtils {
                               + src.getAbsolutePath(), nsfe);
         }
 
+        MvnUtils.ResultsUtil result = new MvnUtils.ResultsUtil();
+        String r = result.xPathProcessor();
+
         // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
         // the TCK regression
-        Assert.assertEquals(bucketName + ":" + testName + ":TCK has returned non-zero return code of: " + rc +
+        Assert.assertEquals(bucketName + ":" + testName + r + "`n" + ":TCK has returned non-zero return code of: " + rc +
                             " This indicates test failure, see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
                             " and ...autoFVT/results/tck/surefire-reports/index.html", 0, rc);
 
@@ -412,4 +419,101 @@ public class MvnUtils {
 
     }
 
+    public static class ResultsUtil {
+        private String r;
+
+        public String xPathProcessor() throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
+            r = null;
+
+            File f = new File(".");
+            if (f.exists())
+                System.out.println("GDH Dot exists at " + f.getAbsolutePath());
+            else
+                System.out.println("GDH Dot does not exist at " + f.getAbsolutePath());
+
+            File results = new File(MvnUtils.resultsDir, "tck/surefire-reports/testng-results.xml");
+            System.out.println("GDH Results is at " + results.getAbsolutePath() + " It exists is " + results.exists());
+
+            File src = new File(MvnUtils.resultsDir, "tck/surefire-reports/junitreports");
+
+            //Create DocumentBuilderFactory for reading testng-results file
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse("publish/results/tck/surefire-reports/testng-results.xml");
+            // Create XPathFactory for creating XPath Object
+            XPathFactory xPathFactory = XPathFactory.newInstance();
+
+            // Create XPath object from XPathFactory
+            XPath xpath = xPathFactory.newXPath();
+
+            // Compile the XPath expression for getting all brands
+            XPathExpression xPathExpr = xpath.compile("/testng-results/@total");
+
+            // XPath text example : executing xpath expression in java
+            Object result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
+            r += log(getClass(), "Result", "Number of tests: " + getXpathResult(result));
+
+            xPathExpr = xpath.compile("/testng-results/@passed");
+            result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
+            r += log(getClass(), "Result", "Number of passed tests: " + getXpathResult(result));
+
+            xPathExpr = xpath.compile("/testng-results/@failed");
+            result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
+            r += log(getClass(), "Result", "Number of failed tests: " + getXpathResult(result));
+
+            if (Integer.parseInt(getXpathResult(result)) != 0) {
+                doc = builder.parse("publish/tckRunner/tck/target/surefire-reports/testng-failed.xml");
+                xPathExpr = xpath.compile("/suite/test/classes/class/@name");
+
+                result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
+
+                NodeList nodes = (NodeList) result;
+                String testClass;
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    testClass = nodes.item(i).getNodeValue();
+                    xPathExpr = xpath.compile("/suite/test/classes/class"
+                                              + "[@name='" + testClass + "']"
+                                              + "/methods/include[@invocation-numbers='0 1']/@name");
+
+                    result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
+                    if (getFailures(result) != "") {
+                        r += log(getClass(), "Result", "Tests failed in " + testClass + ": \n" + getFailures(result));
+                    }
+                }
+            }
+            return r;
+        }
+
+        /**
+         * @param class1
+         * @param string
+         * @param string2
+         */
+        private String log(Class<? extends ResultsUtil> class1, String string, String string2) {
+            String result = "\n" + class1 + string + string2;
+            System.out.print("GDH logging result " + result);
+            Log.info(class1, string, string2);
+            return result;
+        }
+
+        public String getFailures(Object result) {
+            NodeList nodes = (NodeList) result;
+            String finalResult = "";
+            for (int i = 0; i < nodes.getLength(); i++) {
+                finalResult += nodes.item(i).getNodeValue() + "\n";
+            }
+
+            return finalResult;
+        }
+
+        public String getXpathResult(Object result) {
+            NodeList nodes = (NodeList) result;
+            String finalResult = "";
+            for (int i = 0; i < nodes.getLength(); i++) {
+                finalResult += nodes.item(i).getNodeValue();
+            }
+
+            return finalResult;
+        }
+    }
 }
