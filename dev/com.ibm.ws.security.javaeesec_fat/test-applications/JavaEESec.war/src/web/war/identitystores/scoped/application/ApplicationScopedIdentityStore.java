@@ -1,6 +1,5 @@
-
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,8 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.2.0
- */
-@org.osgi.annotation.versioning.Version("1.2.0")
-package com.ibm.wsspi.webcontainer.collaborator;
+package web.war.identitystores.scoped.application;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import web.war.identitystores.BaseIdentityStore;
+
+@ApplicationScoped
+public class ApplicationScopedIdentityStore extends BaseIdentityStore {
+
+    {
+        sourceClass = ApplicationScopedIdentityStore.class.getName();
+    }
+
+}

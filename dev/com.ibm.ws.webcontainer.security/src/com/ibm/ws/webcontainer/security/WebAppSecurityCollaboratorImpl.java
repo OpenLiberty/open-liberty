@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import com.ibm.websphere.security.audit.context.AuditThreadContext;
 import com.ibm.websphere.security.auth.CredentialDestroyedException;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -59,6 +60,7 @@ import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.DenyReply;
 import com.ibm.ws.webcontainer.security.internal.FormLoginExtensionProcessor;
@@ -148,6 +150,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     private UnauthenticatedSubjectService unauthenticatedSubjectService;
     private WebAppAuthorizationHelper wasch = this;
+    private FeatureProvisioner provisionerService;
 
     private boolean isJaspiEnabled = false;
     private Subject savedSubject = null;
@@ -296,6 +299,14 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         wasch = this;
     }
 
+    protected synchronized void setKernelProvisioner(FeatureProvisioner provisionerService) {
+        this.provisionerService = provisionerService;
+    }
+
+    protected synchronized void unsetKernelProvisioner(FeatureProvisioner provisionerService) {
+        this.provisionerService = null;
+    }
+
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         isActive = true;
         locationAdminRef.activate(cc);
@@ -418,6 +429,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         reply.writeResponse(rsp);
     }
 
+    @Override
+    public boolean isCDINeeded() {
+        Set<String> installedFeatures = provisionerService.getInstalledFeatures();
+        return WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40 && installedFeatures.contains("appSecurity-3.0");
+    }
+
     /**
      * {@inheritDoc} If the role is null or the call is unauthenticated,
      * return false. Otherwise, check if the authenticated subject is in
@@ -450,8 +467,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      *            exception or if no work was done.
      */
     @Override
-    public void postInvoke(Object secObject) throws ServletException {
-
+    public void postInvokeForSecureResponse(Object secObject) throws ServletException {
         if (jaccServiceRef.getService() != null) {
             jaccServiceRef.getService().resetPolicyContextHandlerInfo();
         }
@@ -469,6 +485,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void postInvoke(Object secObject) throws ServletException {
+        if (secObject != null) {
+            WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
             Subject invokedSubject = webSecurityContext.getInvokedSubject();
             Subject receivedSubject = webSecurityContext.getReceivedSubject();
 
@@ -574,17 +597,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
          */
         if (isJaspiEnabled &&
             ((JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi")).isAnyProviderRegistered(webRequest)) {
-//            FilterThreadContext filterThreadContext = new FilterThreadContext(this, receivedSubject, uriName, webRequest, webSecurityContext);
-//            filterThreadLocal.set(filterThreadContext);
-//            webReply = PERMIT_REPLY; // TODO: Create new FILTER_REPLY type.
-
             webReply = handleJaspi(receivedSubject, uriName, webRequest, webSecurityContext);
-//            performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
-//            webReply = unprotectedSpecialURI(webRequest, uriName, webRequest.getHttpServletRequest().getMethod());
-//            if (webReply == null) {
-//                AuthenticationResult authResult = authenticateRequest(webRequest);
-//                webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
-//            }
         }
 
         /**
