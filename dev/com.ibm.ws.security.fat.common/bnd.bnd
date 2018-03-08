@@ -23,13 +23,14 @@ Import-Package: \
     !*.internal.*, \
     !com.ibm.ws.kernel.boot.cmdline, \
     *
- 
+
 Private-Package: \
 
-#test.project: true
+test.project: true
+publish.wlp.jar.disabled: true
 
 -buildpath: \
-	com.ibm.ws.kernel.service;version=latest, \
+    com.ibm.ws.kernel.service;version=latest, \
     com.ibm.ws.logging;version=latest, \
     com.ibm.ws.logging.core;version=latest, \
     com.ibm.websphere.org.osgi.core;version=latest, \
