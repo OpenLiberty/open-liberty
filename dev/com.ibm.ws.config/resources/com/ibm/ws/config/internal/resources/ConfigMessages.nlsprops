@@ -455,10 +455,6 @@ warning.binding.config=CWWKG0101W: The configuration with the persisted identity
 warning.binding.config.explanation=A configuration is bound to the calling bundle when the getConfiguration method of the ConfigurationAdmin interface is called for the first time. Once the configuration is bound, it is no longer visible to other bundles.  
 warning.binding.config.useraction=To ensure that the bundle location is the expected value, use the getConfiguration method on the ConfigurationAdmin interface that takes a bundle location as the second parameter.
 
-# This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
-info.config.conflict=CWWKG0102I: {0}
-info.config.conflict.explanation=Multiple values are specified for the same configuration property. 
-info.config.conflict.useraction=No action is required. The informational message can be avoided by editing the server configuration to remove the conflict.
 
 # Non-TR message
 error.invalidOCDRef=ERROR: Metatype PID [{0}] specifies non-existent object class definition ID [{1}]
