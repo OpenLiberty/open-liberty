@@ -155,7 +155,7 @@ public class CollectorJsonHelpers {
     private static void addUnchangingFields(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
         if (unchangingFieldsJson == null) {
             StringBuilder temp = new StringBuilder(512);
-            addToJSON(temp, "host", hostName, false, false, false, false);
+            addToJSON(temp, "hostName", hostName, false, false, false, false);
             addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, false);
             addToJSON(temp, "serverName", serverName, false, false, false, false);
             unchangingFieldsJson = temp.toString();
