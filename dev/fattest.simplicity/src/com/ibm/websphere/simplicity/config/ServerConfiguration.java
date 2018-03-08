@@ -74,6 +74,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "webApplication")
     private ConfigElementList<WebApplication> webApplications;
 
+    @XmlElement(name = "springBootApp")
+    private ConfigElementList<SpringBootApp> springBootApps;
+
     @XmlElement(name = "cloudant")
     private ConfigElementList<Cloudant> cloudants;
 
@@ -633,6 +636,16 @@ public class ServerConfiguration implements Cloneable {
     }
 
     /**
+     * @return explicitly installed Spring Boot applications
+     */
+    public ConfigElementList<SpringBootApp> getSpringBootApps() {
+        if (this.springBootApps == null) {
+            this.springBootApps = new ConfigElementList<SpringBootApp>();
+        }
+        return this.springBootApps;
+    }
+
+    /**
      * @return the connection managers
      */
     public ConfigElementList<ConnectionManager> getConnectionManagers() {
@@ -646,7 +659,7 @@ public class ServerConfiguration implements Cloneable {
      * Removes all applications with a specific name
      *
      * @param name
-     *            the name of the applications to remove
+     *                 the name of the applications to remove
      * @return the removed applications (no longer bound to the server
      *         configuration)
      */
@@ -667,12 +680,12 @@ public class ServerConfiguration implements Cloneable {
      * a specific name if it already exists
      *
      * @param name
-     *            the name of the application
+     *                 the name of the application
      * @param path
-     *            the fully qualified path to the application archive on the
-     *            liberty machine
+     *                 the fully qualified path to the application archive on the
+     *                 liberty machine
      * @param type
-     *            the type of the application (ear/war/etc)
+     *                 the type of the application (ear/war/etc)
      * @return the deployed application
      */
     public Application addApplication(String name, String path, String type) {
@@ -956,7 +969,7 @@ public class ServerConfiguration implements Cloneable {
      * Finds all of the objects in the given config element that implement the
      * ModifiableConfigElement interface.
      *
-     * @param element The config element to check.
+     * @param element                  The config element to check.
      * @param modifiableConfigElements The list containing all modifiable elements.
      * @throws Exception
      */

@@ -34,6 +34,7 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataException;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -49,6 +50,7 @@ public class WebInstance implements Instance {
     final class InstanceDeployedAppInfo extends SimpleDeployedAppInfoBase implements ServletContainerInitializer {
         private final WebInitializer initializer;
         private final AtomicReference<ServiceRegistration<ServletContainerInitializer>> registration = new AtomicReference<>();
+        private final AtomicReference<String> appName = new AtomicReference<>();
 
         InstanceDeployedAppInfo(WebInitializer initializer, DeployedAppInfoFactoryBase factory,
                                 ExtendedApplicationInfo appInfo) throws UnableToAdaptException {
@@ -67,13 +69,18 @@ public class WebInstance implements Instance {
                             appContainer, null, moduleURI, moduleClassesInfo, initializer.getContextPath());
             moduleContainerInfos.add(mci);
 
-            mci.createModuleMetaData(appInfo, this, (m, c) -> app.getClassLoader());
+            ModuleMetaData mmd = mci.createModuleMetaData(appInfo, this, (m, c) -> app.getClassLoader());
+            appName.set(mmd.getJ2EEName().getApplication());
             return getDeployedModule(mci.moduleInfo);
         }
 
         @Override
         public void onStartup(Set<Class<?>> classes, ServletContext context) throws ServletException {
-            if (appInfo.getName().equals(context.getAttribute(APP_NAME_KEY))) {
+            String expectedName = appName.get();
+            if (expectedName == null) {
+                expectedName = appInfo.getName();
+            }
+            if (expectedName.equals(context.getAttribute(APP_NAME_KEY))) {
                 initializer.getContextInitializer().apply(context);
                 unregisterServletContainerListener();
             }

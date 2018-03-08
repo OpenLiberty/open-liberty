@@ -10,19 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                CommonWebServerTests15.class,
-                CommonWebServerTests15Servlet40.class,
-                CommonWebServerTests20.class,
-                CommonWebServerTests20Servlet40.class,
-                ConfigDropinRootTests.class,
-                ConfigSpringBootAppTagTests.class
-})
-public class FATSuite {
+import org.junit.runner.RunWith;
+
+import componenttest.custom.junit.runner.FATRunner;
+
+@RunWith(FATRunner.class)
+public class CommonWebServerTests20 extends CommonWebServerTests {
+
+    @Override
+    public Set<String> getFeatures() {
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
+    }
+
+    @Override
+    public String getApplication() {
+        return SPRING_BOOT_20_APP_BASE;
+    }
 
 }
