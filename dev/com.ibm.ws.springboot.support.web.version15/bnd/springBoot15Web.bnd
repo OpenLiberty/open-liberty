@@ -1,3 +1,0 @@
-Bundle-SymbolicName: springBoot15Web
-Private-Package: com.ibm.ws.springboot.support.web.version15.container.*
-Include-Resource: resources/container

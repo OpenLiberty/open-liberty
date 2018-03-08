@@ -1,1 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.ibm.ws.springboot.support.web.version15.container.LibertyServletContainerConfiguration
