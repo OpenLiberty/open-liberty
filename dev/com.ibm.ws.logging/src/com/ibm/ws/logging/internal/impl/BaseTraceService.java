@@ -365,6 +365,7 @@ public class BaseTraceService implements TrService {
             if (messageLogHandler != null) {
                 messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
                 messageLogHandler.setWriter(messagesLog);
+                messageLogHandler.modified(new ArrayList<String>());
                 ArrayList<String> filteredList = new ArrayList<String>();
                 filteredList.add("message");
                 updateConduitSyncHandlerConnection(filteredList, messageLogHandler);
@@ -386,6 +387,7 @@ public class BaseTraceService implements TrService {
                 } else {
                     consoleLogHandler.setTraceStdout(false);
                 }
+                consoleLogHandler.modified(new ArrayList<String>());
                 updateConduitSyncHandlerConnection(filteredList, consoleLogHandler);
                 consoleLogHandler.setCopySystemStreams(copySystemStreams);
             }
@@ -606,8 +608,8 @@ public class BaseTraceService implements TrService {
         invokeMessageRouters(routedMessage);
         if (logSource != null) {
             publishToLogSource(routedMessage);
-            //logSource.publish(routedMessage);
         }
+
         //send events to handlers
         if (TraceComponent.isAnyTracingEnabled()) {
             publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
@@ -754,7 +756,6 @@ public class BaseTraceService implements TrService {
             // logSource only receives "normal" messages and messages that are not hidden.
             if (logSource != null) {
                 publishToLogSource(routedMessage);
-                //logSource.publish(routedMessage);
             }
         }
 

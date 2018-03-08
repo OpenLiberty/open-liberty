@@ -136,7 +136,7 @@ public class LogSource implements Source, WsLogHandler {
         GenericData genData = new GenericData();
         LogRecord logRecord = routedMessage.getLogRecord();
         String messageVal = extractMessage(routedMessage, logRecord);
-        //BaseTraceService.rawSystemOut.println("LogSource: message val - " + messageVal);
+
         long dateVal = logRecord.getMillis();
         genData.addPair("ibm_datetime", dateVal);
 
@@ -195,12 +195,15 @@ public class LogSource implements Source, WsLogHandler {
             }
             genData.addPair("throwable_localized", s);
         }
+
         genData.addPair("message", messageVal);
+
         if (routedMessage.getFormattedMsg() != null) {
             genData.addPair("formattedMsg", routedMessage.getFormattedMsg());
         }
 
         genData.setSourceType(sourceName);
+        genData.setLoggerName(logRecord.getLoggerName());
         //return logtracedata
         LogTraceData logData = new LogTraceData(genData);
         logData.setLevelValue(logRecord.getLevel().intValue());

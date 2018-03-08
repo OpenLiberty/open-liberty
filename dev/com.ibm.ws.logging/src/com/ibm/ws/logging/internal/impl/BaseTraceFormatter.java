@@ -1089,7 +1089,7 @@ public class BaseTraceFormatter extends Formatter {
      */
     protected String formatStreamOutput(GenericData genData) {
         String txt = null;
-        String loglevel = null;
+        String loggerName = null;
         KeyValuePair kvp = null;
 
         ArrayList<Pair> pairs = genData.getPairs();
@@ -1098,17 +1098,16 @@ public class BaseTraceFormatter extends Formatter {
             if (p instanceof KeyValuePair) {
 
                 kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals("message")) {
+                if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
                     txt = kvp.getValue();
-                } else if (kvp.getKey().equals("loglevel")) {
-                    loglevel = kvp.getValue();
+                } else if (kvp.getKey().equals(LogFieldConstants.MODULE)) {
+                    loggerName = kvp.getValue();
                 }
             }
         }
-
         String message = filterStackTraces(txt);
         if (message != null) {
-            if (loglevel.equals("SystemErr")) {
+            if (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR)) {
                 message = "[err] " + message;
             }
         }

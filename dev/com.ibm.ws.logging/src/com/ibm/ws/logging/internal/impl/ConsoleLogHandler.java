@@ -31,6 +31,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     private SystemLogHolder sysLogHolder;
     private boolean isTraceStdout = false;
 
+    //The 'format' we are in: Json or basic (default is basic)
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
     private BaseTraceFormatter formatter = null;
     private Integer consoleLogLevel = null;
@@ -52,6 +53,10 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         if (sysLogHolder == null) {
             return;
         }
+        String messageOutput = null;
+
+        //Used to identify if console Message is intended for Stderr - each 'new' write sets it to false.
+        boolean isStderr = false;
 
         /*
          * Given an 'object' we must determine what type of log event it originates from.
@@ -59,43 +64,64 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          */
         GenericData genData = null;
         Integer levelVal = null;
+        String loggerName = null;
         if (event instanceof LogTraceData) {
             genData = ((LogTraceData) event).getGenData();
             levelVal = ((LogTraceData) event).getLevelValue();
         } else if (event instanceof GenericData) {
             genData = (GenericData) event;
         }
+        loggerName = genData.getLoggerName();
 
-        String messageOutput = null;
-        boolean isStderr = false;
+        /*
+         * To write out to the console must determine if we are JSON or BASIC
+         * 1. JSON
+         * a) Message
+         * - Check if it is above consoleLogLevel and format as JSON
+         * b) Not Message (i.e. AccessLog, Trace, FFDC)
+         * - format as JSON
+         * 2. BASIC - There can be three message origins for basic messages
+         * a) tracefileName == stdout
+         * - Checks if levelVal was ERROR or FATAl > indicates stderr
+         * - format as Trace
+         * b) Second check if this message originated from echo() and copySystemStreams is true
+         * - Also check if Level is CONFIG and loggerName is SYSOUT or SYSERR
+         * - Format as streamOutput (This does filtering/truncating of stack traces and append [err] as necessary)
+         * c) Lastly this leaves message origin from publishLogRecord()
+         * - We must check if it is above consoleLogLevel to format it
+         */
+        String eventsourceType = getSourceTypeFromDataObject(genData);
         if (format.equals(LoggingConstants.JSON_FORMAT)) {
-            String eventsourceType = getSourceTypeFromDataObject(genData);
             if (eventsourceType.equals(CollectorConstants.MESSAGES_SOURCE) && levelVal != null) {
-                if (levelVal >= consoleLogLevel) {
-                    messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
-                }
+                //if (levelVal >= consoleLogLevel) {
+                messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
+                //}
             } else {
                 messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
             }
         } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
-            //if traceFilename=stdout write everything to console.log in trace format
-            String logLevel = ((LogTraceData) event).getLogLevel();
+            //If traceFilename == stdout write everything to console.log in trace format
             if (isTraceStdout) {
-                //check if message need to be written to stderr
+                //Check if message need to be written to stderr
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
                     isStderr = true;
                 }
                 messageOutput = formatter.traceFormatGenData(genData);
-            } // copySystemStream and stderr/stdout level=700
-            else if (copySystemStreams && (levelVal == 700)) {
-                if (logLevel != null) {
-                    if (logLevel.equals("SystemErr")) {
-                        isStderr = true;
-                    }
+
+            } // copySystemStream and stderr/stdout (i.e WsLevel.CONFIG) and logger is sysout or syserr
+            else if (copySystemStreams &&
+                     levelVal == WsLevel.CONFIG.intValue() &&
+                     (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_OUT) || loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR))) {
+                if (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR)) {
+                    isStderr = true;
                 }
                 messageOutput = formatter.formatStreamOutput(genData);
+
+                //Null return values means we are suppressing a stack trace.. and we don't want to write a 'null' so we retur.
+                if (messageOutput == null)
+                    return;
             }
-            //if !isTraceStdout && level >= consoleloglevel
+            //Lastly origin of message is from publishLogRecord and we need to check if it is above consoleLogLevel
             else if (levelVal >= consoleLogLevel) {
                 //need to use formatmessage filter
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
@@ -112,7 +138,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 BTS.writeStreamOutput(sysLogHolder, messageOutput, false);
             }
         }
-
     }
 
     public boolean getCopySystemStreams() {
