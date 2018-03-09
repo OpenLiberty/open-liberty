@@ -138,7 +138,7 @@ public class BasicAuthenticationMechanismSingleISTest extends JavaEESecTestBase 
     public void testBasicAuthValidUserInRole_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.jaspi_invalidUser, Constants.jaspi_invalidPwd,
-                                                          HttpServletResponse.SC_FORBIDDEN);
+                                                          HttpServletResponse.SC_UNAUTHORIZED);
         verifyResponseAuthenticationFailed(response);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -161,7 +161,7 @@ public class BasicAuthenticationMechanismSingleISTest extends JavaEESecTestBase 
     public void testBasicAuthValidUserInRole_DeniedAccess_WrongPassword() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser, Constants.jaspi_invalidPwd,
-                                                          HttpServletResponse.SC_FORBIDDEN);
+                                                          HttpServletResponse.SC_UNAUTHORIZED);
 
         verifyResponseAuthenticationFailed(response);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
