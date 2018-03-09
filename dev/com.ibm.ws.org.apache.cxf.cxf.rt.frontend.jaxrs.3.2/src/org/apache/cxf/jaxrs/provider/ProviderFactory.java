@@ -235,11 +235,15 @@ public abstract class ProviderFactory {
 
             @Override
             public JsonProvider run() {
+                try {
                 Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
                 if(b != null) {
                     BundleContext bc = b.getBundleContext();
                     ServiceReference<JsonProvider> sr = bc.getServiceReference(JsonProvider.class);
                     return (JsonProvider)bc.getService(sr);
+                }
+                } catch (NoClassDefFoundError ncdfe) {
+                    // ignore - return null
                 }
                 return null;
             }});
@@ -269,11 +273,15 @@ public abstract class ProviderFactory {
 
             @Override
             public JsonbProvider run() {
+                try {
                 Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
                 if(b != null) {
                     BundleContext bc = b.getBundleContext();
                     ServiceReference<JsonbProvider> sr = bc.getServiceReference(JsonbProvider.class);
                     return (JsonbProvider)bc.getService(sr);
+                }
+                } catch (NoClassDefFoundError ncdfe) {
+                    // ignore - return null
                 }
                 return null;
             }});

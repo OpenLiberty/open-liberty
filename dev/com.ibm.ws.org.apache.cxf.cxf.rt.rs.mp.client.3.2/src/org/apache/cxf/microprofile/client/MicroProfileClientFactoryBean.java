@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseFilter;
@@ -42,7 +43,6 @@ import org.apache.cxf.jaxrs.model.FilterProviderInfo;
 import org.apache.cxf.jaxrs.model.ProviderInfo;
 import org.apache.cxf.jaxrs.provider.ProviderFactory;
 import org.apache.cxf.microprofile.client.proxy.MicroProfileClientProxyImpl;
-import org.apache.cxf.phase.Phase;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
@@ -51,12 +51,14 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
     private Configuration configuration;
     private ClassLoader proxyLoader;
     private boolean inheritHeaders;
+    private ExecutorService executorService;
 
     public MicroProfileClientFactoryBean(MicroProfileClientConfigurableImpl<RestClientBuilder> configuration,
-                                         String baseUri, Class<?> aClass) {
+                                         String baseUri, Class<?> aClass, ExecutorService executorService) {
         super();
         this.configuration = configuration.getConfiguration();
         this.comparator = MicroProfileClientProviderFactory.createComparator(this);
+        this.executorService = executorService;
         super.setAddress(baseUri);
         super.setServiceClass(aClass);
         super.setProviderComparator(comparator);
@@ -85,6 +87,10 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
         this.inheritHeaders = inheritHeaders;
     }
 
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
     @Override
     protected void initClient(AbstractClient client, Endpoint ep, boolean addHeaders) {
         super.initClient(client, ep, addHeaders);
@@ -97,19 +103,21 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
     @Override
     protected ClientProxyImpl createClientProxy(ClassResourceInfo cri, boolean isRoot,
                                                 ClientState actualState, Object[] varValues) {
+        // Liberty change start - notify of new clientProxy
         MicroProfileClientProxyImpl clientProxy;
         if (actualState == null) {
             clientProxy = new MicroProfileClientProxyImpl(URI.create(getAddress()), proxyLoader, cri, isRoot,
-                    inheritHeaders, varValues);
+                    inheritHeaders, executorService, varValues);
         } else {
             clientProxy = new MicroProfileClientProxyImpl(actualState, proxyLoader, cri, isRoot,
-                    inheritHeaders, varValues);
+                    inheritHeaders, executorService, varValues);
         }
         RestClientNotifier notifier = RestClientNotifier.getInstance();
         if (notifier != null) {
             notifier.newRestClientProxy(clientProxy);
         }
         return clientProxy;
+        // Liberty change end
     }
 
     Configuration getConfiguration() {
@@ -121,7 +129,7 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
         for (Object provider : configuration.getInstances()) {
             Class<?> providerCls = ClassHelper.getRealClass(bus, provider);
             if (provider instanceof ClientRequestFilter || provider instanceof ClientResponseFilter) {
-                FilterProviderInfo<Object> filter = new FilterProviderInfo<Object>(providerCls, providerCls,
+                FilterProviderInfo<Object> filter = new FilterProviderInfo<>(providerCls, providerCls,
                         provider, bus, configuration.getContracts(providerCls));
                 providers.add(filter);
             } else {
