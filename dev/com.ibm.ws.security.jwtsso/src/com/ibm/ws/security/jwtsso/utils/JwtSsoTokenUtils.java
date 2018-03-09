@@ -16,7 +16,6 @@ import java.util.Set;
 import javax.security.auth.Subject;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.jose4j.lang.JoseException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -233,7 +232,7 @@ public class JwtSsoTokenUtils {
 		// TODO Auto-generated method stub
 		try {
 			return JsonUtils.claimFromJsonObject(payload, claim);
-		} catch (JoseException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
 		}
