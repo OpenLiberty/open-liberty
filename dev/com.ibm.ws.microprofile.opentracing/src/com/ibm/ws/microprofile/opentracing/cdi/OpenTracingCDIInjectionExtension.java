@@ -8,18 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.opentracing;
+package com.ibm.ws.microprofile.opentracing.cdi;
 
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ResourceInfo;
+import javax.enterprise.inject.spi.Extension;
 
-/**
- * Service interface to provide operation names for building spans in filters
- */
-public interface OpentracingFilterHelper {
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-    String getBuildSpanName(ClientRequestContext clientRequestContext);
+import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
-    String getBuildSpanName(ContainerRequestContext incomingRequestContext, ResourceInfo resourceInfo);
-}
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
+public class OpenTracingCDIInjectionExtension implements WebSphereCDIExtension, Extension {}
