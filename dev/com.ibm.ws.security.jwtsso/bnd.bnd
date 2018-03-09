@@ -84,6 +84,7 @@ Include-Resource: \
     com.ibm.ws.security.mp.jwt;version=latest,\
     com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.ws.security.jwt;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.ssl;version=latest
 
 # some strange cnfe's & ncdf's will happen if any of these are removed because the junit.extensions

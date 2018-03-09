@@ -17,8 +17,8 @@ public class IssuerUtil {
 
 	}
 
-	public static String getResolvedHostAndPortUrl(DynamicMBean httpsendpointInfoMBean,
-			DynamicMBean httpendpointInfoMBean, ServerInfoMBean serverInfoMBean, String uniqueId) {
+	public String getResolvedHostAndPortUrl(DynamicMBean httpsendpointInfoMBean, DynamicMBean httpendpointInfoMBean,
+			ServerInfoMBean serverInfoMBean, String uniqueId) {
 		String hosturl = null;
 		;
 		if (httpsendpointInfoMBean != null) {
@@ -45,7 +45,7 @@ public class IssuerUtil {
 		return hosturl;
 	}
 
-	protected static String resolveHost(String host, ServerInfoMBean serverInfoMBean) {
+	protected String resolveHost(String host, ServerInfoMBean serverInfoMBean) {
 		if ("*".equals(host)) {
 			// Check configured ${defaultHostName}
 			if (serverInfoMBean != null) {
@@ -67,7 +67,7 @@ public class IssuerUtil {
 	 * @return InetAddress.getLocalHost().getHostAddress(); or null if that
 	 *         fails.
 	 */
-	protected static String getLocalHostIpAddress() {
+	protected String getLocalHostIpAddress() {
 		try {
 			return AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
 				@Override

@@ -38,4 +38,6 @@ public interface JwtSsoConfig extends MicroProfileJwtConfig {
 
 	String getJwtConsumerRef();
 
+	String getCookieName();
+
 }

@@ -70,6 +70,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	private boolean cookieSecureFlag;
 	private String jwtBuilderRef;
 	private String jwtConsumerRef;
+	private String cookieName;
 	private WebAppSecurityConfig webAppSecConfig;
 
 	protected static final String KEY_UNIQUE_ID = "id";
@@ -259,6 +260,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
 		cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
 		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
 		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
+		cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
 		if (jwtConsumerRef == null) {
 			setJwtSsoConsumerDefaults();
 		}
@@ -355,7 +357,6 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	}
 
 	/** {@inheritDoc} */
-	@SuppressWarnings("static-access")
 	@Override
 	public String getIssuer() {
 		// TODO Auto-generated method stub
@@ -426,6 +427,12 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	public boolean getTokenReuse() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public String getCookieName() {
+		// TODO Auto-generated method stub
+		return cookieName;
 	}
 
 }

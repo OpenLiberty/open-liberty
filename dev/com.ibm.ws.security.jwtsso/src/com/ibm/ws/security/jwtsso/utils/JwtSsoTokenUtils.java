@@ -16,16 +16,15 @@ import java.util.Set;
 import javax.security.auth.Subject;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jose4j.lang.JoseException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.jwt.Claims;
-import com.ibm.websphere.security.jwt.InvalidBuilderException;
 import com.ibm.websphere.security.jwt.InvalidConsumerException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
-import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
@@ -45,17 +44,21 @@ public class JwtSsoTokenUtils {
 	String consumerId = null;
 	boolean isValid = true;
 
+	public JwtSsoTokenUtils() {
+
+	}
+
 	public JwtSsoTokenUtils(String builderId, String consumerId) {
 		this.builderId = builderId;
 		this.consumerId = consumerId;
-		try {
-			JwtBuilder.create(builderId); // fail fast if id or config is
-											// invalid
-			consumer = JwtConsumer.create(consumerId);
-		} catch (InvalidConsumerException | InvalidBuilderException e) {
-			// ffdc
-			isValid = false;
-		}
+		// try {
+		// JwtBuilder.create(builderId); // fail fast if id or config is
+		// // invalid
+		// consumer = JwtConsumer.create(consumerId);
+		// } catch (InvalidConsumerException | InvalidBuilderException e) {
+		// // ffdc
+		// isValid = false;
+		// }
 	}
 
 	/**
@@ -124,7 +127,9 @@ public class JwtSsoTokenUtils {
 			return null;
 		}
 		TokenBuilder tb = new TokenBuilder();
-		String tokenString = tb.createTokenString(builderId, subject);
+		SubjectUtil subjectUtil = new SubjectUtil(subject);
+		String customCacheKey = subjectUtil.getCustomCacheKey();
+		String tokenString = tb.createTokenString(builderId, subject, customCacheKey);
 		if (tokenString == null) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "returning null because tokenString was null, creation failed.");
@@ -153,15 +158,9 @@ public class JwtSsoTokenUtils {
 		if (!isValid) {
 			return tempSubject;
 		}
-		JwtToken jwttoken = null;
-		try {
-			jwttoken = consumer.createJwt(tokenstr);
-		} catch (InvalidTokenException | InvalidConsumerException e) {
-			// ffdc
-			return tempSubject;
-		}
-		String decodedPayload = null;
+		JwtToken jwttoken = recreateJwt(tokenstr);
 		if (jwttoken != null) {
+			String decodedPayload = null;
 			String payload = JsonUtils.getPayload(tokenstr);
 			decodedPayload = JsonUtils.decodeFromBase64String(payload);
 			if (decodedPayload != null) {
@@ -182,5 +181,70 @@ public class JwtSsoTokenUtils {
 
 		return tempSubject;
 
+	}
+
+	public Subject handleJwtSsoTokenValidationWithSubject(Subject subject, String tokenstr) {
+		Subject tempSubject = null;
+		if (!isValid) {
+			return tempSubject;
+		}
+		JwtToken jwttoken = recreateJwt(tokenstr);
+		if (jwttoken != null) {
+			TokenBuilder tb = new TokenBuilder();
+			String user = tb.getUserName(subject);
+			JsonWebToken principal = new DefaultJsonWebTokenImpl(tokenstr, JwtSsoConstants.TOKEN_TYPE_JWT, user);
+			subject.getPrincipals().add(principal);
+		}
+
+		// JsonWebToken principal = buildSecurityPrincipalFromToken(tokenstr);
+
+		return subject;
+
+	}
+
+	private JwtToken recreateJwt(String tokenstr) {
+		// TODO Auto-generated method stub
+		try {
+			return consumer.createJwt(tokenstr);
+		} catch (InvalidTokenException | InvalidConsumerException e) {
+			// ffdc
+			return null;
+		}
+	}
+
+	public boolean isJwtValid(String tokenstr) {
+		// TODO Auto-generated method stub
+		if (recreateJwt(tokenstr) == null) {
+			return false;
+		}
+		return true;
+	}
+
+	public String getCustomCacheKeyFromToken(String tokenstr) {
+		String customCacheKey = null;
+		String payload = decodedPayload(tokenstr);
+		if (payload != null) {
+			customCacheKey = (String) getClaim(payload, Constants.CCK_CLAIM);
+		}
+		return customCacheKey;
+	}
+
+	private Object getClaim(String payload, String claim) {
+		// TODO Auto-generated method stub
+		try {
+			return JsonUtils.claimFromJsonObject(payload, claim);
+		} catch (JoseException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+		}
+		return null;
+	}
+
+	public String decodedPayload(String tokenstr) {
+		if (tokenstr != null) {
+			String payload = JsonUtils.getPayload(tokenstr);
+			return JsonUtils.decodeFromBase64String(payload);
+		}
+		return null;
 	}
 }

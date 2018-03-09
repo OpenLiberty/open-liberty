@@ -118,6 +118,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     }
 
     public Cookie createJwtCookie(HttpServletRequest req, String cookieValue) {
+        //String cookieName = JwtSSOTokenHelper.
         Cookie ssoCookie = new Cookie("jwtToken", cookieValue);
         ssoCookie.setMaxAge(-1);
         //The path has to be "/" so we will not have multiple cookies in the same domain

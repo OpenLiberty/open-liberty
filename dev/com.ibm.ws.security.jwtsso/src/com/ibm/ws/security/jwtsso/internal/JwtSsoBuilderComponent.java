@@ -57,6 +57,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 	private boolean cookieSecureFlag;
 	private String jwtBuilderRef;
 	private String jwtConsumerRef;
+	private String cookieName;
 	private WebAppSecurityConfig webAppSecConfig;
 	private String signatureAlgorithm = "RS256";
 
@@ -187,6 +188,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 			setJwtSsoBuilderDefaults();
 		}
 		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
+		cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
 		if (tc.isEntryEnabled()) {
 			Tr.exit(tc, "process");
 		}
@@ -334,7 +336,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 	}
 
 	/** {@inheritDoc} */
-	@SuppressWarnings("static-access")
+
 	@Override
 	public String getResolvedHostAndPortUrl() {
 		return issuerUtil.getResolvedHostAndPortUrl(httpsendpointInfoMBean, httpendpointInfoMBean, serverInfoMBean,
@@ -354,6 +356,12 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 	public PublicKey getPublicKey() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getCookieName() {
+		// TODO Auto-generated method stub
+		return cookieName;
 	}
 
 }

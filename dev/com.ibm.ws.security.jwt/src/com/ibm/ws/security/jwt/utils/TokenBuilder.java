@@ -34,6 +34,7 @@ public class TokenBuilder {
 	private static TraceComponent tc = Tr.register(TokenBuilder.class);
 	private static final String USER_CLAIM = "upn"; // mp-jwt format
 	private static final String GROUP_CLAIM = "groups"; // mp-jwt format
+	private static final String CCK_CLAIM = "session"; // custom cache key claim
 	private final static String GROUP_PREFIX = "group:";
 
 	/**
@@ -58,7 +59,7 @@ public class TokenBuilder {
 	 */
 	public String createTokenString(String builderConfigId) {
 		try {
-			return createTokenString(builderConfigId, WSSubject.getRunAsSubject());
+			return createTokenString(builderConfigId, WSSubject.getRunAsSubject(), null);
 
 			// JwtBuilder builder = JwtBuilder.create(builderConfigId);
 			//
@@ -161,7 +162,7 @@ public class TokenBuilder {
 		return wsCredential;
 	}
 
-	public String createTokenString(String builderId, Subject subject) {
+	public String createTokenString(String builderId, Subject subject, String customCacheKey) {
 		try {
 			JwtBuilder builder = JwtBuilder.create(builderId);
 
@@ -175,6 +176,9 @@ public class TokenBuilder {
 			ArrayList<String> groups = getGroups(subject);
 			if (isValidList(groups)) {
 				builder.claim(GROUP_CLAIM, groups);
+			}
+			if (customCacheKey != null) {
+				builder.claim(CCK_CLAIM, customCacheKey);
 			}
 
 			return builder.buildJwt().compact();
