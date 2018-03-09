@@ -11,7 +11,10 @@
 package componenttest.topology.utils;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,7 +46,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.ibm.websphere.simplicity.PortType;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.Props;
 
 import componenttest.topology.impl.LibertyServer;
@@ -205,10 +207,9 @@ public class MvnUtils {
         if (!init) {
             init(server);
         }
-        // Everything under autoFVT/results is collected from the child build machine
 
+        // Everything under autoFVT/results is collected from the child build machine
         int rc = runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
-        Assert.assertEquals("mvn returned non-zero: " + rc, 0, rc);
         File src = new File(MvnUtils.resultsDir, "tck/surefire-reports/junitreports");
         File tgt = new File(MvnUtils.resultsDir, "junit");
         try {
@@ -219,14 +220,26 @@ public class MvnUtils {
                               + src.getAbsolutePath(), nsfe);
         }
 
-        MvnUtils.ResultsUtil result = new MvnUtils.ResultsUtil();
-        String r = result.xPathProcessor();
+        // Get the failing tests out of testng-results.xml
+        String failingTestsList = getNonPassingTestsNamesList();
+        if (failingTestsList != null && failingTestsList.length() > 0) {
+            String[] nonPassed = failingTestsList.split("\\s");
+            if (nonPassed.length > 0) {
+                printStdOutAndScreenIfLocal("\nTCK TESTS THAT DID NOT PASS:");
+                for (int i = 0; i < nonPassed.length; i++) {
+                    printStdOutAndScreenIfLocal("                               " + nonPassed[i]);
+                }
+                printStdOutAndScreenIfLocal("\n");
+            }
+        }
 
         // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
         // the TCK regression
-        Assert.assertEquals(bucketName + ":" + testName + r + "`n" + ":TCK has returned non-zero return code of: " + rc +
-                            " This indicates test failure, see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
-                            " and ...autoFVT/results/tck/surefire-reports/index.html", 0, rc);
+        Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
+                            + "The TCK has thus returned non-zero return code of: "
+                            + rc +
+                            ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
+                            " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
 
         return rc;
     }
@@ -419,101 +432,80 @@ public class MvnUtils {
 
     }
 
-    public static class ResultsUtil {
-        private String r;
+    /**
+     * @return A space separated list of non-PASSing test results
+     * @throws SAXException
+     * @throws IOException
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     */
+    public static String getNonPassingTestsNamesList() throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
+        String notPassingTestsQuery = "/testng-results/suite/test/class/test-method[@status!='PASS']/@name";
+        String notPassingTestsResultString = getXPathQueryResults(notPassingTestsQuery);
+        return notPassingTestsResultString;
+    }
 
-        public String xPathProcessor() throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
-            r = null;
+    /**
+     * Return the result of a query on testng-results.xml (usually test methods) filtering out arquillianBefore/After strings.
+     * The arquillianBefore/After methods can be considered 'noise' as if they fail - the tests they wrap will fail too.
+     * 
+     * @param query
+     * @return
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws IOException
+     * @throws XPathExpressionException
+     */
+    private static String getXPathQueryResults(String query) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+        String resultString = "";
 
-            File f = new File(".");
-            if (f.exists())
-                System.out.println("GDH Dot exists at " + f.getAbsolutePath());
-            else
-                System.out.println("GDH Dot does not exist at " + f.getAbsolutePath());
-
-            File results = new File(MvnUtils.resultsDir, "tck/surefire-reports/testng-results.xml");
-            System.out.println("GDH Results is at " + results.getAbsolutePath() + " It exists is " + results.exists());
-
-            File src = new File(MvnUtils.resultsDir, "tck/surefire-reports/junitreports");
-
-            //Create DocumentBuilderFactory for reading testng-results file
+        // We use an aggressive try/catch as it is very important that this non-vital
+        // function does not impact the build success. This is a common function and it
+        // might be possible for a particular FAT bucket to tweak the directories or
+        // surefire output and so on that we use via project specific config files and
+        // we don't want to get a, for example, FileNotFound exception.
+        //
+        try {
+            File testngResults = new File(MvnUtils.resultsDir, "tck/surefire-reports/testng-results.xml");
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse("publish/results/tck/surefire-reports/testng-results.xml");
-            // Create XPathFactory for creating XPath Object
+            Document docTestngResults = builder.parse(testngResults);
             XPathFactory xPathFactory = XPathFactory.newInstance();
-
-            // Create XPath object from XPathFactory
             XPath xpath = xPathFactory.newXPath();
+            XPathExpression xpr = xpath.compile(query);
+            NodeList nodes = (NodeList) xpr.evaluate(docTestngResults, XPathConstants.NODESET);
 
-            // Compile the XPath expression for getting all brands
-            XPathExpression xPathExpr = xpath.compile("/testng-results/@total");
-
-            // XPath text example : executing xpath expression in java
-            Object result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
-            r += log(getClass(), "Result", "Number of tests: " + getXpathResult(result));
-
-            xPathExpr = xpath.compile("/testng-results/@passed");
-            result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
-            r += log(getClass(), "Result", "Number of passed tests: " + getXpathResult(result));
-
-            xPathExpr = xpath.compile("/testng-results/@failed");
-            result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
-            r += log(getClass(), "Result", "Number of failed tests: " + getXpathResult(result));
-
-            if (Integer.parseInt(getXpathResult(result)) != 0) {
-                doc = builder.parse("publish/tckRunner/tck/target/surefire-reports/testng-failed.xml");
-                xPathExpr = xpath.compile("/suite/test/classes/class/@name");
-
-                result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
-
-                NodeList nodes = (NodeList) result;
-                String testClass;
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    testClass = nodes.item(i).getNodeValue();
-                    xPathExpr = xpath.compile("/suite/test/classes/class"
-                                              + "[@name='" + testClass + "']"
-                                              + "/methods/include[@invocation-numbers='0 1']/@name");
-
-                    result = xPathExpr.evaluate(doc, XPathConstants.NODESET);
-                    if (getFailures(result) != "") {
-                        r += log(getClass(), "Result", "Tests failed in " + testClass + ": \n" + getFailures(result));
-                    }
+            for (int i = 0; i < nodes.getLength(); i++) {
+                String value = nodes.item(i).getNodeValue();
+                if (!value.equals("arquillianBeforeTest") && !value.equals("arquillianAfterTest")) {
+                    resultString += " " + value;
                 }
             }
-            return r;
+        } catch (Throwable t) {
+            MvnUtils.log(t.getMessage());
         }
 
-        /**
-         * @param class1
-         * @param string
-         * @param string2
-         */
-        private String log(Class<? extends ResultsUtil> class1, String string, String string2) {
-            String result = "\n" + class1 + string + string2;
-            System.out.print("GDH logging result " + result);
-            Log.info(class1, string, string2);
-            return result;
-        }
+        return resultString;
+    }
 
-        public String getFailures(Object result) {
-            NodeList nodes = (NodeList) result;
-            String finalResult = "";
-            for (int i = 0; i < nodes.getLength(); i++) {
-                finalResult += nodes.item(i).getNodeValue() + "\n";
+    /**
+     * This method will print a String reliably to the 'standard' Standard.out
+     * (i.e. the developers screen when running locally)
+     *
+     * @param msg
+     */
+    private static void printStdOutAndScreenIfLocal(String msg) {
+        // If running locally print to screen and stdout if different else print to 'stdout' only
+        if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
+            // Developers laptop FAT
+            PrintStream screen = new PrintStream(new FileOutputStream(FileDescriptor.out));
+            screen.println(msg);
+            if (!System.out.equals(screen)) {
+                System.out.println(msg);
             }
-
-            return finalResult;
-        }
-
-        public String getXpathResult(Object result) {
-            NodeList nodes = (NodeList) result;
-            String finalResult = "";
-            for (int i = 0; i < nodes.getLength(); i++) {
-                finalResult += nodes.item(i).getNodeValue();
-            }
-
-            return finalResult;
+        } else {
+            // Build engine FAT
+            System.out.println(msg);
         }
     }
 }
