@@ -12,6 +12,7 @@
 
     <featureManager>
         <feature>springBoot-1.5</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
   
     <include location="../fatTestPorts.xml"/>

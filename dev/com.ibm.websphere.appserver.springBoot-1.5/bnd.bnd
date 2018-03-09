@@ -12,5 +12,3 @@
 
 -nobundles=true
 
--dependson: \
-	com.ibm.ws.springboot.support.version15;version=latest

@@ -12,6 +12,3 @@
 
 -nobundles=true
 
--dependson: \
-	com.ibm.ws.springboot.support.version20;version=latest
-
