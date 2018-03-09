@@ -1082,7 +1082,8 @@ public class BaseTraceFormatter extends Formatter {
     }
 
     /**
-     * Outputs filteredStream of genData
+     * Returns filteredStream of genData's message where it hides
+     * internal classes with " at [internal classes]" for stack traces
      *
      * @param genData object to filter
      * @return filtered message of the genData

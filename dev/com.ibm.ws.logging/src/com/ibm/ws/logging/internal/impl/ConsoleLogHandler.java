@@ -20,15 +20,13 @@ import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.SystemLogHolder;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
-/**
- *
- */
 public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.ConsoleLogHandler";
-    //have two writers systemout and systemerr
+
+    //References for the SystemLogHolders for SysErr and SysOut from BaseTraceService
     private SystemLogHolder sysErrHolder;
-    private SystemLogHolder sysLogHolder;
+    private SystemLogHolder sysOutHolder;
     private boolean isTraceStdout = false;
 
     //The 'format' we are in: Json or basic (default is basic)
@@ -37,7 +35,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     private Integer consoleLogLevel = null;
     private boolean copySystemStreams = false;
 
-    private BaseTraceService BTS = null;
+    private BaseTraceService baseTraceService = null;
 
     public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
@@ -50,17 +48,20 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     @Override
     public void synchronousWrite(Object event) {
-        if (sysLogHolder == null) {
+        if (sysOutHolder == null) {
             return;
         }
-        String messageOutput = null;
 
-        //Used to identify if console Message is intended for Stderr - each 'new' write sets it to false.
+        //The message to be written out. TODO: catch nulls later when formatting and output message
+        String messageOutput = null;
+        //Identify if console Message is intended for Stderr - each 'new' write sets it to false.
         boolean isStderr = false;
 
         /*
-         * Given an 'object' we must determine what type of log event it originates from.
-         * Knowing that it is a *Data object, we can figure what type of source it is.
+         * Given a message 'object' we must determine what type of log event it originates from
+         * so that we can extract relevant information.
+         *
+         * Information such as "levelValue" is extracted if the original message is a LogTraceData.
          */
         GenericData genData = null;
         Integer levelVal = null;
@@ -77,7 +78,8 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          * To write out to the console must determine if we are JSON or BASIC
          * 1. JSON
          * a) Message
-         * - Check if it is above consoleLogLevel and format as JSON
+         * - Check if it is above consoleLogLevel OR if it is from SysOut/SysErr AND copySystemStreams is true
+         * then format as JSON
          * b) Not Message (i.e. AccessLog, Trace, FFDC)
          * - format as JSON
          * 2. BASIC - There can be three message origins for basic messages
@@ -90,12 +92,13 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          * c) Lastly this leaves message origin from publishLogRecord()
          * - We must check if it is above consoleLogLevel to format it
          */
-        String eventsourceType = getSourceTypeFromDataObject(genData);
         if (format.equals(LoggingConstants.JSON_FORMAT)) {
+            String eventsourceType = getSourceTypeFromDataObject(genData);
             if (eventsourceType.equals(CollectorConstants.MESSAGES_SOURCE) && levelVal != null) {
-                //if (levelVal >= consoleLogLevel) {
-                messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
-                //}
+                if (levelVal >= consoleLogLevel ||
+                    (copySystemStreams && isOriginFromSystemStreams(levelVal, loggerName))) {
+                    messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
+                }
             } else {
                 messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
             }
@@ -109,9 +112,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 messageOutput = formatter.traceFormatGenData(genData);
 
             } // copySystemStream and stderr/stdout (i.e WsLevel.CONFIG) and logger is sysout or syserr
-            else if (copySystemStreams &&
-                     levelVal == WsLevel.CONFIG.intValue() &&
-                     (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_OUT) || loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR))) {
+            else if (copySystemStreams && isOriginFromSystemStreams(levelVal, loggerName)) {
                 if (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR)) {
                     isStderr = true;
                 }
@@ -130,28 +131,55 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 messageOutput = formatter.consoleLogFormat(genData);
             }
         }
-        synchronized (this) {
-            //check if message need to be written to stderr or stdout
-            if (isStderr) {
-                BTS.writeStreamOutput(sysErrHolder, messageOutput, false);
-            } else if (messageOutput != null) {
-                BTS.writeStreamOutput(sysLogHolder, messageOutput, false);
-            }
+        //check if message need to be written to stderr or stdout
+        if (isStderr) {
+            baseTraceService.writeStreamOutput(sysErrHolder, messageOutput, false);
+            //sysErrHolder.getOriginalStream().println(messageOutput);
+        } else if (messageOutput != null) {
+            //sysOutHolder.getOriginalStream().println(messageOutput);
+            baseTraceService.writeStreamOutput(sysOutHolder, messageOutput, false);
         }
     }
 
-    public boolean getCopySystemStreams() {
-        return copySystemStreams;
+    /**
+     * Return if a message originated from SystemOut or SystemErr
+     * This requires the levelValue and loggerName of the message event
+     * This specifically checks if it came from BaseTraceService.OutputStream.flush() -> echo()
+     * BaseTraceService.OutputStream.flush() creates a logRecord with WsLevel.CONFIG level and loggerName
+     * of the SysLogHolder's name (e.g. SystemOut, SystemErr) before passing onto echo()
+     *
+     * @param levelVal int value of level value of message
+     * @param loggerName loggername of which the message originated from
+     * @return
+     */
+    private boolean isOriginFromSystemStreams(Integer levelVal, String loggerName) {
+        return (levelVal == WsLevel.CONFIG.intValue()) &&
+               (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_OUT) || loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR));
     }
 
+    /**
+     * Set copySystemStreams value that was determined from config by BasegTraceService
+     *
+     * @param copySystemStreams value to determine whether to copysystemstreams or not
+     */
     public void setCopySystemStreams(boolean copySystemStreams) {
         this.copySystemStreams = copySystemStreams;
     }
 
+    /**
+     * Set BaseTraceFormatter passed from BaseTraceService
+     *
+     * @param formatter the BaseTraceFormatter to use
+     */
     public void setFormatter(BaseTraceFormatter formatter) {
         this.formatter = formatter;
     }
 
+    /**
+     * Set consoleLogLevel passed from BaseTraceService
+     *
+     * @param consoleLogLevel consoleLogLevel
+     */
     public void setConsoleLogLevel(Integer consoleLogLevel) {
         this.consoleLogLevel = consoleLogLevel;
     }
@@ -160,23 +188,62 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         this.format = format;
     }
 
+    @Override
+    /**
+     * Because consoleLogHolder has 'two' writers, SystemOut and SystemErr
+     * please use the overloaded setWriter(Object, Object) to set both SystemLogHolders
+     * for SystemOut and SystemErr respectfully.
+     *
+     * @param writer SystemLogHolder object for SystemOut
+     */
+    public void setWriter(Object writer) {
+        this.sysOutHolder = (SystemLogHolder) writer;
+    }
+
+    /**
+     * Set the writers for SystemOut and SystemErr respectfully
+     *
+     * @param sysLogHolder SystemLogHolder object for SystemOut
+     * @param sysErrHolder SystemLogHolder object for SystemErr
+     */
+    public void setWriter(Object sysLogHolder, Object sysErrHolder) {
+        this.sysOutHolder = (SystemLogHolder) sysLogHolder;
+        this.sysErrHolder = (SystemLogHolder) sysErrHolder;
+    }
+
+    /**
+     * Set the writer for SystemOut
+     *
+     * @param sysLogHolder SystemLogHolder object for SystemOut
+     */
+    public void setSysOutHolder(SystemLogHolder sysLogHolder) {
+        this.sysOutHolder = sysLogHolder;
+    }
+
+    /**
+     * Set the writer for SystemErr
+     *
+     * @param sysLogHolder SystemLogHolder object for SystemErr
+     */
     public void setSysErrHolder(SystemLogHolder sysErrHolder) {
         this.sysErrHolder = sysErrHolder;
     }
 
+    /**
+     * Set TraceStdOut value, which is a value calculated by BaseTraceService whether user set traceFileName to stdout
+     *
+     * @param isTraceStdout value calculated by BaseTraceService whether user set traceFileName to stdout
+     */
     public void setTraceStdout(boolean isTraceStdout) {
         this.isTraceStdout = isTraceStdout;
     }
 
     /**
-     * @param trErr the trErr to set
+     * Set reference to BaseTraceService instance
+     *
+     * @param basetraceService reference to BaseTraceService
      */
-    public void setBTS(BaseTraceService BTS) {
-        this.BTS = BTS;
-    }
-
-    @Override
-    public void setWriter(Object writer) {
-        this.sysLogHolder = (SystemLogHolder) writer;
+    public void setBaseTraceService(BaseTraceService basetraceService) {
+        this.baseTraceService = basetraceService;
     }
 }

@@ -357,6 +357,8 @@ public class BaseTraceService implements TrService {
             consoleLogHandler.setWriter(systemOut);
             consoleLogHandler.setSysErrHolder(systemErr);
         }
+        consoleLogHandler.setCopySystemStreams(copySystemStreams);
+
         /*
          * If messageFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
          * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
@@ -389,7 +391,6 @@ public class BaseTraceService implements TrService {
                 }
                 consoleLogHandler.modified(new ArrayList<String>());
                 updateConduitSyncHandlerConnection(filteredList, consoleLogHandler);
-                consoleLogHandler.setCopySystemStreams(copySystemStreams);
             }
         }
 
@@ -430,7 +431,7 @@ public class BaseTraceService implements TrService {
             messageLogHandler.setFormatter(formatter);
         }
         consoleLogHandler.setFormatter(formatter);
-        consoleLogHandler.setBTS(this);
+        consoleLogHandler.setBaseTraceService(this);
         consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
     }
 
