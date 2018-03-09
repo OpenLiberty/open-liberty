@@ -9,9 +9,9 @@
     
     <include location="../fatTestPorts.xml"/>
     
-    <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="10m"/>
 
-    <httpSessionCache libraryRef="HazelcastLib"/>
+    <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES"/>
 
     <library id="HazelcastLib">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>

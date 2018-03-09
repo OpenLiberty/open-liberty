@@ -10,9 +10,10 @@
  *******************************************************************************/
 package web.war.basic;
 
-import java.util.logging.Logger;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
@@ -175,6 +176,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             throw new AuthenticationException(e.toString());
         }
     }
+
     protected String[] getGroups(CredentialValidationResult result) {
         String[] groups = null;
         Set<String> groupSet = result.getCallerGroups();

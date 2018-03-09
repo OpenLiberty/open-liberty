@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -918,6 +918,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      * @throws WIMException
      */
     private Entity createEntityFromLdapEntry(Object parentDO, String propName, LdapEntry ldapEntry, List<String> propNames) throws WIMException {
+        final String METHODNAME = "createEntityFromLdapEntry";
+
         String outEntityType = ldapEntry.getType();
         Entity outEntity = null;
         // For changed entities, when change type is delete, it is possible that
@@ -940,12 +942,23 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             if (SchemaConstants.DO_ENTITIES.equalsIgnoreCase(propName))
                 ((Root) parentDO).getEntities().add(outEntity);
         } else if (parentDO instanceof Entity) {
-            if (SchemaConstants.DO_GROUP.equalsIgnoreCase(propName))
-                ((Entity) parentDO).getGroups().add((Group) outEntity);
-            if (SchemaConstants.DO_MEMBERS.equalsIgnoreCase(propName))
+            if (SchemaConstants.DO_GROUP.equalsIgnoreCase(propName)) {
+                /*
+                 * May get back plain entities if objectclass for group entity and
+                 * group filters don't match up identically.
+                 */
+                if (outEntity instanceof Group) {
+                    ((Entity) parentDO).getGroups().add((Group) outEntity);
+                } else {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, METHODNAME + " Expected group entity. Group will excluded from group membership. Entity: " + outEntity);
+                    }
+                }
+            } else if (SchemaConstants.DO_MEMBERS.equalsIgnoreCase(propName)) {
                 ((Group) parentDO).getMembers().add(outEntity);
-            if (SchemaConstants.DO_CHILDREN.equalsIgnoreCase(propName))
+            } else if (SchemaConstants.DO_CHILDREN.equalsIgnoreCase(propName)) {
                 ((Entity) parentDO).getChildren().add(outEntity);
+            }
         }
 
         IdentifierType outId = new IdentifierType();
@@ -995,7 +1008,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      *             PS. These changes are not going to affect original behaviour; New changes will be serving binary dataType attributes too!
      */
     private void populateEntity(Entity entity, List<String> propNames, Attributes attrs) throws WIMException {
-        if (propNames == null || propNames.size() == 0) {
+        if (propNames == null || propNames.size() == 0 || attrs == null) {
             return;
         }
 
@@ -1132,7 +1145,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         if (timestampFormat != null) {
             dateFormat = new SimpleDateFormat(timestampFormat);
         } else {
-            if ("IBM Tivoli Directory Server".equalsIgnoreCase(iLdapConfigMgr.getLdapType())) {
+            if (LdapConstants.IDS_LDAP_SERVER.equalsIgnoreCase(iLdapConfigMgr.getLdapType())) {
                 int position = originValue.indexOf("-");
                 if (originValue.indexOf(".-") == -1) {
                     while (originValue.substring(0, position).length() < 21) {
@@ -1146,9 +1159,9 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 }
                 dateFormat = new SimpleDateFormat("yyyyMMddHHmmss.SSSZ");
                 originValue = new StringBuffer(originValue.substring(0, 18) + originValue.substring(21));
-            } else if ("Sun Java System Directory Server".equalsIgnoreCase(iLdapConfigMgr.getLdapType())
-                       || "IBM Lotus Domino".equalsIgnoreCase(iLdapConfigMgr.getLdapType())
-                       || "Novell eDirectory".equalsIgnoreCase(iLdapConfigMgr.getLdapType())) {
+            } else if (LdapConstants.SUN_LDAP_SERVER.equalsIgnoreCase(iLdapConfigMgr.getLdapType())
+                       || LdapConstants.DOMINO_LDAP_SERVER.equalsIgnoreCase(iLdapConfigMgr.getLdapType())
+                       || LdapConstants.NOVELL_LDAP_SERVER.equalsIgnoreCase(iLdapConfigMgr.getLdapType())) {
                 dateFormat = new SimpleDateFormat("yyyyMMddHHmmssZ");
             } else {
                 if (originValue.toString().contains(".")) {
@@ -1348,7 +1361,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             }
         } else {
             // If operational attribute "ibm-allGroups" is specified in groupMemberIdMap, then get groups using operational attr "ibm-allGroups"
-            if ("IBM TIVOLI DIRECTORY SERVER".equalsIgnoreCase(iLdapConfigMgr.getLdapType()) && iLdapConfigMgr.isLdapOperationalAttributeSet())
+            if (LdapConstants.IDS_LDAP_SERVER.equalsIgnoreCase(iLdapConfigMgr.getLdapType()) && iLdapConfigMgr.isLdapOperationalAttributeSet())
                 getGroupsByOperationalAttribute(entity, ldapEntry, bases, level, propNames);
             else {
                 getGroupsByMember(entity, ldapEntry, bases, level, propNames, null);
@@ -1451,7 +1464,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         // Get the list of supported properties
         List<String> supportedProps = iLdapConfigMgr.getSupportedProperties(SchemaConstants.DO_GROUP, propNames);
 
-        SearchResult result = iLdapConn.searchByOperationalAttribute(ldapEntry.getDN(), filter, grpTypes, supportedProps, "ibm-allGroups");
+        SearchResult result = iLdapConn.searchByOperationalAttribute(ldapEntry.getDN(), filter, grpTypes, supportedProps, LdapConstants.LDAP_ATTR_IBM_ALL_GROUP);
 
         if (result != null) {
             Attribute attribute = result.getAttributes().get(LDAP_ATTR_IBM_ALL_GROUP);
@@ -1461,8 +1474,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                     while (groups.hasMore()) {
                         if (entity != null) {
                             String groupDN = String.valueOf(groups.next());
-                            LdapEntry grpEntry = new LdapEntry(groupDN, null, groupDN, iLdapConfigMgr.getGroupTypes().get(0), null);
-                            //LdapEntry grpEntry = iLdapConn.getEntityByIdentifier(groupDN, null, null, iLdapConfigMgr.getGroupTypes(), propNames, false, false);
+                            LdapEntry grpEntry = iLdapConn.getEntityByIdentifier(groupDN, null, null, iLdapConfigMgr.getGroupTypes(), propNames, false, false);
                             createEntityFromLdapEntry(entity, SchemaConstants.DO_GROUP, grpEntry, supportedProps);
                         }
                     }
@@ -1560,17 +1572,18 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         Attribute mbrshipAttr = ldapEntry.getAttributes().get(mbrshipAttrName);
         try {
             if (mbrshipAttr == null || (mbrshipAttr.size() == 1 && mbrshipAttr.get(0) == null)) {
-                if (iLdapConfigMgr.getLdapType().startsWith("IDS") &&
-                    mbrshipAttrName != null && mbrshipAttrName.equalsIgnoreCase(LDAP_ATTR_IBM_ALL_GROUP))
+                if (LdapConstants.IDS_LDAP_SERVER.equalsIgnoreCase(iLdapConfigMgr.getLdapType()) &&
+                    mbrshipAttrName != null && mbrshipAttrName.equalsIgnoreCase(LDAP_ATTR_IBM_ALL_GROUP)) {
                     isInGrp = false;
-                else
+                } else {
+                    // This member do not have membership attr, use member attr to look up.
                     isInGrp = getGroupsByMember(entity, ldapEntry, bases, level, supportedProps, groupDN);
+                }
 
-                // This member do not have membership attr, use member attr to look up.
                 return isInGrp;
             } else if (mbrshipAttr.size() == 0) {
-                isInGrp = false;
                 // No groups contain this member
+                isInGrp = false;
                 return isInGrp;
             }
 

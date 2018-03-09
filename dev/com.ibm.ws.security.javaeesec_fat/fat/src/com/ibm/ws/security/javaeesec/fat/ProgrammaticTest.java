@@ -67,7 +67,7 @@ public class ProgrammaticTest extends JavaEESecTestBase {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecUnprotected.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets.unprotected",
-                                               "web.war.identitystores");
+                                               "web.war.identitystores", "web.war.identitystores.scoped.application");
         myServer.setServerConfigurationFile("unprotected.xml");
         myServer.startServer(true);
         myServer.addInstalledAppForValidation("JavaEESecUnprotected");

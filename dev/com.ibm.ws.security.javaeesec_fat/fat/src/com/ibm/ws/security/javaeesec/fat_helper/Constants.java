@@ -93,6 +93,8 @@ public class Constants {
     // Jaspi test users
     public final static String javaeesec_basicRoleGroup = "group1";
     public final static String javaeesec_basicRoleUser = "jaspiuser1";
+    public final static String javaeesec_basicRoleUser_requestscoped = "jaspiuser1_requestscoped";
+    public final static String javaeesec_basicRoleUser_sessionscoped = "jaspiuser1_sessionscoped";
     public final static String javaeesec_basicRoleLDAPUser = "jaspildapuser1";
     public final static String javaeesec_basicRolePwd = "s3cur1ty";
     public final static String javaeesec_basicRoleGroupUser = "jaspiuser2";
