@@ -14,4 +14,5 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.ws.commons-fileupload:commons-fileupload;version=1.2.1,\
+	com.ibm.ws.org.apache.commons.io.2.4;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest
