@@ -78,11 +78,6 @@ public class AbstractStackTraceFilteringTest {
 
     }
 
-    protected void assertConsoleLogCountGreaterThan(String message, String stringToCheckFor, int count) throws Exception {
-        assertTrue(message, server.findStringsInFileInLibertyServerRoot(stringToCheckFor, CONSOLE_LOG).size() > count);
-
-    }
-
     protected void assertMessagesLogDoesNotContain(String message, String stringToCheckFor) throws Exception {
         assertTrue(message,
                    server.findStringsInLogs(stringToCheckFor).isEmpty());

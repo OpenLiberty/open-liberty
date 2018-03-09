@@ -38,9 +38,9 @@ public class StackTraceFilteringForSpecificationClassesExceptionTest extends Abs
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver");
-        server.startServer();
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver", StackTraceFilteringForSpecificationClassesExceptionTest.class);
         ShrinkHelper.defaultDropinApp(server, "broken-servlet", "com.ibm.ws.logging.fat.broken.servlet");
+        server.startServer();
 
         hitWebPage("broken-servlet", "SpecUsingServlet", true);
     }
@@ -68,8 +68,8 @@ public class StackTraceFilteringForSpecificationClassesExceptionTest extends Abs
         assertConsoleLogCountEquals("The console stack should only have one [internal classes] in it per stack trace.",
                                     INTERNAL_CLASSES_REGEXP, errorCount);
         // The javax.servlet methods shouldn't be stripped out, because they're spec used by the app
-        final int servletFrames = 5;
-        assertConsoleLogCountGreaterThan("The console log should have several frames from the specification javax.servlet classes", "javax.servlet", servletFrames);
+        final int servletFrames = 9;
+        assertConsoleLogCountEquals("The console log should have several frames from the specification javax.servlet classes", "javax.servlet", servletFrames);
 
         assertConsoleLogContains("The console log should have the user class in it", "SpecUsingServlet");
 
