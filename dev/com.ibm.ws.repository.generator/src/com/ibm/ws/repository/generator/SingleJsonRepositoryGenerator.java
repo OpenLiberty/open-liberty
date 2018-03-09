@@ -51,12 +51,10 @@ public class SingleJsonRepositoryGenerator extends Task {
         	try {
 				mySingleFileRepo = SingleFileRepositoryConnection.createEmptyRepository(jsonFile);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         } 
         
-       // OutputStream os = null;
         Parser<? extends RepositoryResourceWritable> parser = null;
 
         try {
@@ -108,10 +106,8 @@ public class SingleJsonRepositoryGenerator extends Task {
             if (parser != null) {
                 RepositoryResourceWritable resource = parser.parseFileToResource(assetFile, metadataFile, null);
                 resource.updateGeneratedFields(true);
-                //os = getOutputStreamFromPath(getOutputLocation(), assetFile);
                 resource.setRepositoryConnection(mySingleFileRepo);
                 resource.uploadToMassive(new AddThenDeleteStrategy());
-                //resource.writeDiskRepoJSONToStream(os);
             } else {
                 // Not a file we build json for
             }
@@ -120,20 +116,6 @@ public class SingleJsonRepositoryGenerator extends Task {
             throw new BuildException(e);
         }
         
-//        finally {
-      //      try {
-            //    if (os != null) {
-             //       os.close();
-            //    }
-                // Tidy up any temporary files.
-          //      if (parser != null) {
-            //        parser.tidyUp();
-            //    }
-        //    } catch (IOException e) {
-                // We will not cause the build to fail if this fails.  Just stack trace it and continue.
-            //    e.printStackTrace();
-        //    }
-      //  }
     }
 
     private boolean isPax(File f) {
@@ -143,28 +125,7 @@ public class SingleJsonRepositoryGenerator extends Task {
     private boolean isZip(File f) {
         return f.getName().toLowerCase().endsWith(".zip");
     }
-
-    /*
-    private OutputStream getOutputStreamFromPath(String path, File ipFile) {
-
-        path = path + "/" + ipFile.getName() + ".json";
-
-        OutputStream os = null;
-        try {
-            File f = new File(path);
-            System.out.println("Writing json to " + f.getAbsolutePath());
-            if (f.exists()) {
-                f.delete();
-            }
-            f.createNewFile();
-            os = new FileOutputStream(f);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return os;
-    }
-*/
-    
+ 
     // ---------------------------- SETTERS AND GETTERS BELOW
 
     /**

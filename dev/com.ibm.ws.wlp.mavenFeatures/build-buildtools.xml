@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="LibertyFeaturesToMavenRepo" default="publish">
+<project name="com.ibm.ws.wlp.mavenFeatures" default="publish">
   <import file="../ant_build/public_imports/standard_imports.xml" />
 
   <target name="package" depends="compile">
