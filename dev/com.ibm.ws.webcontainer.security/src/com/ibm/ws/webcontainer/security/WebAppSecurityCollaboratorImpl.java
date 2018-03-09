@@ -980,7 +980,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     public boolean authenticate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         JaspiService jaspiService = null;
         boolean isNewAuthenticate = false;
-        boolean isProviderRegistered = false;
         if (isJaspiEnabled) {
             jaspiService = (JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
             isNewAuthenticate = jaspiService.isProcessingNewAuthentication(req);
@@ -1002,14 +1001,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         AuthenticationResult authResult = null;
 
         if (isJaspiEnabled && jaspiService.isAnyProviderRegistered(webRequest)) {
-            isProviderRegistered = true;
             authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
         }
         if (authResult == null || authResult.getStatus() == AuthResult.CONTINUE) {
             authResult = authenticateRequest(webRequest);
         }
         if (authResult.getStatus() == AuthResult.SUCCESS) {
-            getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult, true, !isProviderRegistered);
+            getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult, true, !isNewAuthenticate);
         } else {
             String realm = authResult.realm;
             if (realm == null) {
