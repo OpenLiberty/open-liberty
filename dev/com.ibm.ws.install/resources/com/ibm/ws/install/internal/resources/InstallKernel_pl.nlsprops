@@ -1,0 +1,776 @@
+###############################################################################
+# Copyright (c) 2010, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/internal/resources/InstallKernel.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Install Kernel
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1200 to 1399 are reserved for the InstallKernel.
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# The following five messages are for InstallException and should not occur.
+# No user action exists to recover from these exceptions without assistance from IBM.
+# The installer may be IM, WDT, FeatureManager or others.
+ERROR_FEATURES_LIST_INVALID=CWWKF1200E: Podana lista sk\u0142adnik\u00f3w ma warto\u015b\u0107 NULL lub jest pusta.
+ERROR_FEATURES_LIST_INVALID.explanation=Lista sk\u0142adnik\u00f3w do zainstalowania jest pusta lub nie istnieje.
+ERROR_FEATURES_LIST_INVALID.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED=CWWKF1201E: Nieobs\u0142ugiwana operacja.
+ERROR_UNSUPPORTED.explanation=Instalator pr\u00f3bowa\u0142 wykona\u0107 nieobs\u0142ugiwan\u0105 operacj\u0119.
+ERROR_UNSUPPORTED.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED_ASSETTYPE=CWWKF1202E: Typ zasobu aplikacyjnego {0} nie jest obs\u0142ugiwany.
+ERROR_UNSUPPORTED_ASSETTYPE.explanation=Podany typ zasobu aplikacyjnego nie jest obs\u0142ugiwany przez instalator.
+ERROR_UNSUPPORTED_ASSETTYPE.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA=CWWKF1217E: Nie mo\u017cna zdeinstalowa\u0107 sk\u0142adnika {0}.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.explanation=Wykryto b\u0142\u0105d wewn\u0119trzny podczas przetwarzania metadanych. 
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA=CWWKF1218E: Nie mo\u017cna zdeinstalowa\u0107 poprawki {0}.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.explanation=Wykryto b\u0142\u0105d wewn\u0119trzny podczas przetwarzania metadanych. 
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Following messages for InstallException
+ERROR_FAILED_TO_RESOLVE_FEATURES=CWWKF1203E: Nie mo\u017cna uzyska\u0107 nast\u0119puj\u0105cych sk\u0142adnik\u00f3w: {0}. Sprawd\u017a, czy sk\u0142adniki s\u0105 poprawne.
+ERROR_FAILED_TO_RESOLVE_FEATURES.explanation=Instalator nie m\u00f3g\u0142 pobra\u0107 podanych sk\u0142adnik\u00f3w z repozytorium produktu IBM WebSphere Liberty.
+ERROR_FAILED_TO_RESOLVE_FEATURES.useraction=Sprawd\u017a, czy okre\u015blone sk\u0142adniki s\u0105 poprawne.
+
+ERROR_FAILED_TO_RESOLVE_IFIX=CWWKF1204E: Nie mo\u017cna uzyska\u0107 nast\u0119puj\u0105cych poprawek tymczasowych: {0} Upewnij si\u0119, \u017ce system mo\u017ce uzyska\u0107 dost\u0119p do repozytorium produktu IBM WebSphere Liberty i \u017ce identyfikatory poprawek tymczasowych s\u0105 poprawne.
+ERROR_FAILED_TO_RESOLVE_IFIX.explanation=Instalator nie m\u00f3g\u0142 pobra\u0107 poprawek tymczasowych z repozytorium produktu IBM WebSphere Liberty.
+ERROR_FAILED_TO_RESOLVE_IFIX.useraction=Sprawd\u017a, czy podany identyfikator poprawki tymczasowej, identyfikator u\u017cytkownika i has\u0142o s\u0105 poprawne oraz czy repozytorium produktu IBM WebSphere Liberty jest dost\u0119pne.
+
+ERROR_INVALID_ESA=CWWKF1205E: Pobrany zas\u00f3b aplikacyjny okre\u015blonego sk\u0142adnika jest niepoprawny: {0}. Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i spr\u00f3buj ponownie.
+ERROR_INVALID_ESA.explanation=Okre\u015blony zas\u00f3b aplikacyjny sk\u0142adnika zosta\u0142 pomy\u015blnie pobrany z repozytorium, ale jest niepoprawny.
+ERROR_INVALID_ESA.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i spr\u00f3buj ponownie.
+
+ERROR_INVALID_IFIX=CWWKF1206E: Okre\u015blony pobrany zas\u00f3b aplikacyjny poprawki jest niepoprawny: {0}. Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i spr\u00f3buj ponownie.
+ERROR_INVALID_IFIX.explanation=Okre\u015blony zas\u00f3b aplikacyjny poprawki zosta\u0142 pomy\u015blnie pobrany z repozytorium, ale jest niepoprawny.
+ERROR_INVALID_IFIX.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i spr\u00f3buj ponownie.
+
+ERROR_FEATURE_NOT_INSTALLED=CWWKF1207E: Sk\u0142adnik {0} nie zosta\u0142 zainstalowany.
+ERROR_FEATURE_NOT_INSTALLED.explanation=Podany sk\u0142adnik nie istnieje i nie mo\u017cna go zdeinstalowa\u0107. 
+ERROR_FEATURE_NOT_INSTALLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_OTHER_FEATURE_DEPEND_ON=CWWKF1208E: Deinstalowane sk\u0142adniki s\u0105 wymagane przez nast\u0119puj\u0105ce inne sk\u0142adniki: {0}.
+ERROR_OTHER_FEATURE_DEPEND_ON.explanation=Nie mo\u017cna usun\u0105\u0107 podanego sk\u0142adnika, je\u015bli wymaga go inny sk\u0142adnik.
+ERROR_OTHER_FEATURE_DEPEND_ON.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_IFIX_NOT_INSTALLED=CWWKF1209E: Poprawka {0} nie zosta\u0142a zainstalowana.
+ERROR_IFIX_NOT_INSTALLED.explanation=Podana poprawka nie istnieje.
+ERROR_IFIX_NOT_INSTALLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_IFIX_UNINSTALLABLE=CWWKF1210E: Nie mo\u017cna zdeinstalowa\u0107 poprawki {0}.
+ERROR_IFIX_UNINSTALLABLE.explanation=Nie mo\u017cna usun\u0105\u0107 podanej poprawki, je\u015bli wymaga jej inna poprawka.
+ERROR_IFIX_UNINSTALLABLE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_LICENSES_NOT_ACCEPTED=CWWKF1211E: Licencja nie zosta\u0142a zaakceptowana.
+ERROR_LICENSES_NOT_ACCEPTED.explanation=Sk\u0142adnik nie mo\u017ce zosta\u0107 zainstalowany, je\u015bli licencja nie zostanie zaakceptowana. 
+ERROR_LICENSES_NOT_ACCEPTED.useraction=Zaakceptuj licencj\u0119 i pon\u00f3w operacj\u0119.
+
+ERROR_FAILED_TO_DOWNLOAD_FEATURE=CWWKF1212E: Nie mo\u017cna pobra\u0107 sk\u0142adnika {0} do po\u0142o\u017cenia {1}. Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu oraz \u017ce katalog tymczasowy istnieje i mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie spr\u00f3buj ponownie.
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania sk\u0142adnika do katalogu tymczasowego. 
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu oraz \u017ce katalog tymczasowy istnieje i mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie spr\u00f3buj ponownie.
+
+ERROR_FAILED_TO_DOWNLOAD_IFIX=CWWKF1213E: Nie mo\u017cna pobra\u0107 poprawki {0} do po\u0142o\u017cenia {1}.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania poprawki do katalogu tymczasowego. Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu oraz \u017ce katalog tymczasowy istnieje i mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie spr\u00f3buj ponownie.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu oraz \u017ce katalog tymczasowy istnieje i mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie spr\u00f3buj ponownie.
+
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE=CWWKF1214E: Sk\u0142adnik {1} wymaga poprawki {0}. Dodaj opcj\u0119 --verbose, aby wy\u015bwietli\u0107 wszystkie zale\u017cne sk\u0142adniki.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.explanation=Nie mo\u017cna usun\u0105\u0107 poprawki, poniewa\u017c wci\u0105\u017c jest wymagana przez sk\u0142adnik {1}.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_FAILED_TO_GET_FEATURE_LICENSE=CWWKF1215E: Nie mo\u017cna uzyska\u0107 licencji dla sk\u0142adnika {0}.
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania podanej licencji sk\u0142adnika.
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.useraction=Sprawd\u017a, czy podana nazwa sk\u0142adnika, identyfikator u\u017cytkownika i has\u0142o s\u0105 poprawne oraz czy repozytorium produktu IBM WebSphere Liberty jest dost\u0119pne.
+
+ALREADY_INSTALLED=CWWKF1216I: Nast\u0119puj\u0105ce sk\u0142adniki ju\u017c istniej\u0105: {0}. Nie zostan\u0105 one ponownie zainstalowane. Aby zmodyfikowa\u0107 istniej\u0105cy sk\u0142adnik, nale\u017cy najpierw r\u0119cznie go zdeinstalowa\u0107.
+ALREADY_INSTALLED.explanation=Podane sk\u0142adniki zosta\u0142y ju\u017c zainstalowane.
+ALREADY_INSTALLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_FAILED_TO_CONNECT=CWWKF1219E: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z repozytorium serwera IBM WebSphere Liberty. Upewnij si\u0119, \u017ce komputer ma dost\u0119p do sieci i firewalle s\u0105 poprawnie skonfigurowane, a nast\u0119pnie pon\u00f3w dzia\u0142anie. Je\u015bli nawi\u0105zywanie po\u0142\u0105czenia b\u0119dzie nadal ko\u0144czy\u0107 si\u0119 niepowodzeniem, serwer repozytorium mo\u017ce by\u0107 tymczasowo niedost\u0119pny.
+ERROR_FAILED_TO_CONNECT.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas nawi\u0105zywania po\u0142\u0105czenia z repozytorium produktu IBM WebSphere Liberty.
+ERROR_FAILED_TO_CONNECT.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i do odpowiedniego repozytorium.
+
+ERROR_FAILED_TO_AUTHENICATE=CWWKF1220E: Podane referencje s\u0105 niepoprawne.
+ERROR_FAILED_TO_AUTHENICATE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d uwierzytelniania. Podane referencje s\u0105 niepoprawne.
+ERROR_FAILED_TO_AUTHENICATE.useraction=Sprawd\u017a, czy podano poprawny identyfikator u\u017cytkownika i has\u0142o.
+
+ERROR_MISSING_DEPENDENT=CWWKF1221E: Zas\u00f3b aplikacyjny {0} jest zale\u017cny od zasobu aplikacyjnego {1}, kt\u00f3ry nie jest dost\u0119pny w repozytorium produktu IBM WebSphere Liberty. Je\u015bli wymagany zas\u00f3b aplikacyjny jest sk\u0142adnikiem, kt\u00f3ry zosta\u0142 wcze\u015bniej pobrany, zainstaluj brakuj\u0105cy sk\u0142adnik poprzez okre\u015blenie po\u0142o\u017cenia pliku ESA sk\u0142adnika w opcji --location komendy featureManager install i pon\u00f3w pr\u00f3b\u0119 zainstalowania zasobu aplikacyjnego {0}.
+ERROR_MISSING_DEPENDENT.explanation=Sk\u0142adnik, program dodatkowy lub poprawka tymczasowa nie mog\u0105 zosta\u0107 zainstalowane, poniewa\u017c s\u0105 zale\u017cne od niedost\u0119pnego zasobu aplikacyjnego.
+ERROR_MISSING_DEPENDENT.useraction=Je\u015bli wymagany zas\u00f3b aplikacyjny jest sk\u0142adnikiem, kt\u00f3ry zosta\u0142 wcze\u015bniej pobrany, zainstaluj brakuj\u0105cy sk\u0142adnik, podaj\u0105c po\u0142o\u017cenie pliku ESA sk\u0142adnika w opcji --location komendy featureManager install i ponawiaj\u0105c pr\u00f3b\u0119. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_INSTALL_FIX=CWWKF1222E: Nie mo\u017cna pomy\u015blnie zastosowa\u0107 poprawki {0}.
+ERROR_FAILED_TO_INSTALL_FIX.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas stosowania poprawki.
+ERROR_FAILED_TO_INSTALL_FIX.useraction=Przyczyn\u0119 mo\u017cna znale\u017a\u0107 w pliku wlp/lib/fixes/fixinstall.log.
+
+ERROR_INVALID_PRODUCT_VERSION=CWWKF1224E: Sk\u0142adnika {0} nie mo\u017cna zainstalowa\u0107 dla produktu {1} {2}, poniewa\u017c ma on zastosowanie tylko do wersji {3}.  U\u017cyj dzia\u0142ania find komendy featureManager, aby pobra\u0107 list\u0119 sk\u0142adnik\u00f3w maj\u0105cych zastosowanie do produktu {1} {2}.
+ERROR_INVALID_PRODUCT_VERSION.explanation=Sk\u0142adnik nie ma zastosowania do bie\u017c\u0105cej wersji zainstalowanego produktu.
+ERROR_INVALID_PRODUCT_VERSION.useraction=Zainstaluj sk\u0142adniki, kt\u00f3re s\u0105 obs\u0142ugiwane przez wersj\u0119 produktu.
+
+ERROR_INVALID_PRODUCT_EDITION=CWWKF1225E: Sk\u0142adnika {0} nie mo\u017cna zainstalowa\u0107 dla edycji {1} {2}, poniewa\u017c ma on zastosowanie tylko do edycji {3}. U\u017cyj dzia\u0142ania find komendy featureManager, aby pobra\u0107 list\u0119 sk\u0142adnik\u00f3w maj\u0105cych zastosowanie do edycji {4} {5}. 
+ERROR_INVALID_PRODUCT_EDITION.explanation=Sk\u0142adnik nie ma zastosowania do edycji zainstalowanego produktu.
+ERROR_INVALID_PRODUCT_EDITION.useraction=Zainstaluj sk\u0142adniki, kt\u00f3re s\u0105 obs\u0142ugiwane przez edycj\u0119 produktu.
+
+ERROR_INVALID_PRODUCT_INSTALLTYPE=CWWKF1226E: Przy u\u017cyciu komendy featureManager nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego {0}, poniewa\u017c produkt zosta\u0142 zainstalowany przez {1}, a zas\u00f3b aplikacyjny ma zastosowanie tylko do instalacji {2}. U\u017cyj dzia\u0142ania find komendy featureManager, aby uzyska\u0107 list\u0119 zasob\u00f3w aplikacyjnych, kt\u00f3re mo\u017cna pobra\u0107 lub zainstalowa\u0107 przy u\u017cyciu komendy.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.explanation=Komenda featureManager nie mo\u017ce pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego w instalacji Liberty, poniewa\u017c zas\u00f3b aplikacyjny ma zastosowanie tylko do innego typu instalacji.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.useraction=U\u017cyj dzia\u0142ania find komendy featureManager, aby uzyska\u0107 list\u0119 zasob\u00f3w aplikacyjnych, kt\u00f3re mo\u017cna pobra\u0107 lub zainstalowa\u0107 przy u\u017cyciu komendy. Wi\u0119cej informacji na ten temat zawiera dokumentacja produktu dotycz\u0105ca danego zasobu aplikacyjnego.
+
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR=CWWKF1227E: Nie mo\u017cna pobra\u0107 sk\u0142adnika {0} z katalogu {1}.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Instalator nie m\u00f3g\u0142 pobra\u0107 okre\u015blonego sk\u0142adnika z okre\u015blonego katalogu lokalnego.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Upewnij si\u0119, \u017ce katalog zawiera sk\u0142adnik i pon\u00f3w operacj\u0119.
+
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Nie mo\u017cna znale\u017a\u0107 pliku wykonywalnego {0} po sprawdzeniu w nast\u0119puj\u0105cych po\u0142o\u017ceniach: {1}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Instalator nie m\u00f3g\u0142 znale\u017a\u0107 pliku wykonywalnego
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Upewnij si\u0119, \u017ce plik wykonywalny istnieje i znajduje si\u0119 w jednym z podanych po\u0142o\u017ce\u0144.
+
+ERROR_EXECUTING_COMMAND=CWWKF1229E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wykonywania komendy: {0}. Komenda zwr\u00f3ci\u0142a kod wyj\u015bcia {1} i komunikat o b\u0142\u0119dzie: {2}
+ERROR_EXECUTING_COMMAND.explanation=Nie by\u0142o mo\u017cliwe pomy\u015blne wykonanie komendy.
+ERROR_EXECUTING_COMMAND.useraction=Przejrzyj kod wyj\u015bcia i komunikat o b\u0142\u0119dzie oraz upewnij si\u0119, \u017ce u\u017cytkownik ma wystarczaj\u0105ce uprawnienia do uruchomienia komendy.
+
+ERROR_INVALID_EXTATTR_PARMS=CWWKF1230E: Parametry {0} nie s\u0105 poprawne dla komendy extattr
+ERROR_INVALID_EXTATTR_PARMS.explanation=Poprawne parametry dla komendy extattr to: [+alps] [-alps]
+ERROR_INVALID_EXTATTR_PARMS.useraction=Upewnij si\u0119, \u017ce u\u017cywane parametry s\u0105 poprawne.
+
+ERROR_UNABLE_TO_GET_UMASK=CWWKF1231E: Nie mo\u017cna pobra\u0107 ustawienia komendy umask przy u\u017cyciu komendy: {0}
+ERROR_UNABLE_TO_GET_UMASK.explanation=Warto\u015b\u0107 ustawienia komendy umask nie zosta\u0142a zwr\u00f3cona po wykonaniu komendy umask.
+ERROR_UNABLE_TO_GET_UMASK.useraction=Upewnij si\u0119, \u017ce mo\u017cliwe jest pomy\u015blne uruchomienie komendy umask.
+
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=CWWKF1232E: Nie mo\u017cna ustawi\u0107 uprawnienia do wykonywania dla nast\u0119puj\u0105cych plik\u00f3w: {0}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by ustawienia uprawnienia do wykonywania.  Identyfikator u\u017cytkownika mo\u017ce nie mie\u0107 uprawnie\u0144 do modyfikowania uprawnie\u0144 do pliku.
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.useraction=Upewnij si\u0119, \u017ce pliki maj\u0105 ustawione uprawnienie do wykonywania.
+
+ERROR_UNABLE_TO_SET_EXT_ATTR=CWWKF1233E: Nie mo\u017cna ustawi\u0107 atrybut\u00f3w rozszerzonych {0} dla nast\u0119puj\u0105cych plik\u00f3w: {1}
+ERROR_UNABLE_TO_SET_EXT_ATTR.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by ustawienia atrybut\u00f3w rozszerzonych.  Identyfikator u\u017cytkownika mo\u017ce nie mie\u0107 uprawnie\u0144 do zmiany atrybut\u00f3w rozszerzonych.
+ERROR_UNABLE_TO_SET_EXT_ATTR.useraction=Upewnij si\u0119, \u017ce pliki maj\u0105 ustawione wymagane atrybuty rozszerzone.
+
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED=CWWKF1234E: Nie mo\u017cna zdeinstalowa\u0107 sk\u0142adnika {0}, poniewa\u017c plik {1} jest zablokowany. Zatrzymaj wszystkie dzia\u0142aj\u0105ce serwery i pon\u00f3w operacj\u0119.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by usuni\u0119cia pliku.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.useraction=Upewnij si\u0119, \u017ce \u017caden plik nie jest zablokowany.
+
+ERROR_UNINSTALL_FIX_FILE_LOCKED=CWWKF1235E: Nie mo\u017cna zdeinstalowa\u0107 poprawki {0}, poniewa\u017c plik {1} jest zablokowany. Zatrzymaj wszystkie dzia\u0142aj\u0105ce serwery i pon\u00f3w operacj\u0119.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by usuni\u0119cia pliku.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.useraction=Upewnij si\u0119, \u017ce \u017caden plik nie jest zablokowany.
+
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED=CWWKF1236E: Nie mo\u017cna zdeinstalowa\u0107 sk\u0142adnik\u00f3w produktu {0}, poniewa\u017c plik {1} jest zablokowany. Zatrzymaj wszystkie dzia\u0142aj\u0105ce serwery i pon\u00f3w operacj\u0119.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by usuni\u0119cia pliku.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.useraction=Upewnij si\u0119, \u017ce \u017caden plik nie jest zablokowany.
+
+ERROR_UNINSTALL_RUNNING_SERVER=CWWKF1237E: Nie mo\u017cna zdeinstalowa\u0107 sk\u0142adnika {0}, poniewa\u017c serwer jest uruchomiony.\nZatrzymaj nast\u0119puj\u0105ce dzia\u0142aj\u0105ce serwery i pon\u00f3w operacj\u0119: {1}
+ERROR_UNINSTALL_RUNNING_SERVER.explanation=Serwer dzia\u0142a podczas pr\u00f3by zdeinstalowania sk\u0142adnika.
+ERROR_UNINSTALL_RUNNING_SERVER.useraction=Upewnij si\u0119, \u017ce wszystkie serwery s\u0105 zatrzymane i nie dzia\u0142aj\u0105.
+
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER_=CWWKF1238E: Nie mo\u017cna zdeinstalowa\u0107 sk\u0142adnika {0}, poniewa\u017c serwer jest uruchomiony i nie mo\u017cna go zatrzyma\u0107.\nZatrzymaj nast\u0119puj\u0105ce dzia\u0142aj\u0105ce serwery i pon\u00f3w operacj\u0119: {1}
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.explanation=Serwer dzia\u0142a i nie mo\u017cna go zatrzyma\u0107 podczas pr\u00f3by zdeinstalowania sk\u0142adnika.
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.useraction=Upewnij si\u0119, \u017ce wszystkie serwery s\u0105 zatrzymane i nie dzia\u0142aj\u0105.
+
+ERROR_INVALID_SERVER_PACKAGE=CWWKF1239E: Plik {0} jest niepoprawnym plikiem pakietu serwera.
+ERROR_INVALID_SERVER_PACKAGE.explanation=Podany plik archiwum jest niepoprawnym plikiem pakietu serwera.
+ERROR_INVALID_SERVER_PACKAGE.useraction=U\u017cyj komendy server, aby utworzy\u0107 plik pakietu serwera.
+
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME=CWWKF1240E: Nie mo\u017cna zainstalowa\u0107 pliku pakietu serwera {0}, poniewa\u017c zawiera \u015brodowisko wykonawcze Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.explanation=Nie mo\u017cna zainstalowa\u0107 pakietu serwera, je\u015bli zawiera \u015brodowisko wykonawcze Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.useraction=Zdekompresuj plik pakietu serwera.
+
+ERROR_INVALID_SERVER_XML=CWWKF1241E: Nie mo\u017cna odczyta\u0107 pliku {0}, poniewa\u017c wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {1}
+ERROR_INVALID_SERVER_XML.explanation=Plik server.xml jest niepoprawny.
+ERROR_INVALID_SERVER_XML.useraction=Popraw plik server.xml.
+
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED=CWWKF1242E: Nie mo\u017cna zainstalowa\u0107 pliku pakietu serwera {0}, poniewa\u017c serwer {1} ju\u017c istnieje.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.explanation=Instalowany serwer ju\u017c istnieje.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1243E: Nast\u0119puj\u0105ce sk\u0142adniki nie zosta\u0142y pobrane, poniewa\u017c s\u0105 ju\u017c zainstalowane: {0}. U\u017cyj innej warto\u015bci opcji --downloadOnly, na przyk\u0142ad all lub none.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=Podane sk\u0142adniki zosta\u0142y ju\u017c zainstalowane.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Ponownie uruchom komend\u0119 z inn\u0105 warto\u015bci\u0105 opcji --downloadOnly, na przyk\u0142ad all lub none.
+
+ERROR_FEATURE_NOT_APPLICABLE=CWWKF1244E: Sk\u0142adnik {0} nie ma zastosowania do instalacji produktu {1}.  {2}
+ERROR_FEATURE_NOT_APPLICABLE.explanation=Okre\u015blony sk\u0142adnik nie jest poprawnym sk\u0142adnikiem dla okre\u015blonej instalacji produktu.
+ERROR_FEATURE_NOT_APPLICABLE.useraction=Upewnij si\u0119, \u017ce sk\u0142adnik ma zastosowanie do instalacji produktu.  U\u017cyj dzia\u0142ania find komendy featureManager, aby pobra\u0107 list\u0119 sk\u0142adnik\u00f3w maj\u0105cych zastosowanie.
+
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY=CWWKF1245E: Nie mo\u017cna pobra\u0107 sk\u0142adnika {0} do po\u0142o\u017cenia {1}. Upewnij si\u0119, \u017ce katalog docelowy jest dost\u0119pny do zapisu oraz \u017ce ilo\u015b\u0107 wolnego miejsca na dysku jest wystarczaj\u0105ca.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.explanation=Instalator wymaga dost\u0119pu do zapisu w katalogu pobierania.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.useraction=Upewnij si\u0119, \u017ce katalog istnieje, jest dost\u0119pny do zapisu oraz \u017ce ilo\u015b\u0107 wolnego miejsca na dysku jest wystarczaj\u0105ca.
+
+ERROR_UNINSTALL_FAILED_ADDON=CWWKF1246E: Nie mo\u017cna zdeinstalowa\u0107 nast\u0119puj\u0105cych sk\u0142adnik\u00f3w, poniewa\u017c s\u0105 one zasobami aplikacyjnymi programu dodatkowego: {0}
+ERROR_UNINSTALL_FAILED_ADDON.explanation=Okre\u015blone sk\u0142adniki s\u0105 zasobami aplikacyjnymi programu dodatkowego i nie mo\u017cna ich zdeinstalowa\u0107.
+ERROR_UNINSTALL_FAILED_ADDON.useraction=Nie deinstaluj zasob\u00f3w aplikacyjnych programu dodatkowego.
+
+ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Nie mo\u017cna zdeinstalowa\u0107 nast\u0119puj\u0105cych sk\u0142adnik\u00f3w, poniewa\u017c s\u0105 one sk\u0142adnikami u\u017cytkownika: {0}
+ERROR_UNINSTALL_FAILED_USR.explanation=Okre\u015blone sk\u0142adniki s\u0105 sk\u0142adnikami u\u017cytkownika i nie mo\u017cna ich zdeinstalowa\u0107.
+ERROR_UNINSTALL_FAILED_USR.useraction=Nie deinstaluj sk\u0142adnik\u00f3w u\u017cytkownika.
+
+ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z jednym z repozytori\u00f3w okre\u015blonych w konfiguracji. Upewnij si\u0119, \u017ce komputer ma dost\u0119p do sieci i firewalle s\u0105 poprawnie skonfigurowane, a nast\u0119pnie pon\u00f3w dzia\u0142anie. Je\u015bli nawi\u0105zywanie po\u0142\u0105czenia b\u0119dzie nadal ko\u0144czy\u0107 si\u0119 niepowodzeniem, serwer repozytorium mo\u017ce by\u0107 tymczasowo niedost\u0119pny.
+ERROR_FAILED_TO_CONNECT_REPOS.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas nawi\u0105zywania po\u0142\u0105czenia z repozytorium.
+ERROR_FAILED_TO_CONNECT_REPOS.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i do odpowiedniego repozytorium.
+
+ERROR_ASSETS_LIST_INVALID=CWWKF1249E: Podana lista zasob\u00f3w aplikacyjnych ma warto\u015b\u0107 NULL lub jest pusta.
+ERROR_ASSETS_LIST_INVALID.explanation=Brak listy zasob\u00f3w aplikacyjnych do zainstalowania lub jest ona pusta.
+ERROR_ASSETS_LIST_INVALID.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ASSETS_ALREADY_INSTALLED=CWWKF1250I: Nast\u0119puj\u0105ce zasoby aplikacyjne ju\u017c istniej\u0105: {0}. Nie zostan\u0105 one ponownie zainstalowane. Aby zmodyfikowa\u0107 istniej\u0105cy sk\u0142adnik, nale\u017cy najpierw r\u0119cznie go zdeinstalowa\u0107.
+ASSETS_ALREADY_INSTALLED.explanation=Okre\u015blone zasoby aplikacyjne zosta\u0142y ju\u017c zainstalowane.
+ASSETS_ALREADY_INSTALLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE=CWWKF1251E: Nie mo\u017cna pobra\u0107 przyk\u0142adu produktu {0} do po\u0142o\u017cenia {1}. Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu oraz \u017ce katalog tymczasowy istnieje i mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie spr\u00f3buj ponownie.
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania przyk\u0142adu produktu do katalogu tymczasowego. 
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu oraz \u017ce katalog tymczasowy istnieje i mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie spr\u00f3buj ponownie.
+
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE=CWWKF1252E: Nie mo\u017cna pobra\u0107 integracji z oprogramowaniem Open Source {0} do po\u0142o\u017cenia {1}. Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu oraz \u017ce katalog tymczasowy istnieje i mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie spr\u00f3buj ponownie.
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania integracji z oprogramowaniem Open Source do katalogu tymczasowego. 
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu oraz \u017ce katalog tymczasowy istnieje i mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie spr\u00f3buj ponownie.
+
+ERROR_INVALID_SAMPLE=CWWKF1253E: Okre\u015blony pobrany zas\u00f3b aplikacyjny przyk\u0142adu produktu jest niepoprawny: {0}. Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i spr\u00f3buj ponownie.
+ERROR_INVALID_SAMPLE.explanation=Okre\u015blony zas\u00f3b aplikacyjny przyk\u0142adu produktu zosta\u0142 pomy\u015blnie pobrany z repozytorium, ale jest niepoprawny.
+ERROR_INVALID_SAMPLE.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i spr\u00f3buj ponownie.
+
+ERROR_INVALID_OPENSOURCE=CWWKF1254E: Okre\u015blony pobrany zas\u00f3b aplikacyjny integracji z oprogramowaniem Open Source jest niepoprawny: {0}. Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i spr\u00f3buj ponownie.
+ERROR_INVALID_OPENSOURCE.explanation=Okre\u015blony zas\u00f3b aplikacyjny integracji z oprogramowaniem Open Source zosta\u0142 pomy\u015blnie pobrany z repozytorium, ale jest niepoprawny.
+ERROR_INVALID_OPENSOURCE.useraction=Upewnij si\u0119, \u017ce system ma dost\u0119p do Internetu i spr\u00f3buj ponownie.
+
+ERROR_ASSET_INVALID_PRODUCT_VERSION=CWWKF1255E: Zasobu aplikacyjnego {0} nie mo\u017cna zainstalowa\u0107 dla produktu {1} {2}, poniewa\u017c ma on zastosowanie tylko do wersji {3}.  U\u017cyj dzia\u0142ania find komendy installUtility, aby pobra\u0107 list\u0119 zasob\u00f3w aplikacyjnych maj\u0105cych zastosowanie do produktu {1} {2}.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.explanation=Zas\u00f3b aplikacyjny nie ma zastosowania do bie\u017c\u0105cej wersji zainstalowanego produktu.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.useraction=Zainstaluj zasoby aplikacyjne, kt\u00f3re s\u0105 obs\u0142ugiwane przez wersj\u0119 produktu.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION=CWWKF1256E: Zasobu aplikacyjnego {0} nie mo\u017cna zainstalowa\u0107 dla edycji {1} {2}, poniewa\u017c ma on zastosowanie tylko do edycji {3}. U\u017cyj dzia\u0142ania find komendy installUtility, aby pobra\u0107 list\u0119 zasob\u00f3w aplikacyjnych maj\u0105cych zastosowanie do edycji {4} {5}. 
+ERROR_ASSET_INVALID_PRODUCT_EDITION.explanation=Zas\u00f3b aplikacyjny nie ma zastosowania do edycji zainstalowanego produktu.
+ERROR_ASSET_INVALID_PRODUCT_EDITION.useraction=Zainstaluj zasoby aplikacyjne, kt\u00f3re s\u0105 obs\u0142ugiwane przez edycj\u0119 produktu.
+
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE=CWWKF1257E: Przy u\u017cyciu komendy installUtility nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego {0}, poniewa\u017c produkt zosta\u0142 zainstalowany przez {1}, a zas\u00f3b aplikacyjny ma zastosowanie tylko do instalacji {2}. U\u017cyj dzia\u0142ania find komendy installUtility, aby uzyska\u0107 list\u0119 zasob\u00f3w aplikacyjnych, kt\u00f3re mo\u017cna pobra\u0107 lub zainstalowa\u0107 przy u\u017cyciu komendy.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.explanation=Komenda installUtility nie mo\u017ce pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego w instalacji Liberty, poniewa\u017c zas\u00f3b aplikacyjny ma zastosowanie tylko do innego typu instalacji.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.useraction=U\u017cyj dzia\u0142ania find komendy installUtility, aby uzyska\u0107 list\u0119 zasob\u00f3w aplikacyjnych, kt\u00f3re mo\u017cna pobra\u0107 lub zainstalowa\u0107 przy u\u017cyciu komendy. Wi\u0119cej informacji na ten temat zawiera dokumentacja produktu dotycz\u0105ca danego zasobu aplikacyjnego.
+
+ERROR_ASSET_MISSING_DEPENDENT=CWWKF1258E: Zas\u00f3b aplikacyjny {0} jest zale\u017cny od zasobu aplikacyjnego {1}, kt\u00f3ry nie jest dost\u0119pny w skonfigurowanych repozytoriach. Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium.
+ERROR_ASSET_MISSING_DEPENDENT.explanation=Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego, poniewa\u017c jest on zale\u017cny od niedost\u0119pnego zasobu aplikacyjnego.
+ERROR_ASSET_MISSING_DEPENDENT.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Nie mo\u017cna uzyska\u0107 nast\u0119puj\u0105cych zasob\u00f3w aplikacyjnych: {0}. Sprawd\u017a, czy podane zasoby aplikacyjne s\u0105 poprawne. Aby znale\u017a\u0107 identyfikatory odpowiednich zasob\u00f3w aplikacyjnych, uruchom komend\u0119 installUtility find.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Instalator nie m\u00f3g\u0142 pobra\u0107 okre\u015blonych zasob\u00f3w aplikacyjnych z repozytori\u00f3w.
+ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Upewnij si\u0119, \u017ce okre\u015blone zasoby aplikacyjne s\u0105 poprawne, \u017ce podano poprawny identyfikator u\u017cytkownika i poprawne has\u0142o oraz \u017ce repozytoria s\u0105 dost\u0119pne.
+
+ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: Zas\u00f3b aplikacyjny {0} nie ma zastosowania do instalacji produktu {1}.  {2}
+ERROR_ASSET_NOT_APPLICABLE.explanation=Okre\u015blony zas\u00f3b aplikacyjny nie jest poprawnym zasobem aplikacyjnym dla okre\u015blonej instalacji produktu.
+ERROR_ASSET_NOT_APPLICABLE.useraction=Upewnij si\u0119, \u017ce zas\u00f3b aplikacyjny ma zastosowanie do instalacji produktu.  U\u017cyj dzia\u0142ania find komendy installUtility, aby pobra\u0107 list\u0119 zasob\u00f3w aplikacyjnych maj\u0105cych zastosowanie.
+
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED=CWWKF1261E: Nie mo\u017cna zainstalowa\u0107 przyk\u0142adu {0}, poniewa\u017c serwer {1} ju\u017c istnieje.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.explanation=Instalowany przyk\u0142adowy serwer ju\u017c istnieje.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED=CWWKF1262E: Nie mo\u017cna zainstalowa\u0107 integracji z oprogramowaniem Open Source {0}, poniewa\u017c serwer {1} ju\u017c istnieje.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.explanation=Instalowany serwer integracji z oprogramowaniem Open Source ju\u017c istnieje.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED=\nCWWKF1263E: Sk\u0142adniki, wobec kt\u00f3rych podejmowana jest pr\u00f3ba deinstalacji, s\u0105 nadal wymagane przez inne zainstalowane sk\u0142adniki: \n \n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.explanation=Sk\u0142adniki okre\u015blone do deinstalacji s\u0105 nadal wymagane przez inne zainstalowanej sk\u0142adniki.
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.useraction=Zdeinstaluj wszystkie sk\u0142adniki z wymaganiami przed lub w tym samym czasie, co okre\u015blone wymagane sk\u0142adniki.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_REQUIRED_BY=Sk\u0142adnik [{0}] jest wymagany przez sk\u0142adnik: {1}.\n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_ACTION=\nZdeinstaluj wszystkie sk\u0142adniki z wymaganiami przed lub w tym samym czasie, co okre\u015blone wymagane sk\u0142adniki.\n
+
+ERROR_UNABLE_RUN_EXTRACTOR=CWWKF1264E: Nie mo\u017cna zainstalowa\u0107 pliku archiwum {0} z nast\u0119puj\u0105cej przyczyny: {1}
+ERROR_UNABLE_RUN_EXTRACTOR.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas instalowania pliku archiwum.
+ERROR_UNABLE_RUN_EXTRACTOR.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_GET_ASSET_LICENSE=CWWKF1265E: Nie mo\u017cna uzyska\u0107 licencji dla zasobu aplikacyjnego {0}. Sprawd\u017a, czy podana nazwa zasobu aplikacyjnego jest poprawna i czy repozytoria s\u0105 dost\u0119pne. 
+ERROR_FAILED_TO_GET_ASSET_LICENSE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania licencji dla okre\u015blonego zasobu aplikacyjnego.
+ERROR_FAILED_TO_GET_ASSET_LICENSE.useraction=Upewnij si\u0119, \u017ce podana nazwa zasobu aplikacyjnego jest poprawna i \u017ce repozytoria s\u0105 dost\u0119pne.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWKF1266E: Nie mo\u017cna znale\u017a\u0107 pliku server.xml w katalogu {0}. Upewnij si\u0119, \u017ce ten plik istnieje i jest dost\u0119pny.
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=Pliku server.xml dla okre\u015blonego serwera nie mo\u017cna znale\u017a\u0107 w katalogu serwera.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Zadbaj o to, aby plik istnia\u0142 i by\u0142 dost\u0119pny.
+
+ERROR_INSTALL_ESA_FILE_NOTEXIST=CWWKF1267E: Plik {0} nie istnieje.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.explanation=Plik Enterprise Subsystem Archive (.esa) podany dla dzia\u0142ania instalowania nie istnieje.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.useraction=Upewnij si\u0119, \u017ce podano poprawn\u0105 nazw\u0119 pliku archiwum esa, i pon\u00f3w dzia\u0142anie instalowania.
+
+ERROR_DEPOLY_DIRECTORY=CWWKF1268E: Plik {0} jest katalogiem. Wymagany jest plik archiwum.
+ERROR_DEPOLY_DIRECTORY.explanation=Podj\u0119to pr\u00f3b\u0119 zainstalowania katalogu.
+ERROR_DEPOLY_DIRECTORY.useraction=Uruchom ponownie komend\u0119 z plikiem archiwum.
+
+ERROR_INVALID_LOCAL_ESA=CWWKF1269E: Plik {0} jest niepoprawnym plikiem Enterprise Subsystem Archive.
+ERROR_INVALID_LOCAL_ESA.explanation=Podany plik archiwum jest niepoprawnym plikiem Enterprise Subsystem Archive.
+ERROR_INVALID_LOCAL_ESA.useraction=Uruchom komend\u0119, podaj\u0105c poprawny plik Enterprise Subsystem Archive.
+
+EXCEPTION_STARTING_SERVER=CWWKF1270E: Napotkano wyj\u0105tek podczas pr\u00f3by uruchomienia serwera {0}.  Wyj\u0105tek: {1}
+EXCEPTION_STARTING_SERVER.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas uruchamiania serwera.
+EXCEPTION_STARTING_SERVER.useraction=Wi\u0119cej informacji na ten temat zawieraj\u0105 przywo\u0142any wyj\u0105tek i dzienniki serwera.
+
+EXCEPTION_STOPPING_SERVER=CWWKF1271E: Napotkano wyj\u0105tek podczas pr\u00f3by zatrzymania serwera {0}.  Wyj\u0105tek: {1}
+EXCEPTION_STOPPING_SERVER.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas zatrzymywania serwera.
+EXCEPTION_STOPPING_SERVER.useraction=Wi\u0119cej informacji na ten temat zawieraj\u0105 przywo\u0142any wyj\u0105tek i dzienniki serwera.
+
+UNABLE_TO_STOP_START_SERVER=CWWKF1272E: Nie mo\u017cna uruchomi\u0107 ani zatrzyma\u0107 serwera {0}.  Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera w po\u0142o\u017ceniu {1}.
+UNABLE_TO_STOP_START_SERVER.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by uruchomienia lub zatrzymania serwera.
+UNABLE_TO_STOP_START_SERVER.useraction=Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera.
+
+UNABLE_TO_DETERMINE_FEATURES=CWWKF1273E: Nie mo\u017cna okre\u015bli\u0107 sk\u0142adnik\u00f3w wymaganych przez serwer {0}.  Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera w po\u0142o\u017ceniu {1}.
+UNABLE_TO_DETERMINE_FEATURES.explanation=Instalator nie m\u00f3g\u0142 okre\u015bli\u0107 sk\u0142adnik\u00f3w wymaganych przez serwer.
+UNABLE_TO_DETERMINE_FEATURES.useraction=Upewnij si\u0119, \u017ce katalog serwera istnieje i jest dost\u0119pny.  Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera.
+
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER=CWWKF1274E: Instalator nie mo\u017ce sprawdzi\u0107 sk\u0142adnik\u00f3w wymaganych przez serwer {0}, poniewa\u017c serwer jest uruchomiony.  Zatrzymaj serwer i pon\u00f3w komend\u0119.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.explanation=Aby instalator m\u00f3g\u0142 sprawdzi\u0107 wymagane sk\u0142adniki, serwer musi by\u0107 zatrzymany.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.useraction=Zatrzymaj serwer i pon\u00f3w komend\u0119.
+
+ERROR_UNABLE_TO_READ_SERVER_XML=CWWKF1275E: Nie mo\u017cna odczyta\u0107 elementu {0} z pliku server.xml: {1}.  Sprawd\u017a, czy plik server.xml zawiera element {0} i czy u\u017cywa poprawnej sk\u0142adni j\u0119zyka XML.
+ERROR_UNABLE_TO_READ_SERVER_XMLL.explanation=Plik nie jest poprawnym plikiem server.xml lub zawiera b\u0142\u0119dy.
+ERROR_UNABLE_TO_READ_SERVER_XML.useraction=Upewnij si\u0119, \u017ce plik server.xml jest poprawny oraz \u017ce sk\u0142adnia j\u0119zyka XML jest poprawna.
+
+ERROR_DOWNLOAD_TO_SOURCE_REPO=CWWKF1276E: Nie mo\u017cna pobra\u0107 sk\u0142adnika {0} do po\u0142o\u017cenia {1}. Folder \u017ar\u00f3d\u0142owy repozytorium dla zasobu aplikacyjnego ma t\u0119 sam\u0105 \u015bcie\u017ck\u0119 co po\u0142o\u017cenie pobierania.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.explanation=Zasob\u00f3w aplikacyjnych nie mo\u017cna pobiera\u0107 do folderu \u017ar\u00f3d\u0142owego repozytorium.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.useraction=Podaj nowe po\u0142o\u017cenie pobierania.
+
+ERROR_CREATING_TEMP_SERVER_DIR=CWWKF1277E: Nast\u0119puj\u0105cy katalog tymczasowy serwera nie zosta\u0142 utworzony: {0}. Upewnij si\u0119, \u017ce masz uprawnienia do zapisu w katalogu {1}, a w katalogu jest dost\u0119pne wolne miejsce.
+ERROR_CREATING_TEMP_SERVER_DIR.explanation=W podanym katalogu nie mo\u017cna utworzy\u0107 katalogu tymczasowego serwera z powodu niewystarczaj\u0105cych uprawnie\u0144 lub zbyt ma\u0142ego obszaru plik\u00f3w.
+ERROR_CREATING_TEMP_SERVER_DIR.useraction=Upewnij si\u0119, \u017ce masz uprawnienia do zapisu w katalogu nadrz\u0119dnym, a w katalogu jest dost\u0119pne wolne miejsce.
+
+ERROR_CREATING_DIR=CWWKF1278E: Katalog {0} nie zosta\u0142 utworzony z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+ERROR_CREATING_DIR.explanation=Podany katalog nie zosta\u0142 utworzony, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d.
+ERROR_CREATING_DIR.useraction=Informacje na temat przyczyny nieutworzenia katalogu zawiera przywo\u0142any wyj\u0105tek.
+
+ERROR_COPYING_FILE=CWWKF1279E: Plik {0} nie zosta\u0142 skopiowany do katalogu {1} z powodu nast\u0119puj\u0105cego wyj\u0105tku: {2}.
+ERROR_COPYING_FILE.explanation=Plik nie zosta\u0142 skopiowany do okre\u015blonego katalogu, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d.
+ERROR_COPYING_FILE.useraction=Informacje na temat przyczyny nieskopiowania pliku zawiera przywo\u0142any wyj\u0105tek.
+
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT=CWWKF1280E: Nie mo\u017cna uzyska\u0107 dost\u0119pu do repozytorium serwera IBM WebSphere Liberty, poniewa\u017c \u015brodowisko wykonawcze program\u00f3w Java (JRE) nie ufa certyfikatowi serwera. Dodaj certyfikat serwera repozytorium jako zaufany certyfikat w \u015brodowisku JRE.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.explanation=Wyst\u0105pi\u0142 wyj\u0105tek java.security.cert.CertPathBuilderException podczas nawi\u0105zywania po\u0142\u0105czenia z repozytorium serwera IBM WebSphere Liberty, poniewa\u017c \u015brodowisko JRE nie rozpoznaje certyfikatu bezpiecze\u0144stwa serwera repozytorium jako zaufanego certyfikatu. W celu zweryfikowania to\u017csamo\u015bci serwera repozytorium wymagany jest zaufany certyfikat.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.useraction=Dodaj certyfikat serwera repozytorium IBM WebSphere Liberty jako zaufany certyfikat w \u015brodowisku JRE.
+
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT=CWWKF1281E: Nie mo\u017cna uzyska\u0107 dost\u0119pu do jednego z repozytori\u00f3w okre\u015blonych w konfiguracji, poniewa\u017c \u015brodowisko wykonawcze program\u00f3w Java (JRE) nie ufa certyfikatowi serwera. Dodaj certyfikat serwera repozytorium jako zaufany certyfikat w \u015brodowisku JRE.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.explanation=Wyst\u0105pi\u0142 wyj\u0105tek java.security.cert.CertPathBuilderException podczas nawi\u0105zywania po\u0142\u0105czenia z repozytorium, poniewa\u017c \u015brodowisko JRE nie rozpoznaje certyfikatu bezpiecze\u0144stwa serwera repozytorium jako zaufanego certyfikatu. W celu zweryfikowania to\u017csamo\u015bci serwera repozytorium wymagany jest zaufany certyfikat.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.useraction=Dodaj certyfikat serwera repozytorium jako zaufany certyfikat w \u015brodowisku JRE.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1282E: Nie mo\u017cna uzyska\u0107 dost\u0119pu do repozytorium {0}, poniewa\u017c \u015brodowisko wykonawcze program\u00f3w Java (JRE) nie ufa certyfikatowi serwera. Dodaj certyfikat serwera repozytorium jako zaufany certyfikat w \u015brodowisku JRE.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=Wyst\u0105pi\u0142 wyj\u0105tek java.security.cert.CertPathBuilderException podczas nawi\u0105zywania po\u0142\u0105czenia z repozytorium, poniewa\u017c \u015brodowisko JRE nie rozpoznaje certyfikatu bezpiecze\u0144stwa serwera repozytorium jako zaufanego certyfikatu. W celu zweryfikowania to\u017csamo\u015bci serwera repozytorium wymagany jest zaufany certyfikat.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=Dodaj certyfikat serwera repozytorium jako zaufany certyfikat w \u015brodowisku JRE.
+
+# In the following 4 messages (CWWKF1282E to CWWKF1285E),
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The webCacheMonitor-1.0 feature cannot be downloaded ...
+# 	The extendedPackage-1.0 addon cannot be downloaded ...
+# 	The ServletSample product sample cannot be downloaded ...
+# 	The SpringSample open source integration cannot be downloaded ...
+ 
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP=CWWKF1283E: Element {1} o identyfikatorze {0} nie mo\u017ce zosta\u0107 pobrany do katalogu {2}. Upewnij si\u0119, \u017ce katalog tymczasowy istnieje i \u017ce mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie ponownie uruchom komend\u0119.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.explanation=Podany zas\u00f3b aplikacyjny nie zosta\u0142 pobrany do katalogu tymczasowego. By\u0107 mo\u017ce katalog nie istnieje, nie ma wystarczaj\u0105cej ilo\u015bci miejsca lub nie masz uprawnienia do zapisu w katalogu.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.useraction=Upewnij si\u0119, \u017ce katalog tymczasowy istnieje i \u017ce mo\u017cna w nim zapisywa\u0107 dane, a nast\u0119pnie ponownie uruchom komend\u0119.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS=CWWKF1284E: Nie mo\u017cna pobra\u0107 elementu {1} o identyfikatorze {0}. Upewnij si\u0119, \u017ce skonfigurowane repozytoria zasob\u00f3w aplikacyjnych profilu Liberty zawieraj\u0105 dany zas\u00f3b aplikacyjny, a nast\u0119pnie ponownie uruchom komend\u0119.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.explanation=Podany zas\u00f3b aplikacyjny nie zosta\u0142 pobrany z \u017cadnego ze skonfigurowanych repozytori\u00f3w, poniewa\u017c repozytoria nie zawieraj\u0105 tego zasobu.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.useraction=Upewnij si\u0119, \u017ce skonfigurowane repozytoria zasob\u00f3w aplikacyjnych profilu Liberty zawieraj\u0105 dany zas\u00f3b aplikacyjny, a nast\u0119pnie ponownie uruchom komend\u0119.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO=CWWKF1285E: Element {1} o identyfikatorze {0} nie mo\u017ce zosta\u0107 pobrany z repozytorium {2}. Upewnij si\u0119, \u017ce repozytorium zawiera dany zas\u00f3b aplikacyjny, a nast\u0119pnie ponownie uruchom komend\u0119.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.explanation=Podany zas\u00f3b aplikacyjny nie zosta\u0142 pobrany z podanego repozytorium, poniewa\u017c repozytorium nie zawiera poprawnej wersji zasobu aplikacyjnego.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.useraction=Upewnij si\u0119, \u017ce repozytorium zawiera dany zas\u00f3b aplikacyjny, a nast\u0119pnie ponownie uruchom komend\u0119.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO=CWWKF1286E: Element {1} o identyfikatorze {0} nie mo\u017ce zosta\u0107 pobrany z repozytorium IBM WebSphere Liberty Repository. Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.explanation=Podany zas\u00f3b aplikacyjny nie zosta\u0142 pobrany z repozytorium IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_BUNDLE_IN_ESA=CWWKF1287E: Nie mo\u017cna zainstalowa\u0107 sk\u0142adnika {0}, poniewa\u017c plik {1} znajduj\u0105cy si\u0119 w pliku Enterprise Subsystem Archive (ESA) nie jest plikiem pakunku. Katalog g\u0142\u00f3wny pliku ESA mo\u017ce zawiera\u0107 tylko pliki pakunk\u00f3w i katalogi. Je\u015bli utworzono plik ESA, sprawd\u017a, czy zawarto\u015b\u0107 pliku jest poprawna.
+ERROR_INVALID_BUNDLE_IN_ESA.explanation=Aby mo\u017cna by\u0142o zainstalowa\u0107 sk\u0142adnik, katalog g\u0142\u00f3wny pliku Enterprise Subsystem Archive mo\u017ce zawiera\u0107 tylko poprawn\u0105 zawarto\u015b\u0107 pakunku i katalogi. Pliki pakunk\u00f3w musz\u0105 by\u0107 plikami JAR zawieraj\u0105cymi poprawny plik manifest.mf.
+ERROR_INVALID_BUNDLE_IN_ESA.useraction=Je\u015bli utworzono plik ESA, sprawd\u017a, czy zawarto\u015b\u0107 pliku jest poprawna. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu znajduj\u0105cymi si\u0119 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# In the following message CWWKF1288E,
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The content of the webCacheMonitor-1.0 feature was changed ..., so the feature is not valid. 
+# 	The content of the extendedPackage-1.0 addon was changed ..., so the addon is not valid. 
+# 	The content of the ServletSample product sample was changed ..., so the sample is not valid. 
+# 	The content of the SpringSample open source integration was changed ..., so the open source integration is not valid. 
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM=CWWKF1288E: Tre\u015b\u0107 elementu {0} {1} uleg\u0142a zmianie podczas pobierania, a wi\u0119c element {1} jest niepoprawny. Uruchom komend\u0119 ponownie.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.explanation=Suma kontrolna pobranego zasobu aplikacyjnego jest niepoprawna. Tre\u015b\u0107 pobranego zasobu aplikacyjnego r\u00f3\u017cni si\u0119 od tre\u015bci z repozytorium, a wi\u0119c nie mo\u017cna zainstalowa\u0107 zasobu aplikacyjnego.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.useraction=Uruchom komend\u0119 ponownie. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu znajduj\u0105cymi si\u0119 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNABLE_TO_CREATE_FILE=CWWKF1289E: Nie mo\u017cna utworzy\u0107 nast\u0119puj\u0105cego pliku: {0}. Upewnij si\u0119, \u017ce istnieje jego katalog macierzysty oraz \u017ce u\u017cytkownik ma uprawnienia niezb\u0119dne do tworzenia plik\u00f3w w katalogu, a nast\u0119pnie ponownie uruchom komend\u0119.
+ERROR_UNABLE_TO_CREATE_FILE.explanation=Komenda featureManager lub installUtility nie mog\u0142a zainstalowa\u0107 zasobu aplikacyjnego w podanym po\u0142o\u017ceniu lub pobra\u0107 zasobu aplikacyjnego z podanego po\u0142o\u017cenia, poniewa\u017c katalog nie istnieje lub u\u017cytkownik nie ma uprawnie\u0144 wymaganych do tworzenia plik\u00f3w.
+ERROR_UNABLE_TO_CREATE_FILE.useraction=Upewnij si\u0119, \u017ce istnieje jego katalog macierzysty oraz \u017ce u\u017cytkownik ma uprawnienia niezb\u0119dne do tworzenia plik\u00f3w w katalogu, a nast\u0119pnie ponownie uruchom komend\u0119.
+
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1290E: Zas\u00f3b aplikacyjny {0} jest zale\u017cny od zasobu aplikacyjnego {1}, kt\u00f3rego nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 w {2} {3} {4}. Zas\u00f3b aplikacyjny {1} w aktualnie skonfigurowanych repozytoriach ma zastosowanie tylko do nast\u0119puj\u0105cych edycji i wersji produktu: {5}. Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania wersji zasobu aplikacyjnego, kt\u00f3ra ma zastosowanie do instalacji u\u017cytkownika. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 ten zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.explanation=Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego, poniewa\u017c jest on zale\u017cny od niedost\u0119pnego zasobu aplikacyjnego. Znaleziono wersj\u0119 wymaganego zasobu aplikacyjnego, ale nie ma ona zastosowania do zainstalowanej wersji lub edycji produktu.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 pakiet zip jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 ten zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1291E: Zas\u00f3b aplikacyjny {0} jest zale\u017cny od zasobu aplikacyjnego {1}, kt\u00f3rego nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 w {2} {3} {4}. Zas\u00f3b aplikacyjny {1} w repozytorium produktu IBM WebSphere Liberty ma zastosowanie tylko do nast\u0119puj\u0105cych edycji i wersji produktu: {5}. Je\u015bli wymagany zas\u00f3b aplikacyjny jest sk\u0142adnikiem, kt\u00f3ry zosta\u0142 wcze\u015bniej pobrany, zainstaluj brakuj\u0105cy sk\u0142adnik, podaj\u0105c po\u0142o\u017cenie pliku ESA sk\u0142adnika w opcji --location komendy featureManager install i pon\u00f3w pr\u00f3b\u0119 zainstalowania zasobu aplikacyjnego {0}.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.explanation=Sk\u0142adnik, program dodatkowy lub poprawka tymczasowa nie mog\u0105 zosta\u0107 pobrane lub zainstalowane, poniewa\u017c s\u0105 zale\u017cne od niedost\u0119pnego zasobu aplikacyjnego. Znaleziono wersj\u0119 wymaganego zasobu aplikacyjnego, ale nie ma ona zastosowania do zainstalowanej wersji lub edycji produktu.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.useraction=Je\u015bli wymagany zas\u00f3b aplikacyjny jest sk\u0142adnikiem, kt\u00f3ry zosta\u0142 wcze\u015bniej pobrany, zainstaluj brakuj\u0105cy sk\u0142adnik poprzez okre\u015blenie po\u0142o\u017cenia pliku ESA sk\u0142adnika w opcji --location komendy featureManager install i pon\u00f3w pr\u00f3b\u0119. Je\u015bli problem b\u0119dzie nadal wyst\u0119powa\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1292E: Opcj\u0119 deinstalacji --force mo\u017cna poda\u0107 tylko dla jednego sk\u0142adnik\u00f3w naraz. Uruchom komend\u0119 uninstall z opcj\u0105 --force dla jednego sk\u0142adnika.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=Opcj\u0119 --force podano podczas deinstalowania wi\u0119cej ni\u017c jednego sk\u0142adnika.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Uruchom komend\u0119 uninstall z opcj\u0105 --force dla jednego sk\u0142adnika.
+
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION=CWWKF1293E: Nie mo\u017cna znale\u017a\u0107 sk\u0142adnika {0} w rozszerzeniu produktu {1}. Aby znale\u017a\u0107 rozszerzenie produktu ze sk\u0142adnikiem, uruchom komend\u0119 productInfo featureInfo.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.explanation=Sk\u0142adnik nie zosta\u0142 zdeinstalowany, poniewa\u017c nie zosta\u0142 znaleziony w podanym rozszerzeniu.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.action=Aby znale\u017a\u0107 rozszerzenie produktu ze sk\u0142adnikiem, uruchom komend\u0119 productInfo featureInfo. Po zidentyfikowaniu poprawnego sk\u0142adnika i rozszerzenia uruchom ponownie komend\u0119 installUtility uninstall.
+
+ERROR_EXTENSION_NOT_FOUND=CWWKF1294E: Nie mo\u017cna zdeinstalowa\u0107 sk\u0142adnika {0}, poniewa\u017c w produkcie nie znaleziono rozszerzenia produktu {1}. Aby znale\u017a\u0107 wszystkie zainstalowane zasoby aplikacyjne i rozszerzenia produktu, uruchom komend\u0119 productInfo featureInfo.
+ERROR_EXTENSION_NOT_FOUND.explanation=Nie mo\u017cna zdeinstalowa\u0107 sk\u0142adnika, poniewa\u017c w produkcie nie znaleziono rozszerzenia produktu.
+ERROR_EXTENSION_NOT_FOUND.action=Aby znale\u017a\u0107 wszystkie zainstalowane zasoby aplikacyjne i rozszerzenia produktu, uruchom komend\u0119 productInfo featureInfo. Po zidentyfikowaniu poprawnego sk\u0142adnika i rozszerzenia uruchom ponownie komend\u0119 installUtility uninstall.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION=CWWKF1295E: Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego {0} w {1} {2} {3}, poniewa\u017c ma on zastosowanie tylko do nast\u0119puj\u0105cych edycji i wersji produktu: {4}. U\u017cyj dzia\u0142ania find komendy installUtility, aby pobra\u0107 list\u0119 zasob\u00f3w aplikacyjnych maj\u0105cych zastosowanie do danej instalacji.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.explanation=Zas\u00f3b aplikacyjny nie ma zastosowania do edycji lub wersji zainstalowanego produktu.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.useraction=U\u017cyj dzia\u0142ania find komendy installUtility, aby pobra\u0107 list\u0119 zasob\u00f3w aplikacyjnych, kt\u00f3re maj\u0105 zastosowanie do danej instalacji.
+
+ERROR_INVALID_PRODUCT_EDITION_VERSION=CWWKF1296E: Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego {0} w {1} {2} {3}, poniewa\u017c ma on zastosowanie tylko do nast\u0119puj\u0105cych edycji i wersji produktu: {4}. U\u017cyj dzia\u0142ania find komendy featureManager, aby pobra\u0107 list\u0119 sk\u0142adnik\u00f3w maj\u0105cych zastosowanie do danej instalacji.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.explanation=Sk\u0142adnik lub program dodatkowy nie ma zastosowania do bie\u017c\u0105cej wersji zainstalowanego produktu.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.useraction=U\u017cyj dzia\u0142ania find komendy featureManager, aby pobra\u0107 list\u0119 zasob\u00f3w aplikacyjnych, kt\u00f3re maj\u0105 zastosowanie do danej instalacji.
+
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND=CWWKF1297E: Nie mo\u017cna zainstalowa\u0107 sk\u0142adnika {0}, poniewa\u017c w produkcie nie znaleziono rozszerzenia produktu {1}. Utw\u00f3rz podane rozszerzenie produktu lub okre\u015bl inne istniej\u0105ce rozszerzenie produktu.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.explanation=Nie mo\u017cna zainstalowa\u0107 sk\u0142adnika, poniewa\u017c w produkcie nie znaleziono podanego rozszerzenia produktu.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.action= Je\u015bli chcesz zainstalowa\u0107 sk\u0142adnik do okre\u015blonego rozszerzenia produktu, utw\u00f3rz to rozszerzenie. Ewentualnie okre\u015bl inne istniej\u0105ce rozszerzenie produktu. Po zidentyfikowaniu poprawnego rozszerzenia produktu uruchom ponownie komend\u0119 installUtility install.
+
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: Element {0} nie jest sk\u0142adnikiem, wi\u0119c nie mo\u017cna go zainstalowa\u0107 w rozszerzeniu produktu. Uruchom komend\u0119 bez okre\u015blania tego sk\u0142adnika.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=W rozszerzeniu produktu mo\u017cna zainstalowa\u0107 tylko sk\u0142adniki.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Uruchom ponownie komend\u0119 installUtility install bez okre\u015blania sk\u0142adnika.
+
+# Following messages for info logging purpose
+LOG_INSTALL_FEATURES=CWWKF1300I: Instalowanie nast\u0119puj\u0105cych sk\u0142adnik\u00f3w: {0}.
+LOG_INSTALL_FEATURES.explanation=Podane sk\u0142adniki zostan\u0105 zainstalowane.
+LOG_INSTALL_FEATURES.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_INSTALL_FIXES=CWWKF1301I: Instalowanie nast\u0119puj\u0105cych poprawek: {0}.
+LOG_INSTALL_FIXES.explanation=Podane poprawki zostan\u0105 zainstalowane.
+LOG_INSTALL_FIXES.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_UNINSTALL_FEATURES=CWWKF1302I: Deinstalowanie nast\u0119puj\u0105cych sk\u0142adnik\u00f3w: {0}.
+LOG_UNINSTALL_FEATURES.explanation=Podane sk\u0142adniki zostan\u0105 zdeinstalowane.
+LOG_UNINSTALL_FEATURES.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_UNINSTALL_FIXES=CWWKF1303I: Deinstalowanie nast\u0119puj\u0105cych poprawek: {0}.
+LOG_UNINSTALL_FIXES.explanation=Podane poprawki zostan\u0105 zdeinstalowane.
+LOG_UNINSTALL_FIXES.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_INSTALLED_FEATURE=CWWKF1304I: Pomy\u015blnie zainstalowano sk\u0142adnik {0}.
+LOG_INSTALLED_FEATURE.explanation=Podany sk\u0142adnik zosta\u0142 pomy\u015blnie zainstalowany.
+LOG_INSTALLED_FEATURE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_INSTALLED_FIX=CWWKF1305I: Pomy\u015blnie zainstalowano poprawk\u0119 {0}.
+LOG_INSTALLED_FIX.explanation=Podana poprawka zosta\u0142a pomy\u015blnie zainstalowana.
+LOG_INSTALLED_FIX.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_UNINSTALLED_FEATURE=CWWKF1306I: Pomy\u015blnie zdeinstalowano sk\u0142adnik {0}.
+LOG_UNINSTALLED_FEATURE.explanation=Podany sk\u0142adnik zosta\u0142 zdeinstalowany.
+LOG_UNINSTALLED_FEATURE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_UNINSTALLED_FIX=CWWKF1307I: Pomy\u015blnie zdeinstalowano poprawk\u0119 {0}.
+LOG_UNINSTALLED_FIX.explanation=Podana poprawka zosta\u0142a pomy\u015blnie zdeinstalowana.
+LOG_UNINSTALLED_FIX.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_INSTALL_ESA=CWWKF1308I: Instalowanie pliku {0}.
+LOG_INSTALL_ESA.explanation=Zostanie zainstalowany podany plik Enterprise Subsystem Archive (.esa).
+LOG_INSTALL_ESA.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_REINSTALL_FIXES_WARNING=Ostrze\u017cenie: Nie mo\u017cna zreinstalowa\u0107 nast\u0119puj\u0105cych wcze\u015bniej zainstalowanych poprawek: {0}. Zreinstaluj poprawki r\u0119cznie.
+LOG_REAPPLY_FIXES_WARNING=CWWKF1309W: Nie powiod\u0142o si\u0119 ponowne zastosowanie nast\u0119puj\u0105cych poprawek: {0}.
+LOG_REAPPLY_FIXES_WARNING.explanation=Nie mo\u017cna ponownie zastosowa\u0107 zainstalowanych poprawek.
+LOG_REAPPLY_FIXES_WARNING.useraction=Ponownie zastosuj poprawki r\u0119cznie.
+
+LOG_UNABLE_TO_DETERMINE_CODEPAGE=WWKF1310W: Nie mo\u017cna okre\u015bli\u0107 strony kodowej systemu dla pliku {0}.  Zostanie u\u017cyta domy\u015blna strona kodowa {1}.
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.explanation=Instalator nie m\u00f3g\u0142 okre\u015bli\u0107 strony kodowej systemu i u\u017cyje do instalowania plik\u00f3w domy\u015blnej strony kodowej.
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.useraction=Upewnij si\u0119, \u017ce system obs\u0142uguje domy\u015bln\u0105 stron\u0119 kodow\u0105.
+
+LOG_INSTALLED_SAMPLE=CWWKF1312I: Pomy\u015blnie zainstalowano przyk\u0142ad produktu {0}.
+LOG_INSTALLED_SAMPLE.explanation=Okre\u015blony przyk\u0142ad produktu zosta\u0142 pomy\u015blnie zainstalowany.
+LOG_INSTALLED_SAMPLE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_INSTALLED_OPENSOURCE=CWWKF1313I: Pomy\u015blnie zainstalowano integracj\u0119 z oprogramowaniem Open Source {0}.
+LOG_INSTALLED_OPENSOURCE.explanation=Okre\u015blona integracja z oprogramowaniem Open Source zosta\u0142a pomy\u015blnie zainstalowana.
+LOG_INSTALLED_OPENSOURCE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LOG_UNINSTALL_FEATURE_DEPENDENCIES=Deinstalowany sk\u0142adnik jest wymagany przez inne zainstalowane sk\u0142adniki:
+LOG_UNINSTALL_FEATURE_DEPENDENCIES_EXPLANATION=Odinstalowanie sk\u0142adnika mo\u017ce spowodowa\u0107, \u017ce zale\u017cne od niego sk\u0142adniki nie b\u0119d\u0105 dzia\u0142a\u0107 poprawnie.
+
+LOG_DEPLOY_SERVER_FEATURES=Serwer {0} wymaga nast\u0119puj\u0105cych sk\u0142adnik\u00f3w: {1}
+LOG_DEPLOY_ADDITIONAL_FEATURES_REQUIRED=Serwery {0} wymagaj\u0105 zainstalowania nast\u0119puj\u0105cych sk\u0142adnik\u00f3w dodatkowych: {1}
+LOG_DEPLOY_NO_ADDITIONAL_FEATURES_REQUIRED=Serwery {0} nie wymagaj\u0105 zainstalowania \u017cadnych sk\u0142adnik\u00f3w dodatkowych.
+LOG_DEPLOY_FILE=Wdra\u017canie pakietu serwera {0}
+
+LOG_NO_REPO_NAME=Nie podano nazwy repozytorium. Nast\u0119puj\u0105ce skonfigurowane repozytorium zostanie pomini\u0119te: {0}\n
+LOG_DUPLICATE_REPO_NAMES=Wykryto zduplikowane nazwy repozytori\u00f3w {0}. Nast\u0119puj\u0105ce skonfigurowane repozytorium zostanie pomini\u0119te: {1}\n
+LOG_DEFAULT_INVALID_VALUE=Okre\u015blono niepoprawn\u0105 warto\u015b\u0107 {0} w\u0142a\u015bciwo\u015bci useDefaultRepository. Repozytorium serwera IBM WebSphere Liberty b\u0119dzie domy\u015blnie w\u0142\u0105czone. \n
+LOG_VALIDATING=Sprawdzanie poprawno\u015bci nast\u0119puj\u0105cego pliku konfiguracyjnego: {0}\n
+LOG_VALIDATION_DONE=Pomy\u015blnie zako\u0144czono sprawdzanie poprawno\u015bci pliku konfiguracyjnego.\n
+
+LOG_DELETING_TEMP_SERVER_DIR=Usuwanie katalogu tymczasowego serwera {0}...
+LOG_NOT_DELETING_TEMP_SERVER_DIR=Katalog tymczasowy serwera {0} nie zosta\u0142 usuni\u0119ty, poniewa\u017c mo\u017ce zawiera\u0107 informacje o b\u0142\u0119dach w katalogu dziennik\u00f3w. Je\u015bli te informacje nie s\u0105 potrzebne, mo\u017cna r\u0119cznie usun\u0105\u0107 katalog {1}.
+LOG_CREATED_TEMP_SERVER_DIR=Utworzono katalog tymczasowy serwera {0}.
+
+LOG_CANNOT_DELETE_FILE=Nie mo\u017cna usun\u0105\u0107 pliku {0}. Zostanie on usuni\u0119ty, gdy wirtualna maszyna j\u0119zyka Java zako\u0144czy prac\u0119.
+
+LOG_CANNOT_CLOSE_OBJECT=Nie mo\u017cna usun\u0105\u0107 plik\u00f3w tymczasowych.
+LOG_CANNOT_CLOSE_OBJECT.explanation=Ten przyk\u0142ad wymaga \u015brodowiska Java 7 lub nowszego w celu usuni\u0119cia katalogu installTmp.
+LOG_CANNOT_CLOSE_OBJECT.action=Usu\u0144 r\u0119cznie katalog installTmp lub u\u017cyj \u015brodowiska Java 7 lub nowszego.
+
+LOG_PASSWORD_NOT_ENCODED_PROXY=Has\u0142o dla nast\u0119puj\u0105cego serwera proxy nie jest zakodowane: {0}. Mo\u017cna zakodowa\u0107 has\u0142o przez uruchomienie komendy securityUtility encode z opcj\u0105 --encoding ustawion\u0105 na obs\u0142ugiwany typ kodowania, kt\u00f3rymi s\u0105 xor (domy\u015blny), aes i hash. Na przyk\u0142ad: securityUtility encode --encoding=aes proxyPassword
+LOG_PENDING_UNINSTALLING_FEATURE=Sk\u0142adniki do zdeinstalowania:
+# Following messages for debug logging purpose
+STATE_STARTING_INSTALL=Uruchamianie instalowania...
+STATE_STARTING_UNINSTALL=Uruchamianie deinstalowania...
+STATE_STARTING_DEPLOY=Uruchamianie wdra\u017cania...
+STATE_STARTING_DOWNLOAD=Uruchamianie pobierania...
+STATE_CHECKING=Sprawdzanie sk\u0142adnik\u00f3w...
+STATE_CHECKING_FIXES=Sprawdzanie poprawek...
+STATE_CHECKING_MISSING_SERVER_FEATURES=Sprawdzanie brakuj\u0105cych sk\u0142adnik\u00f3w wymaganych przez serwer...
+STATE_CHECKING_ASSETS=Sprawdzanie zasob\u00f3w aplikacyjnych...
+STATE_DOWNLOADING=Pobieranie elementu {0}...
+STATE_DOWNLOADING_DEPENDENCY=Pobieranie sk\u0142adnika zale\u017cnego...
+STATE_DOWNLOADING_IGNORE_ASSET=Nast\u0119puj\u0105cy zas\u00f3b aplikacyjny ju\u017c istnieje w katalogu: {0}\nNie podano opcji --overwrite, wi\u0119c zas\u00f3b aplikacyjny nie zostanie pobrany. \n
+STATE_DOWNLOADING_REPLACE_ASSET=Nast\u0119puj\u0105cy zas\u00f3b aplikacyjny ju\u017c istnieje w katalogu: {0}\nPodano opcj\u0119 --overwrite, wi\u0119c zas\u00f3b aplikacyjny zostanie pobrany i zast\u0105pi istniej\u0105cy plik. \n
+STATE_DOWNLOADING_IGNORE_ASSETS=Nast\u0119puj\u0105ce zasoby aplikacyjne ju\u017c istniej\u0105 w katalogu: {0}\nNie podano opcji --overwrite, wi\u0119c zasoby aplikacyjne nie zostan\u0105 pobrane. \n
+STATE_DOWNLOADING_REPLACE_ASSETS=Nast\u0119puj\u0105ce zasoby aplikacyjne ju\u017c istniej\u0105 w katalogu: {0}\nPodano opcj\u0119 --overwrite, wi\u0119c zasoby aplikacyjne zostan\u0105 pobrane i zast\u0105pi\u0105 istniej\u0105ce pliki. \n
+STATE_DOWNLOADING_FEATURES=Pobieranie sk\u0142adnik\u00f3w zdalnych...
+STATE_DOWNLOADING_ASSETS=Pobieranie zdalnych zasob\u00f3w aplikacyjnych...
+STATE_INSTALLING=Instalowanie elementu {0}...
+STATE_INSTALLING_DEPENDENCY=Instalowanie sk\u0142adnika zale\u017cnego...
+STATE_INSTALLING_FEATURES=Instalowanie sk\u0142adnik\u00f3w...
+STATE_INSTALLING_ASSETS=Instalowanie zasob\u00f3w aplikacyjnych...
+STATE_UNINSTALLING=Deinstalowanie elementu {0}...
+STATE_UNINSTALLING_FEATURES=Deinstalowanie sk\u0142adnik\u00f3w...
+STATE_REAPPLYING_FIXES=Ponowne stosowanie poprawek {0}...
+STATE_VALIDATING_FIXES=Sprawdzanie poprawno\u015bci zainstalowanych poprawek...
+STATE_SET_SCRIPTS_PERMISSION=Ustawianie uprawnie\u0144 skrypt\u00f3w...
+STATE_DEPLOYING=Wdra\u017canie {0}...
+STATE_CLEANING=Czyszczenie plik\u00f3w tymczasowych...
+STATE_COMPLETED_INSTALL=Instalacja zako\u0144czona
+STATE_COMPLETED_UNINSTALL=Deinstalacja zako\u0144czona
+STATE_COMPLETED_DOWNLOAD=Pobieranie zako\u0144czone\n
+STATE_COMPLETED_DEPLOY=Wdra\u017canie zosta\u0142o zako\u0144czone
+STATE_RESOLVING=Rozstrzyganie sk\u0142adnik\u00f3w zdalnych. Ten proces mo\u017ce potrwa\u0107 kilka minut.
+STATE_PREPARING_ASSETS=Przygotowywanie zasob\u00f3w aplikacyjnych do instalowania. Ten proces mo\u017ce potrwa\u0107 kilka minut.
+STATE_INITIALIZING=Inicjowanie...
+STATE_CONTACTING_REPO=Nawi\u0105zywanie kontaktu z repozytorium produktu IBM WebSphere Liberty...
+STATE_DOWNLOAD_FILES_OK=\nWszystkie zasoby aplikacyjne zosta\u0142y pomy\u015blnie pobrane.
+PROGRESS_STEP=Krok {0} z {1}
+
+MSG_DOWNLOAD_SUCCESS=Pomy\u015blnie pobrano sk\u0142adnik {0}.
+MSG_CLEANUP_SUCCESS=Pomy\u015blnie zako\u0144czono czyszczenie plik\u00f3w tymczasowych.
+
+MSG_CANCEL_INSTALL=Instalowanie zosta\u0142o anulowane.
+MSG_TAKE_SEVERAL_MINUTES=Ten proces mo\u017ce potrwa\u0107 kilka minut.
+MSG_SEARCHING=Wyszukiwanie zasob\u00f3w aplikacyjnych. Ten proces mo\u017ce potrwa\u0107 kilka minut.
+MSG_SEARCHING_FEATURES=Wyszukiwanie sk\u0142adnik\u00f3w...
+MSG_SEARCHING_ADDONS=Wyszukiwanie program\u00f3w dodatkowych...
+MSG_SEARCHING_SAMPLES=Wyszukiwanie przyk\u0142ad\u00f3w...
+MSG_SEARCHING_OPENSOURCE=Wyszukiwanie integracji z oprogramowaniem Open Source...
+
+FEATURE_ASSET=Sk\u0142adnik
+ADDON_ASSET=Program dodatkowy
+SAMPLE_ASSET=Przyk\u0142ad produktu
+OPENSOURCE_ASSET=Integracja Open Source
+GENERAL_ASSET=Zas\u00f3b aplikacyjny
+
+MSG_INVALID_FOR_OS=Zas\u00f3b sk\u0142adnika {0} jest niepoprawny dla bie\u017c\u0105cego systemu operacyjnego i nie zostanie zainstalowany.
+
+# Following are validation messages for viewSettings
+MSG_VALIDATION_EMPTY_KEY=Nie podano nazwy w\u0142a\u015bciwo\u015bci. Podaj poprawn\u0105 nazw\u0119 w\u0142a\u015bciwo\u015bci lub przekszta\u0142\u0107 w\u0142a\u015bciwo\u015b\u0107 w komentarz (je\u015bli jest nieu\u017cywana).
+MSG_VALIDATION_INVALID_KEY=W\u0142a\u015bciwo\u015b\u0107 {0} nie jest obs\u0142ugiwana. Podaj poprawn\u0105 nazw\u0119 w\u0142a\u015bciwo\u015bci lub przekszta\u0142\u0107 w\u0142a\u015bciwo\u015b\u0107 w komentarz (je\u015bli jest nieu\u017cywana).
+MSG_VALIDATION_EMPTY_REPONAME=Nie podano nazwy repozytorium. Podaj nazw\u0119 repozytorium lub przekszta\u0142\u0107 w\u0142a\u015bciwo\u015b\u0107 w komentarz (je\u015bli jest nieu\u017cywana).
+MSG_VALIDATION_DUPLICATE_KEY=Nazwa w\u0142a\u015bciwo\u015bci {0} jest duplikatem nazwy w\u0142a\u015bciwo\u015bci znajduj\u0105cej si\u0119 w wierszu {1}. Podaj unikaln\u0105 nazw\u0119 w\u0142a\u015bciwo\u015bci w przypadku ka\u017cdej w\u0142a\u015bciwo\u015bci.
+MSG_VALIDATION_EMPTY_VALUE=Nie podano warto\u015bci w\u0142a\u015bciwo\u015bci {0}. Podaj poprawn\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci lub przekszta\u0142\u0107 w\u0142a\u015bciwo\u015b\u0107 w komentarz (je\u015bli jest nieu\u017cywana).
+MSG_VALIDATION_INVALID_DEFAULTREPO_VALUE=W\u0142a\u015bciwo\u015b\u0107 useDefaultRepository nie obs\u0142uguje warto\u015bci {0}. Podaj poprawn\u0105 warto\u015b\u0107: True lub False.
+MSG_VALIDATION_INVALID_PORT_VALUE=Warto\u015b\u0107 portu {0} jest niepoprawna. Podaj warto\u015b\u0107 portu serwera proxy. Musi by\u0107 to liczba ca\u0142kowita z zakresu od 1 do 65535.
+MSG_VALIDATION_MISSING_PORT_VALUE=Nie podano warto\u015bci portu. Podaj warto\u015b\u0107 portu serwera proxy. Musi by\u0107 to liczba ca\u0142kowita z zakresu od 1 do 65535.
+MSG_VALIDATION_MISSING_HOST=Nie podano nazwy hosta serwera proxy. Podaj nazw\u0119 hosta serwera proxy lub przekszta\u0142\u0107 w komentarz inne w\u0142a\u015bciwo\u015bci serwera proxy.
+MSG_VALIDATION_INVALID_URL=Nast\u0119puj\u0105cy adres URL jest niepoprawny: {0}. Obs\u0142ugiwane s\u0105 tylko protoko\u0142y HTTP i HTTPS oraz adresy URL plik\u00f3w. Upewnij si\u0119, \u017ce poprawnie podano adres URL.
+MSG_VALIDATION_UNSUPPORT_PROTOCOL=Protok\u00f3\u0142 URL nie jest obs\u0142ugiwany w przypadku nast\u0119puj\u0105cego repozytorium: {0}. Obs\u0142ugiwane protoko\u0142y: HTTP, HTTPS i file (pliki). Upewnij si\u0119, \u017ce poprawnie podano adres URL.
+MSG_VALIDATION_INVALID_HOST=Nast\u0119puj\u0105cy host serwera proxy jest niepoprawny: {0}. Podaj poprawn\u0105 nazw\u0119 hosta serwera proxy HTTP. Przedrostek http:// nie jest wymagany.
+
+VALIDATION_INVALID_VALUE=Nieobs\u0142ugiwana warto\u015b\u0107
+VALIDATION_INVALID_KEY=Nieobs\u0142ugiwana nazwa w\u0142a\u015bciwo\u015bci
+VALIDATION_EMPTY_KEY=Pusta nazwa w\u0142a\u015bciwo\u015bci
+VALIDATION_EMPTY_VALUE=Pusta warto\u015b\u0107
+VALIDATION_MISSING_REPONAME=Brak nazwy repozytorium
+VALIDATION_MISSING_PORT=Brak warto\u015bci portu
+VALIDATION_INVALID_PORT=Nieobs\u0142ugiwana warto\u015b\u0107 portu
+VALIDATION_MISSING_HOST=Brak nazwy hosta
+VALIDATION_INVALID_HOST=Niepoprawna nazwa hosta
+VALIDATION_INVALID_URL=Nieobs\u0142ugiwany format adresu URL
+VALIDATION_DUPLICATE_KEY=Zduplikowana nazwa w\u0142a\u015bciwo\u015bci
+VALIDATION_UNSUPPORTED_PROTOCOL=Nieobs\u0142ugiwany protok\u00f3\u0142
+
+# Following for tool
+TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Jeden lub wi\u0119cej sk\u0142adnik\u00f3w zosta\u0142o pomy\u015blnie zdeinstalowanych: {0}.
+TOOL_UNINSTALL_FEATURE_OK.explanation=Podany sk\u0142adnik zosta\u0142 zdeinstalowany.
+TOOL_UNINSTALL_FEATURE_OK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+TOOL_UNININSTALL_FEATURE_CONFIRMATION=Ostrze\u017cenie: przed zdeinstalowaniem sk\u0142adnik\u00f3w upewnij si\u0119, \u017ce wszystkie procesy serwera s\u0105 zatrzymane.\nDeinstalowanie sk\u0142adnik\u00f3w z dzia\u0142aj\u0105cych serwer\u00f3w mo\u017ce powodowa\u0107 b\u0142\u0119dy \u015brodowiska wykonawczego lub nieoczekiwane zachowanie.\n\nNaci\u015bnij klawisz Enter, aby kontynuowa\u0107, lub naci\u015bnij klawisz x, aby przerwa\u0107 operacj\u0119 deinstalowania sk\u0142adnika.
+
+TOOL_PASSWORD_PROMPT=Wprowad\u017a has\u0142o:
+TOOL_RE_ENTER_PASSWORD_PROMPT=Wprowad\u017a ponownie has\u0142o:
+TOOL_PASSWORD_DOES_NOT_MATCH=Wpisy nie s\u0105 zgodne.
+
+TOOL_FEATURES_INSTALLATION_COMPLETED=Wszystkie sk\u0142adniki zosta\u0142y pomy\u015blnie zainstalowane.
+TOOL_INSTALLATION_COMPLETED=Wszystkie zasoby aplikacyjne zosta\u0142y pomy\u015blnie zainstalowane.
+
+ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: Nie podano has\u0142a dla identyfikatora u\u017cytkownika okre\u015blonego w opcji --user.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=Je\u015bli identyfikator u\u017cytkownika zosta\u0142 okre\u015blony, wymagane jest podanie has\u0142a.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.useraction=U\u017cyj opcji --password lub --passwordfile, aby wprowadzi\u0107 has\u0142o dla identyfikatora u\u017cytkownika okre\u015blonego w opcji --user, a nast\u0119pnie pon\u00f3w operacj\u0119.
+
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION=CWWKF1352E: Nie mo\u017cna znale\u017a\u0107 podanego pliku hase\u0142 {0}.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by uzyskania dost\u0119pu do podanego pliku hase\u0142.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.useraction=Sprawd\u017a, czy \u015bcie\u017cka do podanego pliku jest poprawna, czy plik istnieje oraz czy u\u017cytkownik ma odpowiednie uprawnienia dost\u0119pu do pliku.
+
+ERROR_TOOL_INVALID_LOG_LEVEL=Okre\u015blony poziom dziennika {0} jest niepoprawny.  Dziennik nie zosta\u0142 w\u0142\u0105czony.
+
+ERROR_TOOL_DIRECTORY_NOT_EXISTS=CWWKF1353E: Okre\u015blony katalog nie istnieje: {0}
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.explanation=System nie mo\u017ce znale\u017a\u0107 okre\u015blonego katalogu.
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.useraction=Uruchom komend\u0119 ponownie przy u\u017cyciu poprawnego katalogu.
+
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA=CWWKF1354E: Opcji --downloadOnly nie mo\u017cna u\u017cy\u0107 do zainstalowania {0}.
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.explanation=Niepoprawne u\u017cycie opcji --downloadOnly. 
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.useraction=Uruchom komend\u0119 ponownie bez parametru --downloadOnly.
+
+ERROR_TOOL_DOWNLOADONLY_IS_FILE=CWWKF1355E: Element {0} jest plikiem. Wymagana jest \u015bcie\u017cka do katalogu.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.explanation=Podj\u0119to pr\u00f3b\u0119 pobrania archiw\u00f3w podsystemu do pliku.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.useraction=Uruchom komend\u0119 ponownie, podaj\u0105c \u015bcie\u017ck\u0119 do katalogu.
+
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR=CWWKF1356E: Nie mo\u017cna utworzy\u0107 struktury katalog\u00f3w {0}.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.explanation=Nie mo\u017cna utworzy\u0107 katalog\u00f3w wymaganych do pobrania archiw\u00f3w podsystemu.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.useraction=Sprawd\u017a, czy istnieje udost\u0119pniony katalog i czy istniej\u0105 niezb\u0119dne uprawnienia umo\u017cliwiaj\u0105ce utworzenie struktury katalog\u00f3w. Pon\u00f3w operacj\u0119.
+
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY=CWWKF1357E: Opcji --downloadOnly nie mo\u017cna u\u017cy\u0107 z opcj\u0105 with --offlineOnly.
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.explanation=Niepoprawne u\u017cycie opcji --offlineOnly. 
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.useraction=Uruchom komend\u0119 ponownie bez opcji --offlineOnly.
+
+ERROR_TOOL_MISSING_DIRECTORY=CWWKF1358E: Opcja --location jest wymagana dla {0}.
+ERROR_TOOL_MISSING_DIRECTORY.explanation=Nie znaleziono opcji --location.
+ERROR_TOOL_MISSING_DIRECTORY.useraction=Uruchom komend\u0119 ponownie z opcj\u0105 --location.
+
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION=CWWKF1359E: Warto\u015b\u0107 {0} jest niepoprawna dla opcji --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.explanation=Nale\u017cy u\u017cy\u0107 poprawnych warto\u015bci opcji --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.useraction=Uruchom komend\u0119 z poprawn\u0105 warto\u015bci\u0105 opcji --downloadOnly, na przyk\u0142ad all.
+
+ERROR_TOOL_LOCATION_WITH_ESA=CWWKF1360E: Opcji --location nie mo\u017cna u\u017cywa\u0107 do instalowania pliku archiwum podsystemu (.esa).
+ERROR_TOOL_LOCATION_WITH_ESA.explanation=Niepoprawne u\u017cycie opcji --location. 
+ERROR_TOOL_LOCATION_WITH_ESA.useraction=Uruchom komend\u0119 ponownie bez opcji --location.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED=CWWKF1361E: Nie mo\u017cna za\u0142adowa\u0107 w\u0142a\u015bciwo\u015bci repozytorium z po\u0142o\u017cenia {0}. Sprawd\u017a, czy \u015bcie\u017cka do okre\u015blonego pliku w\u0142a\u015bciwo\u015bci jest poprawna i czy plik zawiera wymagane w\u0142a\u015bciwo\u015bci.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by dost\u0119pu do okre\u015blonego pliku w\u0142a\u015bciwo\u015bci.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.useraction=Upewnij si\u0119, \u017ce \u015bcie\u017cka do okre\u015blonego pliku jest poprawna, \u017ce plik istnieje oraz \u017ce zawiera wymagane w\u0142a\u015bciwo\u015bci.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE=CWWKF1362E: Podana \u015bcie\u017cka {0} nie prowadzi do pliku.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.explanation=W\u0142a\u015bciwo\u015b\u0107 systemowa umo\u017cliwiaj\u0105ca nadpisanie domy\u015blnego po\u0142o\u017cenia pliku w\u0142a\u015bciwo\u015bci musi okre\u015bla\u0107 \u015bcie\u017ck\u0119 do pliku, a nie katalog. 
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.useraction=Uruchom komend\u0119 ponownie, ustawiaj\u0105c w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 na poprawn\u0105 \u015bcie\u017ck\u0119 do pliku.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS=CWWKF1363E: Okre\u015blony plik {0} nie istnieje.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.explanation=System nie mo\u017ce znale\u017a\u0107 okre\u015blonego pliku w\u0142a\u015bciwo\u015bci repozytori\u00f3w.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.useraction=Sprawd\u017a, czy plik istnieje w podanej \u015bcie\u017cce, i pon\u00f3w komend\u0119.
+
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED=CWWKF1364E: Has\u0142o serwera proxy nie jest zaszyfrowane. Has\u0142o musi by\u0107 zaszyfrowane przy u\u017cyciu komendy securityUtility, a zalecanym algorytmem szyfrowania (ustawianym za pomoc\u0105 opcji --encoding) jest algorytm AES.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.explanation=Has\u0142o serwera proxy musi by\u0107 zaszyfrowane przy u\u017cyciu komendy securityUtility, a zalecanym algorytmem szyfrowania (ustawianym za pomoc\u0105 opcji --encoding) jest algorytm AES.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c zaszyfrowanego has\u0142a.
+
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED=CWWKF1365E: Zaszyfrowane has\u0142o serwera proxy jest niepoprawne. Has\u0142o proxy musi by\u0107 zaszyfrowane przy u\u017cyciu komendy securityUtility, a zalecanym algorytmem szyfrowania (ustawianym za pomoc\u0105 opcji --encoding) jest algorytm AES. 
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.explanation=Algorytm szyfrowania u\u017cyty do zaszyfrowania has\u0142a serwera proxy nie jest obs\u0142ugiwany. Has\u0142o proxy musi by\u0107 zaszyfrowane przy u\u017cyciu komendy securityUtility, a zalecanym algorytmem szyfrowania (ustawianym za pomoc\u0105 opcji --encoding) jest algorytm AES.
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnie zaszyfrowanego has\u0142a.
+
+ERROR_TOOL_PROXY_PORT_MISSING=CWWKF1366E: Nie okre\u015blono numeru portu serwera proxy.
+ERROR_TOOL_PROXY_PORT_MISSING.explanation=Je\u015bli okre\u015blona jest nazwa hosta dla serwera proxy, wymagany jest numer portu.
+ERROR_TOOL_PROXY_PORT_MISSING.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnego numeru portu serwera proxy.
+
+ERROR_TOOL_PROXY_HOST_MISSING=CWWKF1367E: Nie podano nazwy hosta serwera proxy.
+ERROR_TOOL_PROXY_HOST_MISSING.explanation=Je\u015bli okre\u015blony jest numer portu dla serwera proxy, wymagana jest nazwa hosta.
+ERROR_TOOL_PROXY_HOST_MISSING.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnej nazwy hosta serwera proxy.
+
+ERROR_TOOL_INVALID_PROXY_PORT=CWWKF1368E: Numer portu serwera proxy {0} jest niepoprawny. Numer portu musi by\u0107 liczb\u0105 z zakresu od 1 do 65535.
+ERROR_TOOL_INVALID_PROXY_PORT.explanation=Numer portu okre\u015blonego serwera proxy musi by\u0107 liczb\u0105 z zakresu od 1 do 65535.
+ERROR_TOOL_INVALID_PROXY_PORT.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnego numeru portu serwera proxy.
+
+ERROR_TOOL_PROXY_PWD_MISSING=CWWKF1369E: Nie podano has\u0142a serwera proxy.
+ERROR_TOOL_PROXY_PWD_MISSING.explanation=Je\u015bli okre\u015blony jest identyfikator u\u017cytkownika dla serwera proxy, wymagane jest has\u0142o.
+ERROR_TOOL_PROXY_PWD_MISSING.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c wymaganego has\u0142a serwera proxy.
+
+ERROR_TOOL_UNKNOWN_PROXY_HOST=CWWKF1370E: Nazwa hosta serwera proxy {0} jest nieznana.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.explanation=Nie mo\u017cna rozstrzygn\u0105\u0107 nazwy hosta serwera proxy.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c znanej nazwy hosta serwera proxy.
+
+ERROR_TOOL_INCORRECT_PROXY_PORT=CWWKF1371E: Nawi\u0105zanie po\u0142\u0105czenia z serwerem proxy na porcie {0} nie powiod\u0142o si\u0119.
+ERROR_TOOL_INCORRECT_PROXY_PORT.explanation=Podany numer portu serwera proxy jest niepoprawny. Brak us\u0142ug nas\u0142uchuj\u0105cych na okre\u015blonym numerze portu serwera proxy. 
+ERROR_TOOL_INCORRECT_PROXY_PORT.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnego numeru portu serwera proxy.
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWKF1372E: Podane referencje serwera proxy s\u0105 niepoprawne.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=Nie mo\u017cna uwierzytelni\u0107 podanych referencji serwera proxy. 
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnych referencji serwera proxy.
+
+ERROR_NO_REPO_WAS_ENABLED=CWWKF1373E: Komendy nie mo\u017cna wykona\u0107, poniewa\u017c nie w\u0142\u0105czono \u017cadnego repozytorium.
+ERROR_NO_REPO_WAS_ENABLED.explanation=Wszystkie repozytoria zosta\u0142y wy\u0142\u0105czone z konfiguracji.
+ERROR_NO_REPO_WAS_ENABLED.useraction=W\u0142\u0105cz jedno lub wi\u0119cej repozytori\u00f3w, a nast\u0119pnie ponownie uruchom komend\u0119.
+
+ERROR_TOOL_PWD_NOT_ENCRYPTED=CWWKF1374E: Has\u0142o nie jest zaszyfrowane. Has\u0142o musi by\u0107 zaszyfrowane przy u\u017cyciu komendy securityUtility, a zalecanym algorytmem szyfrowania (ustawianym za pomoc\u0105 opcji --encoding) jest algorytm AES.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.explanation=Has\u0142o musi by\u0107 zaszyfrowane za pomoc\u0105 komendy securityUtility.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c zaszyfrowanego has\u0142a.
+
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED=CWWKF1375E: Zaszyfrowane has\u0142o jest niepoprawne. Has\u0142o musi by\u0107 zaszyfrowane przy u\u017cyciu komendy securityUtility, a zalecanym algorytmem szyfrowania (ustawianym za pomoc\u0105 opcji --encoding) jest algorytm AES. 
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.explanation=Algorytm szyfrowania u\u017cyty do zaszyfrowania has\u0142a nie jest obs\u0142ugiwany. Has\u0142o musi by\u0107 zaszyfrowane przy u\u017cyciu komendy securityUtility, a zalecanym algorytmem szyfrowania (ustawianym za pomoc\u0105 opcji --encoding) jest algorytm AES.
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnie zaszyfrowanego has\u0142a.
+
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY=CWWKF1376E:  Element {0} nie jest ani pustym folderem ani poprawnym repozytorium katalogu.  U\u017cyj pustego folderu lub istniej\u0105cego repozytorium katalogu na potrzeby pobierania.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.explanation=Podj\u0119to pr\u00f3b\u0119 pobrania do niepoprawnego katalogu pobierania.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.useraction=Uruchom komend\u0119 ponownie, podaj\u0105c poprawn\u0105 \u015bcie\u017ck\u0119 do katalogu.
+
+ERROR_TOOL_DIRECTORY_REQUIRED=CWWKF1377E: Wymagane jest okre\u015blenie poprawnej \u015bcie\u017cki do pliku w opcji --{0}. Okre\u015bl \u015bcie\u017ck\u0119 do pliku i pon\u00f3w komend\u0119.
+ERROR_TOOL_DIRECTORY_REQUIRED.explanation=Opcja --location wymaga poprawnej \u015bcie\u017cki do pliku, ale nie okre\u015blono \u015bcie\u017cki do pliku lub podana \u015bcie\u017cka do pliku jest niepoprawna.
+ERROR_TOOL_DIRECTORY_REQUIRED.useraction=W opcji --location podaj poprawn\u0105 \u015bcie\u017ck\u0119 do pliku, do kt\u00f3rej maj\u0105 by\u0107 pobierane pliki, a nast\u0119pnie uruchom komend\u0119 ponownie.
+
+ERROR_TOOL_DIRECTORY_INACCESSIBLE=CWWKF1378E: Nast\u0119puj\u0105cy katalog jest niedost\u0119pny: {0}. Upewnij si\u0119, \u017ce bie\u017c\u0105cy u\u017cytkownik ma uprawnienia do odczytu tego katalogu i zapisu w nim. 
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.explanation=Komenda nie mo\u017ce pobra\u0107 plik\u00f3w do okre\u015blonego katalogu, poniewa\u017c bie\u017c\u0105cy u\u017cytkownik nie ma wymaganych uprawnie\u0144 do odczytu i zapisu.
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.useraction=Nadaj u\u017cytkownikowi uprawnienia do odczytu katalogu i zapisu w nim, a nast\u0119pnie uruchom komend\u0119 ponownie.
+
+ERROR_TEMP_DIR_NO_SPACE=CWWKF1379E: Nie mo\u017cna pobra\u0107 zasobu aplikacyjnego, poniewa\u017c brak wystarczaj\u0105cego miejsca na dysku w nast\u0119puj\u0105cym katalogu tymczasowym Java: {0}. \u0141\u0105czne wymagane miejsce: {2}. \u0141\u0105czne dost\u0119pne miejsce: {1}. Usu\u0144 niepotrzebne pliki w katalogu lub zmie\u0144 \u015bcie\u017ck\u0119 do katalogu java.io.tempdir na inny katalog, i uruchom ponownie komend\u0119.
+ERROR_TEMP_DIR_NO_SPACE.explanation=Komenda nie mo\u017ce pobra\u0107 plik\u00f3w do katalogu tymczasowego Java, poniewa\u017c w katalogu nie ma wystarczaj\u0105cego miejsca.
+ERROR_TEMP_DIR_NO_SPACE.useraction=Zapewnij wystarczaj\u0105ce miejsce w katalogu tymczasowym Java, usuwaj\u0105c niepotrzebne pliki lub zmieniaj\u0105c \u015bcie\u017ck\u0119 do katalogu java.io.tempdir na inny katalog, i uruchom ponownie komend\u0119.
+
+ERROR_WLP_DIR_NO_SPACE=CWWKF1380E: Nie mo\u017cna zainstalowa\u0107 zasobu aplikacyjnego, poniewa\u017c brak wystarczaj\u0105cego miejsca na dysku w nast\u0119puj\u0105cym katalogu instalacyjnym: {0}. \u0141\u0105czne wymagane miejsce: {2}. \u0141\u0105czne dost\u0119pne miejsce: {1}. Usu\u0144 niepotrzebne pliki w systemie plik\u00f3w i uruchom ponownie komend\u0119.
+ERROR_WLP_DIR_NO_SPACE.explanation=Komenda nie mo\u017ce zainstalowa\u0107 zasob\u00f3w aplikacyjnych w katalogu instalacyjnym, poniewa\u017c w katalogu nie ma wystarczaj\u0105cego miejsca.
+ERROR_WLP_DIR_NO_SPACE.useraction=Zapewnij wystarczaj\u0105ce miejsce w katalogu instalacyjnym, usuwaj\u0105c niepotrzebne pliki w systemie plik\u00f3w, i uruchom ponownie komend\u0119.
+
+ERROR_FAILED_TO_CONNECT_JDK_WRONG=CWWKF1381E: Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia z repozytorium serwera IBM WebSphere Liberty z powodu b\u0142\u0119du fabryki gniazd SSL. Ten b\u0142\u0105d mo\u017ce wyst\u0105pi\u0107, je\u015bli na serwerze Liberty u\u017cywany jest pakiet Java SDK udost\u0119pniany z klasycznym serwerem WebSphere Application Server. Zainstaluj pakiet Java SDK udost\u0119pniany dla serwera Liberty lub wyczy\u015b\u0107 dostawc\u00f3w fabryki gniazd SSL w istniej\u0105cym pakiecie SDK, zgodnie z opisem w dokumentacji rozwi\u0105zywania problem\u00f3w serwera Liberty.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.explanation=Skonfigurowany pakiet Java SDK jest prawdopodobnie pakietem udost\u0119pnionym dla klasycznego serwera WebSphere Application Server. Ten pakiet Java SDK nie mo\u017ce by\u0107 bez dodatkowej konfiguracji u\u017cywany z serwerem WebSphere Application Server Liberty, co spowodowa\u0142o b\u0142\u0105d fabryki gniazd SSL.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.useraction=Zainstaluj i skonfiguruj pakiet Java SDK dla serwera Liberty. \n\nAlternatywnie mo\u017cna u\u017cy\u0107 istniej\u0105cego pakietu SDK i obej\u015b\u0107 ten problem, czyszcz\u0105c dostawc\u00f3w fabryki gniazd SSL w tym pakiecie Java SDK. Wi\u0119cej informacji na ten temat zawiera dokumentacja serwera Liberty dotycz\u0105ca rozwi\u0105zywania problem\u00f3w z protoko\u0142em SSL. 
+
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION=CWWKF1382E: Nie mo\u017cna uzyska\u0107 nast\u0119puj\u0105cych zasob\u00f3w aplikacyjnych: {0}. Co najmniej jedno skonfigurowane repozytorium jest niedost\u0119pne lub podane zasoby aplikacyjne s\u0105 niepoprawne. Upewnij si\u0119, \u017ce system mo\u017ce uzyska\u0107 dost\u0119p do repozytori\u00f3w oraz u\u017cyj dzia\u0142a\u0144 viewSettings i testConnection, aby zweryfikowa\u0107 po\u0142\u0105czenie. Aby znale\u017a\u0107 identyfikatory odpowiednich zasob\u00f3w aplikacyjnych, uruchom komend\u0119 installUtility find.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.explanation=Instalator nie m\u00f3g\u0142 pobra\u0107 okre\u015blonych zasob\u00f3w aplikacyjnych z repozytori\u00f3w.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Upewnij si\u0119, \u017ce okre\u015blone zasoby aplikacyjne s\u0105 poprawne, \u017ce podano poprawny identyfikator u\u017cytkownika i poprawne has\u0142o oraz \u017ce repozytoria s\u0105 dost\u0119pne. Opcjonalnie u\u017cyj dzia\u0142ania viewSettings, aby zweryfikowa\u0107 skonfigurowane repozytoria, a nast\u0119pnie u\u017cyj dzia\u0142ania testConnection, aby przetestowa\u0107 po\u0142\u0105czenie.
+
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: Zas\u00f3b aplikacyjny {0} jest zale\u017cny od zasobu aplikacyjnego {1}, kt\u00f3ry nie jest dost\u0119pny w skonfigurowanych repozytoriach. Co najmniej jedno skonfigurowane repozytorium mo\u017ce by\u0107 niedost\u0119pne. Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego, poniewa\u017c jest on zale\u017cny od niedost\u0119pnego zasobu aplikacyjnego.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Opcjonalnie u\u017cyj dzia\u0142ania viewSettings, aby zweryfikowa\u0107 skonfigurowane repozytoria, a nast\u0119pnie u\u017cyj dzia\u0142ania testConnection, aby przetestowa\u0107 po\u0142\u0105czenie.\n\n Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. \n\n W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. \n\n Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Zasoby aplikacyjne {0} s\u0105 zale\u017cne od zasobu aplikacyjnego {1}, kt\u00f3ry nie jest dost\u0119pny w skonfigurowanych repozytoriach. Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasob\u00f3w aplikacyjnych, poniewa\u017c s\u0105 one zale\u017cne od niedost\u0119pnego zasobu aplikacyjnego.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105ce zasoby aplikacyjne i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_MISSING_MULTIPLE_DEPENDENT=CWWKF1385E: Zasoby aplikacyjne {0} s\u0105 zale\u017cne od zasobu aplikacyjnego {1}, kt\u00f3ry nie jest dost\u0119pny w repozytorium produktu IBM WebSphere Liberty. Je\u015bli wymagany zas\u00f3b aplikacyjny jest sk\u0142adnikiem, kt\u00f3ry zosta\u0142 wcze\u015bniej pobrany, zainstaluj brakuj\u0105cy sk\u0142adnik poprzez okre\u015blenie po\u0142o\u017cenia pliku ESA sk\u0142adnika w opcji --location komendy featureManager install i pon\u00f3w pr\u00f3b\u0119 zainstalowania zasobu aplikacyjnego {0}.
+ERROR_MISSING_MULTIPLE_DEPENDENT.explanation=Sk\u0142adniki, programy dodatkowe lub poprawki tymczasowe nie mog\u0105 zosta\u0107 zainstalowane, poniewa\u017c s\u0105 zale\u017cne od niedost\u0119pnego zasobu aplikacyjnego.
+ERROR_MISSING_MULTIPLE_DEPENDENT.useraction=Je\u015bli wymagany zas\u00f3b aplikacyjny jest sk\u0142adnikiem, kt\u00f3ry zosta\u0142 wcze\u015bniej pobrany, zainstaluj brakuj\u0105cy sk\u0142adnik, podaj\u0105c po\u0142o\u017cenie pliku ESA sk\u0142adnika w opcji --location komendy featureManager install i ponawiaj\u0105c pr\u00f3b\u0119. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNKNOWN_OPERATING_SYSTEM=CWWKF1386E: Nie rozpoznano aktualnego systemu operacyjnego.
+ERROR_UNKNOWN_OPERATING_SYSTEM.explanation=Pomini\u0119to sprawdzanie mo\u017cliwo\u015bci systemu operacyjnego, poniewa\u017c nie rozpoznano systemu operacyjnego.
+ERROR_UNKNOWN_OPERATING_SYSTEM.useraction=U\u017cyj jednego z nast\u0119puj\u0105cych system\u00f3w operacyjnych: AIX, HP-UX, macOS, Linux, OS/400, Solaris, Windows lub z/OS.
+
+ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: Warto\u015b\u0107 {0} nie jest poprawn\u0105 pozycj\u0105 dyrektywy systemu operacyjnego {1}.
+ERROR_UNKNOWN_OSLIST_VALUE.explanation=Ta warto\u015b\u0107 zostanie zignorowana, poniewa\u017c nie jest to rozpoznana nazwa systemu operacyjnego.
+ERROR_UNKNOWN_OSLIST_VALUE.useraction=Zmodyfikuj lub usu\u0144 t\u0119 warto\u015b\u0107 z pliku manifestu sk\u0142adnika.
+
+TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Sk\u0142adnik zosta\u0142 pomy\u015blnie pobrany.
+TOOL_DOWNLOAD_FEATURE_OK.explanation=Sk\u0142adnik zosta\u0142 pobrany.
+TOOL_DOWNLOAD_FEATURE_OK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+TOOL_DOWNLOAD_FEATURES_OK=CWWKF1501I: Sk\u0142adniki zosta\u0142y pomy\u015blnie pobrane.
+TOOL_DOWNLOAD_FEATURES_OK.explanation=Sk\u0142adniki zosta\u0142y pobrane.
+TOOL_DOWNLOAD_FEATURES_OK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: Nie mo\u017cna zainstalowa\u0107 pliku {0}, poniewa\u017c jest to nieobs\u0142ugiwany typ pliku. Obs\u0142ugiwane jest tylko instalowanie z plik\u00f3w ESA.
+MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=Plik nie zosta\u0142 zainstalowany, poniewa\u017c podano nieobs\u0142ugiwany typ pliku.
+MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+MSG_STABILIZING_FEATUREMANAGER=To dzia\u0142anie featureManager jest ustabilizowane. U\u017cyj zamiast niego komendy installUtility {0}. Komenda installUtility jest zalecana w przypadku dzia\u0142a\u0144 instalacji i dzia\u0142a\u0144 dotycz\u0105cych repozytorium.
