@@ -370,7 +370,11 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 		// TODO Auto-generated method stub
 		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
 		if (tokenUtil != null && encodedjwt != null) {
-			return tokenUtil.handleJwtSsoTokenValidationWithSubject(subject, encodedjwt);
+			if (subject != null) {
+				return tokenUtil.handleJwtSsoTokenValidationWithSubject(subject, encodedjwt);
+			} else {
+				return tokenUtil.handleJwtSsoTokenValidation(encodedjwt);
+			}
 		}
 		return null;
 		// authenticateWithJwt(subject);

@@ -118,7 +118,15 @@ public class JwtSSOTokenHelper {
 
     public static Subject handleJwtSSOToken(String jwtssotoken) {
         if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().handleJwtSSOTokenValidation(jwtssotoken);
+            return jwtSSOTokenUtilRef.getService().handleJwtSSOTokenValidation(null, jwtssotoken);
+        }
+        return null;
+
+    }
+
+    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            return jwtSSOTokenUtilRef.getService().handleJwtSSOTokenValidation(subject, jwtssotoken);
         }
         return null;
 
