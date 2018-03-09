@@ -328,6 +328,17 @@ public class SessionCacheTestServlet extends FATServlet {
         String key = request.getParameter("key");
         HttpSession session = request.getSession(false);
         session.removeAttribute(key);
+}
+
+    public void sessionGetTimeout(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String key = request.getParameter("key");
+        String rawExpectedValue = request.getParameter("expectedValue");
+        String type = request.getParameter("type");
+        boolean compareAsString = Boolean.parseBoolean(request.getParameter("compareAsString")); // useful if the class does not implement .equals
+        Object expectedValue = toType(type, rawExpectedValue);
+        HttpSession session = request.getSession(false);
+        Thread.sleep(45 * 1000);
+        Object actualValue = session.getAttribute(key);
     }
 
     /**

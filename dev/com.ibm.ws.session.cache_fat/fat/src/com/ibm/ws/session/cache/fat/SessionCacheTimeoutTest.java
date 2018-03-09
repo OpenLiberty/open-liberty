@@ -3,6 +3,7 @@
  */
 package com.ibm.ws.session.cache.fat;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -19,6 +20,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
@@ -36,11 +38,11 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @Server("sessionCacheTimeoutServer")
     public static LibertyServer server;
 
-    public static SessionCacheApp appOnelistener = null;
+    public static SessionCacheApp appOneListener = null;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        appOnelistener = new SessionCacheApp(server, "session.cache.web", "session.cache.web.listener1");
+        appOneListener = new SessionCacheApp(server, "session.cache.web", "session.cache.web.listener1");
         server.startServer();
     }
 
@@ -56,12 +58,24 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     public void testInvalidationTimeout() throws Exception {
         // Initialize a session with some data
         List<String> session = new ArrayList<>();
-        String sessionID = appOnelistener.sessionPut("testInvalidationTimeout-foo", "bar", session, true);
+        String sessionID = appOneListener.sessionPut("testInvalidationTimeout-foo", "bar", session, true);
         // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
         assertNotNull("Expected to find message from a session listener indicating the session expired",
                       server.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
         // Verify that repeating the same sessionGet() as before does not locate the expired session
-        appOnelistener.sessionGet("testInvalidationTimeout-foo", null, session);
+        appOneListener.sessionGet("testInvalidationTimeout-foo", null, session);
+    }
+
+    /**
+     * Test that a session can still be used if it was valid when a servlet call began, even after timeout.
+     * This mimics SessionDB behavior.
+     */
+    @Test
+    @Mode(FULL)
+    public void testServletTimeout() throws Exception {
+        List<String> session = new ArrayList<>();
+        appOneListener.sessionPut("testInvalidationTimeout-foo2", "bar", session, true);
+        appOneListener.invokeServlet("sessionGetTimeout&key=testInvalidationTimeout-foo2&expectedValue=bar&type=" + String.class.getName(), session);
     }
 
     @Test
@@ -71,7 +85,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         for (int attempt = 0; attempt < 5; attempt++) {
             // Initialize a session attribute
             List<String> session = new ArrayList<>();
-            appOnelistener.sessionPut("testRefreshInvalidation-foo", "bar", session, true);
+            appOneListener.sessionPut("testRefreshInvalidation-foo", "bar", session, true);
 
             // Read the session attribute every 3 seconds, looping several times.  Reading the session attribute will
             // prevent the session from becoming invalid after 5 seconds because it refreshes the timer on each access.
@@ -80,7 +94,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
                 for (int i = 0; i < refreshes; i++) {
                     start = System.nanoTime();
                     TimeUnit.SECONDS.sleep(3);
-                    appOnelistener.sessionGet("testRefreshInvalidation-foo", "bar", session);
+                    appOneListener.sessionGet("testRefreshInvalidation-foo", "bar", session);
                 }
                 return; // test successful
             } catch (AssertionError e) {
