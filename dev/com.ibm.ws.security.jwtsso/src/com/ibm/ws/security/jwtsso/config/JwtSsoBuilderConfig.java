@@ -12,13 +12,13 @@ package com.ibm.ws.security.jwtsso.config;
 
 import java.util.List;
 
-import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
+import com.ibm.ws.security.jwt.config.JwtConfig;
 
 /**
  * see metatype.xml and metatype.properties for documentation
  *
  */
-public interface JwtSsoConfig extends MicroProfileJwtConfig {
+public interface JwtSsoBuilderConfig extends JwtConfig {
 
 	boolean isHttpOnlyCookies();
 

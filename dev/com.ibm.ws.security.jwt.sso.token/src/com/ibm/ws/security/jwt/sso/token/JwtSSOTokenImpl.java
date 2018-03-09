@@ -36,6 +36,7 @@ import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken;
+import com.ibm.ws.security.jwtsso.config.JwtSsoBuilderConfig;
 import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoTokenUtils;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -49,9 +50,12 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	private static final TraceComponent tc = Tr.register(JwtSSOTokenImpl.class);
 
 	public static final String JSON_WEB_TOKEN_SSO_CONFIG = "jwtSsoConfig";
+	public static final String JSON_WEB_TOKEN_SSO_BUILDER_CONFIG = "jwtSsoBuilderConfig";
 	public static final String UNAUTHENTICATED = "UNAUTHENTICATED";
 	protected final static AtomicServiceReference<JwtSsoConfig> jwtSSOConfigRef = new AtomicServiceReference<JwtSsoConfig>(
 			JSON_WEB_TOKEN_SSO_CONFIG);
+	protected final static AtomicServiceReference<JwtSsoBuilderConfig> jwtSSOBuilderConfigRef = new AtomicServiceReference<JwtSsoBuilderConfig>(
+			JSON_WEB_TOKEN_SSO_BUILDER_CONFIG);
 	private final SubjectHelper subjectHelper = new SubjectHelper();
 	private static final String[] hashtableProperties = { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY };
 
@@ -64,11 +68,22 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 		jwtSSOConfigRef.unsetReference(ref);
 	}
 
+	@Reference(service = JwtSsoBuilderConfig.class, name = JSON_WEB_TOKEN_SSO_BUILDER_CONFIG, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setJwtSsoBuilderConfig(ServiceReference<JwtSsoBuilderConfig> ref) {
+		jwtSSOBuilderConfigRef.setReference(ref);
+	}
+
+	protected void unsetJwtSsoBuilderConfig(ServiceReference<JwtSsoBuilderConfig> ref) {
+		jwtSSOBuilderConfigRef.unsetReference(ref);
+	}
+
 	@Activate
 	protected void activate(ComponentContext cc) {
 		jwtSSOConfigRef.activate(cc);
+		jwtSSOBuilderConfigRef.activate(cc);
 		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "Jwt SSO config service is activated");
+			Tr.debug(tc, "Jwt SSO config consumer service is activated");
+			Tr.debug(tc, "Jwt SSO config builder service is activated");
 			Tr.debug(tc, "Jwt SSO token (impl) service is being activated!!");
 		}
 	}
@@ -80,8 +95,10 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	@Deactivate
 	protected void deactivate(ComponentContext cc) {
 		jwtSSOConfigRef.deactivate(cc);
+		jwtSSOBuilderConfigRef.deactivate(cc);
 		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "Jwt SSO config service is deactivated");
+			Tr.debug(tc, "Jwt SSO config consumer service is deactivated");
+			Tr.debug(tc, "Jwt SSO config builder service is deactivated");
 			Tr.debug(tc, "Jwt SSO token (impl) service is being deactivated!!");
 		}
 	}
@@ -100,7 +117,6 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 			if (isSubjectUnauthenticated(subject) || subjectHasJwtPrincipal(subject)) {
 				return;
 			}
-
 			JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
 			if (tokenUtil != null) {
 				JsonWebToken ssotoken = tokenUtil.buildTokenFromSecuritySubject(subject); // TODO
@@ -203,12 +219,15 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	 * @param consumer
 	 */
 	private JwtSsoTokenUtils getJwtSsoTokenUtils() {
-		JwtSsoConfig jwtssoconfig = getJwtSSOConfig();
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
 		String builder = null;
+		if (jwtssobuilderConfig != null) {
+			builder = getJwtBuilder(jwtssobuilderConfig);
+		}
+		JwtSsoConfig jwtssoconsumerConfig = getJwtSSOConsumerConfig();
 		String consumer = null;
-		if (jwtssoconfig != null) {
-			builder = getJwtBuilder(jwtssoconfig);
-			consumer = getJwtConsumer(jwtssoconfig);
+		if (jwtssoconsumerConfig != null) {
+			consumer = getJwtConsumer(jwtssoconsumerConfig);
 		}
 		if (builder != null && consumer != null) {
 			JwtSsoTokenUtils result = new JwtSsoTokenUtils(builder, consumer);
@@ -216,6 +235,22 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 		}
 		return null;
 	}
+
+	/**
+	 * @return
+	 */
+	// protected String getDefaultJwtConsumer() {
+	// // TODO Auto-generated method stub
+	// return DEFAULT_JWT_SSO_TOKEN_CONSUMER;
+	// }
+	//
+	// /**
+	// * @return
+	// */
+	// protected String getDefaultJwtBuilder() {
+	// // TODO Auto-generated method stub
+	// return DEFAULT_JWT_SSO_TOKEN_BUILDER;
+	// }
 
 	/**
 	 * @param jwtssoconfig
@@ -230,17 +265,24 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	 * @param jwtssoconfig
 	 * @return
 	 */
-	private String getJwtBuilder(JwtSsoConfig jwtssoconfig) {
+	private String getJwtBuilder(JwtSsoBuilderConfig jwtssobuilderconfig) {
 		// TODO Auto-generated method stub
-		return jwtssoconfig.getJwtBuilderRef();
+		return jwtssobuilderconfig.getJwtBuilderRef();
 	}
 
 	/**
 	 *
 	 */
-	private JwtSsoConfig getJwtSSOConfig() {
+	private JwtSsoConfig getJwtSSOConsumerConfig() {
 		if (jwtSSOConfigRef.getService() != null) {
 			return jwtSSOConfigRef.getService();
+		}
+		return null;
+	}
+
+	private JwtSsoBuilderConfig getJwtSSOBuilderConfig() {
+		if (jwtSSOBuilderConfigRef.getService() != null) {
+			return jwtSSOBuilderConfigRef.getService();
 		}
 		return null;
 	}

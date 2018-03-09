@@ -108,10 +108,13 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         //String cookieByteString =
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         // TODO - cache
-        //updateCookieCache(cookieBytes, cookieByteString);
-        Cookie ssoCookie = createJwtCookie(req, cookieByteString); //TODO
-        resp.addCookie(ssoCookie);
-        isJwtCookie = true;
+        if (cookieByteString != null) {
+            //updateCookieCache(cookieBytes, cookieByteString);
+            Cookie ssoCookie = createJwtCookie(req, cookieByteString); //TODO
+            resp.addCookie(ssoCookie);
+            isJwtCookie = true;
+        }
+
     }
 
     public Cookie createJwtCookie(HttpServletRequest req, String cookieValue) {

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt;
 
-public interface MicroProfileJwtConfig {
+import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
+
+public interface MicroProfileJwtConfig extends JwtConsumerConfig {
 
     /**
      *

@@ -164,19 +164,21 @@ public class JwtSsoTokenUtils {
 		if (jwttoken != null) {
 			String payload = JsonUtils.getPayload(tokenstr);
 			decodedPayload = JsonUtils.decodeFromBase64String(payload);
+			if (decodedPayload != null) {
+				TAIMappingHelper mappingHelper;
+				try {
+					mappingHelper = new TAIMappingHelper(decodedPayload);
+					mappingHelper.createJwtPrincipalAndPopulateCustomProperties(jwttoken);
+					tempSubject = mappingHelper.createSubjectFromCustomProperties(jwttoken);
+
+				} catch (MpJwtProcessingException e) {
+					// TODO Auto-generated catch block
+					// e.printStackTrace();
+				}
+			}
 		}
 
 		// JsonWebToken principal = buildSecurityPrincipalFromToken(tokenstr);
-		TAIMappingHelper mappingHelper;
-		try {
-			mappingHelper = new TAIMappingHelper(decodedPayload);
-			mappingHelper.createJwtPrincipalAndPopulateCustomProperties(jwttoken);
-			tempSubject = mappingHelper.createSubjectFromCustomProperties(jwttoken);
-
-		} catch (MpJwtProcessingException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-		}
 
 		return tempSubject;
 
