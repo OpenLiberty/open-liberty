@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container;
 
+import java.io.File;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -55,11 +56,18 @@ public interface SpringBootConfigFactory {
     void rootContextClosed();
 
     /**
+     * Returns the root server directory
+     *
+     * @return the root server directory
+     */
+    File getServerDir();
+
+    /**
      * Finds the Spring Boot configuration factory for a Spring Boot application based
      * on the class loader of a given token object.
      *
      * @param token an object with a class that is loaded by the class loader of
-     *                  the Spring Boot application
+     *            the Spring Boot application
      * @return The Spring Boot configuration factory for a Spring Boot application.
      */
     static SpringBootConfigFactory findFactory(Object token) {

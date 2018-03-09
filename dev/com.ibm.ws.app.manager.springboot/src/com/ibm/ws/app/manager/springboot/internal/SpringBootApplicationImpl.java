@@ -62,9 +62,7 @@ import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
-import com.ibm.ws.app.manager.springboot.container.config.HttpEndpoint;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
-import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instance;
 import com.ibm.ws.app.manager.springboot.support.SpringBootApplication;
@@ -94,6 +92,7 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
+import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
 public class SpringBootApplicationImpl extends DeployedAppInfoBase implements SpringBootConfigFactory, SpringBootApplication {
@@ -258,16 +257,6 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (libertyConfig.getVirtualHosts().size() != 1) {
                 throw new IllegalStateException("Only one virtualHost is allowed: " + libertyConfig.getVirtualHosts());
             }
-
-            // fill out the pids to wire the virtualHost to the httpEndpoint
-            HttpEndpoint httpEndpoint = libertyConfig.getHttpEndpoints().iterator().next();
-            VirtualHost virtualHost = libertyConfig.getVirtualHosts().iterator().next();
-
-            httpEndpoint.setId("springHttpEndpoint-" + id);
-            virtualHost.setAllowFromEndpoint(httpEndpoint.getId());
-            virtualHost.setId("springVirtualHost-" + id);
-            libertyConfig.setDescription("springConfig-" + id);
-
             StringWriter result = new StringWriter();
             try {
                 ServerConfigurationWriter.getInstance().write(libertyConfig, result);
@@ -278,6 +267,17 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             }
             return result.toString();
         }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfig#getId()
+         */
+        @Override
+        public String getId() {
+            return this.id;
+        }
+
     }
 
     private final ApplicationInformation<DeployedAppInfo> applicationInformation;
@@ -684,5 +684,15 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     @Override
     public void rootContextClosed() {
         uninstallApp();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory#getServerDir()
+     */
+    @Override
+    public File getServerDir() {
+        return factory.getLocationAdmin().resolveResource(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR).asFile();
     }
 }
