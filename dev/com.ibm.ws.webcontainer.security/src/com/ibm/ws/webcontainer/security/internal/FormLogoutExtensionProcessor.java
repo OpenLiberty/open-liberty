@@ -244,7 +244,7 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
                         Tr.debug(tc, "domain for exitPage url: " + logoutURLHost);
                     if (!logoutURL.isAbsolute()) {
                         /*
-                         * PI90980: If exitPage starts with "//" , it is a NetworkPath. We need to valid its target host.
+                         * If exitPage starts with "//" , it is a NetworkPath. We need to valid its target host.
                          * While the specification for network paths is preceded by exactly 2 slashes("//"), browsers will
                          * generally redirect network paths with 2 or more preceding slashes. Thus, we need to try to obtain the hostname
                          * utilizing only 2 preceding slashes.
