@@ -25,6 +25,8 @@ public class GenericData {
 
     private String loggerName = null;
 
+    private String jsonMessage = null;
+
     public GenericData() {
         pairs = new ArrayList<Pair>();
     }
@@ -108,6 +110,14 @@ public class GenericData {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    public String getJsonMessage() {
+        return jsonMessage;
+    }
+
+    public void setJsonMessage(String jsonMessage) {
+        this.jsonMessage = jsonMessage;
     }
 
 }

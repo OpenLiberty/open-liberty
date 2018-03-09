@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
+import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -55,7 +56,18 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
         String evensourcetType = getSourceTypeFromDataObject(event);
-        String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+        String messageOutput = null;
+        if (event instanceof GenericData) {
+            GenericData genData = (GenericData) event;
+            if (genData.getJsonMessage() == null) {
+                genData.setJsonMessage((String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
+            }
+            messageOutput = genData.getJsonMessage();
+
+        }
+        if (messageOutput == null) {
+            messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+        }
         if (messageOutput != null) {
             traceWriter.writeRecord(messageOutput);
         }
