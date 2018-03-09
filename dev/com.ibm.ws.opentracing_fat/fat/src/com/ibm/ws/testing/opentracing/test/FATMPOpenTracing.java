@@ -29,8 +29,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import junit.framework.Assert;
 
 /**
- * <p>Test that a JAXRS application works even if the opentracing
- * feature is enabled without a Tracer.</p>
+ * <p>Test that a JAXRS application with @Traced(false) works.</p>
  * 
  * <p>The test suite:</p>
  *
@@ -40,11 +39,11 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 1.8)
-public class FATOpentracingHelloWorld {
+public class FATMPOpenTracing {
     /**
      * For tracing.
      */
-    private static final Class<?> CLASS = FATOpentracingHelloWorld.class;
+    private static final Class<?> CLASS = FATMPOpenTracing.class;
 
     /**
      * Set to the generated server before any tests are run.
@@ -58,11 +57,11 @@ public class FATOpentracingHelloWorld {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("opentracingFATServer2");
-        WebArchive serviceWar = ShrinkWrap.create(WebArchive.class, "jaxrsHelloWorld.war");
-        serviceWar.addPackages(true, "com.ibm.ws.testing.opentracing.jaxrsHelloWorld");
+        server = LibertyServerFactory.getLibertyServer("opentracingFATServer3");
+        WebArchive serviceWar = ShrinkWrap.create(WebArchive.class, "mpOpenTracing.war");
+        serviceWar.addPackages(true, "com.ibm.ws.testing.mpOpenTracing");
         serviceWar.addAsWebInfResource(
-                                       new File("test-applications/jaxrsHelloWorld/resources/beans.xml"));
+                                       new File("test-applications/mpOpenTracing/resources/beans.xml"));
         ShrinkHelper.exportAppToServer(server, serviceWar);
         server.startServer();
     }
@@ -74,12 +73,7 @@ public class FATOpentracingHelloWorld {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-
-        // com.ibm.ws.opentracing.OpentracingUserFeatureAccessService   E CWMOT0001E: Invocation of user supplied OpentracingTracerFactory.newInstance(...) method failed with Exception. Message = null
-        // com.ibm.ws.opentracing.OpentracingContainerFilter            E CWMOT0002E: No Tracer is available for an inbound request. The inbound request will not be correlated with the upstream service.
-        // com.ibm.ws.opentracing.OpentracingContainerFilter            E CWMOT0003E: The Span created for an inbound request is not available for the response to the request. The inbound request will not be correlated the upstream service.
-
-        server.stopServer("CWMOT0001E", "CWMOT0002E", "CWMOT0003E");
+        server.stopServer();
     }
 
     /**
@@ -91,16 +85,44 @@ public class FATOpentracingHelloWorld {
     public void testHelloWorld() throws Exception {
         String methodName = "testHelloWorld";
 
-        String requestUrl = "http://" +
-                            server.getHostname() + ":" +
-                            server.getHttpDefaultPort() +
-                            "/jaxrsHelloWorld/rest/ws/helloWorld";
-
-        List<String> actualResponseLines = FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl);
+        List<String> actualResponseLines = executeWebService("helloWorld");
 
         FATLogging.info(CLASS, methodName, "Actual Response", actualResponseLines);
 
         Assert.assertEquals(1, actualResponseLines.size());
         Assert.assertEquals("Hello World", actualResponseLines.get(0));
+
+        actualResponseLines = executeWebService("getTracerState");
+        
+        String tracerState = "";
+        for (String actualResponseLine : actualResponseLines) {
+            tracerState += actualResponseLine;
+        }
+
+        int expectedSpans = 2;
+        int spanCount = getSpanCount(tracerState);
+        if (spanCount != expectedSpans) {
+            Assert.assertEquals("Expected " + expectedSpans + " spans but found " + spanCount + ":", tracerState);
+        }
+    }
+
+    protected List<String> executeWebService(String method) throws Exception {
+        String requestUrl = "http://" +
+                            server.getHostname() + ":" +
+                            server.getHttpDefaultPort() +
+                            "/mpOpenTracing/rest/ws/" + method;
+
+        return FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl);
+    }
+    
+    protected int getSpanCount(String tracerState) {
+        int result = 0;
+        int i = 0;
+        i = tracerState.indexOf("spanId", i);
+        while (i != -1) {
+            result++;
+            i = tracerState.indexOf("spanId", i + 1);
+        }
+        return result;
     }
 }

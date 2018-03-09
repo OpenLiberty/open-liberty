@@ -51,9 +51,13 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
     public static final String EXCEPTION_KEY = OpentracingContainerFilter.class.getName() + ".Exception";
 
-    private final OpentracingFilterHelper helper;
+    private OpentracingFilterHelper helper;
 
     OpentracingContainerFilter(OpentracingFilterHelper helper) {
+        setFilterHelper(helper);
+    }
+
+    void setFilterHelper(OpentracingFilterHelper helper) {
         this.helper = helper;
     }
 

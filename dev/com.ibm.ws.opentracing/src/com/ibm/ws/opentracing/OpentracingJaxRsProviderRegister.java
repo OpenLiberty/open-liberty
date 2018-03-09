@@ -56,10 +56,22 @@ public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister {
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setOpentracingFilterHelper(OpentracingFilterHelper helper) {
         this.helper = helper;
+        if (containerFilter != null) {
+            containerFilter.setFilterHelper(helper);
+        }
+        if (clientFilter != null) {
+            clientFilter.setFilterHelper(helper);
+        }
     }
 
     protected void unsetOpentracingFilterHelper(OpentracingFilterHelper helper) {
         this.helper = null;
+        if (containerFilter != null) {
+            containerFilter.setFilterHelper(null);
+        }
+        if (clientFilter != null) {
+            clientFilter.setFilterHelper(null);
+        }
     }
 
     @Trivial
