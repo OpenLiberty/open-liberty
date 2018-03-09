@@ -13,7 +13,7 @@
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
     
-    <bell libraryRef="HazelcastLib"/>
+    <bell libraryRef="HazelcastLib" service="javax.cache.spi.CachingProvider"/>
 
     <library id="HazelcastLib">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
