@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Assert;
 
+import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
 import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
@@ -148,14 +149,18 @@ public class PushPromiseTests extends H2FATDriverServlet {
         h2Client.addExpectedFrame(frameHeaders);
 
         // Build a reset frame for stream 2 with reason "cancel" to be used later
-        FrameRstStream frameReset = new FrameRstStream(2, 0x08, false);
+        int CANCEL = 0x08;
+        FrameRstStream frameReset = new FrameRstStream(2, CANCEL, false);
 
         h2Client.sendUpgradeHeader(SERVLET40_PUSH_PROMISE);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+        System.out.println("about to start waiting for push promise frame");
 
         // Wait for the push_promise frame, then send reset
         h2Client.waitFor(pushPromise);
-        h2Client.sendFrame(frameReset, true);
+        System.out.println("waiting complete");
+        h2Client.sendFrame(frameReset, false);
+        System.out.println("reset frame sent (probably)");
 
         //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();

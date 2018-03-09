@@ -10,8 +10,6 @@
  *******************************************************************************/
 package test.server.transport.http2;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -100,17 +98,6 @@ public class Http2LiteModeTests extends FATServletClient {
                                  "H2FATDriver/H2FATDriverServlet?hostName=" + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&iterations="
                                                 + Utils.STRESS_ITERATIONS + "&testdir=" + Utils.TEST_DIR,
                                  testName);
-    }
-
-    /**
-     * This test is just to get us started with the
-     * test framework and bucket. Remove it after
-     * development is done... The test is useless
-     * in any other context.
-     */
-    //@Test
-    public void testDummyRemoveLater() throws Exception {
-        assertTrue(true);
     }
 
     @Test

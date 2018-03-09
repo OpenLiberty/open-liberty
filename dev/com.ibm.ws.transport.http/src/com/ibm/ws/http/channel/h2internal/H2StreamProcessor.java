@@ -940,9 +940,6 @@ public class H2StreamProcessor {
             // send out a HEADER frame and update the stream state to OPEN
             if (frameType == FrameTypes.HEADERS) {
                 updateStreamState(StreamState.OPEN);
-                if (!currentFrame.flagEndHeadersSet()) {
-//                    setContinuationFrameExpected(true);
-                }
             }
             writeFrameSync();
         }
@@ -987,13 +984,11 @@ public class H2StreamProcessor {
 
             } else if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
                 if (currentFrame.flagEndHeadersSet()) {
-//                    setContinuationFrameExpected(false);
                     if (currentFrame.flagEndStreamSet()) {
                         endStream = true;
                         updateStreamState(StreamState.HALF_CLOSED_LOCAL);
                     }
                 } else {
-//                    setContinuationFrameExpected(true);
                     if (currentFrame.flagEndStreamSet()) {
                         endStream = true;
                     }
@@ -1842,7 +1837,7 @@ public class H2StreamProcessor {
                 Tr.debug(tc, "waitForConnectionInit: waiting for the H2 connection to complete initialization on " + streamId());
             }
             // the connection isn't initialized yet; wait on the init lock
-            boolean rc = muxLink.initLock.await(10, java.util.concurrent.TimeUnit.SECONDS);
+            boolean rc = muxLink.initLock.await(Constants.H2C_UPGRADE_TIMEOUT, java.util.concurrent.TimeUnit.MILLISECONDS);
             if (rc) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "waitForConnectionInit: stop waiting, H2 connection initialized " + streamId());
