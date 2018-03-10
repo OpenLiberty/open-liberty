@@ -10,21 +10,29 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
+import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
-public class SimpleTest15 extends CommonTests {
-
-    @Server("com.ibm.ws.springboot.support.fat.SimpleTest15")
-    public static LibertyServer server;
+@Mode(FULL)
+public class CommonWebServerTests20Servlet40 extends CommonWebServerTests {
 
     @Override
-    public LibertyServer getServer() {
-        return server;
+    public Set<String> getFeatures() {
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-4.0"));
+    }
+
+    @Override
+    public String getApplication() {
+        return SPRING_BOOT_20_APP_BASE;
     }
 
 }

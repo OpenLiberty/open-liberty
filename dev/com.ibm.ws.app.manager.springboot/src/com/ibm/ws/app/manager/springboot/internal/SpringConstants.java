@@ -34,9 +34,5 @@ public final class SpringConstants {
                                                     "\n" +
                                                     "        <virtual-host name=\"";
     public static final String VIRTUAL_HOST_END = "\" />\n" +
-                                                  "\n" +
-                                                  "        <resource-ref name=\"SAMPLE\" binding-name=\"jdbc/SAMPLE\">\n" +
-                                                  "                <authentication-alias name=\"USER_AUTH\" />\n" +
-                                                  "        </resource-ref>\n" +
                                                   "</web-bnd>";
 }

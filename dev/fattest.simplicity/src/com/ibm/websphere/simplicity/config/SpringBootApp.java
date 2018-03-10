@@ -8,21 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.springboot.support.fat;
+package com.ibm.websphere.simplicity.config;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                CommonWebServerTests15.class,
-                CommonWebServerTests15Servlet40.class,
-                CommonWebServerTests20.class,
-                CommonWebServerTests20Servlet40.class,
-                ConfigDropinRootTests.class,
-                ConfigSpringBootAppTagTests.class
-})
-public class FATSuite {
-
+/**
+ *
+ */
+public class SpringBootApp extends Application {
+    @Override
+    public WebApplication clone() throws CloneNotSupportedException {
+        return (WebApplication) super.clone();
+    }
 }

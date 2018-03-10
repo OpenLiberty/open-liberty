@@ -11,27 +11,36 @@
 package com.ibm.ws.springboot.support.fat;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import componenttest.topology.impl.LibertyServer;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
-/**
- *
- */
-public abstract class CommonTests {
-    public abstract LibertyServer getServer();
+@RunWith(FATRunner.class)
+public class ConfigSpringBootAppTagTests extends AbstractSpringTests {
+    @Override
+    public Set<String> getFeatures() {
+        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
+    }
+
+    @Override
+    public String getApplication() {
+        return SPRING_BOOT_15_APP_BASE;
+    }
+
+    @Override
+    public AppConfigType getApplicationConfigType() {
+        return AppConfigType.SPRING_BOOT_APP_TAG;
+    }
 
     @Test
-    public void testBasicSpringBootApplication() throws Exception {
-        LibertyServer server = getServer();
-        File f = new File(server.getServerRoot() + "/dropins/spr/");
-        assertTrue("file does not exist", f.exists());
-        server.startServer(true, false);
+    public void testSpringBootAppTag() throws Exception {
         assertNotNull("The application was not installed", server
                         .waitForStringInLog("CWWKZ0001I:.*"));
 
@@ -39,5 +48,4 @@ public abstract class CommonTests {
         server.setHttpDefaultPort(8081);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
     }
-
 }

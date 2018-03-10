@@ -65,9 +65,10 @@ public class SpringBootThinUtil {
         try (JarOutputStream thinJar = new JarOutputStream(new FileOutputStream(targetThinJar), sourceFatJar.getManifest());
                         ZipOutputStream libZip = putLibCacheInDirectory ? null : new ZipOutputStream(new FileOutputStream(libIndexCache))) {
 
+            Set<String> entryNames = new HashSet<>();
             for (Enumeration<JarEntry> entries = sourceFatJar.entries(); entries.hasMoreElements();) {
                 JarEntry entry = entries.nextElement();
-                if (!JarFile.MANIFEST_NAME.equals(entry.getName()) && !entry.getName().startsWith("org")) { // hack to omit spring boot loader
+                if (entryNames.add(entry.getName()) && !JarFile.MANIFEST_NAME.equals(entry.getName()) && !entry.getName().startsWith("org")) { // hack to omit spring boot loader
                     storeEntry(thinJar, libZip, entry);
                 }
             }
