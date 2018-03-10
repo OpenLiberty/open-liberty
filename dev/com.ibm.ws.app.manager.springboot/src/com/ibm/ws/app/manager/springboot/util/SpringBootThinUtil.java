@@ -139,17 +139,18 @@ public class SpringBootThinUtil {
         if (!libIndexCache.exists()) {
             libIndexCache.mkdirs();
         }
-        File libDir = new File(libIndexCache, hashPrefix);
-        if (!libDir.exists()) {
-            libDir.mkdirs();
-        }
-        File libFile = new File(libDir, hashSuffix + ".jar");
-        InputStream is = sourceFatJar.getInputStream(entry);
-
-        try (OutputStream libJar = new FileOutputStream(libFile)) {
-            copyStream(is, libJar);
-        } finally {
-            is.close();
+        File libDir = new File(libIndexCache, hashPrefix + '/' + hashSuffix);
+        File libFile = new File(libDir, entry.getName().substring(entry.getName().lastIndexOf('/') + 1));
+        if (!libFile.exists()) {
+            if (!libDir.exists()) {
+                libDir.mkdirs();
+            }
+            InputStream is = sourceFatJar.getInputStream(entry);
+            try (OutputStream libJar = new FileOutputStream(libFile)) {
+                copyStream(is, libJar);
+            } finally {
+                is.close();
+            }
         }
     }
 

@@ -13,6 +13,7 @@ package com.ibm.ws.app.manager.springboot.internal;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_SHARED_LIB_CACHE_DIR;
 
 import java.io.File;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -57,8 +58,8 @@ public final class LibIndexCache {
         this.adaptableFactory = adaptableFactory;
     }
 
-    public File getLibrary(String hash) {
-        WsResource libraryRes = getStoreLocation(hash);
+    public File getLibrary(Map.Entry<String, String> LibIndexEntry) {
+        WsResource libraryRes = getStoreLocation(LibIndexEntry);
         if (libraryRes.exists()) {
             return libraryRes.asFile();
         }
@@ -69,11 +70,15 @@ public final class LibIndexCache {
      * @param hash
      * @return
      */
-    private WsResource getStoreLocation(String hash) {
+    private WsResource getStoreLocation(Map.Entry<String, String> LibIndexEntry) {
+        String hash = LibIndexEntry.getValue();
+        String key = LibIndexEntry.getKey();
+        //strip off /BOOT-INF/lib or /WEB-INF/lib
+        String jarName = key.substring(key.lastIndexOf('/'));
         CharSequence prefix = hash.subSequence(0, 2);
         CharSequence postFix = hash.subSequence(2, hash.length());
         WsResource prefixDir = libraryIndexRoot.resolveRelative(prefix.toString() + '/');
-        return prefixDir.resolveRelative(postFix.toString() + ".jar");
+        return prefixDir.resolveRelative(postFix.toString() + '/' + jarName);
     }
 
     /**
@@ -81,8 +86,8 @@ public final class LibIndexCache {
      * @return
      * @throws UnableToAdaptException
      */
-    public Container getLibraryContainer(String hash) throws UnableToAdaptException {
-        File libFile = getLibrary(hash);
+    public Container getLibraryContainer(Map.Entry<String, String> LibIndexEntry) throws UnableToAdaptException {
+        File libFile = getLibrary(LibIndexEntry);
         if (libFile == null) {
             return null;
         }
