@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  * This class contains methods for getting web app config information
  */
 public class WebConfigUtils {
-    private static ThreadLocal<MetaDataThreadContext> metaDataThredLocal = new MetaDataThreadLocal();
+    private static ThreadLocal<MetaDataThreadContext> metaDataThreadLocal = new MetaDataThreadLocal();
 
 
     public static final String ATTR_WEB_MODULE_METADATA = "com.ibm.ws.webcontainer.security.webmodulemetadata";
@@ -78,16 +78,16 @@ public class WebConfigUtils {
     }
 
     public static void setWebModuleMetaData(Object key, WebModuleMetaData wmmd) {
-        MetaDataThreadContext mdtc = metaDataThredLocal.get();
+        MetaDataThreadContext mdtc = metaDataThreadLocal.get();
         if (mdtc == null) {
             mdtc = new MetaDataThreadContext();
-            metaDataThredLocal.set(mdtc);
+            metaDataThreadLocal.set(mdtc);
         }
         mdtc.setMetaData(key, wmmd);
     }
 
     public static WebModuleMetaData getWebModuleMetaData() {
-        MetaDataThreadContext mdtc = metaDataThredLocal.get();
+        MetaDataThreadContext mdtc = metaDataThreadLocal.get();
         if (mdtc != null) {
             return mdtc.getMetaData();
         }
@@ -95,7 +95,7 @@ public class WebConfigUtils {
     }
 
     public static void removeWebModuleMetaData(Object key) {
-        MetaDataThreadContext mdtc = metaDataThredLocal.get();
+        MetaDataThreadContext mdtc = metaDataThreadLocal.get();
         if (mdtc != null) {
             mdtc.clearMetaData(key);
         }

@@ -63,7 +63,6 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             cred = authParams.getCredential();
         }
         if (cred != null) {
-            // TODO does newAuthenticaiton need to take account?
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Credential is found.");
             }
