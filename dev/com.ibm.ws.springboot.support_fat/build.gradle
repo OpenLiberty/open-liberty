@@ -19,7 +19,7 @@ autoFVT.doLast {
   ]
   servers15.each { server ->
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.app/build/libs/','com.ibm.ws.springboot.support.version15.test.app-0.0.1-SNAPSHOT.jar')
+      from new File('../com.ibm.ws.springboot.support.version15.test.app/build/libs/','com.ibm.ws.springboot.support.version15.test.app.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins/spr')
     }
   }
@@ -29,7 +29,7 @@ autoFVT.doLast {
   ]
   servers20.each { server ->
     copy {
-      from new File('../com.ibm.ws.springboot.support.version20.test.app/build/libs/','com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar')
+      from new File('../com.ibm.ws.springboot.support.version20.test.app/build/libs/','com.ibm.ws.springboot.support.version20.test.app.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins/spr')
     }
   }
