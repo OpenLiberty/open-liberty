@@ -701,7 +701,7 @@ public class LDAPRegistryDynamicUpdateTest {
         errMsgs = server.findStringsInLogsAndTrace(tr);
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());
 
-        tr = "PoolTimeOut: 1700";
+        tr = "PoolTimeOut: 2"; // Rounded from 1700ms to 2s.
         errMsgs = server.findStringsInLogsAndTrace(tr);
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());
 

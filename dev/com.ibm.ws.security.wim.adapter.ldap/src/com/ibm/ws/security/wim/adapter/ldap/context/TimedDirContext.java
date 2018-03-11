@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.wim.adapter.ldap;
+package com.ibm.ws.security.wim.adapter.ldap.context;
 
 import java.util.Hashtable;
 
@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.wim.adapter.ldap.LdapHelper;
 
 /**
  * This is a wrapper class for an {@link InitialLdapContext} that contains the ability to timeout the connection. The timeout
@@ -60,14 +61,9 @@ public class TimedDirContext {
     private long iCreateTimestampSeconds;
 
     /** The context pool time stamp. */
-    private long iPoolTimestamp;
+    private long iPoolTimestampSeconds;
 
-    /**
-     * @throws javax.naming.NamingException
-     */
-    public TimedDirContext() throws NamingException {
-        context = new InitialLdapContext();
-    }
+    private final String iProviderURL;
 
     /**
      * Construct a new {@link TimedDirContext} instance.
@@ -83,7 +79,8 @@ public class TimedDirContext {
     public TimedDirContext(@Sensitive Hashtable<?, ?> environment, Control[] connCtls, long createTimestamp) throws NamingException {
         context = new InitialLdapContext(environment, connCtls);
         iCreateTimestampSeconds = createTimestamp;
-        iPoolTimestamp = createTimestamp;
+        iPoolTimestampSeconds = createTimestamp;
+        iProviderURL = (String) environment.get(DirContext.PROVIDER_URL);
     }
 
     /** @see InitialLdapContext#close() */
@@ -254,7 +251,7 @@ public class TimedDirContext {
      * @return The time stamp in seconds.
      */
     public long getPoolTimestamp() {
-        return iPoolTimestamp;
+        return iPoolTimestampSeconds;
     }
 
     /** @see InitialLdapContext#getResponseControls() */
@@ -474,7 +471,7 @@ public class TimedDirContext {
      * @param poolTimestamp The time stamp in seconds.
      */
     public void setPoolTimeStamp(long poolTimestamp) {
-        iPoolTimestamp = poolTimestamp;
+        iPoolTimestampSeconds = poolTimestamp;
     }
 
     /** @see InitialLdapContext#setRequestControls(Control[]) */
@@ -546,5 +543,11 @@ public class TimedDirContext {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, JNDI_CALL + methodname + " [" + duration + " ms] " + ne.getMessage(), ne);
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "{iProviderURL=" + iProviderURL + ", iCreateTimestampSeconds=" + iCreateTimestampSeconds + ", iPoolTimeStampSeconds=" + iPoolTimestampSeconds
+               + "}";
     }
 }

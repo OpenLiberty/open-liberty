@@ -16,7 +16,8 @@ Bundle-Description: Ldap adapter, version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.wim.adapter.ldap
 
 Export-Package: \
-  com.ibm.ws.security.wim.adapter.ldap;provide:=true
+  com.ibm.ws.security.wim.adapter.ldap;provide:=true, \
+  com.ibm.ws.security.wim.adapter.ldap.context;provide:=true
 
 Private-Package: \
   com.ibm.ws.config.xml.internal.nester, \
@@ -57,4 +58,7 @@ instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.cla
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.security;version=latest
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.org.apache.directory.server;version=latest,\
+	org.apache.directory.server:apacheds-service;version=latest,\
+	com.ibm.ws.crypto.passwordutil;version=latest

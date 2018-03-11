@@ -2327,9 +2327,10 @@ public class LdapConfigManager {
         return iMbrAttrsAllScope;
     }
 
+    @SuppressWarnings("unchecked")
     @Trivial
-    public List getLdapEntities() {
-        return (List) ((ArrayList<LdapEntity>) iLdapEntities).clone();
+    public List<LdapEntity> getLdapEntities() {
+        return (List<LdapEntity>) ((ArrayList<LdapEntity>) iLdapEntities).clone();
     }
 
     /**
@@ -3221,7 +3222,7 @@ public class LdapConfigManager {
         return iLoginProps;
     }
 
-    public Map getAttributes() {
+    public Map<String, LdapAttribute> getAttributes() {
         return iAttrNameToAttrMap;
     }
 }
