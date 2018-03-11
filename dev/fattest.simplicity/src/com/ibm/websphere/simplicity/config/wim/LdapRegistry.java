@@ -62,7 +62,6 @@ public class LdapRegistry extends ConfigElement {
     private Boolean sslEnabled;
     private String sslRef;
     private Integer searchPageSize; // PRIVATE
-    private String certificateMapperId;
 
     /**
      * @return the activedFilters
@@ -111,13 +110,6 @@ public class LdapRegistry extends ConfigElement {
      */
     public String getCertificateMapMode() {
         return certificateMapMode;
-    }
-
-    /**
-     * @return the certificateMapperId
-     */
-    public String getCertificateMapperId() {
-        return certificateMapperId;
     }
 
     /**
@@ -377,14 +369,6 @@ public class LdapRegistry extends ConfigElement {
     @XmlAttribute(name = "certificateMapMode")
     public void setCertificateMapMode(String certificateMapMode) {
         this.certificateMapMode = certificateMapMode;
-    }
-
-    /**
-     * @param certificateMapperId the certificateMapperId to set
-     */
-    @XmlAttribute(name = "certificateMapperId")
-    public void setCertificateMapperId(String certificateMapperId) {
-        this.certificateMapperId = certificateMapperId;
     }
 
     /**
@@ -655,9 +639,6 @@ public class LdapRegistry extends ConfigElement {
         }
         if (certificateMapMode != null) {
             sb.append("certificateMapMode=\"").append(certificateMapMode).append("\" ");;
-        }
-        if (certificateMapperId != null) {
-            sb.append("certificateMapperId=\"").append(certificateMapperId).append("\" ");;
         }
         if (connectTimeout != null) {
             sb.append("connectTimeout=\"").append(connectTimeout).append("\" ");;
