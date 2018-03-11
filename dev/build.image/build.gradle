@@ -29,18 +29,9 @@ task copyReadmeToBuildImage (type:Copy) {
            tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
 }
 
-task copyGeneratedToBuildImageBinTools (type:Copy) {
-    dependsOn ':com.ibm.ws.kernel.instrument.check:publishWLPJars'
-    from project.file('wlp/lib')
-    into project.file('wlp/bin/tools')
-    include 'bootstrap-agent.jar'
-    rename 'bootstrap-agent.jar', 'ws-javaagent.jar'
-}
-
-assemble { 
-	dependsOn copyPropertiesToBuildImage
-	dependsOn copyReadmeToBuildImage
-	dependsOn copyGeneratedToBuildImageBinTools
+assemble {
+    dependsOn copyPropertiesToBuildImage
+    dependsOn copyReadmeToBuildImage
 }
 
 import groovy.json.*
@@ -59,25 +50,8 @@ File packageDir = new File(project.buildDir, 'openliberty')
 def props = new Properties()
 rootProject.file('generated.properties').withInputStream { props.load(it) }
 
-String getGaFeatures() {
-    String features = ""
-    rootProject.fileTree(dir: '.', include: '*/*.feature').visit { element ->
-        if (element.isDirectory()) {
-            return
-        }
-        Properties featureProps = new Properties()
-        element.getFile().withInputStream { featureProps.load(it) }
-        if (featureProps['kind'] == 'ga' && featureProps['IBM-ShortName'] != null) {
-            String shortname = featureProps['IBM-ShortName']
-            features += "\n<feature>" + shortname + "</feature>"
-        }
-    }
-
-    features
-}
-
 class PackageLibertyWithFeatures extends DefaultTask {
-    String withFeatures
+    Closure withFeatures
     File outputTo
 
     @TaskAction
@@ -98,7 +72,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
             def serverXml = project.file("wlp/usr/servers/packageOpenLiberty/server.xml")
             serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
         <server description="new server">
-        <featureManager>${withFeatures}
+        <featureManager>${withFeatures()}
         </featureManager>
         </server>
         """
@@ -136,25 +110,28 @@ class PackageLibertyWithFeatures extends DefaultTask {
     }
 }
 
+def gaPublicFeatures() {
+    String features = ""
+    gaFeatures(true).each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    features
+}
+
 task packageOpenLiberty(type: PackageLibertyWithFeatures) {
     enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
-    dependsOn parent.subprojects.publishFeatureResources
-    
-    withFeatures getGaFeatures()
+    dependsOn ':com.ibm.websphere.features:publishFeatureResources'
+    withFeatures this.&gaPublicFeatures
     outputTo packageDir
-
 }
 
 task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
     enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
-
     dependsOn parent.subprojects.assemble
-    dependsOn parent.subprojects.publishFeatureResources
-
-    withFeatures ''
+    dependsOn ':com.ibm.websphere.features:publishFeatureResources'
+    withFeatures { '' }
     outputTo packageDir
-    
 }
 
 // Includes only kind=ga features.
@@ -180,7 +157,7 @@ publish.dependsOn zipOpenLibertyKernel
 // Includes all features.
 task zipOpenLibertyAll(type: Zip) {
     dependsOn parent.subprojects.assemble
-    dependsOn parent.subprojects.publishFeatureResources
+    dependsOn ':com.ibm.websphere.features:publishFeatureResources'
     baseName 'openliberty-all'
     from projectDir
     include 'wlp/**'

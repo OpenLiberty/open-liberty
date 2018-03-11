@@ -128,4 +128,8 @@ public class JavaInfo {
     public static int fixPack() {
         return instance().FIXPACK;
     }
+
+    public static boolean vendorIsIBM() {
+        return instance().VENDOR == Vendor.IBM;
+    }
 }
