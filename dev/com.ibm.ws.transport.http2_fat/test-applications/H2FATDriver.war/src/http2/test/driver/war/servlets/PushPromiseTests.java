@@ -23,9 +23,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Assert;
-
-import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
 import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
@@ -84,23 +81,8 @@ public class PushPromiseTests extends H2FATDriverServlet {
         // should be sent with something about push_promise in it.
         h2Client.sendFrame(pushPromise);
 
-        //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();
-
-        //TODO If this has something, make the test fail and make sure the failure cause(s) is human-readable
-        List<Exception> errors = h2Client.getReportedExceptions();
-
-        //temporary just to see the errors, delete after we have a better reporting system in place
-        if (errors != null && !errors.isEmpty()) {
-            testFailed = true;
-            for (Exception e : errors) {
-                message.append(e.getClass() + ": " + e.getMessage());
-            }
-        }
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "testFailed value: " + testFailed);
-        }
-        Assert.assertFalse(message.toString(), testFailed);
+        handleErrors(h2Client, testName);
     }
 
     public void testPushPromiseClientReset(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
@@ -149,36 +131,15 @@ public class PushPromiseTests extends H2FATDriverServlet {
         h2Client.addExpectedFrame(frameHeaders);
 
         // Build a reset frame for stream 2 with reason "cancel" to be used later
-        int CANCEL = 0x08;
-        FrameRstStream frameReset = new FrameRstStream(2, CANCEL, false);
+        FrameRstStream frameReset = new FrameRstStream(2, CANCEL_ERROR, false);
 
         h2Client.sendUpgradeHeader(SERVLET40_PUSH_PROMISE);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
-        System.out.println("about to start waiting for push promise frame");
-
-        // Wait for the push_promise frame, then send reset
         h2Client.waitFor(pushPromise);
-        System.out.println("waiting complete");
         h2Client.sendFrame(frameReset, false);
-        System.out.println("reset frame sent (probably)");
 
-        //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();
-
-        //TODO If this has something, make the test fail and make sure the failure cause(s) is human-readable
-        List<Exception> errors = h2Client.getReportedExceptions();
-
-        //temporary just to see the errors, delete after we have a better reporting system in place
-        if (errors != null && !errors.isEmpty()) {
-            testFailed = true;
-            for (Exception e : errors) {
-                message.append(e.getClass() + ": " + e.getMessage());
-            }
-        }
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "testFailed value: " + testFailed);
-        }
-        Assert.assertFalse(message.toString(), testFailed);
+        handleErrors(h2Client, testName);
     }
 
     public void testPushPromiseWc(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
@@ -242,23 +203,8 @@ public class PushPromiseTests extends H2FATDriverServlet {
         //If the this fails, the test needs to fail as well because the H2 protocol was not established successfully.
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();
-
-        //TODO If this has something, make the test fail and make sure the failure cause(s) is human-readable
-        List<Exception> errors = h2Client.getReportedExceptions();
-
-        //temporary just to see the errors, delete after we have a better reporting system in place
-        if (errors != null && !errors.isEmpty()) {
-            testFailed = true;
-            for (Exception e : errors) {
-                message.append(e.getClass() + ": " + e.getMessage());
-            }
-        }
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "testFailed value: " + testFailed);
-        }
-        Assert.assertFalse(message.toString(), testFailed);
+        handleErrors(h2Client, testName);
     }
 
     public void testPushPromiseClientNotEnabledPreload(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
@@ -302,21 +248,7 @@ public class PushPromiseTests extends H2FATDriverServlet {
 
         //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();
-
-        //TODO If this has something, make the test fail and make sure the failure cause(s) is human-readable
-        List<Exception> errors = h2Client.getReportedExceptions();
-
-        // List any errors
-        if (errors != null && !errors.isEmpty()) {
-            testFailed = true;
-            for (Exception e : errors) {
-                message.append(e.getClass() + ": " + e.getMessage());
-            }
-        }
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "testFailed value: " + testFailed);
-        }
-        Assert.assertFalse(message.toString(), testFailed);
+        handleErrors(h2Client, testName);
     }
 
     public void testPushPromiseClientNotEnabledWc(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -358,23 +290,8 @@ public class PushPromiseTests extends H2FATDriverServlet {
         FrameSettings PUSH_DISABLED_SETTINGS_FRAME = new FrameSettings(0, -1, 0, -1, -1, -1, -1, false);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(PUSH_DISABLED_SETTINGS_FRAME);
 
-        //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();
-
-        //TODO If this has something, make the test fail and make sure the failure cause(s) is human-readable
-        List<Exception> errors = h2Client.getReportedExceptions();
-
-        //temporary just to see the errors, delete after we have a better reporting system in place
-        if (errors != null && !errors.isEmpty()) {
-            testFailed = true;
-            for (Exception e : errors) {
-                message.append(e.getClass() + ": " + e.getMessage());
-            }
-        }
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "testFailed value: " + testFailed);
-        }
-        Assert.assertFalse(message.toString(), testFailed);
+        handleErrors(h2Client, testName);
     }
 
     public void testPushPromisePreload(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -437,22 +354,7 @@ public class PushPromiseTests extends H2FATDriverServlet {
         //If the this fails, the test needs to fail as well because the H2 protocol was not established successfully.
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();
-
-        //TODO If this has something, make the test fail and make sure the failure cause(s) is human-readable
-        List<Exception> errors = h2Client.getReportedExceptions();
-
-        //temporary just to see the errors, delete after we have a better reporting system in place
-        if (errors != null && !errors.isEmpty()) {
-            testFailed = true;
-            for (Exception e : errors) {
-                message.append(e.getClass() + ": " + e.getMessage());
-            }
-        }
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "testFailed value: " + testFailed);
-        }
-        Assert.assertFalse(message.toString(), testFailed);
+        handleErrors(h2Client, testName);
     }
 }

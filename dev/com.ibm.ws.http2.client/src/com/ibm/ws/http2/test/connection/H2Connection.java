@@ -27,6 +27,7 @@ import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameContinuation;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
+import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
 import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePing;
 import com.ibm.ws.http.channel.h2internal.frames.FramePriority;
@@ -46,6 +47,7 @@ import com.ibm.ws.http2.test.exceptions.ReceivedUnexpectedGoAwayExcetion;
 import com.ibm.ws.http2.test.exceptions.UnexpectedUpgradeHeader;
 import com.ibm.ws.http2.test.frames.FrameContinuationClient;
 import com.ibm.ws.http2.test.frames.FrameDataClient;
+import com.ibm.ws.http2.test.frames.FrameGoAwayClient;
 import com.ibm.ws.http2.test.frames.FrameHeadersClient;
 import com.ibm.ws.http2.test.frames.FramePushPromiseClient;
 import com.ibm.ws.http2.test.helpers.H2HeadersUtils;
@@ -253,7 +255,7 @@ public class H2Connection {
             while ((!getPrefaceSent() && count < 50)) {
                 count++;
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (Exception x) {
                 }
             }
@@ -575,7 +577,11 @@ public class H2Connection {
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "framerToConvert.getClass(): " + frameToConvert.getClass());
         if (!isExpectedFrame) {
-            if (frameToConvert.getClass().isAssignableFrom(FrameHeaders.class)) {
+            if (frameToConvert.getClass().isAssignableFrom(FrameGoAway.class)) {
+                FrameGoAway frameGoawayToConvert = ((FrameGoAway) frameToConvert);
+                FrameGoAwayClient goAway = new FrameGoAwayClient(frameGoawayToConvert.getStreamId(), frameGoawayToConvert.getDebugData(), new int[] { frameGoawayToConvert.getErrorCode() }, new int[] { frameGoawayToConvert.getLastStreamId() });
+                return goAway;
+            } else if (frameToConvert.getClass().isAssignableFrom(FrameHeaders.class)) {
                 FrameHeaders frameHeadersToConvert = ((FrameHeaders) frameToConvert);
                 byte[] headerBlockFragment = frameHeadersToConvert.getHeaderBlockFragment();
                 FrameHeadersClient testFrameHeaders = new FrameHeadersClient(frameHeadersToConvert.getStreamId(), headerBlockFragment, frameHeadersToConvert.getStreamDependency(), frameHeadersToConvert.getPaddingLength(), frameHeadersToConvert.getWeight(), frameHeadersToConvert.flagEndStreamSet(), frameHeadersToConvert.flagEndHeadersSet(), frameHeadersToConvert.flagPaddingSet(), frameHeadersToConvert.flagPrioritySet(), frameHeadersToConvert.isExclusive(), frameHeadersToConvert.getFrameReserveBit());
@@ -655,6 +661,7 @@ public class H2Connection {
             LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "Connection close() called in connection " + this + ".");
         //Channel wants to be one to close the connection.
         reportedExceptions.addAll(streamResultManager.compareAllStreamResults());
+
         if (processRead() >= 0) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.logp(Level.INFO, CLASS_NAME, "processFrame", "Server has not closed the connection yet. Checking again in 2 seconds.");

@@ -33,6 +33,7 @@ import com.ibm.ws.http2.test.connection.H2Connection;
 import com.ibm.ws.http2.test.exceptions.ClientPrefaceTimeoutException;
 import com.ibm.ws.http2.test.exceptions.ExpectedPushPromiseDoesNotIncludeLinkHeaderException;
 import com.ibm.ws.http2.test.exceptions.FATTimeoutException;
+import com.ibm.ws.http2.test.exceptions.StreamDidNotReceivedEndOfStreamException;
 import com.ibm.ws.http2.test.exceptions.UnableToSendFrameException;
 import com.ibm.ws.http2.test.frames.FrameSettingsClient;
 import com.ibm.ws.http2.test.helpers.HTTPUtils;
@@ -445,10 +446,13 @@ public class Http2Client {
                 LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedFrameGoAway",
                             "Received FrameGoAway from server. Calling blockUntilConnectionIsDone.countDown() and 'closing' connection.");
             }
-            //This is our best way to predict the test finished
+            // this is our best way to predict the test finished
             isTestDone.set(true);
             h2Connection.close();
+            // if we've received a GOAWAY from the server, we shouldn't care about incomplete streams
+            h2Connection.getReportedExceptions().removeIf(e -> e instanceof StreamDidNotReceivedEndOfStreamException);
             blockUntilConnectionIsDone.countDown();
+
         }
 
         /*

@@ -42,6 +42,7 @@ import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http2.test.Http2Client;
 import com.ibm.ws.http2.test.frames.FrameContinuationClient;
 import com.ibm.ws.http2.test.frames.FrameDataClient;
+import com.ibm.ws.http2.test.frames.FrameGoAwayClient;
 import com.ibm.ws.http2.test.frames.FrameHeadersClient;
 import com.ibm.ws.http2.test.frames.FramePushPromiseClient;
 import com.ibm.ws.http2.test.helpers.HTTPUtils;
@@ -2365,7 +2366,7 @@ public class H2FATDriverServlet extends FATServlet {
         addFirstExpectedHeaders(h2Client);
 
         byte[] debugData = "DATA Frame Received in the wrong state of: HALF_CLOSED_REMOTE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, STREAM_CLOSED, 3, false);
+        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
         h2Client.addExpectedFrame(errorFrame);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -2401,7 +2402,7 @@ public class H2FATDriverServlet extends FATServlet {
         addFirstExpectedHeaders(h2Client);
 
         byte[] debugData = "HEADERS Frame Received in the wrong state of: HALF_CLOSED_REMOTE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, STREAM_CLOSED, 3, false);
+        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
         h2Client.addExpectedFrame(errorFrame);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -2436,7 +2437,7 @@ public class H2FATDriverServlet extends FATServlet {
         addFirstExpectedHeaders(h2Client);
 
         byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 3, false);
+        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
         h2Client.addExpectedFrame(errorFrame);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -2446,7 +2447,7 @@ public class H2FATDriverServlet extends FATServlet {
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_ONLY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
@@ -2650,7 +2651,7 @@ public class H2FATDriverServlet extends FATServlet {
         addFirstExpectedHeaders(h2Client);
 
         byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 3, false);
+        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
         h2Client.addExpectedFrame(errorFrame);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -4259,8 +4260,8 @@ public class H2FATDriverServlet extends FATServlet {
 
         h2Client.addExpectedFrame(EMPTY_SETTINGS_FRAME);
 
-        byte[] debugData = "HEADERS Frame Received in the wrong state of: HALF_CLOSED_REMOTE".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, STREAM_CLOSED, 3, false);
+        byte[] debugData = "HEADERS frame received on a closed stream".getBytes();
+        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
         h2Client.addExpectedFrame(errorFrame);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);

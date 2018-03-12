@@ -56,7 +56,6 @@ public class DataFrameTests extends H2FATDriverServlet {
         byte[] debugData = "DATA Frame Received in the wrong state of: IDLE".getBytes();
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
-        h2Client.waitFor(headers);
         h2Client.sendFrame(data);
 
         blockUntilConnectionIsDone.await();
