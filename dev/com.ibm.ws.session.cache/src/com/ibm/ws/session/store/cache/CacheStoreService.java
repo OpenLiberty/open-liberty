@@ -12,6 +12,7 @@ package com.ibm.ws.session.store.cache;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -77,7 +78,25 @@ public class CacheStoreService implements SessionStoreService {
      */
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        configurationProperties = props;
+        configurationProperties = new HashMap<String, Object>(props);
+
+        Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
+        Object scheduleInvalidationSecondHour = configurationProperties.get("scheduleInvalidationSecondHour");
+        Object writeContents = configurationProperties.get("writeContents");
+        Object writeFrequency = configurationProperties.get("writeFrequency");
+
+        // httpSessionCache writeContents accepts ONLY_SET_ATTRIBUTES in place of ONLY_UPDATED_ATTRIBUTES to better reflect the behavior provided
+        if (writeContents == null || "ONLY_SET_ATTRIBUTES".equals(writeContents))
+            configurationProperties.put("writeContents", "ONLY_UPDATED_ATTRIBUTES");
+        else if (!"ALL_SESSION_ATTRIBUTES".equals(writeContents))
+            throw new IllegalArgumentException("writeContents: " + writeContents);
+
+        // default/disallow advanced properties from httpSessionDatabase
+        configurationProperties.put("noAffinitySwitchBack", "TIME_BASED_WRITE".equals(writeFrequency));
+        configurationProperties.put("onlyCheckInCacheDuringPreInvoke", false);
+        configurationProperties.put("optimizeCacheIdIncrements", true);
+        configurationProperties.put("scheduleInvalidation", scheduleInvalidationFirstHour != null || scheduleInvalidationSecondHour != null);
+        // TODO decide whether or not to externalize useInvalidatedId
         
         Properties vendorProperties = new Properties();
         
