@@ -518,7 +518,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         List<ContainerInfo> result = new ArrayList<>();
         Map<String, String> indexMap = readIndex(indexFile);
         for (Map.Entry<String, String> entry : indexMap.entrySet()) {
-            Container libContainer = libIndexCache.getLibraryContainer(entry.getValue());
+            Container libContainer = libIndexCache.getLibraryContainer(entry);
             if (libContainer == null) {
                 throw new UnableToAdaptException("No library found for:" + entry.getKey() + "=" + entry.getValue());
             }
