@@ -23,15 +23,15 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @Mode(TestMode.LITE)
-public class TxRetryTest extends LoggingTest {
+public class TxRetryReorderedTest extends LoggingTest {
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("TxFaultTolerance");
+    public static SharedServer SHARED_SERVER = new SharedServer("TxFaultToleranceReordered");
 
     @Test
-    public void testRetrySingleTran() throws Exception {
+    public void testRetryMultiTran() throws Exception {
         WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/TxFaultTolerance/retry?testMethod=testRetrySingleTran",
+        getSharedServer().verifyResponse(browser, "/TxFaultTolerance/retry?testMethod=testRetryMultiTran",
                                          "SUCCESS");
     }
 
