@@ -73,14 +73,14 @@ public class SessionCacheOneServerTest extends FATServletClient {
             puts.add(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    app.sessionPut("testConcurrentPutNewAttributesAndRemove-key" + offset, 'A' + offset, session, true);
+                    app.sessionPut("testConcurrentPutNewAttributesAndRemove-key" + offset, (char) ('A' + offset), session, true);
                     return null;
                 }
             });
             gets.add(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    app.sessionGet("testConcurrentPutNewAttributesAndRemove-key" + offset, 'A' + offset, session);
+                    app.sessionGet("testConcurrentPutNewAttributesAndRemove-key" + offset, (char) ('A' + offset), session);
                     return null;
                 }
             });
@@ -94,7 +94,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
                 });
         }
 
-        app.sessionPut("testConcurrentPutNewAttributesAndRemove-key0", 'A', session, true);
+        String sessionId = app.sessionPut("testConcurrentPutNewAttributesAndRemove-key0", 'A', session, true);
         try {
             List<Future<Void>> futures = executor.invokeAll(puts);
             for (Future<Void> future : futures)
@@ -106,6 +106,14 @@ public class SessionCacheOneServerTest extends FATServletClient {
             for (Future<Void> future : futures)
                 future.get(); // report any exceptions that might have occurred
 
+            // check exact values in cache
+            app.invokeServlet("testSessionInfoCache&sessionId=" + sessionId + "&attributes=" + attributeNames, session);
+            for (int i = 1; i <= NUM_THREADS; i++)
+                app.invokeServlet("testSessionPropertyCache&sessionId=" + sessionId
+                                  + "&type=java.lang.Character&key=testConcurrentPutNewAttributesAndRemove-key" + i
+                                  + "&values=" + (char) ('A' + i),
+                                  session);
+
             futures = executor.invokeAll(removes);
             for (Future<Void> future : futures)
                 future.get(); // report any exceptions that might have occurred
@@ -113,6 +121,13 @@ public class SessionCacheOneServerTest extends FATServletClient {
             // first and last attribute must remain, others must be removed
             app.invokeServlet("testAttributeNames&allowOtherAttributes=false&sessionAttributes=" +
                               "testConcurrentPutNewAttributesAndRemove-key0,testConcurrentPutNewAttributesAndRemove-key" + NUM_THREADS, session);
+
+            // check exact values in cache
+            app.invokeServlet("testSessionInfoCache&sessionId=" + sessionId + "&attributes=testConcurrentPutNewAttributesAndRemove-key0,testConcurrentPutNewAttributesAndRemove-key"
+                              + NUM_THREADS, session);
+            app.invokeServlet("testSessionPropertyCache&sessionId=" + sessionId + "&type=java.lang.Character&key=testConcurrentPutNewAttributesAndRemove-key0&values=A", session);
+            app.invokeServlet("testSessionPropertyCache&sessionId=" + sessionId + "&type=java.lang.Character&key=testConcurrentPutNewAttributesAndRemove-key" + NUM_THREADS
+                              + "&values=" + (char) ('A' + NUM_THREADS), session);
         } finally {
             app.invalidateSession(session);
         }
