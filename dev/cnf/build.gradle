@@ -158,22 +158,30 @@ $depsList}
     }
 }
 
-task createGaESAList {
+task createESALists {
     dependsOn everythingElseHasBeenReleased
     doLast {
-        String features = ""
+        String gaFeatures = ""
+        String betaFeatures = ""
         rootProject.fileTree(dir: '.', include: '*/*.feature').visit { feature ->
-            if (feature.isDirectory() || !feature.getFile().getText().contains("kind=ga")) {
+            if (feature.isDirectory()) {
                 return
             }
 
-            String name = feature.name.substring(0, feature.name.size()-8)
-            features += name + "\n"
+            if (feature.getFile().getText().contains("kind=ga")) {
+                gaFeatures += feature.name.substring(0, feature.name.size()-8) + "\n"
+            } else if (feature.getFile().getText().contains("kind=beta")) {
+                betaFeatures += feature.name.substring(0, feature.name.size()-8) + "\n"
+            }
         }
 
         File gaEsa = new File(project.buildDir, 'gaFeatures.txt')
         gaEsa.createNewFile()
-        gaEsa.text = features
+        gaEsa.text = gaFeatures
+
+        File betaEsa = new File(project.buildDir, 'betaFeatures.txt')
+        betaEsa.createNewFile()
+        betaEsa.text = betaFeatures
     }
 }
 
@@ -311,12 +319,13 @@ task ('createIndex') {
 task zipGradleBootstrap(type: Zip) {
     dependsOn createGradleBootstrap
     dependsOn createGeneratedReplacementProjects
-    dependsOn createGaESAList
+    dependsOn createESALists
     dependsOn createIndex
     baseName 'gradle-bootstrap'
     into 'prereq.published', {
         from new File(project.buildDir, 'dependencies.gradle'),
              new File(project.buildDir, 'gaFeatures.txt'),
+             new File(project.buildDir, 'betaFeatures.txt'),
              new File(project.buildDir, 'excludeList.txt')
     }
     from new File(project.buildDir, 'replacements')
