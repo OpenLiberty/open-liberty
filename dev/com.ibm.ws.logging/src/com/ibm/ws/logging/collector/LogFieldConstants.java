@@ -39,4 +39,19 @@ public class LogFieldConstants {
     public static final String DATEOFFIRSTOCCURENCE = "dateOfFirstOccurence";
     public static final String COUNT = "count";
     public static final String IBM_REQUESTSTARTTIME = "ibm_requestStartTime";
+    public static final String IBM_CLASSNAME = "ibm_className";
+    public static final String IBM_EXCEPTIONNAME = "ibm_exceptionName";
+    public static final String IBM_PROBEID = "ibm_probeID";
+    public static final String IBM_OBJECTDETAILS = "ibm_objectDetails";
+    public static final String IBM_METHODNAME = "ibm_methodName";
+    public static final String IBM_MESSAGEID = "ibm_messageId";
+    public static final String IBM_URIPATH = "ibm_uriPath";
+    public static final String IBM_REQUESTMETHOD = "ibm_requestMethod";
+    public static final String IBM_REQUESTHOST = "ibm_requestHost";
+    public static final String IBM_REQUESTPORT = "ibm_requestPort";
+    public static final String IBM_REMOTEHOST = "ibm_remoteHost";
+    public static final String IBM_REQUESTPROTOCOL = "ibm_requestProtocol";
+    public static final String IBM_BYTESRECEIVED = "ibm_bytesReceived";
+    public static final String IBM_RESPONSECODE = "ibm_responseCode";
+    public static final String IBM_ELAPSEDTIME = "ibm_elapsedTime";
 }
