@@ -984,7 +984,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             jaspiService = (JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
             isNewAuthenticate = jaspiService.isProcessingNewAuthentication(req);
         }
-        if (!isJaspiEnabled || !isNewAuthenticate) {
+        if (!isNewAuthenticate) {
             // if JSR-375 HttpAuthenticationMechanism is not enabled, and if there is a valid subject in the context, return it.
             Subject callerSubject = subjectManager.getCallerSubject();
             if (!subjectHelper.isUnauthenticated(callerSubject)) {
