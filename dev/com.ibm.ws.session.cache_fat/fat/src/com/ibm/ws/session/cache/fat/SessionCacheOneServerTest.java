@@ -245,7 +245,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
             String value = response2.substring(start, response2.indexOf("]", start));
 
             // verify the property value is present in the session properties cache
-            app.invokeServlet("testSessionPropertyCache&sessionId=" + sessionId + "&type=java.lang.Integer&key=testConcurrentSetGetAndRemove-key&values=" + value, session);
+            app.invokeServlet("testSessionPropertyCache&sessionId=" + sessionId + "&type=java.lang.Integer&key=testConcurrentSetGetAndRemove-key&values=" + expectedValues, session);
 
             // verify the property name is present in the session info cache
             if (!"null".equals(value))
