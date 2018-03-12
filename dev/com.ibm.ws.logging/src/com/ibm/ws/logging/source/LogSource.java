@@ -155,11 +155,10 @@ public class LogSource implements Source, WsLogHandler {
         genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
         genData.addPair("ibm_className", logRecord.getSourceClassName());
 
-        Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
                 KeyValuePairList extensions = new KeyValuePairList();
-                extMap = ((WsLogRecord) logRecord).getExtensions();
+                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     extensions.addPair(entry.getKey(), entry.getValue());
                 }
