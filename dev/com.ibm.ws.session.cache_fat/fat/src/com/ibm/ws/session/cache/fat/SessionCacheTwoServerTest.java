@@ -14,13 +14,17 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -44,6 +48,11 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appA = new SessionCacheApp(serverA, "session.cache.web"); // no HttpSessionListeners are registered by this app
         appB = new SessionCacheApp(serverB, "session.cache.web", "session.cache.web.cdi", "session.cache.web.listener1");
         serverB.useSecondaryHTTPPort();
+
+        String hazelcastConfig = serverB.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml";
+        String configURL = new File(hazelcastConfig).toURI().toURL().toString();
+        Log.info(SessionCacheTwoServerTest.class, "@AGG", "URL is: " + configURL);
+        serverB.setJvmOptions(Collections.singletonList("-Dhazelcast.config.location=" + configURL));
 
         serverA.startServer();
         serverB.startServer();

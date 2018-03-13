@@ -11,14 +11,34 @@
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="10m"/>
 
-    <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES"/>
+    <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES">
+      <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+    </httpSessionCache>
 
     <library id="HazelcastLib">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
     </library>
-
+    
+    <!-- Permissions for application usage of hazelcast/jcache -->
+    <javaPermission className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.RuntimePermission" name="enableContextClassLoaderOverride"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getenv.HZ_PHONE_HOME_ENABLED"/>
+    <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission className="java.lang.RuntimePermission" name="shutdownHooks"/>
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission className="java.net.NetPermission" name="getNetworkInformation"/>
+    <javaPermission className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
+    <javaPermission className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
+    <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
+    
     <variable name="hazelcast" value="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
-    <javaPermission codebase="${hazelcast}" className="java.io.FilePermission" actions="read" name="hazelcast.xml"/>
+    <javaPermission codebase="${hazelcast}" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
     <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
     <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
     <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
