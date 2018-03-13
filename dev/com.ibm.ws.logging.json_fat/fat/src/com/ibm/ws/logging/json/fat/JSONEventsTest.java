@@ -48,7 +48,7 @@ public abstract class JSONEventsTest {
 
     public abstract RemoteFile getLogFile() throws Exception;
 
-    @Test
+//    @Test
     public void checkMessage() throws Exception {
         final String method = "checkMessage";
         ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
@@ -67,14 +67,9 @@ public abstract class JSONEventsTest {
             Log.info(c, method, "Message line:" + line);
             Assert.fail("Test failed with one or more errors");
         }
-
-        if (!checkExtensions(jsonObj)) {
-            Log.info(c, method, "Message line:" + line);
-            Assert.fail("Test failed with one or more extension related errors");
-        }
     }
 
-    @Test
+    //@Test
     public void checkAccessLog() throws Exception {
         final String method = "checkAccessLog";
 
@@ -102,7 +97,7 @@ public abstract class JSONEventsTest {
 
     }
 
-    @Test
+    //@Test
     @ExpectedFFDC({ "java.lang.NullPointerException" })
     public void checkFfdc() throws Exception {
         final String method = "checkFfdc";
@@ -125,12 +120,12 @@ public abstract class JSONEventsTest {
 
         if (!checkJsonMessage(jsonObj, ffdcKeysMandatoryList, ffdcKeysOptionalList)) {
             Log.info(c, method, "Message line:" + line);
-            Assert.fail("Test failed with one or more extension related errors");
+            Assert.fail("Test failed with one or more errors");
         }
 
     }
 
-    @Test
+    //@Test
     public void checkTrace() throws Exception {
         final String method = "checkTrace";
 
@@ -154,6 +149,22 @@ public abstract class JSONEventsTest {
             Log.info(c, method, "Message line:" + line);
             Assert.fail("Test failed with one or more errors");
         }
+    }
+
+    @Test
+    public void checkExtensions() throws Exception {
+        final String method = "checkExt";
+
+        getServer().addInstalledAppForValidation(APP_NAME);
+        TestUtils.runApp(getServer(), "extension");
+
+        String line = getServer().waitForStringInLog("\\{.*\"module\":\"com.ibm.logs.ExtensionServlet\".*\\}", getLogFile());
+
+        assertNotNull("Cannot find \"module\":\"com.ibm.logs.ExtensionServlet\" from messages.log" + line, line);
+
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
 
         if (!checkExtensions(jsonObj)) {
             Log.info(c, method, "Message line:" + line);
@@ -162,6 +173,8 @@ public abstract class JSONEventsTest {
     }
 
     public boolean checkExtensions(JsonObject jsonObj) throws Exception {
+        final String method = "checkExtensions";
+
         boolean isValid = true;
         for (String key : jsonObj.keySet()) {
             if (key.startsWith(EXT_PREFIX)) {
@@ -169,14 +182,22 @@ public abstract class JSONEventsTest {
 
                 if (key.endsWith(INT_SUFFIX)) {
                     isValid = verifyIntValue(value);
+                    Log.finer(c, method, "key=" + key + ", value=" + value);
                 } else if (key.endsWith(FLOAT_SUFFIX)) {
                     isValid = verifyFloatValue(value);
+                    Log.finer(c, method, "key=" + key + ", value=" + value);
                 } else if (key.endsWith(BOOL_SUFFIX)) {
                     if (value.equals(TRUE_BOOL) || value.equals(FALSE_BOOL)) {
                         isValid = true;
                     }
+                    Log.finer(c, method, "key=" + key + ", value=" + value);
                 } else {
-                    isValid = true;
+                    if (value.startsWith("\"") && value.endsWith("\"")) {
+                        isValid = true;
+                    } else {
+                        isValid = false;
+                    }
+                    Log.finer(c, method, "key=" + key + ", value=" + value);
                 }
 
                 if (!isValid) {

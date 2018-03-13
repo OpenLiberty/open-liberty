@@ -13,7 +13,9 @@ package com.ibm.ws.logging.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Filter;
@@ -24,6 +26,7 @@ import java.util.logging.Logger;
 
 import com.ibm.ejs.ras.TrLevelConstants;
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TraceStateChangeListener;
@@ -240,7 +243,13 @@ public class WsLogger extends Logger implements TraceStateChangeListener {
         if (getComponent() != null) {
             logRecord.setComponent(getComponent());
         }
-
+        
+        Map<String, String> ivExtensions = new HashMap<String, String>();
+        LogRecordContext.getExtensions(ivExtensions);
+        if (!ivExtensions.isEmpty()) {
+        	logRecord.addExtensions(ivExtensions);
+        }
+        
         logRecord.setTraceClass(ivTC.getTraceClass());
 
         // populate runtime data
