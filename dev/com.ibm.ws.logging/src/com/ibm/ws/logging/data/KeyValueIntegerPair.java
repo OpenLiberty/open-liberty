@@ -16,52 +16,50 @@ package com.ibm.ws.logging.data;
 public class KeyValueIntegerPair implements Pair, KeyValuePair {
 
     private final String key;
-    private final Integer value;
-    private final ValueTypes valueType;
+    private final int value;
 
-    public KeyValueIntegerPair(String key, Integer value, ValueTypes valueType) {
+    public KeyValueIntegerPair(String key, int value) {
         this.key = key;
         this.value = value;
-        this.valueType = valueType;
     }
 
     @Override
     public boolean isString() {
-        return (valueType == ValueTypes.STRING);
+        return false;
     }
 
     @Override
     public boolean isInteger() {
-        return (valueType == ValueTypes.INTEGER);
+        return true;
     }
 
     @Override
     public boolean isLong() {
-        return (valueType == ValueTypes.LONG);
+        return false;
+    }
+
+    @Override
+    public String getStringValue() {
+        throw new UnsupportedOperationException("Cannot call getStringValue method on KeyValueIntegerPair class");
+    }
+
+    @Override
+    public Integer getIntValue() {
+        return value;
+    }
+
+    @Override
+    public Long getLongValue() {
+        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueIntegerPair class");
     }
 
     @Override
     public ValueTypes getType() {
-        return valueType;
+        return ValueTypes.INTEGER;
     }
 
     @Override
     public String getKey() {
         return key;
-    }
-
-    @Override
-    public String getValue() throws Exception {
-        throw new Exception("Value is not String");
-    }
-
-    @Override
-    public Integer getIntValue() throws Exception {
-        return value;
-    }
-
-    @Override
-    public Long getLongValue() throws Exception {
-        throw new Exception("Value is not Long");
     }
 }

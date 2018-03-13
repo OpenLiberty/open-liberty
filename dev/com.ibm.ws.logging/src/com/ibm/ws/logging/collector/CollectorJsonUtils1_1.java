@@ -124,7 +124,7 @@ public class CollectorJsonUtils1_1 {
                     if (key.equals(LogFieldConstants.IBM_DURATION)) {
 
                         long duration = kvp.getLongValue() * 1000;
-                        CollectorJsonHelpers.addToJSON(sb, key, Long.toString(duration), false, true, false, false, kvp.isLong());
+                        CollectorJsonHelpers.addToJSON(sb, key, Long.toString(duration), false, true, false, false, true);
 
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
 
@@ -139,9 +139,9 @@ public class CollectorJsonUtils1_1 {
                         } else if (kvp.isLong()) {
                             value = kvp.getLongValue().toString();
                         } else {
-                            value = kvp.getValue();
+                            value = kvp.getStringValue();
                         }
-                        CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, kvp.isLong() || kvp.isInteger());
+                        CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
 
                     }
                 }
@@ -180,8 +180,8 @@ public class CollectorJsonUtils1_1 {
 
                         if (key.equals(LogFieldConstants.IBM_STACKTRACE)) {
 
-                            String formattedValue = CollectorJsonHelpers.formatMessage(kvp.getValue(), maxFieldLength);
-                            CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, kvp.isInteger());
+                            String formattedValue = CollectorJsonHelpers.formatMessage(kvp.getStringValue(), maxFieldLength);
+                            CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, false);
 
                         } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
 
@@ -200,9 +200,9 @@ public class CollectorJsonUtils1_1 {
                             } else if (kvp.isLong()) {
                                 value = kvp.getLongValue().toString();
                             } else {
-                                value = kvp.getValue();
+                                value = kvp.getStringValue();
                             }
-                            CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, kvp.isLong() || kvp.isInteger());
+                            CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
 
                         }
                     }
@@ -242,7 +242,7 @@ public class CollectorJsonUtils1_1 {
 
                     } else if (key.equals(LogFieldConstants.IBM_QUERYSTRING)) {
 
-                        String jsonQueryString = kvp.getValue();
+                        String jsonQueryString = kvp.getStringValue();
                         if (jsonQueryString != null) {
                             try {
                                 jsonQueryString = URLDecoder.decode(jsonQueryString, "UTF-8");
@@ -250,17 +250,17 @@ public class CollectorJsonUtils1_1 {
                                 // ignore, use the original value;
                             }
                         }
-                        CollectorJsonHelpers.addToJSON(sb, key, jsonQueryString, false, true, false, false, kvp.isInteger());
+                        CollectorJsonHelpers.addToJSON(sb, key, jsonQueryString, false, true, false, false, false);
 
                     } else if (key.equals(LogFieldConstants.IBM_USERAGENT)) {
 
-                        String userAgent = kvp.getValue();
+                        String userAgent = kvp.getStringValue();
 
                         if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH) {
                             userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
                         }
 
-                        CollectorJsonHelpers.addToJSON(sb, key, userAgent, false, false, false, false, kvp.isInteger());
+                        CollectorJsonHelpers.addToJSON(sb, key, userAgent, false, false, false, false, false);
 
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
 
@@ -275,9 +275,9 @@ public class CollectorJsonUtils1_1 {
                         } else if (kvp.isLong()) {
                             value = kvp.getLongValue().toString();
                         } else {
-                            value = kvp.getValue();
+                            value = kvp.getStringValue();
                         }
-                        CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, kvp.isLong() || kvp.isInteger());
+                        CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
 
                     }
                 }
@@ -321,8 +321,8 @@ public class CollectorJsonUtils1_1 {
 
                     else if (key.equals(LogFieldConstants.MESSAGE)) {
 
-                        String formattedValue = CollectorJsonHelpers.formatMessage(kvp.getValue(), maxFieldLength);
-                        CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, kvp.isInteger());
+                        String formattedValue = CollectorJsonHelpers.formatMessage(kvp.getStringValue(), maxFieldLength);
+                        CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, false);
 
                     } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
 
@@ -342,9 +342,9 @@ public class CollectorJsonUtils1_1 {
                         } else if (kvp.isLong()) {
                             value = kvp.getLongValue().toString();
                         } else {
-                            value = kvp.getValue();
+                            value = kvp.getStringValue();
                         }
-                        CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, kvp.isLong() || kvp.isInteger());
+                        CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
 
                     }
                 }

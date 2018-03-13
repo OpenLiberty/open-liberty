@@ -31,19 +31,18 @@ public class GenericData {
         pairs = new ArrayList<Pair>();
     }
 
-    //change to string, long, integer
     public void addPair(String key, String value) {
-        KeyValueStringPair kvp = new KeyValueStringPair(key, value, KeyValuePair.ValueTypes.STRING);
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
         pairs.add(kvp);
     }
 
-    public void addPair(String key, Integer value) {
-        KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value, KeyValuePair.ValueTypes.INTEGER);
+    public void addPair(String key, int value) {
+        KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
         pairs.add(kvp);
     }
 
-    public void addPair(String key, Long value) {
-        KeyValueLongPair kvp = new KeyValueLongPair(key, value, KeyValuePair.ValueTypes.LONG);
+    public void addPair(String key, long value) {
+        KeyValueLongPair kvp = new KeyValueLongPair(key, value);
         pairs.add(kvp);
     }
 
@@ -80,12 +79,12 @@ public class GenericData {
     }
 
     //Method created to accomodate some tests, must remove down the line
-    public String getMessageID() throws Exception {
+    public String getMessageID() {
         for (Pair p : pairs) {
             if (p instanceof KeyValuePair) {
                 KeyValuePair kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals("ibm_messageId")) {
-                    return kvp.getValue();
+                    return kvp.getStringValue();
                 }
             }
         }
@@ -97,7 +96,6 @@ public class GenericData {
     public String toString() {
         KeyValuePair kvp;
         String key;
-//        Long val;
         StringBuilder sb = new StringBuilder();
         String comma = ",";
         sb.append("GenericData [");
@@ -116,7 +114,7 @@ public class GenericData {
                     } else if (kvp.isLong()) {
                         sb.append(key + "=" + kvp.getLongValue());
                     } else {
-                        sb.append(key + "=" + kvp.getValue());
+                        sb.append(key + "=" + kvp.getStringValue());
 
                     }
                 }

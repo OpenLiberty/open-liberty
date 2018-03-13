@@ -24,13 +24,13 @@ public interface KeyValuePair {
 
     public boolean isString();
 
+    public Integer getIntValue();
+
+    public Long getLongValue();
+
+    public String getStringValue();
+
     public ValueTypes getType();
 
     public String getKey();
-
-    public String getValue() throws Exception;
-
-    public Integer getIntValue() throws Exception;
-
-    public Long getLongValue() throws Exception;
 }

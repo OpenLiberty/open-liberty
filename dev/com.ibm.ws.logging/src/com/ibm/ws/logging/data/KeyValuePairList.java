@@ -26,17 +26,17 @@ public class KeyValuePairList implements Pair {
 
     //change to string, long, int
     public void addPair(String key, String value) {
-        KeyValuePair kvp = new KeyValueStringPair(key, value, KeyValuePair.ValueTypes.STRING);
+        KeyValuePair kvp = new KeyValueStringPair(key, value);
         keyValuePairs.add(kvp);
     }
 
-    public void addPair(String key, Integer value) {
-        KeyValuePair kvp = new KeyValueIntegerPair(key, value, KeyValuePair.ValueTypes.INTEGER);
+    public void addPair(String key, int value) {
+        KeyValuePair kvp = new KeyValueIntegerPair(key, value);
         keyValuePairs.add(kvp);
     }
 
-    public void addPair(String key, Long value) {
-        KeyValuePair kvp = new KeyValueLongPair(key, value, KeyValuePair.ValueTypes.LONG);
+    public void addPair(String key, long value) {
+        KeyValuePair kvp = new KeyValueLongPair(key, value);
         keyValuePairs.add(kvp);
     }
 }

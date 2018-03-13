@@ -167,13 +167,14 @@ public class TraceHandlerImpl implements Handler {
                         } else if (kvp.isLong()) {
                             return kvp.getLongValue().toString();
                         } else {
-                            return kvp.getValue();
+                            return kvp.getStringValue();
                         }
 
                     }
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return "";
     }

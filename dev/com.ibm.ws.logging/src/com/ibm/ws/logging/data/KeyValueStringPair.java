@@ -14,52 +14,50 @@ public class KeyValueStringPair implements Pair, KeyValuePair {
 
     private final String key;
     private final String value;
-    private final ValueTypes valueType;
 
-    public KeyValueStringPair(String key, String value, ValueTypes valueType) {
+    public KeyValueStringPair(String key, String value) {
         this.key = key;
         this.value = value;
-        this.valueType = valueType;
     }
 
     @Override
     public boolean isString() {
-        return (valueType == ValueTypes.STRING);
+        return true;
     }
 
     @Override
     public boolean isInteger() {
-        return (valueType == ValueTypes.INTEGER);
+        return false;
     }
 
     @Override
     public boolean isLong() {
-        return (valueType == ValueTypes.LONG);
+        return false;
+    }
+
+    @Override
+    public String getStringValue() {
+        return value;
+    }
+
+    @Override
+    public Integer getIntValue() {
+        throw new UnsupportedOperationException("Cannot call getIntValue method on KeyValueStringPair class");
+    }
+
+    @Override
+    public Long getLongValue() {
+        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueStringPair class");
     }
 
     @Override
     public ValueTypes getType() {
-        return valueType;
+        return ValueTypes.STRING;
     }
 
     @Override
     public String getKey() {
         return key;
-    }
-
-    @Override
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public Integer getIntValue() throws Exception {
-        throw new Exception("Value is not Integer");
-    }
-
-    @Override
-    public Long getLongValue() throws Exception {
-        throw new Exception("Value is not Long");
     }
 
 }
