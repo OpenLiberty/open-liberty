@@ -161,7 +161,9 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
                 routeToAll(routedMessage, routeAllMsgsToTheseLogHandlers);
             }
             Set<String> logHandlerIds = getLogHandlersForMessage(routedMessage.getFormattedMsg());
-
+            // Ensure console doesn't duplicate printing specific message that included in wtoMessages=*
+            if(!logHandlerIds.equals(routeAllMsgsToTheseLogHandlers)) 
+            		logHandlerIds.removeAll(routeAllMsgsToTheseLogHandlers);
             if (logHandlerIds == null) {
                 // There are no routing requirements for this msgId.
                 // Return true to tell the caller to log the msg normally.
