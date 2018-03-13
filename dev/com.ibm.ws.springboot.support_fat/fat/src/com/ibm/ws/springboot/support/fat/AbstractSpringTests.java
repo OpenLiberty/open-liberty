@@ -36,6 +36,10 @@ public abstract class AbstractSpringTests {
 
     public static final String SPRING_BOOT_15_APP_BASE = "com.ibm.ws.springboot.support.version15.test.app.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_15_APP_SSL = "com.ibm.ws.springboot.support.version15.test.app.ssl-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_SSL = "com.ibm.ws.springboot.support.version20.test.app.ssl-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_15_APP_SSL_MUTUAL_AUTH = "com.ibm.ws.springboot.support.version15.test.app.ssl.mutualAuth-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_SSL_MUTUAL_AUTH = "com.ibm.ws.springboot.support.version20.test.app.ssl.mutualAuth-0.0.1-SNAPSHOT.jar";
 
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";

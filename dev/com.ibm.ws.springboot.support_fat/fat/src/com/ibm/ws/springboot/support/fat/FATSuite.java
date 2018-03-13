@@ -22,7 +22,12 @@ import org.junit.runners.Suite.SuiteClasses;
                 CommonWebServerTests20Servlet40.class,
                 ConfigDropinRootTests.class,
                 ConfigSpringBootAppTagTests.class,
-                PreThinnedSpringBootTests.class
+                PreThinnedSpringBootTests.class,
+                SSLTest15.class,
+                SSLTest20.class,
+                SSLMutualAuthTest15.class,
+                SSLMutualAuthTest20.class
+
 })
 public class FATSuite {
 
