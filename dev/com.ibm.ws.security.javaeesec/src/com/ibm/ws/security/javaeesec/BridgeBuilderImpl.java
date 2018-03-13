@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,9 @@ import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.security.auth.message.config.AuthConfigProvider;
 import javax.security.auth.message.config.RegistrationListener;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -69,6 +71,17 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
                 Tr.debug(tc, "HttpAuthenticationMechanism bean is not identified. JSR375 BridgeProvider is not enabled.");
             }
         }
+    }
+
+    @Override
+    public boolean isProcessingNewAuthentication(HttpServletRequest req) {
+        if (getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
+            AuthenticationParameters authParams = (AuthenticationParameters) req.getAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
+            if (authParams != null) {
+                return authParams.isNewAuthentication();
+            }
+        }
+        return false;
     }
 
     protected ModulePropertiesUtils getModulePropertiesUtils() {

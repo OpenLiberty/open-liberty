@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -473,7 +473,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             if (jaccServiceRef.getService() != null) {
                 jaccServiceRef.getService().resetPolicyContextHandlerInfo();
             }
-    
+
             if (secObject != null) {
                 WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
                 if (webSecurityContext.getJaspiAuthContext() != null &&
@@ -978,11 +978,20 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     @Override
     public boolean authenticate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Subject callerSubject = subjectManager.getCallerSubject();
-        if (!subjectHelper.isUnauthenticated(callerSubject)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "The underlying login mechanism has committed");
-            return true;
+        JaspiService jaspiService = null;
+        boolean isNewAuthenticate = false;
+        if (isJaspiEnabled) {
+            jaspiService = (JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
+            isNewAuthenticate = jaspiService.isProcessingNewAuthentication(req);
+        }
+        if (!isNewAuthenticate) {
+            // if JSR-375 HttpAuthenticationMechanism is not enabled, and if there is a valid subject in the context, return it.
+            Subject callerSubject = subjectManager.getCallerSubject();
+            if (!subjectHelper.isUnauthenticated(callerSubject)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "The underlying login mechanism has committed");
+                return true;
+            }
         }
 
         WebReply webReply = PERMIT_REPLY;
@@ -991,15 +1000,14 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         webRequest.setRequestAuthenticate(true);
         AuthenticationResult authResult = null;
 
-        if (isJaspiEnabled &&
-            ((JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi")).isAnyProviderRegistered(webRequest)) {
+        if (isJaspiEnabled && jaspiService.isAnyProviderRegistered(webRequest)) {
             authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
         }
         if (authResult == null || authResult.getStatus() == AuthResult.CONTINUE) {
             authResult = authenticateRequest(webRequest);
         }
         if (authResult.getStatus() == AuthResult.SUCCESS) {
-            getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult);
+            getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult, true, !isNewAuthenticate);
         } else {
             String realm = authResult.realm;
             if (realm == null) {

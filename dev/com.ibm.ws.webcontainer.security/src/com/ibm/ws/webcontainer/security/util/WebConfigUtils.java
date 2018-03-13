@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 public class WebConfigUtils {
     private static ThreadLocal<MetaDataThreadContext> metaDataThreadLocal = new MetaDataThreadLocal();
 
-
     public static final String ATTR_WEB_MODULE_METADATA = "com.ibm.ws.webcontainer.security.webmodulemetadata";
     
     /**
