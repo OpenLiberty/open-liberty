@@ -25,7 +25,7 @@ import com.ibm.ws.session.store.common.BackedSession;
 import com.ibm.wsspi.session.IStoreCallback;
 
 /**
- * TODO most methods are not implemented
+ * Represents a session that is persisted via a JCache provider 
  */
 public class CacheSession extends BackedSession {
     private static final TraceComponent tc = Tr.register(CacheSession.class);
@@ -93,11 +93,12 @@ public class CacheSession extends BackedSession {
     }
 
     /**
+     * This method is copied from DatabaseSession.getSwappableData.
+     * 
      * @see com.ibm.ws.session.store.common.BackedSession#getSwappableData()
      */
     @Override
     public Map<Object, Object> getSwappableData() {
-        // TODO copied from DatabaseSession.getSwappableData
         if (mSwappableData == null) {
             mSwappableData = new ConcurrentHashMap<Object, Object>();
             if (isNew()) {
