@@ -329,7 +329,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             this.setScheme(pseudoHeaders.get(HpackConstants.SCHEME));
         }
         if (pseudoHeaders.containsKey(HpackConstants.AUTHORITY)) {
-            parseAuthority(pseudoHeaders.get(HpackConstants.AUTHORITY).getBytes(), 0);
+            parseH2Authority(pseudoHeaders.get(HpackConstants.AUTHORITY).getBytes());
         }
 
     }
@@ -1216,6 +1216,28 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         }
         parseURLHost(data, host_start, slash_start);
         parseURI(data, slash_start);
+    }
+
+    /**
+     * Parse the authority information from the authority pseudo-header.
+     * authority is [userinfo@] host [:port]
+     *
+     * @param data
+     */
+    private void parseH2Authority(byte[] data) {
+        if (data.length == 0) {
+            throw new IllegalArgumentException("Invalid authority: " + GenericUtils.getEnglishString(data));
+        }
+        int i = 0;
+        int host_start = i;
+        for (; i < data.length; i++) {
+            // find either a "@" or "/"
+            if ('@' == data[i]) {
+                // Note: we're just cutting off the userinfo section for now
+                host_start = i + 1;
+            }
+        }
+        parseURLHost(data, host_start, data.length);
     }
 
     /**
