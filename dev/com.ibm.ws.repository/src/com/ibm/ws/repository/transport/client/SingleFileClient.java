@@ -95,12 +95,13 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
 
             idCounter = new AtomicInteger(1);
             assets = new HashMap<String, JsonObject>();
-            JsonReader reader = Json.createReader(new FileInputStream(file));
-            JsonArray assetList = reader.readArray();
-            for (JsonValue val : assetList) {
-                String id = Integer.toString(idCounter.getAndIncrement());
-                if (val.getValueType() == ValueType.OBJECT) {
-                    assets.put(id, (JsonObject) val);
+            try (JsonReader reader = Json.createReader(new FileInputStream(file))) {
+                JsonArray assetList = reader.readArray();
+                for (JsonValue val : assetList) {
+                    String id = Integer.toString(idCounter.getAndIncrement());
+                    if (val.getValueType() == ValueType.OBJECT) {
+                        assets.put(id, (JsonObject) val);
+                    }
                 }
             }
         }
