@@ -81,6 +81,7 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityConstraint;
 import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.metadata.WebResourceCollection;
+import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -468,22 +469,28 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      */
     @Override
     public void postInvokeForSecureResponse(Object secObject) throws ServletException {
-        if (jaccServiceRef.getService() != null) {
-            jaccServiceRef.getService().resetPolicyContextHandlerInfo();
-        }
-
-        if (secObject != null) {
-            WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
-            if (webSecurityContext.getJaspiAuthContext() != null &&
-                webAuthenticatorRef != null) {
-                WebAuthenticator jaspiService = webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
-                if (jaspiService != null) {
-                    try {
-                        ((JaspiService) jaspiService).postInvoke(webSecurityContext);
-                    } catch (Exception e) {
-                        throw new ServletException(e);
+        try {
+            if (jaccServiceRef.getService() != null) {
+                jaccServiceRef.getService().resetPolicyContextHandlerInfo();
+            }
+    
+            if (secObject != null) {
+                WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
+                if (webSecurityContext.getJaspiAuthContext() != null &&
+                    webAuthenticatorRef != null) {
+                    WebAuthenticator jaspiService = webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
+                    if (jaspiService != null) {
+                        try {
+                            ((JaspiService) jaspiService).postInvoke(webSecurityContext);
+                        } catch (Exception e) {
+                            throw new ServletException(e);
+                        }
                     }
                 }
+            }
+        } finally {
+            if (secObject != null) {
+                removeModuleMetaDataFromThreadLocal(secObject);
             }
         }
     }
@@ -575,6 +582,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     private void performSecurityChecks(HttpServletRequest req, HttpServletResponse resp, Subject receivedSubject,
                                        WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
         String uriName = new URLHandler(webAppSecConfig).getServletURI(req);
+        setModuleMetaDataToThreadLocal(webSecurityContext);
         SecurityMetadata securityMetadata = getSecurityMetadata();
 
         savedSubject = receivedSubject;
@@ -1289,11 +1297,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     public SecurityMetadata getSecurityMetadata() {
-        SecurityMetadata secMetadata = null;
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
-        secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
-        return secMetadata;
+        return WebConfigUtils.getSecurityMetadata();
     }
 
     protected void setSecurityMetadata(SecurityMetadata secMetadata) {
@@ -1535,5 +1539,18 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             }
         }
         return id;
+    }
+
+    private void setModuleMetaDataToThreadLocal(Object key) {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData)cmd.getModuleMetaData();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "set WebModuleMetaData : " + wmmd);
+        }
+        WebConfigUtils.setWebModuleMetaData(key, wmmd);
+    }
+
+    private void removeModuleMetaDataFromThreadLocal(Object key) {
+        WebConfigUtils.removeWebModuleMetaData(key);
     }
 }
