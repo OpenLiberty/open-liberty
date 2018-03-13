@@ -26,6 +26,10 @@
     <httpSession storageRef="FATDB" maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="5s" reaperPollInterval="30"/>
 	-->
 
+    <application location="sessionCacheApp.war">
+        <classloader commonLibraryRef="HazelcastLib"/>
+    </application>
+
     <library id="HazelcastLib">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
     </library>

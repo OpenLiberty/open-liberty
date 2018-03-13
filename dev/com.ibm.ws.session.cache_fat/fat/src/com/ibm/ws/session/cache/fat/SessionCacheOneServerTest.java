@@ -41,7 +41,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        app = new SessionCacheApp(server, "session.cache.web", "session.cache.web.listener1", "session.cache.web.listener2");
+        app = new SessionCacheApp(server, true, "session.cache.web", "session.cache.web.listener1", "session.cache.web.listener2");
         server.startServer();
     }
 
@@ -245,7 +245,8 @@ public class SessionCacheOneServerTest extends FATServletClient {
             String value = response2.substring(start, response2.indexOf("]", start));
 
             // verify the property value is present in the session properties cache
-            app.invokeServlet("testSessionPropertyCache&sessionId=" + sessionId + "&type=java.lang.Integer&key=testConcurrentSetGetAndRemove-key&values=" + expectedValues, session);
+            app.invokeServlet("testSessionPropertyCache&sessionId=" + sessionId + "&type=java.lang.Integer&key=testConcurrentSetGetAndRemove-key&values=" + expectedValues,
+                              session);
 
             // verify the property name is present in the session info cache
             if (!"null".equals(value))

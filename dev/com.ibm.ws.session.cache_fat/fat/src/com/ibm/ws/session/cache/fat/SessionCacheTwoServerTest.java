@@ -41,8 +41,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        appA = new SessionCacheApp(serverA, "session.cache.web"); // no HttpSessionListeners are registered by this app
-        appB = new SessionCacheApp(serverB, "session.cache.web", "session.cache.web.cdi", "session.cache.web.listener1");
+        appA = new SessionCacheApp(serverA, true, "session.cache.web"); // no HttpSessionListeners are registered by this app
+        appB = new SessionCacheApp(serverB, true, "session.cache.web", "session.cache.web.cdi", "session.cache.web.listener1");
         serverB.useSecondaryHTTPPort();
 
         serverA.startServer();
