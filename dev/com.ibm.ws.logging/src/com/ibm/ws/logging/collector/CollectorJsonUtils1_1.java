@@ -319,7 +319,7 @@ public class CollectorJsonUtils1_1 {
                 }
             } else if (p instanceof KeyValuePairList) {
                 kvpl = (KeyValuePairList) p;
-                if (kvpl.getName().equals(LogFieldConstants.KVPL_NAME)) {
+                if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
                     extensions = kvpl.getKeyValuePairs();
                     boolean isExtQuoteless = false;
                     for (KeyValuePair k : extensions) {
@@ -335,10 +335,10 @@ public class CollectorJsonUtils1_1 {
                     }
                 }
             }
+        }
 
-            if (tags != null) {
-                addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
-            }
+        if (tags != null) {
+            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
         }
 
         sb.append("}");

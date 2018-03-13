@@ -40,5 +40,5 @@ public class LogFieldConstants {
     public static final String COUNT = "count";
     public static final String IBM_REQUESTSTARTTIME = "ibm_requestStartTime";
     public static final String EXT_PREFIX = "ext_";
-    public static final String KVPL_NAME = "extensions";
+    public static final String EXTENSIONS_KVPL = "extensions";
 }
