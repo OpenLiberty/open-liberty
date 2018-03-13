@@ -399,7 +399,7 @@ public class SessionCacheTestServlet extends FATServlet {
         @SuppressWarnings("rawtypes")
         Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.info.default_host%2FsessionCacheApp", String.class, ArrayList.class);
         long timeoutNS = TimeUnit.MINUTES.toNanos(1);
-        for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start > timeoutNS; TimeUnit.MILLISECONDS.sleep(500));
+        for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < timeoutNS; TimeUnit.MILLISECONDS.sleep(500));
 
         session.getAttribute(key);
     }
