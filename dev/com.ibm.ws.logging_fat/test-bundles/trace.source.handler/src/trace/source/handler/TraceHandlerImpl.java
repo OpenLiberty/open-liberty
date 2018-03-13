@@ -157,13 +157,23 @@ public class TraceHandlerImpl implements Handler {
 
     private String getAttribute(GenericData genData, String key) {
         ArrayList<Pair> pairs = genData.getPairs();
-        for (Pair p : pairs) {
-            if (p instanceof KeyValuePair) {
-                KeyValuePair kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals(key)) {
-                    return kvp.getValue();
+        try {
+            for (Pair p : pairs) {
+                if (p instanceof KeyValuePair) {
+                    KeyValuePair kvp = (KeyValuePair) p;
+                    if (kvp.getKey().equals(key)) {
+                        if (kvp.isInteger()) {
+                            return kvp.getIntValue().toString();
+                        } else if (kvp.isLong()) {
+                            return kvp.getLongValue().toString();
+                        } else {
+                            return kvp.getValue();
+                        }
+
+                    }
                 }
             }
+        } catch (Exception e) {
         }
         return "";
     }

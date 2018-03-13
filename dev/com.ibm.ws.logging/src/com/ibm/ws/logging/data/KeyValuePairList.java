@@ -24,13 +24,19 @@ public class KeyValuePairList implements Pair {
         return keyValuePairs;
     }
 
+    //change to string, long, int
     public void addPair(String key, String value) {
-        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        KeyValuePair kvp = new KeyValueStringPair(key, value, KeyValuePair.ValueTypes.STRING);
         keyValuePairs.add(kvp);
     }
 
-    public void addPair(String key, Number value) {
-        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+    public void addPair(String key, Integer value) {
+        KeyValuePair kvp = new KeyValueIntegerPair(key, value, KeyValuePair.ValueTypes.INTEGER);
+        keyValuePairs.add(kvp);
+    }
+
+    public void addPair(String key, Long value) {
+        KeyValuePair kvp = new KeyValueLongPair(key, value, KeyValuePair.ValueTypes.LONG);
         keyValuePairs.add(kvp);
     }
 }

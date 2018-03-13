@@ -31,13 +31,19 @@ public class GenericData {
         pairs = new ArrayList<Pair>();
     }
 
+    //change to string, long, integer
     public void addPair(String key, String value) {
-        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value, KeyValuePair.ValueTypes.STRING);
         pairs.add(kvp);
     }
 
-    public void addPair(String key, Number value) {
-        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+    public void addPair(String key, Integer value) {
+        KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value, KeyValuePair.ValueTypes.INTEGER);
+        pairs.add(kvp);
+    }
+
+    public void addPair(String key, Long value) {
+        KeyValueLongPair kvp = new KeyValueLongPair(key, value, KeyValuePair.ValueTypes.LONG);
         pairs.add(kvp);
     }
 
@@ -74,7 +80,7 @@ public class GenericData {
     }
 
     //Method created to accomodate some tests, must remove down the line
-    public String getMessageID() {
+    public String getMessageID() throws Exception {
         for (Pair p : pairs) {
             if (p instanceof KeyValuePair) {
                 KeyValuePair kvp = (KeyValuePair) p;
@@ -91,22 +97,32 @@ public class GenericData {
     public String toString() {
         KeyValuePair kvp;
         String key;
-        String val;
+//        Long val;
         StringBuilder sb = new StringBuilder();
         String comma = ",";
         sb.append("GenericData [");
         sb.append("type=" + sourceType);
-        for (Pair p : pairs) {
-            if (p instanceof KeyValuePair) {
-                kvp = (KeyValuePair) p;
-                key = kvp.getKey();
-                val = kvp.getValue();
-                sb.append(comma);
-                if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
-                    key = "threadID";
+        try {
+            for (Pair p : pairs) {
+                if (p instanceof KeyValuePair) {
+                    kvp = (KeyValuePair) p;
+                    key = kvp.getKey();
+                    sb.append(comma);
+                    if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
+                        key = "threadID";
+                    }
+                    if (kvp.isInteger()) {
+                        sb.append(key + "=" + kvp.getIntValue());
+                    } else if (kvp.isLong()) {
+                        sb.append(key + "=" + kvp.getLongValue());
+                    } else {
+                        sb.append(key + "=" + kvp.getValue());
+
+                    }
                 }
-                sb.append(key + "=" + val);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         sb.append("]");
         return sb.toString();
