@@ -24,9 +24,7 @@ WS-TraceGroup: OPENTRACING
     com.ibm.ws.microprofile.opentracing.OpenTracingFilterHelper, \
     com.ibm.ws.microprofile.opentracing.cdi.OpenTracingCDIInjectionExtension
 
-Import-Package: \
-  javax.enterprise.inject.spi;version="[1.2,2.1)",\
-  *
+Import-Package: *
 
 Export-Package: \
     com.ibm.ws.microprofile.opentracing, \
