@@ -112,6 +112,10 @@ public abstract class AbstractServletInitializer implements ServletContainerInit
                     javax.servlet.FilterRegistration.Dynamic filterDynamic = isc.addFilter("ProbeFilter", ProbeFilter.class);
                     filterDynamic.addMappingForUrlPatterns(null, false, "/*");
                 }
+                if (true) {//TODO Either Check we're in the only updated attributes mode.
+                    javax.servlet.FilterRegistration.Dynamic filterDynamic = isc.addFilter("WeldSessionUpdater", WeldSessionUpdator.class);
+                    filterDynamic.addMappingForUrlPatterns(null, false, "/*");
+                }
             }
         }
 
