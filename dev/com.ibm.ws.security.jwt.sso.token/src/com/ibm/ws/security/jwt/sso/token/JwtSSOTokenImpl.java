@@ -36,6 +36,7 @@ import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken;
+import com.ibm.ws.security.jwtsso.config.JwtSsoBuilderConfig;
 import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoTokenUtils;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -49,9 +50,12 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	private static final TraceComponent tc = Tr.register(JwtSSOTokenImpl.class);
 
 	public static final String JSON_WEB_TOKEN_SSO_CONFIG = "jwtSsoConfig";
+	public static final String JSON_WEB_TOKEN_SSO_BUILDER_CONFIG = "jwtSsoBuilderConfig";
 	public static final String UNAUTHENTICATED = "UNAUTHENTICATED";
 	protected final static AtomicServiceReference<JwtSsoConfig> jwtSSOConfigRef = new AtomicServiceReference<JwtSsoConfig>(
 			JSON_WEB_TOKEN_SSO_CONFIG);
+	protected final static AtomicServiceReference<JwtSsoBuilderConfig> jwtSSOBuilderConfigRef = new AtomicServiceReference<JwtSsoBuilderConfig>(
+			JSON_WEB_TOKEN_SSO_BUILDER_CONFIG);
 	private final SubjectHelper subjectHelper = new SubjectHelper();
 	private static final String[] hashtableProperties = { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY };
 
@@ -64,11 +68,22 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 		jwtSSOConfigRef.unsetReference(ref);
 	}
 
+	@Reference(service = JwtSsoBuilderConfig.class, name = JSON_WEB_TOKEN_SSO_BUILDER_CONFIG, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setJwtSsoBuilderConfig(ServiceReference<JwtSsoBuilderConfig> ref) {
+		jwtSSOBuilderConfigRef.setReference(ref);
+	}
+
+	protected void unsetJwtSsoBuilderConfig(ServiceReference<JwtSsoBuilderConfig> ref) {
+		jwtSSOBuilderConfigRef.unsetReference(ref);
+	}
+
 	@Activate
 	protected void activate(ComponentContext cc) {
 		jwtSSOConfigRef.activate(cc);
+		jwtSSOBuilderConfigRef.activate(cc);
 		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "Jwt SSO config service is activated");
+			Tr.debug(tc, "Jwt SSO config consumer service is activated");
+			Tr.debug(tc, "Jwt SSO config builder service is activated");
 			Tr.debug(tc, "Jwt SSO token (impl) service is being activated!!");
 		}
 	}
@@ -80,8 +95,10 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	@Deactivate
 	protected void deactivate(ComponentContext cc) {
 		jwtSSOConfigRef.deactivate(cc);
+		jwtSSOBuilderConfigRef.deactivate(cc);
 		if (tc.isDebugEnabled()) {
-			Tr.debug(tc, "Jwt SSO config service is deactivated");
+			Tr.debug(tc, "Jwt SSO config consumer service is deactivated");
+			Tr.debug(tc, "Jwt SSO config builder service is deactivated");
 			Tr.debug(tc, "Jwt SSO token (impl) service is being deactivated!!");
 		}
 	}
@@ -100,12 +117,22 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 			if (isSubjectUnauthenticated(subject) || subjectHasJwtPrincipal(subject)) {
 				return;
 			}
-
 			JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
 			if (tokenUtil != null) {
 				JsonWebToken ssotoken = tokenUtil.buildTokenFromSecuritySubject(subject); // TODO
-				updateSubject(subject, ssotoken);
+				updateSubject2(subject, ssotoken);
 			}
+		}
+	}
+
+	/**
+	 * @param subject
+	 * @param ssotoken
+	 */
+	private void updateSubject2(Subject subject, JsonWebToken ssotoken) {
+		// TODO Auto-generated method stub
+		if (subject != null && ssotoken != null) {
+			addJwtSSOTokenToSubject(subject, ssotoken);
 		}
 	}
 
@@ -139,6 +166,7 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	 * @param subject
 	 * @param ssotoken
 	 */
+	// TODO : remove me
 	private void updateSubject(Subject subject, JsonWebToken ssotoken) {
 		// TODO Auto-generated method stub
 
@@ -163,7 +191,7 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	private void addJwtSSOTokenToSubject(Subject subject, JsonWebToken ssotoken) {
 		// TODO Auto-generated method stub
 		if (subject != null && ssotoken != null) {
-			subject.getPrivateCredentials().add(ssotoken);
+			// subject.getPrivateCredentials().add(ssotoken);
 			subject.getPrincipals().add(ssotoken);
 		}
 
@@ -203,18 +231,25 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	 * @param consumer
 	 */
 	private JwtSsoTokenUtils getJwtSsoTokenUtils() {
-		JwtSsoConfig jwtssoconfig = getJwtSSOConfig();
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
 		String builder = null;
+		if (jwtssobuilderConfig != null) {
+			builder = getJwtBuilder(jwtssobuilderConfig);
+		}
+		JwtSsoConfig jwtssoconsumerConfig = getJwtSSOConsumerConfig();
 		String consumer = null;
-		if (jwtssoconfig != null) {
-			builder = getJwtBuilder(jwtssoconfig);
-			consumer = getJwtConsumer(jwtssoconfig);
+		if (jwtssoconsumerConfig != null) {
+			consumer = getJwtConsumer(jwtssoconsumerConfig);
 		}
 		if (builder != null && consumer != null) {
 			JwtSsoTokenUtils result = new JwtSsoTokenUtils(builder, consumer);
 			return result.isValid() ? result : null;
 		}
 		return null;
+	}
+
+	private JwtSsoTokenUtils getSimpleJwtSsoTokenUtils() {
+		return new JwtSsoTokenUtils();
 	}
 
 	/**
@@ -230,17 +265,24 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	 * @param jwtssoconfig
 	 * @return
 	 */
-	private String getJwtBuilder(JwtSsoConfig jwtssoconfig) {
+	private String getJwtBuilder(JwtSsoBuilderConfig jwtssobuilderconfig) {
 		// TODO Auto-generated method stub
-		return jwtssoconfig.getJwtBuilderRef();
+		return jwtssobuilderconfig.getJwtBuilderRef();
 	}
 
 	/**
 	 *
 	 */
-	private JwtSsoConfig getJwtSSOConfig() {
+	private JwtSsoConfig getJwtSSOConsumerConfig() {
 		if (jwtSSOConfigRef.getService() != null) {
 			return jwtSSOConfigRef.getService();
+		}
+		return null;
+	}
+
+	private JwtSsoBuilderConfig getJwtSSOBuilderConfig() {
+		if (jwtSSOBuilderConfigRef.getService() != null) {
+			return jwtSSOBuilderConfigRef.getService();
 		}
 		return null;
 	}
@@ -272,13 +314,12 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	 */
 	private String convertToEncoded(JsonWebToken jwtprincipal) {
 		// TODO Auto-generated method stub
-		String rawtoken = null;
 
 		// if ((rawtoken = getRawJwtToken(jwtprincipal)) != null) {
 		// return JsonUtils.convertToBase64(rawtoken);
 		// }
-		rawtoken = getRawJwtToken(jwtprincipal);
-		return rawtoken;
+		return getRawJwtToken(jwtprincipal); // this is already encoded
+
 	}
 
 	/**
@@ -325,42 +366,148 @@ public class JwtSSOTokenImpl implements JwtSSOToken {
 	 * java.lang.String)
 	 */
 	@Override
-	public Subject handleJwtSSOToken(String encodedjwt) {
+	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) {
 		// TODO Auto-generated method stub
-		Subject subject = null;
 		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
-		if (tokenUtil != null) {
-			subject = tokenUtil.handleJwtSsoTokenValidation(encodedjwt);
+		if (tokenUtil != null && encodedjwt != null) {
+			if (subject != null) {
+				return tokenUtil.handleJwtSsoTokenValidationWithSubject(subject, encodedjwt);
+			} else {
+				return tokenUtil.handleJwtSsoTokenValidation(encodedjwt);
+			}
 		}
-		return subject;
+		return null;
 		// authenticateWithJwt(subject);
 
 	}
 
-	/**
-	 * @param subject
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken#
+	 * getCustomCacheKeyFromJwtSSOToken(java.lang.String)
 	 */
-	// private void authenticateWithJwt(Subject subject) {
-	// // TODO Auto-generated method stub
-	// AuthenticationResult authResult;
-	// try {
-	// AuthenticationData authenticationData = createAuthenticationData(req,
-	// res, subject);
-	// Subject new_subject =
-	// authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND,
-	// authenticationData, subject);
-	// authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject);
-	// // if DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER then do not
-	// // callSSOCookie
-	// if (addLtpaCookieToResponse(new_subject, taiId)) {
-	// ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res);
-	// }
-	// } catch (AuthenticationException e) {
-	// authResult = new AuthenticationResult(AuthResult.FAILURE,
-	// e.getMessage());
-	// }
-	// return authResult;
-	//
-	// }
+	@Override
+	public String getCustomCacheKeyFromJwtSSOToken(String encodedjwt) {
+		// TODO Auto-generated method stub
+		JwtSsoTokenUtils tokenUtil = getSimpleJwtSsoTokenUtils();
+		if (encodedjwt != null) {
+			return tokenUtil.getCustomCacheKeyFromToken(encodedjwt);
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken#
+	 * getCacheKeyForJwtSSOToken(javax.security.auth.Subject, java.lang.String)
+	 */
+	@Override
+	public String getCacheKeyForJwtSSOToken(Subject subject, String encodedjwt) {
+		// TODO Auto-generated method stub
+		if (subject != null) {
+			encodedjwt = getJwtSSOToken(subject);
+		}
+		if (encodedjwt != null) {
+			return HashUtils.digest(encodedjwt);
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken#
+	 * addCustomCacheKeyToJwtSSOToken(javax.security.auth.Subject,
+	 * java.lang.String)
+	 */
+	@Override
+	public void addCustomCacheKeyToJwtSSOToken(Subject subject, String cacheKeyValue) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken#isJwtSSOTokenValid(
+	 * javax.security.auth.Subject)
+	 */
+	@Override
+	public boolean isJwtSSOTokenValid(Subject subject) {
+		// TODO Auto-generated method stub
+		String encodedjwt = getJwtSSOToken(subject);
+		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
+		if (tokenUtil != null) {
+			return tokenUtil.isJwtValid(encodedjwt);
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken#getJwtCookieName()
+	 */
+	@Override
+	public String getJwtCookieName() {
+		// TODO Auto-generated method stub
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
+		if (jwtssobuilderConfig != null) {
+			return jwtssobuilderConfig.getCookieName();
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken#
+	 * shouldSetJwtCookiePathToWebAppContext()
+	 */
+	@Override
+	public boolean shouldSetJwtCookiePathToWebAppContext() {
+		// TODO Auto-generated method stub
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
+		if (jwtssobuilderConfig != null) {
+			return jwtssobuilderConfig.isSetCookiePathToWebAppContextPath();
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken#
+	 * shouldAlsoIncludeLtpaCookie()
+	 */
+	@Override
+	public boolean shouldAlsoIncludeLtpaCookie() {
+		// TODO Auto-generated method stub
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
+		if (jwtssobuilderConfig != null) {
+			return jwtssobuilderConfig.isIncludeLtpaCookie();
+		}
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken#
+	 * shouldFallbackToLtpaCookie()
+	 */
+	@Override
+	public boolean shouldFallbackToLtpaCookie() {
+		// TODO Auto-generated method stub
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
+		if (jwtssobuilderConfig != null) {
+			return jwtssobuilderConfig.isFallbackToLtpa();
+		}
+		return true;
+	}
 
 }

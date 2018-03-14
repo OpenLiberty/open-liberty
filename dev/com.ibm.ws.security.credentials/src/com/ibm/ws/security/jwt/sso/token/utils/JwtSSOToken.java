@@ -18,10 +18,27 @@ import com.ibm.websphere.security.WSSecurityException;
  *
  */
 public interface JwtSSOToken {
+
     void createJwtSSOToken(Subject subject) throws WSSecurityException;
 
     String getJwtSSOToken(Subject subject);
 
-    Subject handleJwtSSOToken(String encodedjwt);
+    Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt);
+
+    String getCustomCacheKeyFromJwtSSOToken(String encodedjwt);
+
+    String getCacheKeyForJwtSSOToken(Subject subject, String encodedjwt);
+
+    void addCustomCacheKeyToJwtSSOToken(Subject subject, String cacheKeyValue);
+
+    boolean isJwtSSOTokenValid(Subject subject);
+
+    String getJwtCookieName();
+
+    boolean shouldSetJwtCookiePathToWebAppContext();
+
+    boolean shouldAlsoIncludeLtpaCookie();
+
+    boolean shouldFallbackToLtpaCookie();
 
 }

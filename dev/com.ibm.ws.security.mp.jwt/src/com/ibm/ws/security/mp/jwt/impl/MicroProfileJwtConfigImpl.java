@@ -454,6 +454,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         return clockSkewMilliSeconds;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean getTokenReuse() {
         return this.tokenReuse;

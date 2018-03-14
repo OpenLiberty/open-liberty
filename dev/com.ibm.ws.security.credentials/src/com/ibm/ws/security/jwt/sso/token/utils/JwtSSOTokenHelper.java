@@ -118,10 +118,74 @@ public class JwtSSOTokenHelper {
 
     public static Subject handleJwtSSOToken(String jwtssotoken) {
         if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().handleJwtSSOToken(jwtssotoken);
+            return jwtSSOTokenUtilRef.getService().handleJwtSSOTokenValidation(null, jwtssotoken);
         }
         return null;
 
     }
 
+    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            return jwtSSOTokenUtilRef.getService().handleJwtSSOTokenValidation(subject, jwtssotoken);
+        }
+        return null;
+
+    }
+
+    public static String getCustomCacheKeyFromJwtSSOToken(String encodedjwt) {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            return jwtSSOTokenUtilRef.getService().getCustomCacheKeyFromJwtSSOToken(encodedjwt);
+        }
+        return null;
+    }
+
+    public static String getCacheKeyForJwtSSOToken(Subject subject, String encodedjwt) {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            return jwtSSOTokenUtilRef.getService().getCacheKeyForJwtSSOToken(subject, encodedjwt);
+        }
+        return null;
+    }
+
+    public static void addCustomCacheKeyToJwtSSOToken(Subject subject, String cacheKeyValue) {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            jwtSSOTokenUtilRef.getService().addCustomCacheKeyToJwtSSOToken(subject, cacheKeyValue);
+        }
+    }
+
+    public static boolean isJwtSSOTokenValid(Subject subject) {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            return jwtSSOTokenUtilRef.getService().isJwtSSOTokenValid(subject);
+        }
+        return false;
+    }
+
+    public static boolean shouldSetJwtCookiePathToWebAppContext() {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            return jwtSSOTokenUtilRef.getService().shouldSetJwtCookiePathToWebAppContext();
+        }
+        return false;
+
+    }
+
+    public static boolean shouldAlsoIncludeLtpaCookie() {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            return jwtSSOTokenUtilRef.getService().shouldAlsoIncludeLtpaCookie();
+        }
+        return true;
+    }
+
+    public static boolean shouldFallbackToLtpaCookie() {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            return jwtSSOTokenUtilRef.getService().shouldFallbackToLtpaCookie();
+        }
+        return true;
+    }
+
+    public static String getJwtCookieName() {
+        if (jwtSSOTokenUtilRef.getService() != null) {
+            return jwtSSOTokenUtilRef.getService().getJwtCookieName();
+        }
+        return null;
+
+    }
 }

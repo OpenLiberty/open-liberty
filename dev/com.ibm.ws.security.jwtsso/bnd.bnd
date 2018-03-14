@@ -58,11 +58,12 @@ Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
-    com.ibm.ws.security.jwtsso.internal.JwtSsoComponent
+    com.ibm.ws.security.jwtsso.internal.JwtSsoComponent, \
+    com.ibm.ws.security.jwtsso.internal.JwtSsoBuilderComponent
 
 -dsannotations-inherit = true
 
-instrument.classesExcludes: com/ibm/ws/security/jwtsso/internal/resources/*.class
+#instrument.classesExcludes: com/ibm/ws/security/jwtsso/internal/resources/*.class
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
@@ -74,12 +75,18 @@ instrument.classesExcludes: com/ibm/ws/security/jwtsso/internal/resources/*.clas
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.security.common;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest, \
+	com.ibm.websphere.org.osgi.service.component;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.json4j;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest, \
     com.ibm.ws.security.mp.jwt;version=latest,\
     com.ibm.ws.security.credentials;version=latest,\
-	com.ibm.ws.security.jwt;version=latest
+	com.ibm.ws.security.jwt;version=latest,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.org.jose4j.0.5.1;version=latest,\
+	com.ibm.ws.ssl;version=latest
 
 # some strange cnfe's & ncdf's will happen if any of these are removed because the junit.extensions
 # have transitive dependencies.  
