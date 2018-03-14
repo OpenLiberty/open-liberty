@@ -37,6 +37,11 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_15_APP_BASE = "com.ibm.ws.springboot.support.version15.test.app.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
 
+    public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
+    public static final String SPRING_WORKAREA_DIR = "workarea/spring/";
+    public static final String SHARED_SPRING_LIB_INDEX_CACHE = "resources/" + SPRING_LIB_INDEX_CACHE;
+    public static final String SPRING_THIN_APPS_DIR = "spring.thin.apps";
+
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.springboot.support.fat.SpringBootTests");
     public static final AtomicBoolean serverStarted = new AtomicBoolean();
     public static final Collection<RemoteFile> dropinFiles = new ArrayList<>();
@@ -45,18 +50,30 @@ public abstract class AbstractSpringTests {
     public static void stopServer() throws Exception {
         serverStarted.set(false);
         try {
-            server.stopServer();
+            // don't archive until after stopping and removing the lib.index.cache
+            server.stopServer(false);
         } finally {
+            try {
+                server.deleteDirectoryFromLibertyServerRoot(SPRING_WORKAREA_DIR + SPRING_LIB_INDEX_CACHE);
+            } catch (Exception e) {
+                // ignore
+            }
+            server.postStopServerArchive();
             for (RemoteFile remoteFile : dropinFiles) {
                 remoteFile.delete();
             }
             dropinFiles.clear();
+            server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
         }
     }
 
     public abstract Set<String> getFeatures();
 
     public abstract String getApplication();
+
+    public RemoteFile getApplicationFile() throws Exception {
+        return server.getFileFromLibertyServerRoot("apps/" + getApplication());
+    }
 
     public AppConfigType getApplicationConfigType() {
         return AppConfigType.DROPINS_SPR;
@@ -69,7 +86,7 @@ public abstract class AbstractSpringTests {
             Set<String> features = config.getFeatureManager().getFeatures();
             features.clear();
             features.addAll(getFeatures());
-            RemoteFile appFile = server.getFileFromLibertyServerRoot("apps/" + getApplication());
+            RemoteFile appFile = getApplicationFile();
             switch (getApplicationConfigType()) {
                 case DROPINS_SPR: {
                     new File(new File(server.getServerRoot()), "dropins/spr/").mkdirs();
@@ -90,6 +107,7 @@ public abstract class AbstractSpringTests {
                 }
                 case SPRING_BOOT_APP_TAG: {
                     List<SpringBootApp> apps = config.getSpringBootApps();
+                    apps.clear();
                     SpringBootApp app = new SpringBootApp();
                     app.setLocation(appFile.getName());
                     app.setName("testName");
