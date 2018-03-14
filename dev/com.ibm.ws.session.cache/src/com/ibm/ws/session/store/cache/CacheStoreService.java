@@ -96,7 +96,9 @@ public class CacheStoreService implements SessionStoreService {
         configurationProperties.put("onlyCheckInCacheDuringPreInvoke", false);
         configurationProperties.put("optimizeCacheIdIncrements", true);
         configurationProperties.put("scheduleInvalidation", scheduleInvalidationFirstHour != null || scheduleInvalidationSecondHour != null);
+        configurationProperties.put("sessionPersistenceMode", "DATABASE"); // TODO at some point, allow a value of JCACHE
         // TODO decide whether or not to externalize useInvalidatedId
+        configurationProperties.put("useMultiRowSchema", true);
         
         Properties vendorProperties = new Properties();
         
@@ -128,11 +130,6 @@ public class CacheStoreService implements SessionStoreService {
 
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
-        // Always use a separate cache entry for each session property.
-        // These are kept in a cache named com.ibm.ws.session.prop.{ENCODED_APP_ROOT}
-        // and are keyed by {SESSION_PROP_ID}.{PROPERTY_NAME}
-        smc.setUsingMultirow(true);
-
         IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
         store.setLoader(new SessionLoader(serializationService, classLoader, applicationSessionStore));
         setCompletedPassivation(false);
