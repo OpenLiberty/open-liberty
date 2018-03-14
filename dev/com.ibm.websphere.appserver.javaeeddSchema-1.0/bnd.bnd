@@ -13,6 +13,4 @@
 -nobundles=true
 
 -dependson: \
-	com.ibm.ws.app.manager.war;version=latest, \
-	com.ibm.ws.app.manager.ejb;version=latest, \
-	com.ibm.websphere.appserver.javaeeddSchema-1.0;version=latest
+	com.ibm.ws.javaee.dd;version=latest
