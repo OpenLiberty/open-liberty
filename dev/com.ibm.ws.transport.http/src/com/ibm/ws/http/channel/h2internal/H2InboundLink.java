@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.h2internal.priority.Node;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
@@ -228,8 +229,10 @@ public class H2InboundLink extends HttpInboundLink {
     /**
      * Handle the receipt of the MAGIC string from the client: initialize the control stream 0 and and send out a settings frame to
      * acknowledge the MAGIC string
+     * 
+     * @throws StreamClosedException
      */
-    public void processConnectionPrefaceMagic() {
+    public void processConnectionPrefaceMagic() throws ProtocolException, StreamClosedException {
         connection_preface_string_rcvd = true;
         H2StreamProcessor controlStream = createNewInboundLink(0);
         controlStream.completeConnectionPreface();
