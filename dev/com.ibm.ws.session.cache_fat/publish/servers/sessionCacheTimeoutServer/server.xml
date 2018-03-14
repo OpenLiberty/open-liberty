@@ -14,7 +14,9 @@
         <feature>sessionCache-1.0</feature>
     </featureManager>   
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="5s" reaperPollInterval="30"/>
-    <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES"/>
+    <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES">
+        <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+    </httpSessionCache>
 
     <!-- Use this config for testing sessionDatabase 
     <featureManager>
