@@ -97,7 +97,7 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
 
     /**
      * Gets the required Callback objects needed by this login module.
-     * 
+     *
      * @param callbackHandler
      * @return
      * @throws IOException
@@ -126,7 +126,8 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       userRegistry.getRealm(),
                                                       userRegistry.getUniqueUserId(urAuthenticatedId));
-        setPrincipalAndCredentials(temporarySubject, username, urAuthenticatedId, username, accessId, WSPrincipal.AUTH_METHOD_PASSWORD);
+        setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_PASSWORD, null);
+        setCredentials(temporarySubject, username, urAuthenticatedId);
     }
 
     /** {@inheritDoc} */

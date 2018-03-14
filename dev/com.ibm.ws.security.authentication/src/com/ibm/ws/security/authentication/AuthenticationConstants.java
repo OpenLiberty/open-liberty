@@ -45,4 +45,6 @@ public interface AuthenticationConstants {
 
     String INTERNAL_JSON_WEB_TOKEN = "com.ibm.ws.authentication.internal.json.web.token";
 
+    String JASPI_PRINCIPAL = "com.ibm.wsspi.security.cred.jaspi.principal";
+
 }

@@ -139,7 +139,8 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         temporarySubject = new Subject();
         temporarySubject.getPrivateCredentials().add(recreatedToken);
         String securityName = AccessIdUtil.getUniqueId(accessId);
-        setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
+        setCredentials(temporarySubject, securityName, null);
     }
 
     /**
@@ -158,7 +159,8 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         UserRegistry ur = getUserRegistry();
         String securityName = ur.getUserSecurityName(AccessIdUtil.getUniqueId(accessId));
         securityName = getSecurityName(securityName, securityName); // Special handling for LDAP under here.
-        setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
+        setCredentials(temporarySubject, securityName, null);
     }
 
     private void setUpTemporaryUserSubjectForJsonWebToken(String jwtToken) throws Exception {
@@ -177,7 +179,8 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(temporarySubject, hashtableLoginProperties);
         accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
-        setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
+        setCredentials(temporarySubject, securityName, securityName);
     }
 
     /** {@inheritDoc} */
