@@ -19,13 +19,15 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.eclipse.microprofile.config.spi.ConfigSource;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
-public class PropertiesConfigSource extends InternalConfigSource implements StaticConfigSource {
+public class PropertiesConfigSource extends InternalConfigSource implements ConfigSource {
 
     private static final TraceComponent tc = Tr.register(PropertiesConfigSource.class);
 
