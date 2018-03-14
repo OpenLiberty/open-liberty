@@ -25,12 +25,17 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.injectionengine.ComponentNameSpaceConfiguration;
+import com.ibm.wsspi.injectionengine.InjectionBinding;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.InjectionSimpleBinding;
 import com.ibm.wsspi.injectionengine.InjectionTargetContext;
+import com.ibm.wsspi.injectionengine.RecursiveInjectionException;
 
 public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
+
+    private static final String CLASS_NAME = InjectInjectionBinding.class.getName();
 
     private static final TraceComponent tc = Tr.register(InjectInjectionBinding.class);
     private final CDIRuntime cdiRuntime;
@@ -122,17 +127,70 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see com.ibm.wsspi.injectionengine.InjectionBinding#getInjectionObject(java.lang.Object, com.ibm.wsspi.injectionengine.InjectionTargetContext)
+     * 
+     * This method was copied from InjectionBinding.getInjectionObject() and has three differences.
+     * 
+     * Firstly it does not look in the InjectionBinding.ivInjectedObject field, as InjectInjectionBinding never has that field set anyway.
+     *   
+     * Secondly if the property com.ibm.ws.cdi.ignoreInjectionFailure is true it will ignore any failure except a RecursiveInjectionException
+     * The special status of RecursiveInjectionException is inherited from InjectionBinding where RecursiveInjectionException was the only 
+     * Throwable that isn't converted into an InjectionException. 
+     * 
+     * Thirdly if getInjectionObjectInstance returns a null this method will return a null rather than throw an exception. 
+     */
     @Override
     public Object getInjectionObject(Object targetObject,
-                                     InjectionTargetContext targetContext) throws InjectionException {
-        try {
-            return super.getInjectionObject(targetObject, targetContext);
-        } catch (InjectionException e) {
-            if (!CDIUtils.isInjectionFailureIgnored()) {
-                throw e;
-            } else {
+            InjectionTargetContext targetContext)
+                    throws InjectionException {
+
+        Object retObj = null;
+
+        try
+        {
+            retObj = getInjectionObjectInstance(targetObject, targetContext);
+        } catch (RecursiveInjectionException ex)
+        {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "getInjectionObject: " + ex);
+            throw ex;
+        } catch (Throwable ex)
+        {
+
+            if (CDIUtils.isInjectionFailureIgnored()){
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "com.ibm.ws.cdi.ignoreInjectionFailure = true, ignoring InjectionException", ex);
+                }
                 return null;
             }
+
+            // Only log FFDC if this is a failed injection; failed naming lookups may
+            // be normal and the caller should decide if FFDC is needed.
+            if (targetObject != null) {
+                FFDCFilter.processException(ex, CLASS_NAME + ".getInjectionObject",
+                        "408", this, (Object[]) null);
+            }
+
+            String displayName = getDisplayName();
+            Object exMessage = ex.getLocalizedMessage();
+            if (exMessage == null)
+            {
+                exMessage = ex.toString();
+            }
+
+            String message = Tr.formatMessage(tc,
+                    "FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E",
+                    displayName,
+                    exMessage);
+            InjectionException ex2 = new InjectionException(message, ex);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "getInjectionObject", ex2);
+            throw ex2;
         }
+        
+        return retObj;
     }
 }
