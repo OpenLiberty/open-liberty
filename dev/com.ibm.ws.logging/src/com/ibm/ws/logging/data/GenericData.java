@@ -100,28 +100,25 @@ public class GenericData {
         String comma = ",";
         sb.append("GenericData [");
         sb.append("type=" + sourceType);
-        try {
-            for (Pair p : pairs) {
-                if (p instanceof KeyValuePair) {
-                    kvp = (KeyValuePair) p;
-                    key = kvp.getKey();
-                    sb.append(comma);
-                    if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
-                        key = "threadID";
-                    }
-                    if (kvp.isInteger()) {
-                        sb.append(key + "=" + kvp.getIntValue());
-                    } else if (kvp.isLong()) {
-                        sb.append(key + "=" + kvp.getLongValue());
-                    } else {
-                        sb.append(key + "=" + kvp.getStringValue());
+        for (Pair p : pairs) {
+            if (p instanceof KeyValuePair) {
+                kvp = (KeyValuePair) p;
+                key = kvp.getKey();
+                sb.append(comma);
+                if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
+                    key = "threadID";
+                }
+                if (kvp.isInteger()) {
+                    sb.append(key + "=" + kvp.getIntValue());
+                } else if (kvp.isLong()) {
+                    sb.append(key + "=" + kvp.getLongValue());
+                } else {
+                    sb.append(key + "=" + kvp.getStringValue());
 
-                    }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
         sb.append("]");
         return sb.toString();
     }
