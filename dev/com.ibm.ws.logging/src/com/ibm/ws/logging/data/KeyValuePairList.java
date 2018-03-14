@@ -24,7 +24,6 @@ public class KeyValuePairList implements Pair {
         return keyValuePairs;
     }
 
-    //change to string, long, int
     public void addPair(String key, String value) {
         KeyValuePair kvp = new KeyValueStringPair(key, value);
         keyValuePairs.add(kvp);
