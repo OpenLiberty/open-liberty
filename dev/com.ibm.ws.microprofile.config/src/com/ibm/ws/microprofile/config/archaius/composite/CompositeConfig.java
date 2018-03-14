@@ -22,7 +22,6 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -35,7 +34,7 @@ import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.impl.SourcedValueImpl;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
-import com.ibm.ws.microprofile.config.sources.StaticConfigSource;
+import com.ibm.ws.microprofile.config.sources.InternalConfigSource;
 
 public class CompositeConfig implements Closeable, ConfigListener {
 
@@ -86,9 +85,9 @@ public class CompositeConfig implements Closeable, ConfigListener {
      * @return
      */
     private PollingDynamicConfig addConfig(ConfigSource source, ScheduledExecutorService executor, long refreshInterval) {
-        //if it is an internal static config source then it should not refresh
+        //if it is an internal config source then it should not refresh
         //this is a hack for now ... dynamic config sources will be fixed properly in the next version
-        if (source instanceof StaticConfigSource) {
+        if (source instanceof InternalConfigSource) {
             refreshInterval = 0;
         }
 
@@ -154,7 +153,6 @@ public class CompositeConfig implements Closeable, ConfigListener {
     public String dump() {
         StringBuilder sb = new StringBuilder();
         Set<String> keys = getKeySet();
-        keys = new TreeSet<String>(keys);
         Iterator<String> keyItr = keys.iterator();
         while (keyItr.hasNext()) {
             String key = keyItr.next();
