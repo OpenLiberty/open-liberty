@@ -38,9 +38,9 @@ public class StackTraceFilteringForSpecificationClassesExceptionTest extends Abs
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver");
-        server.startServer();
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver", StackTraceFilteringForSpecificationClassesExceptionTest.class);
         ShrinkHelper.defaultDropinApp(server, "broken-servlet", "com.ibm.ws.logging.fat.broken.servlet");
+        server.startServer();
 
         hitWebPage("broken-servlet", "SpecUsingServlet", true);
     }
@@ -48,7 +48,7 @@ public class StackTraceFilteringForSpecificationClassesExceptionTest extends Abs
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer(MAIN_EXCEPTION);
+            server.stopServer(MAIN_EXCEPTION, "SRVE0777E");
         }
     }
 

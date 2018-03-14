@@ -26,9 +26,9 @@ public class StackTraceFilteringForNoClassDefFoundErrorTest extends AbstractStac
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.missingfeatureserver");
-        server.startServer();
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.missingfeatureserver", StackTraceFilteringForNoClassDefFoundErrorTest.class);
         ShrinkHelper.defaultDropinApp(server, "missing-feature-servlet", "com.ibm.ws.logging.fat.missing.feature.servlet");
+        server.startServer();
 
         hitWebPage("missing-feature-servlet", "MissingEntityManagerServlet", true);
     }
