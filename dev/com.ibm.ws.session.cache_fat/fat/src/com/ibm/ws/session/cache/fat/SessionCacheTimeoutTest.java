@@ -8,7 +8,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
@@ -43,6 +45,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         appOneListener = new SessionCacheApp(server, "session.cache.web", "session.cache.web.listener1");
+        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID()));
         server.startServer();
     }
 

@@ -10,10 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,6 +45,11 @@ public class SessionCacheOneServerTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, "session.cache.web", "session.cache.web.listener1", "session.cache.web.listener2");
+
+        String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
+                                           "-Dhazelcast.config=" + configLocation));
+
         server.startServer();
     }
 
