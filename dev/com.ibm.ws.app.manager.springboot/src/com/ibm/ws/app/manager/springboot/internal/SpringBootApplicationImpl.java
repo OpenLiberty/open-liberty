@@ -395,8 +395,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     }
 
     private static void thinSpringApp(LibIndexCache libIndexCache, File springAppFile, File thinSpringAppFile, long lastModified) throws IOException, NoSuchAlgorithmException {
-        File libIndexCacheFile = libIndexCache.getLibIndexRoot();
-        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, libIndexCacheFile, true);
+        File parent = libIndexCache.getLibIndexParent();
+        File workarea = libIndexCache.getLibIndexWorkarea();
+        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent, true);
         springBootThinUtil.execute();
         thinSpringAppFile.setLastModified(lastModified);
     }
