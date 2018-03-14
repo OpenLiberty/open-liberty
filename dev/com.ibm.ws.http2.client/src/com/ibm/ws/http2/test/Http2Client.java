@@ -51,7 +51,6 @@ public class Http2Client {
     private final CountDownLatch blockUntilConnectionIsDone;
     private final AtomicBoolean isTestDone = new AtomicBoolean(false);
     private final AtomicBoolean didTimeout = new AtomicBoolean(false);
-    private final AtomicBoolean waitingForACK = new AtomicBoolean(false);
     private final AtomicBoolean lockWaitFor = new AtomicBoolean(true);
 
     private final Map<Frame, Frame> sendFrameConditional = new HashMap<Frame, Frame>();
@@ -274,7 +273,7 @@ public class Http2Client {
         //loop until the time is over
         do {
             //if we are waiting for a settings ACK, this will loop
-            if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived())) && !waitingForACK.get()) {
+            if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived())) && !h2Connection.getAaitingForACK().get()) {
                 return h2Connection.sendBytes(bytes);
             } else {
                 try {
@@ -289,7 +288,7 @@ public class Http2Client {
             LOGGER.logp(Level.SEVERE, CLASS_NAME, "sendBytesAfterPreface", "wasUpgradeHeaderReceived? " + wasUpgradeHeaderReceived());
             LOGGER.logp(Level.SEVERE, CLASS_NAME, "sendBytesAfterPreface", "wasServerPrefaceReceived? " + wasServerPrefaceReceived());
         }
-        if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived())) && !waitingForACK.get()) {
+        if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived())) && !h2Connection.getAaitingForACK().get()) {
             return h2Connection.sendBytes(bytes);
         }
         throw new UnableToSendFrameException("Unable to send bytes becuase upgrade header and server preface have not been received yet. wasUpgradeHeaderReceived() = "
@@ -313,7 +312,7 @@ public class Http2Client {
         //loop until the time is over
         do {
             //if we are waiting for a settings ACK, this will loop
-            if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived()) || bypassPreface) && !waitingForACK.get()) {
+            if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived()) || bypassPreface) && !h2Connection.getAaitingForACK().get()) {
                 return h2Connection.sendFrame(writableFrame);
             } else {
                 try {
@@ -329,7 +328,7 @@ public class Http2Client {
             LOGGER.logp(Level.SEVERE, CLASS_NAME, "sendFrame", "wasServerPrefaceReceived? " + wasServerPrefaceReceived());
             LOGGER.logp(Level.SEVERE, CLASS_NAME, "sendFrame", "bypassPreface? " + bypassPreface);
         }
-        if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived()) || bypassPreface) && !waitingForACK.get()) {
+        if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived()) || bypassPreface) && !h2Connection.getAaitingForACK().get()) {
             return h2Connection.sendFrame(writableFrame);
         }
         throw new UnableToSendFrameException("Unable to send frame becuase upgrade header and server preface have not been received yet. wasUpgradeHeaderReceived() = "
@@ -401,6 +400,10 @@ public class Http2Client {
         return h2Connection.getReportedExceptions();
     }
 
+    protected boolean isWaitingForAck() {
+        return h2Connection.getAaitingForACK().get();
+    }
+
     public class FATFramesListener implements FramesListener {
 
         /*
@@ -462,7 +465,7 @@ public class Http2Client {
          */
         @Override
         public void receivedSettingsAckFrame() {
-            waitingForACK.set(false);
+            h2Connection.getAaitingForACK().set(false);
         }
 
         /*
@@ -473,7 +476,7 @@ public class Http2Client {
         @Override
         public void sentSettingsFrame() {
             // TODO Auto-generated method stub
-            waitingForACK.set(true);
+            h2Connection.getAaitingForACK().set(true);
         }
 
         /*
@@ -581,4 +584,5 @@ public class Http2Client {
         }
 
     }
+
 }
