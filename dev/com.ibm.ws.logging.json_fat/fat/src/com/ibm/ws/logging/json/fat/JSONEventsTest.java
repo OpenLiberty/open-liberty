@@ -48,7 +48,7 @@ public abstract class JSONEventsTest {
 
     public abstract RemoteFile getLogFile() throws Exception;
 
-//    @Test
+    @Test
     public void checkMessage() throws Exception {
         final String method = "checkMessage";
         ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
@@ -69,7 +69,7 @@ public abstract class JSONEventsTest {
         }
     }
 
-    //@Test
+    @Test
     public void checkAccessLog() throws Exception {
         final String method = "checkAccessLog";
 
@@ -97,7 +97,7 @@ public abstract class JSONEventsTest {
 
     }
 
-    //@Test
+    @Test
     @ExpectedFFDC({ "java.lang.NullPointerException" })
     public void checkFfdc() throws Exception {
         final String method = "checkFfdc";
@@ -125,7 +125,7 @@ public abstract class JSONEventsTest {
 
     }
 
-    //@Test
+    @Test
     public void checkTrace() throws Exception {
         final String method = "checkTrace";
 
@@ -160,7 +160,7 @@ public abstract class JSONEventsTest {
 
         String line = getServer().waitForStringInLog("\\{.*\"module\":\"com.ibm.logs.ExtensionServlet\".*\\}", getLogFile());
 
-        assertNotNull("Cannot find \"module\":\"com.ibm.logs.ExtensionServlet\" from messages.log" + line, line);
+        assertNotNull("Cannot find \"module\":\"com.ibm.logs.ExtensionServlet\" from messages.log", line);
 
         JsonReader reader = Json.createReader(new StringReader(line));
         JsonObject jsonObj = reader.readObject();
@@ -176,34 +176,33 @@ public abstract class JSONEventsTest {
         final String method = "checkExtensions";
 
         boolean isValid = true;
+
+        ArrayList<String> extensionKeysMandatoryList = new ArrayList<String>(Arrays.asList("ext_correctBooleanExtension_bool", "ext_correctBooleanExtension2_bool",
+                                                                                           "ext_correctIntExtension_int", "ext_correctIntExtension2_int",
+                                                                                           "ext_correctStringExtension", "ext_correctFloatExtension_float",
+                                                                                           "ext_correctFloatExtension2_float"));
+        ArrayList<String> invalidFields = new ArrayList<String>();
+
+        String value = "";
         for (String key : jsonObj.keySet()) {
-            if (key.startsWith(EXT_PREFIX)) {
-                String value = "" + jsonObj.get(key);
-
-                if (key.endsWith(INT_SUFFIX)) {
-                    isValid = verifyIntValue(value);
-                    Log.finer(c, method, "key=" + key + ", value=" + value);
-                } else if (key.endsWith(FLOAT_SUFFIX)) {
-                    isValid = verifyFloatValue(value);
-                    Log.finer(c, method, "key=" + key + ", value=" + value);
-                } else if (key.endsWith(BOOL_SUFFIX)) {
-                    if (value.equals(TRUE_BOOL) || value.equals(FALSE_BOOL)) {
-                        isValid = true;
-                    }
-                    Log.finer(c, method, "key=" + key + ", value=" + value);
-                } else {
-                    if (value.startsWith("\"") && value.endsWith("\"")) {
-                        isValid = true;
-                    } else {
-                        isValid = false;
-                    }
-                    Log.finer(c, method, "key=" + key + ", value=" + value);
-                }
-
-                if (!isValid) {
-                    return false;
-                }
+            if (extensionKeysMandatoryList.contains(key)) {
+                extensionKeysMandatoryList.remove(key);
+                value = "" + jsonObj.get(key);
+                Log.finer(c, method, "key=" + key + ", value=" + value);
             }
+
+            if (key.startsWith("wrongExtension")) {
+                invalidFields.add(key);
+            }
+        }
+
+        if (extensionKeysMandatoryList.size() > 0) {
+            isValid = false;
+            Log.info(c, method, "Mandatory keys missing:" + extensionKeysMandatoryList.toString());
+        }
+        if (invalidFields.size() > 0) {
+            isValid = false;
+            Log.info(c, method, "Invalid keys found:" + invalidFields.toString());
         }
 
         return isValid;
@@ -243,62 +242,4 @@ public abstract class JSONEventsTest {
         return isSucceeded;
     }
 
-    private static boolean verifyIntValue(String value) {
-        boolean isValid = true;
-        char[] arr = value.toCharArray();
-        for (int i = 0; i < arr.length; i++) {
-            if (i == 0) {
-                if (arr[i] == '-' && arr.length > 1) {
-                    continue;
-                }
-            }
-            if (arr[i] >= '0' && arr[i] <= '9') {
-                continue;
-            } else {
-                isValid = false;
-                break;
-            }
-        }
-        return isValid;
-    }
-
-    private static boolean verifyFloatValue(String s) {
-        boolean isValid = true;
-        boolean decimalFlag = false;
-        char[] arr = s.toCharArray();
-        for (int i = 0; i < arr.length; i++) {
-            if (i == 0) {
-                // If the string has more than 1 characters, and the first position in the string has a -, then it is okay.
-                if (arr[i] == '-' && arr.length > 1) {
-                    continue;
-                }
-            }
-            // If a '.' is found
-            if (arr[i] == '.') {
-                // If the decimal is not in the first spot, not in the last spot and the onlt decimal found
-                if (i > 0 && i < arr.length - 1 && decimalFlag == false) {
-                    // Check if there is a digit before the decimal
-                    if (arr[i - 1] >= '0' && arr[i - 1] <= '9') {
-                        // Set decimal flag
-                        decimalFlag = true;
-                        continue;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    //if the decimal conditions are violated, then the number is invalid
-                    return false;
-                }
-            }
-            // Check if the current character is a digit
-            if (arr[i] >= '0' && arr[i] <= '9') {
-                continue;
-            } else {
-                return false;
-            }
-
-        }
-
-        return isValid;
-    }
 }

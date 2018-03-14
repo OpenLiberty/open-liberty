@@ -39,13 +39,13 @@ public class ExtensionServlet extends HttpServlet {
         LogRecordContext.addExtension("correctFloatExtension_float", "100.123");
         LogRecordContext.addExtension("correctFloatExtension2_float", "-100.123");
 
-        LogRecordContext.addExtension("wrongBooleanExtension_bool", "12345");
-        LogRecordContext.addExtension("wrongBooleanExtension2_bool", "wrongBool");
-        LogRecordContext.addExtension("wrongIntExtension_int", "Testing");
-        LogRecordContext.addExtension("wrongIntExtension2_int", "false");
-        LogRecordContext.addExtension("wrongIntExtension3_int", "123.123");
-        LogRecordContext.addExtension("wrongFloatExtension_float", "Testing string");
-        LogRecordContext.addExtension("wrongFloatExtension2_float", "false");
+        LogRecordContext.addExtension("wrongExtensionBoolean_bool", "12345");
+        LogRecordContext.addExtension("wrongExtensionBoolean2_bool", "wrongBool");
+        LogRecordContext.addExtension("wrongExtensionInt_int", "Testing");
+        LogRecordContext.addExtension("wrongExtensionInt2_int", "false");
+        LogRecordContext.addExtension("wrongExtensionInt3_int", "123.123");
+        LogRecordContext.addExtension("wrongExtensionFloat_float", "Testing string");
+        LogRecordContext.addExtension("wrongExtensionFloat2_float", "false");
 
         logger.logp(java.util.logging.Level.INFO, loggerName, "Method.Info", logMessage);
         logger.logp(java.util.logging.Level.FINE, loggerName, "Method.Info", logMessage);
