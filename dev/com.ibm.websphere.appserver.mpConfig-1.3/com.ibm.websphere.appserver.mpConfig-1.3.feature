@@ -12,9 +12,12 @@ IBM-ShortName: mpConfig-1.3
 Subsystem-Name: MicroProfile Config 1.3
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.config-1.3, \
  com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:=2.0, \
- com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:=1.3
+ com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:=1.3, \
+ com.ibm.websphere.appserver.containerServices-1.0, \
+ com.ibm.websphere.appserver.appmanager-1.0
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.ws.microprofile.config.1.3; apiJar=false; location:="lib/", \
+ com.ibm.ws.cdi.interfaces; apiJar=false; location:="lib/", \
  com.ibm.ws.org.apache.commons.lang3.3.5; apiJar=false; location:="lib/"
 kind=noship
 edition=full
