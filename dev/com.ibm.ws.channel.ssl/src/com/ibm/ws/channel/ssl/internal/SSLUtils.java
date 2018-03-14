@@ -655,10 +655,9 @@ public class SSLUtils {
 
         // check to see if any ALPN negotiator is on the classpath; if so, register the current engine and link
         ThirdPartyAlpnNegotiator negotiator = null;
+        boolean tryAlpnNegotiator = false;
 
         if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
-
-            boolean tryAlpnNegotiator = false;
 
             if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
                 if (connLink.getChannel().getUseH2ProtocolAttribute() != null && connLink.getChannel().getUseH2ProtocolAttribute()) {
@@ -984,7 +983,9 @@ public class SSLUtils {
                 result = null;
             }
         } finally {
-            JDK8AlpnNegotiator.tryToRemoveAlpnNegotiator(negotiator, engine, connLink);
+            if (tryAlpnNegotiator) {
+                JDK8AlpnNegotiator.tryToRemoveAlpnNegotiator(negotiator, engine, connLink);
+            }
         }
         if (bTrace && tc.isEntryEnabled()) {
             Tr.exit(tc, "handleHandshake");
