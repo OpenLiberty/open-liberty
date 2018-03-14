@@ -39,6 +39,7 @@ import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.ws.security.credentials.ExpirableCredential;
 import com.ibm.ws.security.jaas.common.modules.CommonLoginModule;
+import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
 import com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
@@ -340,5 +341,6 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
             MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
             removeInternalAssertionHashtable(customProperties, jsonWebTokenProperties);
         }
+        JwtSSOTokenHelper.createJwtSSOToken(subject);
     }
 }

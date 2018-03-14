@@ -14,6 +14,7 @@ import javax.security.auth.Subject;
 
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
+import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
 
 /**
  * Provides the SSO token bytes as the cache key.
@@ -27,9 +28,7 @@ public class JwtSSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
     }
 
     private String getJwtSSOTokenBytes(final Subject subject) {
-        String jwtSSOTokenCacheKey = "s3eDVtuRqj7kIXsMUnLPDUtrUHPqtAHhAxwWOwTIUtc=";
-        //TODO call aruna code to get the cache key
-        return jwtSSOTokenCacheKey;
-//        return null;
+        String jwtSSOToken = JwtSSOTokenHelper.getJwtSSOToken(subject);
+        return JwtSSOTokenHelper.getCustomCacheKeyFromJwtSSOToken(jwtSSOToken);
     }
 }

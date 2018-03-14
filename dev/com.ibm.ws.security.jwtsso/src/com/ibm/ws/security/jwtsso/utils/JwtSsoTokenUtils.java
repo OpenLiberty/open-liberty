@@ -22,8 +22,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.jwt.Claims;
+import com.ibm.websphere.security.jwt.InvalidBuilderException;
 import com.ibm.websphere.security.jwt.InvalidConsumerException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
+import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
@@ -50,14 +52,13 @@ public class JwtSsoTokenUtils {
 	public JwtSsoTokenUtils(String builderId, String consumerId) {
 		this.builderId = builderId;
 		this.consumerId = consumerId;
-		// try {
-		// JwtBuilder.create(builderId); // fail fast if id or config is
-		// // invalid
-		// consumer = JwtConsumer.create(consumerId);
-		// } catch (InvalidConsumerException | InvalidBuilderException e) {
-		// // ffdc
-		// isValid = false;
-		// }
+		try {
+			JwtBuilder.create(builderId); // fail fast if id or config is
+			consumer = JwtConsumer.create(consumerId);
+		} catch (InvalidConsumerException | InvalidBuilderException e) {
+			// ffdc
+			isValid = false;
+		}
 	}
 
 	/**

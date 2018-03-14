@@ -111,7 +111,7 @@ public class TAIMappingHelper {
         }
         customProperties.put(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN, jwtPrincipal);
 
-        subject.getPrivateCredentials().add(jwtPrincipal);
+        //        subject.getPrivateCredentials().add(jwtPrincipal);
         subject.getPrivateCredentials().add(customProperties);
 
         if (tc.isDebugEnabled()) {

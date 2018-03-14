@@ -78,7 +78,8 @@ public class AuthenticationDataCallbackHandler implements CallbackHandler {
                 ((TokenCallback) callback).setToken(token);
             } else if (callback instanceof JwtTokenCallback) {
                 String token = (String) authenticationData.get(JWT_TOKEN);
-                ((JwtTokenCallback) callback).setToken(token);
+                if (token != null)
+                    ((JwtTokenCallback) callback).setToken(token);
             } else if (callback instanceof WSX509CertificateChainCallback) {
                 X509Certificate[] certChain = (X509Certificate[]) authenticationData.get(CERTCHAIN);
                 ((WSX509CertificateChainCallback) callback).setX509CertificateChain(certChain);
