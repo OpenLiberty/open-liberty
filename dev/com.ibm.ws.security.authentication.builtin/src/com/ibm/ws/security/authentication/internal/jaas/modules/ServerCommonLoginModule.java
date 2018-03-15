@@ -133,13 +133,10 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
                                               String authMethod) throws Exception {
         Principal principal = new WSPrincipal(newSecurityName, accessId, authMethod);
         subject.getPrincipals().add(principal);
-        //if (securityName != null && !securityName.equals(urAuthenticatedId)) {       //From zOS point of view, it had to be this way, but breaks unittest 
-        if (urAuthenticatedId != null && !urAuthenticatedId.equals(securityName)) {    //I did not change this line 
-	    if (securityName != null) {
-		Hashtable<String, String> subjectHash = new Hashtable<String, String>();
-		subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, securityName);
-		subject.getPrivateCredentials().add(subjectHash);
-	    }
+        if (urAuthenticatedId != null && !urAuthenticatedId.equals(securityName)) {  
+	    Hashtable<String, String> subjectHash = new Hashtable<String, String>();
+	    subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, urAuthenticatedId);
+	    subject.getPrivateCredentials().add(subjectHash);
         }
         CredentialsService credentialsService = getCredentialsService();
         credentialsService.setCredentials(subject);
