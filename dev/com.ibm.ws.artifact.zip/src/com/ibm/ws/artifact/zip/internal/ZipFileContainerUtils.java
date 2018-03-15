@@ -3,7 +3,7 @@
  *
  * OCO Source Materials
  *
- * Copyright IBM Corp. 2017
+ * Copyright IBM Corp. 2018
  *
  * The source code for this program is not published or otherwise divested
  * of its trade secrets, irrespective of what has been deposited with the
@@ -86,7 +86,7 @@ public class ZipFileContainerUtils {
         private final ArtifactContainer nestedContainer;
         private final String parentPath;
 
-        private final Integer[] locations;
+        private final int[] locations;
         private int index;
 
         @Trivial
@@ -117,7 +117,7 @@ public class ZipFileContainerUtils {
                 throw new NoSuchElementException();
             }
 
-            int location = locations[index++].intValue();
+            int location = locations[index++];
 
             Map.Entry<String, ZipEntry> nextEntry = allZipEntries[location];
             String nextPath = nextEntry.getKey();
@@ -158,7 +158,7 @@ public class ZipFileContainerUtils {
 
             ZipFileEntry nextZipFileEntry = rootContainer.createEntry(
                 nestedContainer,
-                entryName, a_entryPath, entryPath,
+                entryName, a_entryPath,
                 location, nextZipEntry);
 
             return nextZipFileEntry;
@@ -200,20 +200,68 @@ public class ZipFileContainerUtils {
      */
     public static class IteratorData {
         public final String path;
-        public final Integer[] locations;
+        public final int[] locations;
 
         @Trivial
-        public IteratorData(String path, List<Integer> locations) {
+        public IteratorData(String path, int[] locations) {
             this.path = path;
-            this.locations = locations.toArray( new Integer[ locations.size() ] );
+            this.locations = locations;
         }
     }
 
+    private static final List<Integer> EMPTY_OFFSETS = null;
+
+	private static final int[] EMPTY_OFFSETS_ARRAY = new int[0];
+
+	/**
+	 * Allocate an offsets list.
+	 * 
+	 * If no discarded list is available, allocate a new list.
+	 * 
+	 * Otherwise, use one of the discarded lists.
+	 * 
+	 * @param offsetsStorage Storage of discarded offset lists.
+	 * 
+	 * @return An allocated offsets list.
+	 */
+    private static List<Integer> allocateOffsets(List<List<Integer>> offsetsStorage) {
+    	if ( offsetsStorage.isEmpty() ) {
+    		return new ArrayList<Integer>();
+    	} else {
+    		return ( offsetsStorage.remove(0) );
+    	}
+    }
+    
     /**
-     * Empty locations collection.  Used to avoid allocating a locations array
-     * for leaf entries (which is almost always most of the entries of a zip file).
+     * Release an offsets list to storage.
+     * 
+     * Answer the offsets list converted to a raw array of integers.
+     * 
+     * @param offsetsStorage Storage into which to place the
+     *     offset list.
+     * @param offsets The offset list which is to be released to storage.
+     * 
+     * @return The offset list converted to a raw list of integers.
      */
-    private static final List<Integer> EMPTY_LOCATIONS = null;
+    private static int[] releaseOffsets(List<List<Integer>> offsetsStorage, List<Integer> offsets) {    	
+    	int numValues = offsets.size();
+    	
+    	int[] extractedValues;
+    	
+    	if ( numValues == 0 ) {
+    		extractedValues = EMPTY_OFFSETS_ARRAY;
+    	} else {
+    		extractedValues = new int[numValues];
+    		for ( int valueNo = 0; valueNo < numValues; valueNo++ ) {
+    			extractedValues[valueNo] = offsets.get(valueNo).intValue();
+    		}
+    	}
+
+    	offsets.clear();
+    	offsetsStorage.add(offsets);
+
+    	return extractedValues;
+	}
 
     /**
      * Collect the iterator data for a collection of zip entries.
@@ -227,87 +275,117 @@ public class ZipFileContainerUtils {
      *
      * See {@link IteratorData} for additional details.
      *
-     * @param entryData The data for which to collect iterator data.
+     * @param zipEntryData The data for which to collect iterator data.
      *
      * @return A table of iterator data for the zip entries.
      */
     @Trivial
-    public static Map<String, IteratorData> collectIteratorData(Map.Entry<String, ZipEntry>[] entryData) {
+    public static Map<String, IteratorData> collectIteratorData(Map.Entry<String, ZipEntry>[] zipEntryData) {
         Map<String, IteratorData> allNestingData = new HashMap<String, IteratorData>();
 
-        String r_lastPath = ""; // Root
-        int lastLen = 0;
-        List<Integer> lastLocations = EMPTY_LOCATIONS;
+        // Re-use offset lists.  There can be a lot of these
+        // created for a busy tree.  Offset lists are only needed
+        // for entries from the current entry back to the root.
 
-        int stackLen = 0;
+        List<List<Integer>> offsetsStorage = new ArrayList<List<Integer>>(32);
+
+        String r_lastPath = ""; // Root
+        int r_lastPathLen = 0;
+
+        List<Integer> offsets = EMPTY_OFFSETS;
+
+        int nestingDepth = 0;
 
         List<String> r_pathStack = new ArrayList<String>(32);
-        List<List<Integer>> locationsStack = new ArrayList<List<Integer>>(32);
+        List<List<Integer>> offsetsStack = new ArrayList<List<Integer>>(32);
 
-        for ( int nextLocation = 0; nextLocation < entryData.length; nextLocation++ ) {
-            String r_nextPath = entryData[nextLocation].getKey();
-            int nextLen = r_nextPath.length();
+        for ( int nextOffset = 0; nextOffset < zipEntryData.length; nextOffset++ ) {
+            String r_nextPath = zipEntryData[nextOffset].getKey();
+            int r_nextPathLen = r_nextPath.length();
 
-            while ( !isChildOf(r_nextPath, nextLen, r_lastPath, lastLen) ) {
-                if ( lastLocations != EMPTY_LOCATIONS ) {
-                    IteratorData nestingData = new IteratorData(r_lastPath, lastLocations);
-                    allNestingData.put(r_lastPath, nestingData);
+            // The next path may be on a different branch.
+            //
+            // Backup until a common branch is located, emitting nesting data
+            // for each branch we cross.
+
+            while ( !isChildOf(r_nextPath, r_nextPathLen, r_lastPath, r_lastPathLen) ) {
+                if ( offsets != EMPTY_OFFSETS ) {
+                    allNestingData.put(
+                    	r_lastPath,
+                    	new IteratorData( r_lastPath, releaseOffsets(offsetsStorage, offsets) ) );
                 }
 
-                stackLen--;
-
-                r_lastPath = r_pathStack.remove(stackLen);
-                lastLen = r_lastPath.length();
-
-                lastLocations = locationsStack.remove(stackLen);
+                nestingDepth--;
+                r_lastPath = r_pathStack.remove(nestingDepth);
+                r_lastPathLen = r_lastPath.length();
+                offsets = offsetsStack.remove(nestingDepth);
             }
 
-            Integer nextLocationObj = Integer.valueOf(nextLocation);
+            // The entry is now guaranteed to be on the
+            // same branch as the last entry.
+            //
+            // But, the entry be more than one nesting level
+            // deeper than the last entry.
+            //
+            // Create and add new offset collections for each
+            // new nesting level.  There may be additional
+            // entries for the new nesting levels besides the
+            // entry.
 
-            int lastSlashLoc = lastLen + 1;
+            Integer nextOffsetObj = Integer.valueOf(nextOffset);
+
+            int lastSlashLoc = r_lastPathLen + 1;
             while ( lastSlashLoc != -1 ) {
                 int nextSlashLoc = r_nextPath.indexOf('/', lastSlashLoc);
-                String useNextPath;
-                int useNextLen;
+                String r_nextPartialPath;
+                int r_nextPartialPathLen;
                 if ( nextSlashLoc == -1 ) {
-                    useNextPath = r_nextPath;
-                    useNextLen = nextLen;
+                    r_nextPartialPath = r_nextPath;
+                    r_nextPartialPathLen = r_nextPathLen;
                     lastSlashLoc = nextSlashLoc;
                 } else {
-                    useNextPath = r_nextPath.substring(0, nextSlashLoc);
-                    useNextLen = nextSlashLoc;
+                    r_nextPartialPath = r_nextPath.substring(0, nextSlashLoc);
+                    r_nextPartialPathLen = nextSlashLoc;
                     lastSlashLoc = nextSlashLoc + 1;
                 }
 
-                if ( lastLocations == null ) {
-                    lastLocations = new ArrayList<Integer>();
+                if ( offsets == EMPTY_OFFSETS ) {
+                    offsets = allocateOffsets(offsetsStorage);
                 }
-                lastLocations.add(nextLocationObj);
+                offsets.add(nextOffsetObj);
 
-                stackLen++;
+                nestingDepth++;
                 r_pathStack.add(r_lastPath);
-                locationsStack.add(lastLocations);
+                offsetsStack.add(offsets);
 
-                r_lastPath = useNextPath;
-                lastLen = useNextLen;
+                r_lastPath = r_nextPartialPath;
+                r_lastPathLen = r_nextPartialPathLen;
 
-                lastLocations = EMPTY_LOCATIONS;
+                offsets = EMPTY_OFFSETS;
             }
         }
 
-        while ( stackLen > 0 ) {
-            if ( lastLocations != EMPTY_LOCATIONS ) {
-                IteratorData nestingData = new IteratorData(r_lastPath, lastLocations);
-                allNestingData.put(r_lastPath, nestingData);
+        // Usually, we are left some nestings beneath the root.
+        //
+        // Finish off each of those nestings.
+
+        while ( nestingDepth > 0 ) {
+            if ( offsets != EMPTY_OFFSETS ) {
+                allNestingData.put(
+                	r_lastPath,
+                	new IteratorData( r_lastPath, releaseOffsets(offsetsStorage, offsets) ) );
             }
-            stackLen--;
-            r_lastPath = r_pathStack.remove(stackLen);
-            lastLocations = locationsStack.remove(stackLen);
+            nestingDepth--;
+            r_lastPath = r_pathStack.remove(nestingDepth);
+            offsets = offsetsStack.remove(nestingDepth);
         }
 
-        if ( lastLocations != EMPTY_LOCATIONS ) {
-            IteratorData nestingData = new IteratorData(r_lastPath, lastLocations);
-            allNestingData.put(r_lastPath, nestingData);
+        // If root data remains, finish that off too.
+
+        if ( offsets != EMPTY_OFFSETS ) {
+            allNestingData.put(
+            	r_lastPath,
+            	new IteratorData( r_lastPath, releaseOffsets(offsetsStorage, offsets) ) );
         }
 
         return allNestingData;
@@ -390,7 +468,7 @@ public class ZipFileContainerUtils {
                 }
             });
         }
-
+        
         @SuppressWarnings("unchecked")
         Map.Entry<String, ZipEntry>[] entries =
             entriesList.toArray( new Map.Entry[entriesList.size()] );

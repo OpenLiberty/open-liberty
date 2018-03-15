@@ -1,6 +1,5 @@
 /*******************************************************************************
-/*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,16 +26,10 @@ import java.security.PrivilegedExceptionAction;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 /**
- * A set of utilities for working with Files
+ * File utilities.
  */
 public class FileUtils {
 
-    /**
-     * Execute the {@link File#isFile()} from within a {@link PrivilegedAction}.
-     *
-     * @param f
-     * @return
-     */
     public static boolean fileIsFile(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -45,19 +38,12 @@ public class FileUtils {
                 public Boolean run() {
                     return target.isFile();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Execute the {@link File#isDirectory()} from within a {@link PrivilegedAction}.
-     *
-     * @param f
-     * @return
-     */
     public static boolean fileIsDirectory(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -66,19 +52,12 @@ public class FileUtils {
                 public Boolean run() {
                     return target.isDirectory();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Execute the {@link File#exists()} from within a {@link PrivilegedAction}.
-     *
-     * @param target
-     * @return
-     */
     public static synchronized boolean fileExists(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -87,19 +66,12 @@ public class FileUtils {
                 public Boolean run() {
                     return target.exists();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Execute the {@link File#length()} from within a {@link PrivilegedAction}.
-     *
-     * @param target
-     * @return
-     */
     public static long fileLength(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -108,19 +80,12 @@ public class FileUtils {
                 public Long run() {
                     return target.length();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Execute the {@link File#listFiles()} from within a {@link PrivilegedAction}.
-     *
-     * @param f
-     * @return
-     */
     public static File[] listFiles(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -129,19 +94,12 @@ public class FileUtils {
                 public File[] run() {
                     return target.listFiles();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Execute the {@link File#list()} from within a {@link PrivilegedAction}.
-     *
-     * @param f
-     * @return
-     */
     public static String[] list(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -150,16 +108,12 @@ public class FileUtils {
                 public String[] run() {
                     return target.list();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Create a new {@link InputStream} for the file within a {@link PrivilegedAction}.
-     */
     public static InputStream getInputStream(final File target) throws FileNotFoundException {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -181,9 +135,6 @@ public class FileUtils {
         }
     }
 
-    /**
-     * Create a new {@link FileOutputStream} for the file within a {@link PrivilegedAction}.
-     */
     public static FileOutputStream getFileOutputStream(final File target) throws FileNotFoundException {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -205,12 +156,6 @@ public class FileUtils {
         }
     }
 
-    /**
-     * Execute the {@link File#lastModified()} from within a {@link PrivilegedAction}.
-     *
-     * @param target The file to get the last modified for
-     * @return The last modified for the file
-     */
     public static long fileLastModified(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -219,21 +164,12 @@ public class FileUtils {
                 public Long run() {
                     return target.lastModified();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Execute the {@link File#setLastModified()} from within a {@link PrivilegedAction}.
-     *
-     * @param target The file to get the last modified for
-     * @param lastModified The last modified time to set.
-     *
-     * @return True or false telling if the last modified time was set.
-     */
     public static boolean fileSetLastModified(final File target, final long lastModified) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -248,12 +184,6 @@ public class FileUtils {
         }
     }
 
-    /**
-     * Execute the {@link File#canRead()} from within a {@link PrivilegedAction}.
-     *
-     * @param target The file to test if it can be read
-     * @return <code>true</code> if the file can be read
-     */
     public static boolean fileCanRead(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -262,19 +192,12 @@ public class FileUtils {
                 public Boolean run() {
                     return target.canRead();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Execute the {@link File#canWrite()} from within a {@link PrivilegedAction}.
-     *
-     * @param target The file to test if it can be written
-     * @return <code>true</code> if the file can be written
-     */
     public static boolean fileCanWrite(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -283,20 +206,12 @@ public class FileUtils {
                 public Boolean run() {
                     return target.canWrite();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Calls {@link File#mkdirs()} on the specified <code>target</code> from
-     * within a {@link PrivilegedAction}.
-     *
-     * @param target The tarket to make a directory for
-     * @return <code>true</code> if this succeeded.
-     */
     public static synchronized boolean fileMkDirs(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -305,19 +220,12 @@ public class FileUtils {
                 public Boolean run() {
                     return target.mkdirs();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Delete file
-     *
-     * @parm file or empty directory to delete
-     * @return <code>true</code> if file was deleted
-     */
     public static boolean fileDelete(final File file) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -326,28 +234,16 @@ public class FileUtils {
                 public Boolean run() {
                     return file.delete();
                 }
-
             });
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    /**
-     * Calls {@link File#mkdirs()} and {@link File#exists()} on the specified <code>target</code>
-     *
-     * @param target The target to check for existence or to create if it doesn't exist
-     * @return <code>true</code> if either call succeeded.
-     */
     public static boolean ensureDirExists(File dir) {
         return (fileMkDirs(dir) || fileExists(dir));
     }
 
-    /**
-     * Close the closeable object
-     *
-     * @param closeable
-     */
     public static boolean tryToClose(Closeable closeable) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
@@ -356,7 +252,7 @@ public class FileUtils {
                     closeable.close();
                     return true;
                 } catch (IOException e) {
-                    // ignore
+                    // FFDC
                 }
             }
         } finally {
@@ -387,24 +283,10 @@ public class FileUtils {
         }
     }
 
-    /**
-     * Set the file permissions of the file to be user rw only.
-     * <p>
-     * This is a best effort attempt as Windows does NOT play
-     * nicely with file perms.
-     *
-     * @param an existing File
-     */
     public static boolean setUserReadWriteOnly(final File file) {
         return AccessController.doPrivileged(new SetFilePermsAction(file));
     }
 
-    /**
-     * Calls {@link File#createNewFile()} on the specified <code>target</code>
-     *
-     * @param target The target to create if it doesn't exist
-     * @return <code>true</code> if call succeeded.
-     */
     public static Boolean fileCreate(final File target) throws IOException {
         Object token = ThreadIdentityManager.runAsServer();
         try {

@@ -3,7 +3,7 @@
  *
  * OCO Source Materials
  *
- * Copyright IBM Corp. 2011, 2017
+ * Copyright IBM Corp. 2011, 2018
  *
  * The source code for this program is not published or otherwise divested
  * of its trade secrets, irrespective of what has been deposited with the
@@ -49,13 +49,11 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
      * @param name The name of the entry from which the container was created.
      * @param a_path The absolute path to the entry from which the container
      *     was created.
-     * @param r_path The relative path to the entry from which the container
-     *     was created.
      */
     public ZipFileNestedDirContainer(
         ZipFileContainer rootContainer,
         int location, ZipFileEntry entryInEnclosingContainer,
-        String name, String a_path, String r_path) {
+        String name, String a_path) {
 
         this.rootContainer = rootContainer;
 
@@ -64,7 +62,6 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
 
         this.name = name;
         this.a_path = a_path;
-        this.r_path = r_path;
     }
 
     // Root container ...
@@ -92,8 +89,7 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
         return rootContainer.getArtifactNotifier();
     }
 
-    // The local name, absolute path, and relative path of
-    // the nested container.
+    // The local name and absolute path
     //
     // Storage of both paths adds overhead.  Most containers should
     // have many fewer nested containers than they have entries, in
@@ -101,7 +97,6 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
 
     private final String name;
     private final String a_path;
-    private final String r_path;
 
     @Trivial
     @Override
@@ -122,7 +117,7 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
 
     @Trivial
     public String getRelativePath() {
-        return r_path;
+        return a_path.substring(1);
     }
 
     @Override

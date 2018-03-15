@@ -3,7 +3,7 @@
  *
  * OCO Source Materials
  *
- * Copyright IBM Corp. 2011, 2017
+ * Copyright IBM Corp. 2011, 2018
  *
  * The source code for this program is not published or otherwise divested
  * of its trade secrets, irrespective of what has been deposited with the
@@ -851,23 +851,24 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     @Trivial
     protected ZipFileEntry createEntry(
         ArtifactContainer nestedContainer,
-        String entryName, String a_entryPath, String r_entryPath,
+        String entryName, String a_entryPath,
         int entryOffset, ZipEntry zipEntry) {
 
         if ( (zipEntry != null) && !zipEntry.isDirectory() ) {
             return new ZipFileEntry(
                 this, nestedContainer,
                 entryOffset, zipEntry,
-                entryName, a_entryPath, r_entryPath);
+                entryName, a_entryPath);
 
         } else {
+            String r_entryPath = a_entryPath.substring(1);
             synchronized ( nestedContainerEntriesLock ) {
                 ZipFileEntry nestedContainerEntry = nestedContainerEntries.get(r_entryPath);
                 if ( nestedContainerEntry == null ) {
                     nestedContainerEntry = new ZipFileEntry(
                         this, nestedContainer,
                         entryOffset, zipEntry,
-                        entryName, a_entryPath, r_entryPath);
+                        entryName, a_entryPath);                   
                     nestedContainerEntries.put(r_entryPath,  nestedContainerEntry);
                 }
                 return nestedContainerEntry;
@@ -881,19 +882,18 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
      *
      * @param entryName The simple name of the entry.
      * @param a_entryPath The absolute path of the entry.
-     * @param r_entryPath The relative path of the entry.
      *
      * @return The zip entry for the zip file entry at the specified path.
      */
     @Trivial
-    protected ZipFileEntry createEntry(
-        String entryName, String a_entryPath, String r_entryPath) {
+    protected ZipFileEntry createEntry(String entryName, String a_entryPath) {
 
         Map.Entry<String, ZipEntry>[] useZipEntries = getZipEntries();
         if ( useZipEntries.length == 0 ) {
             return null;
         }
 
+        String r_entryPath = a_entryPath.substring(1);
         int location = locatePath(useZipEntries, r_entryPath);
 
         ZipEntry zipEntry;
@@ -907,7 +907,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
         return createEntry(
             null,
-            entryName, a_entryPath, r_entryPath,
+            entryName, a_entryPath,
             location, zipEntry);
     }
 
@@ -1028,7 +1028,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
         return createEntry(
             null,
-            entryName, a_entryPath, r_entryPath,
+            entryName, a_entryPath,
             location, zipEntry);
     }
 

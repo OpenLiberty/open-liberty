@@ -3,7 +3,7 @@
  *
  * OCO Source Materials
  *
- * Copyright IBM Corp. 2011, 2017
+ * Copyright IBM Corp. 2011, 2018
  *
  * The source code for this program is not published or otherwise divested
  * of its trade secrets, irrespective of what has been deposited with the
@@ -55,35 +55,33 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
      * {@link ZipFileNestedDirContainer} when the zip entry is null or is a
      * directory entry.
      *
-     * @param rootContainer The zip file container of this entry.
+     * The enclosing container is either a {@link ZipFileContainer} or a
+     * {@link ZipFileNestedDirContainer}.  The common type of these is
+     * {@link ArtifactContainer}.  (TODO: The common type does not
+     * express the commonality between the actually possible types.)
+     *
+     * @param rootContainer The root zip file type container of this entry.
+     * @param enclosingContainer The container enclosing this entry.
      * @param offset The offset in the root zip container to the zip entry.
      * @param zipEntry The zip entry of this entry.
      * @param name The name of this entry.
      * @param a_path The absolute path of this entry.
-     * @param r_path The relative path of this entry.
      */
     @Trivial
     protected ZipFileEntry(
         ZipFileContainer rootContainer,
         ArtifactContainer enclosingContainer,
         int offset, ZipEntry zipEntry,
-        String name, String a_path, String r_path) {
+        String name, String a_path) {
 
         this.rootContainer = rootContainer;
-
         this.enclosingContainer = enclosingContainer;
-        if ( this.enclosingContainer == null ) {
-            this.enclosingContainerLock = new EnclosingContainerLock();
-        } else {
-            this.enclosingContainerLock = null;
-        }
 
         this.offset = offset;
         this.zipEntry = zipEntry;
 
         this.name = name;
         this.a_path = a_path;
-        this.r_path = r_path;
     }
 
     //
@@ -217,7 +215,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
             @Override
             public void close() throws IOException {
                 if ( !isClosed ) {
-                    synchronized(this) {
+                    synchronized( this ) {
                         if ( !isClosed ) {
                             try {
                                 super.close(); // throws IOException
@@ -309,7 +307,6 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     //
 
     private final String name;
-    private final String r_path;
     private final String a_path;
 
     @Trivial
@@ -331,7 +328,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
 
     @Trivial
     public String getRelativePath() {
-        return r_path;
+        return a_path.substring(1); // Remove the leading '/'.
     }
 
     /**
@@ -358,10 +355,6 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     // directory containers.  Nested directory entries never use the delegating
     // zip file factory method of the root container.
 
-    private static class LocalContainerLock {
-        // EMPTY
-    }
-    private final LocalContainerLock localContainerLock = new LocalContainerLock();
     private volatile ZipFileNestedDirContainer localContainer;
 
     protected ZipFileNestedDirContainer convertToLocalContainer() {
@@ -369,8 +362,10 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
             return null;
         } else {
             if ( localContainer == null ) {
-                synchronized( localContainerLock ) {
-                    localContainer = new ZipFileNestedDirContainer(rootContainer, offset, this, name, a_path, r_path);
+                synchronized ( this) { // Having a new object to guard 'localContainer' is too many objects.
+                	if ( localContainer == null ) {
+                		localContainer = new ZipFileNestedDirContainer(rootContainer, offset, this, name, a_path);
+                	}
                 }
             }
             return localContainer;
@@ -379,10 +374,6 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
 
     //
 
-    private static class EnclosingContainerLock {
-        // EMPTY
-    }
-    private final EnclosingContainerLock enclosingContainerLock;
     private volatile ArtifactContainer enclosingContainer;
 
     /**
@@ -452,7 +443,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
         // That is also a public API.
 
         if ( enclosingContainer == null ) {
-            synchronized(enclosingContainerLock) {
+            synchronized( this ) { // Having a new object to guard 'enclosingContainer' is too many objects.
                 if ( enclosingContainer == null ) {
                     String a_enclosingPath = PathUtils.getParent(a_path);
                     int parentLen = a_enclosingPath.length();
@@ -468,7 +459,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
                             enclosingName = r_enclosingPath.substring(lastSlash + 1); // r_enclosingPath = "parent/child/name"
                         }
                         ZipFileEntry entryInEnclosingContainer =
-                            rootContainer.createEntry(enclosingName, a_enclosingPath, r_enclosingPath);
+                            rootContainer.createEntry(enclosingName, a_enclosingPath);
                         enclosingContainer = entryInEnclosingContainer.convertToLocalContainer();
                     }
                 }
