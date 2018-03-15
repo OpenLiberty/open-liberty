@@ -135,6 +135,9 @@ public class HttpChannelConfig {
     /** PI81572 Purge the remaining response body off the wire when clear is called */
     private boolean purgeRemainingResponseBody = true;
 
+    /** Set as an attribute to the HttpEndpoint **/
+    private Boolean useH2ProtocolAttribute = null;
+
     /**
      * Constructor for an HTTP channel config object.
      *
@@ -163,6 +166,7 @@ public class HttpChannelConfig {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "parseConfig: " + cc.getName());
         }
+
         Map<Object, Object> propsIn = cc.getPropertyBag();
 
         Map<Object, Object> props = new HashMap<Object, Object>();
@@ -170,7 +174,7 @@ public class HttpChannelConfig {
         String key;
         Object value;
 
-        // match keys independent of csae.
+        // match keys independent of case.
         // So this is a bit ugly, but the parsing code is not state independent, meaning if it parses A then and
         // only then it will parse B, and we can't be certain that only properties that we know about from the HTTP Config
         // are in this Map (so we can't just lower case everything).  So, to be case independent we need to convert
@@ -350,9 +354,15 @@ public class HttpChannelConfig {
                 continue;
             }
 
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION)) {
+                props.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, value);
+                continue;
+            }
+
             props.put(key, value);
         }
 
+        parseProtocolVersion(props);
         parsePersistence(props);
         parseOutgoingVersion(props);
         parseBufferType(props);
@@ -1239,6 +1249,41 @@ public class HttpChannelConfig {
                 Tr.event(tc, "Config: PurgeRemainingResponseBody is " + shouldPurgeRemainingResponseBody());
             }
         }
+    }
+
+    /**
+     * Check the configuration to see if there is a desired http protocol version
+     * that has been provided for this HTTP Channel
+     *
+     * @param props
+     */
+    private void parseProtocolVersion(Map<?, ?> props) {
+        Object protocolVersionProperty = props.get(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION);
+        if (null != protocolVersionProperty) {
+
+            String protocolVersion = ((String) protocolVersionProperty).toLowerCase();
+            if (HttpConfigConstants.PROTOCOL_VERSION_11.equals(protocolVersion)) {
+                this.useH2ProtocolAttribute = Boolean.FALSE;
+            } else if (HttpConfigConstants.PROTOCOL_VERSION_2.equals(protocolVersion)) {
+                this.useH2ProtocolAttribute = Boolean.TRUE;
+
+            }
+
+            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled()) && this.useH2ProtocolAttribute != null) {
+                Tr.event(tc, "HTTP Channel Config: versionProtocol has been set to " + protocolVersion);
+            }
+
+        }
+
+    }
+
+    /**
+     * Configured http protocol version used by this HttpChannel
+     *
+     * @return
+     */
+    public Boolean getUseH2ProtocolAttribute() {
+        return this.useH2ProtocolAttribute;
     }
 
     /**
