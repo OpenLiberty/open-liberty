@@ -172,7 +172,7 @@ paths:
         variables:
           id:
             default: "1"
-            description: id of the review
+            description: id of the booking
     put:
       tags:
       - bookings
@@ -193,9 +193,9 @@ paths:
       - name: id
         in: path
         style: simple
-        deprecrated: false
+        deprecated: false
         allowEmptyValue: true
-        explode: false
+        description: id of the booking
         explode: false
         description: ID of the booking
         example: "1"
@@ -240,7 +240,7 @@ paths:
           description: Booking not found
       callbacks:
         testCallback:
-          http://localhost:9080/oas3-airlines/reviews: {}
+          http://localhost:9080/oas3-airlines/bookings: {}
     delete:
       tags:
       - bookings
@@ -298,7 +298,22 @@ paths:
                 description: id of the new review
       callbacks:
         testCallback:
-          http://localhost:9080/oas3-airlines/reviews: {}
+          http://localhost:9080/oas3-airlines/reviews:
+            get:
+              tags:
+              - reviews
+              summary: get all the reviews
+              operationId: getReviewCallback
+              responses:
+                200:
+                  description: successful operation
+                  content:
+                    application/json:
+                      schema:
+                        type: array
+                        items:
+                          oneOf:
+                          - $ref: '#/components/schemas/Review'
       security:
       - reviewoauth2:
         - write:reviews
