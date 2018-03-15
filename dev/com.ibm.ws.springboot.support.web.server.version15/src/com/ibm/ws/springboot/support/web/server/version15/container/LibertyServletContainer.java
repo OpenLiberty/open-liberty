@@ -257,6 +257,8 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         }
         String keyStoreURLString = keyStoreURL.toString();
         String keyStoreName = keyStoreURLString.substring(keyStoreURLString.lastIndexOf("/") + 1);
+        int dot = keyStoreName.lastIndexOf(".");
+        keyStoreName = keyStoreName.substring(0, dot) + "-" + springBootConfigId + keyStoreName.substring(dot);
 
         File securityDir = new File(configFactory.getServerDir(), SECURITY_DIR);
 
@@ -317,6 +319,8 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         }
         String trustStoreURLString = trustStoreURL.toString();
         String trustStoreName = trustStoreURLString.substring(trustStoreURLString.lastIndexOf("/") + 1);
+        int dot = trustStoreName.lastIndexOf(".");
+        trustStoreName = trustStoreName.substring(0, dot) + "-" + springBootConfigId + trustStoreName.substring(dot);
 
         File trustStoreDir = new File(configFactory.getServerDir(), SECURITY_DIR);
         File trustStoreFile = new File(trustStoreDir, trustStoreName);
