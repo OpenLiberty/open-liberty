@@ -331,21 +331,18 @@ public class OpenAPIParserTest {
 
     @Test
     public void testReviewoauth2Scope() {
+
         OAuthFlowsImpl flows = new OAuthFlowsImpl();
+
         assertNotNull(result);
         assertNotNull(result.getOpenAPI());
+
         flows = (OAuthFlowsImpl) result.getOpenAPI().getComponents().getSecuritySchemes().get("reviewoauth2").getFlows();
         assertNotNull(flows);
         assertNotNull(flows.getImplicit());
         assertNotNull(flows.getImplicit().getScopes());
         assertEquals(flows.getImplicit().getScopes().get("write:reviews"), "create a review");
-    }
 
-    @Test
-    public void testBookingoauth2Scope() {
-        OAuthFlowsImpl flows = new OAuthFlowsImpl();
-        assertNotNull(result);
-        assertNotNull(result.getOpenAPI());
         flows = (OAuthFlowsImpl) result.getOpenAPI().getComponents().getSecuritySchemes().get("bookingoauth2").getFlows();
         assertNotNull(flows);
         assertNotNull(flows.getImplicit());
