@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.websphere.ras.SharedTr;
@@ -31,6 +32,7 @@ import test.common.SharedOutputManager;
  * only ensure class-level annotation has precedence over package-level
  * annotation
  */
+@Ignore
 @TraceOptions(traceGroup = "singleclassgroup")
 public class TrRegisterGroupsTest2 {
     static {

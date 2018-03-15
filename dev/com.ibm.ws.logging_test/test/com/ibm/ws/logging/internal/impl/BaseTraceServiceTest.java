@@ -26,16 +26,17 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import test.LoggingTestUtils;
-import test.TestConstants;
-import test.common.SharedOutputManager;
 
 import com.ibm.websphere.ras.SharedTraceComponent;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.ws.logging.internal.PackageProcessor;
+
+import test.LoggingTestUtils;
+import test.TestConstants;
+import test.common.SharedOutputManager;
 
 /**
  */
@@ -76,17 +77,17 @@ public class BaseTraceServiceTest extends java.util.ListResourceBundle {
     }
 
     private final static Object[][] resources = {
-                                                 { "testAuditService", "testAuditService" },
-                                                 { "testAuditService-1", "testAuditService-1" + sf },
-                                                 { "testError", "testError" + sf },
-                                                 { "testError-1", "testError-1" + s },
-                                                 { "testError-2", "testError-2" + sf },
-                                                 { "testFatal", "testFatal" + s },
-                                                 { "testFatal-1", "testFatal-1" + sf },
-                                                 { "testInfo", "testInfo" + s },
-                                                 { "testInfo-1", "testInfo-1" + sf },
-                                                 { "testWarning", "testWarning" + s },
-                                                 { "testWarning-1", "testWarning-1" + sf },
+                                                  { "testAuditService", "testAuditService" },
+                                                  { "testAuditService-1", "testAuditService-1" + sf },
+                                                  { "testError", "testError" + sf },
+                                                  { "testError-1", "testError-1" + s },
+                                                  { "testError-2", "testError-2" + sf },
+                                                  { "testFatal", "testFatal" + s },
+                                                  { "testFatal-1", "testFatal-1" + sf },
+                                                  { "testInfo", "testInfo" + s },
+                                                  { "testInfo-1", "testInfo-1" + sf },
+                                                  { "testWarning", "testWarning" + s },
+                                                  { "testWarning-1", "testWarning-1" + sf },
     };
 
     @After
@@ -252,6 +253,7 @@ public class BaseTraceServiceTest extends java.util.ListResourceBundle {
 
     }
 
+    @Ignore
     @Test
     public void testAuditService() {
         final String m = "testAuditService";
@@ -537,6 +539,7 @@ public class BaseTraceServiceTest extends java.util.ListResourceBundle {
         }
     }
 
+    @Ignore
     @Test
     public void testWarning() {
         final String m = "testWarning";

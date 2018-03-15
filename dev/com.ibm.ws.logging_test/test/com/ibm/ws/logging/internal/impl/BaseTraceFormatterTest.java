@@ -25,10 +25,8 @@ import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import test.TestConstants;
-import test.common.SharedOutputManager;
 
 import com.ibm.ejs.ras.Untraceable;
 import com.ibm.websphere.ras.DataFormatHelper;
@@ -36,9 +34,13 @@ import com.ibm.websphere.ras.Traceable;
 import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
 
+import test.TestConstants;
+import test.common.SharedOutputManager;
+
 /**
  *
  */
+@Ignore
 public class BaseTraceFormatterTest {
     static SharedOutputManager outputMgr;
     static final Object idObj = new Object() {};
@@ -78,82 +80,76 @@ public class BaseTraceFormatterTest {
     static final BaseTraceFormatter enhancedFormatter = new BaseTraceFormatter(TraceFormat.ENHANCED);
 
     enum StringResults {
-        testNullAll("] 0000000b               2   null",
-                    "] 0000000b id=                                                                      2 null",
-                    "] 0000000b  2 UOW= source= thread=[Test worker]" + LoggingConstants.nl + "          null"),
+        testNullAll("] 0000000b               2   null", "] 0000000b id=                                                                      2 null", "] 0000000b  2 UOW= source= thread=[Test worker]"
+                                                                                                                                                       + LoggingConstants.nl
+                                                                                                                                                       + "          null"),
 
-        testSource("] 0000000b source        2   null",
-                   "] 0000000b id=         source                                                       2 null",
-                   "] 0000000b  2 UOW= source=source thread=[Test worker]" + LoggingConstants.nl + "          null"),
+        testSource("] 0000000b source        2   null", "] 0000000b id=         source                                                       2 null", "] 0000000b  2 UOW= source=source thread=[Test worker]"
+                                                                                                                                                      + LoggingConstants.nl
+                                                                                                                                                      + "          null"),
 
-        testClass("] 0000000b class         2 class  null",
-                  "] 0000000b id=         class                                                        2 null",
-                  "] 0000000b  2 UOW= source= class=class thread=[Test worker]" + LoggingConstants.nl + "          null"),
+        testClass("] 0000000b class         2 class  null", "] 0000000b id=         class                                                        2 null", "] 0000000b  2 UOW= source= class=class thread=[Test worker]"
+                                                                                                                                                          + LoggingConstants.nl
+                                                                                                                                                          + "          null"),
 
-        testSourceAndClass("] 0000000b source        2 class  null",
-                           "] 0000000b id=         class                                                        2 null",
-                           "] 0000000b  2 UOW= source=source class=class thread=[Test worker]" + LoggingConstants.nl + "          null"),
+        testSourceAndClass("] 0000000b source        2 class  null", "] 0000000b id=         class                                                        2 null", "] 0000000b  2 UOW= source=source class=class thread=[Test worker]"
+                                                                                                                                                                   + LoggingConstants.nl
+                                                                                                                                                                   + "          null"),
 
-        testMethod("] 0000000b source        2  method null",
-                   "] 0000000b id=         source                                                       2 method null",
-                   "] 0000000b  2 UOW= source=source method=method thread=[Test worker]" + LoggingConstants.nl + "          null"),
-        testMessage("] 0000000b source        2  method ta-da!",
-                    "] 0000000b id=         source                                                       2 method ta-da!",
-                    "] 0000000b  2 UOW= source=source method=method thread=[Test worker]" + LoggingConstants.nl + "          ta-da!"),
-        testLongName("] 0000000b abcdefghijklm 2  method ta-da!",
-                     "] 0000000b id=         cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 2 method ta-da!",
-                     "] 0000000b  2 UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method thread=[Test worker]"
-                                     + LoggingConstants.nl + "          ta-da!"),
-        testId("] 0000000b abcdefghijklm 2  method ta-da!",
-               "] 0000000b id=" + idHash + " cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 2 method ta-da!",
-               "] 0000000b  2 UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method id=" + idHash + " thread=[Test worker]"
-                               + LoggingConstants.nl + "          ta-da!"),
-        testMessageLevel("] 0000000b abcdefghijklm I  method ta-da!",
-                         "] 0000000b id=" + idHash + " cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 I method ta-da!",
-                         "] 0000000b  I UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method id=" + idHash + " thread=[Test worker]"
-                                         + LoggingConstants.nl + "          ta-da!"),
-        testTrEntry("] 0000000b source        >  method " + BaseTraceFormatter.ENTRY,
-                    "] 0000000b id=         source                                                       > method " + BaseTraceFormatter.ENTRY,
-                    "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
-                                    + LoggingConstants.nl + "          " + BaseTraceFormatter.ENTRY),
+        testMethod("] 0000000b source        2  method null", "] 0000000b id=         source                                                       2 method null", "] 0000000b  2 UOW= source=source method=method thread=[Test worker]"
+                                                                                                                                                                   + LoggingConstants.nl
+                                                                                                                                                                   + "          null"),
+        testMessage("] 0000000b source        2  method ta-da!", "] 0000000b id=         source                                                       2 method ta-da!", "] 0000000b  2 UOW= source=source method=method thread=[Test worker]"
+                                                                                                                                                                        + LoggingConstants.nl
+                                                                                                                                                                        + "          ta-da!"),
+        testLongName("] 0000000b abcdefghijklm 2  method ta-da!", "] 0000000b id=         cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 2 method ta-da!", "] 0000000b  2 UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method thread=[Test worker]"
+                                                                                                                                                                         + LoggingConstants.nl
+                                                                                                                                                                         + "          ta-da!"),
+        testId("] 0000000b abcdefghijklm 2  method ta-da!", "] 0000000b id=" + idHash
+                                                            + " cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 2 method ta-da!", "] 0000000b  2 UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method id="
+                                                                                                                                               + idHash + " thread=[Test worker]"
+                                                                                                                                               + LoggingConstants.nl
+                                                                                                                                               + "          ta-da!"),
+        testMessageLevel("] 0000000b abcdefghijklm I  method ta-da!", "] 0000000b id=" + idHash
+                                                                      + " cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 I method ta-da!", "] 0000000b  I UOW= source=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 method=method id="
+                                                                                                                                                         + idHash
+                                                                                                                                                         + " thread=[Test worker]"
+                                                                                                                                                         + LoggingConstants.nl
+                                                                                                                                                         + "          ta-da!"),
+        testTrEntry("] 0000000b source        >  method "
+                    + BaseTraceFormatter.ENTRY, "] 0000000b id=         source                                                       > method "
+                                                + BaseTraceFormatter.ENTRY, "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
+                                                                            + LoggingConstants.nl + "          " + BaseTraceFormatter.ENTRY),
         testTrEntryWithExitParam("] 0000000b source        >  method " + BaseTraceFormatter.ENTRY + " " +
-                                 BaseTraceFormatter.nlBasicPadding + "ExitCode",
-                                 "] 0000000b id=         source                                                       > method " + BaseTraceFormatter.ENTRY + " " +
-                                                 BaseTraceFormatter.nlEnhancedPadding + "ExitCode",
-                                 "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
-                                                 + LoggingConstants.nl + "          " + BaseTraceFormatter.ENTRY + " "
-                                                 + BaseTraceFormatter.nlAdvancedPadding + "ExitCode"),
-        testLoggerEntering("] 0000000b source        >  method ENTRY",
-                           "] 0000000b id=         source                                                       > method ENTRY",
-                           "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
-                                           + LoggingConstants.nl + "          ENTRY"),
-        testLoggerEnteringParam("] 0000000b source        >  method ENTRY aaa",
-                                "] 0000000b id=         source                                                       > method ENTRY aaa",
-                                "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
-                                                + LoggingConstants.nl + "          ENTRY aaa"),
-        testLoggerEnteringParams("] 0000000b source        >  method ENTRY aaa bbb ccc",
-                                 "] 0000000b id=         source                                                       > method ENTRY aaa bbb ccc",
-                                 "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
-                                                 + LoggingConstants.nl + "          ENTRY aaa bbb ccc"),
-        testTrExit("] 0000000b source        <  method " + BaseTraceFormatter.EXIT,
-                   "] 0000000b id=         source                                                       < method " + BaseTraceFormatter.EXIT,
-                   "] 0000000b  < UOW= source=source method=method thread=[Test worker]"
-                                   + LoggingConstants.nl + "          " + BaseTraceFormatter.EXIT),
+                                 BaseTraceFormatter.nlBasicPadding
+                                 + "ExitCode", "] 0000000b id=         source                                                       > method " + BaseTraceFormatter.ENTRY + " " +
+                                               BaseTraceFormatter.nlEnhancedPadding + "ExitCode", "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
+                                                                                                  + LoggingConstants.nl + "          " + BaseTraceFormatter.ENTRY + " "
+                                                                                                  + BaseTraceFormatter.nlAdvancedPadding + "ExitCode"),
+        testLoggerEntering("] 0000000b source        >  method ENTRY", "] 0000000b id=         source                                                       > method ENTRY", "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
+                                                                                                                                                                             + LoggingConstants.nl
+                                                                                                                                                                             + "          ENTRY"),
+        testLoggerEnteringParam("] 0000000b source        >  method ENTRY aaa", "] 0000000b id=         source                                                       > method ENTRY aaa", "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
+                                                                                                                                                                                          + LoggingConstants.nl
+                                                                                                                                                                                          + "          ENTRY aaa"),
+        testLoggerEnteringParams("] 0000000b source        >  method ENTRY aaa bbb ccc", "] 0000000b id=         source                                                       > method ENTRY aaa bbb ccc", "] 0000000b  > UOW= source=source method=method thread=[Test worker]"
+                                                                                                                                                                                                           + LoggingConstants.nl
+                                                                                                                                                                                                           + "          ENTRY aaa bbb ccc"),
+        testTrExit("] 0000000b source        <  method " + BaseTraceFormatter.EXIT, "] 0000000b id=         source                                                       < method "
+                                                                                    + BaseTraceFormatter.EXIT, "] 0000000b  < UOW= source=source method=method thread=[Test worker]"
+                                                                                                               + LoggingConstants.nl + "          " + BaseTraceFormatter.EXIT),
         testTrExitWithEntryParam("] 0000000b source        <  method " + BaseTraceFormatter.EXIT + " " +
-                                 BaseTraceFormatter.nlBasicPadding + "MapEntry",
-                                 "] 0000000b id=         source                                                       < method " + BaseTraceFormatter.EXIT + " " +
-                                                 BaseTraceFormatter.nlEnhancedPadding + "MapEntry",
-                                 "] 0000000b  < UOW= source=source method=method thread=[Test worker]"
-                                                 + LoggingConstants.nl + "          " + BaseTraceFormatter.EXIT + " "
-                                                 + BaseTraceFormatter.nlAdvancedPadding + "MapEntry"),
-        testLoggerExiting("] 0000000b source        <  method RETURN",
-                          "] 0000000b id=         source                                                       < method RETURN",
-                          "] 0000000b  < UOW= source=source method=method thread=[Test worker]"
-                                          + LoggingConstants.nl + "          RETURN"),
-        testLoggerExitingParam("] 0000000b source        <  method RETURN aaa",
-                               "] 0000000b id=         source                                                       < method RETURN aaa",
-                               "] 0000000b  < UOW= source=source method=method thread=[Test worker]"
-                                               + LoggingConstants.nl + "          RETURN aaa");
+                                 BaseTraceFormatter.nlBasicPadding
+                                 + "MapEntry", "] 0000000b id=         source                                                       < method " + BaseTraceFormatter.EXIT + " " +
+                                               BaseTraceFormatter.nlEnhancedPadding + "MapEntry", "] 0000000b  < UOW= source=source method=method thread=[Test worker]"
+                                                                                                  + LoggingConstants.nl + "          " + BaseTraceFormatter.EXIT + " "
+                                                                                                  + BaseTraceFormatter.nlAdvancedPadding + "MapEntry"),
+        testLoggerExiting("] 0000000b source        <  method RETURN", "] 0000000b id=         source                                                       < method RETURN", "] 0000000b  < UOW= source=source method=method thread=[Test worker]"
+                                                                                                                                                                              + LoggingConstants.nl
+                                                                                                                                                                              + "          RETURN"),
+        testLoggerExitingParam("] 0000000b source        <  method RETURN aaa", "] 0000000b id=         source                                                       < method RETURN aaa", "] 0000000b  < UOW= source=source method=method thread=[Test worker]"
+                                                                                                                                                                                           + LoggingConstants.nl
+                                                                                                                                                                                           + "          RETURN aaa");
 
         final String basic;
         final String enhanced;

@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import test.LoggingTestUtils;
@@ -26,6 +27,7 @@ import test.common.SharedOutputManager;
 /**
  *
  */
+@Ignore
 public class TraceableTest {
     static {
         LoggingTestUtils.ensureLogManager();
