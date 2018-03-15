@@ -141,10 +141,12 @@ public class CollectorJsonUtils1_1 {
                 }
             }
 
-            if (tags != null) {
-                addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
-            }
         }
+
+        if (tags != null) {
+            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+        }
+
         sb.append("}");
 
         return sb.toString();
@@ -330,7 +332,7 @@ public class CollectorJsonUtils1_1 {
                         if (isValidExt) {
                             isExtQuoteless = CollectorJsonHelpers.checkIfExtIsQuoteless(extKey);
                             extKey = LogFieldConstants.EXT_PREFIX + extKey;
-                            isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, extKey, extValue, false, true, false, isFirstField, isExtQuoteless);
+                            CollectorJsonHelpers.addToJSON(sb, extKey, extValue, false, true, false, false, isExtQuoteless);
                         }
                     }
                 }
