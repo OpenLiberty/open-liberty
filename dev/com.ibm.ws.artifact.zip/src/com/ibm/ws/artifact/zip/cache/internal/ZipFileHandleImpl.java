@@ -1,13 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2012, 2017
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.ByteArrayInputStream;
@@ -16,165 +17,344 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
-import com.ibm.ws.artifact.zip.internal.Utils;
+import com.ibm.ws.artifact.zip.internal.FileUtils;
 
 /**
+ * A handle to a zip file.
  *
+ * These are expected to be held by {@link ZipCachingServiceImpl} and shared
+ * between code which accesses the zip file.
+ *
+ * In addition to the caching provided by the zip caching service, each zip
+ * file handle caches the last 16 entries which had 8K or fewer bytes.  That
+ * means the zip caching service will use up to 64MB of storage.
  */
 public class ZipFileHandleImpl implements ZipFileHandle {
+    private static final TraceComponent tc = Tr.register(ZipFileHandleImpl.class);
 
-    static final TraceComponent tc = Tr.register(ZipFileHandleImpl.class);
-
-    private final String path;
-    private final File file;
-    private ZipFile zipFile;
-    private int refs;
-
+    @Trivial
     ZipFileHandleImpl(String path) {
         this.path = path;
         this.file = new File(path);
     }
 
-    public ZipFile getZipFile() {
-        return zipFile;
+    private final String path;
+    private final File file;
+
+    @Trivial
+    public String getPath() {
+        return path;
     }
 
-    @Override
-    public synchronized ZipFile open() throws IOException {
-        if (zipFile == null) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "[" + this.hashCode() + "] Opening FileHandle to " + path);
-            zipFile = Utils.newZipFile(file);
-        }
-        refs++;
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "[" + this.hashCode() + "] refCount now " + refs);
-        return zipFile;
+    @Trivial
+    public File getFile() {
+        return file;
     }
 
-    @Override
-    public synchronized void close() {
-        //quick exit if anyone is trying to close us when we are closed!
-        if (refs == 0) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "[" + this.hashCode() + "] attempt to call close when closed & ref at zero.. caused by.. ");
-                Exception e = new Exception();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                PrintStream ps = new PrintStream(baos);
-                e.printStackTrace(ps);
-                Tr.debug(tc, baos.toString());
-            }
-            return;
-        }
-
-        if (--refs != 0) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "[" + this.hashCode() + "] refCount now " + refs);
-            return;
-        }
-
-        // PK96275
-        // Make sure the zipFile has been opened, as it is
-        // possible for a newly created ZipFileHandle to be kicked
-        // out of the zipFileCache before it's been opened.
-        if (zipFile != null) {
-            try {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "[" + this.hashCode() + "] Closing handle to path " + path);
-                zipFile.close();
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "[" + this.hashCode() + "] refCount now " + refs);
-            } catch (IOException ex) {
-                //instrumented ffdc.
-            } finally {
-                zipFile = null;
-            }
-        }
-    }
-
-    final private static int MAX_CACHE_ENTRY_SIZE = 8192;
-    final private static int MAX_CACHE_ENTRIES = 16;
-    final private static Map<String, byte[]> dataCache = Collections.synchronizedMap(new CacheHashMap<String, byte[]>(MAX_CACHE_ENTRIES));
-
-    private byte[] readDataToByteArray(InputStream in) throws IOException {
-        if (in == null) {
-            return null;
-        }
-
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            int readCount;
-            byte[] data = new byte[8192];
-            while ((readCount = in.read(data, 0, data.length)) != -1) {
-                baos.write(data, 0, readCount);
-            }
-            //really make sure we've got all the data =)
-            baos.flush();
-            return baos.toByteArray();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException io) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IO Exception closing input stream while caching zip entry", io);
-                }
-            }
-        }
-    }
-
+    @Trivial
     public long getLastModified() {
-        return AccessController.doPrivileged(new PrivilegedAction<Long>() {
-            @Override
-            public Long run() {
-                return file.lastModified();
-            }
-
-        });
+        return FileUtils.fileLastModified( getFile() );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.wsspi.artifact.zip.cache.ZipFileHandle#getInputStream(java.util.zip.ZipFile, java.util.zip.ZipEntry)
+    //
+
+    private class ZipFileLock {
+        // EMPTY
+    }
+    private final ZipFileLock zipFileLock = new ZipFileLock();
+    private ZipFile zipFile;
+    private int openCount;
+
+    //
+
+    @Trivial
+    private void debug(String methodName, String text) {
+        if ( !tc.isDebugEnabled() ) {
+            return;
+        }
+
+        String message =
+            methodName +
+            " ZipFileHandle@0x" + Integer.toHexString(hashCode()) +
+            " (" + path + ", " + Integer.toString(openCount) + ")" +
+            " " + text;
+        Tr.debug(tc, message);
+    }
+
+    //
+
+    private static final ZipFileReaper zipFileReaper;
+
+    static {
+        int useMaxPending = ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING;
+        if ( useMaxPending == 0 ) {
+            zipFileReaper = null;
+        } else {
+            zipFileReaper = new ZipFileReaper(
+                "zip cache reaper",
+                ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
+                ZipCachingProperties.ZIP_CACHE_REAPER_SHORT_INTERVAL,
+                ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL);
+        }
+    }
+
+    /**
+     * Open the zip file.  Create and assign the zip file if this is the first
+     * open.  Increase the open count by one.
+     *
+     * If this is the first open and the zip file could not be created, the
+     * open count is not increased.
+     *
+     * @return The zip file.
      */
     @Override
-    public InputStream getInputStream(ZipFile zf, ZipEntry ze) throws IOException {
-        //entry was small enough that it might be in cache, or need to be put there.
-        long size = ze.getSize();
-        if (size < MAX_CACHE_ENTRY_SIZE && size > 0 && !ze.getName().endsWith(".class")) {
-            //build a key that includes the entry crc, if the zip changes, we'll only return stale data if the crc clashes.. 
-            //which is pretty remote.. 
-            String path = ze.getName();
-            path += ":::" + ze.getCrc();
-            path += ":::" + getLastModified();
+    @Trivial
+    public ZipFile open() throws IOException {
+        String methodName = "open";
 
-            byte[] data = dataCache.get(path);
-            if (data != null) {
-                return new ByteArrayInputStream(data);
-            } else {
-                data = readDataToByteArray(zf.getInputStream(ze));
-                if (data != null) {
-                    //no sync block means that we might in a race condition
-                    //retrieve the inputstream multiple times, but only the 
-                    //last one will end up in the cache, this is fine.
-                    dataCache.put(path, data);
-                    return new ByteArrayInputStream(data);
+        synchronized( zipFileLock ) {
+            if ( zipFile == null ) {
+                debug(methodName, "Opening");
+                if ( zipFileReaper == null ) {
+                    zipFile = ZipFileUtils.openZipFile(file); // throws IOException
+                } else {
+                    zipFile = zipFileReaper.open(path);
                 }
+            }
+
+            openCount++;
+            debug(methodName, "Opened");
+
+            return zipFile;
+        }
+    }
+
+    @Override
+    @Trivial
+    public void close() {
+        String methodName = "close";
+
+        boolean extraClose;
+
+        synchronized ( zipFileLock ) {
+            if ( !(extraClose = (openCount == 0)) ) {
+                debug(methodName, "Closing");
+
+                openCount = openCount - 1;
+
+                if ( openCount == 0 ) {
+                    if ( zipFileReaper == null ) {
+                        ZipFile useZipFile = zipFile;
+                        zipFile = null;
+                        try {
+                            useZipFile.close();
+                        } catch ( IOException e ) {
+                            // FFDC
+                        }
+                    } else {
+                        zipFile = null;
+                        zipFileReaper.close(path);
+                    }
+                }
+
+                debug(methodName, "Closed");
+            }
+        }
+
+        if ( extraClose && tc.isDebugEnabled() ) {
+            debug(methodName, "Extra close");
+
+            Exception e = new Exception();
+            ByteArrayOutputStream stackStream = new ByteArrayOutputStream();
+            PrintStream stackPrintStream = new PrintStream(stackStream);
+            e.printStackTrace(stackPrintStream);
+
+            Tr.debug( tc, stackStream.toString() );
+        }
+    }
+
+    //
+
+    private static class ZipEntriesLock {
+        // EMPTY
+    }
+    private static final ZipEntriesLock zipEntriesLock = new ZipEntriesLock();
+    private static final Map<String, byte[]> zipEntries;
+
+    static {
+        if ( (ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT == 0) ||
+             (ZipCachingProperties.ZIP_CACHE_ENTRY_MAX == 0) ) {
+            zipEntries = null;
+        } else {
+            zipEntries = new CacheHashMap<String, byte[]>(ZipCachingProperties.ZIP_CACHE_ENTRY_MAX);
+        }
+    }
+
+    private static class CacheHashMap<K, V>
+        extends LinkedHashMap<K, V> {
+
+        private static final long serialVersionUID = 1L;
+
+        private final int ivMaxSize;
+
+        public CacheHashMap(int maxSize) {
+            this(maxSize, 16, .75f, true);
+        }
+
+        public CacheHashMap(int maxSize, int initialCapacity, float loadFactor, boolean accessOrder) {
+            super(initialCapacity, loadFactor, accessOrder);
+
+            this.ivMaxSize = maxSize;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+            return size() > ivMaxSize;
+        }
+    }
+
+    private static final ByteArrayInputStream EMPTY_STREAM =
+        new ByteArrayInputStream( new byte[0] );
+
+    /**
+     * Answer an input stream for an entry of a zip file.  When the entry is a
+     * class entry which has 8K or fewer bytes, read all of the entry bytes immediately
+     * and cache the bytes in this handle.  Subsequent input stream requests which
+     * locate cached bytes will answer a stream on those bytes.
+     *
+     * @param useZipFile The zip file for which to answer an input stream
+     * @param zipEntry The zip entry for which to answer the input stream.
+     *
+     * @return An input stream on the bytes of the entry.  Null for an directory
+     *     type entry, or an entry which has zero bytes.
+     *
+     * @throws IOException Thrown if the entry bytes could not be read.
+     */
+    @Override
+    @Trivial
+    public InputStream getInputStream(ZipFile useZipFile, ZipEntry zipEntry) throws IOException {
+        String methodName = "getInputStream";
+        String entryName = zipEntry.getName();
+
+        if ( zipEntry.isDirectory() ) {
+            if ( tc.isDebugEnabled() ) {
+                debug(methodName, "Entry [ " + entryName + " ] [ null ] (Not using cache: Directory entry)");
             }
             return null;
         }
 
-        //entry was above the entry cache size, get from zip itself.
-        return zf.getInputStream(ze);
+        long entrySize = zipEntry.getSize();
+        if ( entrySize == 0 ) {
+            if ( tc.isDebugEnabled() ) {
+                debug(methodName, "Entry [ " + entryName + " ] [ empty stream ] (Not using cache: Empty entry)");
+            }
+            return EMPTY_STREAM;
+        }
+
+        boolean doNotCache;
+        String doNotCacheReason;
+        if ( zipEntries == null ) { // No entry cache.
+            doNotCache = true;
+            doNotCacheReason = "Do not cache: Entry cache disabled";
+        } else if ( entrySize > ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT) { // Too big for the cache
+            doNotCache = true;
+            doNotCacheReason = "Do not cache: Too big";
+        } else if ( entryName.equals("META-INF/MANIFEST.MF") ) {
+            doNotCache = false;
+            doNotCacheReason = "Cache META-INF/MANIFEST.MF";
+        } else if ( entryName.endsWith(".class") ) {
+            doNotCache = false;
+            doNotCacheReason = "Cache .class resources";
+        } else {
+            doNotCache = true;
+            doNotCacheReason = "Do not cache: Not manifest or class resource";
+        }
+        if ( tc.isDebugEnabled() ) {
+            debug(methodName, "Entry [ " + entryName + " ] [ non-null ] [ " + doNotCacheReason + " ]");
+        }
+
+        if ( doNotCache ) {
+            return useZipFile.getInputStream(zipEntry); // throws IOException
+        }
+
+        // The addition of ":::" *seems* to allow for non-unique cache keys.  Duplicate
+        // keys *are not* possible because the CRC and last-modified values are numeric.
+        // Duplicate keys would be possible of the CRC or last-modified values, when
+        // converted to strings, could contain ":::" character sequences.
+
+        String entryCacheKey =
+               entryName +
+               ":::" + Long.toString( zipEntry.getCrc() ) +
+               ":::" + Long.toString( getLastModified() );
+
+        // Note that only the individual gets and puts are protected.
+        //
+        // That means that simultaneous get misses are possible, which
+        // will result in double reads and double puts.
+        //
+        // That is unfortunate, but is harmless.
+        //
+        // The simultaneous puts are allowed because they should be very
+        // rare.
+        //
+        // They are allowed because blocking entry gets while waiting for
+        // reads could create large delays.
+
+        byte[] entryBytes;
+        synchronized( zipEntriesLock ) {
+            entryBytes = zipEntries.get(entryCacheKey);
+        }
+
+        if ( entryBytes == null ) {
+            InputStream inputStream = useZipFile.getInputStream(zipEntry); // throws IOException
+            try {
+                entryBytes = read(inputStream, (int) entrySize, entryName); // throws IOException
+            } finally {
+                inputStream.close(); // throws IOException
+            }
+
+            synchronized( zipEntriesLock ) {
+                zipEntries.put(entryCacheKey, entryBytes);
+            }
+        }
+
+        return new ByteArrayInputStream(entryBytes);
+    }
+
+    /**
+     * Read an exact count of bytes from an input stream.
+     *
+     * @param inputStream The stream from which to read the bytes.
+     *
+     * @param size The number of bytes which are to be read.
+     * @param name A name associated with the stream.
+     *
+     * @return The bytes read from the stream.
+     *
+     * @throws IOException Throw if the read failed, including the case where
+     *     insufficient bytes were available to be read.
+     */
+    @Trivial
+    private static byte[] read(InputStream inputStream, int size, String name) throws IOException {
+        byte[] bytes = new byte[size];
+
+        int readCount = inputStream.read(bytes, 0, size); // throws IOException
+        if ( readCount != size ) {
+            throw new IOException(
+                "Read [ " + Integer.valueOf(readCount) + " ]" +
+                " but expected to read [ " + Integer.valueOf(size) + " ] bytes" +
+                " from [ " + name + " ]");
+        }
+        return bytes;
     }
 }
