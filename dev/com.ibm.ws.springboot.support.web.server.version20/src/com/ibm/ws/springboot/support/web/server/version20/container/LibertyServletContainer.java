@@ -57,10 +57,6 @@ public class LibertyServletContainer implements WebServer {
     private static final String SPRING_KEYENTRY = "springKeyEntry-";
     private static final String SPRING_CONFIG = "springConfig-";
 
-    /**
-     * @param libertyServletContainerFactory
-     * @param mergeInitializers
-     */
     public LibertyServletContainer(LibertyServletContainerFactory factory, ServletContextInitializer[] initializers) {
         port.set(factory.getPort());
         SpringBootConfigFactory configFactory = SpringBootConfigFactory.findFactory(token);
@@ -96,32 +92,17 @@ public class LibertyServletContainer implements WebServer {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.springframework.boot.context.embedded.EmbeddedServletContainer#getPort()
-     */
     @Override
     public int getPort() {
         // TODO get real port when configured with zero
         return port.get();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.springframework.boot.context.embedded.EmbeddedServletCo ntainer#start()
-     */
     @Override
     public void start() throws WebServerException {
         springBootConfig.start();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.springframework.boot.context.embedded.EmbeddedServletContainer#stop()
-     */
     @Override
     public void stop() throws WebServerException {
         springBootConfig.stop();
@@ -135,11 +116,6 @@ public class LibertyServletContainer implements WebServer {
         return serverConfig;
     }
 
-    /**
-     * @param serverConfig
-     * @param factory
-     * @param springBootConfigId
-     */
     private static void configureVirtualHost(ServerConfiguration serverConfig, LibertyServletContainerFactory factory, String springBootConfigId) {
         List<VirtualHost> virtualHosts = serverConfig.getVirtualHosts();
         virtualHosts.clear();
@@ -154,12 +130,6 @@ public class LibertyServletContainer implements WebServer {
         virtualHosts.add(virtualHost);
     }
 
-    /**
-     * @param serverConfig
-     * @param factory
-     * @param configFactory
-     * @param springBootConfigId
-     */
     private static void configureEndpoint(ServerConfiguration serverConfig, LibertyServletContainerFactory factory, SpringBootConfigFactory configFactory,
                                           String springBootConfigId) {
         List<HttpEndpoint> endpoints = serverConfig.getHttpEndpoints();
@@ -206,11 +176,6 @@ public class LibertyServletContainer implements WebServer {
         endpoints.add(endpoint);
     }
 
-    /**
-     * @param serverConfig
-     * @param ssl
-     * @param springBootConfigId
-     */
     private static void configureSsl(ServerConfiguration serverConfig, Ssl ssl, String springBootConfigId) {
         ConfigElementList<SSLConfig> ssls = serverConfig.getSsls();
         ssls.clear();
@@ -233,12 +198,6 @@ public class LibertyServletContainer implements WebServer {
         ssls.add(sslConfig);
     }
 
-    /**
-     * @param keyStores
-     * @param ssl
-     * @param configFactory
-     * @param springBootConfigId
-     */
     private static void configureKeyStore(ConfigElementList<KeyStore> keyStores, Ssl ssl, SpringBootConfigFactory configFactory, String springBootConfigId) {
         URL keyStoreURL;
         KeyStore keyStore = new KeyStore();
@@ -276,11 +235,6 @@ public class LibertyServletContainer implements WebServer {
         keyStores.add(keyStore);
     }
 
-    /**
-     * @param keyStores
-     * @param ssl
-     * @param springBootConfigId
-     */
     private static void configureKeyEntry(KeyStore keystore, Ssl ssl, String springBootConfigId) {
         ConfigElementList<KeyEntry> keyEntries = keystore.getKeyEntries();
         keyEntries.clear();
@@ -297,12 +251,6 @@ public class LibertyServletContainer implements WebServer {
         keyEntries.add(keyEntry);
     }
 
-    /**
-     * @param keyStores
-     * @param ssl
-     * @param configFactory
-     * @param springBootConfigId
-     */
     private static void configureTrustStore(ConfigElementList<KeyStore> keyStores, Ssl ssl, SpringBootConfigFactory configFactory, String springBootConfigId) {
         KeyStore keyStore = new KeyStore();
         URL trustStoreURL;
@@ -336,10 +284,6 @@ public class LibertyServletContainer implements WebServer {
         keyStores.add(keyStore);
     }
 
-    /**
-     * @param sslConfig
-     * @param ssl
-     */
     private static void configureClientAuthentication(SSLConfig sslConfig, Ssl ssl) {
         if (ssl.getClientAuth() == ClientAuth.NEED) {
             sslConfig.setClientAuthentication(Boolean.TRUE);
@@ -348,10 +292,6 @@ public class LibertyServletContainer implements WebServer {
         }
     }
 
-    /**
-     * @param sslConfig
-     * @param ssl
-     */
     private static void configureEnabledCiphers(SSLConfig sslConfig, Ssl ssl) {
         String[] ciphers = ssl.getCiphers();
         String enabledCiphers = null;
@@ -367,22 +307,12 @@ public class LibertyServletContainer implements WebServer {
         }
     }
 
-    /**
-     * @param serverConfig
-     * @param factory
-     */
     private static void configureSession(ServerConfiguration serverConfig, LibertyServletContainerFactory factory) {
         // TODO is this only configurable for all endpoints?
         HttpSession session = serverConfig.getHttpSession();
         session.setInvalidationTimeout((int) factory.getSession().getTimeout().getSeconds());
     }
 
-    /**
-     * @param in
-     * @param dest
-     * @throws IOException
-     * @throws FileNotFoundException
-     */
     private static void writeFile(InputStream in, File dest) throws FileNotFoundException, IOException {
         dest.getParentFile().mkdirs();
         try (FileOutputStream fos = new FileOutputStream(dest)) {

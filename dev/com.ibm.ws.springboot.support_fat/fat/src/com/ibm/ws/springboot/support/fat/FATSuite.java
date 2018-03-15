@@ -23,12 +23,13 @@ import org.junit.runners.Suite.SuiteClasses;
                 ConfigDropinRootTests.class,
                 ConfigSpringBootAppTagTests.class,
                 PreThinnedSpringBootTests.class,
-                SSLTest15.class,
-                SSLTest20.class,
-                SSLMutualAuthTest15.class,
-                SSLMutualAuthTest20.class
+                SSLTests15.class,
+                SSLTests20.class,
+                SSLMutualAuthTests15.class,
+                SSLMutualAuthTests20.class
 
 })
+
 public class FATSuite {
 
 }

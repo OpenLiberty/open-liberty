@@ -26,18 +26,13 @@ import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
-public class SSLMutualAuthTest20 extends SSLCommonTests {
+public class SSLMutualAuthTests20 extends SSLCommonTests {
 
     @Test
     public void testSSLMutualAuthSpringBootApplication20() throws Exception {
         testSSLApplication();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.SSLCommonTests#getKeyStorePath()
-     */
     @Override
     public String getKeyStorePath() {
         try {
@@ -48,21 +43,11 @@ public class SSLMutualAuthTest20 extends SSLCommonTests {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.SSLCommonTests#getKeyStorePassword()
-     */
     @Override
     public String getKeyStorePassword() {
         return "secret";
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.SSLCommonTests#getTrustStorePath()
-     */
     @Override
     public String getTrustStorePath() {
         try {
@@ -73,34 +58,19 @@ public class SSLMutualAuthTest20 extends SSLCommonTests {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.SSLCommonTests#getTrustStorePassword()
-     */
     @Override
     public String getTrustStorePassword() {
         return "secret";
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.AbstractSpringTests#getFeatures()
-     */
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-4.0", "ssl-1.0"));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.AbstractSpringTests#getApplication()
-     */
     @Override
     public String getApplication() {
-        return SPRING_BOOT_20_APP_SSL_MUTUAL_AUTH;
+        return SPRING_BOOT_20_APP_BASE;
     }
 
 }

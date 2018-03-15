@@ -24,70 +24,21 @@ import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
-public class SSLTest20 extends SSLCommonTests {
+public class SSLTests20 extends SSLCommonTests {
 
     @Test
     public void testSSLSpringBootApplication20() throws Exception {
         testSSLApplication();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.SSLCommonTests#getKeyStorePath()
-     */
-    @Override
-    public String getKeyStorePath() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.SSLCommonTests#getKeyStorePassword()
-     */
-    @Override
-    public String getKeyStorePassword() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.SSLCommonTests#getTrustStorePath()
-     */
-    @Override
-    public String getTrustStorePath() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.SSLCommonTests#getTrustStorePassword()
-     */
-    @Override
-    public String getTrustStorePassword() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.AbstractSpringTests#getFeatures()
-     */
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-4.0", "ssl-1.0"));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.springboot.support.fat.AbstractSpringTests#getApplication()
-     */
     @Override
     public String getApplication() {
-        return SPRING_BOOT_20_APP_SSL;
+        return SPRING_BOOT_20_APP_BASE;
     }
+
 }

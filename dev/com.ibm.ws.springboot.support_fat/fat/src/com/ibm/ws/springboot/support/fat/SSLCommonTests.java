@@ -21,6 +21,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -39,13 +41,21 @@ import componenttest.topology.impl.LibertyServer;
  */
 public abstract class SSLCommonTests extends AbstractSpringTests {
 
-    public abstract String getKeyStorePath();
+    public String getKeyStorePath() {
+        return null;
+    }
 
-    public abstract String getKeyStorePassword();
+    public String getKeyStorePassword() {
+        return null;
+    }
 
-    public abstract String getTrustStorePath();
+    public String getTrustStorePath() {
+        return null;
+    }
 
-    public abstract String getTrustStorePassword();
+    public String getTrustStorePassword() {
+        return null;
+    }
 
     protected void testSSLApplication() throws Exception {
         final String ksPath = getKeyStorePath();
@@ -57,7 +67,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
                         .waitForStringInLog("CWWKZ0001I:.*"));
 
         // NOTE we set the port to the expected port according to the test application.properties
-        server.setHttpDefaultSecurePort(8082);
+        server.setHttpDefaultSecurePort(8081);
         String result = sendHttpsGet("/", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
         assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
@@ -95,10 +105,6 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
         return result;
     }
 
-    /**
-     * @param sslcontext
-     * @throws Exception
-     */
     private void establishSSLcontext(SSLContext sslcontext, LibertyServer server, String ksPath, String ksPassword, String tsPath, String tsPassword) throws Exception {
         InputStream ksStream = null;
         InputStream tsStream = null;
@@ -168,6 +174,18 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
         return new URL("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + path);
 
     }
+
+    @Override
+    public Map<String, String> getBootStrapProperties() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("server.ssl.key-store", "classpath:server-keystore.jks");
+        properties.put("server.ssl.key-store-password", "secret");
+        properties.put("server.ssl.key-password", "secret");
+        properties.put("server.ssl.trust-store", "classpath:server-truststore.jks");
+        properties.put("server.ssl.trust-store-password", "secret");
+        return properties;
+    }
+
 }
 
 class MyHostnameVerifier implements HostnameVerifier {
