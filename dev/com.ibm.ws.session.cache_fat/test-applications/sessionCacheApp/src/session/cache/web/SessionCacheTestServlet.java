@@ -396,6 +396,7 @@ public class SessionCacheTestServlet extends FATServlet {
         String sessionId = session.getId();
 
         // poll for entry to be invalidated from cache
+        System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
         @SuppressWarnings("rawtypes")
         Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.info.default_host%2FsessionCacheApp", String.class, ArrayList.class);
         long timeoutNS = TimeUnit.MINUTES.toNanos(1);
