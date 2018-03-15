@@ -48,9 +48,15 @@ public class ServerXMLBean {
         builder.addDiscoveredConverters();
 
         Config config = builder.build();
+        String serverXMLValue1 = config.getValue("serverXMLKey1", String.class);
         String serverXMLValue2 = config.getValue("serverXMLKey2", String.class);
+        String serverXMLValue3 = config.getValue("serverXMLKey3", String.class);
+        String serverXMLValue4 = config.getValue("serverXMLKey4", String.class);
 
+        assertEquals("serverXMLValue1b", serverXMLValue1);
         assertEquals("serverXMLValue2", serverXMLValue2);
+        assertEquals("serverXMLValue3", serverXMLValue3);
+        assertEquals("serverXMLValue4", serverXMLValue4);
     }
 
 }

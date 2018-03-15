@@ -12,6 +12,8 @@ package com.ibm.ws.microprofile.config13.sources;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -202,26 +204,20 @@ public class OSGiConfigUtils {
      * @param applicationName The application name to look for
      * @return The Configuration instance
      */
-    public static Configuration getConfiguration(BundleContext bundleContext, String applicationName) {
-        Configuration osgiConfig = null;
-
+    public static SortedSet<Configuration> getConfigurations(BundleContext bundleContext, String applicationName) {
+        SortedSet<Configuration> configSet = new TreeSet<>((o1, o2) -> o1.getPid().compareTo(o2.getPid()));
         try {
             String applicationFilter = getApplicationConfigFilter(bundleContext, applicationName);
             ConfigurationAdmin admin = getConfigurationAdmin(bundleContext);
             Configuration[] osgiConfigs = admin.listConfigurations(applicationFilter);
-
-            if (osgiConfigs != null && osgiConfigs.length > 0) {
-                if (osgiConfigs.length > 1) {
-                    throw new ConfigException(Tr.formatMessage(tc, "duplicate.application.configuration.name.CWMCG0203E", applicationName));
-                } else {
-                    osgiConfig = osgiConfigs[0];
-                }
+            for (Configuration cfg : osgiConfigs) {
+                configSet.add(cfg);
             }
         } catch (IOException | InvalidSyntaxException e) {
-            throw new RuntimeException(e);
+            throw new ConfigException(e);
         }
 
-        return osgiConfig;
+        return configSet;
     }
 
     /**

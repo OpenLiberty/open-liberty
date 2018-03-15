@@ -16,6 +16,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedSet;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;
@@ -32,12 +33,11 @@ import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
 public class AppPropertyConfigSource extends InternalConfigSource implements DynamicConfigSource {
 
     private static final TraceComponent tc = Tr.register(AppPropertyConfigSource.class);
-
-    private Configuration osgiConfig;
+    private BundleContext bundleContext;
+    private String applicationName;
 
     public AppPropertyConfigSource() {
         super(Config13Constants.APP_PROPERTY_ORDINAL, Tr.formatMessage(tc, "server.xml.appproperties.config.source"));
-
     }
 
     /** {@inheritDoc} */
@@ -45,8 +45,9 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
     public Map<String, String> getProperties() {
         Map<String, String> props = new HashMap<String, String>();
 
-        Configuration osgiConfig = getOSGiConfiguration();
-        if (osgiConfig != null) {
+        SortedSet<Configuration> osgiConfigs = getOSGiConfigurations();
+        for (Configuration osgiConfig : osgiConfigs) {
+
             Dictionary<String, Object> dict = osgiConfig.getProperties();
 
             Enumeration<String> keys = dict.keys();
@@ -61,19 +62,21 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
         return props;
     }
 
-    private Configuration getOSGiConfiguration() {
-        if (this.osgiConfig == null) {
-            PrivilegedAction<Configuration> configAction = () -> {
-                BundleContext bundleContext = OSGiConfigUtils.getBundleContext(getClass());
-                String applicationName = OSGiConfigUtils.getApplicationName(bundleContext);
-                Configuration osgiConfig = OSGiConfigUtils.getConfiguration(bundleContext, applicationName);
+    private SortedSet<Configuration> getOSGiConfigurations() {
+        PrivilegedAction<SortedSet<Configuration>> configAction = () -> {
+            if (bundleContext == null) {
+                bundleContext = OSGiConfigUtils.getBundleContext(getClass());
+            }
+            if (applicationName == null) {
+                applicationName = OSGiConfigUtils.getApplicationName(bundleContext);
+            }
+            SortedSet<Configuration> osgiConfigs = OSGiConfigUtils.getConfigurations(bundleContext, applicationName);
 
-                return osgiConfig;
-            };
+            return osgiConfigs;
+        };
 
-            this.osgiConfig = AccessController.doPrivileged(configAction);
+        SortedSet<Configuration> osgiConfigs = AccessController.doPrivileged(configAction);
 
-        }
-        return this.osgiConfig;
+        return osgiConfigs;
     }
 }
