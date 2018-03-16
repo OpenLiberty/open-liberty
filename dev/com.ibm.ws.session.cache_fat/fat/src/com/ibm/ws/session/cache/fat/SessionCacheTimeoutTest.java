@@ -44,7 +44,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        appOneListener = new SessionCacheApp(server, "session.cache.web", "session.cache.web.listener1");
+        appOneListener = new SessionCacheApp(server, false, "session.cache.web", "session.cache.web.listener1");
         server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID()));
         server.startServer();
     }
@@ -78,7 +78,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     public void testServletTimeout() throws Exception {
         List<String> session = new ArrayList<>();
         appOneListener.sessionPut("testInvalidationTimeout-foo2", "bar", session, true);
-        appOneListener.invokeServlet("sessionGetTimeout&key=testInvalidationTimeout-foo2&expectedValue=bar&type=" + String.class.getName(), session);
+        appOneListener.invokeServlet("sessionGetTimeout&key=testInvalidationTimeout-foo2", session);
     }
 
     @Test

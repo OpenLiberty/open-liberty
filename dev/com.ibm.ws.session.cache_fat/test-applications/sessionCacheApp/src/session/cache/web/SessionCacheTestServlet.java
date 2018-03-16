@@ -388,17 +388,21 @@ public class SessionCacheTestServlet extends FATServlet {
         String key = request.getParameter("key");
         HttpSession session = request.getSession(false);
         session.removeAttribute(key);
-}
+    }
 
     public void sessionGetTimeout(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         String key = request.getParameter("key");
-        String rawExpectedValue = request.getParameter("expectedValue");
-        String type = request.getParameter("type");
-        boolean compareAsString = Boolean.parseBoolean(request.getParameter("compareAsString")); // useful if the class does not implement .equals
-        Object expectedValue = toType(type, rawExpectedValue);
         HttpSession session = request.getSession(false);
-        Thread.sleep(45 * 1000);
-        Object actualValue = session.getAttribute(key);
+        String sessionId = session.getId();
+
+        // poll for entry to be invalidated from cache
+        System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
+        @SuppressWarnings("rawtypes")
+        Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.info.default_host%2FsessionCacheApp", String.class, ArrayList.class);
+        long timeoutNS = TimeUnit.MINUTES.toNanos(1);
+        for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < timeoutNS; TimeUnit.MILLISECONDS.sleep(500));
+
+        session.getAttribute(key);
     }
 
     /**
