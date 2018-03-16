@@ -45,6 +45,7 @@ public class SpringBootThinUtil {
     private final List<String> libEntries = new ArrayList<>();
     private final Set<String> hashPrefixes = new HashSet<>();
     public static final String SPRING_LIB_INDEX_FILE = "META-INF/spring.lib.index";
+    private static final String SPRING_BOOT_LOADER_CLASSPATH = "org/springframework/boot/loader/";
 
     public SpringBootThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache, boolean putLibCacheInDirectory) throws IOException {
         this(sourceFatJar, targetThinJar, libIndexCache, null, putLibCacheInDirectory);
@@ -74,7 +75,8 @@ public class SpringBootThinUtil {
             Set<String> entryNames = new HashSet<>();
             for (Enumeration<JarEntry> entries = sourceFatJar.entries(); entries.hasMoreElements();) {
                 JarEntry entry = entries.nextElement();
-                if (entryNames.add(entry.getName()) && !JarFile.MANIFEST_NAME.equals(entry.getName()) && !entry.getName().startsWith("org")) { // hack to omit spring boot loader
+                if (entryNames.add(entry.getName()) && !JarFile.MANIFEST_NAME.equals(entry.getName()) &&
+                    !entry.getName().startsWith(SPRING_BOOT_LOADER_CLASSPATH) /* omit spring boot loader classes */) {
                     storeEntry(thinJar, libZip, entry);
                 }
             }
@@ -85,11 +87,11 @@ public class SpringBootThinUtil {
 
     private void storeEntry(JarOutputStream thinJar, ZipOutputStream libZip, JarEntry entry) throws IOException, NoSuchAlgorithmException {
         String path = entry.getName();
-
+        // check if entry is dependency jar or application class
         if (entry.getName().startsWith(springBootLibPath) && !entry.getName().equals(springBootLibPath)) {
 
             String hash = hash(sourceFatJar, entry);
-            String hashPrefix = hash.substring(0, 2) + "/";
+            String hashPrefix = hash.substring(0, 2);
             String hashSuffix = hash.substring(2, hash.length());
 
             if (putLibCacheInDirectory) {
@@ -107,7 +109,7 @@ public class SpringBootThinUtil {
         }
     }
 
-    private static String hash(JarFile jf, ZipEntry entry) throws IOException, NoSuchAlgorithmException {
+    protected String hash(JarFile jf, ZipEntry entry) throws IOException, NoSuchAlgorithmException {
         InputStream eis = jf.getInputStream(entry);
         MessageDigest digest = MessageDigest.getInstance("sha-256");
         byte[] buffer = new byte[4096];
@@ -134,12 +136,19 @@ public class SpringBootThinUtil {
         // create a complete cache that may have no parent.
         String path = entry.getName();
         try (InputStream is = sourceFatJar.getInputStream(entry)) {
-            if (!hashPrefixes.contains(hashPrefix)) {
-                libZip.putNextEntry(new ZipEntry(hashPrefix));
+            //zip format require trailing '/' for directory entries
+            String uniqueDirectoryPath = hashPrefix + '/' + hashSuffix + '/';
+            if (!hashPrefixes.contains(uniqueDirectoryPath)) {
+                if (!hashPrefixes.contains(hashPrefix + '/')) {
+                    libZip.putNextEntry(new ZipEntry(hashPrefix + '/'));
+                    libZip.closeEntry();
+                    hashPrefixes.add(hashPrefix + '/');
+                }
+                libZip.putNextEntry(new ZipEntry(uniqueDirectoryPath));
                 libZip.closeEntry();
-                hashPrefixes.add(hashPrefix);
+                hashPrefixes.add(uniqueDirectoryPath);
             }
-            path = hashPrefix + hashSuffix + ".jar";
+            path = hashPrefix + '/' + hashSuffix + entry.getName().substring(entry.getName().lastIndexOf('/'));
             writeEntry(is, libZip, path);
         }
     }
