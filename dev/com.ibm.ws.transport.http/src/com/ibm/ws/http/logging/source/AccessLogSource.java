@@ -123,7 +123,7 @@ public class AccessLogSource implements Source {
                 genData.addPair(LogFieldConstants.IBM_REQUESTPORT, recordData.getLocalPort());
                 genData.addPair(LogFieldConstants.IBM_REMOTEHOST, recordData.getRemoteAddress());
                 genData.addPair(LogFieldConstants.IBM_USERAGENT, request.getHeader(USER_AGENT_HEADER).asString());
-                genData.addPair(LogFieldConstants.IBM_REQUESTHOST, request.getVersion());
+                genData.addPair(LogFieldConstants.IBM_REQUESTPROTOCOL, request.getVersion());
                 genData.addPair(LogFieldConstants.IBM_BYTESRECEIVED, recordData.getBytesWritten());
                 genData.addPair(LogFieldConstants.IBM_RESPONSECODE, response.getStatusCodeAsInt());
                 genData.addPair(LogFieldConstants.IBM_ELAPSEDTIME, recordData.getElapsedTime());
