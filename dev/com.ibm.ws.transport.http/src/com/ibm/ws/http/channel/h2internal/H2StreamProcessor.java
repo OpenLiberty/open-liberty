@@ -173,21 +173,11 @@ public class H2StreamProcessor {
             settings = new FrameSettings();
         }
         this.frameType = FrameTypes.SETTINGS;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "completeConnectionPreface processNextFrame-:  stream: " + myID + " frame type: " + currentFrame.getFrameType().toString() + " direction: "
-                         + Direction.WRITING_OUT
-                         + " H2InboundLink hc: " + muxLink.hashCode());
-        }
         this.processNextFrame(settings, Direction.WRITING_OUT);
 
         if (Constants.SPEC_INITIAL_WINDOW_SIZE != muxLink.maxReadWindowSize) {
             // the user has changed the max connection read window, so we'll update that now
             FrameWindowUpdate wup = new FrameWindowUpdate(0, (int) muxLink.maxReadWindowSize, false);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "completeConnectionPreface processNextFrame-:  stream: " + myID + " frame type: " + currentFrame.getFrameType().toString() + " direction: "
-                             + Direction.WRITING_OUT
-                             + " H2InboundLink hc: " + muxLink.hashCode());
-            }
             this.processNextFrame(wup, Direction.WRITING_OUT);
         }
     }
