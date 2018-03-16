@@ -303,7 +303,7 @@ public class SessionCacheTestServlet extends FATServlet {
 
         List<String> expected = expectedAttributes == null ? Collections.emptyList() : Arrays.asList(expectedAttributes.split(","));
 
-        Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.info.default_host%2FsessionCacheApp", String.class, ArrayList.class);
+        Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp", String.class, ArrayList.class);
         ArrayList<?> values = cache.get(sessionId);
         @SuppressWarnings("unchecked")
         TreeSet<String> attributeNames = (TreeSet<String>) values.get(values.size() - 1); // last entry is the session attribute names
@@ -315,7 +315,7 @@ public class SessionCacheTestServlet extends FATServlet {
     }
 
     /**
-     * Confirm that a session attribute and its value are written to the session property cache.
+     * Confirm that a session attribute and its value are written to the session attributes cache.
      */
     public void testSessionPropertyCache(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String sessionId = request.getParameter("sessionId");
@@ -329,7 +329,7 @@ public class SessionCacheTestServlet extends FATServlet {
             expected.add(o == null ? null : Arrays.toString(toBytes(o)));
         }
 
-        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.prop.default_host%2FsessionCacheApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
         byte[] bytes = cache.get(key);
 
         String strValue = bytes == null ? null : Arrays.toString(bytes);
@@ -398,7 +398,7 @@ public class SessionCacheTestServlet extends FATServlet {
         // poll for entry to be invalidated from cache
         System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
         @SuppressWarnings("rawtypes")
-        Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.info.default_host%2FsessionCacheApp", String.class, ArrayList.class);
+        Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp", String.class, ArrayList.class);
         long timeoutNS = TimeUnit.MINUTES.toNanos(1);
         for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < timeoutNS; TimeUnit.MILLISECONDS.sleep(500));
 

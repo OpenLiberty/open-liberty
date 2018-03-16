@@ -63,11 +63,13 @@ public class SessionCDITestServlet extends FATServlet {
         for (Enumeration<String> attrs = session.getAttributeNames(); attrs.hasMoreElements();) {
             String name = attrs.nextElement();
             System.out.println("Session attribute " + name + ": " + session.getAttribute(name));
+            if (name.startsWith("WELD_S#"))
+                System.out.println("### HASH FOR " + name + " is " + Integer.toHexString(session.getAttribute(name).hashCode()));
         }
     }
 
     /**
-     * Directly read entries from the session property cache and writes to the servlet output so that
+     * Directly read entries from the session attributes cache and writes to the servlet output so that
      * the caller can confirm that the values are written to the cache.
      */
     public void testWeldSessionAttributes(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -75,7 +77,7 @@ public class SessionCDITestServlet extends FATServlet {
         String key0 = sessionId + ".WELD_S#0";
         String key1 = sessionId + ".WELD_S#1";
 
-        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.prop.default_host%2FsessionCacheApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
         byte[] value0 = cache.get(key0);
         byte[] value1 = cache.get(key1);
         cache.close();
