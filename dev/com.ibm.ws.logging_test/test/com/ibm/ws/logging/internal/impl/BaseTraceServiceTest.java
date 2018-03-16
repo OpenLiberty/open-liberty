@@ -26,7 +26,6 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.websphere.ras.SharedTraceComponent;
@@ -253,7 +252,6 @@ public class BaseTraceServiceTest extends java.util.ListResourceBundle {
 
     }
 
-    @Ignore
     @Test
     public void testAuditService() {
         final String m = "testAuditService";
@@ -539,7 +537,6 @@ public class BaseTraceServiceTest extends java.util.ListResourceBundle {
         }
     }
 
-    @Ignore
     @Test
     public void testWarning() {
         final String m = "testWarning";

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import junit.framework.Assert;
@@ -48,7 +47,6 @@ public class TrFormatMessageTest {
         };
     }
 
-    @Ignore
     @Test
     public void testFormatMessage() {
         List<Locale> locales = Arrays.asList(new Locale("zz"));
@@ -67,7 +65,6 @@ public class TrFormatMessageTest {
      * Locale is used.
      */
     @Test
-    @Ignore
     public void testFormatMessage_resolvesToDefaultLocale() {
         List<Locale> locales = Arrays.asList(new Locale("aa"));
 

@@ -30,15 +30,15 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import test.LoggingTestUtils;
-import test.TestConstants;
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.ras.SharedTr;
 import com.ibm.websphere.ras.SharedTraceComponent;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.boot.logging.LoggerHandlerManager;
+
+import test.LoggingTestUtils;
+import test.TestConstants;
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -63,7 +63,7 @@ public class TrToLoggerTestDisabled {
         // that seems to vary)
         System.setProperty("com.ibm.ws.logging.trace.file.name", "java.util.logging");
 
-        // make stdout/stderr "quiet" & initialize Tr -- no output will 
+        // make stdout/stderr "quiet" & initialize Tr -- no output will
         // show up for test unless one of the copy methods is called
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.logTo(TestConstants.BUILD_TMP);

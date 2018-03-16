@@ -18,7 +18,6 @@ import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,7 +27,6 @@ import com.ibm.wsspi.logprovider.TrService;
 
 import test.LoggingTestUtils;
 
-@Ignore
 @RunWith(JMock.class)
 public class TrStaticAPITest {
     static {
@@ -78,7 +76,6 @@ public class TrStaticAPITest {
         SharedTr.clearConfig();
     }
 
-    @Ignore
     @Test
     public void testStaticTraceMethods() {
         // Each of the following methods have three flavors, which should

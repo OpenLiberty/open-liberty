@@ -16,7 +16,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
@@ -29,7 +28,6 @@ import test.common.SharedOutputManager;
  * Test TraceComponent registration methods using annotations to specify group
  * only
  */
-@Ignore
 @TraceOptions(traceGroup = "singlegroup")
 public class TrRegisterGroupsTest1 {
     static {

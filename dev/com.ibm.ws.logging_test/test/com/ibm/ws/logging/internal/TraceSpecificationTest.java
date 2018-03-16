@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -121,7 +120,6 @@ public class TraceSpecificationTest {
         assertFalse("Test specifications should compare NOT equal", testSpec.equals(testSpec2));
     }
 
-    @Ignore
     @Test
     public void testUnmatchedSpecs() {
         TraceSpecification testSpec = new TraceSpecification("*=info: whitespace= all\n=\t disabled   : unknown=all", null, false);

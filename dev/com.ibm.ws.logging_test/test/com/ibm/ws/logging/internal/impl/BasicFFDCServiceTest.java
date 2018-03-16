@@ -27,7 +27,6 @@ import java.util.TreeSet;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -76,7 +75,6 @@ public class BasicFFDCServiceTest {
         assertTrue("Log directory exists: " + ffdcDir, ffdcDir.exists() || ffdcDir.mkdirs());
     }
 
-    @Ignore
     // Test FFDC calls
     @Test
     public void test1() {
@@ -168,7 +166,6 @@ public class BasicFFDCServiceTest {
     /**
      * This test makes sure that there is a new FFDC file created for every unique exception (46715)
      */
-    @Ignore
     @Test
     public void testNewFileForEachFfdc() {
         BaseFFDCService baseFFDC = (BaseFFDCService) SharedFFDCConfigurator.getDelegate();
@@ -223,7 +220,6 @@ public class BasicFFDCServiceTest {
     /**
      * This test makes sure that there is a not new FFDC file created for duplicate exceptions (46715)
      */
-    @Ignore
     @Test
     public void testNoDuplicateIncident() {
         final Exception e1 = new Exception("unittest exception testNoDuplicateIncident");
@@ -264,7 +260,6 @@ public class BasicFFDCServiceTest {
         outputMgr.resetStreams();
     }
 
-    @Ignore
     @Test
     public void testRollIncidents() throws Exception {
         BaseFFDCService baseFFDC = (BaseFFDCService) SharedFFDCConfigurator.getDelegate();
