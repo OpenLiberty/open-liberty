@@ -161,16 +161,40 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
                 routeToAll(routedMessage, routeAllMsgsToTheseLogHandlers);
             }
             Set<String> logHandlerIds = getLogHandlersForMessage(routedMessage.getFormattedMsg());
-            // Ensure console doesn't duplicate printing specific message that included in wtoMessages=*
-            if(!logHandlerIds.equals(routeAllMsgsToTheseLogHandlers)) 
-            		logHandlerIds.removeAll(routeAllMsgsToTheseLogHandlers);
             if (logHandlerIds == null) {
                 // There are no routing requirements for this msgId.
                 // Return true to tell the caller to log the msg normally.
                 return true;
             } else {
-                // Route to all LogHandlers in the wsLogHandlerService ConcurrentMap.
-                return routeToAll(routedMessage, logHandlerIds);
+                // Ensure console doesn't duplicate printing specific message that included in wtoMessages=*
+            		if(routeAllMsgsToTheseLogHandlers != null) {
+            			String defaultStr = null;
+            			if(logHandlerIds.contains("DEFAULT")) {
+            				defaultStr = "DEFAULT";
+            			}else if(logHandlerIds.contains("+DEFAULT")) {
+            				defaultStr = "+DEFAULT";
+            			}else if(logHandlerIds.contains("-DEFAULT")) {
+            				defaultStr = "-DEFAULT";
+            			}
+            			
+            			if(!logHandlerIds.equals(routeAllMsgsToTheseLogHandlers)) {
+            				logHandlerIds.removeAll(routeAllMsgsToTheseLogHandlers); // filter different msgIDs
+            				
+            				if(defaultStr!=null) {
+            					logHandlerIds.add(defaultStr);	// Add "(+/-/ )DEFAULT" because seems like both 
+            													// logHandlerIds & routeAllMsgsToTheseLogHandlers contains it,
+            													// and it gets removed as "duplicated" message, which caused test failure
+            													// Route to all LogHandlers in the wsLogHandlerService ConcurrentMap.
+            				}
+
+                        return routeToAll(routedMessage, logHandlerIds);
+            			}else {
+            				return true;
+            			}
+            		}else {
+                        // Route to all LogHandlers in the wsLogHandlerService ConcurrentMap.
+                        return routeToAll(routedMessage, logHandlerIds);
+            		}
             }
         } finally {
             RERWLOCK.readLock().unlock();
