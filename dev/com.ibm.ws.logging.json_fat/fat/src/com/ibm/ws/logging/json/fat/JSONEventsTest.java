@@ -186,6 +186,35 @@ public abstract class JSONEventsTest {
         String value = "";
         for (String key : jsonObj.keySet()) {
             if (extensionKeysMandatoryList.contains(key)) {
+                if (key.equals("ext_correctIntExtension_int")) {
+                    if (jsonObj.getInt(key) != 12345) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctIntExtension2_int")) {
+                    if (jsonObj.getInt(key) != -12345) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctBooleanExtension_bool")) {
+                    if (jsonObj.getBoolean(key) != true) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctBooleanExtension2_bool")) {
+                    if (jsonObj.getBoolean(key) != false) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctStringExtension")) {
+                    if (!jsonObj.getString(key).toString().equals("Testing string 1234")) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctFloatExtension_float")) {
+                    if ((Float.parseFloat(jsonObj.get(key).toString())) != 100.123f) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctFloatExtension2_float")) {
+                    if ((Float.parseFloat(jsonObj.get(key).toString())) != -100.123f) {
+                        invalidFields.add(key);
+                    }
+                }
                 extensionKeysMandatoryList.remove(key);
                 value = "" + jsonObj.get(key);
                 Log.finer(c, method, "key=" + key + ", value=" + value);
