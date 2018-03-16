@@ -86,15 +86,15 @@ public class CollectorJsonUtils1_1 {
         /* Common fields for all event types */
         StringBuilder sb = CollectorJsonHelpers.startGCJson1_1(hostName, wlpUserDir, serverName);
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(hcGCData.getTime());
-        CollectorJsonHelpers.addToJSON(sb, "ibm_datetime", datetime, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "ibm_sequence", sequenceNum, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_DATETIME, datetime, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_SEQUENCE, sequenceNum, false, false, false, false);
         /* GC specific fields */
-        CollectorJsonHelpers.addToJSON(sb, "ibm_heap", String.valueOf((long) hcGCData.getHeap()), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "ibm_usedHeap", String.valueOf((long) hcGCData.getUsage()), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "ibm_maxHeap", String.valueOf(hcGCData.getMaxHeap()), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "ibm_duration", String.valueOf((long) hcGCData.getDuration() * 1000), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "ibm_gcType", hcGCData.getType(), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "ibm_reason", hcGCData.getReason(), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_HEAP, String.valueOf((long) hcGCData.getHeap()), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_USED_HEAP, String.valueOf((long) hcGCData.getUsage()), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_MAX_HEAP, String.valueOf(hcGCData.getMaxHeap()), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_DURATION, String.valueOf((long) hcGCData.getDuration() * 1000), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_GC_TYPE, hcGCData.getType(), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_REASON, hcGCData.getReason(), false, false, false, false);
 
         if (tags != null) {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));

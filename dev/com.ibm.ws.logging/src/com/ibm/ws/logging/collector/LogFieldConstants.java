@@ -54,4 +54,16 @@ public class LogFieldConstants {
     public static final String IBM_BYTESRECEIVED = "ibm_bytesReceived";
     public static final String IBM_RESPONSECODE = "ibm_responseCode";
     public static final String IBM_ELAPSEDTIME = "ibm_elapsedTime";
+    public static final String UTF_8 = "UTF-8";
+    public static final String SEQUENCE = "sequence";
+    public static final String HEAP = "heap";
+    public static final String USED_HEAP = "usedHeap";
+    public static final String MAX_HEAP = "maxHeap";
+    public static final String GC_TYPE = "gcType";
+    public static final String REASON = "reason";
+    public static final String IBM_HEAP = "ibm_heap";
+    public static final String IBM_USED_HEAP = "ibm_usedHeap";
+    public static final String IBM_MAX_HEAP = "ibm_maxHeap";
+    public static final String IBM_GC_TYPE = "ibm_gcType";
+    public static final String IBM_REASON = "ibm_reason";
 }

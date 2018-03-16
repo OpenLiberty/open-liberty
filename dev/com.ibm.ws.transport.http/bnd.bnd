@@ -96,7 +96,6 @@ instrument.classesExcludes: \
 -buildpath: \
 	com.ibm.ws.logging,\
 	com.ibm.ws.logging.core,\
-	com.ibm.ws.logging.collector,\
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.ws.event,\
 	com.ibm.websphere.org.osgi.core,\
