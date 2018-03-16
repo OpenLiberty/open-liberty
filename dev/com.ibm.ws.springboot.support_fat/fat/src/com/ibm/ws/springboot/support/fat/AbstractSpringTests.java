@@ -65,22 +65,20 @@ public abstract class AbstractSpringTests {
         } finally {
             try {
                 server.deleteDirectoryFromLibertyServerRoot(SPRING_WORKAREA_DIR + SPRING_LIB_INDEX_CACHE);
+                for (RemoteFile remoteFile : dropinFiles) {
+                    remoteFile.delete();
+                }
+                server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
+                //clear bootstrap.properties
+                bootStrapProperties.clear();
+                try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
+                    bootStrapProperties.store(out, "");
+                }
             } catch (Exception e) {
                 // ignore
-            }
-            server.postStopServerArchive();
-            for (RemoteFile remoteFile : dropinFiles) {
-                remoteFile.delete();
-            }
-            dropinFiles.clear();
-            server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
-            //clear bootstrap.properties
-            try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
-                bootStrapProperties.load(in);
-            }
-            bootStrapProperties.clear();
-            try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
-                bootStrapProperties.store(out, "");
+            } finally {
+                dropinFiles.clear();
+                server.postStopServerArchive();
             }
         }
     }
@@ -118,6 +116,8 @@ public abstract class AbstractSpringTests {
             Set<String> features = config.getFeatureManager().getFeatures();
             features.clear();
             features.addAll(getFeatures());
+            List<SpringBootApp> apps = config.getSpringBootApps();
+            apps.clear();
             RemoteFile appFile = getApplicationFile();
             switch (getApplicationConfigType()) {
                 case DROPINS_SPR: {

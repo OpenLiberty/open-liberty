@@ -94,6 +94,7 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 public class SpringBootApplicationImpl extends DeployedAppInfoBase implements SpringBootConfigFactory, SpringBootApplication {
     private static final TraceComponent tc = Tr.register(SpringBootApplicationImpl.class);
@@ -204,7 +205,18 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             virtualHostConfig.getAndUpdate((b) -> {
                 if (b != null) {
                     try {
-                        b.uninstall();
+                        // If the framework is stopping then we avoid uninstalling the bundle.
+                        // This is necessary because config admin will no process the
+                        // config bundle deletion while the framework is shutting down.
+                        // Here we leave the bundle installed and we will clean it up
+                        // on restart when the Spring Boot app handler is activated.
+                        // This way the configurations can be removed before re-starting
+                        // the spring boot applications
+                        if (!FrameworkState.isStopping()) {
+                            b.uninstall();
+                        }
+                    } catch (IllegalStateException e) {
+                        // auto FFDC here
                     } catch (BundleException e) {
                         // auto FFDC here
                     }

@@ -23,13 +23,14 @@ import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 import javax.net.ssl.SSLEngineResult.Status;
 import javax.net.ssl.SSLException;
 
+import com.ibm.websphere.channelfw.FlowType;
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.channel.ssl.internal.SSLAlpnNegotiatorJdk8.ThirdPartyAlpnNegotiator;
-import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
+import com.ibm.ws.channel.ssl.internal.SSLAlpnNegotiatorJdk8.ThirdPartyAlpnNegotiator;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
@@ -653,8 +654,33 @@ public class SSLUtils {
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
 
         // check to see if any ALPN negotiator is on the classpath; if so, register the current engine and link
-        ThirdPartyAlpnNegotiator negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
-        
+        ThirdPartyAlpnNegotiator negotiator = null;
+        boolean tryAlpnNegotiator = false;
+
+        if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
+
+            if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+                if (connLink.getChannel().getUseH2ProtocolAttribute() != null && connLink.getChannel().getUseH2ProtocolAttribute()) {
+                    tryAlpnNegotiator = true;
+                }
+            }
+
+            else if (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+                if (connLink.getChannel().getUseH2ProtocolAttribute() == null || connLink.getChannel().getUseH2ProtocolAttribute()) {
+                    tryAlpnNegotiator = true;
+                }
+            }
+
+            if (tryAlpnNegotiator) {
+                // if the grizzly-npn or jetty-alpn projects are on the bootclasspath, use them for ALPN
+                if (bTrace && tc.isEntryEnabled()) {
+                    Tr.debug(tc, "handleHandshake, try Alpn Negotiator");
+                }
+                negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
+            }
+
+        }
+
         int amountToWrite = 0;
         boolean firstPass = true;
         HandshakeStatus hsstatus = HandshakeStatus.NEED_WRAP;
@@ -957,7 +983,9 @@ public class SSLUtils {
                 result = null;
             }
         } finally {
-            JDK8AlpnNegotiator.tryToRemoveAlpnNegotiator(negotiator, engine, connLink);
+            if (tryAlpnNegotiator) {
+                JDK8AlpnNegotiator.tryToRemoveAlpnNegotiator(negotiator, engine, connLink);
+            }
         }
         if (bTrace && tc.isEntryEnabled()) {
             Tr.exit(tc, "handleHandshake");
