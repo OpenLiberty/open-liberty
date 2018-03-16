@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 
 import test.common.SharedOutputManager;
@@ -112,7 +113,7 @@ public class EMQSychronousHandlerTest {
         }
         testBufferManager.addSyncHandler(syncHandler);
         assertEquals(200, syncHandler.getNumOfMessages());
-        BufferManagerImpl.removeEMQTrigger();
+        BufferManagerEMQHelper.removeEMQTrigger();
 
         DummyHandler syncHandler2 = new DummyHandler();
         testBufferManager.add(syncHandler2);
@@ -121,8 +122,8 @@ public class EMQSychronousHandlerTest {
 
     @Test
     public void RemoveEMQ() {
-        BufferManagerImpl.removeEMQTrigger();
-        assertTrue(BufferManagerImpl.getEMQRemovedFlag());
+        BufferManagerEMQHelper.removeEMQTrigger();
+        assertTrue(BufferManagerEMQHelper.getEMQRemovedFlag());
     }
 
 }

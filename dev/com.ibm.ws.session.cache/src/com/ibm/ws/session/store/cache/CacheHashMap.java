@@ -390,27 +390,35 @@ public class CacheHashMap extends BackedHashMap {
                         throw new IllegalArgumentException(propid); // internal error, should never occur
                     }
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-                    ObjectOutputStream oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
-                    oos.writeObject(session.getSwappableData().get(propid));
-                    oos.flush();
-
-                    int size = baos.size();
-                    byte[] objbuf = baos.toByteArray();
-
-                    oos.close();
-                    baos.close();
-
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "before update " + propid + " for session " + id + " size " + size);
-
                     String key = createSessionPropertyKey(id, propid);
-                    sessionPropertyCache.put(key, objbuf);
+                    Object value = session.getSwappableData().get(propid);
 
-                    SessionStatistics pmiStats = _iStore.getSessionStatistics();
-                    if (pmiStats != null) {
-                        pmiStats.writeTimes(objbuf.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+                    if (value == null) {
+                        // Value removed by another thread
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "ignoring " + propid + " because it is no longer found");
+                    } else {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+                        ObjectOutputStream oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
+                        oos.writeObject(value);
+                        oos.flush();
+
+                        int size = baos.size();
+                        byte[] objbuf = baos.toByteArray();
+
+                        oos.close();
+                        baos.close();
+
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "before update " + propid + " for session " + id + " size " + size);
+
+                        sessionPropertyCache.put(key, objbuf);
+
+                        SessionStatistics pmiStats = _iStore.getSessionStatistics();
+                        if (pmiStats != null) {
+                            pmiStats.writeTimes(objbuf.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+                        }
                     }
                 }
 
@@ -494,8 +502,8 @@ public class CacheHashMap extends BackedHashMap {
                             throw new RuntimeException(x);
                         }
                     oldValue = sessionInfoCache.get(id);
-                    if (oldValue == null)
-                        throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?
+                    if (oldValue == null) 
+                        {break;} // TODO implement code path where cache entry for session is expired. Delete the property entries?
                     SessionInfo sessionInfo = new SessionInfo(oldValue).clone();
                     if (propsToWrite != null)
                         sessionInfo.addSessionPropertyIds(propsToWrite);

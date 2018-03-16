@@ -18,7 +18,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,11 +28,15 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import javax.cache.Cache;
+import javax.cache.Caching;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -90,6 +96,8 @@ public class SessionCacheTestServlet extends FATServlet {
         HttpSession session = request.getSession(false);
         Object actualValue = session.getAttribute(key);
         System.out.println("Got entry: " + key + '=' + actualValue + " from sessionID=" + session.getId());
+
+        response.getWriter().write("session property value: [" + actualValue + "]");
 
         assertTrue("value is " + actualValue + ", was expecting any of " + expected, expected.contains(actualValue));
     }
@@ -284,6 +292,58 @@ public class SessionCacheTestServlet extends FATServlet {
         assertFalse(session.getAttributeNames().hasMoreElements());
     }
 
+    /**
+     * Confirm that a session attribute name is written to the session info cache.
+     */
+    @SuppressWarnings("rawtypes")
+    public void testSessionInfoCache(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String sessionId = request.getParameter("sessionId");
+        String expectedAttributes = request.getParameter("attributes");
+        boolean allowOtherAttributes = Boolean.parseBoolean(request.getParameter("allowOtherAttributes"));
+
+        List<String> expected = expectedAttributes == null ? Collections.emptyList() : Arrays.asList(expectedAttributes.split(","));
+
+        Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.info.default_host%2FsessionCacheApp", String.class, ArrayList.class);
+        ArrayList<?> values = cache.get(sessionId);
+        @SuppressWarnings("unchecked")
+        TreeSet<String> attributeNames = (TreeSet<String>) values.get(values.size() - 1); // last entry is the session attribute names
+
+        assertTrue(expected + " not found in " + attributeNames, attributeNames.containsAll(expected));
+
+        if (!allowOtherAttributes)
+            assertTrue("Some extra attributes found within " + attributeNames, expected.containsAll(attributeNames));
+    }
+
+    /**
+     * Confirm that a session attribute and its value are written to the session property cache.
+     */
+    public void testSessionPropertyCache(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String sessionId = request.getParameter("sessionId");
+        String key = sessionId + '.' + request.getParameter("key");
+        String expectedValues = request.getParameter("values"); // value must be one of the values in this list (null for not present)
+        String type = request.getParameter("type");
+
+        Set<Object> expected = new HashSet<Object>();
+        for (String v : expectedValues.split(",")) {
+            Object o = toType(type, v);
+            expected.add(o == null ? null : Arrays.toString(toBytes(o)));
+        }
+
+        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.prop.default_host%2FsessionCacheApp", String.class, byte[].class);
+        byte[] bytes = cache.get(key);
+
+        String strValue = bytes == null ? null : Arrays.toString(bytes);
+        assertTrue(strValue + " not found in " + expected, expected.contains(strValue));
+    }
+
+    private static final byte[] toBytes(Object o) throws Exception {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(o);
+            return bos.toByteArray();
+        }
+    }
+
     public void sessionPut(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         boolean createSession = Boolean.parseBoolean(request.getParameter("createSession"));
         HttpSession session = request.getSession(createSession);
@@ -328,6 +388,21 @@ public class SessionCacheTestServlet extends FATServlet {
         String key = request.getParameter("key");
         HttpSession session = request.getSession(false);
         session.removeAttribute(key);
+    }
+
+    public void sessionGetTimeout(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String key = request.getParameter("key");
+        HttpSession session = request.getSession(false);
+        String sessionId = session.getId();
+
+        // poll for entry to be invalidated from cache
+        System.setProperty("hazelcast.config", InitialContext.doLookup("jcache/hazelcast.config")); // need to use same config file as server.xml
+        @SuppressWarnings("rawtypes")
+        Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.info.default_host%2FsessionCacheApp", String.class, ArrayList.class);
+        long timeoutNS = TimeUnit.MINUTES.toNanos(1);
+        for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < timeoutNS; TimeUnit.MILLISECONDS.sleep(500));
+
+        session.getAttribute(key);
     }
 
     /**

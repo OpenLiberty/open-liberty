@@ -1,0 +1,11 @@
+<server>
+    <include location="common.xml"/>  
+    
+    <!-- FAT framework expects to start with the usual port  -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions soReuseAddr="true" />
+    </httpEndpoint>   
+</server>

@@ -1,0 +1,51 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'java'
+
+task massiveCopyTask {
+    
+   copy{    
+    from 'publish'   
+    into 'build'
+    include 'massiveRepo/features/usertest.with.ibm.license.esa'
+    include 'massiveRepo/fixes/8550-wlp-archive-ifpm89011.jar'
+    include 'massiveRepo/samples/SampleX.jar'
+   }
+   copy {
+   
+   	from 'publish/zips'
+   	into'build/unittest/zips'
+    include 'com.ibm.websphere.liberty.repo.core.manifest_8.5.5005.zip'
+    include 'invalid.zip'
+   }
+   
+   copy {  
+   	from zipTree('publish/zips/wlpDirs.zip')
+   	into 'build/unittest/wlpDirs'
+   }
+   copy {  
+   	from zipTree('publish/zips/wlpDirs.zip')
+   	into 'build/unittest/wlpDirs/testUninstallProduct'
+   }
+   copy {  
+   	from zipTree('publish/zips/wlpDirs.zip')
+   	into 'build/unittest/wlpDirs/testUninstallProductFeatures'
+   }
+   
+   mkdir('build/unittest/tmp')
+  
+}
+	
+assemble{
+	dependsOn massiveCopyTask
+
+}

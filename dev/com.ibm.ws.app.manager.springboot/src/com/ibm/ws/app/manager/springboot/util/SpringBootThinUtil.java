@@ -39,16 +39,23 @@ public class SpringBootThinUtil {
     private final JarFile sourceFatJar;
     private final File targetThinJar;
     private final File libIndexCache;
+    private final File libIndexCacheParent;
     private final boolean putLibCacheInDirectory;
     private final String springBootLibPath;
     private final List<String> libEntries = new ArrayList<>();
     private final Set<String> hashPrefixes = new HashSet<>();
     public static final String SPRING_LIB_INDEX_FILE = "META-INF/spring.lib.index";
+    private static final String SPRING_BOOT_LOADER_CLASSPATH = "org/springframework/boot/loader/";
 
     public SpringBootThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache, boolean putLibCacheInDirectory) throws IOException {
+        this(sourceFatJar, targetThinJar, libIndexCache, null, putLibCacheInDirectory);
+    }
+
+    public SpringBootThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache, File libIndexCacheParent, boolean putLibCacheInDirectory) throws IOException {
         this.sourceFatJar = new JarFile(sourceFatJar);
         this.targetThinJar = targetThinJar;
         this.libIndexCache = libIndexCache;
+        this.libIndexCacheParent = libIndexCacheParent;
         this.putLibCacheInDirectory = putLibCacheInDirectory;
         String springBootLibPath = new SpringBootManifest(this.sourceFatJar.getManifest()).getSpringBootLib();
         if (!springBootLibPath.endsWith("/")) {
@@ -65,9 +72,11 @@ public class SpringBootThinUtil {
         try (JarOutputStream thinJar = new JarOutputStream(new FileOutputStream(targetThinJar), sourceFatJar.getManifest());
                         ZipOutputStream libZip = putLibCacheInDirectory ? null : new ZipOutputStream(new FileOutputStream(libIndexCache))) {
 
+            Set<String> entryNames = new HashSet<>();
             for (Enumeration<JarEntry> entries = sourceFatJar.entries(); entries.hasMoreElements();) {
                 JarEntry entry = entries.nextElement();
-                if (!JarFile.MANIFEST_NAME.equals(entry.getName()) && !entry.getName().startsWith("org")) { // hack to omit spring boot loader
+                if (entryNames.add(entry.getName()) && !JarFile.MANIFEST_NAME.equals(entry.getName()) &&
+                    !entry.getName().startsWith(SPRING_BOOT_LOADER_CLASSPATH) /* omit spring boot loader classes */) {
                     storeEntry(thinJar, libZip, entry);
                 }
             }
@@ -78,11 +87,11 @@ public class SpringBootThinUtil {
 
     private void storeEntry(JarOutputStream thinJar, ZipOutputStream libZip, JarEntry entry) throws IOException, NoSuchAlgorithmException {
         String path = entry.getName();
-
+        // check if entry is dependency jar or application class
         if (entry.getName().startsWith(springBootLibPath) && !entry.getName().equals(springBootLibPath)) {
 
             String hash = hash(sourceFatJar, entry);
-            String hashPrefix = hash.substring(0, 2) + "/";
+            String hashPrefix = hash.substring(0, 2);
             String hashSuffix = hash.substring(2, hash.length());
 
             if (putLibCacheInDirectory) {
@@ -100,7 +109,7 @@ public class SpringBootThinUtil {
         }
     }
 
-    private static String hash(JarFile jf, ZipEntry entry) throws IOException, NoSuchAlgorithmException {
+    protected String hash(JarFile jf, ZipEntry entry) throws IOException, NoSuchAlgorithmException {
         InputStream eis = jf.getInputStream(entry);
         MessageDigest digest = MessageDigest.getInstance("sha-256");
         byte[] buffer = new byte[4096];
@@ -122,33 +131,62 @@ public class SpringBootThinUtil {
     }
 
     private void storeLibraryInZip(ZipOutputStream libZip, JarEntry entry, String hashPrefix, String hashSuffix) throws IOException, NoSuchAlgorithmException {
+        // Note that for the in zip case we always store the library
+        // without checking the parent.  This is because we want to
+        // create a complete cache that may have no parent.
         String path = entry.getName();
         try (InputStream is = sourceFatJar.getInputStream(entry)) {
-            if (!hashPrefixes.contains(hashPrefix)) {
-                libZip.putNextEntry(new ZipEntry(hashPrefix));
+            //zip format require trailing '/' for directory entries
+            String uniqueDirectoryPath = hashPrefix + '/' + hashSuffix + '/';
+            if (!hashPrefixes.contains(uniqueDirectoryPath)) {
+                if (!hashPrefixes.contains(hashPrefix + '/')) {
+                    libZip.putNextEntry(new ZipEntry(hashPrefix + '/'));
+                    libZip.closeEntry();
+                    hashPrefixes.add(hashPrefix + '/');
+                }
+                libZip.putNextEntry(new ZipEntry(uniqueDirectoryPath));
                 libZip.closeEntry();
-                hashPrefixes.add(hashPrefix);
+                hashPrefixes.add(uniqueDirectoryPath);
             }
-            path = hashPrefix + hashSuffix + ".jar";
+            path = hashPrefix + '/' + hashSuffix + entry.getName().substring(entry.getName().lastIndexOf('/'));
             writeEntry(is, libZip, path);
         }
     }
 
     private void storeLibraryInDir(JarEntry entry, String hashPrefix, String hashSuffix) throws IOException, NoSuchAlgorithmException {
+        String hashPath = hashPrefix + '/' + hashSuffix;
+        String libName = entry.getName();
+        int lastSlash = libName.lastIndexOf('/');
+        if (lastSlash >= 0) {
+            libName = libName.substring(lastSlash + 1);
+        }
+
+        if (libIndexCacheParent != null) {
+            // if there is a parent cache look to see if the lib name exists there
+            File libDirParent = new File(libIndexCacheParent, hashPath);
+            File libFileParent = new File(libDirParent, libName);
+            if (libFileParent.exists()) {
+                // no need to store since the lib exists in the parent cache
+                return;
+            }
+        }
+
         if (!libIndexCache.exists()) {
             libIndexCache.mkdirs();
         }
-        File libDir = new File(libIndexCache, hashPrefix);
-        if (!libDir.exists()) {
-            libDir.mkdirs();
-        }
-        File libFile = new File(libDir, hashSuffix + ".jar");
-        InputStream is = sourceFatJar.getInputStream(entry);
 
-        try (OutputStream libJar = new FileOutputStream(libFile)) {
-            copyStream(is, libJar);
-        } finally {
-            is.close();
+        File libDir = new File(libIndexCache, hashPath);
+        File libFile = new File(libDir, libName);
+        if (!libFile.exists()) {
+            if (!libDir.exists()) {
+                libDir.mkdirs();
+            }
+            InputStream is = sourceFatJar.getInputStream(entry);
+            try (OutputStream libJar = new FileOutputStream(libFile)) {
+                copyStream(is, libJar);
+            } finally {
+                is.close();
+            }
         }
     }
 

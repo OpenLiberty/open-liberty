@@ -29,6 +29,7 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDICircuitBreaker
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIFallbackTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryReorderedTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -36,6 +37,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 @RunWith(Suite.class)
 @SuiteClasses({
                 TxRetryTest.class,
+                TxRetryReorderedTest.class,
                 CDIAsyncTest.class,
                 CDIBulkheadTest.class,
                 CDICircuitBreakerTest.class,
@@ -60,7 +62,7 @@ public class FATSuite {
         WebArchive CDIFaultTolerance_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.cdi")
                         .addAsLibraries(faulttolerance_jar)
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "persistence.xml")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"));
 
         ShrinkHelper.exportArtifact(CDIFaultTolerance_war, "publish/servers/CDIFaultTolerance/dropins/");
@@ -72,6 +74,7 @@ public class FATSuite {
                         .addAsLibraries(faulttolerance_jar);
 
         ShrinkHelper.exportArtifact(txFaultTolerance_war, "publish/servers/TxFaultTolerance/dropins/");
+        ShrinkHelper.exportArtifact(txFaultTolerance_war, "publish/servers/TxFaultToleranceReordered/dropins/");
     }
 
 }

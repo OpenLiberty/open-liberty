@@ -16,9 +16,20 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                SimpleTest15.class,
-                SimpleTest20.class
+                CommonWebServerTests15.class,
+                CommonWebServerTests15Servlet40.class,
+                CommonWebServerTests20.class,
+                CommonWebServerTests20Servlet40.class,
+                ConfigDropinRootTests.class,
+                ConfigSpringBootAppTagTests.class,
+                PreThinnedSpringBootTests.class,
+                WarmStartTests.class,
+                SSLTests15.class,
+                SSLTests20.class,
+                SSLMutualAuthTests15.class,
+                SSLMutualAuthTests20.class
 })
+
 public class FATSuite {
 
 }

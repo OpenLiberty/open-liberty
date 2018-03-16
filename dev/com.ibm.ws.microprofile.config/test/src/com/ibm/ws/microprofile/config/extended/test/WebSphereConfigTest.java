@@ -22,7 +22,7 @@ import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
-import com.ibm.ws.microprofile.config.basic.test.HashMapConfigSource;
+import com.ibm.ws.microprofile.config.basic.test.BasicConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class WebSphereConfigTest {
@@ -35,7 +35,7 @@ public class WebSphereConfigTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testOptionalString() throws NoSuchFieldException, SecurityException {
-        HashMapConfigSource source100 = new HashMapConfigSource(100, "Basic Source 100");
+        BasicConfigSource source100 = new BasicConfigSource(100, "Basic Source 100");
 
         source100.put("key1", "value1");
         source100.put("key2", "value2");
@@ -59,7 +59,7 @@ public class WebSphereConfigTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testOptionalURL() throws NoSuchFieldException, SecurityException {
-        HashMapConfigSource source100 = new HashMapConfigSource(100, "Basic Source 100");
+        BasicConfigSource source100 = new BasicConfigSource(100, "Basic Source 100");
 
         source100.put("key1", "http://www.ibm.com/");
 
@@ -80,7 +80,7 @@ public class WebSphereConfigTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testOptionalMissing() throws NoSuchFieldException, SecurityException {
-        HashMapConfigSource source100 = new HashMapConfigSource(100, "Basic Source 100");
+        BasicConfigSource source100 = new BasicConfigSource(100, "Basic Source 100");
 
         source100.put("key1", "value1");
         source100.put("key2", "value2");
@@ -103,7 +103,7 @@ public class WebSphereConfigTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testOptionalDefault() throws NoSuchFieldException, SecurityException {
-        HashMapConfigSource source100 = new HashMapConfigSource(100, "Basic Source 100");
+        BasicConfigSource source100 = new BasicConfigSource(100, "Basic Source 100");
 
         source100.put("key1", "value1");
         source100.put("key2", "value2");

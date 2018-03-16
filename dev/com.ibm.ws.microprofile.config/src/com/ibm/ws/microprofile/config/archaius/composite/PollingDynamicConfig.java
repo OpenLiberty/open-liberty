@@ -212,7 +212,11 @@ public class PollingDynamicConfig implements Closeable {
      */
     @Trivial
     protected String getRawProperty(String key) {
-        return current.get(key);
+        String rawValue = source.getValue(key);
+        if (rawValue != null) {
+            current.put(key, rawValue);
+        }
+        return rawValue;
     }
 
     /**
