@@ -28,7 +28,23 @@ import com.ibm.ws.microprofile.config.sources.InternalConfigSource;
 import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
 
 /**
- * A ConfigSource which returns values from appProperties elements in the server.xml file
+ * A ConfigSource which returns values from appProperties elements in the server.xml file e.g.
+ *
+ * <application location="serverXMLApp.war">
+ * <appProperties serverXMLKey1="serverXMLValue1"/>
+ * <appProperties serverXMLKey1="serverXMLValue1a" serverXMLKey2="serverXMLValue2" serverXMLKey3="serverXMLValue3"/>
+ * <appProperties serverXMLKey1="serverXMLValue1b" serverXMLKey4="serverXMLValue4"/>
+ * </application>
+ *
+ * Result should be
+ *
+ * serverXMLKey1="serverXMLValue1b"
+ * serverXMLKey2="serverXMLValue2"
+ * serverXMLKey3="serverXMLValue3"
+ * serverXMLKey4="serverXMLValue4"
+ *
+ * Note that serverXMLKey1 was listed three times and the last entry "won"
+ *
  */
 public class AppPropertyConfigSource extends InternalConfigSource implements DynamicConfigSource {
 

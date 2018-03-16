@@ -37,7 +37,9 @@ public class ServerXMLBean {
     }
 
     /**
-     * Tests the SPI that allows the priority to be set
+     * Tests the that the appProperties in the server.xml are available via the SPI
+     *
+     * Also tests that where there are duplicate keys, the last one wins
      *
      * @throws Exception
      */

@@ -205,6 +205,9 @@ public class OSGiConfigUtils {
      * @return The Configuration instance
      */
     public static SortedSet<Configuration> getConfigurations(BundleContext bundleContext, String applicationName) {
+        //sorting the Configuration objects by their PID which are in the format "appProperties_xx" where xx is an incrementing integer
+        //so the first one discovered might be "appProperties_17" and the second one is "appProperties_18"
+        //This ordering is not a defined API but I'm hoping that it won't change
         SortedSet<Configuration> configSet = new TreeSet<>((o1, o2) -> o1.getPid().compareTo(o2.getPid()));
         try {
             String applicationFilter = getApplicationConfigFilter(bundleContext, applicationName);
