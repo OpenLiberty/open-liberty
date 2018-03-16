@@ -39,6 +39,12 @@ public class H2HandlerImpl implements H2Handler {
      */
     @Override
     public boolean isH2Request(HttpInboundConnection hic, ServletRequest request) throws ServletException {
+        
+        //first check if H2 is enabled for this channel/port
+        if (!((Http2InboundConnection)hic).isHTTP2UpgradeRequest(null, true) ){
+            return false;
+        }
+        
         Map<String, String> headers = new HashMap<String, String>();
         HttpServletRequest hsrt = (HttpServletRequest) request;
         Enumeration<String> headerNames = hsrt.getHeaderNames();
@@ -49,7 +55,8 @@ public class H2HandlerImpl implements H2Handler {
             String value = hsrt.getHeader(key);
             headers.put(key, value);
         }
-        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(headers);
+        //check if this request is asking to do H2
+        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(headers, false);
     }
 
     /**

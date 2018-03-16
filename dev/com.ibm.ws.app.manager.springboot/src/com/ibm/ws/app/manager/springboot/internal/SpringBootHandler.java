@@ -53,7 +53,7 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
     @Activate
     protected void activate(BundleContext context) {
         FrameworkWiring fwkWiring = context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class);
-
+        // Find all bundles left over from previous run that provide spring boot config
         Collection<BundleCapability> configs = fwkWiring.findProviders(new Requirement() {
             @Override
             public Resource getResource() {
@@ -76,6 +76,8 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
             }
         });
 
+        // We uninstall left over configs from previous shutdown to give config admin a
+        // chance to clear out the configurations now before we start any applications.
         configs.forEach((c) -> {
             try {
                 c.getRevision().getBundle().uninstall();

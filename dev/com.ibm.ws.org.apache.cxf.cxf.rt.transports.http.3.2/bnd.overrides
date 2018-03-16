@@ -15,7 +15,8 @@ Export-Package: \
   org.apache.cxf.transport.https,\
   org.apache.cxf.transport.servlet,\
   org.apache.cxf.transports.http;version=3.2.1,\
-  org.apache.cxf.transports.http.configuration
+  org.apache.cxf.transports.http.configuration,\
+  org.apache.cxf.transport.stream;version=1.0.2
   
 Import-Package: \
   !org.apache.aries.*,\

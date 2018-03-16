@@ -22,7 +22,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 CommonWebServerTests20Servlet40.class,
                 ConfigDropinRootTests.class,
                 ConfigSpringBootAppTagTests.class,
-                PreThinnedSpringBootTests.class
+                PreThinnedSpringBootTests.class,
+                WarmStartTests.class
 })
 public class FATSuite {
 

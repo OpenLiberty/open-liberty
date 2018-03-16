@@ -120,6 +120,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     private volatile String host = HttpServiceConstants.LOCALHOST;
     private volatile int httpPort = -1;
     private volatile int httpsPort = -1;
+    private volatile String protocolVersion = null;
     private volatile String topicString = null;
     private volatile String name = null;
     private volatile String pid = null;
@@ -303,6 +304,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             }
         }
 
+        //Find and resolve the protocolVersion if has been defined.
+        protocolVersion = (String) config.get("protocolVersion");
+
         httpPort = MetatypeUtils.parseInteger(HttpServiceConstants.ENPOINT_FPID_ALIAS, "httpPort",
                                               config.get("httpPort"),
                                               -1);
@@ -429,6 +433,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      */
     public int getListeningSecureHttpPort() {
         return httpSecureChain.getActivePort();
+    }
+
+    public String getProtocolVersion(){
+        return this.protocolVersion;
     }
 
     /**
