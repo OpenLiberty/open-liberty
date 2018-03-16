@@ -20,6 +20,11 @@ import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class TestUtils {
 
+    public static void assertContainsKey(Config config, String key1) {
+        Iterable<String> keys = config.getPropertyNames();
+        assertContains(keys, key1);
+    }
+
     public static void assertContains(Iterable<String> iterable, String value) {
         StringBuilder strb = new StringBuilder();
         boolean first = true;
@@ -38,12 +43,17 @@ public class TestUtils {
         fail("Iterable (" + strb + ") did not contain: " + value);
     }
 
-    public static void assertNotContains(Iterable<String> iterable, String value) {
+    public static void assertNotContainsKey(Config config, String key) {
+        Iterable<String> iterable = config.getPropertyNames();
+        assertNotContains(iterable, key);
+    }
+
+    public static void assertNotContains(Iterable<String> iterable, String key) {
         StringBuilder strb = new StringBuilder();
         boolean contains = false;
         boolean first = true;
         for (String str : iterable) {
-            if (str.equals(value)) {
+            if (str.equals(key)) {
                 contains = true;
             }
 
@@ -55,26 +65,11 @@ public class TestUtils {
             strb.append(str);
         }
         if (contains) {
-            fail("Iterable (" + strb + ") DID contain: " + value);
+            fail("Iterable (" + strb + ") DID contain: " + key);
         }
     }
 
-    public static void assertContent(Config config, String key1, String value1, String key2) {
-        Iterable<String> keys = config.getPropertyNames();
-
-        assertContains(keys, key1);
-
-        String value = config.getValue(key1, String.class);
-        assertEquals(value1, value);
-
-        assertNotContains(keys, key2);
-    }
-
     public static void assertValue(Config config, String key1, String value1) {
-        Iterable<String> keys = config.getPropertyNames();
-
-        assertContains(keys, key1);
-
         String value = config.getValue(key1, String.class);
         assertEquals(value1, value);
     }

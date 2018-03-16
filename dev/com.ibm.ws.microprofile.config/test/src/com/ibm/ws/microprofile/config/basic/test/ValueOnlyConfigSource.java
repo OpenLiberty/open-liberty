@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,20 +20,27 @@ import com.ibm.ws.microprofile.config.AbstractConfigSource;
 /**
  *
  */
-public class HashMapConfigSource extends AbstractConfigSource implements ConfigSource {
+public class ValueOnlyConfigSource extends AbstractConfigSource implements ConfigSource {
 
-    private final Map<String, String> properties = new HashMap<>();
+    int getValueCount = 0;
 
-    public HashMapConfigSource(String id) {
+    public ValueOnlyConfigSource(String id) {
         this(100, id);
     }
 
-    public HashMapConfigSource(int ordinal, String id) {
+    public ValueOnlyConfigSource(int ordinal, String id) {
         super(ordinal, id);
     }
 
+    //override getProperties so that it never returns anything useful!
     @Override
     public Map<String, String> getProperties() {
-        return properties;
+        return new HashMap<>();
+    }
+
+    @Override
+    public String getValue(String propertyName) {
+        getValueCount++;
+        return super.getValue(propertyName);
     }
 }

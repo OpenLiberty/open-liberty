@@ -199,8 +199,8 @@ public class CompositeConfig implements Closeable, ConfigListener {
     private SourcedValue getRawCompositeValue(String key) {
         SourcedValue raw = null;
         for (PollingDynamicConfig child : children) {
-            if (child.containsKey(key)) {
-                String value = child.getRawProperty(key);
+            String value = child.getRawProperty(key);
+            if (value != null || child.containsKey(key)) {
                 String source = child.getSourceID();
                 raw = new SourcedValueImpl(key, value, String.class, source);
                 break;
