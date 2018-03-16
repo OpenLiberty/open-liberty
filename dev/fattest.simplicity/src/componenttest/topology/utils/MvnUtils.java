@@ -257,6 +257,7 @@ public class MvnUtils {
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
+        pb.redirectErrorStream(true);
         log("Running command " + Arrays.asList(cmd));
         Process p = pb.start();
         int exitCode = p.waitFor();
