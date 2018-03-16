@@ -15,6 +15,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,16 +29,26 @@ import org.eclipse.microprofile.openapi.models.callbacks.Callback;
 import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
+import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
+import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.responses.APIResponses;
+import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
+import org.eclipse.microprofile.openapi.models.tags.Tag;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.openapi.impl.model.PathItemImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.headers.HeaderImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.media.EncodingImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.responses.APIResponseImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.security.OAuthFlowsImpl;
+import com.ibm.ws.microprofile.openapi.impl.model.tags.TagImpl;
 import com.ibm.ws.microprofile.openapi.impl.parser.OpenAPIParser;
 import com.ibm.ws.microprofile.openapi.impl.parser.core.models.SwaggerParseResult;
 
@@ -273,4 +285,859 @@ public class OpenAPIParserTest {
         assertNotNull(name.getSchema());
     }
 
+    @Test
+    public void testSchemaInResponseContent() {
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+        PathItemImpl path = new PathItemImpl();
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("202"));
+        assertNotNull(path.getGET().getResponses().get("202").getContent());
+        assertNotNull(path.getGET().getResponses().get("202").getContent().get("applictaion/json"));
+        assertNotNull(path.getGET().getResponses().get("202").getContent().get("applictaion/json").getSchema());
+    }
+
+    @Test
+    public void testSchemaInParameter() {
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+        PathItemImpl path = new PathItemImpl();
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/availability");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getParameters());
+        assertNotNull(path.getGET().getParameters().get(0).getSchema());
+        assertEquals(path.getGET().getParameters().get(0).getSchema().getType().toString(), "string");
+    }
+
+    @Test
+    public void testSchemaInRequestBody() {
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+        PathItemImpl path = new PathItemImpl();
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings");
+        assertNotNull(path);
+        assertNotNull(path.getPOST());
+        assertNotNull(path.getPOST().getRequestBody());
+        assertNotNull(path.getPOST().getRequestBody().getContent().get("application/json").getSchema());
+        assertEquals(path.getPOST().getRequestBody().getContent().get("application/json").getSchema().getRef(), "#/components/schemas/Booking");
+    }
+
+    @Test
+    public void testReviewoauth2Scope() {
+
+        OAuthFlowsImpl flows = new OAuthFlowsImpl();
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+
+        flows = (OAuthFlowsImpl) result.getOpenAPI().getComponents().getSecuritySchemes().get("reviewoauth2").getFlows();
+        assertNotNull(flows);
+        assertNotNull(flows.getImplicit());
+        assertNotNull(flows.getImplicit().getScopes());
+        assertEquals(flows.getImplicit().getScopes().get("write:reviews"), "create a review");
+
+        flows = (OAuthFlowsImpl) result.getOpenAPI().getComponents().getSecuritySchemes().get("bookingoauth2").getFlows();
+        assertNotNull(flows);
+        assertNotNull(flows.getImplicit());
+        assertNotNull(flows.getImplicit().getScopes());
+        assertEquals(flows.getImplicit().getScopes().get("write:booking"), "edit a booking");
+    }
+
+    @Test
+    public void testOpenAPITags() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        List<Tag> tags = new ArrayList<Tag>();
+
+        TagImpl tagOne = new TagImpl();
+        tagOne.name("Airlines").description("airlines app");
+        TagImpl tagTwo = new TagImpl();
+        tagTwo.name("airline").description("all the airlines methods");
+        TagImpl tagThree = new TagImpl();
+        tagThree.name("availability").description("all the availibility methods");
+        TagImpl tagFour = new TagImpl();
+        tagFour.name("bookings").description("all the bookings methods");
+        TagImpl tagFive = new TagImpl();
+        tagFive.name("reviews").description("all the review methods");
+
+        tags.add(tagOne);
+        tags.add(tagTwo);
+        tags.add(tagThree);
+        tags.add(tagFour);
+        tags.add(tagFive);
+
+        assertNotNull(result.getOpenAPI().getTags());
+        for (Tag tag : result.getOpenAPI().getTags()) {
+            assertNotNull(tag);
+        }
+
+        for (Tag tag : result.getOpenAPI().getTags()) {
+            assertTrue(tags.contains(tag));
+        }
+    }
+
+    @Test
+    public void testOperationTags() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        List<Tag> tags = new ArrayList<Tag>();
+
+        TagImpl tagOne = new TagImpl();
+        tagOne.name("Airlines").description("airlines app");
+        TagImpl tagTwo = new TagImpl();
+        tagTwo.name("airline").description("all the airlines methods");
+        TagImpl tagThree = new TagImpl();
+        tagThree.name("availability").description("all the availibility methods");
+        TagImpl tagFour = new TagImpl();
+        tagFour.name("bookings").description("all the bookings methods");
+        TagImpl tagFive = new TagImpl();
+        tagFive.name("reviews").description("all the review methods");
+
+        tags.add(tagOne);
+        tags.add(tagTwo);
+        tags.add(tagThree);
+        tags.add(tagFour);
+        tags.add(tagFive);
+
+        PathItemImpl path = new PathItemImpl();
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getTags());
+        assertTrue(path.getGET().getTags().contains(tags.get(1).getName()));
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/availability");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getTags());
+        assertTrue(path.getGET().getTags().contains(tags.get(2).getName()));
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getTags());
+        assertTrue(path.getGET().getTags().contains(tags.get(3).getName()));
+
+        assertNotNull(path.getPOST());
+        assertNotNull(path.getPOST().getTags());
+        assertTrue(path.getPOST().getTags().contains(tags.get(3).getName()));
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings/{id}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getTags());
+        assertTrue(path.getGET().getTags().contains(tags.get(3).getName()));
+
+        assertNotNull(path.getPUT());
+        assertNotNull(path.getPUT().getTags());
+        assertTrue(path.getPUT().getTags().contains(tags.get(3).getName()));
+
+        assertNotNull(path.getDELETE());
+        assertNotNull(path.getDELETE().getTags());
+        assertTrue(path.getDELETE().getTags().contains(tags.get(3).getName()));
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getTags());
+        assertTrue(path.getGET().getTags().contains(tags.get(4).getName()));
+
+        assertNotNull(path.getPOST());
+        assertNotNull(path.getPOST().getTags());
+        assertTrue(path.getPOST().getTags().contains(tags.get(4).getName()));
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{id}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getTags());
+        assertTrue(path.getGET().getTags().contains(tags.get(4).getName()));
+
+        assertNotNull(path.getDELETE());
+        assertNotNull(path.getDELETE().getTags());
+        assertTrue(path.getDELETE().getTags().contains(tags.get(4).getName()));
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{user}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getTags());
+        assertTrue(path.getGET().getTags().contains(tags.get(4).getName()));
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{airline}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getTags());
+        assertTrue(path.getGET().getTags().contains(tags.get(4).getName()));
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{user}/{airlines}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getTags());
+        assertTrue(path.getGET().getTags().contains(tags.get(4).getName()));
+    }
+
+    @Test
+    public void testLinkInComponents() {
+
+        Map<String, Link> links = new HashMap<String, Link>();
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+
+        links = result.getOpenAPI().getComponents().getLinks();
+        assertNotNull(links);
+        assertTrue(links.size() == 2);
+        assertNotNull(links.get("UserName"));
+        assertEquals(links.get("UserName").getDescription(), "The username corresponding to provided user id");
+        assertEquals(links.get("UserName").getOperationId(), "getUserByUserName");
+        assertNotNull(links.get("ReviewId"));
+        assertEquals(links.get("ReviewId").getDescription(), "The id corresponding to a particular review");
+        assertEquals(links.get("ReviewId").getOperationId(), "getReviewById");
+    }
+
+    @Test
+    public void testLinkInResponse() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+
+        PathItemImpl path = new PathItemImpl();
+        APIResponseImpl response = new APIResponseImpl();
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{id}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertNotNull(response);
+        assertNotNull(response.getLinks());
+        assertTrue(response.getLinks().size() == 1);
+        assertNotNull(response.getLinks().get("ReviewId"));
+        assertEquals(response.getLinks().get("ReviewId").getDescription(), "The id corresponding to a particular review");
+        assertEquals(response.getLinks().get("ReviewId").getOperationId(), "getReviewById");
+    }
+
+    @Test
+    public void testHeaderInRequestBody() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        PathItemImpl path = new PathItemImpl();
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings/{id}");
+        assertNotNull(path);
+
+        assertNotNull(path);
+        assertNotNull(path.getPUT());
+        assertNotNull(path.getPUT().getRequestBody());
+        assertNotNull(path.getPUT().getRequestBody().getContent());
+        assertNotNull(path.getPUT().getRequestBody().getContent().get("application/json"));
+        assertNotNull(path.getPUT().getRequestBody().getContent().get("application/json").getEncoding());
+        assertNotNull(path.getPUT().getRequestBody().getContent().get("application/json").getEncoding().get("profileImage"));
+        assertNotNull(path.getPUT().getRequestBody().getContent().get("application/json").getEncoding().get("profileImage").getHeaders());
+        assertNotNull(path.getPUT().getRequestBody().getContent().get("application/json").getEncoding().get("profileImage").getHeaders().get("X-Rate-Limit-Limit"));
+
+        HeaderImpl header = new HeaderImpl();
+        header = (HeaderImpl) path.getPUT().getRequestBody().getContent().get("application/json").getEncoding().get("profileImage").getHeaders().get("X-Rate-Limit-Limit");
+
+        assertEquals(header.getDescription(), "The number of allowed requests in the current period");
+        assertNotNull(header.getSchema());
+        assertEquals(header.getSchema().getType().toString(), "integer");
+        assertEquals(path.getPUT().getRequestBody().getContent().get("application/json").getEncoding().get("profileImage").getHeaders().size(), 1);
+    }
+
+    @Test
+    public void testExampleInParameter() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        PathItemImpl path = new PathItemImpl();
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings/{id}");
+
+        assertNotNull(path);
+        assertNotNull(path.getPUT().getParameters().get(0).getExample());
+        assertEquals(path.getPUT().getParameters().get(0).getExample(), "1");
+    }
+
+    @Test
+    public void testExampleInSchemaProperties() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        PathItemImpl path = new PathItemImpl();
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings/{id}");
+        assertNotNull(path);
+
+        Object example = new Object();
+        example = path.getPUT().getRequestBody().getContent().get("application/json").getSchema().getProperties().get("airMiles").getExample();
+        assertNotNull(example);
+        assertEquals(example, 32126319);
+
+        example = path.getPUT().getRequestBody().getContent().get("application/json").getSchema().getProperties().get("seatPreference").getExample();
+        assertNotNull(example);
+        assertEquals(example, "window");
+    }
+
+    @Test
+    public void testExampleInComponentsSchemaProperties() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        assertNotNull(result.getOpenAPI().getComponents());
+        assertNotNull(result.getOpenAPI().getComponents().getSchemas());
+        assertNotNull(result.getOpenAPI().getComponents().getSchemas().get("User"));
+        assertNotNull(result.getOpenAPI().getComponents().getSchemas().get("User").getProperties());
+        assertNotNull(result.getOpenAPI().getComponents().getSchemas().get("User").getProperties().get("password"));
+
+        Object example = new Object();
+        example = result.getOpenAPI().getComponents().getSchemas().get("User").getProperties().get("password").getExample();
+        assertNotNull(example);
+        assertEquals(example, "bobSm37");
+    }
+
+    @Test
+    public void testEncoding() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        PathItemImpl path = new PathItemImpl();
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings/{id}");
+        assertNotNull(path);
+
+        assertNotNull(path);
+        assertNotNull(path.getPUT());
+        assertNotNull(path.getPUT().getRequestBody());
+        assertNotNull(path.getPUT().getRequestBody().getContent());
+        assertNotNull(path.getPUT().getRequestBody().getContent().get("application/json"));
+        assertNotNull(path.getPUT().getRequestBody().getContent().get("application/json").getEncoding());
+
+        EncodingImpl encoding = new EncodingImpl();
+        encoding = (EncodingImpl) path.getPUT().getRequestBody().getContent().get("application/json").getEncoding().get("profileImage");
+        assertNotNull(encoding);
+        assertEquals(encoding.getContentType(), "text/plain");
+        assertEquals(encoding.getStyle().toString(), "form");
+        assertEquals(encoding.getAllowReserved(), true);
+        assertEquals(encoding.getExplode(), false);
+        assertNotNull(encoding.getHeaders());
+    }
+
+    @Test
+    public void testMediaTypeInAPIResponse() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        PathItemImpl path = new PathItemImpl();
+        APIResponseImpl response = new APIResponseImpl();
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("202"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("202");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("applictaion/json"));
+        assertNotNull(response.getContent().get("applictaion/json").getSchema());
+        assertEquals(response.getContent().get("applictaion/json").getSchema().getRef(), "#/components/schemas/Flight");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/availability");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("202"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("202");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("applictaion/json"));
+        assertNotNull(response.getContent().get("applictaion/json").getSchema());
+        assertEquals(response.getContent().get("applictaion/json").getSchema().getRef(), "#/components/schemas/Flight");
+        assertNotNull(path.getGET().getResponses().get("404"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("404");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("n/a"));
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("application/json"));
+        assertNotNull(response.getContent().get("application/json").getSchema());
+        assertEquals(response.getContent().get("application/json").getSchema().getType().toString(), "string");
+
+        assertNotNull(path);
+        assertNotNull(path.getPOST());
+        assertNotNull(path.getPOST().getResponses());
+        assertNotNull(path.getPOST().getResponses().get("201"));
+        response = (APIResponseImpl) path.getPOST().getResponses().get("201");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("application/json"));
+        assertNotNull(response.getContent().get("application/json").getSchema());
+        assertEquals(response.getContent().get("application/json").getSchema().getType().toString(), "string");
+        assertEquals(response.getContent().get("application/json").getSchema().getDescription(), "id of the new booking");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings/{id}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("application/json"));
+        assertNotNull(response.getContent().get("application/json").getSchema());
+        assertEquals(response.getContent().get("application/json").getSchema().getType().toString(), "array");
+        assertNotNull(response.getContent().get("application/json").getSchema().getItems());
+        assertEquals(response.getContent().get("application/json").getSchema().getItems().getRef(), "#/components/schemas/Booking");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("application/json"));
+        assertNotNull(response.getContent().get("application/json").getSchema());
+        assertEquals(response.getContent().get("application/json").getSchema().getType().toString(), "array");
+        assertNotNull(response.getContent().get("application/json").getSchema().getItems());
+        assertNotNull(response.getContent().get("application/json").getSchema().getItems().getOneOf());
+        assertNotNull(response.getContent().get("application/json").getSchema().getItems().getOneOf().get(0));
+        assertTrue(response.getContent().get("application/json").getSchema().getItems().getOneOf().size() == 1);
+        assertEquals(response.getContent().get("application/json").getSchema().getItems().getOneOf().get(0).getRef(), "#/components/schemas/Review");
+
+        assertNotNull(path.getPOST());
+        assertNotNull(path.getPOST().getResponses());
+        assertNotNull(path.getPOST().getResponses().get("201"));
+        response = (APIResponseImpl) path.getPOST().getResponses().get("201");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("application/json"));
+        assertNotNull(response.getContent().get("application/json").getSchema());
+        assertEquals(response.getContent().get("application/json").getSchema().getType().toString(), "string");
+        assertEquals(response.getContent().get("application/json").getSchema().getDescription(), "id of the new review");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{id}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("application/json"));
+        assertNotNull(response.getContent().get("application/json").getSchema());
+        assertEquals(response.getContent().get("application/json").getSchema().getRef(), "#/components/schemas/Review");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{user}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("application/json"));
+        assertNotNull(response.getContent().get("application/json").getSchema());
+        assertNotNull(response.getContent().get("application/json").getSchema().getOneOf());
+        assertTrue(response.getContent().get("application/json").getSchema().getOneOf().size() == 2);
+        assertNotNull(response.getContent().get("application/json").getSchema().getOneOf().get(0));
+        assertNotNull(response.getContent().get("application/json").getSchema().getOneOf().get(1));
+        assertEquals(response.getContent().get("application/json").getSchema().getOneOf().get(0).getRef(), "#/components/schemas/Review");
+        assertEquals(response.getContent().get("application/json").getSchema().getOneOf().get(1).getRef(), "#/components/schemas/User");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{airline}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("application/json"));
+        assertNotNull(response.getContent().get("application/json").getSchema());
+        assertEquals(response.getContent().get("application/json").getSchema().getRef(), "#/components/schemas/Review");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{user}/{airlines}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertNotNull(response.getContent());
+        assertNotNull(response.getContent().get("application/json"));
+        assertNotNull(response.getContent().get("application/json").getSchema());
+        assertEquals(response.getContent().get("application/json").getSchema().getRef(), "#/components/schemas/Review");
+    }
+
+    @Test
+    public void testMediaTypeInRequestBody() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        PathItemImpl path = new PathItemImpl();
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings");
+        assertNotNull(path);
+        assertNotNull(path.getPOST());
+        assertNotNull(path.getPOST().getRequestBody());
+        assertNotNull(path.getPOST().getRequestBody().getContent());
+        assertNotNull(path.getPOST().getRequestBody().getContent().get("application/json"));
+        assertNotNull(path.getPOST().getRequestBody().getContent().get("application/json").getSchema());
+        assertEquals(path.getPOST().getRequestBody().getContent().get("application/json").getSchema().getRef(), "#/components/schemas/Booking");
+        assertNotNull(path.getPOST().getRequestBody().getContent().get("application/json").getExamples());
+        assertNotNull(path.getPOST().getRequestBody().getContent().get("application/json").getExamples().get("booking"));
+        assertEquals(path.getPOST().getRequestBody().getContent().get("application/json").getExamples().get("booking").getSummary(), "External booking example");
+        assertEquals(path.getPOST().getRequestBody().getContent().get("application/json").getExamples().get("booking").getExternalValue(),
+                     "http://foo.bar/examples/booking-example.json");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings/{id}");
+        assertNotNull(path);
+        assertNotNull(path.getPUT());
+        assertNotNull(path.getPUT().getRequestBody());
+        assertNotNull(path.getPUT().getRequestBody().getContent());
+        assertNotNull(path.getPUT().getRequestBody().getContent().get("application/json"));
+        assertNotNull(path.getPUT().getRequestBody().getContent().get("application/json").getSchema());
+        assertEquals(path.getPUT().getRequestBody().getContent().get("application/json").getSchema().getType().toString(), "object");
+        Map<String, Schema> properties = new HashMap<String, Schema>();
+        properties = path.getPUT().getRequestBody().getContent().get("application/json").getSchema().getProperties();
+        assertNotNull(properties);
+        for (String key : properties.keySet()) {
+            assertNotNull(properties.get(key));
+        }
+        assertEquals(properties.get("departtureFlight").getRef(), "#/components/schemas/Flight");
+        assertEquals(properties.get("returningFlight").getRef(), "#/components/schemas/Flight");
+        assertEquals(properties.get("creditCard").getRef(), "#/components/schemas/CreditCard");
+        assertEquals(properties.get("airMiles").getType().toString(), "string");
+        assertEquals(properties.get("airMiles").getExample(), 32126319);
+        assertEquals(properties.get("seatPreference").getType().toString(), "string");
+        assertEquals(properties.get("seatPreference").getExample(), "window");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews");
+        assertNotNull(path);
+        assertNotNull(path.getPOST());
+        assertNotNull(path.getPOST().getRequestBody());
+        assertNotNull(path.getPOST().getRequestBody().getContent());
+        assertNotNull(path.getPOST().getRequestBody().getContent().get("application/json"));
+        assertNotNull(path.getPOST().getRequestBody().getContent().get("application/json").getSchema());
+        assertEquals(path.getPOST().getRequestBody().getContent().get("application/json").getSchema().getRef(), "#/components/schemas/Review");
+
+    }
+
+    @Test
+    public void testMediaTypeInParameter() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        PathItemImpl path = new PathItemImpl();
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{id}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getParameters());
+        assertNotNull(path.getGET().getParameters().get(0));
+        assertNotNull(path.getGET().getParameters().get(0).getContent());
+        assertNotNull(path.getGET().getParameters().get(0).getContent().get("*/*"));
+        assertNotNull(path.getGET().getParameters().get(0).getContent().get("*/*").getSchema());
+        assertEquals(path.getGET().getParameters().get(0).getContent().get("*/*").getSchema().getType().toString(), "integer");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{user}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getParameters());
+        assertNotNull(path.getGET().getParameters().get(0));
+        assertNotNull(path.getGET().getParameters().get(0).getContent());
+        assertNotNull(path.getGET().getParameters().get(0).getContent().get("*/*"));
+        assertNotNull(path.getGET().getParameters().get(0).getContent().get("*/*").getSchema());
+        assertEquals(path.getGET().getParameters().get(0).getContent().get("*/*").getSchema().getType().toString(), "string");
+        assertNotNull(path.getGET().getParameters().get(0).getContent().get("*/*").getExamples());
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{airline}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getParameters());
+        assertNotNull(path.getGET().getParameters().get(0));
+        assertNotNull(path.getGET().getParameters().get(0).getContent());
+        assertNotNull(path.getGET().getParameters().get(0).getContent().get("*/*"));
+        assertNotNull(path.getGET().getParameters().get(0).getContent().get("*/*").getSchema());
+        assertEquals(path.getGET().getParameters().get(0).getContent().get("*/*").getSchema().getType().toString(), "string");
+        assertNotNull(path.getGET().getParameters().get(0).getContent().get("*/*").getExamples());
+    }
+
+    @Test
+    public void testSecurityRequirement() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        PathItemImpl booking = new PathItemImpl();
+        booking = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings/{id}");
+        assertNotNull(booking);
+        assertNotNull(booking.getPUT());
+        assertNotNull(booking.getPUT().getSecurity());
+        assertNotNull(booking.getPUT().getSecurity().get(0));
+        assertNotNull(booking.getPUT().getSecurity().get(0).get("bookingoauth2"));
+
+        PathItemImpl reviews = new PathItemImpl();
+        reviews = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews");
+        assertNotNull(reviews);
+        assertNotNull(reviews.getPOST());
+        assertNotNull(reviews.getPOST().getSecurity());
+        assertNotNull(reviews.getPOST().getSecurity().get(0));
+        assertNotNull(reviews.getPOST().getSecurity().get(0).get("reviewoauth2"));
+    }
+
+    @Test
+    public void testSecurityScheme() {
+
+        Map<String, SecurityScheme> schemes = new HashMap<String, SecurityScheme>();
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+
+        schemes = result.getOpenAPI().getComponents().getSecuritySchemes();
+        assertNotNull(schemes);
+        assertNotNull(schemes.get("reviewoauth2"));
+        assertNotNull(schemes.get("reviewoauth2").getFlows());
+        assertEquals(schemes.get("reviewoauth2").getType().toString(), "oauth2");
+        assertEquals(schemes.get("reviewoauth2").getDescription(), "authentication needed to create and delete reviews");
+
+        schemes = result.getOpenAPI().getComponents().getSecuritySchemes();
+        assertNotNull(schemes);
+        assertNotNull(schemes.get("bookingoauth2"));
+        assertNotNull(schemes.get("bookingoauth2").getFlows());
+        assertEquals(schemes.get("bookingoauth2").getType().toString(), "oauth2");
+        assertEquals(schemes.get("bookingoauth2").getDescription(), "authentication needed to edit bookings");
+    }
+
+    @Test
+    public void testAPIResponses() {
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getPaths());
+
+        PathItemImpl path = new PathItemImpl();
+        APIResponseImpl response = new APIResponseImpl();
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertTrue(path.getGET().getResponses().size() == 1);
+        assertNotNull(path.getGET().getResponses().get("202"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("202");
+        assertEquals(response.getDescription(), "failed operation");
+        assertNotNull(response.getContent());
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/availability");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertTrue(path.getGET().getResponses().size() == 2);
+        assertNotNull(path.getGET().getResponses().get("202"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("202");
+        assertEquals(response.getDescription(), "failed operation");
+        assertNotNull(response.getContent());
+        assertNotNull(path.getGET().getResponses().get("404"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("404");
+        assertEquals(response.getDescription(), "No available flights found");
+        assertNotNull(response.getContent());
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertTrue(path.getGET().getResponses().size() == 2);
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertEquals(response.getDescription(), "Bookings retrieved");
+        assertNotNull(response.getContent());
+        assertNotNull(path.getGET().getResponses().get("404"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("404");
+        assertEquals(response.getDescription(), "No bookings found for the user.");
+
+        assertNotNull(path);
+        assertNotNull(path.getPOST());
+        assertNotNull(path.getPOST().getResponses());
+        assertTrue(path.getPOST().getResponses().size() == 1);
+        assertNotNull(path.getPOST().getResponses().get("201"));
+        response = (APIResponseImpl) path.getPOST().getResponses().get("201");
+        assertEquals(response.getDescription(), "Booking created");
+        assertNotNull(response.getContent());
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/bookings/{id}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertTrue(path.getGET().getResponses().size() == 2);
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertEquals(response.getDescription(), "booking retrieved");
+        assertNotNull(response.getContent());
+        assertNotNull(path.getGET().getResponses().get("404"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("404");
+        assertEquals(response.getDescription(), "No bookings found for the user.");
+
+        assertNotNull(path.getPUT());
+        assertNotNull(path.getPUT().getResponses());
+        assertTrue(path.getPUT().getResponses().size() == 2);
+        assertNotNull(path.getPUT().getResponses().get("200"));
+        response = (APIResponseImpl) path.getPUT().getResponses().get("200");
+        assertEquals(response.getDescription(), "Booking updated");
+        assertNotNull(path.getPUT().getResponses().get("404"));
+        response = (APIResponseImpl) path.getPUT().getResponses().get("404");
+        assertEquals(response.getDescription(), "Booking not found");
+
+        assertNotNull(path.getDELETE());
+        assertNotNull(path.getDELETE().getResponses());
+        assertTrue(path.getDELETE().getResponses().size() == 2);
+        assertNotNull(path.getDELETE().getResponses().get("200"));
+        response = (APIResponseImpl) path.getDELETE().getResponses().get("200");
+        assertEquals(response.getDescription(), "Booking deleted successfully.");
+        assertNotNull(path.getDELETE().getResponses().get("404"));
+        response = (APIResponseImpl) path.getDELETE().getResponses().get("404");
+        assertEquals(response.getDescription(), "Booking not found.");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertTrue(path.getGET().getResponses().size() == 1);
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertEquals(response.getDescription(), "successful operation");
+        assertNotNull(response.getContent());
+
+        assertNotNull(path.getPOST());
+        assertNotNull(path.getPOST().getResponses());
+        assertTrue(path.getPOST().getResponses().size() == 1);
+        assertNotNull(path.getPOST().getResponses().get("201"));
+        response = (APIResponseImpl) path.getPOST().getResponses().get("201");
+        assertEquals(response.getDescription(), "review created");
+        assertNotNull(response.getContent());
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{id}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertTrue(path.getGET().getResponses().size() == 2);
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertEquals(response.getDescription(), "Review retrieved");
+        assertNotNull(response.getContent());
+        assertNotNull(path.getGET().getResponses().get("404"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("404");
+        assertEquals(response.getDescription(), "Review not found");
+
+        assertNotNull(path.getDELETE());
+        assertNotNull(path.getDELETE().getResponses());
+        assertTrue(path.getDELETE().getResponses().size() == 2);
+        assertNotNull(path.getDELETE().getResponses().get("200"));
+        response = (APIResponseImpl) path.getDELETE().getResponses().get("200");
+        assertEquals(response.getDescription(), "Review deleted");
+        assertNotNull(path.getDELETE().getResponses().get("404"));
+        response = (APIResponseImpl) path.getDELETE().getResponses().get("404");
+        assertEquals(response.getDescription(), "Review not found");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{user}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertTrue(path.getGET().getResponses().size() == 2);
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertEquals(response.getDescription(), "Review(s) retrieved");
+        assertNotNull(response.getContent());
+        assertNotNull(path.getGET().getResponses().get("404"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("404");
+        assertEquals(response.getDescription(), "Review(s) not found");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{airline}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertTrue(path.getGET().getResponses().size() == 2);
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertEquals(response.getDescription(), "Review(s) retrieved");
+        assertNotNull(response.getContent());
+        assertNotNull(path.getGET().getResponses().get("404"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("404");
+        assertEquals(response.getDescription(), "Review(s) not found");
+
+        path = (PathItemImpl) result.getOpenAPI().getPaths().get("/reviews/{user}/{airlines}");
+        assertNotNull(path);
+        assertNotNull(path.getGET());
+        assertNotNull(path.getGET().getResponses());
+        assertTrue(path.getGET().getResponses().size() == 2);
+        assertNotNull(path.getGET().getResponses().get("200"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("200");
+        assertEquals(response.getDescription(), "Review(s) retrieved");
+        assertNotNull(response.getContent());
+        assertNotNull(path.getGET().getResponses().get("404"));
+        response = (APIResponseImpl) path.getGET().getResponses().get("404");
+        assertEquals(response.getDescription(), "Review(s) not found");
+    }
+
+    @Test
+    public void testOAuthFlow() {
+
+        OAuthFlowsImpl flows = new OAuthFlowsImpl();
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+
+        flows = (OAuthFlowsImpl) result.getOpenAPI().getComponents().getSecuritySchemes().get("reviewoauth2").getFlows();
+        assertNotNull(flows);
+        assertNotNull(flows.getImplicit());
+        assertEquals(flows.getImplicit().getAuthorizationUrl(), "https://example.com/api/oauth/dialog");
+
+        flows = (OAuthFlowsImpl) result.getOpenAPI().getComponents().getSecuritySchemes().get("bookingoauth2").getFlows();
+        assertNotNull(flows);
+        assertNotNull(flows.getImplicit());
+        assertEquals(flows.getImplicit().getAuthorizationUrl(), "https://example.com/api/oauth/dialog");
+    }
+
+    @Test
+    public void testOAuthFlows() {
+
+        OAuthFlowsImpl flows = new OAuthFlowsImpl();
+
+        assertNotNull(result);
+        assertNotNull(result.getOpenAPI());
+
+        flows = (OAuthFlowsImpl) result.getOpenAPI().getComponents().getSecuritySchemes().get("reviewoauth2").getFlows();
+        assertNotNull(flows);
+        assertNotNull(flows.getImplicit());
+
+        flows = (OAuthFlowsImpl) result.getOpenAPI().getComponents().getSecuritySchemes().get("bookingoauth2").getFlows();
+        assertNotNull(flows);
+        assertNotNull(flows.getImplicit());
+    }
 }
