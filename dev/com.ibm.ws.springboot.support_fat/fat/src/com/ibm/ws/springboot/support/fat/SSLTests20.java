@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,17 +20,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
-public class CommonWebServerTests20 extends CommonWebServerTests {
+@Mode(FULL)
+public class SSLTests20 extends SSLCommonTests {
+
     @Test
-    public void testBasicSpringBootApplication20() throws Exception {
-        testBasicSpringBootApplication();
+    public void testSSLSpringBootApplication20() throws Exception {
+        testSSLApplication();
     }
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-4.0", "ssl-1.0"));
     }
 
     @Override

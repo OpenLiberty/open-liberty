@@ -20,20 +20,21 @@ import org.junit.runner.RunWith;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-public class CommonWebServerTests20 extends CommonWebServerTests {
+public class SSLTests15 extends SSLCommonTests {
+
     @Test
-    public void testBasicSpringBootApplication20() throws Exception {
-        testBasicSpringBootApplication();
+    public void testSSLSpringBootApplication15() throws Exception {
+        testSSLApplication();
     }
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
+        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1", "ssl-1.0"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_20_APP_BASE;
+        return SPRING_BOOT_15_APP_BASE;
     }
 
 }

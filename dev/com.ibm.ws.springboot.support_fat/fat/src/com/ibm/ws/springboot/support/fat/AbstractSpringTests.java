@@ -11,9 +11,17 @@
 package com.ibm.ws.springboot.support.fat;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -45,6 +53,8 @@ public abstract class AbstractSpringTests {
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.springboot.support.fat.SpringBootTests");
     public static final AtomicBoolean serverStarted = new AtomicBoolean();
     public static final Collection<RemoteFile> dropinFiles = new ArrayList<>();
+    private static final Properties bootStrapProperties = new Properties();
+    private static File bootStrapPropertiesFile;
 
     @AfterClass
     public static void stopServer() throws Exception {
@@ -59,6 +69,11 @@ public abstract class AbstractSpringTests {
                     remoteFile.delete();
                 }
                 server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
+                //clear bootstrap.properties
+                bootStrapProperties.clear();
+                try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
+                    bootStrapProperties.store(out, "");
+                }
             } catch (Exception e) {
                 // ignore
             } finally {
@@ -80,10 +95,24 @@ public abstract class AbstractSpringTests {
         return AppConfigType.DROPINS_SPR;
     }
 
+    public Map<String, String> getBootStrapProperties() {
+        return Collections.emptyMap();
+    }
+
+    private Map<String, String> getDefaultBootStrapProperties() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("bootstrap.include", "../testports.properties");
+        properties.put("websphere.java.security.exempt", "true");
+        return properties;
+    }
+
     @Before
     public void configureServer() throws Exception {
         if (serverStarted.compareAndSet(false, true)) {
+            configureBootStrapProperties();
             ServerConfiguration config = server.getServerConfiguration();
+            List<SpringBootApp> applications = config.getSpringBootApps();
+            applications.clear();
             Set<String> features = config.getFeatureManager().getFeatures();
             features.clear();
             features.addAll(getFeatures());
@@ -112,7 +141,7 @@ public abstract class AbstractSpringTests {
                     SpringBootApp app = new SpringBootApp();
                     app.setLocation(appFile.getName());
                     app.setName("testName");
-                    apps.add(app);
+                    applications.add(app);
                     break;
                 }
                 default:
@@ -123,4 +152,19 @@ public abstract class AbstractSpringTests {
             server.startServer(true, false);
         }
     }
+
+    private void configureBootStrapProperties() throws Exception {
+        bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
+        try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
+            bootStrapProperties.load(in);
+        }
+        bootStrapProperties.putAll(getDefaultBootStrapProperties());
+        bootStrapProperties.putAll(getBootStrapProperties());
+
+        try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
+            bootStrapProperties.store(out, "");
+        }
+
+    }
+
 }
