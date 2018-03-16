@@ -12,6 +12,8 @@
 
 -nobundles: true
 
+src: private, protected, public
+
 instrument.disabled: true
 
 feature.project: true

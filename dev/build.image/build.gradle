@@ -71,11 +71,11 @@ class PackageLibertyWithFeatures extends DefaultTask {
         try {
             def serverXml = project.file("wlp/usr/servers/packageOpenLiberty/server.xml")
             serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
-        <server description="new server">
-        <featureManager>${withFeatures()}
-        </featureManager>
-        </server>
-        """
+<server description="new server">
+    <featureManager>${withFeatures()}
+    </featureManager>
+</server>
+"""
 
             File archive = new File(project.buildDir, 'openliberty.zip')
             project.delete archive
@@ -391,4 +391,3 @@ task publishPublicArtifactsOnBintray {
         }
     }
 }
-

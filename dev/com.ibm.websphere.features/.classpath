@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="private"/>
+	<classpathentry kind="src" path="protected"/>
+	<classpathentry kind="src" path="public"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
