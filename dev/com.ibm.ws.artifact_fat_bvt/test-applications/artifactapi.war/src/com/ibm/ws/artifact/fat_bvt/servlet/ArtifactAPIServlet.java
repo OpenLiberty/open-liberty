@@ -3,7 +3,7 @@
  *
  * OCO Source Materials
  *
- * Copyright IBM Corp. 2011, 2017
+ * Copyright IBM Corp. 2011, 2018
  *
  * The source code for this program is not published or otherwise divested 
  * of its trade secrets, irrespective of what has been deposited with the 
@@ -60,7 +60,7 @@ import com.ibm.ws.artifact.fat_bvt.servlet.filesystem.FileSystemUtils;
 import com.ibm.ws.artifact.fat_bvt.servlet.filesystem.JarFileSystem;
 import com.ibm.ws.artifact.fat_bvt.servlet.filesystem.LooseFileSystem;
 import com.ibm.ws.artifact.fat_bvt.servlet.notification.NotificationTestRunner;
-// import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
+import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipCachingService;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
@@ -425,8 +425,7 @@ public class ArtifactAPIServlet extends HttpServlet {
         }
     }
 
-    // private static final String ZFH_OPEN_COUNT_FIELD_NAME = "openCount"; // TFB: When ZipReaper is installed, this field name changes.
-    private static final String ZFH_OPEN_COUNT_FIELD_NAME = "refs";
+    private static final String ZFH_OPEN_COUNT_FIELD_NAME = "openCount";
     private static final int ERROR_OPEN_COUNT = -1;
 
     private int getOpenCount(ZipFileHandle zfh) {
@@ -528,28 +527,19 @@ public class ArtifactAPIServlet extends HttpServlet {
 
         writer.println(methodName);
 
-        // TFB: These parameters are only available when ZipReaper code is installed.
-        //
-        // writer.println("ZipCache Service Parameters:");
-        //
-        // int handleCacheSize = ZipCachingProperties.ZIP_CACHE_HANDLE_MAX;
-        // writer.println("  Max Zip Handles [ " + Integer.valueOf(handleCacheSize) + " ]");
-        //
-        // int entryCacheSize = ZipCachingProperties.ZIP_CACHE_ENTRY_MAX;
-        // writer.println("  Max Entry Cache Entry Size Limit [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT) + " ]");
-        // writer.println("  Max Entry Cache Size [ " + Integer.valueOf(entryCacheSize) + " ]");
-        //
-        // writer.println("  Max Pending Zip Closes [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING) + " ]");
-        //
-        // writer.println("  Min Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SHORT_INTERVAL) + " ]");
-        // writer.println("  Max Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL) + " ]");
+        writer.println("ZipCache Service Parameters:");
+        
+        int handleCacheSize = ZipCachingProperties.ZIP_CACHE_HANDLE_MAX;
+        writer.println("  Max Zip Handles [ " + Integer.valueOf(handleCacheSize) + " ]");
 
-        // TFB: When ZipReaper code is not installed, the handle and entry cache
-        //      sizes are per fixed constants of open-liberty/dev/com.ibm.ws.artifact.zip,
-        //      package com.ibm.ws.artifact.zip.cache.internal:
+        int entryCacheSize = ZipCachingProperties.ZIP_CACHE_ENTRY_MAX;
+        writer.println("  Max Entry Cache Entry Size Limit [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT) + " ]");
+        writer.println("  Max Entry Cache Size [ " + Integer.valueOf(entryCacheSize) + " ]");
 
-        int handleCacheSize = 250; // ZipCachingServiceImpl.MAXCACHE
-        int entryCacheSize = 16; // ZipFileHandleImpl.MAX_CACHE_ENTRIES
+        writer.println("  Max Pending Zip Closes [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING) + " ]");
+
+        writer.println("  Min Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SHORT_INTERVAL) + " ]");
+        writer.println("  Max Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL) + " ]");
 
         boolean pass = true;
 
