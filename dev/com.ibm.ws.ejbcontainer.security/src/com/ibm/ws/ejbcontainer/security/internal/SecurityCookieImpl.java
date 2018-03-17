@@ -22,10 +22,8 @@ public class SecurityCookieImpl {
     private final Subject adjustedReceivedSubject;
 
     SecurityCookieImpl(Subject invokedSubject, Subject receivedSubject) {
-        this.invokedSubject = invokedSubject;
-        this.receivedSubject = receivedSubject;
-        this.adjustedInvokedSubject = null;
-        this.adjustedReceivedSubject = null;
+        this.invokedSubject = this.adjustedInvokedSubject =invokedSubject;
+        this.receivedSubject = this.adjustedReceivedSubject = receivedSubject;
     }
 
     SecurityCookieImpl(Subject invokedSubject, Subject receivedSubject, Subject adjustedInvokedSubject, Subject adjustedReceivedSubject) {
