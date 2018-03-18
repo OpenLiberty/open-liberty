@@ -24,7 +24,8 @@ import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 public class BufferManagerImpl extends BufferManager {
-
+    
+    /* Package name in trace from BufferManagerImpl is changed in order to reduce the trace volume when traceSpecification is set to "com.ibm.ws.*" */
     private static final TraceComponent tc = Tr.register("x.com.ibm.ws.collector.manager.buffer.BufferManagerImpl",BufferManagerImpl.class,(String)null);	
     private Buffer<Object> ringBuffer;
     private final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
