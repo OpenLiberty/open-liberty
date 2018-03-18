@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaeeClient-7.0
 visibility=public
 IBM-API-Package: com.ibm.ws.ejb.portable; type="internal", \

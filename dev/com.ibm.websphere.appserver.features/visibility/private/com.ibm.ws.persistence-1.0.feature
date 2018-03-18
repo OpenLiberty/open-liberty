@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.ws.persistence-1.0
 visibility=private
 IBM-API-Package: com.ibm.websphere.persistence.mbean; type="ibm-api"

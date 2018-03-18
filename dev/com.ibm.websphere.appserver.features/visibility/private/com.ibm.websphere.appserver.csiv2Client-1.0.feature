@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.csiv2Client-1.0
 IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.iiopclient-1.0

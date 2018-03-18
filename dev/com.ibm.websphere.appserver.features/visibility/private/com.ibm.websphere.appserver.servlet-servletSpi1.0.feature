@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.servlet-servletSpi1.0
 visibility=private
 -jars=com.ibm.websphere.appserver.spi.servlet; location:=dev/spi/ibm/

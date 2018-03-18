@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.appSecurity-3.0
 visibility=public
 IBM-API-Package: javax.security.enterprise; type="spec", \

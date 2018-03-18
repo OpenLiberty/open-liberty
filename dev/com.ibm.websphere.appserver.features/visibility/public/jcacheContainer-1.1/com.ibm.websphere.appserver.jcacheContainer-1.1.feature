@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jcacheContainer-1.1
 visibility=public
 IBM-ShortName: jcacheContainer-1.1

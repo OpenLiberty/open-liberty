@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.httptransport-1.0
 IBM-SPI-Package: com.ibm.wsspi.http, \
 com.ibm.wsspi.http.ee8

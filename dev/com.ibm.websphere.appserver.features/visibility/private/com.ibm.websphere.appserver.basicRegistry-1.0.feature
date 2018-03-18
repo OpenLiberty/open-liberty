@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.basicRegistry-1.0
 -bundles=com.ibm.websphere.security, \
  com.ibm.ws.security.registry, \

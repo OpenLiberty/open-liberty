@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 IBM-ShortName: jsfContainer-2.2
 Subsystem-Name: JavaServer Faces Container 2.2
 symbolicName=com.ibm.websphere.appserver.jsfContainer-2.2

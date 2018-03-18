@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.sessionMonitor-1.0
 IBM-API-Package: com.ibm.websphere.session.monitor; type="ibm-api"
 Manifest-Version: 1.0

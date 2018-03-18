@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.requestProbes-1.0
 Manifest-Version: 1.0
 -bundles=com.ibm.ws.request.probes

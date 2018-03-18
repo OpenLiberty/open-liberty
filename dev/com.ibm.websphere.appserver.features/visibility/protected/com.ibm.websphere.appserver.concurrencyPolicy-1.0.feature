@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.concurrencyPolicy-1.0
 visibility=protected
 -bundles=com.ibm.ws.concurrency.policy

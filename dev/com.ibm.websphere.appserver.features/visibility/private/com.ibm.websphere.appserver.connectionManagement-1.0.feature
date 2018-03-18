@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.connectionManagement-1.0
 visibility=private
 -features=com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:=1.2, \

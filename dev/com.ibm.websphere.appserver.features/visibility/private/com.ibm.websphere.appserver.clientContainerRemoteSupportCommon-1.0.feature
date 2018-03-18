@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 
 # Functionality to support remote client container - primarily assisting in JNDI operations.
 

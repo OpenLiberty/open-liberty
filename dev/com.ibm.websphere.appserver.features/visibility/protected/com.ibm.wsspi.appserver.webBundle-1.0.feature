@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 
 symbolicName = com.ibm.wsspi.appserver.webBundle-1.0
 visibility = protected

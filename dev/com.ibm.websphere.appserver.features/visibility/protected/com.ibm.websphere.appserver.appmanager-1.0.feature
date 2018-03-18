@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.appmanager-1.0
 visibility=protected
 IBM-API-Package: com.ibm.websphere.security; type="ibm-api", \

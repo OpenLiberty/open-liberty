@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.j2eeManagement-1.1
 visibility=public
 IBM-API-Package: com.ibm.websphere.management.j2ee; type="ibm-api", \

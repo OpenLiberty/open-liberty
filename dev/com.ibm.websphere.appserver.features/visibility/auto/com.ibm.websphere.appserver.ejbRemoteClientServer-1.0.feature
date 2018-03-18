@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 
 # Functionality to support remote ejb client container - primarily assisting in EJB auto-link lookups.
 

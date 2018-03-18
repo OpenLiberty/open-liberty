@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javax.jsp-2.3
 singleton=true
 -features=com.ibm.websphere.appserver.javax.el-3.0; apiJar=false, \

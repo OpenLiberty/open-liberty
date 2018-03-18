@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.artifact-1.0
 IBM-SPI-Package: com.ibm.wsspi.adaptable.module, \
  com.ibm.ws.adaptable.module.structure, \

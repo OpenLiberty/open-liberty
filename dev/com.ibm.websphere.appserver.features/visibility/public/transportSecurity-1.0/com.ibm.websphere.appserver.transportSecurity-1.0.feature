@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.transportSecurity-1.0
 visibility=public
 IBM-ShortName: transportSecurity-1.0
