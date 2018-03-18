@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.mpMetrics1.0-cdi1.2
 visibility=private
 singleton=true

@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.appSecurity-1.0
 visibility=public
 IBM-App-ForceRestart: install, \

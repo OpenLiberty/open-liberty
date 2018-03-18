@@ -1,5 +1,5 @@
 # This private impl feature corresponds to JSON-B 1.0 with the Yasson implementation
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jsonbImpl-1.0.1
 singleton=true
 visibility=private

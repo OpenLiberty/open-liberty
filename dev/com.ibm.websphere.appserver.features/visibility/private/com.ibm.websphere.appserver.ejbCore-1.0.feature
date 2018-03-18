@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.ejbCore-1.0
 IBM-API-Package: javax.ejb; type="spec", \
  javax.ejb.embeddable; type="spec", \

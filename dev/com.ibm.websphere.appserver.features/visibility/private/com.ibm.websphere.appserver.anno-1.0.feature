@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.anno-1.0
 IBM-API-Package: javax.annotation; type="spec", \
  javax.annotation.security; type="spec", \

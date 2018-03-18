@@ -1,6 +1,6 @@
 # This private impl feature corresponds to jsonbContainer-1.0, which gives you
 # JSON-B 1.0 spec with the ability to choose the default provider via a bell.
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jsonbImpl-1.0.0
 singleton=true
 visibility=private

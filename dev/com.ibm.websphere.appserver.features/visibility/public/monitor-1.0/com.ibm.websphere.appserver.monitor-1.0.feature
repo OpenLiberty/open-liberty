@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.monitor-1.0
 visibility=public
 IBM-API-Package: com.ibm.websphere.monitor.jmx; type="ibm-api", \

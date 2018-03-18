@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jndiJ2eeManagement-1.0
 IBM-App-ForceRestart: install, \
  uninstall

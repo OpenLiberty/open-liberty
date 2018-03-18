@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.webservicesee-1.3
 visibility=private
 IBM-App-ForceRestart: uninstall, \

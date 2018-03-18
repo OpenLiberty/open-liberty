@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.cdi1.2-jms-2.0
 visibility=private
 IBM-App-ForceRestart: install, \

@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.classloading-1.0
 visibility=protected
 IBM-SPI-Package: com.ibm.wsspi.classloading, \

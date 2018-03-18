@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaeeddSchema-1.0
 visibility=private
 -files=dev/api/ibm/schema/ibm-application-bnd_1_0.xsd, \

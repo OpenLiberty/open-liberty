@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.springBoot15ServerSupport-1.0
 visibility=private
 -bundles=com.ibm.ws.springboot.support.web.server.version15

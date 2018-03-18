@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.channelfw-1.0
 IBM-API-Package: com.ibm.websphere.endpoint; type="ibm-api"
 IBM-Process-Types: server, \

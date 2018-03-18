@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.managedBeansCore-1.0
 IBM-API-Package: com.ibm.ejs.container; type="internal", \
  javax.interceptor; type="spec"

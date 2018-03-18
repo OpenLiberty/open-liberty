@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jwtSso-1.0
 visibility=public
 IBM-ShortName: jwtSso-1.0
@@ -8,7 +8,7 @@ Subsystem-Name: JwtSso
  -features=com.ibm.websphere.appserver.jwt-1.0, \
   com.ibm.websphere.appserver.appSecurity-3.0, \
   com.ibm.websphere.appserver.servlet-4.0
--bundles= com.ibm.ws.security.jwtsso, \  
+-bundles= com.ibm.ws.security.jwtsso, \
   com.ibm.ws.security.common
 kind=noship
 edition=full

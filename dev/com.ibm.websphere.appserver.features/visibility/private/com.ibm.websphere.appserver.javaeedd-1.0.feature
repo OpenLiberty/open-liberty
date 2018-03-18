@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaeedd-1.0
 IBM-SPI-Package: com.ibm.ws.javaee.dd.appbnd, \
  com.ibm.ws.javaee.dd.common, \

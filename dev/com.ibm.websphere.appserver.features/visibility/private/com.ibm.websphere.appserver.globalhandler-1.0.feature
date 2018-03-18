@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.globalhandler-1.0
 visibility=private
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler

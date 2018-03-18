@@ -1,4 +1,4 @@
--include= ~../cnf/resources/bnd/feature.props
+-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.contextService-1.0
 visibility=protected
 IBM-API-Package: com.ibm.ws.context.service.serializable; type="internal"
