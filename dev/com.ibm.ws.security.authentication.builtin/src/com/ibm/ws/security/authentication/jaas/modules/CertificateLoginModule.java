@@ -298,8 +298,9 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       ur.getRealm(),
                                                       ur.getUniqueUserId(username));
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
+        setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
         setCredentials(temporarySubject, username, authenticatedId);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
     }
 
     /** {@inheritDoc} */

@@ -42,7 +42,7 @@ import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.ws.security.delegation.DelegationProvider;
 import com.ibm.ws.security.jaas.common.callback.CallbackHandlerAuthenticationData;
-import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;

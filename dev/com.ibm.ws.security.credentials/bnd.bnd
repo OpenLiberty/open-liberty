@@ -19,10 +19,10 @@ Bundle-ActivationPolicy: lazy
 WS-TraceGroup: Credentials
 
 Export-Package: \
-  com.ibm.ws.security.authentication.principals;provide:=true, \
-  com.ibm.ws.security.credentials;provide:=true, \
-  com.ibm.ws.security.credentials.wscred;provide:=true, \
-  com.ibm.ws.security.jwt.sso.token.utils
+	com.ibm.ws.security.authentication.principals;provide:=true,\
+	com.ibm.ws.security.credentials;provide:=true,\
+	com.ibm.ws.security.credentials.wscred;provide:=true,\
+	com.ibm.ws.security.jwtsso.token.proxy
 
 Private-Package: \
   com.ibm.ws.security.credentials.internal.*
@@ -40,7 +40,7 @@ Service-Component: \
     properties:="service.vendor=IBM", \
 
 -dsannotations=com.ibm.ws.security.credentials.wscred.BasicAuthCredentialProvider, \
-  com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper
+  com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper
 
 -buildpath: \
 	com.ibm.websphere.security;version=latest,\

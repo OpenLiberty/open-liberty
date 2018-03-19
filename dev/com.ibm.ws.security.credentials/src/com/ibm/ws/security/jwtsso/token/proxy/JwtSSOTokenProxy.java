@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwt.sso.token.utils;
+package com.ibm.ws.security.jwtsso.token.proxy;
 
 import javax.security.auth.Subject;
 
@@ -17,7 +17,7 @@ import com.ibm.websphere.security.WSSecurityException;
 /**
  *
  */
-public interface JwtSSOToken {
+public interface JwtSSOTokenProxy {
 
     void createJwtSSOToken(Subject subject) throws WSSecurityException;
 

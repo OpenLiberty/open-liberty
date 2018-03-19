@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwt.sso.token.utils;
+package com.ibm.ws.security.jwtsso.token.proxy;
 
 import java.util.Map;
 
@@ -36,22 +36,22 @@ public class JwtSSOTokenHelper {
 
     private static final TraceComponent tc = Tr.register(JwtSSOTokenHelper.class);
 
-    public static final String JSON_WEB_TOKEN_SSO = "jwtSSOToken";
-    protected final static AtomicServiceReference<JwtSSOToken> jwtSSOTokenUtilRef = new AtomicServiceReference<JwtSSOToken>(JSON_WEB_TOKEN_SSO);
+    public static final String JSON_WEB_TOKEN_SSO_PROXY = "JwtSSOTokenProxy";
+    protected final static AtomicServiceReference<JwtSSOTokenProxy> jwtSSOTokenProxyRef = new AtomicServiceReference<JwtSSOTokenProxy>(JSON_WEB_TOKEN_SSO_PROXY);
 
     static private boolean isJdk18Up = (JavaInfo.majorVersion() >= 8);
 
-    @Reference(service = JwtSSOToken.class, name = JSON_WEB_TOKEN_SSO, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
+    @Reference(service = JwtSSOTokenProxy.class, name = JSON_WEB_TOKEN_SSO_PROXY, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
-    protected void setJwtSSOToken(ServiceReference<JwtSSOToken> ref) {
+    protected void setJwtSSOToken(ServiceReference<JwtSSOTokenProxy> ref) {
         if (isJavaVersionAtLeast18()) {
-            jwtSSOTokenUtilRef.setReference(ref);
+            jwtSSOTokenProxyRef.setReference(ref);
         }
     }
 
-    protected void unsetJwtSSOToken(ServiceReference<JwtSSOToken> ref) {
+    protected void unsetJwtSSOToken(ServiceReference<JwtSSOTokenProxy> ref) {
         if (isJavaVersionAtLeast18()) {
-            jwtSSOTokenUtilRef.unsetReference(ref);
+            jwtSSOTokenProxyRef.unsetReference(ref);
         }
 
     }
@@ -59,9 +59,9 @@ public class JwtSSOTokenHelper {
     @org.osgi.service.component.annotations.Activate
     protected void activate(ComponentContext cc) {
         if (isJavaVersionAtLeast18()) {
-            jwtSSOTokenUtilRef.activate(cc);
+            jwtSSOTokenProxyRef.activate(cc);
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jwt SSO token service is activated");
+                Tr.debug(tc, "Jwt SSO token helper service is activated");
             }
         }
         if (tc.isDebugEnabled()) {
@@ -75,9 +75,9 @@ public class JwtSSOTokenHelper {
     @org.osgi.service.component.annotations.Deactivate
     protected void deactivate(ComponentContext cc) {
         if (isJavaVersionAtLeast18()) {
-            jwtSSOTokenUtilRef.deactivate(cc);
+            jwtSSOTokenProxyRef.deactivate(cc);
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Jwt SSO token service is deactivated");
+                Tr.debug(tc, "Jwt SSO token helper service is deactivated");
             }
         }
         if (tc.isDebugEnabled()) {
@@ -90,13 +90,10 @@ public class JwtSSOTokenHelper {
     }
 
     public static void createJwtSSOToken(Subject subject) {
-        if (jwtSSOTokenUtilRef.getService() != null) {
+        if (jwtSSOTokenProxyRef.getService() != null) {
             try {
-                jwtSSOTokenUtilRef.getService().createJwtSSOToken(subject);
+                jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
             } catch (WSSecurityException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // e.printStackTrace();
                 String msg = Tr.formatMessage(tc, "warn_jwt_sso_token_service_error");
                 Tr.error(tc, msg);
             }
@@ -108,82 +105,81 @@ public class JwtSSOTokenHelper {
      * @param subject
      */
     public static String getJwtSSOToken(Subject subject) {
-        // TODO Auto-generated method stub
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().getJwtSSOToken(subject);
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().getJwtSSOToken(subject);
         }
         return null;
 
     }
 
     public static Subject handleJwtSSOToken(String jwtssotoken) {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().handleJwtSSOTokenValidation(null, jwtssotoken);
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(null, jwtssotoken);
         }
         return null;
 
     }
 
     public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().handleJwtSSOTokenValidation(subject, jwtssotoken);
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(subject, jwtssotoken);
         }
         return null;
 
     }
 
     public static String getCustomCacheKeyFromJwtSSOToken(String encodedjwt) {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().getCustomCacheKeyFromJwtSSOToken(encodedjwt);
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().getCustomCacheKeyFromJwtSSOToken(encodedjwt);
         }
         return null;
     }
 
     public static String getCacheKeyForJwtSSOToken(Subject subject, String encodedjwt) {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().getCacheKeyForJwtSSOToken(subject, encodedjwt);
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().getCacheKeyForJwtSSOToken(subject, encodedjwt);
         }
         return null;
     }
 
     public static void addCustomCacheKeyToJwtSSOToken(Subject subject, String cacheKeyValue) {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            jwtSSOTokenUtilRef.getService().addCustomCacheKeyToJwtSSOToken(subject, cacheKeyValue);
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            jwtSSOTokenProxyRef.getService().addCustomCacheKeyToJwtSSOToken(subject, cacheKeyValue);
         }
     }
 
     public static boolean isJwtSSOTokenValid(Subject subject) {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().isJwtSSOTokenValid(subject);
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().isJwtSSOTokenValid(subject);
         }
         return false;
     }
 
     public static boolean shouldSetJwtCookiePathToWebAppContext() {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().shouldSetJwtCookiePathToWebAppContext();
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().shouldSetJwtCookiePathToWebAppContext();
         }
         return false;
 
     }
 
     public static boolean shouldAlsoIncludeLtpaCookie() {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().shouldAlsoIncludeLtpaCookie();
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().shouldAlsoIncludeLtpaCookie();
         }
         return true;
     }
 
     public static boolean shouldFallbackToLtpaCookie() {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().shouldFallbackToLtpaCookie();
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().shouldFallbackToLtpaCookie();
         }
         return true;
     }
 
     public static String getJwtCookieName() {
-        if (jwtSSOTokenUtilRef.getService() != null) {
-            return jwtSSOTokenUtilRef.getService().getJwtCookieName();
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().getJwtCookieName();
         }
         return null;
 
