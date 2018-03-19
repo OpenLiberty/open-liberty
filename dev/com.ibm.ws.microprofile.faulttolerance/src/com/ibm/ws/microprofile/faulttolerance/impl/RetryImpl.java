@@ -41,8 +41,10 @@ public class RetryImpl extends net.jodah.failsafe.RetryPolicy {
             long jitterMillis = jitter.toMillis();
             long maxDurationMillis = maxDuration.toMillis();
 
+            // Clamp jitter to delay to stop Failsafe sleeping for negative time
+            // If maxDuration is != 0 then Failsafe already catches this and prevents a negative sleep time
             if (maxDurationMillis == 0 && jitterMillis > delayMillis) {
-                jitterMillis = delayMillis; // Clamp jitter to delay to stop Failsafe sleeping for negative time
+                jitterMillis = delayMillis;
             }
 
             if (delayMillis > 0) {
