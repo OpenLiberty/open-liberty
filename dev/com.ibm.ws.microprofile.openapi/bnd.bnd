@@ -30,11 +30,11 @@ Import-Package: \
 
 Private-Package: \
     com.ibm.ws.microprofile.openapi.resources,\
-    com.ibm.ws.microprofile.openapi.utils,\
     com.ibm.ws.microprofile.openapi.impl.*    
     
 Export-Package: \
-	com.ibm.ws.microprofile.openapi
+	com.ibm.ws.microprofile.openapi,\
+	com.ibm.ws.microprofile.openapi.utils
 		
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
