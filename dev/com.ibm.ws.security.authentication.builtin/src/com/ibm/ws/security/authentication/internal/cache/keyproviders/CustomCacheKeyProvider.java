@@ -106,6 +106,7 @@ public class CustomCacheKeyProvider implements CacheKeyProvider {
             // Need a new method to get the the customCacheKey
             //JwtSSOTokenHelper.
             //customCacheKey = "s3eDVtuRqj7kIXsMUnLPDUtrUHPqtAHhAxwWOwTIUtc=";
+//            JwtSSOTokenHelper.getCustomCacheKeyFromJwtSSOToken(token);
         }
 
         return customCacheKey;
