@@ -30,10 +30,10 @@ import web.ejb.jar.bean.SecurityEJBInterface;
  * user in Employee role.
  */
 @WebServlet("/SimpleServletRunAs")
-@ServletSecurity(value = @HttpConstraint(EmptyRoleSemantic.DENY), httpMethodConstraints = { @HttpMethodConstraint(value = "GET", rolesAllowed = { "Manager", "DeclaredRole01" }) })
+@ServletSecurity(value = @HttpConstraint(EmptyRoleSemantic.DENY),
+                 httpMethodConstraints = { @HttpMethodConstraint(value = "GET", rolesAllowed = { "Manager", "declareRoles01", "Employee" }) })
 @BasicAuthenticationMechanismDefinition(realmName = "EJBMultipleIdentityStore")
 
-//TODO Uncomment to use RunAS Functionalities
 @RunAs("Manager")
 public class SecurityEJBRunAsServlet extends SecurityEJBBaseServlet {
 

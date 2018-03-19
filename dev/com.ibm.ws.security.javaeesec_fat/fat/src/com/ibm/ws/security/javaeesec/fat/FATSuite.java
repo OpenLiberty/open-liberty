@@ -60,9 +60,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 FeatureTest.class,
                 EJBModuleRealmTest.class,
                 CustomIdentityStoreHandlerTest.class,
-                NoIdentityStoreTest.class,
                 MultipleModuleGlobalClientCertTest.class,
-                MultipleModuleGlobalClientCertFailOverTest.class
+                MultipleModuleGlobalClientCertFailOverTest.class,
+                NoIdentityStoreTest.class
 })
 
 /**

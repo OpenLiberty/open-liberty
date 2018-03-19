@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 
 /**
@@ -20,6 +21,8 @@ public class SecurityEJBRunAsBean extends SecurityEJBBeanBase implements Securit
 
     @Resource
     private SessionContext context;
+    @Inject
+    private SecurityContext securityContext;
 
     public SecurityEJBRunAsBean() {
         withDeprecation();
@@ -28,6 +31,11 @@ public class SecurityEJBRunAsBean extends SecurityEJBBeanBase implements Securit
     @Override
     protected SessionContext getContext() {
         return context;
+    }
+
+    @Override
+    protected SecurityContext getSecurityContext() {
+        return securityContext;
     }
 
     @Override
@@ -51,17 +59,6 @@ public class SecurityEJBRunAsBean extends SecurityEJBBeanBase implements Securit
     @RolesAllowed({ "Employee", "Manager" })
     public String employeeAndManager() {
         return authenticate("Employee");
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see web.ejb.jar.bean.SecurityEJBBeanBase#getSecurityContext()
-     */
-    @Override
-    protected SecurityContext getSecurityContext() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

@@ -130,8 +130,10 @@ public class Constants {
     public final static String ejb02Bean = "SecurityEJBA02Bean";
     public final static String ejb03Bean = "SecurityEJBA03Bean";
     public final static String ejb06Bean = "SecurityEJBA06Bean";
+    public final static String ejbRunASBean = "SecurityEJBRunAsBean";
     public final static String getEjbBeanMethodName = "Method = ";
     public final static String ejbBeanMethodManager = "manager";
+    public final static String ejbBeanMethodRunAsSpecified = "runAsSpecified";
     public final static String ejbBeanMethodEmployeeAndManager = "employeeAndManager";
     public final static String ejbisCallerManagerTrue = "isCallerInRole(Manager)=true";
     public final static String ejbisCallerManagerFale = "isCallerInRole(Manager)=false";

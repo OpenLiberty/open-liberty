@@ -30,7 +30,7 @@ import web.ejb.jar.bean.SecurityEJBInterface;
                                  callerQuery = "select password from callertable where name = ?",
                                  groupsQuery = "select group_name from callertable_groups where caller_name = ?",
                                  dataSourceLookup = "jdbc/derby1fat")
-//TODO Uncomment to use RunAS Functionalities
+
 @RunAs("Manager")
 public class SecurityEJBRunAsServlet extends SecurityEJBBaseServlet {
 

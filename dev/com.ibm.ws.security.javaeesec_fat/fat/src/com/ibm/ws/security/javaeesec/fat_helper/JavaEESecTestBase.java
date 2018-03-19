@@ -651,6 +651,18 @@ public class JavaEESecTestBase {
         mustContain(response, getEjbRemoteUser);
     }
 
+    protected void verifyEjbRunAsUserResponse(String response, String ejbBean, String ejbBeanMethod, String getEjbRemoteUser, String getEJBRunAsRemoteUser) {
+        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + ejbBean + ", " + ejbBeanMethod + "," + getEjbRemoteUser);
+        mustContain(response, Constants.getEJBBeanResponse + ejbBean);
+        mustContain(response, ejbBeanMethod);
+        mustContain(response, getEjbRemoteUser);
+        mustContain(response, ejbBean + " is invoking injected " + Constants.ejbRunASBean + " running as specified Employee role: ");
+        mustContain(response, Constants.getEJBBeanResponse + Constants.ejbRunASBean);
+        mustContain(response, getEJBRunAsRemoteUser);
+        mustContain(response, Constants.ejbisCallerManagerFale);
+        mustContain(response, Constants.ejbisCallerEmployeeTrue);
+    }
+
     protected void verifyGroupIdsResponse(String response, String realmName, String groupName) {
         Log.info(logClass, "verifyGroupIdsResponse", "Verify groupIds in public credential contains: " + realmName + "//" + groupName);
         mustMatch(response, assembleRegExPublicCredentialGroupIds(realmName, groupName));

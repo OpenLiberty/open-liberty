@@ -51,7 +51,7 @@
         <security-constraint id="SecurityConstraint_RunAs">
      <web-resource-collection id="WebResourceCollection_RunAS">
         <web-resource-name>Protected with all authenticated</web-resource-name>
-        <url-pattern>/SimpleServletRunAs</url-pattern>
+        <url-pattern>/SimpleServletRunAs/*</url-pattern>
         <http-method>GET</http-method>
         <http-method>POST</http-method>
      </web-resource-collection>
