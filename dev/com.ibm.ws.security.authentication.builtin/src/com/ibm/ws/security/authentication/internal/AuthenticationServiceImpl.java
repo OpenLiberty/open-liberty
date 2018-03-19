@@ -371,11 +371,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             } else if (oid != null && oid.equals(JWT_OID)) {
                 JwtSSOTokenHelper.getCustomCacheKeyFromJwtSSOToken(token);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "UTLE>>> JTW TOKEN");
-                }
             }
-            Tr.debug(tc, "UTLE>>> NEW ");
             if (customCacheKey != null) {
                 subject = authCacheService.getSubject(customCacheKey);
                 if (subject == null) {

@@ -94,15 +94,10 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
                     setUpTemporaryUserSubject();
                 }
             } else if (authMechOid.equals(JWT_OID) && jwtToken != null) {
-                //Base64.decodeBase64(credToken64)
                 setUpTemporaryUserSubjectForJsonWebToken(jwtToken);
 
             }
             updateSharedState();
-//            byte[] credToken = AuthenticationHelper.copyCredToken(token);
-//            TokenManager tokenManager = getTokenManager();
-//            recreatedToken = tokenManager.recreateTokenFromBytes(credToken);
-//            accessId = recreatedToken.getAttributes("u")[0];
             return true;
         } catch (InvalidTokenException e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
@@ -165,17 +160,9 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
 
     private void setUpTemporaryUserSubjectForJsonWebToken(String jwtToken) throws Exception {
         temporarySubject = new Subject();
-        //String securityName = "user1"; //TODO: call Aruna code to get the securityName
-        //accessId = "user:https://localhost:9443/jwt/defaultJWT/user1,groupIds=[]"; //TODO: call Aruna code to get the securityName
-//        SubjectHelper subjectHelper = new SubjectHelper();
-//        Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(subject, hashtableLoginProperties);
-
-        //String userId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_USERID);
         temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(jwtToken);
-
-//        temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(JsonUtils.convertToBase64(token.toString()));
         SubjectHelper subjectHelper = new SubjectHelper();
-        //call Aruna code to get accessId, securityname and groups
+        //TODO: call JwtSSOTokenHelper to get accessId, securityname and groups
         Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(temporarySubject, hashtableLoginProperties);
         accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
