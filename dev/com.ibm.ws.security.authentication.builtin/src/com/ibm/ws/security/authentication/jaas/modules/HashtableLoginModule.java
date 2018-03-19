@@ -31,7 +31,7 @@ import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.internal.jaas.modules.ServerCommonLoginModule;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
-import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;

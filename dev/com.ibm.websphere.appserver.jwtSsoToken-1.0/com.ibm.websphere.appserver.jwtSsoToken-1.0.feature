@@ -10,6 +10,6 @@ Subsystem-Name: JwtSsoToken
   com.ibm.websphere.appserver.servlet-4.0
 -bundles=com.ibm.ws.security.jwtsso,\
   com.ibm.websphere.org.eclipse.microprofile.jwt.1.0; location:="dev/api/stable/,lib/",\
-  com.ibm.ws.security.jwt.sso.token
+  com.ibm.ws.security.jwtsso.token
 kind=ga
 edition=core

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwt.sso.token;
+package com.ibm.ws.security.jwtsso.token;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -35,9 +35,9 @@ import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.common.crypto.HashUtils;
-import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken;
 import com.ibm.ws.security.jwtsso.config.JwtSsoBuilderConfig;
 import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenProxy;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoTokenUtils;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
@@ -45,8 +45,8 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 /*
  * This is a utility service to retrieve MicroProfile JsonWebToken in a subject
  */
-@Component(service = JwtSSOToken.class, name = "jwtSSOToken", immediate = true, property = "service.vendor=IBM")
-public class JwtSSOTokenImpl implements JwtSSOToken {
+@Component(service = JwtSSOTokenProxy.class, name = "jwtSSOTokenProxy", immediate = true, property = "service.vendor=IBM")
+public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	private static final TraceComponent tc = Tr.register(JwtSSOTokenImpl.class);
 
 	public static final String JSON_WEB_TOKEN_SSO_CONFIG = "jwtSsoConfig";

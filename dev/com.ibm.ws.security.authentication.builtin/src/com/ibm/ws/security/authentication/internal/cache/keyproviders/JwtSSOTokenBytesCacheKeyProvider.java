@@ -14,7 +14,7 @@ import javax.security.auth.Subject;
 
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
-import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 
 /**
  * Provides the SSO token bytes as the cache key.

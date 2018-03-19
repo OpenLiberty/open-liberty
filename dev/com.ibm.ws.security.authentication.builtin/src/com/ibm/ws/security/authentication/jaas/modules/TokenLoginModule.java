@@ -35,7 +35,7 @@ import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.jaas.common.callback.AuthenticationHelper;
 import com.ibm.ws.security.jaas.common.callback.JwtTokenCallback;
-import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.wsspi.security.ltpa.Token;

@@ -30,7 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.jwt.sso.token.utils.JwtSSOTokenHelper;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.util.ByteArray;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.StringUtil;

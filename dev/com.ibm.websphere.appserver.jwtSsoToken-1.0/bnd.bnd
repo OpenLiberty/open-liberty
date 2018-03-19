@@ -14,5 +14,5 @@
 
 -dependson: \
     com.ibm.ws.security.jwtsso;version=latest, \
-    com.ibm.ws.security.jwt.sso.token;version=latest, \
+    com.ibm.ws.security.jwtsso.token;version=latest, \
     com.ibm.ws.security;version=latest

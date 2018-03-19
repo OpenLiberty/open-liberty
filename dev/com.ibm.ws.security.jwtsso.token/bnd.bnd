@@ -12,22 +12,21 @@
 bVersion=1.0
 
 Bundle-Name: Security JWT SSO Token
-Bundle-SymbolicName: com.ibm.ws.security.jwt.sso.token
+Bundle-SymbolicName: com.ibm.ws.security.jwtsso.token
 Bundle-Description: Security JWT SSO token utility service, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
 WS-TraceGroup: \
   Security
 																																																															
-Export-Package: \
-  com.ibm.ws.security.jwt.sso.token
+Export-Package: com.ibm.ws.security.jwtsso.token
 
 Import-Package: !*.internal.*, \
   org.eclipse.microprofile.jwt, \
   *
    
 -dsannotations: \
-  com.ibm.ws.security.jwt.sso.token.JwtSSOTokenImpl
+  com.ibm.ws.security.jwtsso.token.JwtSSOTokenImpl
   
 -buildpath: \
 	com.ibm.ws.logging.core;version=latest, \
