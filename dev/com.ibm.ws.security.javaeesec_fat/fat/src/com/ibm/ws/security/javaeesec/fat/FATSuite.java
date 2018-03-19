@@ -53,11 +53,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 EJBModuleTestProtectedServlet.class,
                 EJBModuleTestUnprotectedServlet.class,
                 MultipleModuleGlobalLoginTest.class,
-<<<<<<< HEAD
                 MultipleModuleRunAsTest.class,
                 MultipleModuleDBRunAsTest.class,
                 ScopedTest.class,
-<<<<<<< HEAD
                 MultipleModuleRunAsTest.class,
                 FeatureTest.class,
                 EJBModuleRealmTest.class,
@@ -65,13 +63,6 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultipleModuleGlobalClientCertTest.class,
                 MultipleModuleGlobalClientCertFailOverTest.class,
                 NoIdentityStoreTest.class
-=======
-                AnnotatedEAREJBModuleTest.class,
-                EJBModuleTestUnprotectedServlet.class
-=======
-                MultipleModuleRunAsTest.class
->>>>>>> fix order of class
->>>>>>> fix order of class
 })
 
 /**
