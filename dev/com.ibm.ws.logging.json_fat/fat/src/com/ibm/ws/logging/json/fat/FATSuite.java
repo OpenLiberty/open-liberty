@@ -18,8 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-//@SuiteClasses({ MessagesLogEnvTest.class, ConsoleLogTest.class, ServerConfigUpdateTest.class, JsonConfigTest.class })
-@SuiteClasses({ JsonConfigTest.class })
+@SuiteClasses({ MessagesLogEnvTest.class, ConsoleLogTest.class, ServerConfigUpdateTest.class, JsonConfigTest.class })
 public class FATSuite {
 
 }
