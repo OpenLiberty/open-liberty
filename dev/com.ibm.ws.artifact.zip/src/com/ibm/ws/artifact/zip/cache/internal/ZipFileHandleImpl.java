@@ -336,7 +336,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
      *
      * @param inputStream The stream from which to read the bytes.
      *
-     * @param size The number of bytes which are to be read.
+     * @param expectedRead The number of bytes which are to be read.
      * @param name A name associated with the stream.
      *
      * @return The bytes read from the stream.
@@ -345,16 +345,30 @@ public class ZipFileHandleImpl implements ZipFileHandle {
      *     insufficient bytes were available to be read.
      */
     @Trivial
-    private static byte[] read(InputStream inputStream, int size, String name) throws IOException {
-        byte[] bytes = new byte[size];
+    private static byte[] read(InputStream inputStream, int expectedRead, String name) throws IOException {
+        byte[] bytes = new byte[expectedRead];
 
-        int readCount = inputStream.read(bytes, 0, size); // throws IOException
-        if ( readCount != size ) {
-            throw new IOException(
-                "Read [ " + Integer.valueOf(readCount) + " ]" +
-                " but expected to read [ " + Integer.valueOf(size) + " ] bytes" +
-                " from [ " + name + " ]");
+        int remainingRead = expectedRead;
+        int totalRead = 0;
+
+        while ( remainingRead > 0 ) {
+        	int nextRead = inputStream.read(bytes, totalRead, remainingRead); // throws IOException
+        	if ( nextRead <= 0 ) {
+            	// 'nextRead == 0' should only ever happen if 'remainingRead == 0', which ought
+            	// never be the case here.  Treat a '0' return value as an error.
+        		//
+        		// 'nextRead == -1' means the end of input was reached.
+
+        		throw new IOException(
+        			"Read only [ " + Integer.valueOf(totalRead) + " ]" +
+        			" of expected [ " + Integer.valueOf(expectedRead) + " ] bytes" +
+        			" from [ " + name + " ]");
+        	} else {
+        		remainingRead -= nextRead;
+        		totalRead += nextRead;
+        	}
         }
+
         return bytes;
     }
 }
