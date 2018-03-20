@@ -12,6 +12,7 @@ package com.ibm.ws.session.cache.config.fat;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,7 +66,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.web");
 
-        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID()));
+        String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+        server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
+                                           "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         savedConfig = server.getServerConfiguration().clone();
         server.startServer();
@@ -91,5 +94,12 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
         }
         cleanupList = EMPTY_RECYCLE_LIST;
+    }
+
+    @Test
+    public void testManualUpdate() throws Exception {
+        List<String> session = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualUpdate&attribute=MU&value=testManualUpdate", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
     }
 }
