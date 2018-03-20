@@ -2,9 +2,11 @@ package com.ibm.ws.wlp.mavenFeatures;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -15,6 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
+import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
+import javax.json.stream.JsonGenerator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -24,8 +35,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -348,14 +357,16 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		try {
 			InputStream is = new FileInputStream(jsonFile);
 			String jsonTxt = IOUtils.toString(is, (Charset) null);
-			JSONArray jsonArray = new JSONArray(jsonTxt);      
+			JsonReader jsonReader = Json.createReader(new StringReader(jsonTxt));
+			JsonArray jsonArray = jsonReader.readArray();
+			jsonReader.close();
 
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject json = jsonArray.getJSONObject(i);
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JsonObject json = jsonArray.getJsonObject(i);
 
-				JSONObject wlpInfo = json.getJSONObject(Constants.WLP_INFORMATION_KEY);
+				JsonObject wlpInfo = json.getJsonObject(Constants.WLP_INFORMATION_KEY);
 
-				JSONArray provideFeatureArray = wlpInfo.getJSONArray(Constants.PROVIDE_FEATURE_KEY);
+				JsonArray provideFeatureArray = wlpInfo.getJsonArray(Constants.PROVIDE_FEATURE_KEY);
 				String symbolicName = provideFeatureArray.getString(0);
 
 				String appliesTo = wlpInfo.getString(Constants.APPLIES_TO_KEY);
@@ -365,38 +376,38 @@ public class LibertyFeaturesToMavenRepo extends Task {
 							+ " key for feature " + symbolicName + " in file " + jsonFile.getAbsolutePath());
 				}
 
-				JSONObject wlpInfo2 = json.has(Constants.WLP_INFORMATION_2_KEY) ? json.getJSONObject(Constants.WLP_INFORMATION_2_KEY) : null;
-				boolean isBundle = (wlpInfo2 != null) && wlpInfo2.has(Constants.VISIBILITY_KEY) && Constants.VISIBILITY_VALUE_INSTALL.equals(wlpInfo2.getString(Constants.VISIBILITY_KEY));
-				boolean isPublicFeature = wlpInfo.has(Constants.VISIBILITY_KEY) && Constants.VISIBILITY_VALUE_PUBLIC.equals(wlpInfo.getString(Constants.VISIBILITY_KEY));
+				JsonObject wlpInfo2 = json.containsKey(Constants.WLP_INFORMATION_2_KEY) ? json.getJsonObject(Constants.WLP_INFORMATION_2_KEY) : null;
+				boolean isBundle = (wlpInfo2 != null) && wlpInfo2.containsKey(Constants.VISIBILITY_KEY) && Constants.VISIBILITY_VALUE_INSTALL.equals(wlpInfo2.getString(Constants.VISIBILITY_KEY));
+				boolean isPublicFeature = wlpInfo.containsKey(Constants.VISIBILITY_KEY) && Constants.VISIBILITY_VALUE_PUBLIC.equals(wlpInfo.getString(Constants.VISIBILITY_KEY));
 				String shortName = null;
 				if (isBundle || isPublicFeature) {
-					if (wlpInfo.has(Constants.SHORT_NAME_KEY)) {
+					if (wlpInfo.containsKey(Constants.SHORT_NAME_KEY)) {
 						shortName = wlpInfo.getString(Constants.SHORT_NAME_KEY);
 					}
 				}
 
 				// parse requireFeature
 				Map<String, Collection<String>> requireFeaturesWithTolerates = new HashMap<String, Collection<String>>();
-				if (wlpInfo.has(Constants.REQUIRE_FEATURE_KEY)) {
-					JSONArray requireFeatureArray = wlpInfo.getJSONArray(Constants.REQUIRE_FEATURE_KEY);
-					if (requireFeatureArray != null && requireFeatureArray.length() > 0) {
-						for (int j = 0; j < requireFeatureArray.length(); j++) {
+				if (wlpInfo.containsKey(Constants.REQUIRE_FEATURE_KEY)) {
+					JsonArray requireFeatureArray = wlpInfo.getJsonArray(Constants.REQUIRE_FEATURE_KEY);
+					if (requireFeatureArray != null && requireFeatureArray.size() > 0) {
+						for (int j = 0; j < requireFeatureArray.size(); j++) {
 							requireFeaturesWithTolerates.put(requireFeatureArray.getString(j), null);
 						}
 					}
 				}
 				
 				// parse requireFeatureWithTolerates and add to the above map (overwriting any existing null value)
-				if (wlpInfo.has(Constants.REQUIRE_FEATURE_WITH_TOLERATES_KEY)) {
-					JSONArray requireFeatureWithToleratesArray = wlpInfo.getJSONArray(Constants.REQUIRE_FEATURE_WITH_TOLERATES_KEY);
-					if (requireFeatureWithToleratesArray != null && requireFeatureWithToleratesArray.length() > 0) {
-						for (int j = 0; j < requireFeatureWithToleratesArray.length(); j++) {
-							JSONObject requireFeatureWithToleratesObject = requireFeatureWithToleratesArray.getJSONObject(j);
+				if (wlpInfo.containsKey(Constants.REQUIRE_FEATURE_WITH_TOLERATES_KEY)) {
+					JsonArray requireFeatureWithToleratesArray = wlpInfo.getJsonArray(Constants.REQUIRE_FEATURE_WITH_TOLERATES_KEY);
+					if (requireFeatureWithToleratesArray != null && requireFeatureWithToleratesArray.size() > 0) {
+						for (int j = 0; j < requireFeatureWithToleratesArray.size(); j++) {
+							JsonObject requireFeatureWithToleratesObject = requireFeatureWithToleratesArray.getJsonObject(j);
 							String requireFeature = requireFeatureWithToleratesObject.getString(Constants.FEATURE_KEY);
-							if (requireFeatureWithToleratesObject.has(Constants.TOLERATES_KEY)) {
-								JSONArray tolerateArray = requireFeatureWithToleratesObject.getJSONArray(Constants.TOLERATES_KEY);
+							if (requireFeatureWithToleratesObject.containsKey(Constants.TOLERATES_KEY)) {
+								JsonArray tolerateArray = requireFeatureWithToleratesObject.getJsonArray(Constants.TOLERATES_KEY);
 								Collection<String> tolerateVersions = new ArrayList<String>();
-								for (int k = 0; k < tolerateArray.length(); k++) {
+								for (int k = 0; k < tolerateArray.size(); k++) {
 									tolerateVersions.add(tolerateArray.getString(k));
 								}
 								requireFeaturesWithTolerates.put(requireFeature, tolerateVersions);
@@ -414,7 +425,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				}
 				
 				String mavenCoordinates = null;
-				if (wlpInfo.has(Constants.MAVEN_COORDINATES_KEY)) {
+				if (wlpInfo.containsKey(Constants.MAVEN_COORDINATES_KEY)) {
 					mavenCoordinates = wlpInfo.getString(Constants.MAVEN_COORDINATES_KEY);
 					String[] tokens = mavenCoordinates.split(":");
 					if (tokens.length != 3) {
@@ -424,26 +435,70 @@ public class LibertyFeaturesToMavenRepo extends Task {
 
 				LibertyFeature feature = new LibertyFeature(symbolicName, shortName, name, description, requireFeaturesWithTolerates, productVersion, mavenCoordinates, isWebsphereLiberty);
 				
-				// If JSON does not have Maven coordinates, inject them
-				if (!wlpInfo.has(Constants.MAVEN_COORDINATES_KEY)) {
-					wlpInfo.put(Constants.MAVEN_COORDINATES_KEY, feature.getMavenCoordinates().toString());
-				}
 				features.put(symbolicName, feature);
-
 			}
 			
-			// Write JSON to the modified file
-			FileWriter writer = new FileWriter(modifiedJsonFile);
-			writer.write(jsonArray.toString(4));
-			writer.flush();
-			writer.close();
-			
+			// Add Maven coordinates into a modified copy of the JSON
+			try {
+				addMavenCoordinates(modifiedJsonFile, jsonArray, features);
+			} catch (IOException e) {
+				throw new MavenRepoGeneratorException(
+						"Could not write modified JSON to temporary file " + modifiedJsonFile, e);
+			}
 		} catch (FileNotFoundException e) {
 			throw new MavenRepoGeneratorException("JSON file " + jsonFile + " does not exist.", e);
 		} catch (IOException e) {
 			throw new MavenRepoGeneratorException("Could not parse JSON file " + jsonFile, e);
 		}
 		return features;
+	}
+	
+	/**
+	 * Add Maven coordinates into the modified JSON file.
+	 * 
+	 * @param modifiedJsonFile
+	 *            The location to write the modified JSON file.
+	 * @param jsonArray
+	 *            The original JSON array of all features.
+	 * @param features
+	 *            The map of symbolic names to LibertyFeature objects which has
+	 *            Maven coordinates.
+	 * @throws IOException
+	 */
+	private static void addMavenCoordinates(File modifiedJsonFile, JsonArray jsonArray,
+			Map<String, LibertyFeature> features) throws IOException {
+		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+
+		for (int i = 0; i < jsonArray.size(); i++) {
+			JsonObject jsonObject = jsonArray.getJsonObject(i);
+			JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder(jsonObject);
+
+			JsonObject wlpInfo = jsonObject.getJsonObject(Constants.WLP_INFORMATION_KEY);
+			JsonObjectBuilder wlpInfoBuilder = Json.createObjectBuilder(wlpInfo);
+
+			JsonArray provideFeatureArray = wlpInfo.getJsonArray(Constants.PROVIDE_FEATURE_KEY);
+			String symbolicName = provideFeatureArray.getString(0);
+
+			wlpInfoBuilder.add(Constants.MAVEN_COORDINATES_KEY,
+					features.get(symbolicName).getMavenCoordinates().toString());
+			jsonObjectBuilder.add(Constants.WLP_INFORMATION_KEY, wlpInfoBuilder);
+			jsonArrayBuilder.add(jsonObjectBuilder);
+		}
+
+		// Write JSON to the modified file
+		FileOutputStream out = null;
+		try {
+			Map<String, Object> config = new HashMap<String, Object>();
+			config.put(JsonGenerator.PRETTY_PRINTING, true);
+			JsonWriterFactory writerFactory = Json.createWriterFactory(config);
+			out = new FileOutputStream(modifiedJsonFile);
+			JsonWriter streamWriter = writerFactory.createWriter(out);
+			streamWriter.write(jsonArrayBuilder.build());
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+		}
 	}
 
 	/**
