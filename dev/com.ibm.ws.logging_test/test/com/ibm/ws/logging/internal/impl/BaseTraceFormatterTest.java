@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import test.TestConstants;
@@ -184,6 +185,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testNullAll() {
         final String m = "testNullAll";
 
@@ -201,6 +203,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testSource() {
         final String m = "testSource";
 
@@ -219,6 +222,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testClass() {
         final String m = "testClass";
 
@@ -237,6 +241,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testSourceAndClass() {
         final String m = "testSourceAndClass";
 
@@ -256,6 +261,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testMethod() {
         final String m = "testMethod";
 
@@ -275,6 +281,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testMessage() {
         final String m = "testMessage";
 
@@ -294,6 +301,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testLongName() {
         final String m = "testLongName";
 
@@ -313,6 +321,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testMessageLevel() {
         final String m = "testMessageLevel";
 
@@ -332,6 +341,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testTrEntry() {
         final String m = "testTrEntry";
 
@@ -351,6 +361,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testTrEntryWithExitParam() {
         final String m = "testTrEntryWithExitParam";
 
@@ -371,6 +382,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testLoggerEntering() {
         final String m = "testLoggerEntering";
 
@@ -390,6 +402,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testLoggerEnteringParam() {
         final String m = "testLoggerEnteringParam";
 
@@ -410,6 +423,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testLoggerEnteringParams() {
         final String m = "testLoggerEnteringParams";
 
@@ -430,6 +444,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testTrExit() {
         final String m = "testTrExit";
 
@@ -449,6 +464,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testTrExitWithEntryParam() {
         final String m = "testTrExitWithEntryParam";
 
@@ -469,6 +485,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testLoggerExiting() {
         final String m = "testLoggerExiting";
 
@@ -488,6 +505,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testLoggerExitingParam() {
         final String m = "testLoggerExitingParam";
 
@@ -508,6 +526,7 @@ public class BaseTraceFormatterTest {
     }
 
     @Test
+    @Ignore
     public void testId() {
         final String m = "testId";
 
