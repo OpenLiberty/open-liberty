@@ -12,12 +12,12 @@
 package com.ibm.ws.artifact.zip.internal;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.ibm.websphere.ras.Tr;
@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.ExtractableArtifactEntry;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
+import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.ZipEntryData;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.artifact.ArtifactContainer;
@@ -63,7 +64,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
      * @param rootContainer The root zip file type container of this entry.
      * @param enclosingContainer The container enclosing this entry.
      * @param offset The offset in the root zip container to the zip entry.
-     * @param zipEntry The zip entry of this entry.
+     * @param zipEntryData The zip entry of this entry.
      * @param name The name of this entry.
      * @param a_path The absolute path of this entry.
      */
@@ -71,14 +72,14 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     protected ZipFileEntry(
         ZipFileContainer rootContainer,
         ArtifactContainer enclosingContainer,
-        int offset, ZipEntry zipEntry,
+        int offset, ZipEntryData zipEntryData,
         String name, String a_path) {
 
         this.rootContainer = rootContainer;
         this.enclosingContainer = enclosingContainer;
 
         this.offset = offset;
-        this.zipEntry = zipEntry;
+        this.zipEntryData = zipEntryData;
 
         this.name = name;
         this.a_path = a_path;
@@ -107,7 +108,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     //
 
     private final int offset;
-    private final ZipEntry zipEntry;
+    private final ZipEntryData zipEntryData;
 
     @Trivial
     public int getOffset() {
@@ -115,8 +116,8 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     }
 
     @Trivial
-    public ZipEntry getZipEntry() {
-        return zipEntry;
+    public ZipEntryData getZipEntryData() {
+        return zipEntryData;
     }
 
     /**
@@ -134,7 +135,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     public URL getResource() {
         String useRelPath = getRelativePath();
 
-        if ( (zipEntry == null) || zipEntry.isDirectory() ) {
+        if ( (zipEntryData == null) || zipEntryData.isDirectory() ) {
             useRelPath += "/";
         }
 
@@ -175,7 +176,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
      */
     @Override
     public InputStream getInputStream() throws IOException {
-        if ( (zipEntry == null) || zipEntry.isDirectory() ) {
+        if ( (zipEntryData == null) || zipEntryData.isDirectory() ) {
             return null;
         }
 
@@ -188,12 +189,18 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
 
         final InputStream baseInputStream;
         try {
-            baseInputStream = zipFileHandle.getInputStream(zipFile, zipEntry); // throws IOException
+            baseInputStream = zipFileHandle.getInputStream( zipFile, zipEntryData.getPath() ); // throws IOException
         } catch ( Throwable th ) {
             // Need to close here, since the caller never receives a wrapped
             // input stream to close.
             zipFileHandle.close();
             throw th;
+        }
+
+        if ( baseInputStream == null ) {
+        	throw new FileNotFoundException(
+        		"Zip file [ " + zipFile.getName() + " ]" +
+        		" failed to provide input stream for entry [ " + zipEntryData.getPath() + " ]");
         }
 
         InputStream inputStream = new InputStream() {
@@ -287,8 +294,8 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     @Trivial
     @Override
     public long getSize() {
-        if ( zipEntry != null ) {
-            return zipEntry.getSize();
+        if ( zipEntryData != null ) {
+            return zipEntryData.getSize();
         } else {
             return 0L;
         }
@@ -297,8 +304,8 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     @Trivial
     @Override
     public long getLastModified() {
-        if ( zipEntry != null ) {
-            return zipEntry.getTime();
+        if ( zipEntryData != null ) {
+            return zipEntryData.getTime();
         } else {
             return 0L;
         }
@@ -358,7 +365,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     private volatile ZipFileNestedDirContainer localContainer;
 
     protected ZipFileNestedDirContainer convertToLocalContainer() {
-        if ( (zipEntry != null) && !zipEntry.isDirectory() ) {
+        if ( (zipEntryData != null) && !zipEntryData.isDirectory() ) {
             return null;
         } else {
             if ( localContainer == null ) {
@@ -510,7 +517,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
         ArtifactContainer container = getContainerFactoryHolder().getContainerFactory().getContainer(
                 newCacheDir,
                 getEnclosingContainer(), this,
-                zipEntry);
+                zipEntryData);
 
         if ( conversion == null ) {
             conversion = ( (container == null) ? Boolean.FALSE : Boolean.TRUE );

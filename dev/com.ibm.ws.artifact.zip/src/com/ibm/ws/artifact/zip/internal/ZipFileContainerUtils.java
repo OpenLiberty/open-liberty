@@ -81,7 +81,7 @@ public class ZipFileContainerUtils {
 
     public static class ZipFileEntryIterator implements Iterator<ArtifactEntry> {
         private final ZipFileContainer rootContainer;
-        private final Map.Entry<String, ZipEntry>[] allZipEntries;
+        private final ZipEntryData[] allEntryData;
 
         private final ArtifactContainer nestedContainer;
         private final String parentPath;
@@ -93,11 +93,11 @@ public class ZipFileContainerUtils {
         public ZipFileEntryIterator(
             ZipFileContainer rootContainer,
             ArtifactContainer nestedContainer,
-            Map.Entry<String, ZipEntry>[] allZipEntries,
+            ZipEntryData[] allEntryData,
             ZipFileContainerUtils.IteratorData iteratorData) {
 
             this.rootContainer = rootContainer;
-            this.allZipEntries = allZipEntries;
+            this.allEntryData = allEntryData;
 
             this.nestedContainer = nestedContainer;
             this.parentPath = iteratorData.path;
@@ -119,9 +119,8 @@ public class ZipFileContainerUtils {
 
             int location = locations[index++];
 
-            Map.Entry<String, ZipEntry> nextEntry = allZipEntries[location];
-            String nextPath = nextEntry.getKey();
-            ZipEntry nextZipEntry = nextEntry.getValue();
+            ZipEntryData nextEntryData = allEntryData[location];
+            String nextPath = nextEntryData.r_getPath();
 
             int parentLen;
             if ( parentPath.isEmpty() ) {
@@ -151,7 +150,7 @@ public class ZipFileContainerUtils {
                 // The location is a grandchild.
                 entryName = nextPath.substring(parentLen, slashLoc);
                 entryPath = nextPath.substring(0, slashLoc);
-                nextZipEntry = null;
+                nextEntryData = null;
             }
 
             String a_entryPath = "/" + entryPath;
@@ -159,7 +158,7 @@ public class ZipFileContainerUtils {
             ZipFileEntry nextZipFileEntry = rootContainer.createEntry(
                 nestedContainer,
                 entryName, a_entryPath,
-                location, nextZipEntry);
+                location, nextEntryData);
 
             return nextZipFileEntry;
         }
@@ -280,7 +279,7 @@ public class ZipFileContainerUtils {
      * @return A table of iterator data for the zip entries.
      */
     @Trivial
-    public static Map<String, IteratorData> collectIteratorData(Map.Entry<String, ZipEntry>[] zipEntryData) {
+    public static Map<String, IteratorData> collectIteratorData(ZipEntryData[] zipEntryData) {
         Map<String, IteratorData> allNestingData = new HashMap<String, IteratorData>();
 
         // Re-use offset lists.  There can be a lot of these
@@ -300,7 +299,7 @@ public class ZipFileContainerUtils {
         List<List<Integer>> offsetsStack = new ArrayList<List<Integer>>(32);
 
         for ( int nextOffset = 0; nextOffset < zipEntryData.length; nextOffset++ ) {
-            String r_nextPath = zipEntryData[nextOffset].getKey();
+            String r_nextPath = zipEntryData[nextOffset].r_getPath();
             int r_nextPathLen = r_nextPath.length();
 
             // The next path may be on a different branch.
@@ -410,74 +409,137 @@ public class ZipFileContainerUtils {
 
     //
 
-    /**
-     * Comparator of map entries which compares the entry keys using the path comparat.r
-     * See {@link PathUtils#PATH_COMPARATOR}.
-     */
-    public static class ZipEntryComparator implements Comparator<Map.Entry<String, ZipEntry>> {
+    public static class ZipEntryData {
+    	/**
+    	 * Create zip entry data with only the relative path
+    	 * set.  This is for use in array searching operations.
+    	 * 
+    	 * @param r_path The relative path for the new data.
+    	 */
+    	@Trivial
+    	public ZipEntryData(String r_path) {
+    		this.path = null;
+    		this.r_path = r_path;
+    		this.size = -1L;
+    		this.time = -1L;
+    	}
+    	
+    	@Trivial    	
+    	public ZipEntryData(ZipEntry zipEntry) {
+    		this.path = zipEntry.getName();
+    		this.r_path = stripPath(this.path);
+    		this.size = zipEntry.getSize();
+    		this.time = zipEntry.getTime();
+    	}
+
+    	//
+
+    	private final String path;
+    	private final String r_path;
+
+    	@Trivial
+    	public String getPath() {
+    		return path;
+    	}    	    
+
+    	@Trivial
+    	public boolean isDirectory() {
+    		return ( path.charAt( path.length() - 1 ) == '/' ); 
+    	}
+
+    	@Trivial
+    	public String r_getPath() {
+    		return r_path;
+    	}
+
+    	//
+    	
+    	private final long size;
+    	private final long time;
+
+    	@Trivial
+    	public long getSize() {
+    		return size;
+    	}
+    	
+    	@Trivial
+    	public long getTime() {
+    		return time;
+    	}
+    }
+    
+    public static class ZipEntryDataComparator implements Comparator<ZipEntryData> {
         @Trivial
-        public int compare(Map.Entry<String, ZipEntry> e1, Map.Entry<String, ZipEntry> e2) {
-            return PathUtils.PATH_COMPARATOR.compare( e1.getKey(), e2.getKey() );
+        public int compare(ZipEntryData data1, ZipEntryData data2) {
+            return PathUtils.PATH_COMPARATOR.compare( data1.r_getPath(), data2.r_getPath() );
         }
     }
 
-    public static final ZipEntryComparator ZIP_ENTRY_COMPARATOR = new ZipEntryComparator();
+    public static final ZipEntryDataComparator ZIP_ENTRY_DATA_COMPARATOR = new ZipEntryDataComparator();
 
     /**
-     * Collect the zip entries of a zip file.  Answer these as an array of map entries.
-     *
-     * The paths of the map entries are the paths of the zip file entries with leading
-     * and trailing slashes removed.  See {@link #stripPath(String)}.
+     * Collect data for the entries of a zip file.
      *
      * Intermediate / implied paths are not added to the result.
      *
      * Answer the zip entries sorted using the path comparator.
      * See {@link PathUtils#PATH_COMPARATOR}.
      *
-     * @param zipFile The zip file for which to collect zip entries.
+     * @param zipFile The zip file for which to collect entry data.
      *
-     * @return The sorted zip entries of the zip file.
+     * @return Sorted data for entries of the zip file.
      */
     @Trivial
-    public static Map.Entry<String, ZipEntry>[] collectZipEntries(ZipFile zipFile) {
-        final List<Map.Entry<String, ZipEntry>> entriesList =
-            new ArrayList<Map.Entry<String, ZipEntry>>();
+    public static ZipEntryData[] collectZipEntries(ZipFile zipFile) {
+        final List<ZipEntryData> entriesList = new ArrayList<ZipEntryData>();
 
-        final Enumeration<? extends ZipEntry> useEntries = zipFile.entries();
-        while ( useEntries.hasMoreElements() ) {
-            entriesList.add( new Map.Entry<String, ZipEntry>() {
-                final ZipEntry entry = useEntries.nextElement();
-                final String path = stripPath( entry.getName() );
-
-                @Override
-                @Trivial
-                public String getKey() {
-                    return path;
-                }
-
-                @Override
-                @Trivial
-                public ZipEntry getValue() {
-                    return entry;
-                }
-
-                @Override
-                @Trivial
-                public ZipEntry setValue(ZipEntry zipEntry) {
-                    throw new UnsupportedOperationException();
-                }
-            });
+        final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
+        while ( zipEntries.hasMoreElements() ) {
+            entriesList.add( new ZipEntryData( zipEntries.nextElement() ) );
         }
         
-        @SuppressWarnings("unchecked")
-        Map.Entry<String, ZipEntry>[] entries =
-            entriesList.toArray( new Map.Entry[entriesList.size()] );
+        ZipEntryData[] entryData = entriesList.toArray( new ZipEntryData[ entriesList.size() ] );
 
-        Arrays.sort(entries, ZIP_ENTRY_COMPARATOR);
+        Arrays.sort(entryData, ZIP_ENTRY_DATA_COMPARATOR);
 
-        return entries;
+        return entryData;
     }
 
+    /**
+     * Locate a path in a collection of entries.
+     *
+     * Answer the offset of the entry which has the specified path.  If the
+     * path is not found, answer -1 times ( the insertion point of the path
+     * minus one ).
+     *
+     * @param entryData The entries which are to be searched.
+     * @param r_path The path to fine in the entries.
+     *
+     * @return The offset to the path.
+     */
+    @Trivial
+    public static int locatePath(ZipEntryData[] entryData, final String r_path) {
+    	ZipEntryData targetData = new ZipEntryData(r_path);
+
+        // Given:
+        //
+        // 0 gp
+        // 1 gp/p1
+        // 2 gp/p1/c1
+        // 3 gp/p2/c2
+        //
+        // A search for "a"        answers "-1" (inexact; insertion point is 0)
+        // A search for "gp"       answers  "0" (exact)
+        // A search for "gp/p1/c1" answers  "2" (exact)
+        // A search for "gp/p1/c0" answers "-3" (inexact; insertion point is 2)
+        // A search for "z"        answers "-5" (inexact; insertion point is 4)
+
+        return Arrays.binarySearch(
+        	entryData,
+        	targetData,
+        	ZipFileContainerUtils.ZIP_ENTRY_DATA_COMPARATOR);
+    }
+    
     //
 
     /**

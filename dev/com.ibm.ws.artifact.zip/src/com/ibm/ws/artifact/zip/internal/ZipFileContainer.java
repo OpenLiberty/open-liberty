@@ -24,7 +24,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,13 +31,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
+import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.ZipEntryData;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
@@ -715,69 +714,32 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     //
 
-    private class ZipEntriesLock {
+    private class ZipEntryDataLock {
         // EMPTY
     }
-    private final ZipEntriesLock zipEntriesLock = new ZipEntriesLock();
-    private volatile Map.Entry<String, ZipEntry>[] zipEntries;
+    private final ZipEntryDataLock zipEntryDataLock = new ZipEntryDataLock();
+    private volatile ZipEntryData[] zipEntryData;
 
     @Trivial
-    public Map.Entry<String, ZipEntry>[] getZipEntries() {
-        if ( zipEntries == null ) {
-            synchronized( zipEntriesLock ) {
-                if ( zipEntries == null ) {
-                    zipEntries = createZipEntries();
+    public ZipEntryData[] getZipEntryData() {
+        if ( zipEntryData == null ) {
+            synchronized( zipEntryDataLock ) {
+                if ( zipEntryData == null ) {
+                    zipEntryData = createZipEntryData();
                 }
             }
         }
-        return zipEntries;
+        return zipEntryData;
     }
 
     @Trivial
     public int locatePath(String r_path) {
-        return locatePath( getZipEntries(), r_path );
+        return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
     }
-
-    /**
-     * Locate a path in a collection of entries.
-     *
-     * Answer the offset of the entry which has the specified path.  If the
-     * path is not found, answer -1 times ( the insertion point of the path
-     * minus one ).
-     *
-     * @param useEntries The entries which are to be searched.
-     * @param r_path The path to fine in the entries.
-     *
-     * @return The offset to the path.
-     */
+    
     @Trivial
-    public int locatePath(Map.Entry<String, ZipEntry>[] useEntries, final String r_path) {
-        Map.Entry<String, ZipEntry> targetEntry = new Map.Entry<String, ZipEntry>() {
-            @Override
-            @Trivial
-            public String getKey() { return r_path; }
-            @Override
-            @Trivial
-            public ZipEntry getValue() { return null; }
-            @Override
-            @Trivial
-            public ZipEntry setValue(ZipEntry zipEntry) { throw new UnsupportedOperationException(); }
-        };
-
-        // Given:
-        //
-        // 0 gp
-        // 1 gp/p1
-        // 2 gp/p1/c1
-        // 3 gp/p2/c2
-        //
-        // A search for "a"        answers "-1" (inexact; insertion point is 0)
-        // A search for "gp"       answers  "0" (exact)
-        // A search for "gp/p1/c1" answers  "2" (exact)
-        // A search for "gp/p1/c0" answers "-3" (inexact; insertion point is 2)
-        // A search for "z"        answers "-5" (inexact; insertion point is 4)
-
-        return Arrays.binarySearch(useEntries, targetEntry, ZipFileContainerUtils.ZIP_ENTRY_COMPARATOR);
+    public int locatePath(ZipEntryData[] useZipEntryData, String r_path) {
+        return ZipFileContainerUtils.locatePath(useZipEntryData, r_path);
     }
 
     @Trivial
@@ -797,11 +759,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     }
 
     @Trivial
-    @SuppressWarnings("unchecked")
-    private Map.Entry<String, ZipEntry>[] createZipEntries() {
+    private ZipEntryData[] createZipEntryData() {
         ZipFile useZipFile = openZipFileHandle();
         if ( useZipFile == null ) {
-            return new Map.Entry[0];
+            return new ZipEntryData[0];
         }
 
         try {
@@ -826,13 +787,13 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         if ( iteratorData == null ) {
             synchronized(iteratorDataLock) {
                 if ( iteratorData == null ) {
-                    Map.Entry<String, ZipEntry>[] useZipEntries = getZipEntries();
-                    if ( useZipEntries.length == 0 ) {
+                    ZipEntryData[] useZipEntryData = getZipEntryData();
+                    if ( useZipEntryData.length == 0 ) {
                         iteratorData = Collections.emptyMap();
                     } else {
-                        iteratorData = ZipFileContainerUtils.collectIteratorData(useZipEntries);
+                        iteratorData = ZipFileContainerUtils.collectIteratorData(useZipEntryData);
                     }
-                    Tr.debug(tc, methodName + " [ " + Integer.valueOf(useZipEntries.length) + " ] entries");
+                    Tr.debug(tc, methodName + " [ " + Integer.valueOf(useZipEntryData.length) + " ] entries");
                 }
             }
         }
@@ -852,12 +813,12 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     protected ZipFileEntry createEntry(
         ArtifactContainer nestedContainer,
         String entryName, String a_entryPath,
-        int entryOffset, ZipEntry zipEntry) {
+        int entryOffset, ZipEntryData zipEntryData) {
 
-        if ( (zipEntry != null) && !zipEntry.isDirectory() ) {
+        if ( (zipEntryData != null) && !zipEntryData.isDirectory() ) {
             return new ZipFileEntry(
                 this, nestedContainer,
-                entryOffset, zipEntry,
+                entryOffset, zipEntryData,
                 entryName, a_entryPath);
 
         } else {
@@ -867,7 +828,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 if ( nestedContainerEntry == null ) {
                     nestedContainerEntry = new ZipFileEntry(
                         this, nestedContainer,
-                        entryOffset, zipEntry,
+                        entryOffset, zipEntryData,
                         entryName, a_entryPath);                   
                     nestedContainerEntries.put(r_entryPath,  nestedContainerEntry);
                 }
@@ -887,8 +848,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
      */
     @Trivial
     protected ZipFileEntry createEntry(String entryName, String a_entryPath) {
-
-        Map.Entry<String, ZipEntry>[] useZipEntries = getZipEntries();
+        ZipEntryData[] useZipEntries = getZipEntryData();
         if ( useZipEntries.length == 0 ) {
             return null;
         }
@@ -896,19 +856,18 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         String r_entryPath = a_entryPath.substring(1);
         int location = locatePath(useZipEntries, r_entryPath);
 
-        ZipEntry zipEntry;
+        ZipEntryData entryData;
         if ( location < 0 ) {
             location  = ( (location + 1) * -1 );
-            zipEntry = null;
+            entryData = null;
         } else {
-            Map.Entry<String, ZipEntry> entry = useZipEntries[location];
-            zipEntry = entry.getValue();
+            entryData = useZipEntries[location];
         }
 
         return createEntry(
             null,
             entryName, a_entryPath,
-            location, zipEntry);
+            location, entryData);
     }
 
     //
@@ -916,15 +875,15 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     @Trivial
     @Override
     public Iterator<ArtifactEntry> iterator() {
-        Map.Entry<String, ZipEntry>[] allZipEntries = getZipEntries();
-        if ( allZipEntries.length == 0 ) {
+        ZipEntryData[] useEntryData = getZipEntryData();
+        if ( useEntryData.length == 0 ) {
             return Collections.emptyIterator();
         }
 
         Map<String, ZipFileContainerUtils.IteratorData> allIteratorData = getIteratorData();
         ZipFileContainerUtils.IteratorData thisIteratorData = allIteratorData.get("");
 
-        return new ZipFileContainerUtils.ZipFileEntryIterator(this, this, allZipEntries, thisIteratorData);
+        return new ZipFileContainerUtils.ZipFileEntryIterator(this, this, useEntryData, thisIteratorData);
     }
 
     @Trivial
@@ -937,8 +896,8 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     public static final boolean IS_NOT_NORMALIZED = false;
 
     public ZipFileEntry getEntry(String entryPath, boolean normalized) {
-        Map.Entry<String, ZipEntry>[] useZipEntries = getZipEntries();
-        if ( useZipEntries.length == 0 ) {
+        ZipEntryData[] useEntryData = getZipEntryData();
+        if ( useEntryData.length == 0 ) {
             return null; // Prior failure to list entries.
         }
 
@@ -965,7 +924,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             r_entryPath = entryPath; // The path is already relative.
         }
 
-        int location = locatePath(useZipEntries, r_entryPath);
+        int location = locatePath(useEntryData, r_entryPath);
 
         if ( (location < 0) && !normalized ) {
             // Try again after forcing the path to be normalized.
@@ -989,28 +948,28 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 r_entryPath = entryPath; // The path is already relative.
             }
 
-            location = locatePath(useZipEntries, r_entryPath);
+            location = locatePath(useEntryData, r_entryPath);
         }
 
-        ZipEntry zipEntry;
+        ZipEntryData zipEntryData;
         if ( location < 0 ) {
             location = ( (location + 1) * -1 );
             // An in-exact match ...
-            if ( location == useZipEntries.length ) {
+            if ( location == useEntryData.length ) {
                 return null; // There is no next entry; cannot match even partially.
             } else {
-                Map.Entry<String, ZipEntry> nextEntry = useZipEntries[location];
-                if ( !isChildOf(r_entryPath, nextEntry.getKey()) ) {
+                ZipEntryData nextEntryData = useEntryData[location];
+                if ( !isChildOf(r_entryPath, nextEntryData.r_getPath() ) ) {
                      // There is a next entry, but it is not a child of the target.
                     return null;
                 } else {
                     // There is a next entry and it is a child of the target.
                     // Create an implied entry.
-                    zipEntry = null;
+                    zipEntryData = null;
                 }
             }
         } else {
-            zipEntry = useZipEntries[location].getValue();
+            zipEntryData = useEntryData[location];
         }
 
         String entryName = PathUtils.getName(entryPath);
@@ -1029,7 +988,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         return createEntry(
             null,
             entryName, a_entryPath,
-            location, zipEntry);
+            location, zipEntryData);
     }
 
     @Override

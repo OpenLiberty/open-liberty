@@ -23,13 +23,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.ZipEntryData;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
@@ -166,7 +166,7 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
         // is registered.
 
         @SuppressWarnings("unused")
-        Map.Entry<String, ZipEntry>[] allZipEntries = rootContainer.getZipEntries();
+        ZipEntryData[] allZipEntries = rootContainer.getZipEntryData();
     }
 
     //
@@ -786,11 +786,11 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
 
     @Trivial // Don't log this: The paths collection could be very large.
     private void collectRegisteredPaths(String a_path, List<String> a_paths) {
-        Map.Entry<String, ZipEntry>[] allZipEntries = rootContainer.getZipEntries();
+    	ZipEntryData[] allEntryData = rootContainer.getZipEntryData();
 
         if ( a_path.isEmpty() || ((a_path.length() == 1) && (a_path.charAt(0) == '/')) ) {
-            for ( Map.Entry<String, ZipEntry> entry : allZipEntries ) {
-                a_paths.add( "/" + entry.getKey() );
+            for ( ZipEntryData entry : allEntryData ) {
+                a_paths.add( "/" + entry.r_getPath() );
             }
             a_paths.add("/");
 
@@ -798,7 +798,7 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
             String r_path = a_path.substring(1);
             int r_pathLen = r_path.length();
 
-            int location = rootContainer.locatePath(allZipEntries, r_path);
+            int location = rootContainer.locatePath(allEntryData, r_path);
             boolean isExact;
             if ( location < 0 ) {
                 location = (location + 1) * -1; // Inexact
@@ -808,8 +808,8 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
                 isExact = true;
             }
 
-            while ( location < allZipEntries.length ) {
-                String r_nextPath = allZipEntries[location].getKey();
+            while ( location < allEntryData.length ) {
+                String r_nextPath = allEntryData[location].r_getPath();
                 int r_nextPathLen = r_nextPath.length();
 
                 if ( r_nextPathLen <= r_pathLen ) {

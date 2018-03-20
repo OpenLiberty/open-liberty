@@ -3,7 +3,7 @@
  *
  * OCO Source Materials
  *
- * Copyright IBM Corp. 2012, 2017
+ * Copyright IBM Corp. 2012, 2018
  *
  * The source code for this program is not published or otherwise divested
  * of its trade secrets, irrespective of what has been deposited with the
@@ -14,6 +14,7 @@ package com.ibm.ws.artifact.zip.cache.internal;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -225,6 +226,17 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     private static final ByteArrayInputStream EMPTY_STREAM =
         new ByteArrayInputStream( new byte[0] );
+
+    @Override
+    @Trivial
+    public InputStream getInputStream(ZipFile useZipFile, String zipEntryName) throws IOException {
+    	ZipEntry zipEntry = useZipFile.getEntry(zipEntryName);
+    	if ( zipEntry == null ) {
+    		throw new FileNotFoundException("Zip file [ " + getPath() + " ] does not container entry [ " + zipEntryName + " ]");
+    	}
+
+    	return getInputStream(useZipFile, zipEntryName);
+    }
 
     /**
      * Answer an input stream for an entry of a zip file.  When the entry is a

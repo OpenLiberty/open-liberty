@@ -17,9 +17,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.zip.ZipEntry;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.ZipEntryData;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
@@ -178,8 +178,8 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
     @Trivial
     @Override
     public Iterator<ArtifactEntry> iterator() {
-        Map.Entry<String, ZipEntry>[] allZipEntries = rootContainer.getZipEntries();
-        if ( allZipEntries.length == 0 ) {
+        ZipEntryData[] allEntryData = rootContainer.getZipEntryData();
+        if ( allEntryData.length == 0 ) {
             return Collections.emptyIterator();
         } else {
             Map<String, ZipFileContainerUtils.IteratorData> allIteratorData = rootContainer.getIteratorData();
@@ -188,7 +188,7 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
             if ( thisIteratorData == null ) {
                 return Collections.emptyIterator();
             } else {
-                return new ZipFileContainerUtils.ZipFileEntryIterator(rootContainer, this, allZipEntries, thisIteratorData);
+                return new ZipFileContainerUtils.ZipFileEntryIterator(rootContainer, this, allEntryData, thisIteratorData);
             }
         }
     }

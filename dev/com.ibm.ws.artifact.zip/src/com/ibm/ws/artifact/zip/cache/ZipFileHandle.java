@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,4 +79,25 @@ public interface ZipFileHandle {
      * @throws IOException Thrown if the input stream cannot be obtained.
      */
     InputStream getInputStream(ZipFile zipFile, ZipEntry zipEntry) throws IOException;
+    
+    /**
+     * <p>Get an input stream for a zip file and an entry of that zip file.</p> 
+     *
+     * <p>The zip file must have been obtained from the zip file handle.  The
+     * zip entry must have been obtained from the zip file.  The zip file handle
+     * must have at least one active open.</p>
+     * 
+     * <p>An attempt to obtain an input stream from a directory type entry
+     * will result in a null return value.</p>
+     * 
+     * @param zipFile The zip file from which to obtain the input stream.
+     * @param entryName The name of the entry for which to obtain the input stream.
+     * 
+     * @return An input stream for the entry in the zip file.  Null if the
+     *     zip entry is a directory type entry.
+     *
+     * @throws IOException Thrown if the input stream cannot be obtained.
+     */
+    InputStream getInputStream(ZipFile zipFile, String entryName) throws IOException;
+    
 }
