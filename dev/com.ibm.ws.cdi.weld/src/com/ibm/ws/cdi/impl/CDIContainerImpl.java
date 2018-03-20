@@ -15,9 +15,11 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
@@ -148,7 +150,6 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 webSphereCDIDeployment.validateJEEComponentClasses();
                 weldBootstrap.deployBeans();
                 weldBootstrap.validateBeans();
-                weldBootstrap.endInitialization();
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "applicationStarting", "CDI is not enabled, shutting down CDI");
@@ -161,6 +162,22 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
             currentDeployment.set(null);
         }
 
+    }
+
+    public void finalizeApplicationStarting(Application application) throws CDIException {
+        WebSphereCDIDeployment webSphereCDIDeployment = getDeployment(application);
+        WeldBootstrap weldBootstrap = null; 
+        if (webSphereCDIDeployment != null) {
+            weldBootstrap = webSphereCDIDeployment.getBootstrap();
+        }
+        if (weldBootstrap != null) {
+            try {
+                currentDeployment.set(webSphereCDIDeployment);
+                weldBootstrap.endInitialization();
+            } finally {
+                currentDeployment.set(null);
+            }
+        }
     }
 
     public void applicationStopped(Application application) throws CDIException {
