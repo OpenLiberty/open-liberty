@@ -781,7 +781,7 @@ public class H2Connection {
         return streamResultManager.didframeArrive(expectedFrame);
     }
 
-    public AtomicBoolean getAaitingForACK() {
+    public AtomicBoolean getWaitingForACK() {
         return this.waitingForACK;
     }
 }

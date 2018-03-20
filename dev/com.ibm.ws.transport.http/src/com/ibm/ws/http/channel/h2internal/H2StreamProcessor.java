@@ -1566,7 +1566,8 @@ public class H2StreamProcessor {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "new thread calling h2HttpInboundLinkWrap.ready(...): stream id:" + myID);
             }
-            if (!muxLink.checkIfGoAwaySendingOrClosing()) {
+            boolean closing = muxLink.checkIfGoAwaySendingOrClosing();
+            if (!closing) {
                 h2HttpInboundLinkWrap.ready(this.h2HttpInboundLinkWrap.vc);
             }
             headersCompleted = false;

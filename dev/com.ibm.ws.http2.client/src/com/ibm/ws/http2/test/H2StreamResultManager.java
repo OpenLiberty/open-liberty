@@ -292,7 +292,7 @@ public class H2StreamResultManager {
     }
 
     public boolean receivedAllFrames() {
-        if (h2Connection.getAaitingForACK().get()) {
+        if (h2Connection.getWaitingForACK().get()) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.logp(Level.INFO, CLASS_NAME, "receivedAllFrames", "All frames not received: still waiting for SETTINGS frame with ACK set");
             return false;
