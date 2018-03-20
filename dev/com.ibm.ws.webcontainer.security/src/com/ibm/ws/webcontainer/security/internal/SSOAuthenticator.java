@@ -235,6 +235,9 @@ public class SSOAuthenticator implements WebAuthenticator {
 
     private AuthenticationResult authenticateWithJwt(HttpServletRequest req, HttpServletResponse res, String jwtToken) {
         AuthenticationResult authResult = null;
+        if (jwtToken == null) {
+            return authResult;
+        }
         try {
             AuthenticationData authenticationData = createAuthenticationData(req, res, jwtToken, JWT_OID);
             Subject new_subject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND,
