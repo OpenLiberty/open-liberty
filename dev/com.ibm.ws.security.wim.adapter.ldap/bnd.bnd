@@ -32,7 +32,8 @@ Import-Package: \
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
 
--dsannotations: com.ibm.ws.security.wim.adapter.ldap.LdapAdapter
+-dsannotations: com.ibm.ws.security.wim.adapter.ldap.LdapAdapter, \
+  com.ibm.ws.security.wim.adapter.ldap.LdapConfigManager
 
 instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.class
 
@@ -41,6 +42,7 @@ instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.cla
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.security.wim.base;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.wim.core;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

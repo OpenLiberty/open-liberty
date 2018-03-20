@@ -40,10 +40,12 @@ public class DefaultSourcesTest extends AbstractConfigApiTest {
     private final static String testClassName = "DefaultSourcesTest";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(RepeatConfig11EE7.INSTANCE).andWith(RepeatConfig12EE8.INSTANCE);
+    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("SimpleConfigSourcesServer");
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("SimpleConfigSourcesServer");
+    public static RepeatTests r = RepeatTests
+                    .with(RepeatConfig11EE7.INSTANCE.forServers(SHARED_SERVER.getServerName()))
+                    .andWith(RepeatConfig12EE8.INSTANCE.forServers(SHARED_SERVER.getServerName()));
 
     @BuildShrinkWrap
     public static Archive buildApp() {

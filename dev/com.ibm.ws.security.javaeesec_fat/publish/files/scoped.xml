@@ -1,0 +1,38 @@
+<server description="JavaEESec Scoped Security FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <application type="war" id="ApplicationScopedMechanismWithRequestScopedStore" name="ApplicationScopedMechanismWithRequestScopedStore" location="ApplicationScopedMechanismWithRequestScopedStore.war">
+        <application-bnd>
+            <security-role name="javaeesec_basic">
+                <user name="jaspiuser1_requestscoped" access-id="defaultRealm/jaspiuser1_requestscoped" />
+                <group name="group1" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <application type="war" id="ApplicationScopedMechanismWithSessionScopedStore" name="ApplicationScopedMechanismWithSessionScopedStore" location="ApplicationScopedMechanismWithSessionScopedStore.war">
+        <application-bnd>
+            <security-role name="javaeesec_basic">
+                <user name="jaspiuser1_sessionscoped" access-id="defaultRealm/jaspiuser1_sessionscoped" />
+                <group name="group1" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <application type="war" id="RequestScopedMechanismWithApplicationScopedStore" name="RequestScopedMechanismWithApplicationScopedStore" location="RequestScopedMechanismWithApplicationScopedStore.war">
+        <application-bnd>
+            <security-role name="javaeesec_basic">
+                <user name="jaspiuser1" access-id="defaultRealm/jaspiuser1" />
+                <group name="group1" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+
+    <include location="../fatTestPorts.xml" />
+</server>

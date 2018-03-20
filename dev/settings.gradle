@@ -315,6 +315,8 @@ projectNames.each { projectName ->
     project?.getDependson()*.getName().each {
       include it
     }
+  } else if (new File(rootDir, projectName + '/springboot.gradle').exists()) {
+      include projectName 
   }
 }
 

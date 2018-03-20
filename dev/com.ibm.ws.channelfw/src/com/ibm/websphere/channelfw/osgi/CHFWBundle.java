@@ -51,6 +51,7 @@ import com.ibm.ws.udpchannel.internal.UDPChannelFactory;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
+import com.ibm.wsspi.channelfw.HttpProtocolBehavior;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.wsspi.timer.ApproximateTime;
 import com.ibm.wsspi.timer.QuickApproxTime;
@@ -99,6 +100,9 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     private static boolean serverCompletelyStarted = false;
     private static Object syncStarted = new Object() {}; // use brackets/inner class to make lock appear in dumps using class name
+
+    private volatile ServiceReference<HttpProtocolBehavior> protocolBehaviorRef;
+    private static volatile String httpVersionSetting = null;
 
     /**
      * Constructor.
@@ -472,6 +476,25 @@ public class CHFWBundle implements ServerQuiesceListener {
                cardinality = ReferenceCardinality.MANDATORY)
     protected void setApproxTimeService(ApproximateTime ref) {
         // do nothing: need the ref for activation of service
+    }
+
+    @Reference(service = HttpProtocolBehavior.class, cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected synchronized void setBehavior(ServiceReference<HttpProtocolBehavior> reference) {
+
+        protocolBehaviorRef = reference;
+        httpVersionSetting = (String) reference.getProperty(HttpProtocolBehavior.HTTP_VERSION_SETTING);
+    }
+
+    protected synchronized void unsetBehavior(ServiceReference<HttpProtocolBehavior> reference) {
+        if (reference == this.protocolBehaviorRef) {
+            protocolBehaviorRef = null;
+            httpVersionSetting = null;
+        }
+    }
+
+    public static String getServletConfiguredHttpVersionSetting() {
+        return httpVersionSetting;
     }
 
     /**

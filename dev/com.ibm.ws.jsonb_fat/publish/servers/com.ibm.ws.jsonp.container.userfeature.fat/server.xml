@@ -18,9 +18,9 @@
 
 	<include location="../fatTestPorts.xml"/>
 
+    <!--  TODO: once https://github.com/eclipse-ee4j/jsonp/issues/78 is resolved, switch back to Yasson for JSON-B and Johnzon for JSON-P
     <library id="json-p-johnzon">
       <fileset dir="${shared.resource.dir}/johnzon" includes="johnzon-core-*.jar"/>
-<!--       <fileset dir="${shared.resource.dir}/refImpls" includes="org.glassfish.jsonp-1.1.jar"/> -->
     </library>
 
     <bell libraryRef="json-p-johnzon"/>
@@ -30,6 +30,13 @@
     </library>
 
     <bell libraryRef="json-b-yasson"/>
+    -->
+    
+    <!-- TODO: remove this library+bell config once https://github.com/eclipse-ee4j/jsonp/issues/78 is resolved  -->
+    <library id="johnzon">
+      <fileset dir="${shared.resource.dir}/johnzon" includes="*.jar"/>
+    </library>
+    <bell libraryRef="johnzon"/>
 
     <variable name="onError" value="FAIL"/>
 </server>

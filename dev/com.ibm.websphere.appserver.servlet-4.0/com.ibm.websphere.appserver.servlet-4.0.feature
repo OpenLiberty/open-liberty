@@ -45,7 +45,8 @@ Subsystem-Category: JavaEE8Application
  com.ibm.websphere.appserver.javax.servlet-4.0, \
  com.ibm.websphere.appserver.requestProbes-1.0, \
  com.ibm.websphere.appserver.javaeeCompatible-8.0, \
- com.ibm.websphere.appserver.servlet-servletSpi1.0
+ com.ibm.websphere.appserver.servlet-servletSpi1.0, \
+ com.ibm.websphere.appserver.javaeeddSchema-1.0
 -bundles=com.ibm.ws.app.manager.war, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io, \
@@ -65,22 +66,7 @@ Subsystem-Category: JavaEE8Application
 -files=bin/tools/ws-webserverPluginutil.jar, \
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/pluginUtility.bat, \
- dev/api/ibm/schema/ibm-common-bnd_1_2.xsd, \
- dev/api/ibm/schema/ibm-web-bnd_1_0.xsd, \
- dev/api/ibm/schema/ibm-application-ext_1_0.xsd, \
- dev/api/ibm/schema/ibm-web-ext_1_0.xsd, \
- dev/api/ibm/schema/ibm-web-bnd_1_2.xsd, \
- dev/api/ibm/schema/ibm-web-bnd_1_1.xsd, \
- dev/api/ibm/schema/ibm-application-bnd_1_2.xsd, \
- dev/api/ibm/schema/ibm-application-bnd_1_0.xsd, \
- dev/api/ibm/schema/ibm-common-ext_1_0.xsd, \
- dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.servlet_1.1-javadoc.zip, \
- dev/api/ibm/schema/ibm-common-bnd_1_0.xsd, \
- dev/api/ibm/schema/ibm-common-ext_1_1.xsd, \
- dev/api/ibm/schema/ibm-application-bnd_1_1.xsd, \
- dev/api/ibm/schema/ibm-application-ext_1_1.xsd, \
- dev/api/ibm/schema/ibm-common-bnd_1_1.xsd, \
- dev/api/ibm/schema/ibm-web-ext_1_1.xsd
+ dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.servlet_1.1-javadoc.zip
 Subsystem-Name: Java Servlets 4.0
 kind=beta
 edition=core

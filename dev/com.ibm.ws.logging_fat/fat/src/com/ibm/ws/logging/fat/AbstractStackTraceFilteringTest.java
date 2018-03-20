@@ -46,7 +46,7 @@ public class AbstractStackTraceFilteringTest {
             HttpURLConnection con = HttpUtils.getHttpConnection(url, expectedResponseCode, CONN_TIMEOUT);
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String line = br.readLine();
-            // Make sure the server gave us something back 
+            // Make sure the server gave us something back
             assertNotNull(line);
             con.disconnect();
         } catch (IOException e) {

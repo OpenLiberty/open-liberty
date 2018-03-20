@@ -15,6 +15,7 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,16 +26,16 @@ import javax.net.ssl.SSLEngineResult.Status;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSessionContext;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.websphere.ssl.SSLConfig;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.Channel;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -93,6 +94,8 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
      * write before giving up.
      */
     private int timeoutValueInSSLClosingHandshake = 30;
+
+    private static Boolean useH2ProtocolAttribute = null;
 
     /** Flag on whether stop with no quiese has been called after the last start call */
     volatile private boolean stop0Called = false;
@@ -392,12 +395,15 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     Tr.debug(tc, "Querying security service for alias=[" + aliasFinal + "]");
                 }
                 props = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+
                     @Override
                     public Properties run() throws Exception {
                         return jsseHelper.getProperties(aliasFinal, connectionInfo, null);
                     }
                 });
-            } catch (Exception e) {
+            } catch (
+
+            Exception e) {
                 // no FFDC required
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Exception getting SSL properties from alias: " + this.alias);
@@ -492,6 +498,15 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
         return this.timeoutValueInSSLClosingHandshake;
     }
 
+    /**
+     * Indicates whether the SSL Channel is configured to use HTTP/2
+     *
+     * @return
+     */
+    public Boolean getUseH2ProtocolAttribute() {
+        return this.useH2ProtocolAttribute;
+    }
+
     /*
      * @see com.ibm.wsspi.channelfw.Channel#start()
      */
@@ -518,6 +533,7 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     Tr.debug(tc, "inboundHost = " + this.inboundHost
                                  + " inboundPort = " + this.inboundPort
                                  + " endPointName = " + this.endPointName);
+
                 }
             }
         } catch (Exception e) {
@@ -612,6 +628,20 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                     this.timeoutValueInSSLClosingHandshake = Integer.parseInt(timeoutValueSystemProperty);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Found timeoutValueInSSLClosingHandshake in SSL system properties, " + this.timeoutValueInSSLClosingHandshake);
+                    }
+                }
+
+                String protocolVersion = channelProps.getProperty(SSLChannelConstants.PROPNAME_PROTOCOL_VERSION);
+                if (protocolVersion != null) {
+
+                    if (SSLChannelConstants.PROTOCOL_VERSION_11.equalsIgnoreCase(protocolVersion)) {
+                        this.useH2ProtocolAttribute = Boolean.FALSE;
+                    } else if (SSLChannelConstants.PROTOCOL_VERSION_2.equalsIgnoreCase(protocolVersion)) {
+                        this.useH2ProtocolAttribute = Boolean.TRUE;
+                    }
+
+                    if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled()) && useH2ProtocolAttribute != null) {
+                        Tr.event(tc, "SSL Channel Config: versionProtocolOption has been set to " + protocolVersion.toLowerCase(Locale.ENGLISH));
                     }
                 }
 

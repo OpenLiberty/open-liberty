@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -101,7 +102,6 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
         if (this.beanCustomizerContexts == null) {
             this.beanCustomizerContexts = new HashMap<String, Object>();
         }
-
 
         beanCustomizers.addAll(originalBeanCustomizers);
         Collections.sort(beanCustomizers, new Comparator<JaxRsFactoryBeanCustomizer>() {
@@ -197,6 +197,12 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
         Map<String, Object> appProps = app.getProperties();
         if (appProps != null) {
             this.getProperties(true).putAll(appProps);
+        }
+        Enumeration<String> en = servletConfig.getInitParameterNames();
+        while (en.hasMoreElements()) {
+            String key = en.nextElement();
+            String value = servletConfig.getInitParameter(key);
+            this.getProperties(true).put(key, value);
         }
 
         /**

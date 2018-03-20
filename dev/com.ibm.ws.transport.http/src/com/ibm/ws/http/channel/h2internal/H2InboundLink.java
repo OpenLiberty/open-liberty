@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.h2internal.priority.Node;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
@@ -132,10 +133,16 @@ public class H2InboundLink extends HttpInboundLink {
     private boolean oneTimeEntry = false;
 
     public boolean isContinuationExpected() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isContinuationExpected: " + continuationFrameExpected);
+        }
         return continuationFrameExpected;
     }
 
     public void setContinuationExpected(boolean expected) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setContinuationExpected: " + expected);
+        }
         this.continuationFrameExpected = expected;
     }
 
@@ -222,8 +229,10 @@ public class H2InboundLink extends HttpInboundLink {
     /**
      * Handle the receipt of the MAGIC string from the client: initialize the control stream 0 and and send out a settings frame to
      * acknowledge the MAGIC string
+     * 
+     * @throws StreamClosedException
      */
-    public void processConnectionPrefaceMagic() {
+    public void processConnectionPrefaceMagic() throws ProtocolException, StreamClosedException {
         connection_preface_string_rcvd = true;
         H2StreamProcessor controlStream = createNewInboundLink(0);
         controlStream.completeConnectionPreface();
@@ -326,6 +335,11 @@ public class H2InboundLink extends HttpInboundLink {
         streamTable.put(streamID, streamProcessor);
         highestClientStreamId = streamID;
 
+        // add stream 0 to the table, in case we need to write out any control frames prior to initialization completion
+        streamID = 0;
+        streamProcessor = new H2StreamProcessor(streamID, wrap, this, StreamState.OPEN);
+        streamTable.put(streamID, streamProcessor);
+
         // pull the settings header out of the request;
         // process it and apply it to the stream
         String settings = headers.get("HTTP2-Settings");
@@ -334,7 +348,7 @@ public class H2InboundLink extends HttpInboundLink {
                 Tr.debug(tc, "handleHTTP2UpgradeRequest, processing upgrade header settings : " + settings);
             }
             getConnectionSettings().processUpgradeHeaderSettings(settings);
-        } catch (ProtocolException e1) {
+        } catch (Http2Exception e1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleHTTP2UpgradeRequest an error occurred processing the settings during connection initialization");
             }
@@ -832,7 +846,7 @@ public class H2InboundLink extends HttpInboundLink {
                 Tr.debug(tc, "HttpDispatcherLink found: " + hdLink);
             }
             try {
-                hdLink.close(initialVC, null);
+                hdLink.close(initialVC, exceptionForCloseFromHere);
             } catch (Exception consume) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "closeConnectionLink: consuming exception: " + consume);

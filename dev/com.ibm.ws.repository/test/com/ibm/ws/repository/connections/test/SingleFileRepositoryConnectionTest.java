@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.repository.connections.SingleFileRepositoryConnection;
@@ -30,6 +31,7 @@ public class SingleFileRepositoryConnectionTest {
 
     private static final File FILE = new File("testSingleFileRepo");
 
+    @Before
     @After
     public void cleanup() {
         if (FILE.exists()) {

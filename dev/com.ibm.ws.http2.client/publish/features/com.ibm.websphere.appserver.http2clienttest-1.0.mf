@@ -1,0 +1,18 @@
+Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
+IBM-ShortName: http2clienttest-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.http2clienttest-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.ws.http2.client; version="[1,1.0.100)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-API-Package: com.ibm.ws.http2.test; type="api",
+ com.ibm.ws.http2.test.frames; type="api",
+ com.ibm.ws.http2.test.helpers; type="api",
+ com.ibm.ws.http.channel.h2internal; type="api",
+ com.ibm.ws.http.channel.h2internal.exceptions; type="api",
+ com.ibm.ws.http.channel.h2internal.frames; type="api",
+ com.ibm.ws.http.channel.h2internal.hpack; type="api",
+ com.ibm.ws.http.channel.h2internal.huffman; type="api",
+ com.ibm.ws.http.channel.h2internal.priority; type="api",
+ com.ibm.wsspi.http.ee8; type="api"

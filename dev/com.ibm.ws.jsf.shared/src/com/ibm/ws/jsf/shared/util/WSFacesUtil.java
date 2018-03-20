@@ -49,7 +49,7 @@ public class WSFacesUtil {
         }
 	}
 	
-	public static ClassLoader getClassLoader(Object defaultObject)
+    public static ClassLoader getClassLoader(final Object defaultObject)
     {
 		ClassLoader cl;
         if (System.getSecurityManager() != null) 
@@ -59,7 +59,7 @@ public class WSFacesUtil {
                         {
                             public ClassLoader run() throws PrivilegedActionException
                             {
-                                return Thread.currentThread().getContextClassLoader();
+                                return defaultObject.getClass().getClassLoader();
                             }
                         });
             }
@@ -70,10 +70,6 @@ public class WSFacesUtil {
         }
         else
         {
-            cl = Thread.currentThread().getContextClassLoader();
-        }
-        
-        if (cl == null){
         	cl = defaultObject.getClass().getClassLoader();
         }
         

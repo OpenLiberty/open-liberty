@@ -124,6 +124,9 @@
                     </dependenciesToScan>
                     <excludes>
                        <exclude>**/TimerTest.java</exclude>
+                       <exclude>**/MpMetricTest.java</exclude>
+                       <exclude>**/HistogramTest.java</exclude>
+                       <exclude>**/MeterTest.java</exclude>
                     </excludes>
                </configuration>
 			</plugin>
