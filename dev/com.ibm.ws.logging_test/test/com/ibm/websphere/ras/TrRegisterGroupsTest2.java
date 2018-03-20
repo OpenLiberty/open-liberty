@@ -18,6 +18,7 @@ import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,6 +36,7 @@ import test.common.SharedOutputManager;
  */
 @RunWith(JMock.class)
 @TraceOptions(traceGroups = { "multigroup1", "multigroup2" })
+@Ignore
 public class TrRegisterGroupsTest2 {
     static {
         LoggingTestUtils.ensureLogManager();
