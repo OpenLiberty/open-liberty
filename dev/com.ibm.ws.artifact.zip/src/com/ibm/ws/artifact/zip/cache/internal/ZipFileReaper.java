@@ -3,7 +3,7 @@
  *
  * OCO Source Materials
  *
- * Copyright IBM Corp. 2017
+ * Copyright IBM Corp. 2018
  *
  * The source code for this program is not published or otherwise divested
  * of its trade secrets, irrespective of what has been deposited with the
@@ -11,6 +11,7 @@
  */
 package com.ibm.ws.artifact.zip.cache.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.internal.SystemUtils;
+import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 /**
  * Reaper facility for managing ZipFiles.
@@ -111,6 +113,9 @@ import com.ibm.ws.artifact.zip.internal.SystemUtils;
  * When re-opens occur, maximum re-use is achieved by setting an infinite close delay.
  * However, that also maximizes the amount of time zip files are open.  A balance is
  * needed that provides re-use without keeping zip files open longer than is useful.
+ * 
+ * The reaper monitors the size and last modified date of target zip files.  Changes
+ * to either are allowed only when a zip file has no active opens.
  */
 @Trivial
 public class ZipFileReaper {
@@ -192,11 +197,14 @@ public class ZipFileReaper {
          * Main operations: Create, with the initial state as open.
          *
          * @param path The path to the zip file.
-         * @param zipFile The zip file.
          * @param initialAt The time at which the reaper subsystem was initialized.
          * @param openAt When the zip file was initially opened.
+         * 
+         * @throws IOException Thrown if the open fails.
+         * @throws ZipException Thrown if the open fails.
          */
-        public ZipFileData(String path, ZipFile zipFile, long initialAt, long openAt) {
+        public ZipFileData(String path, long initialAt, long openAt)
+        	throws IOException, ZipException {
             String methodName = "<init>";
 
             if ( tc.isDebugEnabled() ) {
@@ -210,7 +218,9 @@ public class ZipFileReaper {
             // activeOpens  > 0; zipFile != null: open
             // activeOpens  > 0; zipFile == null: invalid
 
-            this.zipFile = zipFile;
+            this.zipFile = ZipFileUtils.openZipFile(path); // throws IOException, ZipException
+            this.recordZipFile();
+
             this.activeOpens = 1; // Start open
 
             //
@@ -368,6 +378,8 @@ public class ZipFileReaper {
 
             ZipFile useZipFile = zipFile;
             zipFile = null;
+            zipLength = -1L;
+            zipLastModified = -1L;
 
             try {
                 ZipFileUtils.closeZipFile(getPath(), useZipFile); // throws IOException
@@ -409,21 +421,32 @@ public class ZipFileReaper {
          * An open is requested on the data.  The data is closed.
          *
          * @param useZipFile The zip file from the recent open.
+         * @param useZipLength The zip file length from the recent open.
+         * @param useZipLastModified The zip file last modified time
+         *     from the recent open.
          * @param openAt When the open was performed.
+         * 
+         * @throws IOException, ZipException Thrown if the open fails.
          */
-        public void reopen(ZipFile useZipFile, long openAt) {
+        public ZipFile reopen(long openAt) throws IOException, ZipException {
             String methodName = "reopen";
             if ( tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + "On [ " + getPath() + " ] at [ " + toRelSec(initialAt, openAt) + " ]");
             }
+
             if ( zipFile != null ) { // (zipFile != null) && (activeOpens == 0) || (activeOpens > 0)
                 if ( tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + "Open; ignoring!");
                 }
+
             } else { // (zipFile == null) && (activeOpens == 0)
-                zipFile = useZipFile;
+                zipFile = ZipFileUtils.openZipFile(path); // throws IOException, ZipException
+                recordZipFile();
+
                 fromClosedToOpen(openAt);
             }
+            
+            return zipFile;
         }
 
         // Identity ...
@@ -449,16 +472,117 @@ public class ZipFileReaper {
         // activeOpens  > 0; zipFile == null: invalid
 
         private ZipFile zipFile;
+        private long zipLength;
+        private long zipLastModified;
 
         @Trivial
         public ZipFile getZipFile() {
             return zipFile;
         }
 
-        @Trivial
-        private void setZipFile(ZipFile zipFile) {
-            this.zipFile = zipFile;
+        @Trivial        
+        public long getZipLength() {
+        	return zipLength;
         }
+        
+        @Trivial
+        public long getZipLastModified() {
+        	return zipLastModified;
+        }
+
+        /**
+         * Re-acquire the ZIP file.
+         * 
+         * If either the zip file length or last modified times changed
+         * since the zip file was set, re-open the zip file and update
+         * the length and last modified times.
+         * 
+         * A warning is displayed if changes are detected and there are
+         * active opens.  If there are no active opens, the data will be
+         * in a pending close state.  Changes between a pending close
+         * and a re-open are expected.
+         * 
+         * @return The zip file of the data.
+         * 
+         * @throws IOException Thrown if the re-open of the zip file failed.
+         * @throws ZipException Thrown if the re-open of the zip file failed.
+         */
+        @Trivial
+        private ZipFile reacquireZipFile() throws IOException, ZipException {
+        	String methodName = "reacquireZipFile";
+
+            File rawZipFile = new File(path);
+            long newZipLength = FileUtils.fileLength(rawZipFile);
+            long newZipLastModified = FileUtils.fileLastModified(rawZipFile);                
+
+            boolean changed = false;
+
+            if ( newZipLength != zipLength ) {                	
+            	changed = true;
+            	
+            	if ( activeOpens > 0 ) {
+            		Tr.warning(tc,
+            			methodName +
+            			"Zip [ " + path + " ]:" +
+            			" Changed length from [ " + Long.valueOf(zipLength) + " ]" +
+            			" to [ " + Long.valueOf(newZipLength) + " ]");
+            	} else {
+            		if ( tc.isDebugEnabled() ) {
+            			Tr.debug(tc,
+                    	    methodName +
+                    	    "Zip [ " + path + " ]:" +
+                    	    " Changed length from [ " + Long.valueOf(zipLength) + " ]" +
+                    	    " to [ " + Long.valueOf(newZipLength) + " ]");
+            		}
+                }
+            }
+
+            if ( newZipLastModified != zipLastModified ) {
+            	changed = true;
+
+            	if ( activeOpens > 0 ) {
+            		Tr.warning(tc,
+            			methodName +
+                    	"Zip [ " + path + " ]:" +
+                    	" Changed last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
+                    	" to [ " + Long.valueOf(newZipLastModified) + " ]");
+            	} else {
+            		if ( tc.isDebugEnabled() ) {
+            			Tr.debug(tc,
+            				methodName +
+            				"Zip [ " + path + " ]:" +
+            				" Changed last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
+            				" to [ " + Long.valueOf(newZipLastModified) + " ]");
+            		}
+                }
+            }
+
+            if ( changed ) {
+                zipFile = ZipFileUtils.openZipFile(path); // throws IOException, ZipException
+                zipLength = newZipLength;
+                zipLastModified = newZipLastModified;
+            }
+        	
+            return zipFile;
+        }
+
+        private void recordZipFile() {
+        	String methodName = "recordZipFile";
+        
+            File rawZipFile = new File(path);
+            zipLength = FileUtils.fileLength(rawZipFile);
+            zipLastModified = FileUtils.fileLastModified(rawZipFile);
+            
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc,
+                	methodName +
+                	" Path [ " + path + " ]" +
+                	" Length [ " + Long.valueOf(zipLength) + " ]" +
+                	" Last modified [ " + Long.valueOf(zipLastModified) + " ]");
+            }
+        }
+
+        //
 
         private int activeOpens;
 
@@ -1391,18 +1515,24 @@ public class ZipFileReaper {
                     Tr.debug(tc, methodName + "New [ " + path + " ]: Open and create data");
                 }
 
-                zipFile = ZipFileUtils.openZipFile(path); // throws IOException, ZipException
-                data = new ZipFileData(path, zipFile, getInitialAt(), openAt);
+                data = new ZipFileData( path, getInitialAt(), openAt ); // throws IOException, ZipException
+
+                zipFile = data.getZipFile();
+
                 put(path, data);
 
             } else if ( data.getIsClosePending() ) { // activeOpens == 0; zipFile != null
                 if ( tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + "Pending [ " + path + " ]: Unpend close; retrieve prior open");
                 }
+
+                zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+
                 removePending(path);
+                
                 data.unpendClose(openAt);
                 data.addActiveOpen();
-                zipFile = data.getZipFile();
+
                 // The reaper thread might wake up early now!  That is OK:
                 // The reaper tolerates changes to the pending closes collection.
 
@@ -1410,15 +1540,19 @@ public class ZipFileReaper {
                 if ( tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + "Open [ " + path + " ]: Retrieve prior open");
                 }
+
+                // Safety check: A change to the zip file is not expected.
+
+                zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+
                 data.addActiveOpen();
-                zipFile = data.getZipFile();
 
             } else {
                 if ( tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + "Closed [ " + path + " ]: Re-open and store");
                 }
-                zipFile = ZipFileUtils.openZipFile(path); // throws IOException, ZipException
-                data.reopen(zipFile, openAt);
+
+                zipFile = data.reopen(openAt); // throws IOException, ZipException
             }
 
             return zipFile;
