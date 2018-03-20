@@ -65,6 +65,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "httpSession")
     private HttpSession httpSession;
 
+    @XmlElement(name = "httpSessionCache")
+    private ConfigElementList<HttpSessionCache> httpSessionCaches;
+
     @XmlElement(name = "httpSessionDatabase")
     private HttpSessionDatabase httpSessionDatabase;
 
@@ -423,6 +426,15 @@ public class ServerConfiguration implements Cloneable {
     }
 
     /**
+     * @return the list of httpSesssionCache configuration elements
+     */
+    public ConfigElementList<HttpSessionCache> getHttpSessionCaches() {
+        if (this.httpSessionCaches == null)
+            this.httpSessionCaches = new ConfigElementList<HttpSessionCache>();
+        return this.httpSessionCaches;
+    }
+
+    /**
      * @return the HTTP session manager database configuration for this server
      */
     public HttpSessionDatabase getHttpSessionDatabase() {
@@ -659,7 +671,7 @@ public class ServerConfiguration implements Cloneable {
      * Removes all applications with a specific name
      *
      * @param name
-     *                 the name of the applications to remove
+     *            the name of the applications to remove
      * @return the removed applications (no longer bound to the server
      *         configuration)
      */
@@ -680,12 +692,12 @@ public class ServerConfiguration implements Cloneable {
      * a specific name if it already exists
      *
      * @param name
-     *                 the name of the application
+     *            the name of the application
      * @param path
-     *                 the fully qualified path to the application archive on the
-     *                 liberty machine
+     *            the fully qualified path to the application archive on the
+     *            liberty machine
      * @param type
-     *                 the type of the application (ear/war/etc)
+     *            the type of the application (ear/war/etc)
      * @return the deployed application
      */
     public Application addApplication(String name, String path, String type) {
@@ -969,7 +981,7 @@ public class ServerConfiguration implements Cloneable {
      * Finds all of the objects in the given config element that implement the
      * ModifiableConfigElement interface.
      *
-     * @param element                  The config element to check.
+     * @param element The config element to check.
      * @param modifiableConfigElements The list containing all modifiable elements.
      * @throws Exception
      */
