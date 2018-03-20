@@ -137,11 +137,34 @@ public final class URITemplate {
 
     private static String escapeCharacters(String expression) {
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < expression.length(); i++) {
-            char ch = expression.charAt(i);
-            sb.append(isReservedCharacter(ch) ? "\\" + ch : ch);
+        // Liberty Change for CXF Begin
+        int length = expression.length();
+        int i = 0;
+        char ch = ' ';
+        for (; i < length; ++i) {
+            ch = expression.charAt(i);
+            if (isReservedCharacter(ch)) {
+                break;
+            }
         }
+
+        if (i == length) {
+            return expression;
+        }
+
+        StringBuilder sb = new StringBuilder(length + 8);
+        sb.append(expression, 0, i);
+        sb.append('\\');
+        sb.append(ch);
+        ++i;
+        for (; i < length; ++i) {
+            ch = expression.charAt(i);
+            if (isReservedCharacter(ch)) {
+                sb.append('\\');
+            }
+            sb.append(ch);
+        }
+        // Liberty Change for CXF End
         return sb.toString();
     }
 

@@ -847,12 +847,24 @@ public final class ResourceUtils {
                                                       Message m,
                                                       boolean perRequest,
                                                       Map<Class<?>, Object> contextValues) {
-        if (m == null) {
-            m = new MessageImpl();
-        }
+        // Liberty Change for CXF Begin
         Class<?>[] params = c.getParameterTypes();
         Annotation[][] anns = c.getParameterAnnotations();
         Type[] genericTypes = c.getGenericParameterTypes();
+        return createConstructorArguments(c, m, perRequest, contextValues, params, anns, genericTypes);
+    }
+
+    public static Object[] createConstructorArguments(Constructor<?> c,
+                                                      Message m,
+                                                      boolean perRequest,
+                                                      Map<Class<?>, Object> contextValues,
+                                                      Class<?>[] params,
+                                                      Annotation[][] anns,
+                                                      Type[] genericTypes) {
+        if (m == null) {
+            m = new MessageImpl();
+        }
+        // Liberty Change for CXF End
         @SuppressWarnings("unchecked")
         MultivaluedMap<String, String> templateValues =
             (MultivaluedMap<String, String>)m.get(URITemplate.TEMPLATE_PARAMETERS);
