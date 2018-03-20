@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,34 @@ public interface ClassSource_Streamer {
      *             testing the specified class.
      */
     boolean process(String classSourceName,
-                    String className, InputStream inputStream,
-                    ScanPolicy scanPolicy) throws ClassSource_Exception;
+            String className, InputStream inputStream,
+            ScanPolicy scanPolicy) throws ClassSource_Exception;
 
+    //
+
+    /**
+     * <p>Tell if this streamer supports the processing of JANDEX class information.</p>
+     *
+     * @return True or false telling if this streamer supports the processing of JANDEX
+     *     class information.
+     */
+    boolean supportsJandex();
+
+    /**
+     * <p>Process the data for the specified class.</p>
+     *
+     * @param classSourceName The name of the class source which contains the class.
+     * @param className The name of the class to process.
+     * @param jandexClassInfo JANDEX class information for the class.
+     * @param scanPolicy The policy active on the class.
+     * 
+     * @return True if the class was processed. Otherwise, false.
+     * 
+     * @throws ClassSource_Exception Thrown if an error occurred while
+     *             testing the specified class.
+     */
+    boolean process(
+        String classSourceName,
+        org.jboss.jandex.ClassInfo jandexClassInfo,
+        ScanPolicy scanPolicy) throws ClassSource_Exception;
 }

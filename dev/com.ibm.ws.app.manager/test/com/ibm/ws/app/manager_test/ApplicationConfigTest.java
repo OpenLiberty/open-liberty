@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.osgi.framework.Constants;
 
 import com.ibm.websphere.application.ApplicationMBean;
+import com.ibm.ws.app.manager.ApplicationManager;
 import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.internal.ApplicationConfig;
 
@@ -31,7 +32,8 @@ public class ApplicationConfigTest {
         ca.put(AppManagerConstants.LOCATION, "snoop.war");
         ca.put(Constants.SERVICE_PID, pid);
 
-        ApplicationConfig config = new ApplicationConfig(pid, ca);
+        ApplicationManager dummyAppMgr = new ApplicationManager();
+        ApplicationConfig config = new ApplicationConfig(pid, ca, dummyAppMgr);
 
         assertConfig(config, "snoop", "snoop.war", "war", true);
     }
@@ -46,14 +48,17 @@ public class ApplicationConfigTest {
         ca.put(Constants.SERVICE_PID, pid);
         ca.put(AppManagerConstants.AUTO_START, false);
 
-        ApplicationConfig config = new ApplicationConfig(pid, ca);
+        ApplicationManager dummyAppMgr = new ApplicationManager();
+        ApplicationConfig config = new ApplicationConfig(pid, ca, dummyAppMgr);
 
         assertConfig(config, "my name", "snoop.war", "ear", false);
     }
 
     public void testInvalidConfig() {
         String pid = "com.ibm.ws.app.manager.some.unique.id";
-        ApplicationConfig config = new ApplicationConfig(pid, new Hashtable<String, Object>());
+
+        ApplicationManager dummyAppMgr = new ApplicationManager();
+        ApplicationConfig config = new ApplicationConfig(pid, new Hashtable<String, Object>(), dummyAppMgr);
 
         assertFalse("The config is valid when it should be invalid", config.isValid());
     }
@@ -65,7 +70,8 @@ public class ApplicationConfigTest {
         ca.put(AppManagerConstants.LOCATION, "snoop.war");
         ca.put(Constants.SERVICE_PID, pid);
 
-        ApplicationConfig config = new ApplicationConfig(pid, ca);
+        ApplicationManager dummyAppMgr = new ApplicationManager();
+        ApplicationConfig config = new ApplicationConfig(pid, ca, dummyAppMgr);
 
         assertTrue("Config is not valid and it should be", config.isValid());
         assertConfig(config, "snoop", "snoop.war", "war", true);

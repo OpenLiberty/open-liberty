@@ -19,30 +19,35 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainerFactory;
 
 /**
  * Default factory implementation, expandable by new overlay types as needed..
- * <p>
  */
 public class OverlayContainerFactoryImpl implements OverlayContainerFactory, ContainerFactoryHolder {
 
-    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends OverlayContainer> T createOverlay(Class<T> overlayType, ArtifactContainer b) {
+    public <T extends OverlayContainer> T createOverlay(
+    	Class<T> overlayType,
+    	ArtifactContainer baseContainer) {
 
-        //We don't use osgi to find overlay impls, as that's not required for now.
-        //Instead we use a quick if/else block to handle the request.
-        if (overlayType.equals(OverlayContainer.class)) {
-            //we now only support the DirBasedOverlay, the in-memory one has been retired.
-            //the naming and interfaces have been fixed up so that OverlayContainer now offers
-            //the ability of the DirectoryBased one.
-            return (T) new DirectoryBasedOverlayContainerImpl(b, this);
+        // Don't use OSGI to find the overlay implementation.  That is not required for now.
+
+    	// Only support the specific type OverlayContainer.
+    	//
+    	// Only support a directory based implementation.  The previously supported
+    	// in-memory implementation was retired.
+
+        if ( overlayType.equals(OverlayContainer.class) ) {
+            return (T) new DirectoryBasedOverlayContainerImpl(baseContainer, this);
+
+        } else {
+        	return null;
         }
-
-        return null;
     }
 
-    private ArtifactContainerFactory containerFactory = null;
+    private ArtifactContainerFactory containerFactory;
 
-    protected synchronized void activate(ComponentContext ctx) {}
+    protected synchronized void activate(ComponentContext ctx) {
+    	// Empty
+    }
 
     protected synchronized void deactivate(ComponentContext ctx) {
         this.containerFactory = null;
@@ -53,17 +58,16 @@ public class OverlayContainerFactoryImpl implements OverlayContainerFactory, Con
     }
 
     protected synchronized void unsetContainerFactory(ArtifactContainerFactory cf) {
-        if (this.containerFactory == cf) {
+        if ( this.containerFactory == cf ) {
             this.containerFactory = null;
         }
     }
 
     @Override
     public synchronized ArtifactContainerFactory getContainerFactory() {
-        if (containerFactory == null) {
+        if ( containerFactory == null ) {
             throw new IllegalStateException();
         }
         return containerFactory;
     }
-
 }

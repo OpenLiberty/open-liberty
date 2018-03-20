@@ -34,7 +34,6 @@ import com.ibm.wsspi.artifact.ArtifactEntry;
  * overrides.
  */
 public interface OverlayContainer extends ArtifactContainer {
-
     /**
      * Set the location this overlay should use to obtain & store data to.<p>
      * f must exist, must be a directory, and must be writable.<p>
@@ -164,6 +163,8 @@ public interface OverlayContainer extends ArtifactContainer {
      */
     public OverlayContainer getParentOverlay();
 
+    //
+
     /**
      * Stores some data associated with the given container/entry path within
      * non persistent in memory cache associated with this overlay instance.
@@ -172,7 +173,7 @@ public interface OverlayContainer extends ArtifactContainer {
      * @param owner Class of caller setting data, allows multiple adapters to cache against a given path.
      * @param data Data to store for caller.
      */
-    public void addToNonPersistentCache(String path, Class owner, Object data);
+    public void addToNonPersistentCache(String path, Class<?> owner, Object data);
 
     /**
      * Removes some data associated with the given container/entry path within
@@ -181,7 +182,7 @@ public interface OverlayContainer extends ArtifactContainer {
      * @param path Path to associate data with.
      * @param owner Class of caller setting data, allows multiple adapters to cache against a given path.
      */
-    public void removeFromNonPersistentCache(String path, Class owner);
+    public void removeFromNonPersistentCache(String path, Class<?> owner);
 
     /**
      * Obtains some data associated with the given container/entry path within
@@ -191,5 +192,5 @@ public interface OverlayContainer extends ArtifactContainer {
      * @param owner Class of caller getting data, allows multiple adapters to cache against a given path.
      * @returns Cached data if any was held, or null if none was known.
      */
-    public Object getFromNonPersistentCache(String path, Class owner);
+    public Object getFromNonPersistentCache(String path, Class<?> owner);
 }

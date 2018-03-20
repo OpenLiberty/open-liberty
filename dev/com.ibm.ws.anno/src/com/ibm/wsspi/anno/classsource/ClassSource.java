@@ -102,6 +102,13 @@ public interface ClassSource {
      */
     String getCanonicalName();
 
+    /**
+     * Answer the options of the class source.
+     *
+     * @return The options of the class source.
+     */
+    ClassSource_Options getOptions();
+    
     //
 
     // State management ...
