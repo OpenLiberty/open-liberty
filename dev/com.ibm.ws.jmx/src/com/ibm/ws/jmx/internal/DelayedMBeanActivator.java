@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2011
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.jmx.internal;
 
 import java.io.ObjectInputStream;
@@ -123,8 +122,7 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         }
     }
 
-    private void registerMBeanIfDelayed(DelayedMBeanHolder mBeanHolder,
-                                        ObjectName name) throws InstanceNotFoundException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
+    private void registerMBeanIfDelayed(DelayedMBeanHolder mBeanHolder, ObjectName name) throws InstanceNotFoundException, NotCompliantMBeanException, InstanceAlreadyExistsException, MBeanRegistrationException {
         Object mBean = bundleContext.getService(mBeanHolder.getRef());
         if (mBean != null) {
             DelayedMBeanRegistrationState state = mBeanHolder.registrationState.get();
@@ -145,7 +143,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
                         // Should never happen.
                         // TODO: trace?
                     }
-                    mBeanHolder.registrationState.set(registered ? DelayedMBeanRegistrationState.REGISTERED : DelayedMBeanRegistrationState.UNREGISTERED);
+                    mBeanHolder.registrationState.set(registered ?
+                                    DelayedMBeanRegistrationState.REGISTERED : DelayedMBeanRegistrationState.UNREGISTERED);
                     mBeanHolder.processingCompleteSignal.countDown();
                     if (!registered) {
                         final MBeanServerNotificationSupport _notificationSupport = notificationSupport;
@@ -230,7 +229,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     public void addNotificationListener(ObjectName name,
                                         NotificationListener listener,
                                         NotificationFilter filter,
-                                        Object handback) throws InstanceNotFoundException {
+                                        Object handback)
+                    throws InstanceNotFoundException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -246,7 +246,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     @Override
     public void addNotificationListener(ObjectName name, ObjectName listener,
                                         NotificationFilter filter,
-                                        Object handback) throws InstanceNotFoundException {
+                                        Object handback)
+                    throws InstanceNotFoundException {
         try {
             registerMBeanIfDelayed(name);
             registerMBeanIfDelayed(listener);
@@ -261,8 +262,10 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public ObjectInstance createMBean(String className,
-                                      ObjectName name) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException {
+    public ObjectInstance createMBean(String className, ObjectName name)
+                    throws ReflectionException, InstanceAlreadyExistsException,
+                    MBeanRegistrationException, MBeanException,
+                    NotCompliantMBeanException {
         try {
             registerMBeanIfDelayed(name);
         } catch (InstanceNotFoundException e) {
@@ -273,7 +276,10 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
 
     @Override
     public ObjectInstance createMBean(String className, ObjectName name,
-                                      ObjectName loaderName) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException {
+                                      ObjectName loaderName)
+                    throws ReflectionException, InstanceAlreadyExistsException,
+                    MBeanRegistrationException, MBeanException,
+                    NotCompliantMBeanException, InstanceNotFoundException {
         registerMBeanIfDelayed(name);
         registerMBeanIfDelayed(loaderName);
         return super.createMBean(className, name, loaderName);
@@ -281,8 +287,10 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
 
     @Override
     public ObjectInstance createMBean(String className, ObjectName name,
-                                      Object[] params,
-                                      String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException {
+                                      Object[] params, String[] signature)
+                    throws ReflectionException, InstanceAlreadyExistsException,
+                    MBeanRegistrationException, MBeanException,
+                    NotCompliantMBeanException {
         try {
             registerMBeanIfDelayed(name);
         } catch (InstanceNotFoundException e) {
@@ -294,14 +302,18 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     @Override
     public ObjectInstance createMBean(String className, ObjectName name,
                                       ObjectName loaderName, Object[] params,
-                                      String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException {
+                                      String[] signature)
+                    throws ReflectionException, InstanceAlreadyExistsException,
+                    MBeanRegistrationException, MBeanException,
+                    NotCompliantMBeanException, InstanceNotFoundException {
         registerMBeanIfDelayed(name);
         registerMBeanIfDelayed(loaderName);
         return super.createMBean(className, name, loaderName, params, signature);
     }
 
     @Override
-    public ObjectInputStream deserialize(ObjectName name, byte[] data) throws InstanceNotFoundException, OperationsException {
+    public ObjectInputStream deserialize(ObjectName name, byte[] data)
+                    throws InstanceNotFoundException, OperationsException {
         try {
             registerMBeanIfDelayed(name);
         } catch (MBeanRegistrationException e) {
@@ -311,14 +323,17 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public ObjectInputStream deserialize(String className, byte[] data) throws OperationsException, ReflectionException {
+    public ObjectInputStream deserialize(String className, byte[] data)
+                    throws OperationsException, ReflectionException {
         registerDelayedMBeans();
         return super.deserialize(className, data);
     }
 
     @Override
     public ObjectInputStream deserialize(String className,
-                                         ObjectName loaderName, byte[] data) throws InstanceNotFoundException, OperationsException, ReflectionException {
+                                         ObjectName loaderName, byte[] data)
+                    throws InstanceNotFoundException, OperationsException,
+                    ReflectionException {
         try {
             registerMBeanIfDelayed(loaderName);
         } catch (MBeanRegistrationException e) {
@@ -328,7 +343,9 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public Object getAttribute(ObjectName name, String attribute) throws MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException {
+    public Object getAttribute(ObjectName name, String attribute)
+                    throws MBeanException, AttributeNotFoundException,
+                    InstanceNotFoundException, ReflectionException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -340,7 +357,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public AttributeList getAttributes(ObjectName name, String[] attributes) throws InstanceNotFoundException, ReflectionException {
+    public AttributeList getAttributes(ObjectName name, String[] attributes)
+                    throws InstanceNotFoundException, ReflectionException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -354,7 +372,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public ClassLoader getClassLoader(ObjectName loaderName) throws InstanceNotFoundException {
+    public ClassLoader getClassLoader(ObjectName loaderName)
+                    throws InstanceNotFoundException {
         try {
             registerMBeanIfDelayed(loaderName);
         } catch (NotCompliantMBeanException e) {
@@ -368,7 +387,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public ClassLoader getClassLoaderFor(ObjectName mbeanName) throws InstanceNotFoundException {
+    public ClassLoader getClassLoaderFor(ObjectName mbeanName)
+                    throws InstanceNotFoundException {
         try {
             registerMBeanIfDelayed(mbeanName);
         } catch (NotCompliantMBeanException e) {
@@ -405,7 +425,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
         if (!entries.hasNext()) {
             return domains;
         }
-        Set<String> _domains = domains != null ? new HashSet<String>(Arrays.asList(domains)) : new HashSet<String>();
+        Set<String> _domains = domains != null ?
+                        new HashSet<String>(Arrays.asList(domains)) : new HashSet<String>();
         do {
             Entry<ObjectName, DelayedMBeanHolder> entry = entries.next();
             if (entry.getValue().registrationState.get() != DelayedMBeanRegistrationState.UNREGISTERED) {
@@ -437,7 +458,9 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public MBeanInfo getMBeanInfo(ObjectName name) throws InstanceNotFoundException, IntrospectionException, ReflectionException {
+    public MBeanInfo getMBeanInfo(ObjectName name)
+                    throws InstanceNotFoundException, IntrospectionException,
+                    ReflectionException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -451,7 +474,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public ObjectInstance getObjectInstance(ObjectName name) throws InstanceNotFoundException {
+    public ObjectInstance getObjectInstance(ObjectName name)
+                    throws InstanceNotFoundException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -465,13 +489,16 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public Object instantiate(String className) throws ReflectionException, MBeanException {
+    public Object instantiate(String className) throws ReflectionException,
+                    MBeanException {
         registerDelayedMBeans();
         return super.instantiate(className);
     }
 
     @Override
-    public Object instantiate(String className, ObjectName loaderName) throws ReflectionException, MBeanException, InstanceNotFoundException {
+    public Object instantiate(String className, ObjectName loaderName)
+                    throws ReflectionException, MBeanException,
+                    InstanceNotFoundException {
         try {
             registerMBeanIfDelayed(loaderName);
         } catch (NotCompliantMBeanException e) {
@@ -484,14 +511,17 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
 
     @Override
     public Object instantiate(String className, Object[] params,
-                              String[] signature) throws ReflectionException, MBeanException {
+                              String[] signature) throws ReflectionException,
+                    MBeanException {
         registerDelayedMBeans();
         return super.instantiate(className, params, signature);
     }
 
     @Override
     public Object instantiate(String className, ObjectName loaderName,
-                              Object[] params, String[] signature) throws ReflectionException, MBeanException, InstanceNotFoundException {
+                              Object[] params, String[] signature)
+                    throws ReflectionException, MBeanException,
+                    InstanceNotFoundException {
         try {
             registerMBeanIfDelayed(loaderName);
         } catch (NotCompliantMBeanException e) {
@@ -504,7 +534,9 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
 
     @Override
     public Object invoke(ObjectName name, String operationName,
-                         Object[] params, String[] signature) throws InstanceNotFoundException, MBeanException, ReflectionException {
+                         Object[] params, String[] signature)
+                    throws InstanceNotFoundException, MBeanException,
+                    ReflectionException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -516,7 +548,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public boolean isInstanceOf(ObjectName name, String className) throws InstanceNotFoundException {
+    public boolean isInstanceOf(ObjectName name, String className)
+                    throws InstanceNotFoundException {
         DelayedMBeanHolder mBeanHolder = delayedMBeanMap.get(name);
         if (mBeanHolder != null) {
             Object mbeanClassesObj = mBeanHolder.getRef().getProperty(MBEAN_CLASSES);
@@ -654,7 +687,9 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public ObjectInstance registerMBean(Object object, ObjectName name) throws InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
+    public ObjectInstance registerMBean(Object object, ObjectName name)
+                    throws InstanceAlreadyExistsException, MBeanRegistrationException,
+                    NotCompliantMBeanException {
         try {
             registerMBeanIfDelayed(name);
         } catch (InstanceNotFoundException e) {
@@ -664,7 +699,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public void removeNotificationListener(ObjectName name, ObjectName listener) throws InstanceNotFoundException, ListenerNotFoundException {
+    public void removeNotificationListener(ObjectName name, ObjectName listener)
+                    throws InstanceNotFoundException, ListenerNotFoundException {
         try {
             registerMBeanIfDelayed(name);
             registerMBeanIfDelayed(listener);
@@ -680,7 +716,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
 
     @Override
     public void removeNotificationListener(ObjectName name,
-                                           NotificationListener listener) throws InstanceNotFoundException, ListenerNotFoundException {
+                                           NotificationListener listener)
+                    throws InstanceNotFoundException, ListenerNotFoundException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -697,7 +734,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     public void removeNotificationListener(ObjectName name,
                                            ObjectName listener,
                                            NotificationFilter filter,
-                                           Object handback) throws InstanceNotFoundException, ListenerNotFoundException {
+                                           Object handback)
+                    throws InstanceNotFoundException, ListenerNotFoundException {
         try {
             registerMBeanIfDelayed(name);
             registerMBeanIfDelayed(listener);
@@ -715,7 +753,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     public void removeNotificationListener(ObjectName name,
                                            NotificationListener listener,
                                            NotificationFilter filter,
-                                           Object handback) throws InstanceNotFoundException, ListenerNotFoundException {
+                                           Object handback)
+                    throws InstanceNotFoundException, ListenerNotFoundException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -729,8 +768,9 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public void setAttribute(ObjectName name,
-                             Attribute attribute) throws InstanceNotFoundException, AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
+    public void setAttribute(ObjectName name, Attribute attribute)
+                    throws InstanceNotFoundException, AttributeNotFoundException,
+                    InvalidAttributeValueException, MBeanException, ReflectionException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -742,7 +782,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public AttributeList setAttributes(ObjectName name, AttributeList attributes) throws InstanceNotFoundException, ReflectionException {
+    public AttributeList setAttributes(ObjectName name, AttributeList attributes)
+                    throws InstanceNotFoundException, ReflectionException {
         try {
             registerMBeanIfDelayed(name);
         } catch (NotCompliantMBeanException e) {
@@ -756,7 +797,8 @@ final class DelayedMBeanActivator extends MBeanServerForwarderDelegate implement
     }
 
     @Override
-    public void unregisterMBean(ObjectName name) throws InstanceNotFoundException, MBeanRegistrationException {
+    public void unregisterMBean(ObjectName name)
+                    throws InstanceNotFoundException, MBeanRegistrationException {
         if (!unregisterMBeanIfDelayed(name)) {
             super.unregisterMBean(name);
         }
