@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.Pair;
 
 /*
@@ -156,10 +157,10 @@ public class CollectorJsonUtils {
                     CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
                 }
             }
+        }
 
-            if (tags != null) {
-                addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
-            }
+        if (tags != null) {
+            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
         }
 
         sb.append("}");
@@ -173,6 +174,8 @@ public class CollectorJsonUtils {
         GenericData genData = (GenericData) event;
         StringBuilder sb = null;
         ArrayList<Pair> pairs = genData.getPairs();
+        ArrayList<KeyValuePair> extensions = null;
+        KeyValuePairList kvpl = null;
         KeyValuePair kvp = null;
         String key = null;
 
@@ -222,6 +225,23 @@ public class CollectorJsonUtils {
                         value = kvp.getStringValue();
                     }
                     CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
+                }
+            } else if (p instanceof KeyValuePairList) {
+                kvpl = (KeyValuePairList) p;
+                if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
+                    extensions = kvpl.getKeyValuePairs();
+                    boolean isExtQuoteless = false;
+                    for (KeyValuePair k : extensions) {
+                        String extKey = k.getKey();
+                        String extValue = k.getValue();
+                        // Checking the value of the extension KeyValuePair to make sure the suffix is correct
+                        boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(k);
+                        if (isValidExt) {
+                            isExtQuoteless = CollectorJsonHelpers.checkIfExtIsQuoteless(extKey);
+                            extKey = LogFieldConstants.EXT_PREFIX + extKey;
+                            CollectorJsonHelpers.addToJSON(sb, extKey, extValue, false, true, false, false, isExtQuoteless);
+                        }
+                    }
                 }
             }
         }

@@ -27,6 +27,13 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   
+  <servlet id="ExtensionServlet">
+    <servlet-name>ExtensionServlet</servlet-name>
+    <display-name>ExtensionServlet</display-name>
+    <servlet-class>com.ibm.logs.ExtensionServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
   <!-- SERVLET MAPPINGS -->        
   <servlet-mapping id="ServletMapping_Default">
     <servlet-name>Logstash Servlet</servlet-name>
@@ -41,6 +48,11 @@
   <servlet-mapping id="TraceServlet">
     <servlet-name>TraceServlet</servlet-name>
     <url-pattern>/TraceURL</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="ExtensionServlet">
+    <servlet-name>ExtensionServlet</servlet-name>
+    <url-pattern>/ExtURL</url-pattern>
   </servlet-mapping>
 
 </web-app>
