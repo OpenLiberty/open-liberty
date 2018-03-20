@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.logging.internal.osgi;
 
+import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -168,26 +169,18 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
             } else {
                 // Ensure console doesn't duplicate printing specific message that included in wtoMessages=*
             		if(routeAllMsgsToTheseLogHandlers != null) {
-            			String defaultStr = null;
-            			if(logHandlerIds.contains("DEFAULT")) {
-            				defaultStr = "DEFAULT";
-            			}else if(logHandlerIds.contains("+DEFAULT")) {
-            				defaultStr = "+DEFAULT";
-            			}else if(logHandlerIds.contains("-DEFAULT")) {
-            				defaultStr = "-DEFAULT";
-            			}
-            			
             			if(!logHandlerIds.equals(routeAllMsgsToTheseLogHandlers)) {
-            				logHandlerIds.removeAll(routeAllMsgsToTheseLogHandlers); // filter different msgIDs
-            				
-            				if(defaultStr!=null) {
-            					logHandlerIds.add(defaultStr);	// Add "(+/-/ )DEFAULT" because seems like both 
-            													// logHandlerIds & routeAllMsgsToTheseLogHandlers contains it,
-            													// and it gets removed as "duplicated" message, which caused test failure
-            													// Route to all LogHandlers in the wsLogHandlerService ConcurrentMap.
-            				}
-
-                        return routeToAll(routedMessage, logHandlerIds);
+	            			Set<String> tempLogHandlerIds = new HashSet<String>();
+	            			
+	            			for(String id : logHandlerIds) {
+	            				if(id.equals("DEFAULT") || id.equals("-DEFAULT") || id.equals("+DEFAULT")) {
+	            					tempLogHandlerIds.add(id);
+	            					continue;
+	            				}else if(!routeAllMsgsToTheseLogHandlers.contains(id) ) {
+	            					tempLogHandlerIds.add(id);
+	            				}
+	            			}
+	            			return routeToAll(routedMessage, tempLogHandlerIds);
             			}else {
             				return true;
             			}
