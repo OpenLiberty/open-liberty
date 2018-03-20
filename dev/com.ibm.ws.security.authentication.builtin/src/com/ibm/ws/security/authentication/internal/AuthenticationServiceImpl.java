@@ -319,7 +319,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 subject = findSubjectByTokenContents(authCacheService, jwtSSOToken, null, authenticationData);
             } else if (ssoToken != null) {
                 String oid = (String) authenticationData.get(AuthenticationData.AUTHENTICATION_MECH_OID);
-                if (oid != null && oid.equals(LTPA_OID)) {
+                if (oid == null || oid.equals(LTPA_OID)) {
                     subject = findSubjectByTokenContents(authCacheService, ssoToken, null, authenticationData);
                 }
             } else {
@@ -351,16 +351,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Subject findSubjectByTokenContents(AuthCacheService authCacheService, String token, byte[] ssoTokenBytes,
                                                AuthenticationData authenticationData) throws AuthenticationException {
         Subject subject = null;
+        String oid = (String) authenticationData.get(AuthenticationData.AUTHENTICATION_MECH_OID);
         if (token != null) {
-            subject = authCacheService.getSubject(token);
+            if (oid == null || oid.equals(LTPA_OID)) {
+                subject = authCacheService.getSubject(token);
+            } else if (oid != null && oid.equals(JWT_OID)) {
+                String cacheKey = JwtSSOTokenHelper.getCacheKeyForJwtSSOToken(subject, token);
+                subject = authCacheService.getSubject(cacheKey);
+            }
         }
         if (subject == null && ssoTokenBytes != null) {
             subject = authCacheService.getSubject(ssoTokenBytes);
         }
         if (subject == null) {
             String customCacheKey = null;
-            String oid = (String) authenticationData.get(AuthenticationData.AUTHENTICATION_MECH_OID);
-            if (oid == null && oid.equals(LTPA_OID)) {
+            if (oid == null || oid.equals(LTPA_OID)) {
                 if (ssoTokenBytes == null && token != null) {
                     ssoTokenBytes = Base64Coder.base64DecodeString(token);
                 }
@@ -370,7 +375,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 customCacheKey = CustomCacheKeyProvider.getCustomCacheKey(authCacheService, ssoTokenBytes, authenticationData);
 
             } else if (oid != null && oid.equals(JWT_OID)) {
-                JwtSSOTokenHelper.getCustomCacheKeyFromJwtSSOToken(token);
+                customCacheKey = JwtSSOTokenHelper.getCustomCacheKeyFromJwtSSOToken(token);
             }
             if (customCacheKey != null) {
                 subject = authCacheService.getSubject(customCacheKey);

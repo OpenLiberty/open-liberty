@@ -74,7 +74,6 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         try {
             Callback[] callbacks = getRequiredCallbacks(callbackHandler);
             byte[] token = ((WSCredTokenCallbackImpl) callbacks[0]).getCredToken();
-            String authMechOid = ((WSAuthMechOidCallbackImpl) callbacks[1]).getAuthMechOid();
             String jwtToken = ((JwtTokenCallback) callbacks[2]).getToken();
             // If we have insufficient data, abstain.
             if (token == null && jwtToken == null) {
@@ -83,7 +82,9 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
 
             setAlreadyProcessed();
 
-            if (authMechOid == null || authMechOid.equals(LTPA_OID)) {
+            if (jwtToken != null) {
+                setUpTemporaryUserSubjectForJsonWebToken(jwtToken);
+            } else {
                 byte[] credToken = AuthenticationHelper.copyCredToken(token);
                 TokenManager tokenManager = getTokenManager();
                 recreatedToken = tokenManager.recreateTokenFromBytes(credToken);
@@ -93,13 +94,12 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
                 } else {
                     setUpTemporaryUserSubject();
                 }
-            } else if (authMechOid.equals(JWT_OID) && jwtToken != null) {
-                setUpTemporaryUserSubjectForJsonWebToken(jwtToken);
-
             }
             updateSharedState();
             return true;
-        } catch (InvalidTokenException e) {
+        } catch (
+
+        InvalidTokenException e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
         } catch (TokenExpiredException e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);

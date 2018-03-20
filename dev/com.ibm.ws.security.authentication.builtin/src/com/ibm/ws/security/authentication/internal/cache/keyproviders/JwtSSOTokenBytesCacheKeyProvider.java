@@ -17,7 +17,7 @@ import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 
 /**
- * Provides the SSO token bytes as the cache key.
+ * Provides the JWT SSO token bytes as the cache key.
  */
 public class JwtSSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
 
@@ -29,6 +29,6 @@ public class JwtSSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
 
     private String getJwtSSOTokenBytes(final Subject subject) {
         String jwtSSOToken = JwtSSOTokenHelper.getJwtSSOToken(subject);
-        return JwtSSOTokenHelper.getCustomCacheKeyFromJwtSSOToken(jwtSSOToken);
+        return JwtSSOTokenHelper.getCacheKeyForJwtSSOToken(subject, jwtSSOToken);
     }
 }

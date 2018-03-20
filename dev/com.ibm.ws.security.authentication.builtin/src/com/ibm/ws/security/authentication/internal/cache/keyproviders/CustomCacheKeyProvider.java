@@ -80,35 +80,26 @@ public class CustomCacheKeyProvider implements CacheKeyProvider {
     @FFDCIgnore({ InvalidTokenException.class, TokenExpiredException.class })
     public static String getCustomCacheKey(AuthCacheService authCacheService, byte[] ssoTokenBytes, AuthenticationData authenticationData) throws AuthenticationException {
         String customCacheKey = null;
-        String oid = (String) authenticationData.get(AuthenticationData.AUTHENTICATION_MECH_OID);
-        if (oid == null && oid.equals(LTPA_OID)) {
-            TokenManager tokenManager = CustomCacheKeyProvider.tokenManager.getService();
-            if (tokenManager == null)
-                return null;
-            try {
-                Token recreatedToken = tokenManager.recreateTokenFromBytes(ssoTokenBytes);
-                String[] attrs = recreatedToken.getAttributes(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
-                if (attrs != null && attrs.length > 0) {
-                    customCacheKey = attrs[0];
-                }
-                String[] accessTokens = recreatedToken.getAttributes(OIDC_ACCESS_TOKEN);
-                if (accessTokens != null && accessTokens.length > 0) {
-                    HttpServletRequest req = (HttpServletRequest) authenticationData.get(AuthenticationData.HTTP_SERVLET_REQUEST);
-                    req.setAttribute(OIDC_ACCESS_TOKEN, accessTokens[0]);
-                }
-
-            } catch (InvalidTokenException e) {
-                throw new AuthenticationException(e.getMessage());
-            } catch (TokenExpiredException e) {
-                throw new AuthenticationException(e.getMessage());
+        TokenManager tokenManager = CustomCacheKeyProvider.tokenManager.getService();
+        if (tokenManager == null)
+            return null;
+        try {
+            Token recreatedToken = tokenManager.recreateTokenFromBytes(ssoTokenBytes);
+            String[] attrs = recreatedToken.getAttributes(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
+            if (attrs != null && attrs.length > 0) {
+                customCacheKey = attrs[0];
             }
-        } else if (oid != null && oid.equals(JWT_OID)) {
-            // Need a new method to get the the customCacheKey
-            //JwtSSOTokenHelper.
-            //customCacheKey = "s3eDVtuRqj7kIXsMUnLPDUtrUHPqtAHhAxwWOwTIUtc=";
-//            JwtSSOTokenHelper.getCustomCacheKeyFromJwtSSOToken(token);
-        }
+            String[] accessTokens = recreatedToken.getAttributes(OIDC_ACCESS_TOKEN);
+            if (accessTokens != null && accessTokens.length > 0) {
+                HttpServletRequest req = (HttpServletRequest) authenticationData.get(AuthenticationData.HTTP_SERVLET_REQUEST);
+                req.setAttribute(OIDC_ACCESS_TOKEN, accessTokens[0]);
+            }
 
+        } catch (InvalidTokenException e) {
+            throw new AuthenticationException(e.getMessage());
+        } catch (TokenExpiredException e) {
+            throw new AuthenticationException(e.getMessage());
+        }
         return customCacheKey;
     }
 

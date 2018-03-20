@@ -26,6 +26,7 @@ import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticateApi;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -49,7 +50,6 @@ public class SSOAuthenticator implements WebAuthenticator {
     public final static String REQ_CONTENT_TYPE_NAME = "Content-Type";
     public final static String REQ_CONTENT_TYPE_APP_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private static final String ACCESS_TOKEN = "access_token";
-    private final AuthenticationResult AUTHN_CONTINUE_RESULT = new AuthenticationResult(AuthResult.CONTINUE, "Authentication continue");
     private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
@@ -114,8 +114,7 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         authResult = handleJwtSSO(req, res);
-
-        if (authResult != null && !authResult.equals(AuthResult.CONTINUE)) {
+        if (authResult != null && (authResult.equals(AuthResult.SUCCESS) || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie())) {
             return authResult;
         }
 
@@ -176,7 +175,7 @@ public class SSOAuthenticator implements WebAuthenticator {
             encodedjwtssotoken = getJwtBearerToken(req);
         }
         if (encodedjwtssotoken == null)
-            return AUTHN_CONTINUE_RESULT;
+            return null;
         else
             return authenticateWithJwt(req, res, encodedjwtssotoken);
 
@@ -245,11 +244,6 @@ public class SSOAuthenticator implements WebAuthenticator {
             Subject new_subject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND,
                                                                      authenticationData, null);
             authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject, "jwtToken", null, AuditEvent.OUTCOME_SUCCESS);
-            // if DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER then do not
-            // callSSOCookie
-//            if (addLtpaCookieToResponse(new_subject, taiId)) {
-//                ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res);
-//            }
             ssoCookieHelper.addJwtSsoCookiesToResponse(new_subject, req, res);
         } catch (AuthenticationException e) {
             authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());

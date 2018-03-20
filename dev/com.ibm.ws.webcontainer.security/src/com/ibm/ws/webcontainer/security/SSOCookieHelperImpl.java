@@ -106,13 +106,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      */
     @Override
     public void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
-        // TODO Auto-generated method stub
-        //String cookieByteString =
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
-        // TODO - cache
         if (cookieByteString != null) {
-            //updateCookieCache(cookieBytes, cookieByteString);
-            Cookie ssoCookie = createJwtCookie(req, cookieByteString); //TODO
+            Cookie ssoCookie = createJwtCookie(req, cookieByteString);
             resp.addCookie(ssoCookie);
             isJwtCookie = true;
         }
@@ -120,10 +116,8 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     }
 
     public Cookie createJwtCookie(HttpServletRequest req, String cookieValue) {
-        //String cookieName = JwtSSOTokenHelper.
         Cookie ssoCookie = new Cookie("jwtToken", cookieValue);
         ssoCookie.setMaxAge(-1);
-        //The path has to be "/" so we will not have multiple cookies in the same domain
         ssoCookie.setPath("/");
         ssoCookie.setSecure(config.getSSORequiresSSL());
         ssoCookie.setHttpOnly(config.getHttpOnlyCookies());

@@ -57,7 +57,7 @@ public class SSOAuthenticatorTest {
 
     /**
      * Common set of expectations shared by all the test methods
-     * 
+     *
      */
     @Before
     public void setup() {
@@ -73,6 +73,11 @@ public class SSOAuthenticatorTest {
                 will(returnValue(req));
                 allowing(webRequest).getHttpServletResponse();
                 will(returnValue(resp));
+                allowing(req).getHeader("Authorization");
+                will(returnValue(null));
+                allowing(req).getMethod();
+                will(returnValue("GET"));
+
             }
         });
 
@@ -92,7 +97,7 @@ public class SSOAuthenticatorTest {
     /**
      * Tests that handleSSO() will return null for
      * AuthenticationResult when no Cookie exists
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -138,7 +143,7 @@ public class SSOAuthenticatorTest {
     /**
      * Tests that handleSSO() will return null for
      * AuthenticationResult when no Cookie exists
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -171,7 +176,7 @@ public class SSOAuthenticatorTest {
     /**
      * Tests that handleSSO() will return null for AuthenticationResult
      * when the HTTP session is invalid.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -204,7 +209,7 @@ public class SSOAuthenticatorTest {
     /**
      * Tests that handleSSO() will return null for AuthenticationResult
      * when the HTTP session is invalid.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -243,7 +248,7 @@ public class SSOAuthenticatorTest {
     /**
      * Tests handleSSO() will use the ssoCookieName Cookie
      * to authenticate successfully with AuthenticationService.authenticate()
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -283,7 +288,7 @@ public class SSOAuthenticatorTest {
     /**
      * Tests handleSSO() will use the ssoCookieName Cookie
      * to authenticate successfully with AuthenticationService.authenticate()
-     * 
+     *
      * @throws Exception
      */
     @Test

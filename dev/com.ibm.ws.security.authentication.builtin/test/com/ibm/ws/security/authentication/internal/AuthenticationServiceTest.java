@@ -50,8 +50,6 @@ import org.junit.rules.TestName;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
@@ -66,6 +64,8 @@ import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.security.auth.callback.WSCallbackHandlerFactory;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
+
+import test.common.SharedOutputManager;
 
 @SuppressWarnings("unchecked")
 public class AuthenticationServiceTest {
@@ -521,7 +521,6 @@ public class AuthenticationServiceTest {
         });
 
         badAuthData.set(AuthenticationData.TOKEN64, "ABCD");
-
         assertNull("There must not be an authenticated subject",
                    authenticationServiceImpl.authenticate(jaasEntryName, badAuthData, null));
     }
