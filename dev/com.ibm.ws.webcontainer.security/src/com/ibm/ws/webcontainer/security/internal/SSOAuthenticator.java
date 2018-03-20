@@ -49,6 +49,7 @@ public class SSOAuthenticator implements WebAuthenticator {
     public final static String REQ_CONTENT_TYPE_NAME = "Content-Type";
     public final static String REQ_CONTENT_TYPE_APP_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private static final String ACCESS_TOKEN = "access_token";
+    private final AuthenticationResult AUTHN_CONTINUE_RESULT = new AuthenticationResult(AuthResult.CONTINUE, "Authentication continue");
     private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
@@ -113,8 +114,8 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         authResult = handleJwtSSO(req, res);
-        //sso cookie not there, validate problem, then check for fallback
-        if (authResult != null && authResult.equals(AuthResult.SUCCESS)) {
+
+        if (authResult != null && !authResult.equals(AuthResult.CONTINUE)) {
             return authResult;
         }
 
@@ -174,7 +175,10 @@ public class SSOAuthenticator implements WebAuthenticator {
         if (encodedjwtssotoken == null) { //jwt sso cookie is missing, look at the auth header
             encodedjwtssotoken = getJwtBearerToken(req);
         }
-        return authenticateWithJwt(req, res, encodedjwtssotoken);
+        if (encodedjwtssotoken == null)
+            return AUTHN_CONTINUE_RESULT;
+        else
+            return authenticateWithJwt(req, res, encodedjwtssotoken);
 
     }
 
@@ -235,9 +239,7 @@ public class SSOAuthenticator implements WebAuthenticator {
 
     private AuthenticationResult authenticateWithJwt(HttpServletRequest req, HttpServletResponse res, String jwtToken) {
         AuthenticationResult authResult = null;
-        if (jwtToken == null) {
-            return authResult;
-        }
+
         try {
             AuthenticationData authenticationData = createAuthenticationData(req, res, jwtToken, JWT_OID);
             Subject new_subject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND,

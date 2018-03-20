@@ -253,8 +253,9 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                                                        getRealm(customProperties),
                                                        username);
             }
-            setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
+            setWSPrincipal(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
             setCredentials(temporarySubject, username, null);
+            setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
             updateSharedState();
         } catch (Exception e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
@@ -294,8 +295,9 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       userRegistry.getRealm(),
                                                       uniqueUserId);
-        setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
+        setWSPrincipal(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
         setCredentials(temporarySubject, username, urAuthenticatedId);
+        setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
     }
 
     /**

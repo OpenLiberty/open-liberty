@@ -134,8 +134,9 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         temporarySubject = new Subject();
         temporarySubject.getPrivateCredentials().add(recreatedToken);
         String securityName = AccessIdUtil.getUniqueId(accessId);
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
+        setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
         setCredentials(temporarySubject, securityName, null);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
     }
 
     /**
@@ -154,8 +155,9 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         UserRegistry ur = getUserRegistry();
         String securityName = ur.getUserSecurityName(AccessIdUtil.getUniqueId(accessId));
         securityName = getSecurityName(securityName, securityName); // Special handling for LDAP under here.
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
+        setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
         setCredentials(temporarySubject, securityName, null);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
     }
 
     private void setUpTemporaryUserSubjectForJsonWebToken(String jwtToken) throws Exception {
@@ -166,8 +168,9 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(temporarySubject, hashtableLoginProperties);
         accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
+        setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
         setCredentials(temporarySubject, securityName, securityName);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
     }
 
     /** {@inheritDoc} */
