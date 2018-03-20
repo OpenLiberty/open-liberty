@@ -88,7 +88,7 @@ public class SpringBootThinUtil {
     private void storeEntry(JarOutputStream thinJar, ZipOutputStream libZip, JarEntry entry) throws IOException, NoSuchAlgorithmException {
         String path = entry.getName();
         // check if entry is dependency jar or application class
-        if (entry.getName().startsWith(springBootLibPath) && !entry.getName().equals(springBootLibPath)) {
+        if (entry.getName().startsWith(springBootLibPath) && !entry.getName().equals(springBootLibPath) && !isEmbeddedContainerImpl(entry)) {
 
             String hash = hash(sourceFatJar, entry);
             String hashPrefix = hash.substring(0, 2);
@@ -107,6 +107,15 @@ public class SpringBootThinUtil {
                 writeEntry(is, thinJar, path);
             }
         }
+    }
+
+    private static boolean isEmbeddedContainerImpl(JarEntry entry) {
+        return isEmbeddedContainerImpl(entry.getName());
+    }
+
+    public static boolean isEmbeddedContainerImpl(String jarName) {
+        String lowerCaseName = jarName.toLowerCase();
+        return (lowerCaseName.endsWith(".jar") && lowerCaseName.contains("tomcat-"));
     }
 
     protected String hash(JarFile jf, ZipEntry entry) throws IOException, NoSuchAlgorithmException {

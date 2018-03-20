@@ -519,7 +519,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             Container libContainer = libEntry.adapt(Container.class);
             if (libContainer != null) {
                 for (Entry entry : libContainer) {
-                    if (entry.getName().toLowerCase().endsWith(".jar") && !entry.getName().contains("tomcat-")) {
+                    if (!SpringBootThinUtil.isEmbeddedContainerImpl(entry.getName())) {
                         String jarEntryName = entry.getName();
                         Container jarContainer = entry.adapt(Container.class);
                         if (jarContainer != null) {
