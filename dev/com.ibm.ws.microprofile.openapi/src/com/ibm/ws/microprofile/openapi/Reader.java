@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.microprofile.openapi.impl.jaxrs2;
+package com.ibm.ws.microprofile.openapi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -74,6 +74,9 @@ import com.ibm.ws.microprofile.openapi.impl.core.util.Json;
 import com.ibm.ws.microprofile.openapi.impl.core.util.ParameterProcessor;
 import com.ibm.ws.microprofile.openapi.impl.core.util.PathUtils;
 import com.ibm.ws.microprofile.openapi.impl.core.util.ReflectionUtils;
+import com.ibm.ws.microprofile.openapi.impl.jaxrs2.OperationParser;
+import com.ibm.ws.microprofile.openapi.impl.jaxrs2.ResolvedParameter;
+import com.ibm.ws.microprofile.openapi.impl.jaxrs2.SecurityParser;
 import com.ibm.ws.microprofile.openapi.impl.jaxrs2.ext.OpenAPIExtension;
 import com.ibm.ws.microprofile.openapi.impl.jaxrs2.ext.OpenAPIExtensions;
 import com.ibm.ws.microprofile.openapi.impl.jaxrs2.util.ReaderUtils;
@@ -211,7 +214,7 @@ public class Reader {
                 });
             }
         }
-        
+
         ExternalDocumentation apiExternalDocs = ReflectionUtils.getAnnotation(cls, ExternalDocumentation.class);
         org.eclipse.microprofile.openapi.annotations.tags.Tag[] apiTags = ReflectionUtils.getRepeatableAnnotationsArray(cls,
                                                                                                                         org.eclipse.microprofile.openapi.annotations.tags.Tag.class);
