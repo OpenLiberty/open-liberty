@@ -101,10 +101,7 @@ public class H2StreamResultManager {
         if (receivedExpectedGoAway) {
             //calling this here to make sure we add the expected GoAway to the streamResult so we can compare correctly
             framesListener.receivedFrameGoAway();
-        }
-        //TODO Check if this is the last frame we are expecting
-        //This method my be not so good for performance
-        else if (receivedAllFrames()) {
+        } else if (receivedAllFrames()) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.logp(Level.INFO, CLASS_NAME, "addResponseFrame", "Calling listener's receivedLastFrame " + "sendGoAway: " + receivedExpectedGoAway);
             //if we got an expected GoAway frame, we don't need to send a GoAway frame automatically.
@@ -295,6 +292,11 @@ public class H2StreamResultManager {
     }
 
     public boolean receivedAllFrames() {
+        if (h2Connection.getWaitingForACK().get()) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.logp(Level.INFO, CLASS_NAME, "receivedAllFrames", "All frames not received: still waiting for SETTINGS frame with ACK set");
+            return false;
+        }
         Set<Integer> streamIds = streamHashtable.keySet();
         for (Integer streamId : streamIds) {
             if (lookupStreamResult(streamId).getStreamId() != 0 && !lookupStreamResult(streamId).receivedEndOfStreamOrRstStream()

@@ -157,46 +157,28 @@ public class H2StreamProcessor {
      * Complete the connection preface. At this point, we should have received the client connection preface string.
      * Now we need to make sure that the client sent a settings frame along with the preface, update our settings,
      * and send an empty settings frame in response to the client preface.
+     *
+     * @throws StreamClosedException
+     * @throws ProtocolException
      */
-    protected void completeConnectionPreface() {
+    protected void completeConnectionPreface() throws ProtocolException, StreamClosedException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "completeConnectionPreface entry: about to send SETTINGS frame to ACK receipt of MAGIC");
         }
-
+        FrameSettings settings;
         // send out a settings frame with any HTTP2 settings that the user may have changed
         if (Constants.SPEC_INITIAL_WINDOW_SIZE != this.streamReadWindowSize) {
-            currentFrame = new FrameSettings(0, -1, -1, -1, (int) this.streamReadWindowSize, -1, -1, false);
+            settings = new FrameSettings(0, -1, -1, -1, (int) this.streamReadWindowSize, -1, -1, false);
         } else {
-            currentFrame = new FrameSettings();
+            settings = new FrameSettings();
         }
         this.frameType = FrameTypes.SETTINGS;
-        try {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "completeConnectionPreface processNextFrame-:  stream: " + myID + " frame type: " + currentFrame.getFrameType().toString() + " direction: "
-                             + Direction.WRITING_OUT
-                             + " H2InboundLink hc: " + muxLink.hashCode());
-            }
+        this.processNextFrame(settings, Direction.WRITING_OUT);
 
-            this.writeFrameSync();
-
-        } catch (FlowControlException e) {
-            // FlowControlException can only occur writing DATA frames
-        }
         if (Constants.SPEC_INITIAL_WINDOW_SIZE != muxLink.maxReadWindowSize) {
             // the user has changed the max connection read window, so we'll update that now
-            currentFrame = new FrameWindowUpdate(0, (int) muxLink.maxReadWindowSize, false);
-            try {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "completeConnectionPreface processNextFrame-:  stream: " + myID + " frame type: " + currentFrame.getFrameType().toString() + " direction: "
-                                 + Direction.WRITING_OUT
-                                 + " H2InboundLink hc: " + muxLink.hashCode());
-                }
-
-                this.writeFrameSync();
-
-            } catch (FlowControlException e) {
-                // FlowControlException can only occur writing DATA frames
-            }
+            FrameWindowUpdate wup = new FrameWindowUpdate(0, (int) muxLink.maxReadWindowSize, false);
+            this.processNextFrame(wup, Direction.WRITING_OUT);
         }
     }
 
@@ -1584,7 +1566,10 @@ public class H2StreamProcessor {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "new thread calling h2HttpInboundLinkWrap.ready(...): stream id:" + myID);
             }
-            h2HttpInboundLinkWrap.ready(this.h2HttpInboundLinkWrap.vc);
+            boolean closing = muxLink.checkIfGoAwaySendingOrClosing();
+            if (!closing) {
+                h2HttpInboundLinkWrap.ready(this.h2HttpInboundLinkWrap.vc);
+            }
             headersCompleted = false;
         }
     }
