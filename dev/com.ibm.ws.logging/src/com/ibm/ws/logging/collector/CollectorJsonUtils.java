@@ -95,15 +95,15 @@ public class CollectorJsonUtils {
         /* Common fields for all event types */
         StringBuilder sb = CollectorJsonHelpers.startGCJson(hostName, wlpUserDir, serverName);
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(hcGCData.getTime());
-        CollectorJsonHelpers.addToJSON(sb, "datetime", datetime, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "sequence", sequenceNum, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.DATETIME, datetime, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.SEQUENCE, sequenceNum, false, false, false, false);
         /* GC specific fields */
-        CollectorJsonHelpers.addToJSON(sb, "heap", String.valueOf((long) hcGCData.getHeap()), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "usedHeap", String.valueOf((long) hcGCData.getUsage()), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "maxHeap", String.valueOf(hcGCData.getMaxHeap()), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "duration", String.valueOf((long) hcGCData.getDuration() * 1000), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "gcType", hcGCData.getType(), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, "reason", hcGCData.getReason(), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.HEAP, String.valueOf((long) hcGCData.getHeap()), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.USED_HEAP, String.valueOf((long) hcGCData.getUsage()), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.MAX_HEAP, String.valueOf(hcGCData.getMaxHeap()), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.DURATION, String.valueOf((long) hcGCData.getDuration() * 1000), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.GC_TYPE, hcGCData.getType(), false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.REASON, hcGCData.getReason(), false, false, false, false);
 
         if (tags != null) {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
@@ -323,7 +323,7 @@ public class CollectorJsonUtils {
                     String jsonQueryString = kvp.getStringValue();
                     if (jsonQueryString != null) {
                         try {
-                            jsonQueryString = URLDecoder.decode(jsonQueryString, "UTF-8");
+                            jsonQueryString = URLDecoder.decode(jsonQueryString, LogFieldConstants.UTF_8);
                         } catch (UnsupportedEncodingException e) {
                             // ignore, use the original value;
                         }
