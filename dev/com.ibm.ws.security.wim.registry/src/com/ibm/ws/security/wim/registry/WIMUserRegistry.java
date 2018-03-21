@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -188,14 +188,15 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
             String returnValue = loginBridge.mapCertificate(inputCertificate);
             return returnValue;
         } catch (Exception excp) {
-            if (excp instanceof CertificateMapFailedException)
-                throw (CertificateMapFailedException) excp.getCause();
-
-            else if (excp instanceof RegistryException)
+            if (excp instanceof CertificateMapFailedException) {
+                throw (CertificateMapFailedException) excp;
+            } else if (excp instanceof CertificateMapNotSupportedException) {
+                throw (CertificateMapNotSupportedException) excp;
+            } else if (excp instanceof RegistryException) {
                 throw (RegistryException) excp;
-
-            else
+            } else {
                 throw new RegistryException(excp.getMessage(), excp);
+            }
         }
     }
 

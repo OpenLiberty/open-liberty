@@ -15,15 +15,15 @@ configurations {
 }
 
 dependencies {
-  johnzon 'org.apache.johnzon:johnzon-core:1.1.0',
-    'org.apache.johnzon:johnzon-jsonb:1.1.0',
-    'org.apache.johnzon:johnzon-mapper:1.1.0'
+  johnzon 'org.apache.johnzon:johnzon-core:1.1.5',
+    'org.apache.johnzon:johnzon-jsonb:1.1.5',
+    'org.apache.johnzon:johnzon-mapper:1.1.5'
   jsonbapi 'javax.json.bind:javax.json.bind-api:1.0'
 }
 
 task addJohnzon(type: Copy) {
   from configurations.johnzon
-  into "${buildDir}/autoFVT/publish/files/johnzon/"
+  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/"
 }
 
 task addJsonBApi(type: Copy) {

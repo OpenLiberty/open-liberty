@@ -11,11 +11,9 @@
 package web.war.mechanisms.rememberme;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.RememberMe;
 
 import web.war.mechanisms.BaseAuthMech;
-
 
 @ApplicationScoped
 @RememberMe

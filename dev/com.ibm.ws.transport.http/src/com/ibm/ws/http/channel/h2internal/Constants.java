@@ -59,4 +59,6 @@ public class Constants {
     public static final long LONG_31BIT_FILTER = 0xFFFFFFFF80000000L;
 
     public static final long INITIAL_CLOSE_TIME = 0;
+
+    protected static final int H2C_UPGRADE_TIMEOUT = 30000;
 }

@@ -21,26 +21,21 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  * <p>This class *must* be named "FATSuite", since the test code is hard coded
  * to look for just that class.</p>
- *
- * <p>See the file "open-liberty/dev/com.ibm.ws.opentracing_fat/generated/autoFVT/src/ant/launch.xml",
- * which has property "filesToFind" coded to "FATSuiteLite.class;FATSuite.class;FATTest.class".</p>
  */
 @RunWith(Suite.class)
 @SuiteClasses({
     TestSpanUtils.class,
     FATOpentracing.class,
-    FATOpentracingHelloWorld.class
+    FATOpentracingHelloWorld.class,
+    FATMPOpenTracing.class,
+    OpentracingTCKLauncher.class
 })
 public class FATSuite implements FATOpentracingConstants {
-    // Logging ...
-
     private static final Class<? extends FATSuite> CLASS = FATSuite.class;
 
     private static void info(String methodName, String text) {
         FATLogging.info(CLASS, methodName, text);
     }
-
-    //
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.tx.beans.RetryBeanB;
-import com.ibm.ws.microprofile.faulttolerance_fat.tx.beans.RetryBeanB2;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
 import componenttest.app.FATServlet;
@@ -34,9 +33,6 @@ public class RetryServlet extends FATServlet {
 
     @Inject
     RetryBeanB beanB;
-
-    @Inject
-    RetryBeanB2 beanB2;
 
     public void testRetryMultiTran(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HashSet<Long> txns = new HashSet<Long>();
@@ -62,10 +58,10 @@ public class RetryServlet extends FATServlet {
         HashSet<Long> txns = new HashSet<Long>();
         //should be retried 3 times as per default
         try {
-            beanB2.connectB(txns);
+            beanB.connectB(txns);
             throw new AssertionError("Exception not thrown");
         } catch (ConnectException e) {
-            String expected = "ConnectException: RetryBeanB2 Connect: 4";
+            String expected = "ConnectException: RetryBeanB Connect: 4";
             String actual = e.getMessage();
             if (!expected.equals(actual)) {
                 throw new AssertionError("Expected: " + expected + ", Actual: " + actual);

@@ -1,0 +1,22 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.session.cache/resources/com/ibm/ws/session/store/cache/resources/WASSessionCache.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# The range SESN0300 - SESN0350 has been reserved for use in this file
+
+INCORRECT_URI_SYNTAX=SESN0300E: Invalid syntax in httpSessionCache URI.  Cause is {0}.
+INCORRECT_URI_SYNTAX.explanation=The syntax of the specified httpSessionCache JCache configuration URI is invalid.
+INCORRECT_URI_SYNTAX.useraction=Correct the syntax of the specified httpSessionCache configuration URI.

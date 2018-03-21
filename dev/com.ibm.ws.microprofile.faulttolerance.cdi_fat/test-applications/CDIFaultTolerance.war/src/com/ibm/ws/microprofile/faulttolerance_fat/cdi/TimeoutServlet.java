@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,8 +56,8 @@ public class TimeoutServlet extends FATServlet {
             //expected!
             long timeout = System.currentTimeMillis();
             long duration = timeout - start;
-            if (duration > 2000) { //the default timeout is 1000ms, if it takes 2000ms to fail then there is something wrong
-                throw new AssertionError("TimeoutException not thrown quickly enough: " + timeout);
+            if (duration > 3000) { //the default timeout is 1000ms, if it takes 3000ms to fail then there is something wrong
+                throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
             }
         } catch (ConnectException e) {
             throw new ServletException(e);
@@ -172,7 +172,7 @@ public class TimeoutServlet extends FATServlet {
             long timeout = System.currentTimeMillis();
             long duration = timeout - start;
             if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
-                throw new AssertionError("TimeoutException not thrown quickly enough: " + timeout);
+                throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
             }
         } catch (ConnectException e) {
             throw new ServletException(e);
@@ -200,7 +200,7 @@ public class TimeoutServlet extends FATServlet {
             long timeout = System.currentTimeMillis();
             long duration = timeout - start;
             if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
-                throw new AssertionError("TimeoutException not thrown quickly enough: " + timeout);
+                throw new AssertionError("TimeoutException not thrown quickly enough: " + duration);
             }
         } catch (ConnectException e) {
             throw new ServletException(e);

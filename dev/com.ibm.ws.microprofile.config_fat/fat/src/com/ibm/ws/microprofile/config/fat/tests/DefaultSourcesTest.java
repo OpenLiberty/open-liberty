@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016 IBM Corporation and others.
+* Copyright (c) 2016, 2018 IBM Corporation and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -13,42 +13,42 @@ package com.ibm.ws.microprofile.config.fat.tests;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.appConfig.defaultSources.tests.DefaultSourcesTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11EE7;
 import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig12EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  *
  */
-public class DefaultSourcesTest extends AbstractConfigApiTest {
+@RunWith(FATRunner.class)
+public class DefaultSourcesTest extends FATServletClient {
 
-    private final static String testClassName = "DefaultSourcesTest";
+    public static final String APP_NAME = "defaultSources";
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(RepeatConfig11EE7.INSTANCE).andWith(RepeatConfig12EE8.INSTANCE);
+    @Server("SimpleConfigSourcesServer")
+    @TestServlet(servlet = DefaultSourcesTestServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server;
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("SimpleConfigSourcesServer");
-
-    @BuildShrinkWrap
-    public static Archive buildApp() {
-        String APP_NAME = "defaultSources";
-
+    @BeforeClass
+    public static void setUp() throws Exception {
         JavaArchive testAppUtils = SharedShrinkWrapApps.getTestAppUtilsJar();
 
         JavaArchive defaultSources_jar = ShrinkWrap.create(JavaArchive.class, APP_NAME + ".jar")
@@ -95,109 +95,19 @@ public class DefaultSourcesTest extends AbstractConfigApiTest {
                         .addAsModule(warVisibility_war)
                         .addAsLibrary(earlib_jar);
 
-        return defaultSources_ear;
+        ShrinkHelper.exportDropinAppToServer(server, defaultSources_ear);
+
+        server.startServer();
     }
 
-    public DefaultSourcesTest() {
-        super("/defaultSources/");
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
-    @Rule
-    public TestName testName = new TestName();
-
-    /**
-     * Test that a simple config loads from the default locations
-     * no provided files so config should just be process environment
-     * variables, System.properties and WAS files.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void defaultsGetConfig() throws Exception {
-        test(testName);
-    }
-
-    @Test
-    public void defaultsGetBuilderWithDefaults() throws Exception {
-        test(testName);
-    }
-
-    /**
-     * Tests that we can get a builder that will not include the default sources
-     *
-     * @throws Exception
-     */
-    @Test
-    public void defaultsGetEmptyBuilderNoDefaults() throws Exception {
-        test(testName);
-    }
-
-    /**
-     * Tests that a config source can be loaded from within a jar
-     */
-    @Test
-    public void defaultsGetConfigPathJar() throws Exception {
-        test(testName);
-    }
-
-    /**
-     * Tests that a config source can be loaded from within a war
-     */
-    @Test
-    public void defaultsGetConfigPathWar() throws Exception {
-        test(testName);
-    }
-
-    /**
-     * Tests that a config source can be loaded from all
-     * valid places within a ear
-     */
-    @Test
-    public void defaultsGetConfigPathEar() throws Exception {
-        test(testName);
-    }
-
-    /**
-     * Test that the microprofile-config.properties files are sourced ok
-     *
-     * @throws Exception
-     */
-    @Test
-    public void defaultsGetConfigProperties() throws Exception {
-        test(testName);
-    }
-
-    /**
-     * Test that the WAS server level *.xml, *.properties and *.env files are sourced
-     *
-     * @throws Exception
-     */
-    @Test
-    public void defaultsGetConfigWasSpecific() throws Exception {
-        test(testName);
-    }
-
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    public void defaultsGetConfigPathSysProps() throws Exception {
-        test(testName);
-    }
-
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    public void defaultsGetConfigPathProcEnv() throws Exception {
-        test(testName);
-    }
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .with(new RepeatConfig11EE7("SimpleConfigSourcesServer"))
+                    .andWith(new RepeatConfig12EE8("SimpleConfigSourcesServer"));
 
 }

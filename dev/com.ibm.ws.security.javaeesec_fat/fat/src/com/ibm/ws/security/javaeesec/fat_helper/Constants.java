@@ -93,6 +93,8 @@ public class Constants {
     // Jaspi test users
     public final static String javaeesec_basicRoleGroup = "group1";
     public final static String javaeesec_basicRoleUser = "jaspiuser1";
+    public final static String javaeesec_basicRoleUser_requestscoped = "jaspiuser1_requestscoped";
+    public final static String javaeesec_basicRoleUser_sessionscoped = "jaspiuser1_sessionscoped";
     public final static String javaeesec_basicRoleLDAPUser = "jaspildapuser1";
     public final static String javaeesec_basicRolePwd = "s3cur1ty";
     public final static String javaeesec_basicRoleGroupUser = "jaspiuser2";
@@ -183,4 +185,7 @@ public class Constants {
     public final static String DB_GROUP2 = "group2";
     public final static String DB_GROUP3 = "group3";
     public final static String DB_USER_NOPWD = "userNoPwd";
+    public final static String DB_CUSTOM_PWD1 = "blue1";
+    public final static String DB_CUSTOM_HASH = "_CUSTOM";
+    public final static String DB_CUSTOM_PWD1_HASH = "blue1" + DB_CUSTOM_HASH;
 }

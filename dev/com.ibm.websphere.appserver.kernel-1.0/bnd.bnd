@@ -77,7 +77,6 @@
 	com.ibm.ws.crypto.certificateutil,\
 	com.ibm.ws.crypto.ltpakeyutil,\
 	com.ibm.ws.jmx.scripting.client,\
-	com.ibm.ws.kernel.boot.archive,\
 	com.ibm.ws.kernel.boot.ws-launch,\
 	com.ibm.ws.kernel.cmdline,\
 	com.ibm.ws.kernel.feature.featurelist,\

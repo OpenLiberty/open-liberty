@@ -11,19 +11,17 @@
 package com.ibm.ws.microprofile.config.fat.suite;
 
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.FeatureReplacementAction;
 
 /**
  *
  */
 public class RepeatConfig12EE8 extends EE8FeatureReplacementAction {
 
-    public static final FeatureReplacementAction INSTANCE = new RepeatConfig12EE8();
-
-    public RepeatConfig12EE8() {
+    public RepeatConfig12EE8(String server) {
         super();
         removeFeature("mpConfig-1.1");
         addFeature("mpConfig-1.2");
+        forServers(server);
     }
 
 }

@@ -12,6 +12,7 @@ package com.ibm.ws.opentracing;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ResourceInfo;
 
 /**
  * Service interface to provide operation names for building spans in filters
@@ -20,5 +21,5 @@ public interface OpentracingFilterHelper {
 
     String getBuildSpanName(ClientRequestContext clientRequestContext);
 
-    String getBuildSpanName(ContainerRequestContext incomingRequestContext);
+    String getBuildSpanName(ContainerRequestContext incomingRequestContext, ResourceInfo resourceInfo);
 }

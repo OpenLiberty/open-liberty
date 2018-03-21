@@ -1,0 +1,3 @@
+Bundle-SymbolicName: springBootCloser
+Private-Package: com.ibm.ws.springboot.support.shutdown.*
+Include-Resource: resources/container

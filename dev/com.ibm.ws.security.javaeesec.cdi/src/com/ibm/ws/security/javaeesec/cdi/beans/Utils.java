@@ -91,6 +91,16 @@ public class Utils {
         return status;
     }
 
+    protected AuthenticationStatus handleAuthenticate(CDI cdi, String realmName, @Sensitive Credential credential, Subject clientSubject,
+                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
+        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+        status = validateCredential(cdi, realmName, clientSubject, credential, httpMessageContext);
+        if (status == AuthenticationStatus.SUCCESS) {
+            httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
+        }
+        return status;
+    }
+
     public AuthenticationStatus validateWithIdentityStore(String realmName, Subject clientSubject, @Sensitive Credential credential, IdentityStoreHandler identityStoreHandler) {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         CredentialValidationResult result = identityStoreHandler.validate(credential);

@@ -29,6 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jmx.PlatformMBeanService;
 import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
 
@@ -50,7 +51,7 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
 
     /**
      * DS method to activate this component.
-     * 
+     *
      * @param compContext
      */
     protected void activate(ComponentContext compContext) {
@@ -67,7 +68,7 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
 
     /**
      * DS method to deactivate this component.
-     * 
+     *
      * @param compContext
      */
     protected void deactivate(ComponentContext compContext) {
@@ -98,7 +99,7 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
                 // TODO: trace, FFDC?
             }
         } else {
-            // REVISIT: "jmx.objectname" was not specified or was not in 
+            // REVISIT: "jmx.objectname" was not specified or was not in
             // the right format. Ignoring this MBean for now since we don't
             // have an ObjectName. Possible that this MBean is a
             // javax.management.MBeanRegistration, do we want to try to
@@ -141,6 +142,7 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
         }
     }
 
+    @FFDCIgnore(InstanceNotFoundException.class)
     private void unsetServiceReferenceInternal(ServiceReference<?> ref) {
         final ObjectName name = mBeanMap.remove(ref);
         if (name != null) {

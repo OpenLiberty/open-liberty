@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -809,7 +809,7 @@ public class LdapConnection {
         if (configProps.containsKey(CONFIG_PROP_SEARCH_PAGE_SIZE)) {
             iPageSize = (int) configProps.get(CONFIG_PROP_SEARCH_PAGE_SIZE);
         } else {
-            if (iLdapConfigMgr.getLdapType().startsWith("MICROSOFT ACTIVE DIRECTORY")) {
+            if (LdapConstants.AD_LDAP_SERVER.equalsIgnoreCase(iLdapConfigMgr.getLdapType())) {
                 iPageSize = 1000;
             }
         }
@@ -819,14 +819,8 @@ public class LdapConnection {
          */
         if (configProps.containsKey(CONFIG_PROP_ATTRIBUTE_RANGE_STEP)) {
             iAttrRangeStep = Integer.parseInt((String) configProps.get(CONFIG_PROP_ATTRIBUTE_RANGE_STEP));
-        } else {
-            if (iLdapConfigMgr.getLdapType().equals("AD2000") || iLdapConfigMgr.getLdapType().equals("ADAM")) {
-                iAttrRangeStep = 1000;
-            } else if (iLdapConfigMgr.getLdapType().startsWith("AD2003")) {
-                iAttrRangeStep = 1500;
-            } else if (iLdapConfigMgr.getLdapType().startsWith("MICROSOFT ACTIVE DIRECTORY")) {
-                iAttrRangeStep = 1000;
-            }
+        } else if (LdapConstants.AD_LDAP_SERVER.equalsIgnoreCase(iLdapConfigMgr.getLdapType())) {
+            iAttrRangeStep = 1000;
         }
 
         iWriteToSecondary = Boolean.getBoolean((String) configProps.get(CONFIG_PROP_ALLOW_WRITE_TO_SECONDARY_SERVERS));

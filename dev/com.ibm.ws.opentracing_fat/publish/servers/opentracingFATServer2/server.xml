@@ -10,4 +10,6 @@
 
   <application location="jaxrsHelloWorld.war" />
 
-</server>
+  <logging traceSpecification="*=info:com.ibm.ws.opentracing*=all:com.ibm.ws.microprofile.opentracing*=all" maxFileSize="100" maxFiles="1" />
+
+ </server>

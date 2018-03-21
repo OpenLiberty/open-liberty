@@ -65,6 +65,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "httpSession")
     private HttpSession httpSession;
 
+    @XmlElement(name = "httpSessionCache")
+    private ConfigElementList<HttpSessionCache> httpSessionCaches;
+
     @XmlElement(name = "httpSessionDatabase")
     private HttpSessionDatabase httpSessionDatabase;
 
@@ -73,6 +76,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "webApplication")
     private ConfigElementList<WebApplication> webApplications;
+
+    @XmlElement(name = "springBootApp")
+    private ConfigElementList<SpringBootApp> springBootApps;
 
     @XmlElement(name = "cloudant")
     private ConfigElementList<Cloudant> cloudants;
@@ -420,6 +426,15 @@ public class ServerConfiguration implements Cloneable {
     }
 
     /**
+     * @return the list of httpSesssionCache configuration elements
+     */
+    public ConfigElementList<HttpSessionCache> getHttpSessionCaches() {
+        if (this.httpSessionCaches == null)
+            this.httpSessionCaches = new ConfigElementList<HttpSessionCache>();
+        return this.httpSessionCaches;
+    }
+
+    /**
      * @return the HTTP session manager database configuration for this server
      */
     public HttpSessionDatabase getHttpSessionDatabase() {
@@ -630,6 +645,16 @@ public class ServerConfiguration implements Cloneable {
             this.webApplications = new ConfigElementList<WebApplication>();
         }
         return this.webApplications;
+    }
+
+    /**
+     * @return explicitly installed Spring Boot applications
+     */
+    public ConfigElementList<SpringBootApp> getSpringBootApps() {
+        if (this.springBootApps == null) {
+            this.springBootApps = new ConfigElementList<SpringBootApp>();
+        }
+        return this.springBootApps;
     }
 
     /**

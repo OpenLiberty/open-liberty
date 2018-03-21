@@ -19,6 +19,8 @@
 
 package org.apache.cxf.jaxrs.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,6 +49,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
@@ -89,6 +92,7 @@ import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.io.ReaderInputStream;
 import org.apache.cxf.jaxrs.JAXRSServiceImpl;
@@ -974,7 +978,7 @@ public final class JAXRSUtils {
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
                 String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
                 String body = FormUtils.readBody(m.getContent(InputStream.class), enc);
-                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, decode);
+                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
                     && MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(mt)) {
@@ -985,6 +989,14 @@ public final class JAXRSUtils {
                     Tr.warning(tc, errorMsg.toString());
                     throw ExceptionUtils.toNotSupportedException(null, null);
                 }
+            }
+        }
+
+        if (decode) {
+            List<String> values = params.get(key);
+            if (values != null) {
+                values = values.stream().map(value -> HttpUtils.urlDecode(value)).collect(Collectors.toList());
+                params.replace(key, values);
             }
         }
 
@@ -1297,6 +1309,13 @@ public final class JAXRSUtils {
         List<MediaType> types = JAXRSUtils.intersectMimeTypes(ori.getConsumeTypes(), contentType);
 
         final ProviderFactory pf = ServerProviderFactory.getInstance(m);
+        // Liberty change start
+        // copy the input stream so that it is not inadvertently closed
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        IOUtils.copy(is, baos);
+        final byte[] copiedBytes = baos.toByteArray();
+        m.setContent(ByteArrayInputStream.class, new ByteArrayInputStream(copiedBytes));
+        // Liberty change end
         for (MediaType type : types) {
             List<ReaderInterceptor> readers = pf.createMessageBodyReaderInterceptor(
                                                                                     targetTypeClass,
@@ -1312,7 +1331,7 @@ public final class JAXRSUtils {
                                                      targetTypeClass,
                                                      parameterType,
                                                      parameterAnnotations,
-                                                     is,
+                                                     new ByteArrayInputStream(copiedBytes), // Liberty change
                                                      type,
                                                      m);
                 } catch (IOException e) {

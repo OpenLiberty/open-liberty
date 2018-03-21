@@ -40,6 +40,7 @@ Export-Package: \
 Import-Package: \
    javax.servlet;version="!", \
    javax.servlet.*;version="!", \
+   com.ibm.ws.security.jwt.utils, \
    *
 
 Private-Package: \

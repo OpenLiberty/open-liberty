@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.ibm.websphere.simplicity.config.ConfigElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 
 /**
  * Configuration for the following nested elements:
@@ -32,6 +33,7 @@ public class LdapEntityType extends ConfigElement {
     private Set<String> objectClasses;
     private Set<String> searchBases;
     private String searchFilter;
+    private ConfigElementList<RdnProperty> rdnProperties; // PRIVATE
 
     public LdapEntityType() {}
 
@@ -61,6 +63,13 @@ public class LdapEntityType extends ConfigElement {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * @return the rdnProperties
+     */
+    public ConfigElementList<RdnProperty> getRdnProperties() {
+        return (rdnProperties == null) ? (rdnProperties = new ConfigElementList<RdnProperty>()) : rdnProperties;
     }
 
     /**
@@ -98,6 +107,14 @@ public class LdapEntityType extends ConfigElement {
     @XmlElement(name = "objectClass")
     public void setObjectClasses(Set<String> objectClasses) {
         this.objectClasses = objectClasses;
+    }
+
+    /**
+     * @param rdnProperties the rdnProperties to set
+     */
+    @XmlElement(name = "rdnProperty")
+    public void setRdnProperties(ConfigElementList<RdnProperty> rdnProperties) {
+        this.rdnProperties = rdnProperties;
     }
 
     /**

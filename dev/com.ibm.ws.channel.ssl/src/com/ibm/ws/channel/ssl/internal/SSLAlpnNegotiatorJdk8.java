@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.channel.ssl.internal;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -47,6 +48,26 @@ public class SSLAlpnNegotiatorJdk8 {
     private final String unknown = "";
     private static boolean grizzlyAlpnPresent = false;
     private static boolean jettyAlpnPresent = false;
+    private static boolean ibmAlpnPresent = false;
+
+    /** IBM JSSE classes to find via reflection */
+    private static Class<?> ibmAlpn;
+
+    static {
+        try {
+            ibmAlpn = ClassLoader.getSystemClassLoader().loadClass("com.ibm.jsse2.ext.ALPNJSSEExt");
+            ibmAlpnPresent = true;
+
+            // invoke ALPNJSSEExt.init()
+            ibmAlpn.getMethod("init").invoke(null);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "com.ibm.jsse2.ext.ALPNJSSEExt was found on the classpath; ALPN is available");
+            }
+        } catch (Throwable t) {
+            // no-op
+        }
+    }
 
     /** jetty-alpn classes to find via reflection */
     private static Class<?> jettyAlpn;
@@ -54,16 +75,18 @@ public class SSLAlpnNegotiatorJdk8 {
     private static Class<?> jettyProviderInterface;
 
     static {
-        try {
-            jettyAlpn = ClassLoader.getSystemClassLoader().loadClass("org.eclipse.jetty.alpn.ALPN");
-            jettyServerProviderInterface = ClassLoader.getSystemClassLoader().loadClass("org.eclipse.jetty.alpn.ALPN$ServerProvider");
-            jettyProviderInterface = ClassLoader.getSystemClassLoader().loadClass("org.eclipse.jetty.alpn.ALPN$Provider");
-            jettyAlpnPresent = true;
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "jetty-alpn module was found on the classpath; ALPN is available");
+        if (!ibmAlpnPresent) {
+            try {
+                jettyAlpn = ClassLoader.getSystemClassLoader().loadClass("org.eclipse.jetty.alpn.ALPN");
+                jettyServerProviderInterface = ClassLoader.getSystemClassLoader().loadClass("org.eclipse.jetty.alpn.ALPN$ServerProvider");
+                jettyProviderInterface = ClassLoader.getSystemClassLoader().loadClass("org.eclipse.jetty.alpn.ALPN$Provider");
+                jettyAlpnPresent = true;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "jetty-alpn module was found on the classpath; ALPN is available");
+                }
+            } catch (Throwable t) {
+                // no-op
             }
-        } catch (Throwable t) {
-            // no-op
         }
     }
 
@@ -74,8 +97,8 @@ public class SSLAlpnNegotiatorJdk8 {
     private static Object grizzlyNegotiationSupportObject;
 
     static {
-        try {
-            if (!jettyAlpnPresent) {
+        if (!jettyAlpnPresent && !ibmAlpnPresent) {
+            try {
                 grizzlyNegotiationSupport = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.NegotiationSupport");
                 grizzlyAlpnServerNegotiator = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.AlpnServerNegotiator");
                 grizzlyAlpnClientNegotiator = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.AlpnClientNegotiator");
@@ -84,14 +107,21 @@ public class SSLAlpnNegotiatorJdk8 {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "grizzly-npn module was found on the classpath; ALPN is available");
                 }
+            } catch (Throwable t) {
+                // no-op
             }
-        } catch (Throwable t) {
-            // no-op
         }
     }
 
     public SSLAlpnNegotiatorJdk8() {
         // no-op
+    }
+
+    /**
+     * @return true if com.ibm.jsse2.ext.ALPNJSSEExt is available
+     */
+    protected boolean isIbmAlpnActive() {
+        return ibmAlpnPresent;
     }
 
     /**
@@ -109,16 +139,90 @@ public class SSLAlpnNegotiatorJdk8 {
     }
 
     /**
-     * If either jetty-alpn or grizzly-npn is present, set up a connection for ALPN
+     * Check for IBM's ALPNJSSEExt, jetty-alpn, and grizzly-npn; if any are present, set up a connection for ALPN.
+     * Order of preference is IBM's ALPNJSSEExt, jetty-alpn, then grizzly-npn.
+     *
+     * @param SSLEngine
+     * @param SSLConnectionLink
+     * @return ThirdPartyAlpnNegotiator used for this connection,
+     *         or null if ALPN is not available or the IBM provider was used
+     */
+    protected ThirdPartyAlpnNegotiator tryToRegisterAlpnNegotiator(SSLEngine engine, SSLConnectionLink link) {
+        if (isIbmAlpnActive()) {
+            registerIbmAlpn(engine);
+        } else if (this.isJettyAlpnActive()) {
+            return registerJettyAlpn(engine, link);
+        } else if (this.isGrizzlyAlpnActive()) {
+            return registerGrizzlyAlpn(engine, link);
+        }
+        return null;
+    }
+
+    /**
+     * If ALPN is active, try to remove the ThirdPartyAlpnNegotiator from the map of active negotiators
+     *
+     * @param ThirdPartyAlpnNegotiator
+     * @param SSLEngine
+     * @param SSLConnectionLink
+     */
+    protected void tryToRemoveAlpnNegotiator(ThirdPartyAlpnNegotiator negotiator, SSLEngine engine, SSLConnectionLink link) {
+        // the IBM JSSE ALPN implementation does not use a negotiator object
+        if (negotiator == null && isIbmAlpnActive()) {
+            getAndRemoveIbmAlpnChoice(engine, link);
+        } else if (negotiator != null && isJettyAlpnActive() && negotiator instanceof JettyServerNegotiator) {
+            ((JettyServerNegotiator) negotiator).removeEngine();
+        } else if (negotiator != null && isGrizzlyAlpnActive() && negotiator instanceof GrizzlyAlpnNegotiator) {
+            ((GrizzlyAlpnNegotiator) negotiator).removeServerNegotiatorEngine();
+        }
+    }
+
+    /**
+     * invoke ALPNJSSEExt.put(SSLEngine, String[] protocols), passing in "h2" and "http/1.1" (in order of preference)
+     *
+     * @param SSLEngine
+     */
+    protected void registerIbmAlpn(SSLEngine engine) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "registerIbmAlpn entry " + engine);
+        }
+        try {
+            Method m = ibmAlpn.getMethod("put", SSLEngine.class, String[].class);
+            // invoke ALPNJSSEExt.put(engine, String[] protocols)
+            String[] protocols = new String[] { h2, h1 };
+            m.invoke(null, engine, protocols);
+
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "registerIbmAlpn exception: " + e);
+            }
+        }
+    }
+
+    /**
+     * Ask the JSSE ALPN provider for the protocol selected for the given SSLEngine, then delete the engine from
+     * the ALPN provider's map. If the selected protocol was "h2", set that as the protocol to use on the given link.
      *
      * @param SSLEngine
      * @param SSLConnectionLink
      */
-    protected void tryToRegisterAlpnNegotiator(SSLEngine engine, SSLConnectionLink link) {
-        if (this.isJettyAlpnActive()) {
-            registerJettyAlpn(engine, link);
-        } else if (this.isGrizzlyAlpnActive()) {
-            registerGrizzlyAlpn(engine, link);
+    protected void getAndRemoveIbmAlpnChoice(SSLEngine engine, SSLConnectionLink link) {
+        if (this.isIbmAlpnActive()) {
+            try {
+                // invoke ALPNJSSEExt.get(engine)
+                Method m = ibmAlpn.getMethod("get", SSLEngine.class);
+                String[] alpnResult = (String[]) m.invoke(null, engine);
+
+                // invoke ALPNJSSEExt.delete(engine)
+                m = ibmAlpn.getMethod("delete", SSLEngine.class);
+                m.invoke(null, engine);
+                if (alpnResult != null && alpnResult.length > 0 && h2.equals(alpnResult[0])) {
+                    link.setAlpnProtocol(h2);
+                }
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "registerIbmAlpn exception: " + e);
+                }
+            }
         }
     }
 
@@ -127,8 +231,9 @@ public class SSLAlpnNegotiatorJdk8 {
      *
      * @param SSLEngine
      * @param SSLConnectionLink
+     * @return GrizzlyAlpnNegotiator or null if ALPN was not set up
      */
-    protected void registerGrizzlyAlpn(SSLEngine engine, SSLConnectionLink link) {
+    protected GrizzlyAlpnNegotiator registerGrizzlyAlpn(SSLEngine engine, SSLConnectionLink link) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "registerGrizzlyAlpn entry " + engine);
@@ -159,12 +264,14 @@ public class SSLAlpnNegotiatorJdk8 {
                                                                                                                               new java.lang.Class[] { grizzlyAlpnClientNegotiator },
                                                                                                                               negotiator) });
                 }
+                return negotiator;
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "registerGrizzlyAlpn grizzly-npn exception: " + e);
                 }
             }
         }
+        return null;
     }
 
     /**
@@ -172,8 +279,9 @@ public class SSLAlpnNegotiatorJdk8 {
      *
      * @param SSLEngine
      * @param SSLConnectionLink
+     * @return JettyServerNegotiator or null if ALPN was not set up
      */
-    protected void registerJettyAlpn(final SSLEngine engine, SSLConnectionLink link) {
+    protected JettyServerNegotiator registerJettyAlpn(final SSLEngine engine, SSLConnectionLink link) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "registerJettyAlpn entry " + engine);
@@ -186,18 +294,24 @@ public class SSLAlpnNegotiatorJdk8 {
                                                                                            jettyServerProviderInterface.getClassLoader(),
                                                                                            new java.lang.Class[] { jettyServerProviderInterface },
                                                                                            negotiator) });
-
+            return negotiator;
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "registerJettyAlpn jetty-alpn exception: " + e);
             }
         }
+        return null;
     }
+
+    /**
+     * Interface for the InvocationHandler ALPN implementations this class defines
+     */
+    public interface ThirdPartyAlpnNegotiator {}
 
     /**
      * Proxy class for jetty-alpn to implement org.eclipse.jetty.alpn.ALPN$ServerProvider
      */
-    public class JettyServerNegotiator implements java.lang.reflect.InvocationHandler {
+    public class JettyServerNegotiator implements InvocationHandler, ThirdPartyAlpnNegotiator {
 
         private final SSLEngine engine;
         private final SSLConnectionLink link;
@@ -283,7 +397,7 @@ public class SSLAlpnNegotiatorJdk8 {
      * Proxy class for grizzly-npn to implement org.glassfish.grizzly.npn.AlpnServerNegotiator and
      * org.glassfish.grizzly.npn.AlpnClientNegotiator
      */
-    public class GrizzlyAlpnNegotiator implements java.lang.reflect.InvocationHandler {
+    public class GrizzlyAlpnNegotiator implements InvocationHandler, ThirdPartyAlpnNegotiator {
 
         private final SSLEngine engine;
         private final SSLConnectionLink link;

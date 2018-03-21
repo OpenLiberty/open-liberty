@@ -83,9 +83,6 @@
       <supportedLdapEntityType name="PersonAccount" searchFilter="(|(ObjectCategory=User)(ObjectClass=User))">
         <objectClass>user</objectClass>
       </supportedLdapEntityType>
-      <groupConfiguration>
-        <memberAttribute name="member" dummyMember="uid=dummy" objectClass="group" scope="direct"/>
-      </groupConfiguration>
       <attributeConfiguration>
       	<attribute defaultValue="544" name="userAccountControl" entityType="PersonAccount" />
       	<attribute name="samAccountName" propertyName="uid" entityType="PersonAccount" />
