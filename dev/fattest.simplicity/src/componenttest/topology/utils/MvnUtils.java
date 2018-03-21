@@ -257,6 +257,7 @@ public class MvnUtils {
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
+        pb.redirectErrorStream(true);
         log("Running command " + Arrays.asList(cmd));
         Process p = pb.start();
         int exitCode = p.waitFor();
@@ -448,7 +449,7 @@ public class MvnUtils {
     /**
      * Return the result of a query on testng-results.xml (usually test methods) filtering out arquillianBefore/After strings.
      * The arquillianBefore/After methods can be considered 'noise' as if they fail - the tests they wrap will fail too.
-     * 
+     *
      * @param query
      * @return
      * @throws ParserConfigurationException
@@ -507,5 +508,38 @@ public class MvnUtils {
             // Build engine FAT
             System.out.println(msg);
         }
+    }
+
+    /**
+     * @param repo
+     */
+    public static int mvnCleanInstall(File dir) {
+
+        String mvn = "mvn";
+        if (System.getProperty("os.name").contains("Windows")) {
+            mvn = mvn + ".cmd";
+        }
+
+        String[] mvnCleanInstall = new String[] { mvn, "clean", "install" };
+
+        File results = Props.getInstance().getFileProperty(Props.DIR_LOG); //typically ${component_Root_Directory}/results
+        File output = new File(results, "mvnCleanInstall.out");
+
+        // Everything under autoFVT/results is collected from the child build machine
+        int rc = -1;
+        try {
+            rc = runCmd(mvnCleanInstall, dir, output);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+        Assert.assertEquals("maven clean install in " + dir + " has a non-zero return code of: "
+                            + rc +
+                            ".\nThis indicates build failure", 0, rc);
+
+        return rc;
+
     }
 }

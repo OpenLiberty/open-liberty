@@ -76,6 +76,7 @@ task autoFVT {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
+  
   enabled project.file('fat').exists()
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
@@ -322,6 +323,45 @@ assemble {
     enabled = false;
     dependsOn = [];
   }
+}
+
+ext.gitClone = { proj, branch = 'master', folder = '', site = 'git@github.com', org = 'eclipse' ->
+  
+  // If running locally use git directly
+  Boolean local = System.properties['fat.test.localrun'];
+  if( local ){
+  
+    if( proj == null || proj.length() == 0 ){
+      project.logger.lifecycle("The first parameter to task clone is the project name and cannot be defaulted");
+      return
+    }
+
+    if( folder == null || folder.length() == 0 ){
+      folder = proj
+    }
+
+    File repoDir = new File(project.file('publish'), folder )
+    String into = repoDir.getAbsolutePath()
+     
+    String url = " " + site + ":" + org + "/" + proj + ".git "
+    String cmd = "git clone --single-branch --branch " + branch + " " + url + " " + into
+      
+    delete into
+    def proc = cmd.execute()
+    proc.in.eachLine { line -> println cmd + ':\n' + line }
+    proc.err.eachLine { line -> println cmd + ':\n' + line }
+    proc.waitFor()
+    
+  } else {
+    // Make use of the EBC clone mechanism
+    project.logger.lifecycle('ebc clone')
+    ebcClone(url) 
+  }
+  
+}
+
+def ebcClone(String url, String branch, String repoPath){
+  project.logger.lifecycle('ERROR: Needs pre-req of https://github.ibm.com/APTribe/CSI-Squad-Backlog/issues/372 to implement git clone of' + url)
 }
 
 build {
