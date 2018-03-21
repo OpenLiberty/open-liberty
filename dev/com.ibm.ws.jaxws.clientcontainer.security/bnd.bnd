@@ -25,8 +25,8 @@ Export-Package: \
 -dsannotations: com.ibm.ws.jaxws.clientcontainer.security.JaxWsSecurityConfigurationServiceImpl
 
 -buildpath: \
-	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20180124-1753, \
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20170216-1739, \
+	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20180308-1806, \
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180308-1806, \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

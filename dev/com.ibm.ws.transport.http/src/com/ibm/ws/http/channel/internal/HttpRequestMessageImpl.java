@@ -329,7 +329,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             this.setScheme(pseudoHeaders.get(HpackConstants.SCHEME));
         }
         if (pseudoHeaders.containsKey(HpackConstants.AUTHORITY)) {
-            parseAuthority(pseudoHeaders.get(HpackConstants.AUTHORITY).getBytes(), 0);
+            parseH2Authority(pseudoHeaders.get(HpackConstants.AUTHORITY).getBytes());
         }
 
     }
@@ -1219,6 +1219,28 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     }
 
     /**
+     * Parse the authority information from the authority pseudo-header.
+     * authority is [userinfo@] host [:port]
+     *
+     * @param data
+     */
+    private void parseH2Authority(byte[] data) {
+        if (data.length == 0) {
+            throw new IllegalArgumentException("Invalid authority: " + GenericUtils.getEnglishString(data));
+        }
+        int i = 0;
+        int host_start = i;
+        for (; i < data.length; i++) {
+            // find either a "@" or "/"
+            if ('@' == data[i]) {
+                // Note: we're just cutting off the userinfo section for now
+                host_start = i + 1;
+            }
+        }
+        parseURLHost(data, host_start, data.length);
+    }
+
+    /**
      * Parse the scheme marker out of the input data and then start the parse
      * for the next section. If any errors are encountered, then an exception
      * is thrown.
@@ -1883,6 +1905,16 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
      */
     public long getStartNanoTime() {
         return getServiceContext().getStartNanoTime();
+    }
+
+    public String getRemoteUser() {
+        String remoteUser = "";
+
+        if (getServiceContext() instanceof HttpInboundServiceContextImpl) {
+            remoteUser = ((HttpInboundServiceContextImpl) getServiceContext()).getRemoteUser();
+        }
+
+        return remoteUser;
     }
 
     /*

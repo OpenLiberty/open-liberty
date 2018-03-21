@@ -40,7 +40,7 @@ import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.metadata.MetaDataService;
-import com.ibm.ws.http.channel.h2internal.H2UpgradeHandler;
+import com.ibm.ws.http2.upgrade.H2UpgradeHandler;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;

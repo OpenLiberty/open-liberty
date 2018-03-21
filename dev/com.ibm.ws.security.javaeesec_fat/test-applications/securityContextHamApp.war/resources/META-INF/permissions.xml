@@ -26,6 +26,11 @@
       <class-name>javax.security.auth.AuthPermission</class-name>
       <name>wssecurity.getCallerSubject</name>
    </permission>
+
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>createLoginContext.system.WEB_INBOUND</name>
+   </permission>
    
    <permission>
       <class-name>java.security.SecurityPermission</class-name>

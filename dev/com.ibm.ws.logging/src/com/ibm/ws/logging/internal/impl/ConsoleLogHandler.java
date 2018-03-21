@@ -55,6 +55,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         int logLevelValue = Integer.MIN_VALUE;
         String loggerName = null;
         String sourceType = null;
+        String messageOutput = null;
         if (event instanceof GenericData) {
             GenericData genData = (GenericData) event;
             loggerName = genData.getLoggerName();
@@ -63,9 +64,14 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
             if (logRecordLevel != null) {
                 logLevelValue = logRecordLevel.intValue();
             }
+            if (genData.getJsonMessage() == null) {
+                genData.setJsonMessage((String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
+            }
+            messageOutput = genData.getJsonMessage();
         }
-
-        String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+        if (messageOutput == null) {
+            messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+        }
         synchronized (this) {
 
             //Write out accessLog or ffdc or trace

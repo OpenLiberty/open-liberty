@@ -13,5 +13,4 @@
 -nobundles=true
 
 -dependson: \
-	com.ibm.websphere.appserver.thirdparty.eclipselink.2.7;version=latest, \
-	com.ibm.ws.jpa.container.eclipselink.2.7;version=latest
+	com.ibm.websphere.appserver.thirdparty.eclipselink.2.7;version=latest

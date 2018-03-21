@@ -1,7 +1,7 @@
 Subsystem-ManifestVersion: 1
 Subsystem-SymbolicName: com.ibm.websphere.appserver.adminSecurity-1.0
 Subsystem-Version: 1.0.0
-Subsystem-Content: com.ibm.websphere.security; version="[1,1.0.100)",
+Subsystem-Content: com.ibm.websphere.security; version="[1,2)",
  com.ibm.ws.security.authentication.tai; version="[1,1.0.100)",
  com.ibm.ws.webcontainer.security; version="[1.0.0,1.0.100)",
  com.ibm.ws.webcontainer.security.admin; version="[1,1.0.100)",

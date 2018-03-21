@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -25,12 +27,14 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(Suite.class)
 @SuiteClasses({
                 SessionCacheOneServerTest.class,
-                SessionCacheTwoServerTest.class
+                SessionCacheTwoServerTest.class,
+                SessionCacheTimeoutTest.class
 })
 public class FATSuite {
 
-    public static void run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
+    public static String run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, path + '?' + FATServletClient.TEST_METHOD + '=' + testMethod);
+        Log.info(FATSuite.class, "run", "HTTP GET: " + con.getURL());
 
         if (session != null)
             for (String cookie : session)
@@ -51,6 +55,8 @@ public class FATSuite {
                         session.add(setCookie.split(";", 2)[0]);
                 }
             }
+
+            return servletResponse;
         } finally {
             con.disconnect();
         }

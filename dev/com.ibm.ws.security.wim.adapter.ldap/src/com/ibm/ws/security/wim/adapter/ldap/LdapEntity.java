@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -458,23 +458,50 @@ public class LdapEntity {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getName()).append(":{");
-        sb.append("iAttrs=").append(iAttrs);
-        sb.append(", iAttrToPropMap=").append(iAttrToPropMap);
-        sb.append(", iExtId=").append(iExtId);
-        sb.append(", iObjectClassAttrs=").append(Arrays.toString(iObjectClassAttrs));
-        sb.append(", iObjectClasses=").append(iObjectClasses);
-        sb.append(", iProps=").append(iProps);
-        sb.append(", iPropToAttrMap=").append(iPropToAttrMap);
-        sb.append(", iQEntityType=").append(iQEntityType);
-        sb.append(", iRDNAttrs=").append(Arrays.deepToString(iRDNAttrs));
-        sb.append(", iRDNObjectClass=").append(Arrays.deepToString(iRDNObjectClass));
+        sb.append("EntityType=").append(iQEntityType);
+        if (iExtId != null) {
+            sb.append(", ExternalID=").append(iExtId);
+        }
+        if (iAttrs != null && !iAttrs.isEmpty()) {
+            sb.append(", Attributes=").append(iAttrs);
+        }
+        if (iAttrToPropMap != null && !iAttrToPropMap.isEmpty()) {
+            sb.append(", AttributeToPropertyMap=").append(iAttrToPropMap);
+        }
+        if (iProps != null && !iProps.isEmpty()) {
+            sb.append(", Properties=").append(iProps);
+        }
+        if (iPropToAttrMap != null && !iPropToAttrMap.isEmpty()) {
+            sb.append(", PropertyToAttributeMap=").append(iPropToAttrMap);
+        }
+        if (iObjectClassAttrs != null && iObjectClassAttrs.length != 0) {
+            sb.append(", ObjectClassAttributes=").append(Arrays.toString(iObjectClassAttrs));
+        }
+        if (iObjectClasses != null && !iObjectClasses.isEmpty()) {
+            sb.append(", ObjectClasses=").append(iObjectClasses);
+        }
+
         sb.append(", iSearchBaseConfigured=").append(iSearchBaseConfigured);
-        sb.append(", iSearchBaseList=").append(iSearchBaseList);
-        sb.append(", iSearchBases=").append(Arrays.toString(iSearchBases));
-        sb.append(", iSearchFilter=").append(iSearchFilter);
+        if (iSearchBaseList != null && !iSearchBaseList.isEmpty()) {
+            sb.append(", SearchBases=").append(iSearchBaseList);
+        }
+        if (iSearchFilter != null) {
+            sb.append(", SearchFilter=").append(iSearchFilter);
+        }
+
         sb.append(", iTranslatedRDN=").append(iTranslatedRDN);
-        sb.append(", iWIMRDNAttrs=").append(Arrays.deepToString(iWIMRDNAttrs));
-        sb.append(", iWIMRDNProps=").append(Arrays.deepToString(iWIMRDNProps));
+        if (iRDNAttrs != null && iRDNAttrs.length != 0) {
+            sb.append(", RDNAttributes=").append(Arrays.deepToString(iRDNAttrs));
+        }
+        if (iRDNObjectClass != null && iRDNObjectClass.length != 0) {
+            sb.append(", RDNObjectClass=").append(Arrays.deepToString(iRDNObjectClass));
+        }
+        if (iWIMRDNAttrs != null && iWIMRDNAttrs.length != 0) {
+            sb.append(", WIMRDNAttrs=").append(Arrays.deepToString(iWIMRDNAttrs));
+        }
+        if (iWIMRDNProps != null && iWIMRDNProps.length != 0) {
+            sb.append(", WIMRDNProps=").append(Arrays.deepToString(iWIMRDNProps));
+        }
         sb.append("}");
         return sb.toString();
     }

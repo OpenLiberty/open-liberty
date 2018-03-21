@@ -85,10 +85,11 @@ String getVersionFromReleaseRepo(String org, String name) {
             versions.add(relPath)
         }
     }
-    if (versions.size() != 1) {
-        throw new GradleException('Unable to locate a distinct version for the artifact ' + org + ':' + name)
+    
+    if (versions.size() == 0) {
+        throw new GradleException('Unable to locate a version for the artifact ' + org + ':' + name + '. Run release task to publish the artifact.')
     }
-    return versions[0]
+    return versions.sort()[versions.size()-1]
 }
 
 task everythingElseHasBeenReleased {
@@ -100,7 +101,7 @@ task createGradleBootstrap {
     doLast {
         println 'Generating gradle bootstrap'
 
-        String depsList = ""
+        def depsList = []
         rootProject.fileTree(dir: '.', include: '*').visit { element ->
             if (element.isDirectory()) {
                 String relativePath = "$element.relativePath"
@@ -114,20 +115,15 @@ task createGradleBootstrap {
                     }
                     for (String bsn : bndProject.getBsns()) {
                         String version = getVersionFromReleaseRepo(org, bsn)
-                        depsList = depsList + '    compile \'' + org + ':' + bsn + ':' + version + '\'\n'
-                        depsList = depsList + '    compile \'' + org + ':' + bsn + ':' + version + '@pom\'\n'
+                        depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '\'')
+                        depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '@pom\'')
                     }
                 }
             }
         }
 
-        Map<String, String> projectPathToVersion = new HashMap<String, String>()
-        rootProject.subprojects.each { p ->
-            projectPathToVersion.put(p.name, p.version)
-        }
-
         String org = 'dev'
-        rootProject.fileTree(dir: '.', include: '**/*.feature').visit { feature ->
+        cnf.fileTree(dir: '..', include: '**/*.feature').visit { feature ->
             if (feature.isDirectory()) return
 
             Properties props = new Properties()
@@ -141,11 +137,11 @@ task createGradleBootstrap {
                     featureArtifactId = featureName
                 }
 
-                String rev = projectPathToVersion.get(featureName)
+                String rev = getVersionFromReleaseRepo(org, featureArtifactId)
                 if (rev != null) {
-                    depsList = depsList + '    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa\'\n'
-                    depsList = depsList + '    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa.metadata.zip\'\n'
-                    depsList = depsList + '    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@pom\'\n'
+                    depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa\'')
+                    depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa.metadata.zip\'')
+                    depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@pom\'')
                 }
             }
         }
@@ -153,27 +149,38 @@ task createGradleBootstrap {
         File dependenciesFile = new File(project.buildDir, 'dependencies.gradle')
         dependenciesFile.createNewFile()
         dependenciesFile.text = """dependencies {
-$depsList}
-"""
+${depsList.sort().join('\n')}
+}"""
     }
 }
 
-task createGaESAList {
+task createESALists {
     dependsOn everythingElseHasBeenReleased
     doLast {
-        String features = ""
+        def gaFeatures = []
+        def betaFeatures = []
         rootProject.fileTree(dir: '.', include: '*/*.feature').visit { feature ->
-            if (feature.isDirectory() || !feature.getFile().getText().contains("kind=ga")) {
+            if (feature.isDirectory()) {
                 return
             }
 
-            String name = feature.name.substring(0, feature.name.size()-8)
-            features += name + "\n"
+            if (feature.getFile().getText().contains("kind=ga")) {
+                gaFeatures.add(feature.name.substring(0, feature.name.size()-".feature".size()))
+            } else if (feature.getFile().getText().contains("kind=beta")) {
+                betaFeatures.add(feature.name.substring(0, feature.name.size()-".feature".size()))
+            }
         }
+
+        gaFeatures = gaFeatures.sort()
+        betaFeatures = betaFeatures.sort()
 
         File gaEsa = new File(project.buildDir, 'gaFeatures.txt')
         gaEsa.createNewFile()
-        gaEsa.text = features
+        gaEsa.text = gaFeatures.join("\n")
+
+        File betaEsa = new File(project.buildDir, 'betaFeatures.txt')
+        betaEsa.createNewFile()
+        betaEsa.text = betaFeatures.join("\n")
     }
 }
 
@@ -311,12 +318,13 @@ task ('createIndex') {
 task zipGradleBootstrap(type: Zip) {
     dependsOn createGradleBootstrap
     dependsOn createGeneratedReplacementProjects
-    dependsOn createGaESAList
+    dependsOn createESALists
     dependsOn createIndex
     baseName 'gradle-bootstrap'
     into 'prereq.published', {
         from new File(project.buildDir, 'dependencies.gradle'),
              new File(project.buildDir, 'gaFeatures.txt'),
+             new File(project.buildDir, 'betaFeatures.txt'),
              new File(project.buildDir, 'excludeList.txt')
     }
     from new File(project.buildDir, 'replacements')

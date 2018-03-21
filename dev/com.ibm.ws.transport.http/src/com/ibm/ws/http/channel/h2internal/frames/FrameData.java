@@ -96,7 +96,7 @@ public class FrameData extends Frame {
                 paddingLength = frp.grabNextByte() & 0xFF; // grab byte and convert to int
                 payloadIndex++;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "PADDED_FLAG on. paddedLength = " + (payloadLength - paddingLength));
+                    Tr.debug(tc, "PADDED_FLAG on. paddedLength = " + (paddingLength));
                 }
             }
 
@@ -166,13 +166,13 @@ public class FrameData extends Frame {
         if (streamId == 0) {
             throw new ProtocolException("DATA frame stream ID cannot be 0x0");
         }
-        if (this.getPayloadLength() > settings.maxFrameSize) {
+        if (getPayloadLength() > settings.maxFrameSize) {
             throw new FrameSizeException("DATA payload greater than allowed by the max frame size");
         }
-        if (this.payloadLength > 0 && this.paddingLength >= this.payloadLength) {
-            throw new ProtocolException("DATA padding length must be less than the length of the payload");
+        if (payloadLength > 0 && paddingLength > 0 && paddingLength >= payloadLength) {
+            throw new ProtocolException("DATA padding length must be less than the length of the total payload");
         }
-        if (this.paddingLength < 0) {
+        if (paddingLength < 0) {
             throw new ProtocolException("DATA padding length is invalid");
         }
     }

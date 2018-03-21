@@ -51,6 +51,7 @@ import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwt.config.JwtConfig;
+import com.ibm.ws.security.jwt.internal.JwtConfigUtil;
 import com.ibm.ws.security.jwt.registry.RegistryClaims;
 import com.ibm.ws.security.wim.VMMService;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -585,6 +586,11 @@ public class JwtUtils {
 		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Date resultdate = new Date(current);
 		return sdf.format(resultdate);
+	}
+
+	@Sensitive
+	public static String processProtectedString(Map<String, Object> props, String cfgKey) {
+		return JwtConfigUtil.processProtectedString(props, cfgKey);
 	}
 
 }

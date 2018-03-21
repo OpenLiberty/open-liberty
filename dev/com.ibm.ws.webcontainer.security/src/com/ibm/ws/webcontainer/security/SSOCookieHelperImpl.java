@@ -69,6 +69,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      **/
     @Override
     public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+new Exception("Toshi").printStackTrace();
         if (!allowToAddCookieToResponse(req))
             return;
         addJwtSsoCookiesToResponse(subject, req, resp);

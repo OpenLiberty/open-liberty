@@ -248,7 +248,9 @@ public class FrameHeaders extends Frame {
         } else if (this.paddingLength >= this.payloadLength) {
             throw new ProtocolException("HEADERS padding length must be less than the length of the payload");
         } else if (this.streamId == this.streamDependency) {
-            throw new ProtocolException("HEADERS frame stream cannot depend on itself");
+            ProtocolException pe = new ProtocolException("HEADERS frame stream cannot depend on itself");
+            pe.setConnectionError(false);
+            throw pe;
         } else if (this.paddingLength < 0) {
             throw new ProtocolException("HEADERS padding length is invalid");
         }

@@ -10,8 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.wsat;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
@@ -32,17 +33,10 @@ public class WSATFeatureBusListener implements LibertyApplicationBusListener {
     private static final TraceComponent tc = Tr.register(
                                                          WSATFeatureBusListener.class, Constants.TRACE_GROUP, null);
 
-    private static Set<Bus> busSet;
+    private final static Set<Bus> busSet = Collections.newSetFromMap(new ConcurrentHashMap<Bus, Boolean>());
 
     public static Set<Bus> getBusSet() {
         return busSet;
-    }
-
-    private synchronized static void insertBus(Bus b) {
-        if (busSet == null) {
-            busSet = new HashSet<Bus>();
-        }
-        busSet.add(b);
     }
 
     @Override
@@ -58,15 +52,14 @@ public class WSATFeatureBusListener implements LibertyApplicationBusListener {
             return;
         }
 
-        LibertyApplicationBus.Type busType = bus
-                        .getExtension(LibertyApplicationBus.Type.class);
+        LibertyApplicationBus.Type busType = bus.getExtension(LibertyApplicationBus.Type.class);
         if (busType == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "initComplete",
                          "Can not determine server type, not Liberty BUS?");
             return;
         } else {
-            insertBus(bus);
+            busSet.add(bus);
         }
         AssertionBuilderRegistry reg = bus.getExtension(AssertionBuilderRegistry.class);
         if (reg != null) {
@@ -106,7 +99,7 @@ public class WSATFeatureBusListener implements LibertyApplicationBusListener {
 
     @Override
     public void postShutdown(Bus bus) {
-
+        busSet.remove(bus);
     }
 
 }

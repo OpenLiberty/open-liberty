@@ -97,10 +97,10 @@ public class FramePing extends Frame {
     @Override
     public void validate(H2ConnectionSettings settings) throws ProtocolException, FrameSizeException {
         if (streamId != 0) {
-            throw new ProtocolException("PING frame streamID must be 0x0; received " + streamId);
+            throw new ProtocolException("ping frames must be sent on stream 0");
         }
         if (this.payloadLength != 8) {
-            throw new FrameSizeException("PING opaque data must have a length of 8.  Actual length : " + payloadLength);
+            throw new FrameSizeException("ping frames must have a length of 8 bytes");
         }
     }
 

@@ -15,7 +15,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.FrameReadProcessor;
 import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
-import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 
@@ -64,8 +63,10 @@ public abstract class Frame {
 
     /**
      * Grabs the payload out of a binary read frame
+     *
+     * @throws Http2Exception
      */
-    abstract public void processPayload(FrameReadProcessor frp) throws FrameSizeException;
+    abstract public void processPayload(FrameReadProcessor frp) throws Http2Exception;
 
     // ################# FRAME WRITE OPS #####################################
 

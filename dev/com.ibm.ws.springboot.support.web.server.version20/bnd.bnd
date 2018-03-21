@@ -1,0 +1,67 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+
+bVersion=1.0
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: WebSphere Spring Boot 2.0 Web Server Support
+Bundle-SymbolicName: com.ibm.ws.springboot.support.web.server.version20
+Bundle-Description: WebSphere Spring Boot 2.0 Web Server Support, version ${bVersion}
+
+Private-Package: com.ibm.ws.springboot.support.web.server.version20.osgi.*
+Import-Package: \
+    com.ibm.ws.app.manager.module.internal, \
+    *
+
+Include-Resource: springBoot20Server.jar
+
+instrument.disabled: true
+
+Provide-Capability: spring.boot.support; jars:List<String>=springBoot20Server.jar; version:Version=2.0
+
+-buildpath: \
+	org.springframework:spring-core;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework:spring-context;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework:spring-aop;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework:spring-expression;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework:spring-beans;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework.boot:spring-boot-autoconfigure;version=2.0.0.RELEASE, \
+	org.springframework.boot:spring-boot;version=2.0.0.RELEASE, \
+	com.ibm.websphere.org.osgi.core, \
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.app.manager.springboot, \
+	com.ibm.websphere.javaee.servlet.3.1, \
+	com.ibm.ws.webcontainer,\
+	com.ibm.ws.org.osgi.annotation.versioning,\
+	com.ibm.ws.app.manager.module;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.threading;version=latest,\
+	com.ibm.ws.springboot.support.web.server;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1
+
+-dsannotations: com.ibm.ws.springboot.support.web.server.version20.osgi.SpringBoot15Support
+-dsannotations-inherit: true
+
+-make= (*).(jar); type=bnd; recipe="bnd/$1.bnd"

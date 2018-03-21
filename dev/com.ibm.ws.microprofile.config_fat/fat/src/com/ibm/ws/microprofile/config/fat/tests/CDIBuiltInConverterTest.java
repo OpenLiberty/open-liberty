@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,171 +10,54 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.tests;
 
-import java.util.BitSet;
-
-import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.appConfig.cdi.web.BuiltInConverterTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11EE7;
 import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig12EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  *
  */
-public class CDIBuiltInConverterTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class CDIBuiltInConverterTest extends FATServletClient {
+
+    public static final String APP_NAME = "cdiConfig";
+
+    @Server("CDIConfigServer")
+    @TestServlet(servlet = BuiltInConverterTestServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        WebArchive war = SharedShrinkWrapApps.cdiConfigServerApps();
+
+        ShrinkHelper.exportDropinAppToServer(server, war);
+
+        server.startServer();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
+    }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(RepeatConfig11EE7.INSTANCE).andWith(RepeatConfig12EE8.INSTANCE);
+    public static RepeatTests r = RepeatTests
+                    .with(new RepeatConfig11EE7("CDIConfigServer"))
+                    .andWith(new RepeatConfig12EE8("CDIConfigServer"));
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIConfigServer");
-
-    @BuildShrinkWrap
-    public static Archive buildApp() {
-        return SharedShrinkWrapApps.cdiConfigServerApps();
-    }
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
-    @Test
-    public void testBoolean() throws Exception {
-        test("BOOLEAN_KEY", "true");
-    }
-
-    @Test
-    public void testInteger() throws Exception {
-        test("INTEGER_KEY", "2147483647");
-    }
-
-    @Test
-    public void testInt() throws Exception {
-        test("INT_KEY", "2147483647");
-    }
-
-    @Test
-    public void testLong() throws Exception {
-        test("LONG_KEY", "-9223372036854775808");
-    }
-
-    @Test
-    public void testShort() throws Exception {
-        test("SHORT_KEY", "32767");
-    }
-
-    @Test
-    public void testByte() throws Exception {
-        test("BYTE_KEY", "-128");
-    }
-
-    @Test
-    public void testDouble() throws Exception {
-        test("DOUBLE_KEY", "1.7976931348623157E308");
-    }
-
-    @Test
-    public void testFloat() throws Exception {
-        test("FLOAT_KEY", "1.4E-45");
-    }
-
-    @Test
-    public void testBigInteger() throws Exception {
-        test("BIG_INTEGER_KEY", "697627659869078390664");
-    }
-
-    @Test
-    public void testBigDecimal() throws Exception {
-        test("BIG_DECIMAL_KEY", "899559405265203640297");
-    }
-
-    @Test
-    public void testAtomicInteger() throws Exception {
-        test("ATOMIC_INTEGER_KEY", "1");
-    }
-
-    @Test
-    public void testAtomicLong() throws Exception {
-        test("ATOMIC_LONG_KEY", "1");
-    }
-
-    @Test
-    public void testDuration() throws Exception {
-        test("DURATION_KEY", "PT1S");
-    }
-
-    @Test
-    public void testLocalDateTime() throws Exception {
-        test("LOCAL_DATE_TIME_KEY", "1970-01-01T01:00");
-    }
-
-    @Test
-    public void testLocalDate() throws Exception {
-        test("LOCAL_DATE_KEY", "1970-01-01");
-    }
-
-    @Test
-    public void testLocalTime() throws Exception {
-        test("LOCAL_TIME_KEY", "00:00");
-    }
-
-    @Test
-    public void testOffsetDateTime() throws Exception {
-        test("OFFSET_DATE_TIME_KEY", "-999999999-01-01T00:00+18:00");
-    }
-
-    @Test
-    public void testOffsetTime() throws Exception {
-        test("OFFSET_TIME_KEY", "23:59:59.999999999-18:00");
-    }
-
-    @Test
-    public void testZonedDateTime() throws Exception {
-        test("ZONED_DATE_TIME_KEY", "1970-01-01T01:00+01:00[Europe/London]");
-    }
-
-    @Test
-    public void testInstant() throws Exception {
-        test("INSTANT_KEY", "1970-01-01T00:00:00Z");
-    }
-
-    @Test
-    public void testCurrency() throws Exception {
-        test("CURRENCY_KEY", "GBP");
-    }
-
-    @Test
-    public void testBitSet() throws Exception {
-        BitSet expected = new BitSet(8);
-        expected.set(1);
-        expected.set(3);
-        expected.set(5);
-        expected.set(7);
-        test("BIT_SET_KEY", expected.toString());
-    }
-
-    @Test
-    public void testURI() throws Exception {
-        test("URI_KEY", "../../resource.txt");
-    }
-
-    @Test
-    public void testURL() throws Exception {
-        test("URL_KEY", "http://www.ibm.com");
-    }
-
-    private void test(String key, String expected) throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/cdiConfig/builtin?key=" + key, key + "=" + expected);
-    }
 }

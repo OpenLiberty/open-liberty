@@ -25,9 +25,9 @@ public class StackTraceFilteringForPrintedExceptionTest extends AbstractStackTra
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver");
-        server.startServer();
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver", StackTraceFilteringForPrintedExceptionTest.class);
         ShrinkHelper.defaultDropinApp(server, "broken-servlet", "com.ibm.ws.logging.fat.broken.servlet");
+        server.startServer();
 
         // Hit the servlet, to drive the error
         hitWebPage("broken-servlet", "ExceptionPrintingServlet", false);
