@@ -55,10 +55,7 @@ public class JsonConfigTest {
     public static final String SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS = "jsonSourceMessageTraceAccess.xml";
     public static final String SERVER_XML_JSON_MESSAGE_ACCESS = "jsonMessageSourceAccessLog.xml";
 
-    public static final String SERVER_XML_JSON_MESSAGES = "jsonMessagesLogServer.xml";
-    public static final String SERVER_XML_JSON_CONSOLE = "jsonConsoleLogServer.xml";
-
-    ArrayList<String> sourceList = new ArrayList<String>(Arrays.asList("message", "trace", "accesslog", "ffdc"));
+    ArrayList<String> ALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("message", "trace", "accesslog", "ffdc"));
 
     String line = null;
     String consoleline = null;
@@ -78,10 +75,10 @@ public class JsonConfigTest {
         line = setConfig(SERVER_XML_CLLERROR);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
         //run LogServlet
-        line = checkMessageLogUpdate(false, sourceList, "");
+        line = checkMessageLogUpdate(false, ALL_SOURCE_LIST, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
         //console
-        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "ERROR", sourceList, "");
+        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "ERROR", ALL_SOURCE_LIST, "");
     }
 
     //<logging consoleLogLevel="WARNING" />
@@ -89,10 +86,10 @@ public class JsonConfigTest {
     public void testWarning() throws Exception {
         line = setConfig(SERVER_XML_CLLWARNING);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
-        line = checkMessageLogUpdate(false, sourceList, "");
+        line = checkMessageLogUpdate(false, ALL_SOURCE_LIST, "");
         //console
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "WARNING", sourceList, "");
+        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "WARNING", ALL_SOURCE_LIST, "");
     }
 
     //<logging consoleLogLevel="INFO" consoleFormat="basic"/>
@@ -100,9 +97,9 @@ public class JsonConfigTest {
     public void testInfo() throws Exception {
         line = setConfig(SERVER_XML_CLLINFO_BASIC_CONSOLE);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
-        line = checkMessageLogUpdate(false, sourceList, "");
+        line = checkMessageLogUpdate(false, ALL_SOURCE_LIST, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", sourceList, "");
+        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
     //Test 6 consoleLL="INFO" consoleFormat=basic messageFormat=json
@@ -110,10 +107,10 @@ public class JsonConfigTest {
     public void testBasicConsoleJsonMessage() throws Exception {
         line = setConfig(SERVER_XML_BASIC_CONSOLE_JSON_MESSAGE);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
-        line = checkMessageLogUpdate(true, sourceList, "");
+        line = checkMessageLogUpdate(true, ALL_SOURCE_LIST, "");
         //console
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", sourceList, "");
+        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
     //<logging consoleLogLevel="INFO" consoleFormat="json" messageFormat="json"/>
@@ -121,9 +118,9 @@ public class JsonConfigTest {
     public void testJsonConsoleJsonMessage() throws Exception {
         line = setConfig(SERVER_XML_JSON_CONSOLE_JSON_MESSAGE);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
-        line = checkMessageLogUpdate(true, sourceList, "");
+        line = checkMessageLogUpdate(true, ALL_SOURCE_LIST, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", sourceList, "");
+        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
     //<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="basic" maxFileSize="100"/>
@@ -131,9 +128,9 @@ public class JsonConfigTest {
     public void testBasicConsoleBasicMessage() throws Exception {
         line = setConfig(SERVER_XML_BASIC_CONSOLE_BASIC_MESSAGE);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
-        line = checkMessageLogUpdate(false, sourceList, "");
+        line = checkMessageLogUpdate(false, ALL_SOURCE_LIST, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", sourceList, "");
+        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
     //<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="json" maxFileSize="100"/>
@@ -141,56 +138,56 @@ public class JsonConfigTest {
     public void testBasicConsoleJsonMessageMaxFileSize() throws Exception {
         line = setConfig(SERVER_XML_BASIC_CONSOLE_JSON_MESSAGE_MAXFILESIZE);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
-        line = checkMessageLogUpdate(true, sourceList, "");
+        line = checkMessageLogUpdate(true, ALL_SOURCE_LIST, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", sourceList, "");
+        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
     //<logging consoleLogLevel="INFO" consoleFormat="basic" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
     @Test
     public void testJsonMessageSrcTraceAccess() throws Exception {
-        ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
+        ArrayList<String> messageALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
         line = setConfig(SERVER_XML_BASIC_CONSOLE_JSON_MESSAGE_ACCESSTRACE);
-        line = checkMessageLogUpdate(true, messagesourceList, "");
+        line = checkMessageLogUpdate(true, messageALL_SOURCE_LIST, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", sourceList, "");
+        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
     //<logging consoleLogLevel="INFO" consoleFormat="json" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100" traceSpecification="com.ibm.logs.LogstashServlet=finest"/>
     @Test
     public void testJsonTraceEnabled() throws Exception {
-        ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
+        ArrayList<String> messageALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
         line = setConfig(SERVER_XML_JSON_CONSOLE_JSON_MESSAGE_TRACE_ENABLED);
-        line = checkMessageLogUpdate(true, messagesourceList, "finest");
+        line = checkMessageLogUpdate(true, messageALL_SOURCE_LIST, "finest");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", sourceList, "finest");
+        consoleline = checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "finest");
     }
 
     //<logging consoleLogLevel="INFO" consoleFormat="basic" consoleSource="trace" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
     @Test
     public void testTraceConsoleAccessTraceMessage() throws Exception {
-        ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
+        ArrayList<String> messageALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
         line = setConfig(SERVER_XML_TRACE_CONSOLE_ACCESSTRACE_MESSAGE);
-        line = checkMessageLogUpdate(true, messagesourceList, "");
-        ArrayList<String> consolesourceList = new ArrayList<String>(Arrays.asList("trace"));
+        line = checkMessageLogUpdate(true, messageALL_SOURCE_LIST, "");
+        ArrayList<String> consoleALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("trace"));
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        line = checkConsoleLogUpdate(false, consoleLogFile, "INFO", consolesourceList, "");
+        line = checkConsoleLogUpdate(false, consoleLogFile, "INFO", consoleALL_SOURCE_LIST, "");
     }
 
     //<logging consoleLogLevel="INFO" consoleFormat="json" consoleSource="trace" messageFormat="json" messageSource="trace,accesslog" maxFileSize="100"/>
     @Test
     public void testClearLoggingSources() throws Exception {
-        ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
+        ArrayList<String> messageALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("trace", "accesslog"));
         line = setConfig(SERVER_XML_CLEAR_LOGGING_SOURCES);
-        line = checkMessageLogUpdate(true, messagesourceList, "");
+        line = checkMessageLogUpdate(true, messageALL_SOURCE_LIST, "");
 
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        ArrayList<String> consolesourceList = new ArrayList<String>(Arrays.asList("trace"));
-        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", consolesourceList, "");
+        ArrayList<String> consoleALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("trace"));
+        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", consoleALL_SOURCE_LIST, "");
         //clear server.xml logging element
         line = setConfig(SERVER_XML_BASIC);
-        line = checkMessageLogUpdate(false, sourceList, "");
-        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", sourceList, "");
+        line = checkMessageLogUpdate(false, ALL_SOURCE_LIST, "");
+        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
 
     }
 
@@ -199,13 +196,13 @@ public class JsonConfigTest {
     public void testJsonConsoleJsonMessageClearLogging() throws Exception {
         line = setConfig(SERVER_XML_JSON_CONSOLE_JSON_MESSAGE);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
-        line = checkMessageLogUpdate(true, sourceList, "");
+        line = checkMessageLogUpdate(true, ALL_SOURCE_LIST, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", sourceList, "");
+        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
         //clear server.xml logging element
         line = setConfig(SERVER_XML_BASIC);
-        line = checkMessageLogUpdate(false, sourceList, "");
-        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", sourceList, "");
+        line = checkMessageLogUpdate(false, ALL_SOURCE_LIST, "");
+        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
     //<logging consoleLogLevel="INFO" consoleFormat="json" consoleSource="trace" messageFormat="json" messageSource="message,trace,accesslog" maxFileSize="100"/>
@@ -213,29 +210,29 @@ public class JsonConfigTest {
     public void testJsonSrcMessageTraceAccess() throws Exception {
         line = setConfig(SERVER_XML_JSON_SOURCE_MESSAGETRACEACCESS);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
-        ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("message", "trace", "accesslog"));
-        line = checkMessageLogUpdate(true, messagesourceList, "");
+        ArrayList<String> messageALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("message", "trace", "accesslog"));
+        line = checkMessageLogUpdate(true, messageALL_SOURCE_LIST, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        ArrayList<String> consolesourceList = new ArrayList<String>(Arrays.asList("trace"));
-        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", consolesourceList, "");
+        ArrayList<String> consoleALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("trace"));
+        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", consoleALL_SOURCE_LIST, "");
     }
 
     //<logging messageFormat="json" messageSource="accesslog"/>
     @Test
     public void testJsonMessageAccess() throws Exception {
         line = setConfig(SERVER_XML_JSON_MESSAGE_ACCESS);
-        ArrayList<String> messagesourceList = new ArrayList<String>(Arrays.asList("accesslog"));
-        line = checkMessageLogUpdate(true, messagesourceList, "");
+        ArrayList<String> messageALL_SOURCE_LIST = new ArrayList<String>(Arrays.asList("accesslog"));
+        line = checkMessageLogUpdate(true, messageALL_SOURCE_LIST, "");
         RemoteFile consoleLogFile = server.getConsoleLogFile();
-        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", sourceList, "");
+        consoleline = checkConsoleLogUpdate(true, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-    private String checkMessageLogUpdate(boolean isJson, ArrayList<String> sourceList, String traceSpec) {
+    private String checkMessageLogUpdate(boolean isJson, ArrayList<String> ALL_SOURCE_LIST, String traceSpec) {
         String line = null;
         //runApp
         TestUtils.runApp(server, "logServlet");
         if (isJson) {
-            if (sourceList.contains("trace") && traceSpec.equals("finest")) {
+            if (ALL_SOURCE_LIST.contains("trace") && traceSpec.equals("finest")) {
                 line = checkLine("\\{.*\"loglevel\":\"ENTRY\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"CONFIG\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"FINE\".*\\}");
@@ -243,13 +240,13 @@ public class JsonConfigTest {
                 line = checkLine("\\{.*\"loglevel\":\"FINEST\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"EXIT\".*\\}");
             }
-            if (sourceList.contains("message")) {
+            if (ALL_SOURCE_LIST.contains("message")) {
                 line = checkLine("\\{.*\"loglevel\":\"SEVERE\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"WARNING\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"SystemOut\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"SystemErr\".*\\}");
             }
-            if (sourceList.contains("accesslog")) {
+            if (ALL_SOURCE_LIST.contains("accesslog")) {
                 line = checkLine("\\{.*\"type\":\"liberty_accesslog\".*\\}");
             }
         } else if (!isJson) {
@@ -262,10 +259,10 @@ public class JsonConfigTest {
         return line;
     }
 
-    private String checkConsoleLogUpdate(boolean isJson, RemoteFile consoleLogFile, String consoleLogLevel, ArrayList<String> sourceList, String traceSpec) {
+    private String checkConsoleLogUpdate(boolean isJson, RemoteFile consoleLogFile, String consoleLogLevel, ArrayList<String> ALL_SOURCE_LIST, String traceSpec) {
         String line = null;
         if (isJson) {
-            if (sourceList.contains("trace") && traceSpec.equals("finest")) {
+            if (ALL_SOURCE_LIST.contains("trace") && traceSpec.equals("finest")) {
                 line = checkLine("\\{.*\"loglevel\":\"ENTRY\".*\\}");
             }
             line = checkLine("\\{.*\"loglevel\":\"SEVERE\".*\\}", consoleLogFile);
@@ -275,14 +272,14 @@ public class JsonConfigTest {
             }
             line = checkLine("\\{.*\"loglevel\":\"SystemOut\".*\\}", consoleLogFile);
             line = checkLine("\\{.*\"loglevel\":\"SystemErr\".*\\}", consoleLogFile);
-            if (sourceList.contains("trace") && traceSpec.equals("finest")) {
+            if (ALL_SOURCE_LIST.contains("trace") && traceSpec.equals("finest")) {
                 line = checkLine("\\{.*\"loglevel\":\"CONFIG\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"FINE\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"FINER\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"FINEST\".*\\}");
                 line = checkLine("\\{.*\"loglevel\":\"EXIT\".*\\}");
             }
-            if (sourceList.contains("accesslog")) {
+            if (ALL_SOURCE_LIST.contains("accesslog")) {
                 line = checkLine("\\{.*\"type\":\"liberty_accesslog\".*\\}", consoleLogFile);
             }
         } else if (!isJson) {
