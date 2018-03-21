@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,23 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.appConfig.types.test;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.junit.Test;
 
-import com.ibm.ws.microprofile.appConfig.test.utils.AppConfigTestApp;
+import componenttest.app.FATServlet;
 
-/**
- *
- */
-public class TestBooleanTypes implements AppConfigTestApp {
-    /** {@inheritDoc} */
+@SuppressWarnings("serial")
+@WebServlet("/")
+public class TypesTestServlet extends FATServlet {
+    public static final String DYNAMIC_REFRESH_INTERVAL_PROP_NAME = "microprofile.config.refresh.rate";
 
-    @Override
-    public String runTest(HttpServletRequest request) {
-
+    /** Tests that a user can retrieve properties of type boolean */
+    @Test
+    public void testBooleanTypes() throws Exception {
         System.setProperty(DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
         ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
         MySource s = new MySource();
@@ -37,18 +41,29 @@ public class TestBooleanTypes implements AppConfigTestApp {
 
         b.withSources(s);
 
-        Boolean missing = new Boolean("true");
         Config c = b.build();
         Boolean v1 = c.getValue("p1", Boolean.class);
         Boolean v2 = c.getValue("p2", Boolean.class);
         Boolean v3 = c.getValue("p3", Boolean.class);
         Boolean v4 = c.getValue("p4", Boolean.class);
 
-        if (v1 && !v2 && v3 && !v4) {
-            return "PASSED";
-        } else {
-            return "FAILED";
-        }
+        assertTrue(v1);
+        assertFalse(v2);
+        assertTrue(v3);
+        assertFalse(v4);
     }
 
+    /** Tests that a user can retrieve properties of type Integer */
+    @Test
+    public void testIntegerTypes() throws Exception {
+        System.setProperty(DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
+        ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
+        MySource s = new MySource().put("p1", "3");
+        b.withSources(s);
+
+        Config c = b.build();
+        Integer v1 = c.getValue("p1", Integer.class);
+
+        assertEquals(new Integer(3), v1);
+    }
 }

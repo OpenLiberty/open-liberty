@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016 IBM Corporation and others.
+* Copyright (c) 2016, 2018 IBM Corporation and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -13,36 +13,37 @@ package com.ibm.ws.microprofile.config.fat.tests;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.appConfig.classLoaders.test.ClassLoadersTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  *
  */
-public class ClassLoadersTest extends AbstractConfigApiTest {
+@RunWith(FATRunner.class)
+public class ClassLoadersTest extends FATServletClient {
 
-    private final static String testClassName = "ClassLoadersTest";
+    public static final String APP_NAME = "classLoaders";
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("ClassLoadersServer");
+    @Server("ClassLoadersServer")
+    @TestServlet(servlet = ClassLoadersTestServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server;
 
-    @BuildShrinkWrap
-    public static Archive buildApp() {
-        String APP_NAME = "classLoaders";
-
+    @BeforeClass
+    public static void setUp() throws Exception {
         WebArchive classLoaders_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "com.ibm.ws.microprofile.appConfig.classLoaders.test")
                         .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
@@ -54,47 +55,14 @@ public class ClassLoadersTest extends AbstractConfigApiTest {
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + ".war/resources/WEB-INF/classes/META-INF/microprofile-config.properties"),
                                              "classes/META-INF/microprofile-config.properties");
 
-        return classLoaders_war;
+        ShrinkHelper.exportDropinAppToServer(server, classLoaders_war);
+
+        server.startServer();
     }
 
-    public ClassLoadersTest() {
-        super("/classLoaders/");
-    }
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
-    @Rule
-    public TestName testName = new TestName();
-
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testUserClassLoaders() throws Exception {
-        test(testName.getMethodName());
-    }
-
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    @ExpectedFFDC({ "java.util.ServiceConfigurationError" })
-    public void testUserLoaderErrors() throws Exception {
-        test(testName.getMethodName());
-    }
-
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testMultiUrlResources() throws Exception {
-        test(testName.getMethodName());
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 
 }
