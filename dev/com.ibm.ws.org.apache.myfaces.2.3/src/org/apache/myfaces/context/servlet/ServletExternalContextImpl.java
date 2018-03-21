@@ -450,8 +450,10 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     }
 
     @Override
-    public String encodeWebsocketURL(String baseUrl)
+    public String encodeWebsocketURL(String url)
     {
+
+        checkNull(url, "url");
         FacesContext facesContext = getCurrentFacesContext();
         Integer port = WebConfigParamUtils.getIntegerInitParameter(
                 getCurrentFacesContext().getExternalContext(), ViewHandler.WEBSOCKET_PORT);
@@ -461,22 +463,22 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         {
             String scheme = facesContext.getExternalContext().getRequestScheme();
             String serverName = facesContext.getExternalContext().getRequestServerName();
-            String url;
+            String webSocketUrl;
             try
             {
-                url = new URL(scheme, serverName, port, baseUrl).toExternalForm();
-                url = url.replaceFirst("http", "ws");
-                return ((HttpServletResponse) _servletResponse).encodeURL(url);
+                webSocketUrl = new URL(scheme, serverName, port, url).toExternalForm();
+                webSocketUrl = webSocketUrl.replaceFirst("http", "ws");
+                return ((HttpServletResponse) _servletResponse).encodeURL(webSocketUrl);
             }
             catch (MalformedURLException ex)
             {
                 //If cannot build the url, return the base one unchanged
-                return baseUrl;
+                return url;
             }
         }
         else
         {
-            return baseUrl;
+            return url;
         }
     }
 

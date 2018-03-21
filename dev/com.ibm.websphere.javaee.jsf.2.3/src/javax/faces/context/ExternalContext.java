@@ -806,19 +806,10 @@ public abstract class ExternalContext
     }
     
     /**
-     * 
+     * @since 2.3
      * @param url
      * @return 
      */
-    public String encodeWebsocketURL(String url)
-    {
-        ExternalContext ctx = _MyFacesExternalContextHelper.firstInstance.get();
-        
-        if (ctx == null)
-        {
-            throw new UnsupportedOperationException();
-        }
-        
-        return ctx.encodeWebsocketURL(url);
-    }
+    public abstract String encodeWebsocketURL(String url);
+
 }

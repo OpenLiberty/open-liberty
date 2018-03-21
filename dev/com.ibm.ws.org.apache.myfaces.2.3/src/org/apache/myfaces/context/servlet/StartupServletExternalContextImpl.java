@@ -446,6 +446,12 @@ public class StartupServletExternalContextImpl extends ServletExternalContextImp
         throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
     }
 
+    @Override
+    public String encodeWebsocketURL(String url)
+    {
+        throw new UnsupportedOperationException(EXCEPTION_TEXT + _getTime());
+    }
+
     // ~ private Methods ------------------------------------------------------
     
     /**
