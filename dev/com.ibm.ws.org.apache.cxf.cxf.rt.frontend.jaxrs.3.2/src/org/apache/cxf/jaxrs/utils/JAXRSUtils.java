@@ -834,7 +834,7 @@ public final class JAXRSUtils {
                                            MultivaluedMap<String, String> values,
                                            Message message,
                                            OperationResourceInfo ori) throws IOException, WebApplicationException {
-        InputStream is = message.getContent(InputStream.class);
+        InputStream is = copyAndGetEntityStream(message); // Liberty change
         if (is == null) {
             Reader reader = message.getContent(Reader.class);
             if (reader != null) {
@@ -976,8 +976,9 @@ public final class JAXRSUtils {
             m.put(FormUtils.FORM_PARAM_MAP, params);
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
+                InputStream entityStream = copyAndGetEntityStream(m); // Liberty change
                 String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
-                String body = FormUtils.readBody(m.getContent(InputStream.class), enc);
+                String body = FormUtils.readBody(entityStream, enc); // Liberty change
                 FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
@@ -1310,13 +1311,6 @@ public final class JAXRSUtils {
         List<MediaType> types = JAXRSUtils.intersectMimeTypes(ori.getConsumeTypes(), contentType);
 
         final ProviderFactory pf = ServerProviderFactory.getInstance(m);
-        // Liberty change start
-        // copy the input stream so that it is not inadvertently closed
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        IOUtils.copy(is, baos);
-        final byte[] copiedBytes = baos.toByteArray();
-        m.setContent(ByteArrayInputStream.class, new ByteArrayInputStream(copiedBytes));
-        // Liberty change end
         for (MediaType type : types) {
             List<ReaderInterceptor> readers = pf.createMessageBodyReaderInterceptor(
                                                                                     targetTypeClass,
@@ -1332,7 +1326,7 @@ public final class JAXRSUtils {
                                                      targetTypeClass,
                                                      parameterType,
                                                      parameterAnnotations,
-                                                     new ByteArrayInputStream(copiedBytes), // Liberty change
+                                                     is,
                                                      type,
                                                      m);
                 } catch (IOException e) {
@@ -1875,4 +1869,19 @@ public final class JAXRSUtils {
         return new JaxRsRuntimeException(ex);
     }
 
+    // Liberty change start
+    // copy the input stream so that it is not inadvertently closed
+    private static InputStream copyAndGetEntityStream(Message m) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            IOUtils.copy(m.getContent(InputStream.class), baos);
+        } catch (IOException e) {
+            throw ExceptionUtils.toInternalServerErrorException(e, null);
+        }
+        final byte[] copiedBytes = baos.toByteArray();
+        m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
+        m.setContent(ByteArrayInputStream.class, new ByteArrayInputStream(copiedBytes));
+        return new ByteArrayInputStream(copiedBytes);
+    }
+    // Liberty change end
 }
