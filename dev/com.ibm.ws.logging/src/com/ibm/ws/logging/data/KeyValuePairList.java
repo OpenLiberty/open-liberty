@@ -15,8 +15,10 @@ import java.util.ArrayList;
 public class KeyValuePairList implements Pair {
 
     ArrayList<KeyValuePair> keyValuePairs;
+    private final String name;
 
-    public KeyValuePairList() {
+    public KeyValuePairList(String name) {
+        this.name = name;
         keyValuePairs = new ArrayList<KeyValuePair>();
     }
 
@@ -37,5 +39,9 @@ public class KeyValuePairList implements Pair {
     public void addPair(String key, long value) {
         KeyValuePair kvp = new KeyValueLongPair(key, value);
         keyValuePairs.add(kvp);
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -158,7 +158,7 @@ public class LogSource implements Source, WsLogHandler {
 
         if (logRecord instanceof WsLogRecord) {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
-                KeyValuePairList extensions = new KeyValuePairList();
+                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     extensions.addPair(entry.getKey(), entry.getValue());
@@ -213,7 +213,7 @@ public class LogSource implements Source, WsLogHandler {
         genData.addPair(LogFieldConstants.IBM_METHODNAME, logRecord.getSourceMethodName());
         genData.addPair(LogFieldConstants.IBM_CLASSNAME, logRecord.getSourceClassName());
 
-        KeyValuePairList extensions = new KeyValuePairList();
+        KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
         Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
             extMap = ((WsLogRecord) logRecord).getExtensions();
