@@ -19,6 +19,8 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.injection.resref.web.AdvResourceRefServlet;
+import com.ibm.ws.injection.resref.web.BasicResourceRefServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -28,8 +30,6 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import suite.r85.base.injection.resref.web.AdvResourceRefServlet;
-import suite.r85.base.injection.resref.web.BasicResourceRefServlet;
 
 /**
  * This test case ensures that @Resource and XML can be declared and inject an
@@ -58,7 +58,7 @@ public class ResRefTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         // Use ShrinkHelper to build the ears
-        WebArchive ResourceRefWeb = ShrinkHelper.buildDefaultApp("ResourceRefWeb.war", "suite.r85.base.injection.resref.web.");
+        WebArchive ResourceRefWeb = ShrinkHelper.buildDefaultApp("ResourceRefWeb.war", "com.ibm.ws.injection.resref.web.");
         EnterpriseArchive ResourceRefTest = ShrinkWrap.create(EnterpriseArchive.class, "ResourceRefTest.ear");
         ResourceRefTest.addAsModule(ResourceRefWeb);
 

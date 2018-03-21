@@ -19,6 +19,18 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.injection.envann.web.AdvEnvAnnObjServlet;
+import com.ibm.ws.injection.envann.web.AdvEnvAnnPrimServlet;
+import com.ibm.ws.injection.envann.web.BasicEnvObjAnnServlet;
+import com.ibm.ws.injection.envann.web.BasicEnvPrimAnnServlet;
+import com.ibm.ws.injection.envmix.web.AdvEnvMixObjServlet;
+import com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServlet;
+import com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet;
+import com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet;
+import com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServlet;
+import com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServlet;
+import com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet;
+import com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -28,18 +40,6 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import suite.r85.base.injection.envann.web.AdvEnvAnnObjServlet;
-import suite.r85.base.injection.envann.web.AdvEnvAnnPrimServlet;
-import suite.r85.base.injection.envann.web.BasicEnvObjAnnServlet;
-import suite.r85.base.injection.envann.web.BasicEnvPrimAnnServlet;
-import suite.r85.base.injection.envmix.web.AdvEnvMixObjServlet;
-import suite.r85.base.injection.envmix.web.AdvEnvMixPrimServlet;
-import suite.r85.base.injection.envmix.web.BasicEnvObjMixServlet;
-import suite.r85.base.injection.envmix.web.BasicEnvPrimMixServlet;
-import suite.r85.base.injection.envxml.web.AdvEnvXMLObjServlet;
-import suite.r85.base.injection.envxml.web.AdvEnvXMLPrimServlet;
-import suite.r85.base.injection.envxml.web.BasicEnvObjXMLServlet;
-import suite.r85.base.injection.envxml.web.BasicEnvPrimXMLServlet;
 
 /**
  * This test case ensures that @Resource can be declared and inject an env-entry
@@ -76,15 +76,15 @@ public class EnvEntryTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         // Use ShrinkHelper to build the ears
-        WebArchive EnvEntryAnnWeb = ShrinkHelper.buildDefaultApp("EnvEntryAnnWeb.war", "suite.r85.base.injection.envann.web.");
+        WebArchive EnvEntryAnnWeb = ShrinkHelper.buildDefaultApp("EnvEntryAnnWeb.war", "com.ibm.ws.injection.envann.web.");
         EnterpriseArchive EnvEntryAnnTest = ShrinkWrap.create(EnterpriseArchive.class, "EnvEntryAnnTest.ear");
         EnvEntryAnnTest.addAsModule(EnvEntryAnnWeb);
 
-        WebArchive EnvEntryMixWeb = ShrinkHelper.buildDefaultApp("EnvEntryMixWeb.war", "suite.r85.base.injection.envmix.web.");
+        WebArchive EnvEntryMixWeb = ShrinkHelper.buildDefaultApp("EnvEntryMixWeb.war", "com.ibm.ws.injection.envmix.web.");
         EnterpriseArchive EnvEntryMixTest = ShrinkWrap.create(EnterpriseArchive.class, "EnvEntryMixTest.ear");
         EnvEntryMixTest.addAsModule(EnvEntryMixWeb);
 
-        WebArchive EnvEntryXMLWeb = ShrinkHelper.buildDefaultApp("EnvEntryXMLWeb.war", "suite.r85.base.injection.envxml.web.");
+        WebArchive EnvEntryXMLWeb = ShrinkHelper.buildDefaultApp("EnvEntryXMLWeb.war", "com.ibm.ws.injection.envxml.web.");
         EnterpriseArchive EnvEntryXMLTest = ShrinkWrap.create(EnterpriseArchive.class, "EnvEntryXMLTest.ear");
         EnvEntryXMLTest.addAsModule(EnvEntryXMLWeb);
 

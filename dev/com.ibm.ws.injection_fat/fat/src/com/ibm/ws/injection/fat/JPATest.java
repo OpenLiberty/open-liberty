@@ -19,6 +19,9 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServlet;
+import com.ibm.ws.injection.jpa.web.BasicJPAPersistenceContextServlet;
+import com.ibm.ws.injection.jpa.web.BasicJPAPersistenceUnitServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -28,9 +31,6 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import suite.r85.base.injection.jpa.web.AdvJPAPersistenceServlet;
-import suite.r85.base.injection.jpa.web.BasicJPAPersistenceContextServlet;
-import suite.r85.base.injection.jpa.web.BasicJPAPersistenceUnitServlet;
 
 /**
  * This test case ensures that @Resource and XML can be declared and inject a
@@ -62,7 +62,7 @@ public class JPATest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         // Use ShrinkHelper to build the ears
-        WebArchive JPAInjectionWeb = ShrinkHelper.buildDefaultApp("JPAInjectionWeb.war", "suite.r85.base.injection.jpa.web.");
+        WebArchive JPAInjectionWeb = ShrinkHelper.buildDefaultApp("JPAInjectionWeb.war", "com.ibm.ws.injection.jpa.web.");
         EnterpriseArchive JPAInjectionTest = ShrinkWrap.create(EnterpriseArchive.class, "JPAInjectionTest.ear");
         JPAInjectionTest.addAsModule(JPAInjectionWeb);
 

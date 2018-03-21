@@ -19,6 +19,9 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.injection.transaction.web.AdvTransactionServlet;
+import com.ibm.ws.injection.transaction.web.BasicTranSynchRegistryServlet;
+import com.ibm.ws.injection.transaction.web.BasicUserTransactionServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -28,9 +31,6 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import suite.r85.base.injection.transaction.web.AdvTransactionServlet;
-import suite.r85.base.injection.transaction.web.BasicTranSynchRegistryServlet;
-import suite.r85.base.injection.transaction.web.BasicUserTransactionServlet;
 
 /**
  * This test case ensures that @Resource and XML can be declared and inject a
@@ -62,7 +62,7 @@ public class TranTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         // Use ShrinkHelper to build the ears
-        WebArchive TransactionWeb = ShrinkHelper.buildDefaultApp("TransactionWeb.war", "suite.r85.base.injection.transaction.web.");
+        WebArchive TransactionWeb = ShrinkHelper.buildDefaultApp("TransactionWeb.war", "com.ibm.ws.injection.transaction.web.");
         EnterpriseArchive TransactionTest = ShrinkWrap.create(EnterpriseArchive.class, "TransactionTest.ear");
         TransactionTest.addAsModule(TransactionWeb);
 

@@ -6,63 +6,63 @@
     <!-- ##### Listeners: Object #### -->
     <listener>
         <display-name>AdvEnvAnnObjServletRequestListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnObjServletRequestListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnObjServletRequestListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnObjServletContextListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnObjServletContextListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnObjServletContextListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnObjHttpSessionListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnObjHttpSessionListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnObjHttpSessionListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnObjServletRequestAttributeListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnObjServletRequestAttributeListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnObjServletRequestAttributeListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnObjServletContextAttributeListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnObjServletContextAttributeListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnObjServletContextAttributeListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnObjHttpSessionAttributeListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnObjHttpSessionAttributeListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnObjHttpSessionAttributeListener</listener-class>
     </listener>
     
     <!-- ##### Listeners: Primitive #### -->
     <listener>
         <display-name>AdvEnvAnnPrimServletRequestListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnPrimServletRequestListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnPrimServletRequestListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnPrimServletContextListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnPrimServletContextListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnPrimServletContextListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnPrimHttpSessionListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnPrimHttpSessionListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnPrimHttpSessionListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnPrimServletRequestAttributeListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnPrimServletRequestAttributeListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnPrimServletRequestAttributeListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnPrimServletContextAttributeListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnPrimServletContextAttributeListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnPrimServletContextAttributeListener</listener-class>
     </listener>
     
     <listener>
         <display-name>AdvEnvAnnPrimHttpSessionAttributeListener</display-name>
-        <listener-class>suite.r85.base.injection.envann.web.AdvEnvAnnPrimHttpSessionAttributeListener</listener-class>
+        <listener-class>com.ibm.ws.injection.envann.web.AdvEnvAnnPrimHttpSessionAttributeListener</listener-class>
     </listener>
     
     <!-- Filters -->
@@ -70,7 +70,7 @@
     <filter>
         <display-name>AdvEnvAnnObjFilter</display-name>
         <filter-name>AdvEnvAnnObjFilter</filter-name>
-        <filter-class>suite.r85.base.injection.envann.web.AdvEnvAnnObjFilter</filter-class>
+        <filter-class>com.ibm.ws.injection.envann.web.AdvEnvAnnObjFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>AdvEnvAnnObjFilter</filter-name>
@@ -81,7 +81,7 @@
     <filter>
         <display-name>AdvEnvAnnPrimFilter</display-name>
         <filter-name>AdvEnvAnnPrimFilter</filter-name>
-        <filter-class>suite.r85.base.injection.envann.web.AdvEnvAnnPrimFilter</filter-class>
+        <filter-class>com.ibm.ws.injection.envann.web.AdvEnvAnnPrimFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>AdvEnvAnnPrimFilter</filter-name>
