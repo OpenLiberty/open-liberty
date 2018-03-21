@@ -10,6 +10,7 @@
  *******************************************************************************/
 package session.cache.web;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -63,7 +64,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     /**
      * Verify that the cache contains the specified attribute and value.
      */
-    public void testCacheContents(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testCacheContains(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String sessionId = request.getParameter("sessionId");
 
         if (sessionId == null) {
@@ -74,29 +75,33 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         String attrName = request.getParameter("attribute");
         String key = sessionId + '.' + attrName;
 
-        String expected = request.getParameter("expected");
+        String expected = request.getParameter("value");
         String type = request.getParameter("type");
         Object expectedValue = toType(type, expected);
 
-        testCacheContents(key, expectedValue);
+        testCacheContains(key, expectedValue);
     }
 
     /**
      * Verify that the cache contains the specified attribute and value.
      */
-    private void testCacheContents(String key, Object expectedValue) throws Exception {
+    private void testCacheContains(String key, Object expectedValue) throws Exception {
         byte[] expectedBytes = expectedValue == null ? null : toBytes(expectedValue);
 
-        System.out.println("testCacheContents cache entry " + key + " should have value: " + expectedValue);
+        System.out.println("testCacheContains cache entry " + key + " should have value: " + expectedValue);
         System.out.println("as a byte array, this is: " + Arrays.toString(expectedBytes));
 
         // need to use same config file as server.xml
         String hazelcastConfigLoc = InitialContext.doLookup("hazelcast/configlocation");
         System.setProperty("hazelcast.config", hazelcastConfigLoc);
 
+        byte[] bytes;
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
-
-        byte[] bytes = cache.get(key);
+        try {
+            bytes = cache.get(key);
+        } finally {
+            cache.close();
+        }
 
         assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
                    "Bytes expected: " + Arrays.toString(expectedBytes) + EOLN +
@@ -105,7 +110,54 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     }
 
     /**
-     * Use IBMSession.sync to request a manual update of the persistent store and verify that the update is made immediately.
+     * Verify that the cache either does not contain specified attribute or its value does not match.
+     */
+    private void testCacheEntryDoesNotMatch(String key, Object unexpectedValue) throws Exception {
+        byte[] unexpectedBytes = unexpectedValue == null ? null : toBytes(unexpectedValue);
+
+        System.out.println("testCacheEntryDoesNotMatch cache entry " + key + " should not have value: " + unexpectedValue);
+        System.out.println("as a byte array, this is: " + Arrays.toString(unexpectedBytes));
+
+        // need to use same config file as server.xml
+        String hazelcastConfigLoc = InitialContext.doLookup("hazelcast/configlocation");
+        System.setProperty("hazelcast.config", hazelcastConfigLoc);
+
+        byte[] bytes;
+        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        try {
+            bytes = cache.get(key);
+        } finally {
+            cache.close();
+        }
+
+        assertFalse("Not expecting cache entry " + key + " to have value " + unexpectedValue + ". " + EOLN +
+                    "Bytes observed: " + Arrays.toString(bytes),
+                    Arrays.equals(unexpectedBytes, bytes));
+    }
+
+    /**
+     * Use IBMSession.sync to request a manual update of the persistent store and verify that an update that
+     * was made under a previous servlet request goes into effect immediately.
+     */
+    public void testManualSync(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String attrName = request.getParameter("attribute");
+
+        String stringValue = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object value = toType(type, stringValue);
+
+        HttpSession session = request.getSession(false);
+
+        ((IBMSession) session).sync();
+
+        // Verify that attribute has been persisted to the cache
+        String key = session.getId() + '.' + attrName;
+        testCacheContains(key, value);
+    }
+
+    /**
+     * Use IBMSession.sync to request a manual update of the persistent store for an update that is made
+     * within the same servlet request. Verify that the update goes into effect immediately.
      */
     public void testManualUpdate(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String attrName = request.getParameter("attribute");
@@ -117,12 +169,33 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         HttpSession session = request.getSession(true);
         session.setAttribute(attrName, value);
 
+        // Verify that attribute does not get persisted to the cache yet
         String key = session.getId() + '.' + attrName;
-        testCacheContents(key, null);
+        testCacheEntryDoesNotMatch(key, value);
 
         ((IBMSession) session).sync();
 
-        testCacheContents(key, value);
+        // Verify that attribute has been persisted to the cache
+        testCacheContains(key, value);
+    }
+
+    /**
+     * Set the value of a session attribute.
+     * Precondition: in order for the test logic to be valid, the session attribute must not already have the same value.
+     */
+    public void testSetAttribute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String attrName = request.getParameter("attribute");
+
+        String stringValue = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object value = toType(type, stringValue);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(attrName, value);
+
+        // Verify that attribute does not get persisted to the cache yet
+        String key = session.getId() + '.' + attrName;
+        testCacheEntryDoesNotMatch(key, value);
     }
 
     /**

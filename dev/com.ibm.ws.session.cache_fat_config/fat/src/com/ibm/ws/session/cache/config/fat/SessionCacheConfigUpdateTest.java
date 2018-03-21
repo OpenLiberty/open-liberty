@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.HttpSessionCache;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
@@ -96,10 +97,36 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         cleanupList = EMPTY_RECYCLE_LIST;
     }
 
+    /**
+     * Update the configured value of the writeFrequency attribute from default (END_OF_SERVLET_SERVICE) to MANUAL_UPDATE
+     * while the server is running. The session must remain valid, and must exhibit the new behavior (MANUAL_UPDATE) after
+     * the configuration change.
+     */
     @Test
-    public void testManualUpdate() throws Exception {
+    public void testWriteFrequency() throws Exception {
+        // Verify default behavior: writeFrequency=END_OF_SERVLET_SERVICE
         List<String> session = new ArrayList<>();
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualUpdate&attribute=MU&value=testManualUpdate", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+
+        // Reconfigure writeFrequency=MANUAL_UPDATE
+        ServerConfiguration config = server.getServerConfiguration();
+        HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        httpSessionCache.setWriteFrequency("MANUAL_UPDATE");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        // Set a new attribute value without performing a manual sync, the value in the cache should not be updated
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+
+        // TODO enable if manual sync is supported across same session spanning multiple servlet requests:
+        // Perform a manual sync under a subsequent servlet request and verify the previously set value is updated
+        // FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualSync&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
+
+        // Perform a manual update within the same servlet request
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualUpdate&attribute=testWriteFrequency&value=3_MANUAL_UPDATE", session);
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
     }
 }
