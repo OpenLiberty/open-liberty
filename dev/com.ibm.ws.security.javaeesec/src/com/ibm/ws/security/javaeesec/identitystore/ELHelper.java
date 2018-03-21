@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -375,6 +375,7 @@ class ELHelper {
             Object obj = evaluateElExpression(useForExpression);
             if (obj instanceof Object[]) {
                 result = new HashSet(Arrays.asList(obj));
+                System.out.println("Toshi : result : " + result);
                 immediate = isImmediateExpression(useForExpression);
             } else if (obj instanceof Set) {
                 result = (Set<ValidationType>) obj;
@@ -387,7 +388,8 @@ class ELHelper {
         if (result == null || result.isEmpty()) {
             throw new IllegalArgumentException("The identity store must be configured with at least one ValidationType.");
         }
-        return (immediateOnly && !immediate) ? null : Collections.unmodifiableSet(result);
+//        return (immediateOnly && !immediate) ? null : Collections.unmodifiableSet(result);
+        return (immediateOnly && !immediate) ? null : result;
     }
 
     /**
