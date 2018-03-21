@@ -26,7 +26,9 @@ javac.source: 1.8
 javac.target: 1.8
 
 -testpath: \
+	org.springframework:spring-beans;strategy=exact;version=4.3.13.RELEASE, \
 	org.springframework:spring-context;strategy=exact;version=4.3.13.RELEASE, \
 	org.springframework:spring-web;strategy=exact;version=4.3.13.RELEASE, \
 	org.springframework.boot:spring-boot-autoconfigure;strategy=exact;version=1.5.9.RELEASE, \
-	org.springframework.boot:spring-boot;strategy=exact;version=1.5.9.RELEASE
+	org.springframework.boot:spring-boot;strategy=exact;version=1.5.9.RELEASE, \
+	com.ibm.websphere.javaee.servlet.3.1

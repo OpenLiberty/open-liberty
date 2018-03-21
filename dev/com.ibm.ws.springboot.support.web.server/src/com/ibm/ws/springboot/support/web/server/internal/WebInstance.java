@@ -33,6 +33,7 @@ import com.ibm.ws.app.manager.springboot.support.SpringBootApplication;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.extended.TagLibContainerInfo;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
@@ -137,6 +138,15 @@ public class WebInstance implements Instance {
         // classesInfo is known to be non-null - getClassesInfo always constructs a new one
         NonPersistentCache npc = appContainer.adapt(NonPersistentCache.class);
         npc.addToCache(WebModuleClassesInfo.class, classesInfo);
+
+        TagLibContainerInfo tagLibInfo = new TagLibContainerInfo() {
+
+            @Override
+            public List<ContainerInfo> getTagLibContainers() {
+                return app.getSpringClassesContainerInfo().getClassesContainerInfo();
+            }
+        };
+        npc.addToCache(TagLibContainerInfo.class, tagLibInfo);
 
         ExtendedApplicationInfo appInfo = app.createApplicationInfo(id, appContainer);
         InstanceDeployedAppInfo deployedApp = new InstanceDeployedAppInfo(initializer, instanceFactory.getDeployedAppFactory(), appInfo);

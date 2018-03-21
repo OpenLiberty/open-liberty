@@ -26,7 +26,7 @@ javac.source: 1.8
 javac.target: 1.8
 
 -testpath: \
-	org.springframework:spring-context;version=5.0.4.RELEASE, \
-	org.springframework:spring-web;version=5.0.4.RELEASE, \
+	org.springframework:spring-context;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework:spring-web;strategy=exact;version=5.0.4.RELEASE, \
 	org.springframework.boot:spring-boot-autoconfigure;version=2.0.0.RELEASE, \
 	org.springframework.boot:spring-boot;version=2.0.0.RELEASE

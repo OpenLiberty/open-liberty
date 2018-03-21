@@ -30,13 +30,13 @@ Provide-Capability: spring.boot.support; jars:List<String>=springBootCloser.jar;
 instrument.disabled: true
 
 -buildpath: \
-	org.springframework:spring-core;version=4.3.13.RELEASE, \
-	org.springframework:spring-context;version=4.3.13.RELEASE, \
-	org.springframework:spring-aop;version=4.3.13.RELEASE, \
-	org.springframework:spring-expression;version=4.3.13.RELEASE, \
-	org.springframework:spring-beans;version=4.3.13.RELEASE, \
-	org.springframework.boot:spring-boot-autoconfigure;version=1.5.9.RELEASE, \
-	org.springframework.boot:spring-boot;version=1.5.9.RELEASE, \
+	org.springframework:spring-core;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-context;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-aop;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-expression;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-beans;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework.boot:spring-boot-autoconfigure;strategy=exact;version=1.5.9.RELEASE, \
+	org.springframework.boot:spring-boot;strategy=exact;version=1.5.9.RELEASE, \
 	com.ibm.ws.app.manager.springboot;version=latest, \
 	com.ibm.wsspi.org.osgi.service.component.annotations
 

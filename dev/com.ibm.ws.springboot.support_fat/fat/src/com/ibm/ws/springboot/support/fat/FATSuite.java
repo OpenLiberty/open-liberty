@@ -27,7 +27,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 SSLTests15.class,
                 SSLTests20.class,
                 SSLMutualAuthTests15.class,
-                SSLMutualAuthTests20.class
+                SSLMutualAuthTests20.class,
+                JSPTests15.class
 })
 
 public class FATSuite {

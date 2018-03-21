@@ -43,6 +43,7 @@ public abstract class AbstractSpringTests {
     }
 
     public static final String SPRING_BOOT_15_APP_BASE = "com.ibm.ws.springboot.support.version15.test.app.jar";
+    public static final String SPRING_BOOT_15_APP_WAR = "com.ibm.ws.springboot.support.version15.test.war.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
 
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
@@ -116,8 +117,6 @@ public abstract class AbstractSpringTests {
             Set<String> features = config.getFeatureManager().getFeatures();
             features.clear();
             features.addAll(getFeatures());
-            List<SpringBootApp> apps = config.getSpringBootApps();
-            apps.clear();
             RemoteFile appFile = getApplicationFile();
             switch (getApplicationConfigType()) {
                 case DROPINS_SPR: {
