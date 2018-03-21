@@ -31,11 +31,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.LoggingTestUtils;
-import test.TestConstants;
-import test.common.SharedOutputManager;
-import test.common.TestFile;
-
 import com.ibm.websphere.ras.SharedTr;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.DiagnosticModule;
@@ -46,6 +41,11 @@ import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.ws.ffdc.IncidentStream;
 import com.ibm.ws.ffdc.SharedFFDCConfigurator;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
+
+import test.LoggingTestUtils;
+import test.TestConstants;
+import test.common.SharedOutputManager;
+import test.common.TestFile;
 
 public class BasicFFDCServiceTest {
 
@@ -58,6 +58,7 @@ public class BasicFFDCServiceTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         LogProviderConfig config = SharedTr.getDefaultConfig();
+
         FFDCConfigurator.init(config);
 
         File logDir = config.getLogDirectory();
@@ -375,7 +376,7 @@ public class BasicFFDCServiceTest {
     public void testFFDCSummary() throws Exception {
         BaseFFDCService ffdcService = new BaseFFDCService();
 
-        // Non-destructive pre-config value: 
+        // Non-destructive pre-config value:
         assertEquals("maxFiles should start out as 0", 0, ffdcService.summaryLogSet.getMaxFiles());
 
         // Apply initial configuration
@@ -448,7 +449,7 @@ public class BasicFFDCServiceTest {
 
     /**
      * Gets all of the FFDC logs from the ffdc folder. Returns an empty array if there are no files in there.
-     * 
+     *
      * @return An array of the ffdc log files
      */
     private File[] getFfdcLogs() {

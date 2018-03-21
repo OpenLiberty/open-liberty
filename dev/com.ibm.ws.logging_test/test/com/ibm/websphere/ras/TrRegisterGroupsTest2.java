@@ -18,6 +18,7 @@ import org.jmock.integration.junit4.JMock;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,7 @@ import test.common.SharedOutputManager;
  * Test TraceComponent registration methods using annotations to specify
  * multiple groups only
  */
+@Ignore
 @RunWith(JMock.class)
 @TraceOptions(traceGroups = { "multigroup1", "multigroup2" })
 public class TrRegisterGroupsTest2 {

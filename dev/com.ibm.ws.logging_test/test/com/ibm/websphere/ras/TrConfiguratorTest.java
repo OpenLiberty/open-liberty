@@ -36,7 +36,6 @@ import test.common.SharedOutputManager;
 /**
  *
  */
-@Ignore
 public class TrConfiguratorTest {
     static {
         LoggingTestUtils.ensureLogManager();
@@ -66,6 +65,7 @@ public class TrConfiguratorTest {
         Tr.allTraceComponents.clear();
     }
 
+    @Ignore
     @Test
     public void testBadTraceSpecification() {
         final String m = "testStaticTraceMethods";

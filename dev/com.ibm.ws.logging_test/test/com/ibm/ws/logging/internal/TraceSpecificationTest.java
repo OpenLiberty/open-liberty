@@ -22,11 +22,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import com.ibm.ws.logging.internal.TraceSpecification.TraceElement;
+
 import test.LoggingTestUtils;
 import test.TestConstants;
 import test.common.SharedOutputManager;
-
-import com.ibm.ws.logging.internal.TraceSpecification.TraceElement;
 
 /**
  * Tests for the {@link TraceSpecification} class
