@@ -332,7 +332,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * Each war files has one jar file.
      * This test case uses EJB with the purpose of testing Basic Authentication but falling back to the server's UR.
      * </OL>
-     * <P> Expected Results: 403 Due to the application uses IS.
+     * <P> Expected Results: 401 Due to the application uses IS.
      * <OL>
      * <LI>
      * </OL>
@@ -346,7 +346,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user99",
                                                           "user99pwd",
-                                                          HttpServletResponse.SC_FORBIDDEN);
+                                                          HttpServletResponse.SC_UNAUTHORIZED);
         Log.info(logClass, getCurrentTestName(), "-------------End of Response");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());

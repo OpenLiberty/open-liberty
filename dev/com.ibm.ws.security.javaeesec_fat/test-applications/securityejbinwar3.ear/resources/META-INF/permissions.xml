@@ -34,10 +34,10 @@
       <actions>read</actions>
    </permission>
 
-   <permission>
+  <!-- <permission>
       <class-name>javax.security.enterprise.identitystore.IdentityStorePermission</class-name>
       <name>getGroups</name>
-   </permission>
+   </permission>-->
 
    <permission>
       <class-name>java.lang.RuntimePermission</class-name>

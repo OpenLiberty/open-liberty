@@ -28,7 +28,7 @@
 			</security-role>
 			<security-role name="Manager">
 				<user name="user1" access-id="uid=user1,ou=users,o=ibm,c=us" />
-				<user name="user1" access-id="uid=user1,ou=anotherusers,o=ibm,c=us" />
+				<user name="anotheruser1" access-id="uid=anotheruser1,ou=anotherusers,o=ibm,c=us" />
 				<user name="blue1" access-id="user:jdbc/derby1fat/blue1" />
 				<user name="blue3" access-id="user:jdbc/derby1fat/blue3" />
 				<run-as userid="blue3" />
@@ -37,9 +37,9 @@
 				<special-subject type="ALL_AUTHENTICATED_USERS" />
 			</security-role>
 
-<			security-role name="declareRoles01">
+			<security-role name="declareRoles01">
 				<user name="user2" access-id="uid=user2,ou=users,o=ibm,c=us" />
-				<user name="user2" access-id="uid=anotheruser2,ou=anotherusers,o=ibm,c=us" />
+				<user name="anotheruser2" access-id="uid=anotheruser2,ou=anotherusers,o=ibm,c=us" />
 				<user name="jaspiuser1" access-id="user:BasicRealm/jaspiuser1" />
 			</security-role>
 		</application-bnd>

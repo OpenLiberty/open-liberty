@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application id="Application_ID" version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+  <description>securityejbinwar2.ear</description>
+  <display-name>securityejbinwar2.ear</display-name>
+  <module id="WebModule_1">
+    <web>
+      <web-uri>EjbinWarServletISLdapDb.war</web-uri>
+      <context-root>/EjbinWarServletISLdapDb</context-root>
+    </web>
+  </module>
+    <module id="WebModule_2">
+    <web>
+      <web-uri>EjbinWarServletISLdap.war</web-uri>
+      <context-root>/EjbinWarServletISLdap</context-root>
+    </web>
+  </module>
+</application>

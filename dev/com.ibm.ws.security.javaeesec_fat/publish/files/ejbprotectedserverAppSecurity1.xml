@@ -1,9 +1,8 @@
 <server description="JavaEESec Multiple Module FAT">
 
 	<featureManager>
-		<feature>appSecurity-3.0</feature>
+		<feature>appSecurity-1.0</feature>
 		<feature>ejbLite-3.2</feature>
-		<feature>jsf-2.3</feature>
 		<feature>el-3.0</feature>
 		<feature>jdbc-4.1</feature>
 		<feature>componenttest-1.0</feature>
@@ -19,8 +18,8 @@
 
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 	
-	<application type="ear" id="securityejbinwar2" name="securityejbinwar2"
-		location="securityejbinwar2.ear">
+	<application type="ear" id="securityejbinwar3" name="securityejbinwar3"
+		location="securityejbinwar3.ear">
 <application-bnd>
 			<security-role name="Employee">
 				<user name="blue2" access-id="user:jdbc/derby1fat/blue2" />
@@ -28,7 +27,7 @@
 			</security-role>
 			<security-role name="Manager">
 				<user name="user1" access-id="uid=user1,ou=users,o=ibm,c=us" />
-				 <user name="jaspiuser1" access-id="EJBMultipleIdentityStore2/jaspiuser1" />
+				<user name="jaspiuser1" access-id="user:EJBMultipleIdentityStore/jaspiuser1" />
 				<user name="anotheruser1" access-id="uid=anotheruser1,ou=anotherusers,o=ibm,c=us" />
 				<user name="blue1" access-id="user:jdbc/derby1fat/blue1" />
 				<user name="blue3" access-id="user:jdbc/derby1fat/blue3" />
