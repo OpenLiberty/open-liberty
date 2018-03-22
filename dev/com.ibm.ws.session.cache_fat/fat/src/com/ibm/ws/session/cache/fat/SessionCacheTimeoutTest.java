@@ -1,6 +1,13 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.session.cache.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
@@ -58,6 +65,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
      * Test that a session is removed from memory after timeout.
      */
     @Test
+    @Mode(FULL)
     public void testInvalidationTimeout() throws Exception {
         // Initialize a session with some data
         List<String> session = new ArrayList<>();
@@ -77,8 +85,21 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @Mode(FULL)
     public void testServletTimeout() throws Exception {
         List<String> session = new ArrayList<>();
-        appOneListener.sessionPut("testInvalidationTimeout-foo2", "bar", session, true);
-        appOneListener.invokeServlet("sessionGetTimeout&key=testInvalidationTimeout-foo2", session);
+        appOneListener.sessionPut("testServletTimeout-foo2", "bar", session, true);
+        appOneListener.invokeServlet("sessionGetTimeout&key=testServletTimeout-foo2&expectedValue=bar", session); //Should still get the value
+        appOneListener.sessionGet("testServletTimeout-foo2", null, session);
+    }
+
+    /**
+     * Tests that a locally cached session is still usable to the end of a servlet call after being invalidated,
+     * and is no longer valid in a following servlet call.
+     */
+    @Test
+    @Mode(FULL)
+    public void testServletPutTimeout() throws Exception {
+        List<String> session = new ArrayList<>();
+        appOneListener.invokeServlet("sessionPutTimeout&key=testServletPutTimeout-foo2&value=bar&createSession=true", session);
+        appOneListener.sessionGet("testServletPutTimeout-foo2", null, session);
     }
 
     @Test
@@ -112,4 +133,5 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         }
         fail("The machine was too slow to run this test after attempting it 5 times.");
     }
+
 }
