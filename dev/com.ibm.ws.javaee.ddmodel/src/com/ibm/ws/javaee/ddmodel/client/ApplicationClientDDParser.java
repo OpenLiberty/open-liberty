@@ -73,13 +73,25 @@ public class ApplicationClientDDParser extends DDParser {
                 return new ApplicationClientType(getDeploymentDescriptorPath());
             }
         }
-        else if (maxVersion >= ApplicationClient.VERSION_7 && "7".equals(vers)) {
-            if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                version = ApplicationClient.VERSION_7;
-                eePlatformVersion = 70;
-                return new ApplicationClientType(getDeploymentDescriptorPath());
-            }
+        else if ("7".equals(vers)) {
+        	if (maxVersion >= ApplicationClient.VERSION_7) { 
+        		if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+        			version = ApplicationClient.VERSION_7;
+        			eePlatformVersion = 70;
+        			return new ApplicationClientType(getDeploymentDescriptorPath());
+        		}
+        	}
         }
+        else if ("8".equals(vers)) {
+        	if (maxVersion >= ApplicationClient.VERSION_8) {
+        		if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+        			version = ApplicationClient.VERSION_8;
+        			eePlatformVersion = 80;
+        			return new ApplicationClientType(getDeploymentDescriptorPath());
+        		}
+        	}
+        }
+
         throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
     }
 }

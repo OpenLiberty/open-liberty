@@ -84,6 +84,9 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
             if (!"application".equals(rootElementLocalName)) {
                 throw new ParseException(invalidRootElement());
             }
+
+            // Old DTD based descriptor.
+
             if (namespace == null) {
                 if (dtdPublicId != null) {
                     if (APPLICATION_DTD_PUBLIC_ID_12.equals(dtdPublicId)) {
@@ -99,36 +102,59 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
                 }
                 throw new ParseException(unknownDeploymentDescriptorVersion());
             }
+
+            // Schema based descriptor.
+
+            // A version must always be specified.
             String vers = getAttributeValue("", "version");
             if (vers == null) {
                 throw new ParseException(missingDeploymentDescriptorVersion());
             }
 
-            if ("http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
-                if ("1.4".equals(vers)) {
+            // Note: In TWAS, the namespace is optional.
+
+            if ("1.4".equals(vers)) {
+            	// Always supported. The namespace must be correct for the version.
+            	if ( "http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
                     version = 14;
                     eePlatformVersion = 14;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
-            }
-            else if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
-                if ("5".equals(vers)) {
+            } else if ("5".equals(vers)) {
+            	// Always supported. The namespace must be correct for the version.
+                if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
                     version = 50;
                     eePlatformVersion = 50;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
-                if ("6".equals(vers)) {
+            } else if ("6".equals(vers)) {
+            	// Always supported. The namespace must be correct for the version.
+                if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {            	
                     version = 60;
                     eePlatformVersion = 60;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
-            }
-            else if (eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0 && "http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                if ("7".equals(vers)) {
-                    version = 70;
-                    eePlatformVersion = 70;
-                    return new ApplicationType(getDeploymentDescriptorPath());
-                }
+            } else if ("7".equals(vers)) {
+            	// Supported only when provisioned for java 7 or java 8.
+            	// The namespace must still be correctly set.
+            	if ((eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) ||
+            	    (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0)) { 
+                	if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+            			version = 70;
+            			eePlatformVersion = 70;
+            			return new ApplicationType(getDeploymentDescriptorPath());
+            		}
+            	}
+            } else if ("8".equals(vers)) {
+            	// Supported only when provisioned for java 8.
+            	// The namespace must still be correctly set.
+            	if (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0) { 
+                	if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+            			version = 80;
+            			eePlatformVersion = 80;
+            			return new ApplicationType(getDeploymentDescriptorPath());
+            		}
+            	}
             }
 
             throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
