@@ -36,6 +36,16 @@ public class KeyValueStringPair implements Pair, KeyValuePair {
     }
 
     @Override
+    public boolean isFloat() {
+        return false;
+    }
+
+    @Override
+    public boolean isBoolean() {
+        return false;
+    }
+
+    @Override
     public String getStringValue() {
         return value;
     }
@@ -51,6 +61,16 @@ public class KeyValueStringPair implements Pair, KeyValuePair {
     }
 
     @Override
+    public Float getFloatValue() {
+        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueStringPair class");
+    }
+
+    @Override
+    public Boolean getBooleanValue() {
+        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueStringPair class");
+    }
+
+    @Override
     public ValueTypes getType() {
         return ValueTypes.STRING;
     }
@@ -59,5 +79,4 @@ public class KeyValueStringPair implements Pair, KeyValuePair {
     public String getKey() {
         return key;
     }
-
 }

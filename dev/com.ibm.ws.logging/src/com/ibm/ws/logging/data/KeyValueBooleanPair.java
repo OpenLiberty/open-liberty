@@ -13,12 +13,12 @@ package com.ibm.ws.logging.data;
 /**
  *
  */
-public class KeyValueLongPair implements Pair, KeyValuePair {
 
+public class KeyValueBooleanPair implements Pair, KeyValuePair {
     private final String key;
-    private final long value;
+    private final boolean value;
 
-    public KeyValueLongPair(String key, long value) {
+    public KeyValueBooleanPair(String key, boolean value) {
         this.key = key;
         this.value = value;
     }
@@ -35,7 +35,7 @@ public class KeyValueLongPair implements Pair, KeyValuePair {
 
     @Override
     public boolean isLong() {
-        return true;
+        return false;
     }
 
     @Override
@@ -45,37 +45,37 @@ public class KeyValueLongPair implements Pair, KeyValuePair {
 
     @Override
     public boolean isBoolean() {
-        return false;
+        return true;
     }
 
     @Override
     public String getStringValue() {
-        throw new UnsupportedOperationException("Cannot call getStringValue method on KeyValueLongPair class");
+        throw new UnsupportedOperationException("Cannot call getStringValue method on KeyValueFloatPair class");
     }
 
     @Override
     public Integer getIntValue() {
-        throw new UnsupportedOperationException("Cannot call getIntValue method on KeyValueLongPair class");
-    }
-
-    @Override
-    public Float getFloatValue() {
-        throw new UnsupportedOperationException("Cannot call getIntValue method on KeyValueLongPair class");
-    }
-
-    @Override
-    public Boolean getBooleanValue() {
-        throw new UnsupportedOperationException("Cannot call getIntValue method on KeyValueLongPair class");
+        throw new UnsupportedOperationException("Cannot call getStringValue method on KeyValueFloatPair class");
     }
 
     @Override
     public Long getLongValue() {
+        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueFloatPair class");
+    }
+
+    @Override
+    public Float getFloatValue() {
+        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueFloatPair class");
+    }
+
+    @Override
+    public Boolean getBooleanValue() {
         return value;
     }
 
     @Override
     public ValueTypes getType() {
-        return ValueTypes.LONG;
+        return ValueTypes.BOOLEAN;
     }
 
     @Override

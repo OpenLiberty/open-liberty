@@ -17,6 +17,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
@@ -122,8 +123,26 @@ public class TraceSource implements Source, WsTraceHandler {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
                 KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
+                String extKey = "";
+                String extValue = "";
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    extensions.addPair(entry.getKey(), entry.getValue());
+                    extKey = entry.getKey();
+                    extValue = entry.getValue();
+                    boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(extKey, extValue);
+                    if (isValidExt) {
+                        extKey = LogFieldConstants.EXT_PREFIX + extKey;
+                        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+                            extensions.addPair(extKey, Integer.parseInt(extValue));
+                        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+                            extensions.addPair(extKey, Float.parseFloat(extValue));
+                        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+                            extensions.addPair(extKey, Boolean.parseBoolean(extValue));
+                        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+                            extensions.addPair(extKey, Long.parseLong(extValue));
+                        } else {
+                            extensions.addPair(extKey, extValue);
+                        }
+                    }
                 }
                 genData.addPairs(extensions);
             }

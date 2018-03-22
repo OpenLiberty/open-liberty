@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
@@ -160,8 +161,27 @@ public class LogSource implements Source, WsLogHandler {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
                 KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
+
+                String extKey = "";
+                String extValue = "";
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    extensions.addPair(entry.getKey(), entry.getValue());
+                    extKey = entry.getKey();
+                    extValue = entry.getValue();
+                    boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(extKey, extValue);
+                    if (isValidExt) {
+                        extKey = LogFieldConstants.EXT_PREFIX + extKey;
+                        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+                            extensions.addPair(extKey, Integer.parseInt(extValue));
+                        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+                            extensions.addPair(extKey, Float.parseFloat(extValue));
+                        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+                            extensions.addPair(extKey, Boolean.parseBoolean(extValue));
+                        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+                            extensions.addPair(extKey, Long.parseLong(extValue));
+                        } else {
+                            extensions.addPair(extKey, extValue);
+                        }
+                    }
                 }
                 genData.addPairs(extensions);
             }
@@ -213,16 +233,36 @@ public class LogSource implements Source, WsLogHandler {
         genData.addPair(LogFieldConstants.IBM_METHODNAME, logRecord.getSourceMethodName());
         genData.addPair(LogFieldConstants.IBM_CLASSNAME, logRecord.getSourceClassName());
 
-        KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
-        Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
-            extMap = ((WsLogRecord) logRecord).getExtensions();
-            for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                extensions.addPair(entry.getKey(), entry.getValue());
+            if (((WsLogRecord) logRecord).getExtensions() != null) {
+                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
+                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
+
+                String extKey = "";
+                String extValue = "";
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    extKey = entry.getKey();
+                    extValue = entry.getValue();
+                    boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(extKey, extValue);
+                    if (isValidExt) {
+                        extKey = LogFieldConstants.EXT_PREFIX + extKey;
+                        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+                            extensions.addPair(extKey, Integer.parseInt(extValue));
+                        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+                            extensions.addPair(extKey, Float.parseFloat(extValue));
+                        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+                            extensions.addPair(extKey, Boolean.parseBoolean(extValue));
+                        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+                            extensions.addPair(extKey, Long.parseLong(extValue));
+                        } else {
+                            extensions.addPair(extKey, extValue);
+                        }
+                    }
+                }
+                genData.addPairs(extensions);
             }
         }
 
-        genData.addPairs(extensions);
         genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceNumber.next(dateVal));
         //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
 

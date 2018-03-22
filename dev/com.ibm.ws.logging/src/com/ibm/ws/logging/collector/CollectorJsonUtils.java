@@ -230,16 +230,18 @@ public class CollectorJsonUtils {
                 kvpl = (KeyValuePairList) p;
                 if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
                     extensions = kvpl.getKeyValuePairs();
-                    boolean isExtQuoteless = false;
                     for (KeyValuePair k : extensions) {
                         String extKey = k.getKey();
-                        String extValue = k.getStringValue();
-                        // Checking the value of the extension KeyValuePair to make sure the suffix is correct
-                        boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(k);
-                        if (isValidExt) {
-                            isExtQuoteless = CollectorJsonHelpers.checkIfExtIsQuoteless(extKey);
-                            extKey = LogFieldConstants.EXT_PREFIX + extKey;
-                            CollectorJsonHelpers.addToJSON(sb, extKey, extValue, false, true, false, false, isExtQuoteless);
+                        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getIntValue().toString(), false, true, false, false, k.isInteger());
+                        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getFloatValue().toString(), false, true, false, false, k.isFloat());
+                        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getLongValue().toString(), false, true, false, false, k.isLong());
+                        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getBooleanValue().toString(), false, true, false, false, k.isBoolean());
+                        } else {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
                         }
                     }
                 }

@@ -15,7 +15,7 @@ package com.ibm.ws.logging.data;
  */
 public interface KeyValuePair {
     public static enum ValueTypes {
-        STRING, INTEGER, LONG
+        STRING, INTEGER, LONG, FLOAT, BOOLEAN
     }
 
     public boolean isInteger();
@@ -24,11 +24,19 @@ public interface KeyValuePair {
 
     public boolean isString();
 
+    public boolean isFloat();
+
+    public boolean isBoolean();
+
     public Integer getIntValue();
 
     public Long getLongValue();
 
     public String getStringValue();
+
+    public Float getFloatValue();
+
+    public Boolean getBooleanValue();
 
     public ValueTypes getType();
 

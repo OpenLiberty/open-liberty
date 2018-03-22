@@ -41,6 +41,16 @@ public class KeyValuePairList implements Pair {
         keyValuePairs.add(kvp);
     }
 
+    public void addPair(String key, boolean value) {
+        KeyValuePair kvp = new KeyValueBooleanPair(key, value);
+        keyValuePairs.add(kvp);
+    }
+
+    public void addPair(String key, float value) {
+        KeyValuePair kvp = new KeyValueFloatPair(key, value);
+        keyValuePairs.add(kvp);
+    }
+
     public String getName() {
         return name;
     }

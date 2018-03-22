@@ -12,8 +12,6 @@ package com.ibm.ws.logging.collector;
 
 import java.text.SimpleDateFormat;
 
-import com.ibm.ws.logging.data.KeyValuePair;
-
 /**
  * CollectorJsonHelpers contains methods shared between CollectorjsonUtils and CollectorJsonUtils1_1
  */
@@ -36,11 +34,12 @@ public class CollectorJsonHelpers {
     private static final String gcEventTypeFieldJson = "\"type\":\"liberty_gc\"";
     private static String unchangingFieldsJson = null;
     private static String unchangingFieldsJson1_1 = null;
-    private final static String TRUE_BOOL = "true";
-    private final static String FALSE_BOOL = "false";
-    private final static String INT_SUFFIX = "_int";
-    private final static String FLOAT_SUFFIX = "_float";
-    private final static String BOOL_SUFFIX = "_bool";
+    public final static String TRUE_BOOL = "true";
+    public final static String FALSE_BOOL = "false";
+    public final static String INT_SUFFIX = "_int";
+    public final static String FLOAT_SUFFIX = "_float";
+    public final static String BOOL_SUFFIX = "_bool";
+    public final static String LONG_SUFFIX = "_long";
 
     protected static String getEventType(String source, String location) {
         if (source.equals(CollectorConstants.GC_SOURCE) && location.equals(CollectorConstants.MEMORY)) {
@@ -384,10 +383,10 @@ public class CollectorJsonHelpers {
         return sb.toString();
     }
 
-    protected static boolean checkExtSuffixValidity(KeyValuePair kvp) {
+    public static boolean checkExtSuffixValidity(String k, String v) {
         boolean isValidExt = false;
-        String key = kvp.getKey();
-        String value = kvp.getStringValue();
+        String key = k;
+        String value = v;
 
         if (key.endsWith(INT_SUFFIX)) {
             isValidExt = verifyIntValue(value);
@@ -460,6 +459,15 @@ public class CollectorJsonHelpers {
         }
 
         return isValid;
+    }
+
+    public static boolean addPairBasedOnType(String extKey) {
+        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX) || extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)
+            || extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     protected static boolean checkIfExtIsQuoteless(String extKey) {
