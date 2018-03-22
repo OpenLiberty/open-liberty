@@ -340,7 +340,9 @@ ext.gitClone = { proj, branch = 'master', folder = '', site = 'git@github.com', 
       folder = proj
     }
     
-    File gitRepos = new File(project.file('publish'), 'gitRepos' )
+
+    File gitRepos = new File(autoFvtDir, 'gitRepos' )
+    
     File repoDir = new File(gitRepos, folder)
     String into = repoDir.getAbsolutePath()
      
@@ -357,6 +359,15 @@ ext.gitClone = { proj, branch = 'master', folder = '', site = 'git@github.com', 
     // Make use of the EBC clone mechanism
     project.logger.lifecycle('ebc clone')
     ebcClone(url) 
+    
+    //EBC clones in dev/../../../<repo>
+    File ebcCloneDir = new File( project, "./../../../" )
+    File gitRepos = new File(autoFvtDir, 'gitRepos')
+    copy {
+      from ebcCloneDir
+      include proj
+      into gitRepos
+    }
   }
   
 }

@@ -36,9 +36,8 @@ import componenttest.topology.utils.MvnUtils;
 public class FaultToleranceGitTckLauncher {
 
     /**  */
-    private static final String GITHUB_MP_FAULT_TOLERANCE = "git@github.com:eclipse/microprofile-fault-tolerance.git";
-    private static final String GIT_CLONE_MP_FT_PARENT_DIR = "../../../../../.."; // cwd == "<repo>/dev/<proj>/build/libs/autoFVT"
-    private static final String GIT_REPO_NAME_MP_FT = "microprofile-fault-tolerance";
+    private static String GIT_CLONE_PARENT_DIR = "";
+    private static final String GIT_REPO_NAME = "microprofile-fault-tolerance";
 
     @Server("FaultToleranceTCKServer")
     public static LibertyServer server;
@@ -103,9 +102,19 @@ public class FaultToleranceGitTckLauncher {
     @Mode(TestMode.EXPERIMENTAL)
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchFaultToleranceGitTck() throws Exception {
-        File repoParent = new File(GIT_CLONE_MP_FT_PARENT_DIR);
-        File repo = new File(repoParent, GIT_REPO_NAME_MP_FT);
+    public void runFreshMasterBranchTck() throws Exception {
+
+        if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
+            // Developers laptop FAT - we can't assume we won't over write existing repo
+            // so we clone the repo into the project's autoVFT/gitRepos/
+            GIT_CLONE_PARENT_DIR = "./publish/gitRepos/";
+        } else {
+            // Build engine FAT repos can be assumed to be siblings of this one
+            GIT_CLONE_PARENT_DIR = "../../../../../.."; // 6*'..' as "repoParent6/<repo>5/dev4/<proj>3/build2/libs1/autoFVT(.)"
+        }
+
+        File repoParent = new File(GIT_CLONE_PARENT_DIR);
+        File repo = new File(repoParent, GIT_REPO_NAME);
 
         System.out.println("RepoParent is at: " + repoParent.getAbsolutePath());
         System.out.println("Repo is at: " + repo.getAbsolutePath());
@@ -114,4 +123,9 @@ public class FaultToleranceGitTckLauncher {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK");
     }
 
+    @Mode(TestMode.LITE)
+    @Test
+    public void testThatDoesNothingAndCanAlwaysRunAndPass() {
+        // Do nothing
+    }
 }
