@@ -11,12 +11,15 @@
 package http2.test.war.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.PushBuilder;
 
 /**
  * Servlet implementation class
@@ -25,41 +28,72 @@ import javax.servlet.http.HttpServletResponse;
 public class H2PushPromise extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    static int numberOfRequests = 1;
-
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        if (1 == numberOfRequests) {
-            // This should be the initial request
-            // The response to this request should have rel=preload, which will kick
-            // off the push-promise sequence
-            numberOfRequests++;
+        PrintWriter pw = response.getWriter();
+
+        String test = null;
+        test = request.getParameter("test");
+
+        if ((test == null) || (test == (new String("")))) {
+            // No special parm, this is the pushed request
+
+            long time = System.currentTimeMillis();
+            response.setDateHeader("Date", time);
+
+            pw.println("Response to push");
+
+        } else if (test.toLowerCase().equals(new String("preload"))) {
+
+            // Test the header link rel=preload path
+            pw.println("push_promise link header rel=preload");
 
             long time = System.currentTimeMillis();
             response.setDateHeader("Date", time);
             response.addHeader("Link", "</H2TestModule/H2PushPromise>; rel=preload;");
+            response.addHeader("Link", "</H2TestModule/H2PushPromise>; rel=preload;");
 
-            //response.getWriter().write("DataFromPushPromiseServlet");
-            response.getWriter().flush();
-            response.getWriter().close();
+        } else if ((test.toLowerCase().equals(new String("pushbuilder")))) {
 
-        } else {
-            // This should be the pushed request
+            // Test the pushbuilder path
+            pw.println("push_promise PushBuilder");
 
-            long time = System.currentTimeMillis();
-            response.setDateHeader("Date", time);
+            Enumeration<String> reqHeaderNames = request.getHeaderNames();
+            while (reqHeaderNames.hasMoreElements()) {
+                String name = reqHeaderNames.nextElement();
+                pw.println("Req Header : " + name + ":" + request.getHeader(name));
+            }
 
-            response.getWriter().write("DataFromPushPromiseServlet");
-            response.getWriter().flush();
-            response.getWriter().close();
-            numberOfRequests = 1;
+            PushBuilder pb = request.newPushBuilder();
+            if (pb != null) {
+                pb.path("/H2TestModule/H2PushPromise");
+                pb.queryString("test=queryString");
+                try {
+                    pb.push();
+                    pw.println("PASS : pb.push() did not throw an ISE");
+                } catch (IllegalStateException exc) {
+                    pw.println("FAIL : pb.push() threw an ISE : " + exc.getMessage());
+                }
+            }
+        } else if ((test.toLowerCase().equals(new String("delay")))) {
+
+            // Wait a little bit for the client
+            pw.println("push_promise delay");
+
+            try {
+                Thread.sleep(5000);
+            } catch (Exception x) {
+            }
+
         }
+
+        pw.flush();
+        pw.close();
 
         try {
             Thread.yield();
         } catch (Exception x) {
-
         }
 
     }
