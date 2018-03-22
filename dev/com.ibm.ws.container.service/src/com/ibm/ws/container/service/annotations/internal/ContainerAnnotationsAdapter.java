@@ -105,6 +105,12 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
             this.annotationService = annotationService;
         }
 
+        @Deprecated
+        @Override
+        public boolean hasSpecifiedAnnotations(List<String> annotationTypeNames) {
+            return hasSpecifiedAnnotations(annotationTypeNames, false);
+        }
+
         @Override
         public boolean hasSpecifiedAnnotations(List<String> annotationTypeNames, boolean useJandex) {
             try {
@@ -125,6 +131,12 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
                 e.getClass();
             }
             return false;
+        }
+
+        @Deprecated
+        @Override
+        public Set<String> getClassesWithSpecifiedInheritedAnnotations(List<String> annotationTypeNames) {
+            return getClassesWithSpecifiedInheritedAnnotations(annotationTypeNames, false);
         }
 
         @Override

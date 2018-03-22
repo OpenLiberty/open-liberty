@@ -39,4 +39,11 @@ public interface ContainerAnnotations {
      * @return the names of any classes which have any of the specified annotations (declared or inherited)
      */
     public Set<String> getClassesWithSpecifiedInheritedAnnotations(List<String> annotationTypeNames, boolean useJandex);
+
+    //  Just leaving these old interfaces here to satisfy feature checker.
+    @Deprecated
+    public boolean hasSpecifiedAnnotations(List<String> annotationTypeNames);
+
+    @Deprecated
+    public Set<String> getClassesWithSpecifiedInheritedAnnotations(List<String> annotationTypeNames);
 }

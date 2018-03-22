@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.anno-1.0
+symbolicName=com.ibm.websphere.appserver.anno-1.1
 IBM-API-Package: javax.annotation; type="spec", \
  javax.annotation.security; type="spec", \
  javax.annotation.sql; type="spec"
@@ -15,6 +15,6 @@ IBM-Process-Types: server, \
  com.ibm.websphere.appserver.javax.annotation-1.1; ibm.tolerates:="1.2, 1.3"
 -bundles=com.ibm.ws.anno
 -jars=com.ibm.websphere.appserver.spi.anno; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.0-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.1-javadoc.zip
 kind=ga
 edition=core
