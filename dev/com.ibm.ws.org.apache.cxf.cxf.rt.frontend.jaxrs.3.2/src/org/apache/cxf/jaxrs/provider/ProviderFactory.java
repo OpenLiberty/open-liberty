@@ -239,7 +239,7 @@ public abstract class ProviderFactory {
                 }
                 return null;
             }});
-        
+
         return new JsonPProvider(jsonProvider);
     }
     // Liberty Change for CXF End
@@ -259,7 +259,7 @@ public abstract class ProviderFactory {
 
         return c;
     }
-    
+
     public static Object createJsonBindingProvider() {
         JsonbProvider jsonbProvider = AccessController.doPrivileged(new PrivilegedAction<JsonbProvider>(){
 
@@ -273,7 +273,7 @@ public abstract class ProviderFactory {
                 }
                 return null;
             }});
-        
+
         return new JsonBProvider(jsonbProvider);
     }
 
@@ -330,7 +330,7 @@ public abstract class ProviderFactory {
                 }
             }
         }
-        if (candidates.size() == 0) {
+        if (candidates.isEmpty()) {
             return null;
         } else if (candidates.size() == 1) {
             return candidates.get(0);
@@ -446,9 +446,17 @@ public abstract class ProviderFactory {
                                        Message m,
                                        Class<?> providerClass,
                                        boolean injectContext) {
+        return handleMapper(em, expectedType, m, providerClass, null, injectContext);
+    }
 
+    protected <T> boolean handleMapper(ProviderInfo<T> em,
+                                       Class<?> expectedType,
+                                       Message m,
+                                       Class<?> providerClass,
+                                       Class<?> commonBaseClass,
+                                       boolean injectContext) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "handleMapper", new Object[]{em, expectedType, m, providerClass, injectContext});
+            Tr.debug(tc, "handleMapper", new Object[]{em, expectedType, m, providerClass, commonBaseClass, injectContext});
         }
         // Liberty Change for CXF Begin
         Class<?> mapperClass = ClassHelper.getRealClass(bus, em.getOldProvider());
@@ -457,7 +465,7 @@ public abstract class ProviderFactory {
         if (m != null && MessageUtils.getContextualBoolean(m, IGNORE_TYPE_VARIABLES)) {
             types = new Type[] { mapperClass };
         } else {
-            types = getGenericInterfaces(mapperClass, expectedType);
+            types = getGenericInterfaces(mapperClass, expectedType, commonBaseClass);
         }
         for (Type t : types) {
             if (t instanceof ParameterizedType) {
@@ -647,7 +655,7 @@ public abstract class ProviderFactory {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "createMessageBodyWriter ",  new Object[]{type, genericType, annotations, mediaType, m});
         }
-        
+
         // Step1: check the cache.
         if (providerCache != null) {
             for (ProviderInfo<MessageBodyWriter<?>> ep : providerCache.getWriters(type, mediaType)) {
@@ -729,15 +737,15 @@ public abstract class ProviderFactory {
         for (ProviderInfo<? extends Object> provider : theProviders) {
             Class<?> providerCls = ClassHelper.getRealClass(bus, provider.getProvider());
 
-            if (MessageBodyReader.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, MessageBodyReader.class)) {
                 addProviderToList(messageReaders, provider);
             }
 
-            if (MessageBodyWriter.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, MessageBodyWriter.class)) {
                 addProviderToList(messageWriters, provider);
             }
 
-            if (ContextResolver.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, ContextResolver.class)) {
                 addProviderToList(contextResolvers, provider);
             }
 
@@ -753,7 +761,7 @@ public abstract class ProviderFactory {
                 writeInts.add((ProviderInfo<WriterInterceptor>) provider);
             }
 
-            if (ParamConverterProvider.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, ParamConverterProvider.class)) {
                 paramConverters.add((ProviderInfo<ParamConverterProvider>) provider);
             }
         }
@@ -827,7 +835,7 @@ public abstract class ProviderFactory {
      */
     private void sortReaders() {
         if (!customComparatorAvailable(MessageBodyReader.class)) {
-            Collections.sort(messageReaders, new MessageBodyReaderComparator(readerMediaTypesMap));
+            messageReaders.sort(new MessageBodyReaderComparator(readerMediaTypesMap));
         } else {
             doCustomSort(messageReaders);
         }
@@ -835,7 +843,7 @@ public abstract class ProviderFactory {
 
     private <T> void sortWriters() {
         if (!customComparatorAvailable(MessageBodyWriter.class)) {
-            Collections.sort(messageWriters, new MessageBodyWriterComparator(writerMediaTypesMap));
+            messageWriters.sort(new MessageBodyWriterComparator(writerMediaTypesMap));
         } else {
             doCustomSort(messageWriters);
         }
@@ -881,11 +889,11 @@ public abstract class ProviderFactory {
         }
         List<T> theProviders = (List<T>) listOfProviders;
         Comparator<? super T> theComparator = (Comparator<? super T>) theProviderComparator;
-        Collections.sort(theProviders, theComparator);
+        theProviders.sort(theComparator);
     }
 
     private void sortContextResolvers() {
-        Collections.sort(contextResolvers, new ContextResolverComparator());
+        contextResolvers.sort(new ContextResolverComparator());
     }
 
     private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = new HashMap<>();
@@ -1186,7 +1194,7 @@ public abstract class ProviderFactory {
             } else {
                 if (provider instanceof FilterProviderInfo) {
                     FilterProviderInfo<?> fpi = (FilterProviderInfo<?>) provider;
-                    if (fpi.isDynamic() && !names.containsAll(fpi.getNameBinding())) {
+                    if (fpi.isDynamic() && !names.containsAll(fpi.getNameBindings())) {
                         continue;
                     }
                 }
@@ -1319,10 +1327,15 @@ public abstract class ProviderFactory {
         return 0;
     }
 
+
+    private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass) {
+        return getGenericInterfaces(cls, expectedClass, Object.class);
+    }
     //Liberty code change start
     //defect 178126
     //Add the result to cache before return
-    private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass) {
+    private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass,
+                                       Class<?> commonBaseCls) {
         if (Object.class == cls) {
             return emptyType;
         }
@@ -1337,7 +1350,10 @@ public abstract class ProviderFactory {
                     Type[] tempTypes = new Type[] { genericSuperType };
                     putTypes(cls, expectedClass, tempTypes);
                     return tempTypes;
-                } else if (expectedClass.isAssignableFrom(actualType)) {
+                } else if (commonBaseCls != null && commonBaseCls != Object.class
+                           && commonBaseCls.isAssignableFrom(expectedClass)
+                           && commonBaseCls.isAssignableFrom(actualType)
+                           || expectedClass.isAssignableFrom(actualType)) {
                     putTypes(cls, expectedClass, emptyType);
                     return emptyType;
                 }
@@ -1348,7 +1364,7 @@ public abstract class ProviderFactory {
             putTypes(cls, expectedClass, types);
             return types;
         }
-        Type[] superGenericTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass);
+        Type[] superGenericTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass, commonBaseCls);
         putTypes(cls, expectedClass, superGenericTypes);
         return superGenericTypes;
     }
@@ -1516,14 +1532,15 @@ public abstract class ProviderFactory {
     }
 
     protected static Set<String> getFilterNameBindings(ProviderInfo<?> p) {
-        Set<String> names = null;
         if (p instanceof FilterProviderInfo) {
-            names = ((FilterProviderInfo<?>) p).getNameBinding();
+            return ((FilterProviderInfo<?>)p).getNameBindings();
+        } else {
+            return getFilterNameBindings(p.getBus(), p.getProvider());
         }
-        if (names == null) {
-            Class<?> pClass = ClassHelper.getRealClass(p.getBus(), p.getProvider());
-            names = AnnotationUtils.getNameBindings(pClass.getAnnotations());
-        }
+    }
+    protected static Set<String> getFilterNameBindings(Bus bus, Object provider) {
+        Class<?> pClass = ClassHelper.getRealClass(bus, provider);
+        Set<String> names = AnnotationUtils.getNameBindings(pClass.getAnnotations());
         if (names.isEmpty()) {
             names = Collections.singleton(DEFAULT_FILTER_NAME_BINDING);
         }
