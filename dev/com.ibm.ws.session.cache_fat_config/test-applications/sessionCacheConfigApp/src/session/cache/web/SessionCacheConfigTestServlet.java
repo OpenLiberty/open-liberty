@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
+import java.util.BitSet;
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
@@ -281,6 +283,77 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         // Verify that attribute does not get persisted to the cache yet
         String key = session.getId() + '.' + attrName;
         testCacheEntryDoesNotMatch(key, value);
+    }
+
+    /**
+     * Verify that all session attributes are written to the cache regardless of whether setAttribute is invoked.
+     */
+    public void testWriteContents_ALL_SESSION_ATTRIBUTES(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession(true);
+        try {
+            LinkedList<Long> list = new LinkedList<>();
+            list.addAll(Arrays.asList(150l, 151l, 152l));
+
+            session.setAttribute("asaset", false);
+            session.setAttribute("asaget", new BitSet(8));
+            session.setAttribute("asamod", list);
+
+            // Write all attributes to the cache
+            ((IBMSession) session).sync();
+
+            session.setAttribute("asaset", true); // set
+            ((BitSet) session.getAttribute("asaget")).flip(0, 3); // get and mutate
+            list.add(153l); // mutate without get
+
+            // Write to cache per the writeContents
+            ((IBMSession) session).sync();
+
+            // Check the cache for values expected per writeContents=ALL_SESSION_ATTRIBUTES
+            BitSet expectedBits = new BitSet(8);
+            expectedBits.flip(0, 3);
+            String sessionId = session.getId();
+            testCacheContains(sessionId + ".asaset", true);
+            testCacheContains(sessionId + ".asaget", expectedBits);
+            testCacheContains(sessionId + ".asamod", list);
+        } finally {
+            session.invalidate();
+        }
+    }
+
+    /**
+     * Verify that only attributes for which setAttribute is invoked are written to the cache.
+     */
+    public void testWriteContents_ONLY_SET_ATTRIBUTES(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession(true);
+        try {
+            LinkedList<Long> list = new LinkedList<>();
+            list.addAll(Arrays.asList(250l, 251l, 252l));
+
+            @SuppressWarnings("unchecked")
+            LinkedList<Long> originalList = (LinkedList<Long>) list.clone();
+
+            session.setAttribute("asaset", 's');
+            session.setAttribute("asaget", new BitSet(8));
+            session.setAttribute("asamod", list);
+
+            // Write all attributes to the cache
+            ((IBMSession) session).sync();
+
+            session.setAttribute("asaset", 'S'); // set
+            ((BitSet) session.getAttribute("asaget")).flip(2, 6); // get and mutate
+            list.add(253l); // mutate without get
+
+            // Write to cache per the writeContents
+            ((IBMSession) session).sync();
+
+            // Check the cache for values expected per writeContents=ONLY_SET_ATTRIBUTES
+            String sessionId = session.getId();
+            testCacheContains(sessionId + ".asaset", 'S'); // updated
+            testCacheContains(sessionId + ".asaget", new BitSet(8)); // not updated
+            testCacheContains(sessionId + ".asamod", originalList); // not updated
+        } finally {
+            session.invalidate();
+        }
     }
 
     /**
