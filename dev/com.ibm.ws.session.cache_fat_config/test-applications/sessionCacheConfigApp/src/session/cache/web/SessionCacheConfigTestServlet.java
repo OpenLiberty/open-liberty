@@ -42,6 +42,39 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
     /**
+     * Gets the current value of an attribute from the cache and writes it to the servlet response
+     */
+    public void getValueFromCache(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String sessionId = request.getParameter("sessionId");
+
+        if (sessionId == null) {
+            HttpSession session = request.getSession(false);
+            sessionId = session.getId();
+        }
+
+        String attrName = request.getParameter("attribute");
+        String key = sessionId + '.' + attrName;
+
+        // need to use same config file as server.xml
+        String hazelcastConfigLoc = InitialContext.doLookup("hazelcast/configlocation");
+        System.setProperty("hazelcast.config", hazelcastConfigLoc);
+
+        byte[] bytes;
+        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        try {
+            bytes = cache.get(key);
+        } finally {
+            cache.close();
+        }
+
+        Object value = toObject(bytes);
+
+        System.out.println("Found value of " + value + " in the cache. As bytes, this is " + EOLN + Arrays.toString(bytes));
+
+        response.getWriter().write("value from cache: [" + value + "]");
+    }
+
+    /**
      * Obtains the session id for the current session and writes it to the servlet response
      */
     public void getSessionId(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -115,7 +148,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     private void testCacheEntryDoesNotMatch(String key, Object unexpectedValue) throws Exception {
         byte[] unexpectedBytes = unexpectedValue == null ? null : toBytes(unexpectedValue);
 
-        System.out.println("testCacheEntryDoesNotMatch cache entry " + key + " should not have value: " + unexpectedValue);
+        System.out.println("testCacheEntryDoesNotMatch cache entry " + key + " will be checked to verify the value is not: " + unexpectedValue);
         System.out.println("as a byte array, this is: " + Arrays.toString(unexpectedBytes));
 
         // need to use same config file as server.xml
@@ -177,6 +210,58 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         // Verify that attribute has been persisted to the cache
         testCacheContains(key, value);
+    }
+
+    /**
+     * Poll the cache for a particular attribute value to appear.
+     */
+    public void testPollCache(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String sessionId = request.getParameter("sessionId");
+
+        if (sessionId == null) {
+            HttpSession session = request.getSession(false);
+            sessionId = session.getId();
+        }
+
+        String attrName = request.getParameter("attribute");
+        String key = sessionId + '.' + attrName;
+
+        String expected = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object expectedValue = toType(type, expected);
+
+        testPollCache(key, expectedValue);
+    }
+
+    /**
+     * Poll the cache for a particular attribute value to appear.
+     */
+    private void testPollCache(String key, Object expectedValue) throws Exception {
+        byte[] expectedBytes = expectedValue == null ? null : toBytes(expectedValue);
+
+        System.out.println("testPollCache cache entry " + key + " should eventually have value: " + expectedValue);
+        System.out.println("as a byte array, this is: " + Arrays.toString(expectedBytes));
+
+        // need to use same config file as server.xml
+        String hazelcastConfigLoc = InitialContext.doLookup("hazelcast/configlocation");
+        System.setProperty("hazelcast.config", hazelcastConfigLoc);
+
+        boolean found = false;
+        byte[] bytes = null;
+        Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        try {
+            for (long start = System.nanoTime(); !found && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500)) {
+                bytes = cache.get(key);
+                found = Arrays.equals(expectedBytes, bytes);
+            }
+        } finally {
+            cache.close();
+        }
+
+        assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
+                   "Bytes expected: " + Arrays.toString(expectedBytes) + EOLN +
+                   "Bytes observed: " + Arrays.toString(bytes),
+                   found);
     }
 
     /**
