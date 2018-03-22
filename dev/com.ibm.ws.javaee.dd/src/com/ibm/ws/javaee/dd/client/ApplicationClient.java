@@ -71,6 +71,13 @@ public interface ApplicationClient extends ModuleDeploymentDescriptor, Deploymen
      * @see org.eclipse.jst.j2ee.internal.J2EEVersionConstants#JEE_7_0_ID
      */
     int VERSION_7 = 70;
+    
+    /**
+     * Represents "8" for {@link #getVersionID}.
+     *
+     * @see org.eclipse.jst.j2ee.internal.J2EEVersionConstants#JEE_8_0_ID
+     */
+    int VERSION_8 = 80;
 
     /**
      * @return the version
@@ -81,6 +88,7 @@ public interface ApplicationClient extends ModuleDeploymentDescriptor, Deploymen
      *         <li>{@link #VERSION_5} - 5
      *         <li>{@link #VERSION_6} - 6
      *         <li>{@link #VERSION_7} - 7
+     *         <li>{@link #VERSION_8} - 8
      *         </ul>
      */
     int getVersionID();

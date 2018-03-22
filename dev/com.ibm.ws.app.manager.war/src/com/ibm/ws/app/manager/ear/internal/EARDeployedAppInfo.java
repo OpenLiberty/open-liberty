@@ -154,7 +154,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         this.nestedModuleMetaDataFactories = factory.getNestedModuleMetaDataFactories();
         this.appMBeanRuntime = factory.appMBeanRuntime;
         this.applicationDD = applicationDD;
-        this.altDDSupportEnabled = factory.platformVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0;
+        this.altDDSupportEnabled =
+            ((factory.platformVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) ||
+             (factory.platformVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0));
         this.preExpansionEarContainer = preExpansionEarContainer;
 
         String appName = applicationDD == null ? null : applicationDD.getApplicationName();
