@@ -235,7 +235,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
     		throw new FileNotFoundException("Zip file [ " + getPath() + " ] does not container entry [ " + zipEntryName + " ]");
     	}
 
-    	return getInputStream(useZipFile, zipEntryName);
+    	return getInputStream(useZipFile, zipEntry);
     }
 
     /**
