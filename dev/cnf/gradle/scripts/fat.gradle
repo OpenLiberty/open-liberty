@@ -339,8 +339,9 @@ ext.gitClone = { proj, branch = 'master', folder = '', site = 'git@github.com', 
     if( folder == null || folder.length() == 0 ){
       folder = proj
     }
-
-    File repoDir = new File(project.file('publish'), folder )
+    
+    File gitRepos = new File(project.file('publish'), 'gitRepos' )
+    File repoDir = new File(gitRepos, folder)
     String into = repoDir.getAbsolutePath()
      
     String url = " " + site + ":" + org + "/" + proj + ".git "
