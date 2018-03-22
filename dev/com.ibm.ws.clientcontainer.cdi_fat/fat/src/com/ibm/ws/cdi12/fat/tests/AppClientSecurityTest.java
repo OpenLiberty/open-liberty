@@ -59,6 +59,7 @@ public class AppClientSecurityTest {
 
         EnterpriseArchive appClientSecurityEar = ShrinkWrap.create(EnterpriseArchive.class,"appClientSecurity.ear")
                         .add(new FileAsset(new File("test-applications/appClientSecurity.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
+                        .add(new FileAsset(new File("test-applications/appClientSecurity.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .addAsModule(appClientSecurity);
 
         ShrinkHelper.exportToClient(client, "/apps", appClientSecurityEar);

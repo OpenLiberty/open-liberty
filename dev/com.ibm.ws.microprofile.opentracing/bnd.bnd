@@ -20,15 +20,22 @@ Bundle-Description: MicroProfile.OpenTracing 1.0, version ${bVersion}
 
 WS-TraceGroup: OPENTRACING
 
--dsannotations: com.ibm.ws.microprofile.opentracing.OpenTracingFilterHelper
+-dsannotations: \
+    com.ibm.ws.microprofile.opentracing.OpenTracingFilterHelper, \
+    com.ibm.ws.microprofile.opentracing.cdi.OpenTracingCDIInjectionExtension
 
-Import-Package: *
+Import-Package: \
+  javax.enterprise.inject.spi;version="[1.1,2.1)",\
+  *
 
 Export-Package: \
     com.ibm.ws.microprofile.opentracing, \
     com.ibm.ws.microprofile.opentracing.cdi
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Include-Resource: \
+  META-INF=resources/META-INF
 
 -buildpath: \
 	io.opentracing:opentracing-api;version=0.30.0, \

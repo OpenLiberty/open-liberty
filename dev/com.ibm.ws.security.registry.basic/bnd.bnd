@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,8 @@ instrument.classesExcludes: com/ibm/ws/security/registry/basic/internal/resource
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.websphere.security;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

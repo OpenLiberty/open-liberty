@@ -974,7 +974,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         Properties props = new Properties();
         if (realm == null) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "basicAuthenticationMechanismRealmName is not set. the default value " + JavaEESecConstants.BASIC_AUTH_DEFAULT_REALM + " is used.");
+                Tr.debug(tc, "basicAuthenticationMechanismRealmName is not set. the default value " + JavaEESecConstants.DEFAULT_REALM + " is used.");
             }
         } else {
             if (tc.isDebugEnabled()) {

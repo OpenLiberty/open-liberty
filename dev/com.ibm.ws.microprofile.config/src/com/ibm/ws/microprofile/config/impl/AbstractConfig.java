@@ -135,8 +135,8 @@ public abstract class AbstractConfig implements WebSphereConfig {
     public Object getValue(String propertyName, Type propertyType, boolean optional) {
         Object value = null;
         assertNotClosed();
-        if (getKeySet().contains(propertyName)) {
-            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+        SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+        if (sourced != null) {
             value = sourced.getValue();
         } else {
             if (optional) {
@@ -153,8 +153,9 @@ public abstract class AbstractConfig implements WebSphereConfig {
     public Object getValue(String propertyName, Type propertyType, String defaultString) {
         Object value = null;
         assertNotClosed();
-        if (getKeySet().contains(propertyName)) {
-            SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+
+        SourcedValue sourced = getSourcedValue(propertyName, propertyType);
+        if (sourced != null) {
             value = sourced.getValue();
         } else {
             value = convertValue(defaultString, propertyType);

@@ -23,7 +23,7 @@ public interface Http2InboundConnection extends HttpInboundConnection {
     /**
      * Determine if a request is an http2 upgrade request
      */
-    boolean isHTTP2UpgradeRequest(Map<String, String> map);
+    boolean isHTTP2UpgradeRequest(Map<String, String> map, boolean checkEnabledOnly);
 
     /**
      * Determine if a map of headers contains an http2 upgrade header

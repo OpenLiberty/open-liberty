@@ -16,6 +16,7 @@ import java.util.List;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.HttpTrailerGeneratorImpl;
 import com.ibm.ws.http.channel.internal.outbound.HttpOutputStreamImpl;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
@@ -39,8 +40,6 @@ public class HttpResponseImpl implements HttpResponse {
     private HttpResponseMessage message = null;
     private HttpOutputStreamImpl body = null;
     private HttpDispatcherLink connlink = null;
-    private boolean useEE7Streams = false;
-    private boolean isLastStreamUsedEE7 = false;
 
     /**
      * Constructor.
@@ -49,16 +48,6 @@ public class HttpResponseImpl implements HttpResponse {
      */
     public HttpResponseImpl(HttpDispatcherLink link) {
         this.connlink = link;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param link
-     */
-    public HttpResponseImpl(HttpDispatcherLink link, boolean useEE7Streams) {
-        this.connlink = link;
-        this.useEE7Streams = useEE7Streams;
     }
 
     /**
@@ -185,9 +174,8 @@ public class HttpResponseImpl implements HttpResponse {
     @Override
     public HttpOutputStreamImpl getBody() {
         if (null == this.body) {
-            if (this.useEE7Streams) {
+            if (HttpDispatcher.useEE7Streams()) {
                 this.body = new HttpOutputStreamEE7(this.isc);
-                isLastStreamUsedEE7 = true;
             } else {
                 this.body = new HttpOutputStreamImpl(this.isc);
             }
@@ -198,16 +186,6 @@ public class HttpResponseImpl implements HttpResponse {
                     this.body.setContentLength(getContentLength());
                 }
             }
-        } else if (this.useEE7Streams && !isLastStreamUsedEE7) {
-            // check if useEE7Streams is in use and if the last stream used was not the EE7 stream
-            // then create a new HttpOutputStreamEE7
-            this.body = new HttpOutputStreamEE7(this.isc);
-            isLastStreamUsedEE7 = true;
-        } else if (!this.useEE7Streams && isLastStreamUsedEE7) {
-            // check if useEE7Streams is not in use and if the last stream used was the EE7 stream
-            // then create a new HttpOutputStreamImpl
-            this.body = new HttpOutputStreamImpl(this.isc);
-            isLastStreamUsedEE7 = false;
         }
         return this.body;
     }

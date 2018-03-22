@@ -25,17 +25,24 @@ public class GenericData {
 
     private String loggerName = null;
 
+    private String jsonMessage = null;
+
     public GenericData() {
         pairs = new ArrayList<Pair>();
     }
 
     public void addPair(String key, String value) {
-        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
         pairs.add(kvp);
     }
 
-    public void addPair(String key, Number value) {
-        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+    public void addPair(String key, int value) {
+        KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
+        pairs.add(kvp);
+    }
+
+    public void addPair(String key, long value) {
+        KeyValueLongPair kvp = new KeyValueLongPair(key, value);
         pairs.add(kvp);
     }
 
@@ -77,7 +84,7 @@ public class GenericData {
             if (p instanceof KeyValuePair) {
                 KeyValuePair kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals("ibm_messageId")) {
-                    return kvp.getValue();
+                    return kvp.getStringValue();
                 }
             }
         }
@@ -89,7 +96,6 @@ public class GenericData {
     public String toString() {
         KeyValuePair kvp;
         String key;
-        String val;
         StringBuilder sb = new StringBuilder();
         String comma = ",";
         sb.append("GenericData [");
@@ -98,16 +104,31 @@ public class GenericData {
             if (p instanceof KeyValuePair) {
                 kvp = (KeyValuePair) p;
                 key = kvp.getKey();
-                val = kvp.getValue();
                 sb.append(comma);
                 if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
                     key = "threadID";
                 }
-                sb.append(key + "=" + val);
+                if (kvp.isInteger()) {
+                    sb.append(key + "=" + kvp.getIntValue());
+                } else if (kvp.isLong()) {
+                    sb.append(key + "=" + kvp.getLongValue());
+                } else {
+                    sb.append(key + "=" + kvp.getStringValue());
+
+                }
             }
         }
+
         sb.append("]");
         return sb.toString();
+    }
+
+    public String getJsonMessage() {
+        return jsonMessage;
+    }
+
+    public void setJsonMessage(String jsonMessage) {
+        this.jsonMessage = jsonMessage;
     }
 
 }

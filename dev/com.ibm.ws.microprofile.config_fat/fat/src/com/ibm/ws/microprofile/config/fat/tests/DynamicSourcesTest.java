@@ -40,10 +40,12 @@ public class DynamicSourcesTest extends AbstractConfigApiTest {
     private final static String testClassName = "DynamicSourcesTest";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(RepeatConfig11EE7.INSTANCE).andWith(RepeatConfig12EE8.INSTANCE);
+    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("DynamicSourcesServer");
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("DynamicSourcesServer");
+    public static RepeatTests r = RepeatTests
+                    .with(RepeatConfig11EE7.INSTANCE.forServers(SHARED_SERVER.getServerName()))
+                    .andWith(RepeatConfig12EE8.INSTANCE.forServers(SHARED_SERVER.getServerName()));
 
     public DynamicSourcesTest() {
         super("/dynamicSources/");

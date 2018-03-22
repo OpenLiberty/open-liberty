@@ -35,6 +35,7 @@ public class TokenBuilder {
 	private static final String USER_CLAIM = "upn"; // mp-jwt format
 	private static final String GROUP_CLAIM = "groups"; // mp-jwt format
 	private static final String CCK_CLAIM = "session"; // custom cache key claim
+
 	private final static String GROUP_PREFIX = "group:";
 
 	/**
