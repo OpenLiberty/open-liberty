@@ -38,6 +38,7 @@ import javax.servlet.jsp.tagext.TagInfo;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
+import com.ibm.ws.container.service.app.deploy.extended.TagLibContainerInfo;
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JspCoreException;
 import com.ibm.ws.jsp.JspOptions;
@@ -343,17 +344,32 @@ public class TagLibraryCache extends Hashtable<String, Object> {
     
     private void loadLibJarMap(List loadedLocations) {
         if (container!=null) {
-            com.ibm.wsspi.adaptable.module.Entry libDir = container.getEntry("/WEB-INF/lib");
-            if (libDir!=null) {
-                try {
-                    Container libDirContainer = libDir.adapt(Container.class);
-                    if (libDirContainer!=null) {
-                        loadLibJarMapRecursivelyForContainer(loadedLocations, libDirContainer);
+            try {
+                NonPersistentCache npc = container.adapt(NonPersistentCache.class);
+                TagLibContainerInfo tagLibContainers = (TagLibContainerInfo) npc.getFromCache(TagLibContainerInfo.class);
+                if (tagLibContainers != null) {
+                    for (ContainerInfo info : tagLibContainers.getTagLibContainers()) {
+                        if (info.getType() == ContainerInfo.Type.WEB_INF_LIB) {
+                            String resourcePath = info.getName();
+                            if (resourcePath.lastIndexOf('/') != -1) {
+                                resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf('/'));
+                            }
+                            loadTldsFromJar(info.getContainer(), info.getName(), resourcePath, loadedLocations, null);
+                        }
                     }
-                } catch (UnableToAdaptException ex) {
-                    throw new IllegalStateException(ex);
+                } else {
+                    com.ibm.wsspi.adaptable.module.Entry libDir = container.getEntry("/WEB-INF/lib");
+                    if (libDir!=null) {
+                        Container libDirContainer = libDir.adapt(Container.class);
+                        if (libDirContainer!=null) {
+                            loadLibJarMapRecursivelyForContainer(loadedLocations, libDirContainer);
+                        }
+                    }
                 }
+            } catch (UnableToAdaptException e) {
+                throw new IllegalStateException(e);
             }
+
         } else {
             // No need to search META-INF resources
             Set libSet = ctxt.getResourcePaths("/WEB-INF/lib",false);

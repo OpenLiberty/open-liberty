@@ -14,9 +14,12 @@ import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_BUNDLE_PREFIX;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_NAMESPACE;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_THIN_APPS_DIR;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.VIRTUAL_HOST_END;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.VIRTUAL_HOST_START;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_BND_NAME;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_VIRTUAL_HOST_END;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_VIRTUAL_HOST_START;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_BND_NAME;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_VIRTUAL_HOST_END;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_VIRTUAL_HOST_START;
 import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.SPRING_LIB_INDEX_FILE;
 
 import java.io.BufferedReader;
@@ -437,7 +440,11 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     public Container createContainerFor(String id) throws IOException, UnableToAdaptException {
         Container container = setupContainer(applicationInformation.getPid(), rawContainer, factory);
         AddEntryToOverlay virtualHostBnd = container.adapt(AddEntryToOverlay.class);
-        virtualHostBnd.add(XML_BND_NAME, getVirtualHostConfig(id));
+
+        // Add both XML and XMI here incase an old web.xml file is used;
+        // easier to just supply both here than figure out which to supply
+        virtualHostBnd.add(XML_BND_NAME, getVirtualHostConfig(XML_VIRTUAL_HOST_START, id, XML_VIRTUAL_HOST_END));
+        virtualHostBnd.add(XMI_BND_NAME, getVirtualHostConfig(XMI_VIRTUAL_HOST_START, id, XMI_VIRTUAL_HOST_END));
         return container;
     }
 
@@ -474,10 +481,10 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         return super.uninstallApp();
     }
 
-    private String getVirtualHostConfig(String id) {
-        StringBuilder builder = new StringBuilder(VIRTUAL_HOST_START);
+    private String getVirtualHostConfig(String start, String id, String end) {
+        StringBuilder builder = new StringBuilder(start);
         builder.append("springVirtualHost-" + id);
-        builder.append(VIRTUAL_HOST_END);
+        builder.append(end);
         return builder.toString();
     }
 

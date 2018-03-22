@@ -19,8 +19,8 @@ configurations {
 }
 
 dependencies {
-    sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20180110-104032-383:sources'
-    javadocJar 'org.apache.myfaces.core:myfaces-api:2.3.0-beta:javadoc'
+    sourceJar 'org.apache.myfaces.core:myfaces-api:2.3.0:sources'
+    javadocJar 'org.apache.myfaces.core:myfaces-api:2.3.0:javadoc'
 }
 
 task copySource(type: Copy) {

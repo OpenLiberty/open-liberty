@@ -291,9 +291,9 @@ public class SSOAuthenticator implements WebAuthenticator {
         String hdrValue = req.getHeader(Authorization_Header);
         String bearerAuthzMethod = "Bearer ";
         if (hdrValue != null && hdrValue.startsWith(bearerAuthzMethod)) {
-            hdrValue = hdrValue.substring(bearerAuthzMethod.length());
+            return hdrValue.substring(bearerAuthzMethod.length());
         }
-        return hdrValue;
+        return null;
     }
 
 }

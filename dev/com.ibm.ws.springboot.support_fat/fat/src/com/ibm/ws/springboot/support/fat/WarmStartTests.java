@@ -48,7 +48,7 @@ public class WarmStartTests extends AbstractSpringTests {
     }
 
     @Test
-    public void testWithSharedCache() throws Exception {
+    public void testWarmStartConfig() throws Exception {
         // First stop the server so we can start from a warm start
         assertNotNull("The application was not installed", server
                         .waitForStringInLog("CWWKZ0001I:.*"));

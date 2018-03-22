@@ -163,7 +163,7 @@ public class TokenBuilder {
 		return wsCredential;
 	}
 
-	public String createTokenString(String builderId, Subject subject, String customCacheKey) {
+	public String createTokenString(String builderId, Subject subject, String customCacheKey) throws Exception {
 		try {
 			JwtBuilder builder = JwtBuilder.create(builderId);
 
@@ -186,7 +186,7 @@ public class TokenBuilder {
 
 		} catch (Exception e) {
 			// ffdc
-			return null;
+			throw e;
 		}
 	}
 
