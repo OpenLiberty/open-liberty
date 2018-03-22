@@ -23,7 +23,7 @@ public interface JwtSSOTokenProxy {
 
     String getJwtSSOToken(Subject subject);
 
-    Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt);
+    Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws WSSecurityException;
 
     String getCustomCacheKeyFromJwtSSOToken(String encodedjwt);
 

@@ -112,7 +112,7 @@ public class JwtSSOTokenHelper {
 
     }
 
-    public static Subject handleJwtSSOToken(String jwtssotoken) {
+    public static Subject handleJwtSSOToken(String jwtssotoken) throws WSSecurityException {
         if (jwtSSOTokenProxyRef.getService() != null) {
             return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(null, jwtssotoken);
         }
@@ -120,7 +120,7 @@ public class JwtSSOTokenHelper {
 
     }
 
-    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) {
+    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) throws WSSecurityException {
         if (jwtSSOTokenProxyRef.getService() != null) {
             return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(subject, jwtssotoken);
         }

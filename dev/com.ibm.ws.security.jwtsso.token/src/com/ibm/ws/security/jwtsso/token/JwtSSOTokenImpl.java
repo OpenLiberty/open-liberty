@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.token;
 
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
@@ -119,8 +118,18 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 			}
 			JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
 			if (tokenUtil != null) {
-				JsonWebToken ssotoken = tokenUtil.buildTokenFromSecuritySubject(subject); // TODO
-				updateSubject2(subject, ssotoken);
+				JsonWebToken ssotoken = null;
+				try {
+					ssotoken = tokenUtil.buildTokenFromSecuritySubject(subject);
+				} catch (Exception e) {
+					// TODO ffdc
+					throw new WSSecurityException(e);
+				}
+				updateSubject(subject, ssotoken);
+			} else {
+				// TODO : nls
+				String msg = "jwtsso configuration is not valid";
+				throw new WSSecurityException(msg);
 			}
 		}
 	}
@@ -129,7 +138,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * @param subject
 	 * @param ssotoken
 	 */
-	private void updateSubject2(Subject subject, JsonWebToken ssotoken) {
+	private void updateSubject(Subject subject, JsonWebToken ssotoken) {
 		// TODO Auto-generated method stub
 		if (subject != null && ssotoken != null) {
 			addJwtSSOTokenToSubject(subject, ssotoken);
@@ -166,28 +175,6 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * @param subject
 	 * @param ssotoken
 	 */
-	// TODO : remove me
-	private void updateSubject(Subject subject, JsonWebToken ssotoken) {
-		// TODO Auto-generated method stub
-
-		if (subject != null && ssotoken != null) {
-			@SuppressWarnings("unchecked")
-			Hashtable<String, Object> customProperties = (Hashtable<String, Object>) customPropertiesFromSubject(
-					subject);
-			if (customProperties == null) {
-				customProperties = new Hashtable<String, Object>();
-			}
-			addCustomCacheKeyToCustomProperties(customProperties, ssotoken);
-			addCustomPropertiesToSubject(subject, customProperties);
-			addJwtSSOTokenToSubject(subject, ssotoken);
-		}
-
-	}
-
-	/**
-	 * @param subject
-	 * @param ssotoken
-	 */
 	private void addJwtSSOTokenToSubject(Subject subject, JsonWebToken ssotoken) {
 		// TODO Auto-generated method stub
 		if (subject != null && ssotoken != null) {
@@ -195,35 +182,6 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 			subject.getPrincipals().add(ssotoken);
 		}
 
-	}
-
-	/**
-	 * @param subject
-	 * @param customProperties
-	 */
-	private void addCustomPropertiesToSubject(Subject subject, Hashtable<String, Object> customProperties) {
-		// TODO Auto-generated method stub
-		if (subject != null && customProperties != null) {
-			subject.getPrivateCredentials().add(customProperties);
-		}
-
-	}
-
-	private void addCustomCacheKeyToCustomProperties(Hashtable<String, Object> customProperties,
-			JsonWebToken ssotoken) {
-
-		if (customProperties != null && ssotoken != null) {
-			String customCacheKey = HashUtils.digest(ssotoken.toString());
-			customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
-		}
-	}
-
-	/**
-	 * @param subject
-	 */
-	private Hashtable<String, ?> customPropertiesFromSubject(Subject subject) {
-		// TODO Auto-generated method stub
-		return subjectHelper.getHashtableFromSubject(subject, hashtableProperties);
 	}
 
 	/**
@@ -366,17 +324,29 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * java.lang.String)
 	 */
 	@Override
-	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) {
+	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws WSSecurityException {
 		// TODO Auto-generated method stub
 		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
 		if (tokenUtil != null && encodedjwt != null) {
 			if (subject != null) {
-				return tokenUtil.handleJwtSsoTokenValidationWithSubject(subject, encodedjwt);
+				try {
+					return tokenUtil.handleJwtSsoTokenValidationWithSubject(subject, encodedjwt);
+				} catch (Exception e) {
+					throw new WSSecurityException(e);
+				}
 			} else {
-				return tokenUtil.handleJwtSsoTokenValidation(encodedjwt);
+				try {
+					return tokenUtil.handleJwtSsoTokenValidation(encodedjwt);
+				} catch (Exception e) {
+					throw new WSSecurityException(e);
+
+				}
 			}
+		} else {
+			// TODO : nls
+			String msg = "jwtsso configuration is not valid or token is not valid";
+			throw new WSSecurityException(msg);
 		}
-		return null;
 		// authenticateWithJwt(subject);
 
 	}
@@ -406,12 +376,15 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	@Override
 	public String getCacheKeyForJwtSSOToken(Subject subject, String encodedjwt) {
 		// TODO Auto-generated method stub
-		if (subject != null) {
-			encodedjwt = getJwtSSOToken(subject);
-		}
 		if (encodedjwt != null) {
 			return HashUtils.digest(encodedjwt);
+		} else if (subject != null) {
+			String jwtssotoken = getJwtSSOToken(subject);
+			if (jwtssotoken != null) {
+				return HashUtils.digest(jwtssotoken);
+			}
 		}
+
 		return null;
 	}
 

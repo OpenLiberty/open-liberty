@@ -160,7 +160,12 @@ public class SSOAuthenticator implements WebAuthenticator {
      * @return
      */
     private AuthenticationResult handleJwtSSO(HttpServletRequest req, HttpServletResponse res) {
-        String[] hdrVals = CookieHelper.getCookieValues(getCookies(req), "jwtToken");
+        String jwtCookieName = JwtSSOTokenHelper.getJwtCookieName();
+        if (jwtCookieName == null) {
+            return null;
+        }
+
+        String[] hdrVals = CookieHelper.getCookieValues(getCookies(req), jwtCookieName);
         String encodedjwtssotoken = null;
         if (hdrVals != null) {
             for (int n = 0; n < hdrVals.length; n++) {

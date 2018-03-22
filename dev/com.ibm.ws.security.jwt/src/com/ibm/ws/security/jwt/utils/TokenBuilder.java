@@ -32,9 +32,10 @@ import com.ibm.ws.security.jwt.config.JwtConfig;
  */
 public class TokenBuilder {
 	private static TraceComponent tc = Tr.register(TokenBuilder.class);
-	private static final String USER_CLAIM = "upn"; // mp-jwt format
-	private static final String GROUP_CLAIM = "groups"; // mp-jwt format
-	private static final String CCK_CLAIM = "session"; // custom cache key claim
+	protected static final String USER_CLAIM = "upn"; // mp-jwt format
+	protected static final String GROUP_CLAIM = "groups"; // mp-jwt format
+	protected static final String CCK_CLAIM = "session"; // custom cache key
+															// claim
 
 	private final static String GROUP_PREFIX = "group:";
 

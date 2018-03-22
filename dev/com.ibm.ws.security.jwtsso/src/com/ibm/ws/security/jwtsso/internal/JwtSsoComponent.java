@@ -37,7 +37,6 @@ import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
 import com.ibm.ws.security.jwtsso.utils.IssuerUtil;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
-import com.ibm.ws.security.jwtsso.utils.JwtSsoTokenUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
@@ -126,17 +125,6 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	@Override
 	public String getJwtConsumerRef() {
 		return jwtConsumerRef;
-	}
-
-	/**
-	 * construct a tokenUtils instance. These should be constructed right before
-	 * use so any config changes will get picked up.
-	 *
-	 * @return
-	 */
-	public JwtSsoTokenUtils getJwtSsoTokenUtils() {
-		JwtSsoTokenUtils result = new JwtSsoTokenUtils(jwtBuilderRef, jwtConsumerRef);
-		return result.isValid() ? result : null;
 	}
 
 	// todo: base sec is going to make WebAppSecurityConfig an osgi service, but

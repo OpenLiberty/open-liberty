@@ -19,13 +19,10 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.jwt.Claims;
-import com.ibm.websphere.security.jwt.InvalidBuilderException;
 import com.ibm.websphere.security.jwt.InvalidConsumerException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
-import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
@@ -52,13 +49,13 @@ public class JwtSsoTokenUtils {
 	public JwtSsoTokenUtils(String builderId, String consumerId) {
 		this.builderId = builderId;
 		this.consumerId = consumerId;
-		try {
-			JwtBuilder.create(builderId); // fail fast if id or config is
-			consumer = JwtConsumer.create(consumerId);
-		} catch (InvalidConsumerException | InvalidBuilderException e) {
-			// ffdc
-			isValid = false;
-		}
+		// try {
+		// JwtBuilder.create(builderId); // fail fast if id or config is
+		// consumer = JwtConsumer.create(consumerId);
+		// } catch (InvalidConsumerException | InvalidBuilderException e) {
+		// // ffdc
+		// isValid = false;
+		// }
 	}
 
 	/**
@@ -82,9 +79,9 @@ public class JwtSsoTokenUtils {
 	 *
 	 */
 	public JsonWebToken buildSecurityPrincipalFromToken(String jwtTokenString) {
-		if (!isValid) {
-			return null;
-		}
+		// if (!isValid) {
+		// return null;
+		// }
 		JwtToken token = null;
 		try {
 			token = consumer.createJwt(jwtTokenString);
@@ -107,7 +104,7 @@ public class JwtSsoTokenUtils {
 	 * @return - a DefaultJsonWebTokenImpl, or null if user wasn't
 	 *         authenticated.
 	 */
-	public JsonWebToken buildTokenFromSecuritySubject() throws WSSecurityException {
+	public JsonWebToken buildTokenFromSecuritySubject() throws Exception {
 
 		Subject subj = WSSubject.getRunAsSubject();
 		Set<Principal> principals = subj.getPrincipals();
@@ -121,7 +118,7 @@ public class JwtSsoTokenUtils {
 
 	}
 
-	public JsonWebToken buildTokenFromSecuritySubject(Subject subject) {
+	public JsonWebToken buildTokenFromSecuritySubject(Subject subject) throws Exception {
 		// TODO Auto-generated method stub
 		if (!isValid) {
 			return null;
@@ -153,11 +150,8 @@ public class JwtSsoTokenUtils {
 
 	}
 
-	public Subject handleJwtSsoTokenValidation(String tokenstr) {
+	public Subject handleJwtSsoTokenValidation(String tokenstr) throws Exception {
 		Subject tempSubject = null;
-		if (!isValid) {
-			return tempSubject;
-		}
 		JwtToken jwttoken = recreateJwt(tokenstr);
 		if (jwttoken != null) {
 			String decodedPayload = null;
@@ -183,38 +177,39 @@ public class JwtSsoTokenUtils {
 
 	}
 
-	public Subject handleJwtSsoTokenValidationWithSubject(Subject subject, String tokenstr) {
-		Subject tempSubject = null;
-		if (!isValid) {
-			return tempSubject;
-		}
+	public Subject handleJwtSsoTokenValidationWithSubject(Subject subject, String tokenstr) throws Exception {
 		JwtToken jwttoken = recreateJwt(tokenstr);
 		if (jwttoken != null) {
 			TokenBuilder tb = new TokenBuilder();
 			String user = tb.getUserName(subject);
 			JsonWebToken principal = new DefaultJsonWebTokenImpl(tokenstr, JwtSsoConstants.TOKEN_TYPE_JWT, user);
 			subject.getPrincipals().add(principal);
+			return subject;
 		}
 
 		// JsonWebToken principal = buildSecurityPrincipalFromToken(tokenstr);
 
-		return subject;
+		return null;
 
 	}
 
-	private JwtToken recreateJwt(String tokenstr) {
+	private JwtToken recreateJwt(String tokenstr) throws Exception {
 		// TODO Auto-generated method stub
 		try {
 			return consumer.createJwt(tokenstr);
 		} catch (InvalidTokenException | InvalidConsumerException e) {
 			// ffdc
-			return null;
+			throw e;
 		}
 	}
 
 	public boolean isJwtValid(String tokenstr) {
 		// TODO Auto-generated method stub
-		if (recreateJwt(tokenstr) == null) {
+		try {
+			if (recreateJwt(tokenstr) == null) {
+				return false;
+			}
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
