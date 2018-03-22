@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.1.16
+ * @version 1.2
  */
-@org.osgi.annotation.versioning.Version("1.1.16")
+@org.osgi.annotation.versioning.Version("1.2")
 package com.ibm.wsspi.application.handler;

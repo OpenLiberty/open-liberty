@@ -11,12 +11,6 @@
 
 package com.ibm.wsspi.anno.classsource;
 
-import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Aggregate;
-import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_ClassLoader;
-import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedDirectory;
-import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedJar;
-import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedSimple;
-import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Options;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Container_EJB;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Container_WAR;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_Bundle;
@@ -91,8 +85,8 @@ public interface ClassSource_Factory {
     ClassSource_Aggregate createAggregateClassSource(
                                                      Util_InternMap internMap, String name) throws ClassSource_Exception;
 
-    ClassSourceImpl_Aggregate createAggregateClassSource(
-                                                         Util_InternMap internMap, String name, ClassSource_Options options) throws ClassSource_Exception;
+    ClassSource_Aggregate createAggregateClassSource(
+                                                     Util_InternMap internMap, String name, ClassSource_Options options) throws ClassSource_Exception;
 
     //
 
@@ -105,28 +99,28 @@ public interface ClassSource_Factory {
     ClassSource_MappedSimple createSimpleClassSource(
                                                      Util_InternMap internMap, String name, SimpleClassProvider provider) throws ClassSource_Exception;
 
-    ClassSourceImpl_MappedSimple createSimpleClassSource(
-                                                         Util_InternMap internMap, String name, ClassSource_Options options,
+    ClassSource_MappedSimple createSimpleClassSource(
+                                                     Util_InternMap internMap, String name, ClassSource_Options options,
                                                          SimpleClassProvider provider) throws ClassSource_Exception;
 
     ClassSource_MappedDirectory createDirectoryClassSource(
                                                            Util_InternMap internMap, String name, String dirPath) throws ClassSource_Exception;
 
-    ClassSourceImpl_MappedDirectory createDirectoryClassSource(
-                                                               Util_InternMap internMap, String name, ClassSource_Options options, String dirPath) throws ClassSource_Exception;
+    ClassSource_MappedDirectory createDirectoryClassSource(
+                                                           Util_InternMap internMap, String name, ClassSource_Options options, String dirPath) throws ClassSource_Exception;
 
     ClassSource_MappedJar createJarClassSource(
                                                Util_InternMap internMap, String name, String jarPath) throws ClassSource_Exception;
 
-    ClassSourceImpl_MappedJar createJarClassSource(
-                                                   Util_InternMap internMap, String name, ClassSource_Options options, String jarPath) throws ClassSource_Exception;
+    ClassSource_MappedJar createJarClassSource(
+                                               Util_InternMap internMap, String name, ClassSource_Options options, String jarPath) throws ClassSource_Exception;
 
     ClassSource_ClassLoader createClassLoaderClassSource(
                                                          Util_InternMap internMap, String name, ClassLoader classLoader) throws ClassSource_Exception;
 
-    ClassSourceImpl_ClassLoader createClassLoaderClassSource(
-                                                             Util_InternMap internMap, String name, ClassSource_Options options,
-                                                             ClassLoader classLoader) throws ClassSource_Exception;
+    ClassSource_ClassLoader createClassLoaderClassSource(
+                                                         Util_InternMap internMap, String name, ClassSource_Options options,
+                                                         ClassLoader classLoader) throws ClassSource_Exception;
 
     //
 
@@ -144,5 +138,5 @@ public interface ClassSource_Factory {
      * @param useJandex
      * @return
      */
-    ClassSourceImpl_Options createOptions(boolean useJandex);
+    ClassSource_Options createOptions(boolean useJandex);
 }

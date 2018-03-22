@@ -128,12 +128,14 @@ public class AnnotationTargetsImpl_Streamer implements ClassSource_Streamer {
     @Override
     public boolean process(
         String classSourceName,
-        org.jboss.jandex.ClassInfo jandexClassInfo,
+        Object jandexClassInfo,
         ScanPolicy scanPolicy) throws ClassSource_Exception {
 
         String i_classSourceName = getTargets().internClassSourceName(classSourceName);
 
-        getJandexConverter().convertClassInfo(i_classSourceName, jandexClassInfo, scanPolicy);
+        getJandexConverter().convertClassInfo(i_classSourceName, 
+                                              (org.jboss.jandex.ClassInfo)jandexClassInfo, 
+                                              scanPolicy);
 
         return true;
     }
