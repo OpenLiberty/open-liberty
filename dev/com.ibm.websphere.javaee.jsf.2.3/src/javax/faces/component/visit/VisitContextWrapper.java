@@ -32,9 +32,7 @@ public abstract class VisitContextWrapper extends VisitContext implements FacesW
 {
     private VisitContext delegate;
 
-    /**
-     * 
-     */
+    @Deprecated
     public VisitContextWrapper()
     {
         

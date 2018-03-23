@@ -31,6 +31,7 @@ public abstract class VisitContextFactory implements FacesWrapper<VisitContextFa
 {
     private VisitContextFactory delegate;
 
+    @Deprecated
     public VisitContextFactory()
     {
     }

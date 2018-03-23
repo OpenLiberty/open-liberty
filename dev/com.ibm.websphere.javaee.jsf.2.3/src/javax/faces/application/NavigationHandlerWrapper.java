@@ -31,6 +31,7 @@ public abstract class NavigationHandlerWrapper extends NavigationHandler
 
     private NavigationHandler delegate;
 
+    @Deprecated
     public NavigationHandlerWrapper()
     {
     }
