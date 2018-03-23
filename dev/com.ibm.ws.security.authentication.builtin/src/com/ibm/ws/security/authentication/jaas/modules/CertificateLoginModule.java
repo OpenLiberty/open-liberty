@@ -299,7 +299,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
                                                       ur.getRealm(),
                                                       ur.getUniqueUserId(username));
         setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
-        setCredentials(temporarySubject, username, authenticatedId);
+        setCredentials(temporarySubject, securityName, username);
         setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
     }
 

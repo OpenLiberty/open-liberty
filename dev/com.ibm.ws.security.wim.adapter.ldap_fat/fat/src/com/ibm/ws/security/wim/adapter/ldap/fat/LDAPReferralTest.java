@@ -370,10 +370,6 @@ public class LDAPReferralTest {
              */
             Log.info(c, "assertIgnoreResults", "Exception is " + e.getMessage());
             assertNotNull("Exception should have an error message", e.getMessage());
-            assertTrue("Error message should contain notification about classcast type failure: com.ibm.wsspi.security.wim.model.Entity",
-                       e.getMessage().contains("com.ibm.wsspi.security.wim.model.Entity"));
-            assertTrue("Error message should contain notification about classcast type failure: com.ibm.wsspi.security.wim.model.Group",
-                       e.getMessage().contains("com.ibm.wsspi.security.wim.model.Group"));
         }
 
 //      assertEquals(DELEGATE_USER_DN, servlet.checkPassword(DELEGATE_USER_DN, "password"));

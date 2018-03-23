@@ -134,8 +134,9 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
 //        Principal principal = new WSPrincipal(securityName, accessId, authMethod);
         if (urAuthenticatedId != null && !urAuthenticatedId.equals(securityName)) {
             Hashtable<String, String> subjectHash = new Hashtable<String, String>();
-            subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, securityName);
+            subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, urAuthenticatedId);
             subject.getPrivateCredentials().add(subjectHash);
+
         }
         CredentialsService credentialsService = getCredentialsService();
         credentialsService.setCredentials(subject);
