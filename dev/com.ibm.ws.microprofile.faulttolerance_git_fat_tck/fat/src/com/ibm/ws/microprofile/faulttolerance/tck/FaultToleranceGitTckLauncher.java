@@ -107,9 +107,6 @@ public class FaultToleranceGitTckLauncher {
         File repoParent = new File(GIT_REPO_PARENT_DIR);
         File repo = new File(repoParent, GIT_REPO_NAME);
 
-        System.out.println("RepoParent is at: " + repoParent.getAbsolutePath());
-        System.out.println("Repo is at: " + repo.getAbsolutePath());
-
         MvnUtils.mvnCleanInstall(repo);
         String tckVersion = MvnUtils.getTckVersionAfterClone(repo);
         System.out.println("Queried tck.version is : " + tckVersion);

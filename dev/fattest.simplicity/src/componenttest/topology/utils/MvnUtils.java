@@ -566,7 +566,6 @@ public class MvnUtils {
      */
     private static String getQueryInXml(File xml, String query, String seperatorPrefix, Set<String> excludes) {
         String result = "";
-        System.out.println("Looking at pomXml " + xml.getAbsolutePath());
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -576,18 +575,14 @@ public class MvnUtils {
             XPathExpression xpr = xpath.compile(query);
             NodeList nodes = (NodeList) xpr.evaluate(docTestngResults, XPathConstants.NODESET);
 
-            System.out.println("found " + nodes.getLength() + " nodes");
-            System.out.println("Noddy node " + nodes.item(0).getTextContent());
-
             if (nodes.getLength() > 0) {
-                if (nodes.getLength() == 1) {
-                    result = nodes.item(0).getTextContent();
-                } else {
-                    for (int i = 0; i < nodes.getLength(); i++) {
-                        String value = nodes.item(i).getNodeValue();
-                        if (excludes == null || !excludes.contains(value)) {
-                            result += seperatorPrefix + value;
-                        }
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    String value = nodes.item(i).getNodeValue();
+                    if (value == null || value.length() == 0) {
+                        value = nodes.item(i).getTextContent();
+                    }
+                    if (excludes == null || !excludes.contains(value)) {
+                        result += seperatorPrefix + value;
                     }
                 }
             }
