@@ -33,7 +33,6 @@ import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Context;
 import com.ibm.wsspi.security.wim.model.Control;
 import com.ibm.wsspi.security.wim.model.Entity;
-import com.ibm.wsspi.security.wim.model.Group;
 import com.ibm.wsspi.security.wim.model.PersonAccount;
 import com.ibm.wsspi.security.wim.model.Root;
 import com.ibm.wsspi.security.wim.model.SearchControl;
@@ -206,28 +205,37 @@ public class DisplayNameBridge {
             }
             // the user was found
             else {
-                PersonAccount loginAccount = (PersonAccount) returnList.get(0);
-                // f113366
-                if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                    //returnValue = loginAccount.getString(this.propertyMap.getOutputUserDisplayName(idAndRealm.getRealm()));
-                    String mappedProp = outputAttrName;
-                    if (mappedProp.equals("displayName")) {
-                        if (loginAccount.getDisplayName().size() == 0)
-                            returnValue = "";
-                        else
-                            returnValue = loginAccount.getDisplayName().get(0);
-                    } else if (mappedProp.equals(SchemaConstants.PROP_PRINCIPAL_NAME) && foundInURBridge) {
-                        String outputUserPrincipalAttr = this.propertyMap.getOutputUserPrincipal(idAndRealm.getRealm());
-                        if (!this.mappingUtils.isIdentifierTypeProperty(outputUserPrincipalAttr)) {
-                            returnValue = (String) loginAccount.get(outputUserPrincipalAttr);
+                // This check might cause inconsistencies for customers whose
+                // filters don't match what has been set in the entity objectclasses.
+                // To fix this, they need to add the objectclass to the entity
+                if (returnList.get(0) instanceof PersonAccount) {
+                    PersonAccount personAccount = (PersonAccount) returnList.get(0);
+                    // f113366
+                    if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
+                        //returnValue = loginAccount.getString(this.propertyMap.getOutputUserDisplayName(idAndRealm.getRealm()));
+                        String mappedProp = outputAttrName;
+                        if (mappedProp.equals("displayName")) {
+                            if (personAccount.getDisplayName().size() == 0)
+                                returnValue = "";
+                            else
+                                returnValue = personAccount.getDisplayName().get(0);
+                        } else if (mappedProp.equals(SchemaConstants.PROP_PRINCIPAL_NAME) && foundInURBridge) {
+                            String outputUserPrincipalAttr = this.propertyMap.getOutputUserPrincipal(idAndRealm.getRealm());
+                            if (!this.mappingUtils.isIdentifierTypeProperty(outputUserPrincipalAttr)) {
+                                returnValue = (String) personAccount.get(outputUserPrincipalAttr);
+                            } else {
+                                returnValue = (String) personAccount.getIdentifier().get(outputUserPrincipalAttr);
+                            }
                         } else {
-                            returnValue = (String) loginAccount.getIdentifier().get(outputUserPrincipalAttr);
+                            returnValue = (String) personAccount.get(mappedProp);
                         }
                     } else {
-                        returnValue = (String) loginAccount.get(mappedProp);
+                        returnValue = (String) personAccount.getIdentifier().get(outputAttrName);
                     }
                 } else {
-                    returnValue = (String) loginAccount.getIdentifier().get(outputAttrName);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "No groups will be returned for user because the entity was not of type \"PersonAccount\".", returnList.get(0));
+                    }
                 }
             }
         } catch (WIMException toCatch) {
@@ -341,7 +349,7 @@ public class DisplayNameBridge {
             }
             // the group was found
             else {
-                Group group = (Group) returnList.get(0);
+                Entity group = returnList.get(0);
                 // f113366
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                     // get the property to return

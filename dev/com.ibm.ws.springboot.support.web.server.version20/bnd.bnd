@@ -34,11 +34,11 @@ instrument.disabled: true
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot20Server.jar; version:Version=2.0
 
 -buildpath: \
-	org.springframework:spring-core;version=5.0.4.RELEASE, \
-	org.springframework:spring-context;version=5.0.4.RELEASE, \
-	org.springframework:spring-aop;version=5.0.4.RELEASE, \
-	org.springframework:spring-expression;version=5.0.4.RELEASE, \
-	org.springframework:spring-beans;version=5.0.4.RELEASE, \
+	org.springframework:spring-core;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework:spring-context;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework:spring-aop;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework:spring-expression;strategy=exact;version=5.0.4.RELEASE, \
+	org.springframework:spring-beans;strategy=exact;version=5.0.4.RELEASE, \
 	org.springframework.boot:spring-boot-autoconfigure;version=2.0.0.RELEASE, \
 	org.springframework.boot:spring-boot;version=2.0.0.RELEASE, \
 	com.ibm.websphere.org.osgi.core, \

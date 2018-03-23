@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -102,6 +103,7 @@ public class H2Connection {
     private WsByteBuffer[] myPendingBuffers = new WsByteBuffer[10];
     private final int PENDING_BUFFER_MIN_GROWTH_SIZE = 4;
 
+    private final AtomicBoolean waitingForACK = new AtomicBoolean(false);
     private final FrameSettings ackSettingsFrame;
 
     private boolean closeCalled = false;
@@ -777,5 +779,9 @@ public class H2Connection {
      */
     public boolean didFrameArrive(Frame expectedFrame) {
         return streamResultManager.didframeArrive(expectedFrame);
+    }
+
+    public AtomicBoolean getWaitingForACK() {
+        return this.waitingForACK;
     }
 }

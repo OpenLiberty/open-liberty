@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,13 +16,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
-import com.ibm.ws.microprofile.config.fat.tests.CDIBrokenMethodInjectionTest;
-import com.ibm.ws.microprofile.config.fat.tests.CDIBrokenXtorInjectionTest;
+import com.ibm.ws.microprofile.config.fat.tests.CDIBrokenInjectionTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIBuiltInConverterTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIConfigPropertyTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIFieldInjectionTest;
-import com.ibm.ws.microprofile.config.fat.tests.CDIMethodInjectionTest;
-import com.ibm.ws.microprofile.config.fat.tests.CDIMissingConvertersTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIScopeTest;
 import com.ibm.ws.microprofile.config.fat.tests.CDIXtorInjectionTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoadersTest;
@@ -42,13 +39,10 @@ import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-                CDIBrokenXtorInjectionTest.class,
-                CDIBrokenMethodInjectionTest.class,
+                CDIBrokenInjectionTest.class,
                 CDIBuiltInConverterTest.class,
                 CDIConfigPropertyTest.class,
                 CDIFieldInjectionTest.class,
-                CDIMethodInjectionTest.class,
-                CDIMissingConvertersTest.class,
                 CDIScopeTest.class,
                 CDIXtorInjectionTest.class,
                 ClassLoadersTest.class,

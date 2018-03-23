@@ -16,10 +16,13 @@ public class SessionCacheApp {
     static final String SERVLET_NAME = "SessionCacheTestServlet";
     final LibertyServer s;
 
-    public SessionCacheApp(LibertyServer s, String... packages) throws Exception {
+    public SessionCacheApp(LibertyServer s, boolean isDropinApp, String... packages) throws Exception {
         Objects.requireNonNull(s);
         this.s = s;
-        ShrinkHelper.defaultDropinApp(s, APP_NAME, packages);
+        if (isDropinApp)
+            ShrinkHelper.defaultDropinApp(s, APP_NAME, packages);
+        else
+            ShrinkHelper.defaultApp(s, APP_NAME, packages);
     }
 
     public String invokeServlet(String testName, List<String> session) throws Exception {

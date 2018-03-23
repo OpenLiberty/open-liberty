@@ -23,8 +23,14 @@ import org.junit.runners.Suite.SuiteClasses;
                 ConfigDropinRootTests.class,
                 ConfigSpringBootAppTagTests.class,
                 PreThinnedSpringBootTests.class,
-                WarmStartTests.class
+                WarmStartTests.class,
+                SSLTests15.class,
+                SSLTests20.class,
+                SSLMutualAuthTests15.class,
+                SSLMutualAuthTests20.class,
+                JSPTests15.class
 })
+
 public class FATSuite {
 
 }

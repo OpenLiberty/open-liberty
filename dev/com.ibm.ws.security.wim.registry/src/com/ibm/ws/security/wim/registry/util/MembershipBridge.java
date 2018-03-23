@@ -359,7 +359,7 @@ public class MembershipBridge {
             }
             // the group was found
             else {
-                Group group = (Group) returnList.get(0);
+                Entity group = returnList.get(0);
                 idAndRealm.setId(group.getIdentifier().getUniqueName());
             }
             // create an empty root DataObject
@@ -416,39 +416,55 @@ public class MembershipBridge {
                                                                                                    WIMMessageKey.ENTITY_NOT_FOUND,
                                                                                                    WIMMessageHelper.generateMsgParms(inputGroupSecurityName)));
             }
-            Group entity = (Group) entityList.get(0);
-            List<Entity> memberList = entity.getMembers();
-            // if the output DataGraph contains MAP(userSecurityName)s
-            if (!memberList.isEmpty()) {
-                // add the MAP(userSecurityName)s to the Result list while count < limit
-                String userAttrName = outputUserSecurityNameAttr;
-                boolean isIdentifier = this.mappingUtils.isIdentifierTypeProperty(userAttrName);
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, methodName + " " + "userAttrName=" + userAttrName +
-                                 ", isIdentifier=" + isIdentifier,
-                             methodName);
-                }
 
-                ArrayList<String> users = new ArrayList<String>();
-                for (int count = 0; count < memberList.size(); count++) {
-                    if ((inputLimit != 0) && (count == inputLimit)) {
-                        // set the Result boolean to true
-                        //returnValue.setHasMore();
-                        break;
-                    }
-                    Entity member = memberList.get(count);
-                    // d115256
-                    if (!isIdentifier) {
-                        users.add((String) member.get(userAttrName));
-                    } else {
-                        users.add((String) member.getIdentifier().get(userAttrName));
-                    }
-                }
-                returnValue = new SearchResult(users, true);
+            // The following code requires having access to methods
+            // specifically available in the Group object. If the object
+            // is not an instance of Group, we should log that this happened.
 
+            // This check might cause inconsistencies for customers whose
+            // filters don't match what has been set in the entity objectclasses.
+            // To fix this, they need to add the objectclass to the entity
+
+            if (entityList.get(0) instanceof Group) {
+                Group entity = (Group) entityList.get(0);
+                List<Entity> memberList = entity.getMembers();
+                // if the output DataGraph contains MAP(userSecurityName)s
+                if (!memberList.isEmpty()) {
+                    // add the MAP(userSecurityName)s to the Result list while count < limit
+                    String userAttrName = outputUserSecurityNameAttr;
+                    boolean isIdentifier = this.mappingUtils.isIdentifierTypeProperty(userAttrName);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, methodName + " " + "userAttrName=" + userAttrName +
+                                     ", isIdentifier=" + isIdentifier,
+                                 methodName);
+                    }
+
+                    ArrayList<String> users = new ArrayList<String>();
+                    for (int count = 0; count < memberList.size(); count++) {
+                        if ((inputLimit != 0) && (count == inputLimit)) {
+                            // set the Result boolean to true
+                            //returnValue.setHasMore();
+                            break;
+                        }
+                        Entity member = memberList.get(count);
+                        // d115256
+                        if (!isIdentifier) {
+                            users.add((String) member.get(userAttrName));
+                        } else {
+                            users.add((String) member.getIdentifier().get(userAttrName));
+                        }
+                    }
+                    returnValue = new SearchResult(users, true);
+
+                } else {
+                    returnValue = new SearchResult(new ArrayList<String>(), false);
+                }
             } else {
-                returnValue = new SearchResult(new ArrayList<String>(), false);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No users will be returned because the entity was not of type \"Group\".", entityList.get(0));
+                }
             }
+
         } catch (WIMException toCatch) {
             // log the Exception
             if (tc.isDebugEnabled()) {

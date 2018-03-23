@@ -40,7 +40,7 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.transport.MessageObserver;
-import org.apache.cxf.transport.stream.ProxyOutputStream;
+import org.apache.cxf.transport.http.ProxyOutputStream;
 
 public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterceptor {
 

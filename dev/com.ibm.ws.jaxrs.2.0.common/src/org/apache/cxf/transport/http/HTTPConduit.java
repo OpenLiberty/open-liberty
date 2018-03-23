@@ -85,11 +85,12 @@ import org.apache.cxf.transport.https.CertConstraints;
 import org.apache.cxf.transport.https.CertConstraintsInterceptor;
 import org.apache.cxf.transport.https.CertConstraintsJaxBUtils;
 import org.apache.cxf.transport.https.HttpsURLConnectionInfo;
-import org.apache.cxf.transport.stream.ProxyOutputStream;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.workqueue.AutomaticWorkQueue;
 import org.apache.cxf.workqueue.WorkQueueManager;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /*
  * HTTP Conduit implementation.
@@ -488,6 +489,7 @@ public abstract class HTTPConduit
      *
      * @param message The message to be sent.
      */
+    @FFDCIgnore(URISyntaxException.class)
     @Override
     public void prepare(Message message) throws IOException {
         // This call can possibly change the conduit endpoint address and
@@ -616,6 +618,7 @@ public abstract class HTTPConduit
         }
     }
 
+    @FFDCIgnore(NumberFormatException.class)
     protected static int determineReceiveTimeout(Message message,
             HTTPClientPolicy csPolicy) {
         long rtimeout = csPolicy.getReceiveTimeout();
@@ -635,6 +638,7 @@ public abstract class HTTPConduit
         return (int)rtimeout;
     }
 
+    @FFDCIgnore(NumberFormatException.class)
     protected static int determineConnectionTimeout(Message message,
             HTTPClientPolicy csPolicy) {
         long ctimeout = csPolicy.getConnectionTimeout();
@@ -1047,6 +1051,7 @@ public abstract class HTTPConduit
          * @param inMessage
          */
         @Override
+        @FFDCIgnore(IOException.class)
         public void onMessage(Message inMessage) {
             // disposable exchange, swapped with real Exchange on correlation
             inMessage.setExchange(new ExchangeImpl());
@@ -1196,9 +1201,11 @@ public abstract class HTTPConduit
         }
 
 
+        @FFDCIgnore(RejectedExecutionException.class)
         protected void handleResponseOnWorkqueue(boolean allowCurrentThread, boolean forceWQ) throws IOException {
             Runnable runnable = new Runnable() {
                 @Override
+                @FFDCIgnore(Throwable.class)
                 public void run() {
                     try {
                         handleResponseInternal();
@@ -1312,6 +1319,7 @@ public abstract class HTTPConduit
          * reset output stream ... etc.)
          */
         @Override
+        @FFDCIgnore(IOException.class)
         protected void onFirstWrite() throws IOException {
             try {
                 handleHeadersTrustCaching();
@@ -1362,6 +1370,7 @@ public abstract class HTTPConduit
          * Perform any actions required on stream closure (handle response etc.)
          */
         @Override
+        @FFDCIgnore(value = {HttpRetryException.class, IOException.class, RuntimeException.class})
         public void close() throws IOException {
             try {
                 if (buffer != null && buffer.size() > 0) {
@@ -1408,6 +1417,7 @@ public abstract class HTTPConduit
             }
         }
 
+        @FFDCIgnore(Throwable.class)
         private <T extends Exception> T mapException(String msg,
                                                      T ex, Class<T> cls) {
             T ex2 = ex;
@@ -1479,6 +1489,8 @@ public abstract class HTTPConduit
             }
             return false;
         }
+
+        @FFDCIgnore(value = {IOException.class, URISyntaxException.class})
         protected boolean redirectRetransmit() throws IOException {
             // If we are not redirecting by policy, then we don't.
             if (!getClient(outMessage).isAutoRedirect()) {
@@ -1527,6 +1539,7 @@ public abstract class HTTPConduit
          * @return true if there was a retransmit
          * @throws IOException
          */
+        @FFDCIgnore(Throwable.class)
         protected boolean authorizationRetransmit() throws IOException {
             Message m = new MessageImpl();
             updateResponseHeaders(m);
@@ -1780,6 +1793,7 @@ public abstract class HTTPConduit
          *                     established by the configured MessageTrustDecider.
          * @see MessageTrustDecider
          */
+        @FFDCIgnore(UntrustedURLConnectionIOException.class)
         protected void makeTrustDecision() throws IOException {
 
             MessageTrustDecider decider2 = outMessage.get(MessageTrustDecider.class);

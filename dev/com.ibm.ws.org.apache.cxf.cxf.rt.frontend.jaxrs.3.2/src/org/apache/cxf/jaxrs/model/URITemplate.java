@@ -150,13 +150,13 @@ public final class URITemplate {
         return CHARACTERS_TO_ESCAPE.indexOf(ch) != -1;
     }
 
-    public boolean match(String uri, MultivaluedMap<String, String> templateVariableToValue) {
-
-        if (uri == null) {
+    public boolean match(String uri, MultivaluedMap<String, String> templateVariableToValue) {     
+        
+        if (uri == null) {            
             return (templateRegexPattern == null) ? true : false;
         }
 
-        if (templateRegexPattern == null) {
+        if (templateRegexPattern == null) {            
             return false;
         }
 
@@ -186,10 +186,10 @@ public final class URITemplate {
                     uri = SLASH;
                 }
                 m = templateRegexPattern.matcher(uri);
-                if (!m.matches()) {
+                if (!m.matches()) {                    
                     return false;
                 }
-            } else {
+            } else {                
                 return false;
             }
         }
@@ -217,8 +217,7 @@ public final class URITemplate {
             finalGroup = SLASH;
         }
 
-        templateVariableToValue.putSingle(FINAL_MATCH_GROUP, finalGroup);
-
+        templateVariableToValue.putSingle(FINAL_MATCH_GROUP, finalGroup);        
         return true;
     }
 
@@ -336,6 +335,11 @@ public final class URITemplate {
     }
 
     // Liberty Change start
+    public static URITemplate createTemplate(Path path, List<Parameter> params, String classNameandPath) {
+
+        return createTemplate(path == null ? null : path.value(), params, classNameandPath);
+    }
+    
     public static URITemplate createTemplate(Path path, List<Parameter> params) {
 
         return createTemplate(path == null ? null : path.value(), params);
@@ -345,33 +349,51 @@ public final class URITemplate {
 
         return createTemplate(path == null ? null : path.value(), Collections.<Parameter> emptyList());
     }
+    
+    public static URITemplate createTemplate(Path path, String classNameandPath) {
+
+        return createTemplate(path == null ? null : path.value(), Collections.<Parameter> emptyList(), classNameandPath);
+    }
 
     public static URITemplate createTemplate(String pathValue) {
-        return createTemplate(pathValue, Collections.<Parameter> emptyList());
+        return createTemplate(pathValue, Collections.<Parameter> emptyList(), pathValue);
+    }
+    
+    public static URITemplate createTemplate(String pathValue, String classNameandPath) {
+        return createTemplate(pathValue, Collections.<Parameter> emptyList(), classNameandPath);
     }
 
     public static URITemplate createTemplate(String pathValue, List<Parameter> params) {
+        return createExactTemplate(pathValue, params, pathValue);
+    }
+    
+    public static URITemplate createTemplate(String pathValue, List<Parameter> params, String classNameandPath) {
         if (pathValue == null) {
             pathValue = "/";
         } else if (!pathValue.startsWith("/")) {
             pathValue = "/" + pathValue;
         }
-        return createExactTemplate(pathValue, params);
+        return createExactTemplate(pathValue, params, classNameandPath);
     }
 
     public static URITemplate createExactTemplate(String pathValue) {
         return createExactTemplate(pathValue, Collections.<Parameter> emptyList());
     }
 
-    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params) {
-        URITemplate template = URI_TEMPLATE_CACHE.get(pathValue);
+    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params) {        
+         return createExactTemplate(pathValue, params, pathValue);
+    }
+    
+    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params, String classNameandPath) {        
+        URITemplate template = URI_TEMPLATE_CACHE.get(classNameandPath);
         if (template == null) {
             template = new URITemplate(pathValue, params);
             if (URI_TEMPLATE_CACHE.size() >= MAX_URI_TEMPLATE_CACHE_SIZE) {
                 URI_TEMPLATE_CACHE.clear();
             }
-            URI_TEMPLATE_CACHE.put(pathValue, template);
+            URI_TEMPLATE_CACHE.put(classNameandPath, template);            
         }
+ 
         return template;
     }
     // Liberty Change end

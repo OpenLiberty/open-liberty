@@ -133,10 +133,10 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
                                               String authMethod) throws Exception {
         Principal principal = new WSPrincipal(newSecurityName, accessId, authMethod);
         subject.getPrincipals().add(principal);
-        if (urAuthenticatedId != null && !urAuthenticatedId.equals(securityName)) {
-            Hashtable<String, String> subjectHash = new Hashtable<String, String>();
-            subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, securityName);
-            subject.getPrivateCredentials().add(subjectHash);
+        if (urAuthenticatedId != null && !urAuthenticatedId.equals(securityName)) {  
+	    Hashtable<String, String> subjectHash = new Hashtable<String, String>();
+	    subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, urAuthenticatedId);
+	    subject.getPrivateCredentials().add(subjectHash);
         }
         CredentialsService credentialsService = getCredentialsService();
         credentialsService.setCredentials(subject);

@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import javax.cache.CacheManager;
 import javax.cache.Caching;
+import javax.cache.configuration.OptionalFeature;
 import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
@@ -66,6 +67,16 @@ public class CacheStoreService implements SessionStoreService {
     @Reference
     protected SerializationService serializationService;
 
+    /**
+     * Indicates whether or not the caching provider supports store by reference.
+     */
+    boolean supportsStoreByReference;
+
+    /**
+     * Trace identifier for the cache manager
+     */
+    String tcCacheManager;
+
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected volatile UserTransaction userTransaction;
 
@@ -78,6 +89,8 @@ public class CacheStoreService implements SessionStoreService {
      */
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> props) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         configurationProperties = new HashMap<String, Object>(props);
 
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
@@ -96,7 +109,9 @@ public class CacheStoreService implements SessionStoreService {
         configurationProperties.put("onlyCheckInCacheDuringPreInvoke", false);
         configurationProperties.put("optimizeCacheIdIncrements", true);
         configurationProperties.put("scheduleInvalidation", scheduleInvalidationFirstHour != null || scheduleInvalidationSecondHour != null);
+        configurationProperties.put("sessionPersistenceMode", "DATABASE"); // TODO at some point, allow a value of JCACHE
         // TODO decide whether or not to externalize useInvalidatedId
+        configurationProperties.put("useMultiRowSchema", true);
         
         Properties vendorProperties = new Properties();
         
@@ -123,16 +138,28 @@ public class CacheStoreService implements SessionStoreService {
 
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
         cachingProvider = Caching.getCachingProvider(library.getClassLoader());
+
+        String tcCachingProvider = trace && tc.isDebugEnabled() ? "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider)) : null;
+        if (tcCachingProvider != null)
+            CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
+
         cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
+
+        tcCacheManager = "CacheManager" + Integer.toHexString(System.identityHashCode(cacheManager));
+
+        if (trace && tc.isDebugEnabled()) {
+            CacheHashMap.tcReturn(tcCachingProvider, "getCacheManager", tcCacheManager);
+            CacheHashMap.tcInvoke(tcCachingProvider, "isSupported", "STORE_BY_REFERENCE");
+        }
+
+        supportsStoreByReference = cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE);
+
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcReturn(tcCachingProvider, "isSupported", supportsStoreByReference);
     }
 
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
-        // Always use a separate cache entry for each session property.
-        // These are kept in a cache named com.ibm.ws.session.prop.{ENCODED_APP_ROOT}
-        // and are keyed by {SESSION_PROP_ID}.{PROPERTY_NAME}
-        smc.setUsingMultirow(true);
-
         IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
         store.setLoader(new SessionLoader(serializationService, classLoader, applicationSessionStore));
         setCompletedPassivation(false);
@@ -147,7 +174,14 @@ public class CacheStoreService implements SessionStoreService {
      */
     @Deactivate
     protected void deactivate(ComponentContext context) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcInvoke(tcCacheManager, "close");
+
         cacheManager.close();
+
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcReturn(tcCacheManager, "close");
     }
 
     @Override

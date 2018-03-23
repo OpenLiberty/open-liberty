@@ -24,7 +24,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,7 +43,6 @@ import test.common.SharedOutputManager;
  */
 @SuppressWarnings("deprecation")
 @RunWith(JMock.class)
-@Ignore
 public class TrRegisterTest {
     static {
         LoggingTestUtils.ensureLogManager();
@@ -144,7 +142,7 @@ public class TrRegisterTest {
             TraceComponent tc = Tr.register(myClass);
             assertEquals(tc.getTraceClass(), myClass);
 
-            System.out.println(tc.toString());
+            //System.out.println(tc.toString());
             String str[] = tc.introspectSelf(); // returns name, group, and
             // bundle
             assertEquals("TraceComponent[" + myClass.getCanonicalName()
@@ -158,7 +156,6 @@ public class TrRegisterTest {
     @Test
     public void testRegisterClassGroup() {
         final String m = "testRegisterClassGroup";
-
         try {
             context.checking(new Expectations() {
                 {
@@ -194,7 +191,7 @@ public class TrRegisterTest {
 
             String str[] = tc.introspectSelf(); // returns name, group, and
             // bundle
-            System.out.println(tc.toString());
+            //System.out.println(tc.toString());
             assertEquals("TraceComponent[" + myName
                          + "," + myClass
                          + ",[group],bundle,null]", str[0]);
@@ -218,7 +215,7 @@ public class TrRegisterTest {
 
             String str[] = tc.introspectSelf(); // returns name, group, and
             // bundle
-            System.out.println(tc.toString());
+            //System.out.println(tc.toString());
             assertEquals("TraceComponent[x.logwriter"
                          + "," + myClass
                          + ",[x.logwriter],null,null]", str[0]);
@@ -258,7 +255,7 @@ public class TrRegisterTest {
 
             String str[] = tc.introspectSelf(); // returns name, group, and
             // bundle
-            System.out.println(tc.toString());
+            //System.out.println(tc.toString());
             assertEquals("TraceComponent[" + myName
                          + "," + myClass
                          + ",[groupName],null,null]", str[0]);
@@ -282,7 +279,7 @@ public class TrRegisterTest {
 
             String str[] = tc.introspectSelf(); // returns name, group, and
             // bundle
-            System.out.println(tc.toString());
+            //System.out.println(tc.toString());
             assertEquals("TraceComponent[" + myName
                          + "," + myClass
                          + ",[groupName],bundle,null]", str[0]);

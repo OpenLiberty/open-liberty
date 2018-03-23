@@ -34,7 +34,6 @@ import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Context;
 import com.ibm.wsspi.security.wim.model.Control;
 import com.ibm.wsspi.security.wim.model.Entity;
-import com.ibm.wsspi.security.wim.model.Group;
 import com.ibm.wsspi.security.wim.model.LoginAccount;
 import com.ibm.wsspi.security.wim.model.Root;
 import com.ibm.wsspi.security.wim.model.SearchControl;
@@ -388,7 +387,7 @@ public class UniqueIdBridge {
             }
             // the group was found
             else {
-                Group group = (Group) returnList.get(0);
+                Entity group = returnList.get(0);
                 // d113801
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                     returnValue = (String) group.get(outputAttrName);

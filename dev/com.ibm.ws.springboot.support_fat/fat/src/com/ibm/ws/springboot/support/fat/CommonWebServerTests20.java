@@ -14,12 +14,17 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
 public class CommonWebServerTests20 extends CommonWebServerTests {
+    @Test
+    public void testBasicSpringBootApplication20() throws Exception {
+        testBasicSpringBootApplication();
+    }
 
     @Override
     public Set<String> getFeatures() {
