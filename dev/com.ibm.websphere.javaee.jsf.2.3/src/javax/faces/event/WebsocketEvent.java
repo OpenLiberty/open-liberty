@@ -31,7 +31,7 @@ import javax.websocket.CloseReason;
 /**
  *
  */
-public class WebsocketEvent implements Serializable
+public final class WebsocketEvent implements Serializable
 {
    
     private String channel;
