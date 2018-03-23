@@ -39,6 +39,8 @@ public class TestUtils {
             url = url + "?thirdFFDC=true";
         } else if (type.equals("trace")) {
             url = url + "/TraceURL";
+        } else if (type.equals("logServlet")) {
+            url = url + "/LogURL";
         }
         Log.info(c, "runApp", "---> Running the application with url : " + url);
 
