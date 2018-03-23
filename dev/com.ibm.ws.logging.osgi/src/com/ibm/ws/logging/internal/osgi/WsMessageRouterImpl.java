@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,10 +173,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
 	            			Set<String> tempLogHandlerIds = new HashSet<String>();
 	            			
 	            			for(String id : logHandlerIds) {
-	            				if(id.equals("DEFAULT") || id.equals("-DEFAULT") || id.equals("+DEFAULT")) {
-	            					tempLogHandlerIds.add(id);
-	            					continue;
-	            				}else if(!routeAllMsgsToTheseLogHandlers.contains(id) ) {
+	            				if(id.equals("DEFAULT") || id.equals("-DEFAULT") || id.equals("+DEFAULT") || !routeAllMsgsToTheseLogHandlers.contains(id)) {
 	            					tempLogHandlerIds.add(id);
 	            				}
 	            			}
