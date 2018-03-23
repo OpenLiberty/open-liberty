@@ -373,9 +373,9 @@ class ELHelper {
              * Evaluate the EL expression to get the value.
              */
             Object obj = evaluateElExpression(useForExpression);
-            if (obj instanceof Object[]) {
-                result = new HashSet(Arrays.asList(obj));
-                System.out.println("Toshi : result : " + result);
+            if (obj instanceof ValidationType[]) {
+                ValidationType[] types = (ValidationType[])obj;
+                result = new HashSet<ValidationType>(Arrays.asList(types));
                 immediate = isImmediateExpression(useForExpression);
             } else if (obj instanceof Set) {
                 result = (Set<ValidationType>) obj;
@@ -388,8 +388,7 @@ class ELHelper {
         if (result == null || result.isEmpty()) {
             throw new IllegalArgumentException("The identity store must be configured with at least one ValidationType.");
         }
-//        return (immediateOnly && !immediate) ? null : Collections.unmodifiableSet(result);
-        return (immediateOnly && !immediate) ? null : result;
+        return (immediateOnly && !immediate) ? null : Collections.unmodifiableSet(result);
     }
 
     /**
