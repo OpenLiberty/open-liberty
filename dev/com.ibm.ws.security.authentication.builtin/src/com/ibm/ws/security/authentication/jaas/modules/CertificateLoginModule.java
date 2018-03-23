@@ -302,7 +302,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       ur.getRealm(),
                                                       ur.getUniqueUserId(username));
-        setPrincipalAndCredentials(temporarySubject, username, authenticatedId, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
+        setPrincipalAndCredentials(temporarySubject, securityName, username, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
 
     }
 
