@@ -1008,16 +1008,17 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         }
         if (authResult.getStatus() == AuthResult.SUCCESS) {
             getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult, true, !isNewAuthenticate);
-        } else {
+        } else if (!isNewAuthenticate) {
             String realm = authResult.realm;
             if (realm == null) {
                 realm = collabUtils.getUserRegistryRealm(securityServiceRef);
             }
             webReply = createReplyForAuthnFailure(authResult, realm);
             result = false;
+            authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
         }
-        authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
-        if (!resp.isCommitted() && webReply != null) {
+
+        if (!isNewAuthenticate && !resp.isCommitted() && webReply != null) {
             webReply.writeResponse(resp);
         }
 
