@@ -246,6 +246,8 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         temporarySubject = new Subject();
         Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
         hashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, AccessIdUtil.getUniqueId(accessId));
+        setWSPrincipal(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
+        setCredentials(temporarySubject, username, username);
         temporarySubject.getPublicCredentials().add(hashtable);
         temporarySubject.getPublicCredentials().remove(hashtable);
     }
