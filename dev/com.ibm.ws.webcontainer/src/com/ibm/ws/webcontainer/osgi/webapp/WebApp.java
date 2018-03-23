@@ -573,7 +573,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
   public String getRealPath(String path, boolean checkDocRoot)
   {
       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
-          logger.entering(CLASS_NAME, "getRealPath", " passed in path is: " + path);
+          logger.entering(CLASS_NAME, "getRealPath", new Object[]{path, checkDocRoot});
       
       //if (webAppInfo != null)
       //{
@@ -581,6 +581,10 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
       //}
        
     String basePath = null;
+
+    if (path == null || path.equals("")) {
+        path = "/";
+    }
       
     if(container != null){
         
