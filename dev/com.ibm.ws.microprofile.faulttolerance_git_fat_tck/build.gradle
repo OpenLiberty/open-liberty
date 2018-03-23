@@ -9,7 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 task clone {
+  mustRunAfter cleanFat
   gitClone "microprofile-fault-tolerance"
 }
 
-autoFVT.dependsOn clone
+build.mustRunAfter clone
+addRequiredLibraries.dependsOn clone

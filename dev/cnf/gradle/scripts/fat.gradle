@@ -26,7 +26,7 @@ publishing {
 }
 
 task cleanFat(type: Delete) {
-  delete autoFvtDir
+ delete autoFvtDir
 }
 
 task cleanBeforeRun(type: Delete) {
@@ -214,7 +214,7 @@ task autoFVT {
       into new File(autoFvtDir, 'lib')
     }
     
-    // Copy all non-java app resourecs, such as *.html or *.jsp
+    // Copy all non-java app resources, such as *.html or *.jsp
     copy {
       includeEmptyDirs = false
       from projectDir
@@ -222,7 +222,13 @@ task autoFVT {
       include 'test-applications/**', 'test-bundles/**', 'test-resourceadapters/**'
       exclude '**/*.java'
     }
-    
+
+    // Copy any locally cloned git repositories
+    copy {
+      from new File(project.buildDir, 'gitRepos')
+      into new File(autoFvtDir, 'publish/gitRepos/')
+    }
+
     // Produce a list of features tested by this FAT
     def featureDeps = [] as Set
     // Include features added explictly via bnd.bnd
@@ -326,30 +332,33 @@ assemble {
 }
 
 ext.gitClone = { proj, branch = 'master', folder = '', site = 'git@github.com', org = 'eclipse' ->
-  
+
+  // We need to know which MP project at least
+  if( proj == null || proj.length() == 0 ){
+    project.logger.lifecycle("The first parameter to task clone is the project name and cannot be defaulted");
+    return
+  }
+
+  // Default the destination forlder to the project name
+  if( folder == null || folder.length() == 0 ){
+    folder = proj
+  }
+
+  //Staging area parent folder to enable copying all subfolders.
+  File gitReposDir = new File(project.buildDir, 'gitRepos')
+
   // If running locally use git directly
-  Boolean local = System.properties['fat.test.localrun'];
-  if( local ){
-  
-    if( proj == null || proj.length() == 0 ){
-      project.logger.lifecycle("The first parameter to task clone is the project name and cannot be defaulted");
-      return
-    }
+  if( System.properties['fat.test.localrun'] ){
 
-    if( folder == null || folder.length() == 0 ){
-      folder = proj
-    }
-    
-
-    File gitRepos = new File(autoFvtDir, 'gitRepos' )
-    
-    File repoDir = new File(gitRepos, folder)
+    File repoDir = new File(gitReposDir, folder)
     String into = repoDir.getAbsolutePath()
      
     String url = " " + site + ":" + org + "/" + proj + ".git "
     String cmd = "git clone --single-branch --branch " + branch + " " + url + " " + into
       
     delete into
+    mkdir into
+    
     def proc = cmd.execute()
     proc.in.eachLine { line -> println cmd + ':\n' + line }
     proc.err.eachLine { line -> println cmd + ':\n' + line }
@@ -362,11 +371,10 @@ ext.gitClone = { proj, branch = 'master', folder = '', site = 'git@github.com', 
     
     //EBC clones in dev/../../../<repo>
     File ebcCloneDir = new File( project, "./../../../" )
-    File gitRepos = new File(autoFvtDir, 'gitRepos')
     copy {
       from ebcCloneDir
       include proj
-      into gitRepos
+      into gitReposDir
     }
   }
   

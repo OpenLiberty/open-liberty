@@ -36,7 +36,7 @@ import componenttest.topology.utils.MvnUtils;
 public class FaultToleranceGitTckLauncher {
 
     /**  */
-    private static String GIT_CLONE_PARENT_DIR = "";
+    private static String GIT_REPO_PARENT_DIR = "publish/gitRepos/";
     private static final String GIT_REPO_NAME = "microprofile-fault-tolerance";
 
     @Server("FaultToleranceTCKServer")
@@ -104,23 +104,17 @@ public class FaultToleranceGitTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void runFreshMasterBranchTck() throws Exception {
 
-        if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
-            // Developers laptop FAT - we can't assume we won't over write existing repo
-            // so we clone the repo into the project's autoVFT/gitRepos/
-            GIT_CLONE_PARENT_DIR = "./publish/gitRepos/";
-        } else {
-            // Build engine FAT repos can be assumed to be siblings of this one
-            GIT_CLONE_PARENT_DIR = "../../../../../.."; // 6*'..' as "repoParent6/<repo>5/dev4/<proj>3/build2/libs1/autoFVT(.)"
-        }
-
-        File repoParent = new File(GIT_CLONE_PARENT_DIR);
+        File repoParent = new File(GIT_REPO_PARENT_DIR);
         File repo = new File(repoParent, GIT_REPO_NAME);
 
         System.out.println("RepoParent is at: " + repoParent.getAbsolutePath());
         System.out.println("Repo is at: " + repo.getAbsolutePath());
 
         MvnUtils.mvnCleanInstall(repo);
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK");
+        String tckVersion = MvnUtils.getTckVersionAfterClone(repo);
+        System.out.println("Queried tck.version is : " + tckVersion);
+
+        MvnUtils.runTCKVersionedMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK", tckVersion);
     }
 
     @Mode(TestMode.LITE)

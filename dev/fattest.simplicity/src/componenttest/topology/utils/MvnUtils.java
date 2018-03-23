@@ -24,6 +24,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -203,13 +204,54 @@ public class MvnUtils {
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      */
+    public static int runTCKVersionedMvnCmd(LibertyServer server, String bucketName, String testName, String tckVersion) throws Exception {
+        if (!init) {
+            init(server);
+        }
+        String[] cmd = concatStringArray(mvnCliRoot, new String[] { "-Dtck.version=" + tckVersion });
+        int rc = runCmd(cmd, MvnUtils.tckRunnerDir, mvnOutput);
+        String failingTestsList = postProcessTestNgResults();
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+        Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
+                            + "The TCK (version=" + tckVersion + ") has thus returned non-zero return code of: "
+                            + rc +
+                            ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
+                            " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
+        return rc;
+    }
+
+    /**
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     */
     public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName) throws Exception {
         if (!init) {
             init(server);
         }
-
         // Everything under autoFVT/results is collected from the child build machine
         int rc = runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
+        String failingTestsList = postProcessTestNgResults();
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+        Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
+                            + "The TCK has thus returned non-zero return code of: "
+                            + rc +
+                            ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
+                            " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
+        return rc;
+    }
+
+    /**
+     * Prepare the TestNg Result XML files for inclusion in Simplicity html processing and return a list of failing tests
+     *
+     * @return A list of non passing tests
+     * @throws IOException
+     * @throws SAXException
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     */
+    private static String postProcessTestNgResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException {
+
         File src = new File(MvnUtils.resultsDir, "tck/surefire-reports/junitreports");
         File tgt = new File(MvnUtils.resultsDir, "junit");
         try {
@@ -232,16 +274,7 @@ public class MvnUtils {
                 printStdOutAndScreenIfLocal("\n");
             }
         }
-
-        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
-        // the TCK regression
-        Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
-                            + "The TCK has thus returned non-zero return code of: "
-                            + rc +
-                            ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
-                            " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
-
-        return rc;
+        return failingTestsList;
     }
 
     /**
@@ -442,51 +475,10 @@ public class MvnUtils {
      */
     public static String getNonPassingTestsNamesList() throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
         String notPassingTestsQuery = "/testng-results/suite/test/class/test-method[@status!='PASS']/@name";
-        String notPassingTestsResultString = getXPathQueryResults(notPassingTestsQuery);
+        File testngResults = new File(MvnUtils.resultsDir, "tck/surefire-reports/testng-results.xml");
+        HashSet<String> excludes = new HashSet<String>(Arrays.asList("arquillianBeforeTest", "arquillianAfterTest"));
+        String notPassingTestsResultString = getQueryInXml(testngResults, notPassingTestsQuery, " ", excludes);
         return notPassingTestsResultString;
-    }
-
-    /**
-     * Return the result of a query on testng-results.xml (usually test methods) filtering out arquillianBefore/After strings.
-     * The arquillianBefore/After methods can be considered 'noise' as if they fail - the tests they wrap will fail too.
-     *
-     * @param query
-     * @return
-     * @throws ParserConfigurationException
-     * @throws SAXException
-     * @throws IOException
-     * @throws XPathExpressionException
-     */
-    private static String getXPathQueryResults(String query) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
-        String resultString = "";
-
-        // We use an aggressive try/catch as it is very important that this non-vital
-        // function does not impact the build success. This is a common function and it
-        // might be possible for a particular FAT bucket to tweak the directories or
-        // surefire output and so on that we use via project specific config files and
-        // we don't want to get a, for example, FileNotFound exception.
-        //
-        try {
-            File testngResults = new File(MvnUtils.resultsDir, "tck/surefire-reports/testng-results.xml");
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document docTestngResults = builder.parse(testngResults);
-            XPathFactory xPathFactory = XPathFactory.newInstance();
-            XPath xpath = xPathFactory.newXPath();
-            XPathExpression xpr = xpath.compile(query);
-            NodeList nodes = (NodeList) xpr.evaluate(docTestngResults, XPathConstants.NODESET);
-
-            for (int i = 0; i < nodes.getLength(); i++) {
-                String value = nodes.item(i).getNodeValue();
-                if (!value.equals("arquillianBeforeTest") && !value.equals("arquillianAfterTest")) {
-                    resultString += " " + value;
-                }
-            }
-        } catch (Throwable t) {
-            MvnUtils.log(t.getMessage());
-        }
-
-        return resultString;
     }
 
     /**
@@ -541,5 +533,68 @@ public class MvnUtils {
 
         return rc;
 
+    }
+
+    /**
+     * Return the version from the tck/pom.xml
+     *
+     * @param repo
+     * @return
+     */
+    public static String getTckVersionAfterClone(File repo) {
+        String version = "NOT_SET";
+        Assert.assertTrue("The cloned into directory " + repo.getAbsolutePath() + " does not exist", repo.exists());
+
+        File tckDir = new File(repo, "tck");
+        Assert.assertTrue("The tck directory " + tckDir.getAbsolutePath() + " does not exist", tckDir.exists());
+
+        File pomXml = new File(tckDir, "pom.xml");
+        Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
+
+        String query = "/project/version";
+        version = getQueryInXml(pomXml, query, "", null).trim();
+
+        return version;
+    }
+
+    /**
+     * Return the result of a XPath query on a file
+     *
+     * @param xml file
+     * @param query as a XPath String
+     * @return result of query into the xml
+     */
+    private static String getQueryInXml(File xml, String query, String seperatorPrefix, Set<String> excludes) {
+        String result = "";
+        System.out.println("Looking at pomXml " + xml.getAbsolutePath());
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document docTestngResults = builder.parse(xml);
+            XPathFactory xPathFactory = XPathFactory.newInstance();
+            XPath xpath = xPathFactory.newXPath();
+            XPathExpression xpr = xpath.compile(query);
+            NodeList nodes = (NodeList) xpr.evaluate(docTestngResults, XPathConstants.NODESET);
+
+            System.out.println("found " + nodes.getLength() + " nodes");
+            System.out.println("Noddy node " + nodes.item(0).getTextContent());
+
+            if (nodes.getLength() > 0) {
+                if (nodes.getLength() == 1) {
+                    result = nodes.item(0).getTextContent();
+                } else {
+                    for (int i = 0; i < nodes.getLength(); i++) {
+                        String value = nodes.item(i).getNodeValue();
+                        if (excludes == null || !excludes.contains(value)) {
+                            result += seperatorPrefix + value;
+                        }
+                    }
+                }
+            }
+
+        } catch (Throwable t) {
+            MvnUtils.log(t.getMessage());
+        }
+        return result;
     }
 }

@@ -16,7 +16,6 @@
     <name>MicroProfile Fault Tolerance TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.faulttolerance.version>1.0</microprofile.faulttolerance.version>
         <microprofile.config.version>1.0</microprofile.config.version>
 
         <arquillian.version>1.1.13.Final</arquillian.version>
@@ -48,7 +47,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
             <artifactId>microprofile-fault-tolerance-tck</artifactId>
-            <version>${microprofile.faulttolerance.version}</version>
+            <version>${tck.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.microprofile.apis</groupId>
