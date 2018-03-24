@@ -36,23 +36,14 @@ dependencies {
 
 task copyMavenLibs(type: Copy) {
     from configurations.binaries
-    into cnf.file('mavenlibs')
-}
-
-void deleteRecursive(File file) {
-    if (file.isDirectory()) {
-        for (File entry : file.listFiles()) {
-            deleteRecursive(entry)
-        }
-    }
-    file.delete()
+    into project.file('mavenlibs')
 }
 
 task cleanRepos(type: Delete) {
     doLast {
-        deleteRecursive(file('release'))
+        project.delete('release')
         delete 'release.mvn'
-        deleteRecursive(file('local'))
+        project.delete('local')
         delete 'local.mvn'
         delete fileTree('mavenlibs')
     }
@@ -108,7 +99,7 @@ task createGradleBootstrap {
                 def bndProject = bndWorkspace.getProject(relativePath)
                 if (bndProject != null && !bndProject.isNoBundles()) {
                     String org
-                    if ('true'.equals(bndProject.get('test.project', 'false'))) {
+                    if ('true'.equals(bndProject.get('test.project', bndProject.get('fat.project', 'false')))) {
                         org = 'test'
                     } else {
                         org = 'dev'
@@ -157,30 +148,23 @@ ${depsList.sort().join('\n')}
 task createESALists {
     dependsOn everythingElseHasBeenReleased
     doLast {
-        def gaFeatures = []
-        def betaFeatures = []
-        rootProject.fileTree(dir: '.', include: '*/*.feature').visit { feature ->
-            if (feature.isDirectory()) {
-                return
-            }
-
-            if (feature.getFile().getText().contains("kind=ga")) {
-                gaFeatures.add(feature.name.substring(0, feature.name.size()-".feature".size()))
-            } else if (feature.getFile().getText().contains("kind=beta")) {
-                betaFeatures.add(feature.name.substring(0, feature.name.size()-".feature".size()))
-            }
+        String features = ""
+        gaFeatures(false).each { gaFeature ->
+            features += gaFeature + "\n"
         }
-
-        gaFeatures = gaFeatures.sort()
-        betaFeatures = betaFeatures.sort()
 
         File gaEsa = new File(project.buildDir, 'gaFeatures.txt')
         gaEsa.createNewFile()
-        gaEsa.text = gaFeatures.join("\n")
+        gaEsa.text = features
+
+        features = ""
+        betaFeatures().each { betaFeature ->
+            features += betaFeature + "\n"
+        }
 
         File betaEsa = new File(project.buildDir, 'betaFeatures.txt')
         betaEsa.createNewFile()
-        betaEsa.text = betaFeatures.join("\n")
+        betaEsa.text = features
     }
 }
 
@@ -198,12 +182,13 @@ task createGeneratedReplacementProjects {
             if (bndProject == null) {
                 return
             }
-            boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', 'false'))
+            boolean testProject = 'true'.equals(bndProject.get('test.project', bndProject.get('fat.project', 'false')))
+            boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', testProject ? 'false' : 'true'))
+            if (!generateReplacement) {
+                return
+            }
             String org
-            if ('true'.equals(bndProject.get('test.project', 'false'))) {
-                if (!generateReplacement) {
-                    return
-                }
+            if (testProject) {
                 org = 'test'
             } else {
                 org = 'dev'
@@ -272,8 +257,8 @@ task ('createIndex') {
         /* indexer */
         def repoindexJar = project.file('mavenlibs/org.osgi.impl.bundle.repoindex.cli-3.5.0.jar')
 
-        def tmpreleaserepo = cnf.file('tmpreleaserepo')
-        deleteRecursive(tmpreleaserepo)
+        def tmpreleaserepo = project.file('tmpreleaserepo')
+        project.delete('tmpreleaserepo')
 
         try {
             copy {
@@ -310,7 +295,7 @@ task ('createIndex') {
             }.assertNormalExitValue()
             logger.info 'Generated index {}.', index_compressed
         } finally {
-            deleteRecursive(tmpreleaserepo)
+            project.delete('tmpreleaserepo')
         }
     }
 }
@@ -329,7 +314,7 @@ task zipGradleBootstrap(type: Zip) {
     }
     from new File(project.buildDir, 'replacements')
     into 'com.ibm.websphere.features.internal.openliberty', {
-        from rootProject.fileTree(dir: '.', include: '*/*.feature').collect {
+        from rootProject.fileTree(dir: 'com.ibm.websphere.appserver.features', include: '**/*.feature').collect {
             if (!it.isDirectory()) {
                 it
             }

@@ -16,4 +16,4 @@ Subsystem-Vendor: IBM Corp.
 TODAY, DSTAMP, TSTAMP, Bnd-LastModified, \
 Include-Resource, Export-Package, Private-Package, Ignore-Package, \
 Bundle-SymbolicName, Bundle-Name, Bundle-Description, Bundle-ManifestVersion, Bundle-Version, Manifest-Version
--includeresource=OSGI-INF/l10n/=build/l10n/,OSGI-INF=resources/icons/${symbolicName}/OSGI-INF
+-includeresource=OSGI-INF/l10n/=resources/l10n/,OSGI-INF=resources/icons/${symbolicName}/OSGI-INF

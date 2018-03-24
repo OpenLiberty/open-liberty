@@ -10,8 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.config.fat;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,8 +27,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.HttpSessionCache;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -65,7 +68,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.web");
 
-        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID()));
+        String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+        server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
+                                           "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         savedConfig = server.getServerConfiguration().clone();
         server.startServer();
@@ -73,23 +78,123 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("SRVE0297E.*IllegalStateException"); // TODO remove this temporarily allowed error once OSGi dependencies in session manager code are fixed
     }
 
     /**
-     * TODO Remove this test once we have useful tests added to this class
+     * Update the configured value of the writeContents attribute while the server is running. Confirm the configured behavior.
      */
     @Test
-    public void testGetAndInvalidate() throws Exception {
+    public void testWriteContents() throws Exception {
+        // Verify default behavior: writeContents=ONLY_SET_ATTRIBUTES
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_ONLY_SET_ATTRIBUTES", new ArrayList<>());
+
+        // TODO enable once this function is implemented
+        // Reconfigure writeContents=GET_AND_SET_ATTRIBUTES
+        //ServerConfiguration config = server.getServerConfiguration();
+        //HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        //httpSessionCache.setWriteContents("GET_AND_SET_ATTRIBUTES");
+        //server.setMarkToEndOfLog();
+        //server.updateServerConfiguration(config);
+        //server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        //FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_GET_AND_SET_ATTRIBUTES", new ArrayList<>());
+
+        // Reconfigure writeContents=ALL_SESSION_ATTRIBUTES
+        ServerConfiguration config = server.getServerConfiguration();
+        HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        httpSessionCache.setWriteContents("ALL_SESSION_ATTRIBUTES");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_ALL_SESSION_ATTRIBUTES", new ArrayList<>());
+    }
+
+    /**
+     * Update the configured value of the writeFrequency attribute from default (END_OF_SERVLET_SERVICE) to MANUAL_UPDATE
+     * while the server is running. The session must remain valid, and must exhibit the new behavior (MANUAL_UPDATE) after
+     * the configuration change.
+     */
+    @Test
+    public void testWriteFrequency() throws Exception {
+        // Verify default behavior: writeFrequency=END_OF_SERVLET_SERVICE
         List<String> session = new ArrayList<>();
-        String response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "getSessionId", session);
-        try {
-            int start = response.indexOf("session id: [") + 13;
-            String sessionId = response.substring(start, response.indexOf(']', start));
-            assertNotNull(sessionId);
-        } finally {
-            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+
+        // Reconfigure writeFrequency=MANUAL_UPDATE
+        ServerConfiguration config = server.getServerConfiguration();
+        HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        httpSessionCache.setWriteFrequency("MANUAL_UPDATE");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        // Set a new attribute value without performing a manual sync, the value in the cache should not be updated
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+
+        // TODO enable if manual sync is supported across same session spanning multiple servlet requests:
+        // Perform a manual sync under a subsequent servlet request and verify the previously set value is updated
+        // FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualSync&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
+
+        // Perform a manual update within the same servlet request
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualUpdate&attribute=testWriteFrequency&value=3_MANUAL_UPDATE", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+    }
+
+    /**
+     * Update the configured value of the writeInterval attribute while the server is running.
+     */
+    @AllowedFFDC("java.lang.IllegalStateException") // TODO remove this temporarily allowed error once OSGi dependencies in session manager code are fixed
+    @Test
+    public void testWriteInterval() throws Exception {
+        // Verify default behavior: writeFrequency=END_OF_SERVLET_SERVICE, writeInterval ignored
+        List<String> session = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteInterval&value=0_END_OF_SERVLET_SERVICE", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testWriteInterval&value=0_END_OF_SERVLET_SERVICE", session);
+
+        // Reconfigure writeFrequency=TIME_BASED_WRITE and writeInterval=5s
+        ServerConfiguration config = server.getServerConfiguration();
+        HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        httpSessionCache.setWriteFrequency("TIME_BASED_WRITE");
+        httpSessionCache.setWriteInterval("5s");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        // Set a new attribute value and verify that it does not get persisted upon the end of the servlet request.
+        // This might require retries because periodic timed based write could happen right as the servlet request ends.
+        String previousValue = "0_END_OF_SERVLET_SERVICE";
+        String newValue = null;
+        for (int numAttempts = 1; numAttempts < 20; numAttempts++) {
+            newValue = numAttempts + "_TIME_BASED_WRITE";
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteFrequency&value=" + newValue, session);
+
+            String response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "getValueFromCache&attribute=testWriteFrequency", session);
+            int start = response.indexOf("value from cache: [") + 19;
+            String cachedValue = response.substring(start, response.indexOf(']', start));
+
+            if (!previousValue.equals(cachedValue))
+                break;
+
+            previousValue = newValue;
         }
-        cleanupList = EMPTY_RECYCLE_LIST;
+
+        assertFalse("TIME_BASED_WRITE was either not honored, or the test was very unlucky in repeatedly " +
+                    "having the time based write align with servlet request completion",
+                    previousValue.equals(newValue));
+
+        String response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "getSessionId", session);
+        int start = response.indexOf("session id: [") + 13;
+        String sessionId = response.substring(start, response.indexOf(']', start));
+
+        // Due to TIME_BASED_WRITE, the value should be written to cache some time within the next 5 seconds. Poll for it,
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME,
+                     "testPollCache&attribute=testWriteFrequency&value=" + newValue + "&sessionId=" + sessionId,
+                     null); // Avoid having the servlet access the session here because this will block 5 cycles of the time based write.
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
     }
 }

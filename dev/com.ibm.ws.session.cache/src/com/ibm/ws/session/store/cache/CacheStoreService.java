@@ -77,6 +77,11 @@ public class CacheStoreService implements SessionStoreService {
      */
     String tcCacheManager;
 
+    /**
+     * Trace identifier for the caching provider.
+     */
+    private String tcCachingProvider;
+
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected volatile UserTransaction userTransaction;
 
@@ -139,8 +144,8 @@ public class CacheStoreService implements SessionStoreService {
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
         cachingProvider = Caching.getCachingProvider(library.getClassLoader());
 
-        String tcCachingProvider = trace && tc.isDebugEnabled() ? "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider)) : null;
-        if (tcCachingProvider != null)
+        tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
+        if (trace && tc.isDebugEnabled())
             CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
 
         cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
@@ -180,8 +185,16 @@ public class CacheStoreService implements SessionStoreService {
 
         cacheManager.close();
 
-        if (trace && tc.isDebugEnabled())
+        if (trace && tc.isDebugEnabled()) {
             CacheHashMap.tcReturn(tcCacheManager, "close");
+            CacheHashMap.tcInvoke(tcCachingProvider, "close");
+        }
+
+        // TODO this could have consequences for other users of the provider. Look into using a separate classloader that delegates to the common one for the library.
+        cachingProvider.close();
+
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcReturn(tcCachingProvider, "close");
     }
 
     @Override

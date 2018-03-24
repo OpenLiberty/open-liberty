@@ -10,7 +10,6 @@
  *******************************************************************************/
 defaultTasks 'clean', 'build'
 
-plugins.apply 'java'
 plugins.apply 'jacoco'
 
 /* Project version is the Bundle-Version attribute if a bundle gets released, otherwise
@@ -175,128 +174,6 @@ task publishLibNative(type: Copy) {
   into buildImage.file('wlp/lib/native')
 }
 
-task prereqFeatureResources {
-  dependsOn ':cnf:copyMavenLibs'
-  dependsOn publishWLPJars
-  dependsOn publishJavadoc
-  dependsOn publishToolJars
-  dependsOn publishSchemaResources
-  dependsOn publishPlatformFiles
-  dependsOn publishTemplates
-  dependsOn publishBinScripts
-  dependsOn publishClientScripts
-  dependsOn publishLibNative
-}
-
-task publishFeatureResources {
-  // Start building feature resources after all other assemble artifacts are done being published
-  dependsOn {
-    bndWorkspace.getProject(project.name)?.getDependson()*.getName().collect {
-      rootProject.project(it).tasks.getByName 'prereqFeatureResources'
-    }
-  }
-
-  def featureFiles = fileTree(dir: project.projectDir, include: '*.feature')
-  inputs.files(featureFiles).skipWhenEmpty()
-  outputs.dir buildImage.file('wlp/lib/features')
-  outputs.dir new File(project.buildDir, 'repo')
-  doFirst {
-    buildImage.mkdir('wlp/lib/features')
-    project.mkdir(new File(project.buildDir, 'repo'))
-  }
-  doLast {
-    ant.taskdef(resource: 'com/ibm/ws/wlp/feature/tasks/default.properties') {
-      classpath {
-        fileset(dir: cnf.file('lib')) {
-          include(name: "wlp-*.jar")
-        }
-        fileset(dir: cnf.file('mavenlibs')) {
-          include(name: "biz.aQute.bnd-*.jar")
-          include(name: "infra.buildtasks*.jar")
-          include(name: "asm-all-5.2.jar")
-          include(name: "org.apache.aries.util-*.jar")
-          include(name: "osgi.core*.jar")
-          include(name: "jackson*.jar")
-          include(name: "jsoup-*.jar")
-        }
-      }
-    }
-
-    ant.taskdef(resource: 'com/ibm/ws/wlp/repository/default.properties') {
-      classpath {
-        fileset(dir: "${rootDir}/cnf/lib/") {
-          include(name: "wlp-generateRepositoryContent.jar")
-        }
-        fileset(dir: "${rootDir}/cnf/mavenlibs") {
-          include(name: "org.apache.aries.util-*.jar")
-          include(name: "jsoup-*.jar")
-        }
-      }
-    }
-
-    // featureBnd task expects files in build/l10n
-    copy {
-      from project.file('resources/l10n')
-      into project.file('build/l10n')
-    }
-
-    featureFiles.each {
-      Properties props = new Properties()
-      props.load(new FileInputStream(it))
-
-      if (props['kind'] != null) {
-        String version = ("beta".equals(props['kind']) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
-
-        ant.featureBnd(bnd: it.getPath(),
-                createESA: "true",
-                dir: buildImage.file('wlp'),
-                esaDir: new File(project.buildDir, 'repo'),
-                createFor: props['kind'],
-                buildType: props['kind'],
-                junit: new File(project.buildDir, 'report/featureChecks.xml')) {
-          defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
-                  licensePath: buildImage.file('lafiles/featureTerms'),
-                  version: version,
-                  licenseType: "EPL",
-                  displayVersion: "OpenLiberty")
-          edition(baseEdition: "beta")
-          edition(baseEdition: "core",
-                  validEditions: "")
-          edition(baseEdition: "base",
-                  validEditions: "BASE,BASE_ILAN,DEVELOPERS,EXPRESS,ND,zOS")
-          edition(baseEdition: "nd",
-                  validEditions: "BASE_ILAN,DEVELOPERS,ND,zOS")
-          edition(baseEdition: "zos",
-                  validEditions: "zOS")
-          edition(baseEdition: "bluemix",
-                  validEditions: "BLUEMIX")
-          edition(baseEdition: "full")
-          edition(baseEdition: "unsupported")
-        }
-
-        delete "${buildDir}/repo/description.html"
-        ant.propertyfile(file: "${buildDir}/repo/assetInfo.properties") {
-          entry(key: "licenseType", value: "UNSPECIFIED")
-        }
-        ant.generateEsaDescriptionHtml(featureManifestFile: ant.properties['feature.manifest.file'],
-                descriptionHtmlOutputFile: "${buildDir}/repo/description.html",
-                generateKnowledgeCentreLinks: "true",
-                licenseType: "EPL")
-        ant.zip(destfile: "${buildDir}/repo/${props['symbolicName']}.esa.metadata.zip") {
-          fileset(dir: "${buildDir}/repo", includes: "description.html,assetInfo.properties")
-          zipfileset(dir: buildImage.file("lafiles/featureTerms_html"), fullpath: "lafiles/en.html", includes: "en.html")
-        }
-      }
-    }
-
-    copy {
-      from project.file('resources/l10n')
-      into buildImage.file('wlp/lib/features/l10n')
-    }
-
-  }
-}
-
 assemble {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn publishWLPJars
@@ -308,10 +185,6 @@ assemble {
   dependsOn publishBinScripts
   dependsOn publishClientScripts
   dependsOn publishLibNative
-}
-
-publish {
-  dependsOn publishFeatureResources
 }
 
 compileJava {
@@ -493,29 +366,6 @@ test {
       rootProject.ext.successfulTestCountTotal = rootProject.ext.successfulTestCountTotal + result.successfulTestCount
       rootProject.ext.failedTestCountTotal = rootProject.ext.failedTestCountTotal + result.failedTestCount
       rootProject.ext.skippedTestCountTotal = rootProject.ext.skippedTestCountTotal + result.skippedTestCount
-    }
-  }
-}
-
-def featuresToPublish() {
-  def features = []
-  fileTree(dir: project.projectDir, include: '*.feature').each {
-    Properties props = new Properties()
-    props.load(new FileInputStream(it))
-    features.add(props['symbolicName'])
-  }
-  return features
-}
-
-publishing {
-  publications {
-    featuresToPublish().each { feature ->
-      maven(MavenPublication) {
-        artifactId feature
-        version project.version
-        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa"), extension: 'esa'
-        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa.metadata.zip"), extension: 'esa.metadata.zip'
-      }
     }
   }
 }
