@@ -11,7 +11,6 @@
 package com.ibm.ws.session.cache.config.fat;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -83,20 +82,33 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     }
 
     /**
-     * TODO Remove this test once we have useful tests added to this class
+     * Update the configured value of the writeContents attribute while the server is running. Confirm the configured behavior.
      */
     @Test
-    public void testGetAndInvalidate() throws Exception {
-        List<String> session = new ArrayList<>();
-        String response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "getSessionId", session);
-        try {
-            int start = response.indexOf("session id: [") + 13;
-            String sessionId = response.substring(start, response.indexOf(']', start));
-            assertNotNull(sessionId);
-        } finally {
-            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
-        }
-        cleanupList = EMPTY_RECYCLE_LIST;
+    public void testWriteContents() throws Exception {
+        // Verify default behavior: writeContents=ONLY_SET_ATTRIBUTES
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_ONLY_SET_ATTRIBUTES", new ArrayList<>());
+
+        // TODO enable once this function is implemented
+        // Reconfigure writeContents=GET_AND_SET_ATTRIBUTES
+        //ServerConfiguration config = server.getServerConfiguration();
+        //HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        //httpSessionCache.setWriteContents("GET_AND_SET_ATTRIBUTES");
+        //server.setMarkToEndOfLog();
+        //server.updateServerConfiguration(config);
+        //server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        //FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_GET_AND_SET_ATTRIBUTES", new ArrayList<>());
+
+        // Reconfigure writeContents=ALL_SESSION_ATTRIBUTES
+        ServerConfiguration config = server.getServerConfiguration();
+        HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        httpSessionCache.setWriteContents("ALL_SESSION_ATTRIBUTES");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_ALL_SESSION_ATTRIBUTES", new ArrayList<>());
     }
 
     /**
@@ -156,7 +168,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         // This might require retries because periodic timed based write could happen right as the servlet request ends.
         String previousValue = "0_END_OF_SERVLET_SERVICE";
         String newValue = null;
-        for (int numAttempts = 1; numAttempts < 3; numAttempts++) {
+        for (int numAttempts = 1; numAttempts < 20; numAttempts++) {
             newValue = numAttempts + "_TIME_BASED_WRITE";
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteFrequency&value=" + newValue, session);
 
