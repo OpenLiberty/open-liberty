@@ -81,7 +81,7 @@ public class ModulePropertiesUtils {
     private HttpAuthenticationMechanism getHttpAuthenticationMechanism(boolean logError) {
         HttpAuthenticationMechanism ham = null;
         CDI cdi = getCDI();
-        if (cdi != null) {
+        if (cdi != null && cdi.getBeanManager() != null) {
             Instance<ModulePropertiesProvider> mppi = cdi.select(ModulePropertiesProvider.class);
             if (mppi != null && !mppi.isUnsatisfied() && !mppi.isAmbiguous()) {
                 List<Class> implClassList = mppi.get().getAuthMechClassList();

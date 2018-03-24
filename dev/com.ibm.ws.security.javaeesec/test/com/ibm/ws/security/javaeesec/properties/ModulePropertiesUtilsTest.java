@@ -68,7 +68,7 @@ public class ModulePropertiesUtilsTest {
     private ModulePropertiesProvider mpp;
     private Instance<ModulePropertiesProvider> mppi;
     private Instance<HttpAuthenticationMechanism> hami;
-    private BeanManager bm1, bm2;
+    private BeanManager bm, bm1, bm2;
     private CDIService cs;
     private CDIHelperTestWrapper chtw;
     private Bean bean1, bean2;
@@ -110,6 +110,7 @@ public class ModulePropertiesUtilsTest {
         mpp = mockery.mock(ModulePropertiesProvider.class);
         mppi = mockery.mock(Instance.class, "mppi");
         hami = mockery.mock(Instance.class, "hami");
+        bm = mockery.mock(BeanManager.class, "bm");
         bm1 = mockery.mock(BeanManager.class, "bm1");
         bm2 = mockery.mock(BeanManager.class, "bm2");
         cs = mockery.mock(CDIService.class);
@@ -204,6 +205,8 @@ public class ModulePropertiesUtilsTest {
         mpu.setComponentMetaData(cmd);
         mockery.checking(new Expectations() {
             {
+                one(cdi).getBeanManager();
+                will(returnValue(bm));
                 one(cdi).select(ModulePropertiesProvider.class);
                 will(returnValue(null));
             }
@@ -219,6 +222,8 @@ public class ModulePropertiesUtilsTest {
         mpu.setComponentMetaData(cmd);
         mockery.checking(new Expectations() {
             {
+                one(cdi).getBeanManager();
+                will(returnValue(bm));
                 one(cdi).select(ModulePropertiesProvider.class);
                 will(returnValue(null));
             }
@@ -229,6 +234,36 @@ public class ModulePropertiesUtilsTest {
         } catch (RuntimeException e) {
             assertEquals("The message of RuntimeException does not match.", e.getMessage(), "ModulePropertiesProvider object cannot be identified.");
         }
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testIsHttpAuthenticationMechanismNoBM() {
+        mpu.setComponentMetaData(cmd);
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).getBeanManager();
+                will(returnValue(null));
+            }
+        });
+        assertFalse("false should be returned.", mpu.isHttpAuthenticationMechanism());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetHttpAuthenticationMechanismNoBM() {
+        mpu.setComponentMetaData(cmd);
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).getBeanManager();
+                will(returnValue(null));
+            }
+        });
+        assertFalse("false should be returned.", mpu.isHttpAuthenticationMechanism());
     }
 
     /**
@@ -412,6 +447,8 @@ public class ModulePropertiesUtilsTest {
     private ModulePropertiesUtilsTest withModulePropertiesProvider(boolean isUnsatisfied, boolean isAmbiguous) {
         mockery.checking(new Expectations() {
             {
+                one(cdi).getBeanManager();
+                will(returnValue(bm));
                 one(cdi).select(ModulePropertiesProvider.class);
                 will(returnValue(mppi));
                 allowing(mppi).isUnsatisfied();
