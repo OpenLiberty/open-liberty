@@ -386,7 +386,7 @@ public class CollectorJsonHelpers {
     }
 
     public static void handleExtensions(KeyValuePairList extensions, String extKey, String extValue) {
-        extKey = "ext_" + extKey;
+        extKey = LogFieldConstants.EXT_PREFIX + extKey;
         if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
             try {
                 extensions.addPair(extKey, Integer.parseInt(extValue));
