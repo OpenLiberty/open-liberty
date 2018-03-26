@@ -17,6 +17,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
+import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.internal.WsLogRecord;
@@ -99,35 +100,34 @@ public class TraceSource implements Source, WsTraceHandler {
         GenericData genData = new GenericData();
         LogRecord logRecord = routedMessage.getLogRecord();
         String verboseMessage = routedMessage.getFormattedVerboseMsg();
+
         if (verboseMessage == null) {
-            genData.addPair("message", logRecord.getMessage());
+            genData.addPair(LogFieldConstants.MESSAGE, logRecord.getMessage());
         } else {
-            genData.addPair("message", verboseMessage);
+            genData.addPair(LogFieldConstants.MESSAGE, verboseMessage);
         }
 
         long datetimeValue = logRecord.getMillis();
-        genData.addPair("ibm_datetime", datetimeValue);
-        genData.addPair("ibm_threadId", logRecord.getThreadID());
-        genData.addPair("module", logRecord.getLoggerName());
-        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
-        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
-        genData.addPair("ibm_className", logRecord.getSourceClassName());
+        genData.addPair(LogFieldConstants.IBM_DATETIME, datetimeValue);
+        genData.addPair(LogFieldConstants.IBM_THREADID, logRecord.getThreadID());
+        genData.addPair(LogFieldConstants.MODULE, logRecord.getLoggerName());
+        genData.addPair(LogFieldConstants.SEVERITY, LogFormatUtils.mapLevelToType(logRecord));
+        genData.addPair(LogFieldConstants.LOGLEVEL, LogFormatUtils.mapLevelToRawType(logRecord));
+        genData.addPair(LogFieldConstants.IBM_METHODNAME, logRecord.getSourceMethodName());
+        genData.addPair(LogFieldConstants.IBM_CLASSNAME, logRecord.getSourceClassName());
         String sequenceNum = sequenceNumber.next(datetimeValue);
-        genData.addPair("ibm_sequence", sequenceNum);
+        genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceNum);
 
-        KeyValuePairList extensions = new KeyValuePairList();
-        Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
-                extMap = ((WsLogRecord) logRecord).getExtensions();
+                KeyValuePairList extensions = new KeyValuePairList();
+                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     extensions.addPair(entry.getKey(), entry.getValue());
                 }
+                genData.addPairs(extensions);
             }
         }
-
-        genData.addPairs(extensions);
 
         genData.setSourceType(sourceName);
         return genData;

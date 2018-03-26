@@ -29,7 +29,7 @@ public class EmptyNullStringTest {
 
     @Test
     public void testEmptyString() {
-        HashMapConfigSource source = new HashMapConfigSource("Basic Source");
+        BasicConfigSource source = new BasicConfigSource("Basic Source");
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
         builder.withSources(source);
 
@@ -39,15 +39,15 @@ public class EmptyNullStringTest {
 
         Config config = builder.build();
 
-        TestUtils.assertContains(config.getPropertyNames(), "key1");
-        TestUtils.assertContains(config.getPropertyNames(), "key2");
-        TestUtils.assertContains(config.getPropertyNames(), "key3");
-        TestUtils.assertNotContains(config.getPropertyNames(), "key4");
+        TestUtils.assertContainsKey(config, "key1");
+        TestUtils.assertContainsKey(config, "key2");
+        TestUtils.assertContainsKey(config, "key3");
+        TestUtils.assertNotContainsKey(config, "key4");
     }
 
     @Test
     public void testNoSuchElementException() {
-        HashMapConfigSource source = new HashMapConfigSource("Basic Source");
+        BasicConfigSource source = new BasicConfigSource("Basic Source");
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
         builder.withSources(source);
 
@@ -76,7 +76,7 @@ public class EmptyNullStringTest {
 
     @Test
     public void testOptionals() {
-        HashMapConfigSource source = new HashMapConfigSource("Basic Source");
+        BasicConfigSource source = new BasicConfigSource("Basic Source");
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
         builder.withSources(source);
 

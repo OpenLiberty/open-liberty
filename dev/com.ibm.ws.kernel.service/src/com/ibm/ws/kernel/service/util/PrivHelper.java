@@ -31,6 +31,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 /**
  * @deprecated All liberty bundles may not run with the same permissions in the future.
  *             Dependencies on this class should therefore be removed.
+ *             Use com.ibm.ws.kernel.service.util.SecureAction instead
  */
 @Trivial
 @Deprecated

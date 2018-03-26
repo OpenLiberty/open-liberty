@@ -37,7 +37,6 @@ import com.ibm.ws.jca.cm.AppDefinedResourceFactory;
 import com.ibm.ws.jca.cm.ConnectionManagerService;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jca.service.ConnectionFactoryService;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -123,7 +122,7 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
         variableRegistryRef.activate(context);
         metaTypeServiceRef.activate(context);
         wsConfigurationHelperRef.activate(context);
-        bundleContext = PrivHelper.getBundleContext(context);
+        bundleContext = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(context);
 
     }
 
@@ -226,7 +225,7 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
             if ((value = annotationProps.remove(name)) != null)
                 cmSvcProps.put(name, value);
 
-        BundleContext bundleContext = PrivHelper.getBundleContext(FrameworkUtil.getBundle(ConnectionFactoryService.class));
+        BundleContext bundleContext = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectionFactoryService.class));
 
         StringBuilder connectionFactoryFilter = new StringBuilder(200);
         connectionFactoryFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, connectionFactoryID));
@@ -235,7 +234,7 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
         ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, connectionFactoryID, connectionFactoryFilter.toString(), declaringApplication);
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
-            String jcaBundleLocation = PrivHelper.getBundleContext(FrameworkUtil.getBundle(ConnectorService.class)).getBundle().getLocation();
+            String jcaBundleLocation = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectorService.class)).getBundle().getLocation();
             ConfigurationAdmin configAdmin = configAdminRef.getService();
 
             Configuration conMgrConfig = configAdmin.createFactoryConfiguration(ConnectionManagerService.FACTORY_PID, jcaBundleLocation);

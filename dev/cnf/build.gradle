@@ -36,23 +36,14 @@ dependencies {
 
 task copyMavenLibs(type: Copy) {
     from configurations.binaries
-    into cnf.file('mavenlibs')
-}
-
-void deleteRecursive(File file) {
-    if (file.isDirectory()) {
-        for (File entry : file.listFiles()) {
-            deleteRecursive(entry)
-        }
-    }
-    file.delete()
+    into project.file('mavenlibs')
 }
 
 task cleanRepos(type: Delete) {
     doLast {
-        deleteRecursive(file('release'))
+        project.delete('release')
         delete 'release.mvn'
-        deleteRecursive(file('local'))
+        project.delete('local')
         delete 'local.mvn'
         delete fileTree('mavenlibs')
     }
@@ -85,10 +76,11 @@ String getVersionFromReleaseRepo(String org, String name) {
             versions.add(relPath)
         }
     }
-    if (versions.size() != 1) {
-        throw new GradleException('Unable to locate a distinct version for the artifact ' + org + ':' + name)
+    
+    if (versions.size() == 0) {
+        throw new GradleException('Unable to locate a version for the artifact ' + org + ':' + name + '. Run release task to publish the artifact.')
     }
-    return versions[0]
+    return versions.sort()[versions.size()-1]
 }
 
 task everythingElseHasBeenReleased {
@@ -100,57 +92,47 @@ task createGradleBootstrap {
     doLast {
         println 'Generating gradle bootstrap'
 
-        String depsList = ""
+        def depsList = []
         rootProject.fileTree(dir: '.', include: '*').visit { element ->
             if (element.isDirectory()) {
                 String relativePath = "$element.relativePath"
                 def bndProject = bndWorkspace.getProject(relativePath)
                 if (bndProject != null && !bndProject.isNoBundles()) {
                     String org
-                    if ('true'.equals(bndProject.get('test.project', 'false'))) {
+                    if ('true'.equals(bndProject.get('test.project', bndProject.get('fat.project', 'false')))) {
                         org = 'test'
                     } else {
                         org = 'dev'
                     }
                     for (String bsn : bndProject.getBsns()) {
                         String version = getVersionFromReleaseRepo(org, bsn)
-                        depsList = depsList + '    compile \'' + org + ':' + bsn + ':' + version + '\'\n'
-                        depsList = depsList + '    compile \'' + org + ':' + bsn + ':' + version + '@pom\'\n'
+                        depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '\'')
+                        depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '@pom\'')
                     }
                 }
             }
         }
 
-        Map<String, String> projectPathToVersion = new HashMap<String, String>()
-        rootProject.subprojects.each { p ->
-            projectPathToVersion.put(p.name, p.version)
-        }
-
         String org = 'dev'
-        rootProject.fileTree(dir: '.', include: '**/*.feature').visit { feature ->
+        cnf.fileTree(dir: '..', include: '**/*.feature').visit { feature ->
             if (feature.isDirectory()) return
 
+            Properties props = new Properties()
+            props.load(new FileInputStream(feature.getFile()))
+
             String text = feature.getFile().getText()
-            if (text.contains("kind=ga") || text.contains("kind=beta")) {
-                String name = null
-                int index = text.indexOf("symbolicName=")
-                if (index != -1) {
-                    int endIndex = text.indexOf("\n", index)
-                    if (endIndex == -1) {
-                        endIndex = text.length()
-                    }
-                    // symbolicName= is length 13
-                    name = text.substring(index + 13, endIndex)
-                    name = name.replaceAll("\\s+", "")
-                } else {
-                    name = feature.name.substring(0, feature.name.size() - 8)
+            if (props['kind']=="ga" || props['kind']=="beta") {
+                String featureArtifactId = props['symbolicName']
+                String featureName = feature.name.substring(0, feature.name.size() - ".feature".length())
+                if (featureArtifactId == null) {
+                    featureArtifactId = featureName
                 }
 
-                String featureName = feature.name.substring(0, feature.name.size() - 8)
-                String rev = projectPathToVersion.get(featureName)
+                String rev = getVersionFromReleaseRepo(org, featureArtifactId)
                 if (rev != null) {
-                    depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa\'\n'
-                    depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa.metadata.zip\'\n'
+                    depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa\'')
+                    depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa.metadata.zip\'')
+                    depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@pom\'')
                 }
             }
         }
@@ -158,27 +140,31 @@ task createGradleBootstrap {
         File dependenciesFile = new File(project.buildDir, 'dependencies.gradle')
         dependenciesFile.createNewFile()
         dependenciesFile.text = """dependencies {
-$depsList}
-"""
+${depsList.sort().join('\n')}
+}"""
     }
 }
 
-task createGaESAList {
+task createESALists {
     dependsOn everythingElseHasBeenReleased
     doLast {
         String features = ""
-        rootProject.fileTree(dir: '.', include: '*/*.feature').visit { feature ->
-            if (feature.isDirectory() || !feature.getFile().getText().contains("kind=ga")) {
-                return
-            }
-
-            String name = feature.name.substring(0, feature.name.size()-8)
-            features += name + "\n"
+        gaFeatures(false).each { gaFeature ->
+            features += gaFeature + "\n"
         }
 
         File gaEsa = new File(project.buildDir, 'gaFeatures.txt')
         gaEsa.createNewFile()
         gaEsa.text = features
+
+        features = ""
+        betaFeatures().each { betaFeature ->
+            features += betaFeature + "\n"
+        }
+
+        File betaEsa = new File(project.buildDir, 'betaFeatures.txt')
+        betaEsa.createNewFile()
+        betaEsa.text = features
     }
 }
 
@@ -196,12 +182,13 @@ task createGeneratedReplacementProjects {
             if (bndProject == null) {
                 return
             }
-            boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', 'false'))
+            boolean testProject = 'true'.equals(bndProject.get('test.project', bndProject.get('fat.project', 'false')))
+            boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', testProject ? 'false' : 'true'))
+            if (!generateReplacement) {
+                return
+            }
             String org
-            if ('true'.equals(bndProject.get('test.project', 'false'))) {
-                if (!generateReplacement) {
-                    return
-                }
+            if (testProject) {
                 org = 'test'
             } else {
                 org = 'dev'
@@ -270,8 +257,8 @@ task ('createIndex') {
         /* indexer */
         def repoindexJar = project.file('mavenlibs/org.osgi.impl.bundle.repoindex.cli-3.5.0.jar')
 
-        def tmpreleaserepo = cnf.file('tmpreleaserepo')
-        deleteRecursive(tmpreleaserepo)
+        def tmpreleaserepo = project.file('tmpreleaserepo')
+        project.delete('tmpreleaserepo')
 
         try {
             copy {
@@ -308,7 +295,7 @@ task ('createIndex') {
             }.assertNormalExitValue()
             logger.info 'Generated index {}.', index_compressed
         } finally {
-            deleteRecursive(tmpreleaserepo)
+            project.delete('tmpreleaserepo')
         }
     }
 }
@@ -316,13 +303,23 @@ task ('createIndex') {
 task zipGradleBootstrap(type: Zip) {
     dependsOn createGradleBootstrap
     dependsOn createGeneratedReplacementProjects
-    dependsOn createGaESAList
+    dependsOn createESALists
     dependsOn createIndex
     baseName 'gradle-bootstrap'
-    into 'prereq.published', { from new File(project.buildDir, 'dependencies.gradle'),
-                                    new File(project.buildDir, 'gaFeatures.txt'),
-                                    new File(project.buildDir, 'excludeList.txt') }
+    into 'prereq.published', {
+        from new File(project.buildDir, 'dependencies.gradle'),
+             new File(project.buildDir, 'gaFeatures.txt'),
+             new File(project.buildDir, 'betaFeatures.txt'),
+             new File(project.buildDir, 'excludeList.txt')
+    }
     from new File(project.buildDir, 'replacements')
+    into 'com.ibm.websphere.features.internal.openliberty', {
+        from rootProject.fileTree(dir: 'com.ibm.websphere.appserver.features', include: '**/*.feature').collect {
+            if (!it.isDirectory()) {
+                it
+            }
+        }
+    }
 }
 
 publishing {

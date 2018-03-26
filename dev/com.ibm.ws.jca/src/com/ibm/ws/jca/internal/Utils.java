@@ -18,6 +18,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
+import java.security.AccessController;
 
 import javax.resource.ResourceException;
 
@@ -30,7 +31,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
@@ -40,11 +41,12 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
  */
 public class Utils {
     private static final TraceComponent tc = Tr.register(Utils.class);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /**
      * Converts a Number value to a Integer, Long, Short, Byte, Double, or Float.
      * If unable to convert, the original value is returned.
-     * 
+     *
      * @param value a numeric value.
      * @param type the desired type, which should be one of (Integer, Long, Short, Byte, Double, Float).
      * @return converted value.
@@ -67,7 +69,7 @@ public class Utils {
 
     /**
      * Converts a String value to the specified type.
-     * 
+     *
      * @param str a String value.
      * @param type the desired type, which can be a primitive or primitive wrapper.
      * @return converted value.
@@ -97,7 +99,7 @@ public class Utils {
 
     /**
      * Gets an NLS message.
-     * 
+     *
      * @param key the message key
      * @param params the message parameters
      * @return formatted message
@@ -111,15 +113,15 @@ public class Utils {
      * Utility method that gets the onError setting.
      * This method should be invoked every time it is needed in order to allow for
      * changes to the onError setting.
-     * 
+     *
      * @return the onError setting if configured. Otherwise the default value.
      */
     @Trivial
     private static final OnError ignoreWarnOrFail() {
         String value = null;
-        BundleContext bundleContext = PrivHelper.getBundleContext(FrameworkUtil.getBundle(VariableRegistry.class));
-        ServiceReference<VariableRegistry> ref = PrivHelper.getServiceReference(bundleContext, VariableRegistry.class);
-        VariableRegistry variableRegistry = PrivHelper.getService(bundleContext, ref);
+        BundleContext bundleContext = priv.getBundleContext(FrameworkUtil.getBundle(VariableRegistry.class));
+        ServiceReference<VariableRegistry> ref = priv.getServiceReference(bundleContext, VariableRegistry.class);
+        VariableRegistry variableRegistry = priv.getService(bundleContext, ref);
         try {
             String key = "${" + OnErrorUtil.CFG_KEY_ON_ERROR + "}";
             value = variableRegistry.resolveString(key);
@@ -138,7 +140,7 @@ public class Utils {
      * Ignore, warn, or fail when a configuration error occurs.
      * This is copied from Tim's code in tWAS and updated slightly to
      * override with the Liberty ignore/warn/fail setting.
-     * 
+     *
      * @param tc the TraceComponent from where the message originates
      * @param throwable an already created Throwable object, which can be used if the desired action is fail.
      * @param exceptionClassToRaise the class of the Throwable object to return
@@ -181,7 +183,7 @@ public class Utils {
 
     /**
      * Returns an exception message, stack, and cause formatted as a String.
-     * 
+     *
      * @param x exception or error.
      * @return an exception message, stack, and cause formatted as a String.
      */
@@ -194,7 +196,7 @@ public class Utils {
 
     /**
      * Deserialize from an array of bytes.
-     * 
+     *
      * @param bytes serialized bytes.
      * @return deserialized object.
      */
@@ -223,7 +225,7 @@ public class Utils {
 
     /**
      * Serialize an object to a byte array.
-     * 
+     *
      * @param pk the object
      * @throws IOException if an error occurs during the serialization process.
      */
@@ -242,14 +244,12 @@ public class Utils {
         } catch (IOException e) {
             FFDCFilter.processException(e, Utils.class.getName(), "336");
             if (trace && tc.isEntryEnabled())
-                Tr.exit(tc, "serObjByte", new Object[]
-                { "Unable to serialize: " + pk, e });
+                Tr.exit(tc, "serObjByte", new Object[] { "Unable to serialize: " + pk, e });
             throw e;
         } catch (Error e) {
             FFDCFilter.processException(e, Utils.class.getName(), "342");
             if (trace && tc.isEntryEnabled())
-                Tr.exit(tc, "serObjByte", new Object[]
-                { "Unable to serialize: " + pk, e });
+                Tr.exit(tc, "serObjByte", new Object[] { "Unable to serialize: " + pk, e });
             throw e;
         }
         if (trace && tc.isEntryEnabled())
@@ -259,7 +259,7 @@ public class Utils {
 
     /**
      * Format bytes as hexadecimal text. For example, 49 42 4D
-     * 
+     *
      * @param bytes array of bytes.
      * @return hexadecimal text.
      */
@@ -270,9 +270,7 @@ public class Utils {
         StringBuilder sb = new StringBuilder(bytes.length * 3);
         for (int i = 0; i < bytes.length; i++) {
             int b = bytes[i] < 0 ? 0x100 + bytes[i] : bytes[i];
-            sb.append(Integer.toHexString(b / 0x10))
-                            .append(Integer.toHexString(b % 0x10))
-                            .append(' ');
+            sb.append(Integer.toHexString(b / 0x10)).append(Integer.toHexString(b % 0x10)).append(' ');
         }
 
         return new String(sb);
@@ -280,7 +278,7 @@ public class Utils {
 
     /**
      * Check accessibility of the resource adapter from the application.
-     * 
+     *
      * @param resourceName The name of the resource
      * @param adapterName The name of the resource adapter
      * @param embeddedApp The name of the app in which the resource adapter is embedded

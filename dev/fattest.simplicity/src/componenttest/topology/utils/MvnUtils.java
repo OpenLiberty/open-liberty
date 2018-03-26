@@ -11,7 +11,10 @@
 package componenttest.topology.utils;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,14 +33,17 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.ibm.websphere.simplicity.PortType;
 import com.ibm.ws.fat.util.Props;
@@ -201,10 +207,9 @@ public class MvnUtils {
         if (!init) {
             init(server);
         }
-        // Everything under autoFVT/results is collected from the child build machine
 
+        // Everything under autoFVT/results is collected from the child build machine
         int rc = runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
-        Assert.assertEquals("mvn returned non-zero: " + rc, 0, rc);
         File src = new File(MvnUtils.resultsDir, "tck/surefire-reports/junitreports");
         File tgt = new File(MvnUtils.resultsDir, "junit");
         try {
@@ -215,11 +220,26 @@ public class MvnUtils {
                               + src.getAbsolutePath(), nsfe);
         }
 
+        // Get the failing tests out of testng-results.xml
+        String failingTestsList = getNonPassingTestsNamesList();
+        if (failingTestsList != null && failingTestsList.length() > 0) {
+            String[] nonPassed = failingTestsList.split("\\s");
+            if (nonPassed.length > 0) {
+                printStdOutAndScreenIfLocal("\nTCK TESTS THAT DID NOT PASS:");
+                for (int i = 0; i < nonPassed.length; i++) {
+                    printStdOutAndScreenIfLocal("                               " + nonPassed[i]);
+                }
+                printStdOutAndScreenIfLocal("\n");
+            }
+        }
+
         // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
         // the TCK regression
-        Assert.assertEquals(bucketName + ":" + testName + ":TCK has returned non-zero return code of: " + rc +
-                            " This indicates test failure, see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
-                            " and ...autoFVT/results/tck/surefire-reports/index.html", 0, rc);
+        Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
+                            + "The TCK has thus returned non-zero return code of: "
+                            + rc +
+                            ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
+                            " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
 
         return rc;
     }
@@ -237,6 +257,7 @@ public class MvnUtils {
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
+        pb.redirectErrorStream(true);
         log("Running command " + Arrays.asList(cmd));
         Process p = pb.start();
         int exitCode = p.waitFor();
@@ -412,4 +433,80 @@ public class MvnUtils {
 
     }
 
+    /**
+     * @return A space separated list of non-PASSing test results
+     * @throws SAXException
+     * @throws IOException
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     */
+    public static String getNonPassingTestsNamesList() throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
+        String notPassingTestsQuery = "/testng-results/suite/test/class/test-method[@status!='PASS']/@name";
+        String notPassingTestsResultString = getXPathQueryResults(notPassingTestsQuery);
+        return notPassingTestsResultString;
+    }
+
+    /**
+     * Return the result of a query on testng-results.xml (usually test methods) filtering out arquillianBefore/After strings.
+     * The arquillianBefore/After methods can be considered 'noise' as if they fail - the tests they wrap will fail too.
+     * 
+     * @param query
+     * @return
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws IOException
+     * @throws XPathExpressionException
+     */
+    private static String getXPathQueryResults(String query) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+        String resultString = "";
+
+        // We use an aggressive try/catch as it is very important that this non-vital
+        // function does not impact the build success. This is a common function and it
+        // might be possible for a particular FAT bucket to tweak the directories or
+        // surefire output and so on that we use via project specific config files and
+        // we don't want to get a, for example, FileNotFound exception.
+        //
+        try {
+            File testngResults = new File(MvnUtils.resultsDir, "tck/surefire-reports/testng-results.xml");
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document docTestngResults = builder.parse(testngResults);
+            XPathFactory xPathFactory = XPathFactory.newInstance();
+            XPath xpath = xPathFactory.newXPath();
+            XPathExpression xpr = xpath.compile(query);
+            NodeList nodes = (NodeList) xpr.evaluate(docTestngResults, XPathConstants.NODESET);
+
+            for (int i = 0; i < nodes.getLength(); i++) {
+                String value = nodes.item(i).getNodeValue();
+                if (!value.equals("arquillianBeforeTest") && !value.equals("arquillianAfterTest")) {
+                    resultString += " " + value;
+                }
+            }
+        } catch (Throwable t) {
+            MvnUtils.log(t.getMessage());
+        }
+
+        return resultString;
+    }
+
+    /**
+     * This method will print a String reliably to the 'standard' Standard.out
+     * (i.e. the developers screen when running locally)
+     *
+     * @param msg
+     */
+    private static void printStdOutAndScreenIfLocal(String msg) {
+        // If running locally print to screen and stdout if different else print to 'stdout' only
+        if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
+            // Developers laptop FAT
+            PrintStream screen = new PrintStream(new FileOutputStream(FileDescriptor.out));
+            screen.println(msg);
+            if (!System.out.equals(screen)) {
+                System.out.println(msg);
+            }
+        } else {
+            // Build engine FAT
+            System.out.println(msg);
+        }
+    }
 }

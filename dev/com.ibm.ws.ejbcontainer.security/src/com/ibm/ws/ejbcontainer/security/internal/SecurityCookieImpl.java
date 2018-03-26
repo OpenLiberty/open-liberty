@@ -18,10 +18,19 @@ import javax.security.auth.Subject;
 public class SecurityCookieImpl {
     private final Subject invokedSubject;
     private final Subject receivedSubject;
+    private final Subject adjustedInvokedSubject;
+    private final Subject adjustedReceivedSubject;
 
     SecurityCookieImpl(Subject invokedSubject, Subject receivedSubject) {
+        this.invokedSubject = this.adjustedInvokedSubject =invokedSubject;
+        this.receivedSubject = this.adjustedReceivedSubject = receivedSubject;
+    }
+
+    SecurityCookieImpl(Subject invokedSubject, Subject receivedSubject, Subject adjustedInvokedSubject, Subject adjustedReceivedSubject) {
         this.invokedSubject = invokedSubject;
         this.receivedSubject = receivedSubject;
+        this.adjustedInvokedSubject = adjustedInvokedSubject;
+        this.adjustedReceivedSubject = adjustedReceivedSubject;
     }
 
     public Subject getInvokedSubject() {
@@ -30,5 +39,13 @@ public class SecurityCookieImpl {
 
     public Subject getReceivedSubject() {
         return receivedSubject;
+    }
+
+    public Subject getAdjustedInvokedSubject() {
+        return adjustedInvokedSubject;
+    }
+
+    public Subject getAdjustedReceivedSubject() {
+        return adjustedReceivedSubject;
     }
 }

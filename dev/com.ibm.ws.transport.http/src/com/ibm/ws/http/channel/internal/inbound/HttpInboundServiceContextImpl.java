@@ -80,6 +80,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private boolean bContainsLargeMessage = false;
     /** Start time of the request (when access logging is enabled) */
     private long startTime = 0;
+    /** Remote user of the request, as set by WebContainer */
+    private String remoteUser = "";
 
     /**
      * Constructor for an HTTP inbound service context object.
@@ -157,6 +159,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         super.clear();
         this.bCheckedAcceptEncoding = false;
         this.bContainsLargeMessage = false;
+        this.remoteUser = "";
         // @311734 - clean the statemap of the final write mark
         getVC().getStateMap().remove(HttpConstants.FINAL_WRITE_MARK);
     }
@@ -2014,6 +2017,14 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         msg.removeHeader(HttpHeaderKeys.HDR_UPGRADE);
         msg.removeHeader(HttpHeaderKeys.HDR_CONNECTION);
         return true;
+    }
+
+    public void setRemoteUser(String remoteUser) {
+        this.remoteUser = remoteUser;
+    }
+
+    public String getRemoteUser() {
+        return this.remoteUser;
     }
 
 }

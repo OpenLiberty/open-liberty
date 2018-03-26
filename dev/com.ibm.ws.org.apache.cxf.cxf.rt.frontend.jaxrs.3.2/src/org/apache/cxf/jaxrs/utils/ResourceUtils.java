@@ -223,10 +223,12 @@ public final class ResourceUtils {
         if (model == null) {
             throw new RuntimeException("Resource class " + sClass.getName() + " has no model info");
         }
+                
         ClassResourceInfo cri =
             new ClassResourceInfo(sClass, sClass, isRoot, enableStatic, true,
                                   model.getConsumes(), model.getProduces(), bus);
-        URITemplate t = URITemplate.createTemplate(model.getPath());
+        String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), model.getPath()); // Liberty change        
+        URITemplate t = URITemplate.createTemplate(model.getPath(), classNameandPath); // Liberty change
         cri.setURITemplate(t);
 
         MethodDispatcher md = new MethodDispatcher();
@@ -251,8 +253,10 @@ public final class ResourceUtils {
             if (actualMethod == null) {
                 continue;
             }
+            String classNameandPath2 = getClassNameandPath(cri.getResourceClass().getName(), op.getName()); // Liberty change            
+            URITemplate t2 = URITemplate.createTemplate(op.getName(), classNameandPath2); // Liberty change
             OperationResourceInfo ori =
-                new OperationResourceInfo(actualMethod, cri, URITemplate.createTemplate(op.getPath()),
+                new OperationResourceInfo(actualMethod, cri, t2, // Liberty change
                                           op.getVerb(), op.getConsumes(), op.getProduces(),
                                           op.getParameters(),
                                           op.isOneway());
@@ -303,7 +307,8 @@ public final class ResourceUtils {
         cri.setParent(parent);
 
         if (root) {
-            URITemplate t = URITemplate.createTemplate(cri.getPath());
+            String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), cri.getPath()); // Liberty change            
+            URITemplate t = URITemplate.createTemplate(cri.getPath(), classNameandPath); // Liberty change
             cri.setURITemplate(t);
         }
 
@@ -531,12 +536,41 @@ public final class ResourceUtils {
     private static OperationResourceInfo createOperationInfo(Method m, Method annotatedMethod,
                                                              ClassResourceInfo cri, Path path, String httpMethod) {
         OperationResourceInfo ori = new OperationResourceInfo(m, annotatedMethod, cri);
-        URITemplate t = URITemplate.createTemplate(path, ori.getParameters()); // Liberty change
+        String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), path); // Liberty change       
+        URITemplate t = URITemplate.createTemplate(path, ori.getParameters(), classNameandPath); // Liberty change
         ori.setURITemplate(t);
         ori.setHttpMethod(httpMethod);
         return ori;
     }
-
+    
+// start Liberty change    
+    private static String getClassNameandPath (String className, Path path) {
+        if (path == null) {            
+            return getClassNameandPath(className, "/");
+        } else {
+            return getClassNameandPath(className, path.value()); 
+        }        
+    }
+    
+    private static String getClassNameandPath (String className, String pathValue) {        
+        if (pathValue == null) {
+            pathValue = "/";
+        } else if (!pathValue.startsWith("/")) {
+            pathValue = "/" + pathValue;
+        }     
+        
+        StringBuilder sb = new StringBuilder().append("/").append(className).append(pathValue);
+        
+        for (int index = 0; index < sb.length(); index++) {
+            if (sb.charAt(index) == '.') {
+                sb.setCharAt(index, '_');
+            }
+        }
+        
+        return sb.toString();
+    }
+// end Liberty change
+    
     private static boolean checkMethodDispatcher(ClassResourceInfo cr) {
         if (cr.getMethodDispatcher().getOperationResourceInfos().isEmpty()) {
             LOG.warning(new org.apache.cxf.common.i18n.Message("NO_RESOURCE_OP_EXC",
@@ -847,12 +881,24 @@ public final class ResourceUtils {
                                                       Message m,
                                                       boolean perRequest,
                                                       Map<Class<?>, Object> contextValues) {
-        if (m == null) {
-            m = new MessageImpl();
-        }
+        // Liberty Change for CXF Begin
         Class<?>[] params = c.getParameterTypes();
         Annotation[][] anns = c.getParameterAnnotations();
         Type[] genericTypes = c.getGenericParameterTypes();
+        return createConstructorArguments(c, m, perRequest, contextValues, params, anns, genericTypes);
+    }
+
+    public static Object[] createConstructorArguments(Constructor<?> c,
+                                                      Message m,
+                                                      boolean perRequest,
+                                                      Map<Class<?>, Object> contextValues,
+                                                      Class<?>[] params,
+                                                      Annotation[][] anns,
+                                                      Type[] genericTypes) {
+        if (m == null) {
+            m = new MessageImpl();
+        }
+        // Liberty Change for CXF End
         @SuppressWarnings("unchecked")
         MultivaluedMap<String, String> templateValues =
             (MultivaluedMap<String, String>)m.get(URITemplate.TEMPLATE_PARAMETERS);

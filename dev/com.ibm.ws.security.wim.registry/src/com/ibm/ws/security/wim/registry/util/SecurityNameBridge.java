@@ -324,7 +324,7 @@ public class SecurityNameBridge {
             }
             // the group was found
             else {
-                Group group = (Group) returnList.get(0);
+                Entity group = returnList.get(0);
                 // d115913
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                     Object value = group.get(outputAttrName);

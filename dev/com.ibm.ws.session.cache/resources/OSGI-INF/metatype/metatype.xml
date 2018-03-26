@@ -18,12 +18,32 @@
   <Object ocdref="com.ibm.ws.session.cache"/>
  </Designate>
 
- <!-- TODO add NLS -->
- <OCD id="com.ibm.ws.session.cache" ibm:alias="httpSessionCache" name="internal" description="internal use only">
-  <AD id="libraryRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" name="internal" description="internal use only"/>
-  <AD id="library.target"              type="String"  default="(|(service.pid=${libraryRef})(&amp;(zero=${count(libraryRef)})(id=com.ibm.ws.session.cache.defaultprovider.library)))" ibm:final="true" name="internal" description="internal use only"/>
-  <!-- TODO JCache CacheManager properties -->
-  <AD id="service.ranking"             type="Integer" default="50" ibm:final="true" name="internal" description="internal use only"/> <!-- httpSessionDatabase takes precedence -->
+ <OCD id="com.ibm.ws.session.cache" ibm:alias="httpSessionCache" name="%httpSessionCache" description="%httpSessionCache.desc" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="libraryRef"                     type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" name="%libraryRef" description="%libraryRef.desc"/>
+  <AD id="library.target"                 type="String"  default="(|(service.pid=${libraryRef})(&amp;(zero=${count(libraryRef)})(id=com.ibm.ws.session.cache.defaultprovider.library)))" ibm:final="true" name="internal" description="internal use only"/>  
+  <AD id="service.ranking"                type="Integer" default="50" ibm:final="true" name="internal" description="internal use only"/> <!-- httpSessionDatabase takes precedence -->
+  <AD id="uri" type="String" ibm:type="location" required="false" name="%uri" description="%uri.desc"/>
+  <AD id="properties" required="false"    type="String"  cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.session.cache.properties" ibm:flat="true"/>
+  <!-- group: performance -->
+  <AD id="scheduleInvalidationFirstHour"  type="Integer" required="false" min="0" max="23" ibmui:group="performance" name="%scheduleInval1" description="%scheduleInval.desc"/>
+  <AD id="scheduleInvalidationSecondHour" type="Integer" required="false" min="0" max="23" ibmui:group="performance" name="%scheduleInval2" description="%scheduleInval.desc"/>
+  <AD id="writeContents"                  type="String"  default="ONLY_SET_ATTRIBUTES" ibmui:group="performance" name="%writeContents"  description="%writeContents.desc">
+   <Option label="%writeContents.set"                      value="ONLY_SET_ATTRIBUTES"/>
+   <Option label="%writeContents.getset"                   value="GET_AND_SET_ATTRIBUTES"/>
+   <Option label="%writeContents.all"                      value="ALL_SESSION_ATTRIBUTES"/>
+  </AD>
+  <AD id="writeFrequency"                 type="String"  default="END_OF_SERVLET_SERVICE" ibmui:group="performance" name="%writeFrequency"  description="%writeFrequency.desc">
+   <Option label="%writeFrequency.es"                      value="END_OF_SERVLET_SERVICE"/>
+   <Option label="%writeFrequency.mu"                      value="MANUAL_UPDATE"/>
+   <Option label="%writeFrequency.tb"                      value="TIME_BASED_WRITE"/>
+  </AD>
+  <AD id="writeInterval"                  type="String"  ibm:type="duration(s)" default="2m" ibmui:group="performance" name="%writeInterval"  description="%writeInterval.desc"/>
  </OCD>
-
+ 
+  <Designate pid="com.ibm.ws.session.cache.properties">
+  	<Object ocdref="com.ibm.ws.session.cache.properties"/>
+  </Designate>
+ 
+ <OCD id="com.ibm.ws.session.cache.properties" name="%properties" description="%properties.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype" />
+ 
 </metatype:MetaData>

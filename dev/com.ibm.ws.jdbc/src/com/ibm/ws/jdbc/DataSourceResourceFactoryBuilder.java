@@ -195,7 +195,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
             if ((value = vendorProps.remove(name)) != null)
                 dsSvcProps.put(name, value);
 
-        BundleContext bundleContext = PrivHelper.getBundleContext(FrameworkUtil.getBundle(DataSourceResourceFactoryBuilder.class));
+        BundleContext bundleContext = DataSourceService.priv.getBundleContext(FrameworkUtil.getBundle(DataSourceResourceFactoryBuilder.class));
 
         // className
         String className = (String) vendorProps.remove(DataSourceDef.className.name());
@@ -243,7 +243,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         ConfigurationAdmin configAdmin = null;
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
-            String jcaBundleLocation = PrivHelper.getBundleContext(FrameworkUtil.getBundle(ConnectorService.class)).getBundle().getLocation();
+            String jcaBundleLocation = DataSourceService.priv.getBundleContext(FrameworkUtil.getBundle(ConnectorService.class)).getBundle().getLocation();
 
             configAdmin = configAdminRef.getService();
 
@@ -323,7 +323,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
     public final boolean removeExistingConfigurations(String filter) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        BundleContext bundleContext = PrivHelper.getBundleContext(FrameworkUtil.getBundle(DataSourceResourceFactoryBuilder.class));
+        BundleContext bundleContext = DataSourceService.priv.getBundleContext(FrameworkUtil.getBundle(DataSourceResourceFactoryBuilder.class));
         ConfigurationAdmin configAdmin = configAdminRef.getService();
         try {
             Configuration[] existingConfigurations = configAdmin.listConfigurations(filter);
@@ -411,7 +411,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
 
         // Find the application
         Configuration[] classloaderConfigs = null;
-        ServiceReference<?>[] refs = PrivHelper.getServiceReferences(bundleContext,"com.ibm.wsspi.application.Application", FilterUtils.createPropertyFilter("name", declaringApplication));
+        ServiceReference<?>[] refs = DataSourceService.priv.getServiceReferences(bundleContext,"com.ibm.wsspi.application.Application", FilterUtils.createPropertyFilter("name", declaringApplication));
         if (refs != null && refs.length > 0) {
             ServiceReference<?> appRef = refs[0];
             String parentPid = (String) appRef.getProperty(Constants.SERVICE_PID);
@@ -465,9 +465,9 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         // Give commonLibraryRef higher priority than libraryRef by adding it first
         List<ServiceReference<Library>> libraryRefs = new LinkedList<ServiceReference<Library>>();
         if (commonLibraryFilter.length() > 3)
-            libraryRefs.addAll(PrivHelper.getServiceReferences(bundleContext,Library.class, commonLibraryFilter.toString()));
+            libraryRefs.addAll(DataSourceService.priv.getServiceReferences(bundleContext,Library.class, commonLibraryFilter.toString()));
         if (libraryFilter.length() > 3)
-            libraryRefs.addAll(PrivHelper.getServiceReferences(bundleContext,Library.class, libraryFilter.toString()));
+            libraryRefs.addAll(DataSourceService.priv.getServiceReferences(bundleContext,Library.class, libraryFilter.toString()));
         
         // If no commonLibraryRef or privateLibraryRef was specified, use the global shared lib
         if(libraryRefs.size() == 0){
@@ -477,7 +477,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
             globalLibFilter.append(FilterUtils.createPropertyFilter("service.factoryPid", "com.ibm.ws.classloading.sharedlibrary"));
             globalLibFilter.append(FilterUtils.createPropertyFilter("id", "global"));
             globalLibFilter.append(")");
-            Collection<ServiceReference<Library>> globalLib = PrivHelper.getServiceReferences(bundleContext, Library.class, globalLibFilter.toString());
+            Collection<ServiceReference<Library>> globalLib = DataSourceService.priv.getServiceReferences(bundleContext, Library.class, globalLibFilter.toString());
             libraryRefs.addAll(globalLib);
         }
             
@@ -486,7 +486,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
 
         // Determine which shared library can load className
         for (ServiceReference<Library> libraryRef : libraryRefs) {
-            Library library = PrivHelper.getService(bundleContext,libraryRef);
+            Library library = DataSourceService.priv.getService(bundleContext,libraryRef);
             try {
                 String libraryPid = (String) libraryRef.getProperty(Constants.SERVICE_PID);
                 if (library == null) {
@@ -495,7 +495,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                 } else {
                     try {
                         ClassLoader loader = AdapterUtil.getClassLoaderWithPriv(library);
-                        Class<?> cl = PrivHelper.loadClass(loader, className);
+                        Class<?> cl = DataSourceService.priv.loadClass(loader, className);
                         String type = XADataSource.class.isAssignableFrom(cl) ? XADataSource.class.getName()
                                         : ConnectionPoolDataSource.class.isAssignableFrom(cl) ? ConnectionPoolDataSource.class.getName()
                                                         : DataSource.class.getName();

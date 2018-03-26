@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ public class LdapRegistry extends ConfigElement {
     private LdapFilters domino50Filters;
     private LdapFilters edirectoryFilters;
     private ConfigElementList<FailoverServers> failoverServers;
+    private GroupConfiguration groupProperties;
     private String host;
     private LdapFilters idsFilters;
     private Boolean ignoreCase;
@@ -61,6 +62,7 @@ public class LdapRegistry extends ConfigElement {
     private Boolean sslEnabled;
     private String sslRef;
     private Integer searchPageSize; // PRIVATE
+    private String certificateMapperId;
 
     /**
      * @return the activedFilters
@@ -112,6 +114,13 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @return the certificateMapperId
+     */
+    public String getCertificateMapperId() {
+        return certificateMapperId;
+    }
+
+    /**
      * @return the connectTimeout
      */
     public String getConnectTimeout() {
@@ -151,6 +160,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public ConfigElementList<FailoverServers> getFailoverServers() {
         return (failoverServers == null) ? (failoverServers = new ConfigElementList<FailoverServers>()) : failoverServers;
+    }
+
+    /**
+     * @return the groupProperties
+     */
+    public GroupConfiguration getGroupProperties() {
+        return groupProperties;
     }
 
     /**
@@ -364,6 +380,14 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @param certificateMapperId the certificateMapperId to set
+     */
+    @XmlAttribute(name = "certificateMapperId")
+    public void setCertificateMapperId(String certificateMapperId) {
+        this.certificateMapperId = certificateMapperId;
+    }
+
+    /**
      * @param connectTimeout the connectTimeout to set
      */
     @XmlAttribute(name = "")
@@ -419,6 +443,14 @@ public class LdapRegistry extends ConfigElement {
     public void setFailoverServer(FailoverServers failoverServers) {
         this.failoverServers = new ConfigElementList<FailoverServers>();
         this.failoverServers.add(failoverServers);
+    }
+
+    /**
+     * @param groupProperties the groupProperties to set
+     */
+    @XmlElement(name = "groupProperties")
+    public void setGroupProperties(GroupConfiguration groupProperties) {
+        this.groupProperties = groupProperties;
     }
 
     /**
@@ -624,6 +656,9 @@ public class LdapRegistry extends ConfigElement {
         if (certificateMapMode != null) {
             sb.append("certificateMapMode=\"").append(certificateMapMode).append("\" ");;
         }
+        if (certificateMapperId != null) {
+            sb.append("certificateMapperId=\"").append(certificateMapperId).append("\" ");;
+        }
         if (connectTimeout != null) {
             sb.append("connectTimeout=\"").append(connectTimeout).append("\" ");;
         }
@@ -641,6 +676,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (failoverServers != null) {
             sb.append("failoverServers=\"").append(failoverServers).append("\" ");;
+        }
+        if (groupProperties != null) {
+            sb.append("groupConfiguration=\"").append(groupProperties).append("\" ");;
         }
         if (host != null) {
             sb.append("host=\"").append(host).append("\" ");;

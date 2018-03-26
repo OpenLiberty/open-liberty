@@ -34,57 +34,23 @@ assemble {
     dependsOn copyReadmeToBuildImage
 }
 
-task copyGeneratedToBuildImageBinTools (type:Copy) {
-    dependsOn parent.subprojects.assemble
-    from project.file('wlp/lib')
-    into project.file('wlp/bin/tools')
-    include 'bootstrap-agent.jar'
-    rename 'bootstrap-agent.jar', 'ws-javaagent.jar'
-}
-
-task copyGeneratedToCnfLib (type:Copy) {
-    dependsOn parent.subprojects.assemble
-    from project.file('wlp/dev/api/spec/')
-    into project.file('lib')
-    include 'com.ibm.ws.org.osgi.core_*.jar'
-    rename '.*.jar', 'osgi.core.jar'
-}
-
 import groovy.json.*
 import org.gradle.internal.os.OperatingSystem
 
-// Set the generated zip version to the buildID.
-// tasks.gradle file where this task is defined
-// can't see the bnd property because it isn't
-// a bundle.
-def releaseVersion = bnd.buildID
-if (releaseVersionOverride != null) {
-    releaseVersion = releaseVersionOverride
-}
+
 
 File packageDir = new File(project.buildDir, 'openliberty')
 def props = new Properties()
 rootProject.file('generated.properties').withInputStream { props.load(it) }
 
-String getGaFeatures() {
-    String features = ""
-    rootProject.fileTree(dir: '.', include: '*/*.feature').visit { element ->
-        if (element.isDirectory()) {
-            return
-        }
-        Properties featureProps = new Properties()
-        element.getFile().withInputStream { featureProps.load(it) }
-        if (featureProps['kind'] == 'ga' && featureProps['IBM-ShortName'] != null) {
-            String shortname = featureProps['IBM-ShortName']
-            features += "\n<feature>" + shortname + "</feature>"
-        }
-    }
-
-    features
-}
+// Set the generated zip version to the
+// version qualifier to be consistent
+// with what is use for the individual Bundle-Versions
+// as well as the server version output.
+def releaseVersion = props.getProperty("version.qualifier")
 
 class PackageLibertyWithFeatures extends DefaultTask {
-    String withFeatures
+    Closure withFeatures
     File outputTo
 
     @TaskAction
@@ -104,11 +70,11 @@ class PackageLibertyWithFeatures extends DefaultTask {
         try {
             def serverXml = project.file("wlp/usr/servers/packageOpenLiberty/server.xml")
             serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
-        <server description="new server">
-        <featureManager>${withFeatures}
-        </featureManager>
-        </server>
-        """
+<server description="new server">
+    <featureManager>${withFeatures()}
+    </featureManager>
+</server>
+"""
 
             File archive = new File(project.buildDir, 'openliberty.zip')
             project.delete archive
@@ -143,29 +109,28 @@ class PackageLibertyWithFeatures extends DefaultTask {
     }
 }
 
+def gaPublicFeatures() {
+    String features = ""
+    gaFeatures(true).each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    features
+}
+
 task packageOpenLiberty(type: PackageLibertyWithFeatures) {
     enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
-    dependsOn parent.subprojects.publishFeatureResources
-    dependsOn copyGeneratedToBuildImageBinTools
-    dependsOn copyGeneratedToCnfLib
-    
-    withFeatures getGaFeatures()
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    withFeatures this.&gaPublicFeatures
     outputTo packageDir
-
 }
 
 task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
     enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
-
     dependsOn parent.subprojects.assemble
-    dependsOn parent.subprojects.publishFeatureResources
-    dependsOn copyGeneratedToBuildImageBinTools
-    dependsOn copyGeneratedToCnfLib
-
-    withFeatures ''
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    withFeatures { '' }
     outputTo packageDir
-    
 }
 
 // Includes only kind=ga features.
@@ -191,9 +156,7 @@ publish.dependsOn zipOpenLibertyKernel
 // Includes all features.
 task zipOpenLibertyAll(type: Zip) {
     dependsOn parent.subprojects.assemble
-    dependsOn parent.subprojects.publishFeatureResources
-    dependsOn copyGeneratedToBuildImageBinTools
-    dependsOn copyGeneratedToCnfLib
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     baseName 'openliberty-all'
     from projectDir
     include 'wlp/**'
@@ -427,4 +390,3 @@ task publishPublicArtifactsOnBintray {
         }
     }
 }
-

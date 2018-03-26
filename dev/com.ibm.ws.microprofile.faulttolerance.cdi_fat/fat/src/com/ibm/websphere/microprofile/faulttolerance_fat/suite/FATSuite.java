@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -30,12 +29,15 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDICircuitBreaker
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIFallbackTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryReorderedTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.SharedServer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                TxRetryTest.class,
+                TxRetryReorderedTest.class,
                 CDIAsyncTest.class,
                 CDIBulkheadTest.class,
                 CDICircuitBreakerTest.class,
@@ -50,8 +52,6 @@ import com.ibm.ws.fat.util.SharedServer;
 
 public class FATSuite {
 
-    public static SharedServer MULTI_MODULE_SERVER = new SharedServer("FaultToleranceMultiModule");
-
     @BeforeClass
     public static void setUp() throws Exception {
         String APP_NAME = "CDIFaultTolerance";
@@ -62,18 +62,19 @@ public class FATSuite {
         WebArchive CDIFaultTolerance_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.cdi")
                         .addAsLibraries(faulttolerance_jar)
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "persistence.xml")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"));
 
         ShrinkHelper.exportArtifact(CDIFaultTolerance_war, "publish/servers/CDIFaultTolerance/dropins/");
-    }
 
-    @AfterClass
-    public static void shutdownMultiModuleServer() throws Exception {
-        if (MULTI_MODULE_SERVER.getLibertyServer().isStarted()) {
-            MULTI_MODULE_SERVER.getLibertyServer().stopServer("CWMFT50[01][0-9]E.*badMethod",
-                                                              "CWMFT5019W.*badMethod");
-        }
+        String TX_APP_NAME = "TxFaultTolerance";
+
+        WebArchive txFaultTolerance_war = ShrinkWrap.create(WebArchive.class, TX_APP_NAME + ".war")
+                        .addPackages(true, "com.ibm.ws.microprofile.faulttolerance_fat.tx")
+                        .addAsLibraries(faulttolerance_jar);
+
+        ShrinkHelper.exportArtifact(txFaultTolerance_war, "publish/servers/TxFaultTolerance/dropins/");
+        ShrinkHelper.exportArtifact(txFaultTolerance_war, "publish/servers/TxFaultToleranceReordered/dropins/");
     }
 
 }

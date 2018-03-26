@@ -17,6 +17,7 @@ javac.target: 1.8
 src: \
 	fat/src,\
 	test-applications/BasicSseApp/src,\
+        test-applications/SseJaxbApp/src,\
 	test-applications/SseJsonbApp/src
 
 fat.project: true

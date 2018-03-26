@@ -1364,7 +1364,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
         if (tc.isDebugEnabled())
             Tr.debug(this, tc, "Create castable wrapper for", Arrays.toString(interfaceList));
 
-        Connection wrapper = (Connection) Proxy.newProxyInstance(PrivHelper.getClassLoader(connImpl.getClass()),
+        Connection wrapper = (Connection) Proxy.newProxyInstance(WSJdbcWrapper.priv.getClassLoader(connImpl.getClass()),
                                                                  interfaceList,
                                                                  this);
 

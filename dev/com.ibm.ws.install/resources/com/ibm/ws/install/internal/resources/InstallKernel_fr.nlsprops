@@ -1,0 +1,776 @@
+###############################################################################
+# Copyright (c) 2010, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.install/resources/com/ibm/ws/install/internal/resources/InstallKernel.nlsprops
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF Install Kernel
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1200 to 1399 are reserved for the InstallKernel.
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# The following five messages are for InstallException and should not occur.
+# No user action exists to recover from these exceptions without assistance from IBM.
+# The installer may be IM, WDT, FeatureManager or others.
+ERROR_FEATURES_LIST_INVALID=CWWKF1200E: La liste de fonctions fournie est nulle ou vide.
+ERROR_FEATURES_LIST_INVALID.explanation=La liste de fonctions \u00e0 installer est manquante ou vide.
+ERROR_FEATURES_LIST_INVALID.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED=CWWKF1201E: Op\u00e9ration non prise en charge.
+ERROR_UNSUPPORTED.explanation=Le programme d'installation a essay\u00e9 d'effectuer une op\u00e9ration non prise en charge.
+ERROR_UNSUPPORTED.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNSUPPORTED_ASSETTYPE=CWWKF1202E: Type d''actif {0} non pris en charge.
+ERROR_UNSUPPORTED_ASSETTYPE.explanation=Le type d'actif sp\u00e9cifi\u00e9 n'est pas pris en charge par le programme d'installation.
+ERROR_UNSUPPORTED_ASSETTYPE.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA=CWWKF1217E: La fonction {0} ne peut pas \u00eatre d\u00e9sinstall\u00e9e.
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.explanation=Une erreur interne a d\u00e9tect\u00e9 des m\u00e9tadonn\u00e9es de traitement. 
+ERROR_UNINSTALL_FEATURE_INVALID_META_DATA.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA=CWWKF1218E: Le correctif {0} ne peut pas \u00eatre d\u00e9sinstall\u00e9.
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.explanation=Une erreur interne a d\u00e9tect\u00e9 des m\u00e9tadonn\u00e9es de traitement. 
+ERROR_UNINSTALL_FIX_INVALID_META_DATA.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Following messages for InstallException
+ERROR_FAILED_TO_RESOLVE_FEATURES=CWWKF1203E: Impossible d''obtenir les fonctions suivantes : {0}. V\u00e9rifiez que les fonctions sont valides.
+ERROR_FAILED_TO_RESOLVE_FEATURES.explanation=Le programme d'installation n'a pas pu extraire les fonctions sp\u00e9cifi\u00e9es du r\u00e9f\u00e9rentiel IBM WebSphere Liberty.
+ERROR_FAILED_TO_RESOLVE_FEATURES.useraction=V\u00e9rifiez que les fonctions sp\u00e9cifi\u00e9es sont valides.
+
+ERROR_FAILED_TO_RESOLVE_IFIX=CWWKF1204E: Impossible d''obtenir les correctifs temporaire suivants : {0}. Assurez-vous que le syst\u00e8me peut acc\u00e9der au r\u00e9f\u00e9rentiel IBM WebSphere Liberty et que les ID de correctif temporaire sont valides.
+ERROR_FAILED_TO_RESOLVE_IFIX.explanation=Le programme d'installation n'a pas pu extraire les correctifs temporaires du r\u00e9f\u00e9rentiel IBM WebSphere Liberty.
+ERROR_FAILED_TO_RESOLVE_IFIX.useraction=Assurez-vous qu'un ID de correctif temporaire valide est sp\u00e9cifi\u00e9, qu'un ID utilisateur et un mot de passe valides sont fournis et que le r\u00e9f\u00e9rentiel IBM WebSphere Liberty est accessible.
+
+ERROR_INVALID_ESA=CWWKF1205E: L''actif sp\u00e9cifi\u00e9 t\u00e9l\u00e9charg\u00e9 n''est pas valide : {0}. Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et r\u00e9essayez.
+ERROR_INVALID_ESA.explanation=L'actif de fonction sp\u00e9cifi\u00e9 a \u00e9t\u00e9 extrait du r\u00e9f\u00e9rentiel mais il n'est pas valide.
+ERROR_INVALID_ESA.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et r\u00e9essayez.
+
+ERROR_INVALID_IFIX=CWWKF1206E: L''actif sp\u00e9cifi\u00e9 t\u00e9l\u00e9charg\u00e9 n''est pas valide : {0}. Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et r\u00e9essayez.
+ERROR_INVALID_IFIX.explanation=L'actif de correctif sp\u00e9cifi\u00e9e a \u00e9t\u00e9 extrait du r\u00e9f\u00e9rentiel mais il n'est pas valide.
+ERROR_INVALID_IFIX.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et r\u00e9essayez.
+
+ERROR_FEATURE_NOT_INSTALLED=CWWKF1207E: La fonction {0} n''est pas install\u00e9e.
+ERROR_FEATURE_NOT_INSTALLED.explanation=La fonction sp\u00e9cifi\u00e9e n'existe pas et ne peut pas \u00eatre d\u00e9sinstall\u00e9e. 
+ERROR_FEATURE_NOT_INSTALLED.useraction=Aucune action n'est requise.
+
+ERROR_OTHER_FEATURE_DEPEND_ON=CWWKF1208E: Les fonctions que vous d\u00e9sinstallez sont requises par la ou les fonctions {0} ci-apr\u00e8s.
+ERROR_OTHER_FEATURE_DEPEND_ON.explanation=La fonction sp\u00e9cifi\u00e9e ne peut pas \u00eatre supprim\u00e9e alors qu'elle est encore requise par une autre fonction.
+ERROR_OTHER_FEATURE_DEPEND_ON.useraction=Aucune action n'est requise.
+
+ERROR_IFIX_NOT_INSTALLED=CWWKF1209E: Le correctif {0} n''est pas install\u00e9.
+ERROR_IFIX_NOT_INSTALLED.explanation=Le correctif sp\u00e9cifi\u00e9 n'existe pas.
+ERROR_IFIX_NOT_INSTALLED.useraction=Aucune action n'est requise.
+
+ERROR_IFIX_UNINSTALLABLE=CWWKF1210E: Le correctif {0} ne peut pas \u00eatre d\u00e9sinstall\u00e9.
+ERROR_IFIX_UNINSTALLABLE.explanation=Le correctif sp\u00e9cifi\u00e9 ne peut pas \u00eatre supprim\u00e9 alors qu'il est encore requis par un autre correctif.
+ERROR_IFIX_UNINSTALLABLE.useraction=Aucune action n'est requise.
+
+ERROR_LICENSES_NOT_ACCEPTED=CWWKF1211E: La licence n'a pas \u00e9t\u00e9 accept\u00e9e.
+ERROR_LICENSES_NOT_ACCEPTED.explanation=La fonction ne peut pas \u00eatre install\u00e9e tant que la licence n'a pas \u00e9t\u00e9 accept\u00e9e. 
+ERROR_LICENSES_NOT_ACCEPTED.useraction=Acceptez la licence et renouvelez l'op\u00e9ration.
+
+ERROR_FAILED_TO_DOWNLOAD_FEATURE=CWWKF1212E: Impossible de t\u00e9l\u00e9charger la fonction {0} vers {1}. Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet, que le r\u00e9pertoire temporaire existe et qu''il est accessible en \u00e9criture, puis r\u00e9essayez.
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.explanation=Une erreur s'est produite lors du t\u00e9l\u00e9chargement d'une fonction vers le r\u00e9pertoire temporaire. 
+ERROR_FAILED_TO_DOWNLOAD_FEATURE.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet, que le r\u00e9pertoire temporaire existe et qu'il est accessible en \u00e9criture, puis r\u00e9essayez.
+
+ERROR_FAILED_TO_DOWNLOAD_IFIX=CWWKF1213E: Impossible de t\u00e9l\u00e9charger le correctif {0} vers {1}.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.explanation=Une erreur s'est produite lors du t\u00e9l\u00e9chargement d'un correctif vers le r\u00e9pertoire temporaire. Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet, que le r\u00e9pertoire temporaire existe et qu'il est accessible en \u00e9criture, puis r\u00e9essayez.
+ERROR_FAILED_TO_DOWNLOAD_IFIX.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet, que le r\u00e9pertoire temporaire existe et qu'il est accessible en \u00e9criture, puis r\u00e9essayez.
+
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE=CWWKF1214E: Le correctif {0} est requis par la fonction {1}. Ajoutez le param\u00e8tre --verbose pour afficher toutes les fonctions d\u00e9pendantes.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.explanation=Le correctif ne peut pas \u00eatre retir\u00e9 alors qu''il est toujours requis par {1}.
+ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.useraction=Aucune action n'est requise.
+
+ERROR_FAILED_TO_GET_FEATURE_LICENSE=CWWKF1215E: Impossible d''obtenir la licence pour la fonction : {0}
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.explanation=Une erreur s'est produite lors de l'extraction de la licence de fonction sp\u00e9cifi\u00e9e.
+ERROR_FAILED_TO_GET_FEATURE_LICENSE.useraction=Assurez-vous que le nom de fonction sp\u00e9cifi\u00e9 est valide, qu'un ID utilisateur et un mot de passe valides sont indiqu\u00e9s, et que le r\u00e9f\u00e9rentiel IBM WebSphere Liberty Repository est accessible.
+
+ALREADY_INSTALLED=CWWKF1216I: Les fonctions suivantes existent d\u00e9j\u00e0 : {0}. Elles ne seront pas r\u00e9install\u00e9es. Pour modifier une fonction existante, vous devez d''abord la d\u00e9sinstaller manuellement.
+ALREADY_INSTALLED.explanation=Les fonctions sp\u00e9cifi\u00e9es sont d\u00e9j\u00e0 install\u00e9es.
+ALREADY_INSTALLED.useraction=Aucune action n'est requise.
+
+ERROR_FAILED_TO_CONNECT=CWWKF1219E: Impossible d'atteindre le r\u00e9f\u00e9rentiel IBM WebSphere Liberty. V\u00e9rifiez que votre ordinateur dispose d'un acc\u00e8s r\u00e9seau et que les pare-feux sont correctement configur\u00e9s puis tentez \u00e0 nouveau l'op\u00e9ration. Si la connexion n'aboutit toujours pas, il est possible que le serveur de r\u00e9f\u00e9rentiel soit temporairement indisponible.
+ERROR_FAILED_TO_CONNECT.explanation=Une erreur s'est produite lors de la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty Repository.
+ERROR_FAILED_TO_CONNECT.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et au r\u00e9f\u00e9rentiel appropri\u00e9.
+
+ERROR_FAILED_TO_AUTHENICATE=CWWKF1220E: Les donn\u00e9es d'identifications fournies ne sont pas valides.
+ERROR_FAILED_TO_AUTHENICATE.explanation=Une erreur d'authentification s'est produite. Les donn\u00e9es d'identification indiqu\u00e9es ne sont pas valides.
+ERROR_FAILED_TO_AUTHENICATE.useraction=Assurez-vous qu'un ID utilisateur et un mot de passe valides sont sp\u00e9cifi\u00e9s.
+
+ERROR_MISSING_DEPENDENT=CWWKF1221E: L''actif {0} d\u00e9pend de {1}, qui n''est pas disponible dans le r\u00e9f\u00e9rentiel IBM WebSphere Liberty. Si l''actif obligatoire est une fonction que vous avez pr\u00e9alablement t\u00e9l\u00e9charg\u00e9, installez la fonction manquante en indiquant l''emplacement du fichier ESA dans l''option featureManager install --location, et relancez l''installation de {0}.
+ERROR_MISSING_DEPENDENT.explanation=La fonction, l'additif ou le correctif temporaire ne peut pas \u00eatre install\u00e9 car il d\u00e9pend d'un actif qui n'est pas disponible.
+ERROR_MISSING_DEPENDENT.useraction=Si l'actif obligatoire est une fonction que vous avez pr\u00e9alablement t\u00e9l\u00e9charg\u00e9, installez la fonction manquante en indiquant l'emplacement du fichier ESA dans l'option featureManager install --location, et renouvelez l'op\u00e9ration. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_INSTALL_FIX=CWWKF1222E: L''application du correctif {0} n''a pas abouti.
+ERROR_FAILED_TO_INSTALL_FIX.explanation=Une erreur s'est produite lors de l'application du correctif.
+ERROR_FAILED_TO_INSTALL_FIX.useraction=Recherchez la cause de l'erreur dans le fichier wlp/lib/fixes/fixinstall.log.
+
+ERROR_INVALID_PRODUCT_VERSION=CWWKF1224E: La fonction {0} ne peut pas \u00eatre install\u00e9e sur {1} {2} car elle ne s''applique qu''\u00e0 la version {3}.  Utilisez l''action "find" (Rechercher) de la commande featureManager afin d''extraire une liste des fonctions applicables \u00e0 {1} {2}.
+ERROR_INVALID_PRODUCT_VERSION.explanation=La fonction ne s'applique pas \u00e0 la version actuelle du produit install\u00e9.
+ERROR_INVALID_PRODUCT_VERSION.useraction=Installez des fonctions prises en charge par votre version du produit.
+
+ERROR_INVALID_PRODUCT_EDITION=CWWKF1225E: La fonction {0} ne peut pas \u00eatre install\u00e9e sur l''\u00e9dition {1} {2} car elle ne s''applique qu''aux \u00e9ditions {3}. Utilisez l''action "find" (Rechercher) de la commande featureManager afin d''extraire une liste des fonctions applicables \u00e0 l''\u00e9dition {4} {5}. 
+ERROR_INVALID_PRODUCT_EDITION.explanation=La fonction ne s'applique pas \u00e0 l'\u00e9dition du produit install\u00e9.
+ERROR_INVALID_PRODUCT_EDITION.useraction=Installez des fonctions prises en charge par votre \u00e9dition du produit.
+
+ERROR_INVALID_PRODUCT_INSTALLTYPE=CWWKF1226E: L''actif {0} ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 ou install\u00e9 avec la commande featureManager car le produit a \u00e9t\u00e9 install\u00e9 par by {1}, alors que l''actif s''applique uniquement \u00e0 l''installation {2}. Utilisez l''action de recherche featureManager afin d''extraire une liste des actifs que vous pouvez installer ou t\u00e9l\u00e9charger avec la commande.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.explanation=La commande featureManager ne peut pas t\u00e9l\u00e9charger ou installer l'actif dans votre installation Liberty car l'actif s'applique uniquement \u00e0 un type d'installation diff\u00e9rent.
+ERROR_INVALID_PRODUCT_INSTALLTYPE.useraction=Utilisez l'action de recherche featureManager afin d'extraire une liste des actifs que vous pouvez installer ou t\u00e9l\u00e9charger avec la commande. Pour plus de d\u00e9tails, consultez la documentation du produit relative \u00e0 l'actif.
+
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR=CWWKF1227E: Impossible d''obtenir la fonction {0} depuis le r\u00e9pertoire {1}.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Le programme d'installation n'a pas pu extraire la fonction sp\u00e9cifi\u00e9e du r\u00e9pertoire local indiqu\u00e9.
+ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=V\u00e9rifiez que le r\u00e9pertoire contient la fonction, puis relancez l'op\u00e9ration.
+
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Impossible de localiser l''ex\u00e9cutable {0} apr\u00e8s v\u00e9rification des emplacements suivants : {1}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Le programme d'installation n'a pas pu localiser le fichier ex\u00e9cutable
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=V\u00e9rifiez que le fichier ex\u00e9cutable existe dans l'un des emplacements sp\u00e9cifi\u00e9s.
+
+ERROR_EXECUTING_COMMAND=CWWKF1229E: Erreur lors de l''ex\u00e9cution de la commande : {0}. La commande s''est termin\u00e9e avec le code de sortie {1} et le message d''erreur : {2}
+ERROR_EXECUTING_COMMAND.explanation=L'ex\u00e9cution de la commande n'a pas abouti.
+ERROR_EXECUTING_COMMAND.useraction=Examinez le code de sortie et le code d'erreur et v\u00e9rifiez que vous disposez d'autorisations suffisantes pour ex\u00e9cuter cette commande.
+
+ERROR_INVALID_EXTATTR_PARMS=CWWKF1230E: Les param\u00e8tres {0} ne sont pas valides pour la commande extattr
+ERROR_INVALID_EXTATTR_PARMS.explanation=Les param\u00e8tres valides pour la commande extattr sont : [+alps] [-alps]
+ERROR_INVALID_EXTATTR_PARMS.useraction=Assurez-vous que des param\u00e8tres valides soient utilis\u00e9s.
+
+ERROR_UNABLE_TO_GET_UMASK=CWWKF1231E: Impossible d''extraire le param\u00e8tre umask \u00e0 l''aide de la commande : {0}
+ERROR_UNABLE_TO_GET_UMASK.explanation=La valeur du param\u00e8tre umask n'a pas \u00e9t\u00e9 renvoy\u00e9e apr\u00e8s l'ex\u00e9cution de la commande umask.
+ERROR_UNABLE_TO_GET_UMASK.useraction=V\u00e9rifiez que vous pouvez ex\u00e9cuter la commande umask.
+
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=CWWKF1232E: Impossible d''attribuer l''autorisation d''ex\u00e9cution sur les fichiers suivants : {0}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.explanation=Une erreur s'est produite lors de la tentative d'attribution de l'autorisation d'ex\u00e9cution.  Il se peut que l'ID utilisateur ne soit pas habilit\u00e9 \u00e0 modifier les droits d'acc\u00e8s au fichier.
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS.useraction=V\u00e9rifiez que l'autorisation d'ex\u00e9cution a \u00e9t\u00e9 attribu\u00e9e sur les fichiers.
+
+ERROR_UNABLE_TO_SET_EXT_ATTR=CWWKF1233E: Impossible de d\u00e9finir les attributs \u00e9tendus {0} sur les fichiers suivants : {1}
+ERROR_UNABLE_TO_SET_EXT_ATTR.explanation=Une erreur s'est produite lors de la tentative de d\u00e9finition des attributs \u00e9tendus.  Il se peut que l'ID utilisateur ne soit pas habilit\u00e9 \u00e0 modifier les attributs \u00e9tendus.
+ERROR_UNABLE_TO_SET_EXT_ATTR.useraction=V\u00e9rifiez que les attributs \u00e9tendus requis ont \u00e9t\u00e9 d\u00e9finis sur les fichiers.
+
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED=CWWKF1234E: La fonction {0} ne peut pas \u00eatre d\u00e9sinstall\u00e9e car le fichier {1} est verrouill\u00e9. Arr\u00eatez tous les serveurs en cours d''ex\u00e9cution, puis relancez l''op\u00e9ration.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.explanation=Une erreur s'est produite lors d'une tentative de suppression d'un fichier.
+ERROR_UNINSTALL_FEATURE_FILE_LOCKED.useraction=Assurez-vous qu'aucun fichier n'est verrouill\u00e9.
+
+ERROR_UNINSTALL_FIX_FILE_LOCKED=CWWKF1235E: Le correctif {0} ne peut pas \u00eatre d\u00e9sinstall\u00e9 car le fichier {1} est verrouill\u00e9. Arr\u00eatez tous les serveurs en cours d''ex\u00e9cution, puis relancez l''op\u00e9ration.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.explanation=Une erreur s'est produite lors d'une tentative de suppression d'un fichier.
+ERROR_UNINSTALL_FIX_FILE_LOCKED.useraction=Assurez-vous qu'aucun fichier n'est verrouill\u00e9.
+
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED=CWWKF1236E: Les fonctions du produit {0} ne peuvent pas \u00eatre d\u00e9sinstall\u00e9es car le fichier {1} est verrouill\u00e9. Arr\u00eatez tous les serveurs en cours d''ex\u00e9cution, puis relancez l''op\u00e9ration.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.explanation=Une erreur s'est produite lors d'une tentative de suppression d'un fichier.
+ERROR_UNINSTALL_PRODUCT_FILE_LOCKED.useraction=Assurez-vous qu'aucun fichier n'est verrouill\u00e9.
+
+ERROR_UNINSTALL_RUNNING_SERVER=CWWKF1237E: La fonction {0} ne peut pas \u00eatre d\u00e9sinstall\u00e9e car le serveur est en cours d''ex\u00e9cution.\nArr\u00eatez les serveurs ci-apr\u00e8s en cours d''ex\u00e9cution, puis relancez l''op\u00e9ration : {1}
+ERROR_UNINSTALL_RUNNING_SERVER.explanation=Le serveur est en cours d'ex\u00e9cution alors que vous essayez de d\u00e9sinstaller une fonction.
+ERROR_UNINSTALL_RUNNING_SERVER.useraction=Assurez-vous que tous les serveurs sont arr\u00eat\u00e9s et ne sont pas en cours d'ex\u00e9cution.
+
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER_=CWWKF1238E: La fonction {0} ne peut pas \u00eatre d\u00e9sinstall\u00e9e car le serveur est en cours d''ex\u00e9cution et ne peut pas \u00eatre arr\u00eat\u00e9.\nArr\u00eatez les serveurs ci-apr\u00e8s en cours d''ex\u00e9cution, puis relancez l''op\u00e9ration : {1}
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.explanation=Le serveur est en cours d'ex\u00e9cution et ne peut pas \u00eatre arr\u00eat\u00e9 alors que vous essayez de d\u00e9sinstaller une fonction.
+ERROR_UNINSTALL_FAILED_TO_STOP_RUNNING_SERVER.useraction=Assurez-vous que tous les serveurs sont arr\u00eat\u00e9s et ne sont pas en cours d'ex\u00e9cution.
+
+ERROR_INVALID_SERVER_PACKAGE=CWWKF1239E: Le fichier {0} est un fichier de package serveur non valide.
+ERROR_INVALID_SERVER_PACKAGE.explanation=Le fichier archive sp\u00e9cifi\u00e9 est un fichier de package serveur non valide.
+ERROR_INVALID_SERVER_PACKAGE.useraction=Utilisez la commande serveur pour cr\u00e9er le fichier de package serveur.
+
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME=CWWKF1240E: Le fichier de package serveur {0} ne peut pas \u00eatre install\u00e9 car il contient l''environnement d''ex\u00e9cution Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.explanation=Le fichier de package serveur ne peut pas \u00eatre install\u00e9 s'il contient l'environnement d'ex\u00e9cution Liberty.
+ERROR_SERVER_PACKAGE_CONTAINS_RUNTIME.useraction=D\u00e9compressez le fichier de package serveur.
+
+ERROR_INVALID_SERVER_XML=CWWKF1241E: Echec de lecture de {0} car l''erreur suivante n''est produite : Erreur : {1}
+ERROR_INVALID_SERVER_XML.explanation=Le fichier server.xml n'est pas valide.
+ERROR_INVALID_SERVER_XML.useraction=Assurez-vous que le fichier server.xml est valide.
+
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED=CWWKF1242E: Le fichier de package serveur {0} ne peut pas \u00eatre install\u00e9 car le serveur {1} existe d\u00e9j\u00e0.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.explanation=Le serveur en cours d'installation existe d\u00e9j\u00e0.
+ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.useraction=Aucune action n'est requise.
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1243E: Les fonctions suivantes n''ont pas \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9es car elles sont d\u00e9j\u00e0 install\u00e9es : {0}. Utilisez une autre valeur pour l''option --downloadOnly, par exemple all ou none.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=Les fonctions sp\u00e9cifi\u00e9es sont d\u00e9j\u00e0 install\u00e9es.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Relancez la commande avec une autre valeur pour l'option --downloadOnly, par exemple all ou none.
+
+ERROR_FEATURE_NOT_APPLICABLE=CWWKF1244E: La fonction {0} ne s''applique pas \u00e0 l''installation produit {1}.  {2}
+ERROR_FEATURE_NOT_APPLICABLE.explanation=La fonction sp\u00e9cifi\u00e9e n'est pas une fonction valide pour l'installation produit sp\u00e9cifi\u00e9e.
+ERROR_FEATURE_NOT_APPLICABLE.useraction=Assurez-vous que la fonction s'applique pas \u00e0 l'installation produit.  Utilisez l'action "find" (Rechercher) de la commande featureManager afin d'extraire une liste des fonctions applicables.
+
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY=CWWKF1245E: Impossible de t\u00e9l\u00e9charger {0} vers {1}. Assurez-vous que le r\u00e9pertoire cible est accessible en \u00e9criture et dispose d''un espace disque suffisant.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.explanation=Le programme d'installation a besoin d'un acc\u00e8s en \u00e9criture au r\u00e9pertoire de t\u00e9l\u00e9chargement.
+ERROR_UNABLE_TO_DOWNLOAD_TO_DIRCTORY.useraction=Assurez-vous que le r\u00e9pertoire existe, qu'il est accessible en \u00e9criture et qu'il dispose d'un espace disque suffisant.
+
+ERROR_UNINSTALL_FAILED_ADDON=CWWKF1246E: Les fonctions suivantes ne peuvent pas \u00eatre d\u00e9sinstall\u00e9es car il s''agit d''actifs additifs : {0}
+ERROR_UNINSTALL_FAILED_ADDON.explanation=Les fonctions sp\u00e9cifi\u00e9es sont des additifs et ne peuvent pas \u00eatre d\u00e9sinstall\u00e9es.
+ERROR_UNINSTALL_FAILED_ADDON.useraction=Ne d\u00e9sinstallez pas les actif additifs.
+
+ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: Les fonctions suivantes ne peuvent pas \u00eatre d\u00e9sinstall\u00e9es car il s''agit de fonctions utilisateur : {0}
+ERROR_UNINSTALL_FAILED_USR.explanation=Les fonctions sp\u00e9cifi\u00e9es sont des fonctions utilisateur et ne peuvent pas \u00eatre d\u00e9sinstall\u00e9es.
+ERROR_UNINSTALL_FAILED_USR.useraction=Ne d\u00e9sinstallez pas les fonctions utilisateur.
+
+ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: Impossible d'atteindre un des r\u00e9f\u00e9rentiels sp\u00e9cifi\u00e9s dans la configuration. V\u00e9rifiez que votre ordinateur dispose d'un acc\u00e8s r\u00e9seau et que les pare-feux sont correctement configur\u00e9s puis tentez \u00e0 nouveau l'op\u00e9ration. Si la connexion n'aboutit toujours pas, il est possible que le serveur de r\u00e9f\u00e9rentiel soit temporairement indisponible.
+ERROR_FAILED_TO_CONNECT_REPOS.explanation=Une erreur s'est produite lors de la connexion \u00e0 un r\u00e9f\u00e9rentiel.
+ERROR_FAILED_TO_CONNECT_REPOS.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et au r\u00e9f\u00e9rentiel appropri\u00e9.
+
+ERROR_ASSETS_LIST_INVALID=CWWKF1249E: La liste d'actifs fournie est nulle ou vide.
+ERROR_ASSETS_LIST_INVALID.explanation=La liste d'actifs \u00e0 installer est manquante ou vide.
+ERROR_ASSETS_LIST_INVALID.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ASSETS_ALREADY_INSTALLED=CWWKF1250I: Les actifs suivants existent d\u00e9j\u00e0 : {0}. Ils ne seront pas r\u00e9install\u00e9s. Pour modifier une fonction existante, vous devez d''abord la d\u00e9sinstaller manuellement.
+ASSETS_ALREADY_INSTALLED.explanation=Les actifs sp\u00e9cifi\u00e9s sont d\u00e9j\u00e0 install\u00e9s.
+ASSETS_ALREADY_INSTALLED.useraction=Aucune action n'est requise.
+
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE=CWWKF1251E: Impossible de t\u00e9l\u00e9charger la ressource {0} vers {1}. Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet, que le r\u00e9pertoire temporaire existe et qu''il est accessible en \u00e9criture, puis r\u00e9essayez.
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.explanation=Une erreur s'est produite lors du t\u00e9l\u00e9chargement d'une ressource vers le r\u00e9pertoire temporaire. 
+ERROR_FAILED_TO_DOWNLOAD_SAMPLE.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet, que le r\u00e9pertoire temporaire existe et qu'il est accessible en \u00e9criture, puis r\u00e9essayez.
+
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE=CWWKF1252E: Impossible de t\u00e9l\u00e9charger l''int\u00e9gration source {0} vers {1}. Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet, que le r\u00e9pertoire temporaire existe et qu''il est accessible en \u00e9criture, puis r\u00e9essayez.
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.explanation=Une erreur s'est produite lors du t\u00e9l\u00e9chargement d'une int\u00e9gration source vers le r\u00e9pertoire temporaire. 
+ERROR_FAILED_TO_DOWNLOAD_OPENSOURCE.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet, que le r\u00e9pertoire temporaire existe et qu'il est accessible en \u00e9criture, puis r\u00e9essayez.
+
+ERROR_INVALID_SAMPLE=CWWKF1253E: L''exemple de produit sp\u00e9cifi\u00e9 t\u00e9l\u00e9charg\u00e9 n''est pas valide : {0}. Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et r\u00e9essayez.
+ERROR_INVALID_SAMPLE.explanation=L'actif d'exemple de produit sp\u00e9cifi\u00e9 a \u00e9t\u00e9 extrait du r\u00e9f\u00e9rentiel mais il n'est pas valide.
+ERROR_INVALID_SAMPLE.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et r\u00e9essayez.
+
+ERROR_INVALID_OPENSOURCE=CWWKF1254E: L''actif d''int\u00e9gration open source sp\u00e9cifi\u00e9 t\u00e9l\u00e9charg\u00e9 n''est pas valide : {0}. Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et r\u00e9essayez.
+ERROR_INVALID_OPENSOURCE.explanation=L'actif d'int\u00e9gration open source sp\u00e9cifi\u00e9 a \u00e9t\u00e9 extrait du r\u00e9f\u00e9rentiel mais il n'est pas valide.
+ERROR_INVALID_OPENSOURCE.useraction=Assurez-vous que le syst\u00e8me peut acc\u00e9der \u00e0 Internet et r\u00e9essayez.
+
+ERROR_ASSET_INVALID_PRODUCT_VERSION=CWWKF1255E: L''actif {0} ne peut pas \u00eatre install\u00e9 sur {1} {2} car il ne s''applique qu''\u00e0 la version {3}.  Utilisez l''action "find" de la commande installUtility pour extraire la liste des actifs applicables \u00e0 {1} {2}.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.explanation=L'actif ne s'applique pas \u00e0 la version actuelle du produit install\u00e9.
+ERROR_ASSET_INVALID_PRODUCT_VERSION.useraction=Installez des actifs pris en charge par votre version du produit.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION=CWWKF1256E: L''actif {0} ne peut pas \u00eatre install\u00e9 sur l''\u00e9dition {1} {2} car elle ne s''applique qu''aux \u00e9ditions {3}. Utilisez l''action "find" de la commande installUtility pour extraire la liste des actifs applicables \u00e0 l''\u00e9dition {4} {5}. 
+ERROR_ASSET_INVALID_PRODUCT_EDITION.explanation=L'actif ne s'applique pas \u00e0 l'\u00e9dition du produit install\u00e9.
+ERROR_ASSET_INVALID_PRODUCT_EDITION.useraction=Installez des actifs pris en charge par votre \u00e9dition du produit.
+
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE=CWWKF1257E: L''actif {0} ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 ou install\u00e9 avec la commande installUtility car le produit a \u00e9t\u00e9 install\u00e9 par by {1}, alors que l''actif s''applique uniquement \u00e0 l''installation {2}. Utilisez l''action de recherche installUtility afin d''extraire une liste des actifs que vous pouvez installer ou t\u00e9l\u00e9charger avec la commande.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.explanation=La commande installUtility ne peut pas t\u00e9l\u00e9charger ou installer l'actif dans votre installation Liberty car l'actif s'applique uniquement \u00e0 un type d'installation diff\u00e9rent.
+ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.useraction=Utilisez l'action de recherche installUtility afin d'extraire une liste des actifs que vous pouvez installer ou t\u00e9l\u00e9charger avec la commande. Pour plus de d\u00e9tails, consultez la documentation du produit relative \u00e0 l'actif.
+
+ERROR_ASSET_MISSING_DEPENDENT=CWWKF1258E: L''actif {0} d\u00e9pend de {1}, qui n''est pas disponible dans les r\u00e9f\u00e9rentiels configur\u00e9s. Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d''installer l''actif. Si vous ne disposez pas d''un acc\u00e8s Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l''actif manquant et d''\u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9.
+ERROR_ASSET_MISSING_DEPENDENT.explanation=L'actif ne peut pas \u00eatre install\u00e9 car il d\u00e9pend d'un actif qui n'est pas disponible.
+ERROR_ASSET_MISSING_DEPENDENT.useraction=Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d'installer l'actif. Vous pouvez aussi t\u00e9l\u00e9charger wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central, et configurer le dossier extrait en tant r\u00e9f\u00e9rentiel bas\u00e9 sur un r\u00e9pertoire. Si vous ne disposez pas d'un acc\u00e8s Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l'actif manquant et d'\u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. Pour plus d'informations sur l'installation des actifs, consultez la documentation relative \u00e0 installUtility dans IBM Knowledge Center. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Impossible d''obtenir les actifs suivants : {0}. V\u00e9rifiez que les actifs sp\u00e9cifi\u00e9s sont valides. Pour identifier les ID des actifs applicables, lancez l''utilitaire de recherche installUtility.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Le programme d'installation n'a pas pu extraire les actifs sp\u00e9cifi\u00e9s des r\u00e9f\u00e9rentiels.
+ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Assurez-vous que les actifs sp\u00e9cifi\u00e9s sont valides, qu'un ID utilisateur et un mot de passe valides sont fournis, et que les r\u00e9f\u00e9rentiels sont accessibles.
+
+ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: L''actif {0} ne s''applique pas \u00e0 l''installation produit {1}.  {2}
+ERROR_ASSET_NOT_APPLICABLE.explanation=L'actif sp\u00e9cifi\u00e9 n'est pas un actif valide pour l'installation produit sp\u00e9cifi\u00e9e.
+ERROR_ASSET_NOT_APPLICABLE.useraction=Assurez-vous que l'actif s'applique pas \u00e0 l'installation produit.  Utilisez l'action "find" de la commande installUtility pour extraire la liste des actifs applicables.
+
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED=CWWKF1261E: L''exemple {0} ne peut pas \u00eatre install\u00e9 car le serveur {1} existe d\u00e9j\u00e0.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.explanation=Le serveur d'exemple en cours d'installation existe d\u00e9j\u00e0.
+ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.useraction=Aucune action n'est requise.
+
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED=CWWKF1262E: L''int\u00e9gration open source {0} ne peut pas \u00eatre install\u00e9e car le serveur {1} existe d\u00e9j\u00e0.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.explanation=L'int\u00e9gration open source en cours d'installation existe d\u00e9j\u00e0.
+ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.useraction=Aucune action n'est requise.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED=\nCWWKF1263E: Les fonctions que vous essayez de d\u00e9sinstaller sont encore n\u00e9cessaires \u00e0 d'autres fonctions qui sont install\u00e9es :\n\n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.explanation=Les fonctions \u00e0 d\u00e9sinstaller sont toujours requises par d'autres fonctions qui sont install\u00e9es.
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.useraction=D\u00e9sinstallez toutes les fonctions requises avant ou en m\u00eame temps que les fonctions sp\u00e9cifi\u00e9es pour d\u00e9sinstallation.
+
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_REQUIRED_BY=[{0}] est requise par : {1}.\n
+ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED_ACTION=\nD\u00e9sinstallez toutes les fonctions requises avant ou en m\u00eame temps que les fonctions sp\u00e9cifi\u00e9es pour d\u00e9sinstallation.\n
+
+ERROR_UNABLE_RUN_EXTRACTOR=CWWKF1264E: Le fichier archive {0} ne peut pas \u00eatre install\u00e9 pour la raison : {1}
+ERROR_UNABLE_RUN_EXTRACTOR.explanation=Une exception se produit lors de l'installation du fichier archive.
+ERROR_UNABLE_RUN_EXTRACTOR.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_FAILED_TO_GET_ASSET_LICENSE=CWWKF1265E: Impossible d''obtenir la licence pour l''actif : {0}. V\u00e9rifiez que le nom d''actif sp\u00e9cifi\u00e9 est valide et que les r\u00e9f\u00e9rentiels sont accessibles. 
+ERROR_FAILED_TO_GET_ASSET_LICENSE.explanation=Une erreur s'est produite lors de l'extraction de la licence d'actif sp\u00e9cifi\u00e9e.
+ERROR_FAILED_TO_GET_ASSET_LICENSE.useraction=V\u00e9rifiez que le nom d'actif sp\u00e9cifi\u00e9 est valide et que les r\u00e9f\u00e9rentiels sont accessibles.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWKF1266E: Impossible de localiser le fichier server.xml dans le r\u00e9pertoire {0}. V\u00e9rifiez que le fichier existe et qu''il est accessible..
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=Le fichier server.xml pour le serveur sp\u00e9cifi\u00e9 est introuvable dans le r\u00e9pertoire serveur.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Assurez-vous que le fichier existe et que vous pouvez y acc\u00e9der.
+
+ERROR_INSTALL_ESA_FILE_NOTEXIST=CWWKF1267E: Le fichier {0} n''existe pas.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.explanation=Le fichier .esa (Enterprise Subsystem Archive) sp\u00e9cifi\u00e9 fourni pour l'action d'installation n'existe pas.
+ERROR_INSTALL_ESA_FILE_NOTEXIST.useraction=V\u00e9rifiez que le nom de fichier d'archive esa fourni est correct et ex\u00e9cutez \u00e0 nouveau l'action d'installation.
+
+ERROR_DEPOLY_DIRECTORY=CWWKF1268E: {0} est un r\u00e9pertoire. Un fichier archive est requis.
+ERROR_DEPOLY_DIRECTORY.explanation=Tentative d'installation d'un r\u00e9pertoire.
+ERROR_DEPOLY_DIRECTORY.useraction=R\u00e9ex\u00e9cutez la commande avec un fichier archive.
+
+ERROR_INVALID_LOCAL_ESA=CWWKF1269E: Le fichier {0} est un fichier ESA (Enterprise Subsystem Archive) non valide.
+ERROR_INVALID_LOCAL_ESA.explanation=Le fichier d'archive sp\u00e9cifi\u00e9 est un fichier .esa (Enterprise Subsystem Archive) non valide.
+ERROR_INVALID_LOCAL_ESA.useraction=Ex\u00e9cutez la commande avec un fichier .esa (Enterprise Subsystem Archive) valide.
+
+EXCEPTION_STARTING_SERVER=CWWKF1270E: Une exception est survenue lors de la tentative de d\u00e9marrage du serveur {0}.  Exception : {1}
+EXCEPTION_STARTING_SERVER.explanation=Une exception s'est produite lors du d\u00e9marrage du serveur.
+EXCEPTION_STARTING_SERVER.useraction=Pour plus d'informations, consultez l'exception r\u00e9f\u00e9renc\u00e9e et les journaux du serveur.
+
+EXCEPTION_STOPPING_SERVER=CWWKF1271E: Une exception s''est produite lors de la tentative d''arr\u00eat du serveur {0}.  Exception : {1}
+EXCEPTION_STOPPING_SERVER.explanation=Une exception s'est produite lors de l'arr\u00eat du serveur.
+EXCEPTION_STOPPING_SERVER.useraction=Pour plus d'informations, consultez l'exception r\u00e9f\u00e9renc\u00e9e et les journaux du serveur.
+
+UNABLE_TO_STOP_START_SERVER=CWWKF1272E: Impossible de d\u00e9marrer ou d''arr\u00eater le serveur {0}.  Pour plus d''informations, voir les fichiers journaux dans {1}.
+UNABLE_TO_STOP_START_SERVER.explanation=Une erreur s'est produite lors de la tentative de d\u00e9marrage ou d'arr\u00eat du serveur.
+UNABLE_TO_STOP_START_SERVER.useraction=Consultez les journaux du serveur pour plus d'informations.
+
+UNABLE_TO_DETERMINE_FEATURES=CWWKF1273E: Impossible de d\u00e9terminer les fonctions requises par le serveur {0}.  Pour plus d''informations, voir les fichiers journaux dans {1}.
+UNABLE_TO_DETERMINE_FEATURES.explanation=Le programme d'installation n'a pas pu d\u00e9terminer les fonctions requises par le serveur.
+UNABLE_TO_DETERMINE_FEATURES.useraction=V\u00e9rifiez que le r\u00e9pertoire du serveur existe et qu'il est accessible.  Consultez les journaux du serveur pour plus d'informations.
+
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER=CWWKF1274E: Le programme d''installation ne peut pas rechercher les fonctions requises par le serveur {0} car ce dernier est en cours d''ex\u00e9cution.  Arr\u00eatez le serveur puis ex\u00e9cutez \u00e0 nouveau la commande.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.explanation=Pour que le programme d'installation puisse rechercher les fonctions requises, le serveur doit \u00eatre arr\u00eat\u00e9.
+ERROR_UNABLE_TO_GET_FEATURES_FROM_RUNNING_SERVER.useraction=Arr\u00eatez le serveur puis ex\u00e9cutez \u00e0 nouveau la commande.
+
+ERROR_UNABLE_TO_READ_SERVER_XML=CWWKF1275E: Impossible de lire l''\u00e9l\u00e9ment {0} dans le fichier server.xml : {1}.  V\u00e9rifiez que le fichier server.xml contient l''\u00e9l\u00e9ment {0} et qu''il utilise la syntaxe XML correcte.
+ERROR_UNABLE_TO_READ_SERVER_XMLL.explanation=Le fichier n'est pas un fichier server.xml valide ou il contient des erreurs.
+ERROR_UNABLE_TO_READ_SERVER_XML.useraction=V\u00e9rifiez que le fichier server.xml est valide et que la syntaxe XML est correcte.
+
+ERROR_DOWNLOAD_TO_SOURCE_REPO=CWWKF1276E: Impossible de t\u00e9l\u00e9charger la fonction {0} vers {1}. Le dossier source du r\u00e9f\u00e9rentiel de l''actif a le m\u00eame chemin que l''emplacement de t\u00e9l\u00e9chargement.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.explanation=Les actifs ne peuvent pas \u00eatre t\u00e9l\u00e9charg\u00e9s dans le dossier source du r\u00e9f\u00e9rentiel.
+ERROR_DOWNLOAD_TO_SOURCE_REPO.useraction=Indiquez un nouvel emplacement de t\u00e9l\u00e9chargement.
+
+ERROR_CREATING_TEMP_SERVER_DIR=CWWKF1277E: Le r\u00e9pertoire temporaire suivant n''a pas \u00e9t\u00e9 cr\u00e9\u00e9 sur le serveur : {0}. V\u00e9rifiez que vous disposez du droit d''\u00e9criture sur le r\u00e9pertoire {1} et que le celui-ci contient suffisamment d''espace disponible.
+ERROR_CREATING_TEMP_SERVER_DIR.explanation=Le r\u00e9pertoire de serveur temporaire ne peut pas \u00eatre cr\u00e9\u00e9 dans le r\u00e9pertoire indiqu\u00e9 en raison de droits ou d'espace fichiers insuffisants.
+ERROR_CREATING_TEMP_SERVER_DIR.useraction=V\u00e9rifiez que vous disposez du droit d'\u00e9criture sur le r\u00e9pertoire parent et que celui-ci contient suffisamment d'espace disponible.
+
+ERROR_CREATING_DIR=CWWKF1278E: Le r\u00e9pertoire {0} n''a pas \u00e9t\u00e9 cr\u00e9\u00e9 en raison de l''exception suivante : {1}
+ERROR_CREATING_DIR.explanation=Le r\u00e9pertoire indiqu\u00e9 n'a pas \u00e9t\u00e9 cr\u00e9\u00e9 car une erreur s'est produite.
+ERROR_CREATING_DIR.useraction=Pour plus d'informations sur la raison pour laquelle le r\u00e9pertoire n'a pas \u00e9t\u00e9 cr\u00e9\u00e9, reportez-vous \u00e0 l'exception r\u00e9f\u00e9renc\u00e9e.
+
+ERROR_COPYING_FILE=CWWKF1279E: Le fichier {0} n''a pas \u00e9t\u00e9 copi\u00e9 dans le r\u00e9pertoire  {1}  en raison de l''exception suivante : {2}
+ERROR_COPYING_FILE.explanation=Le fichier n'a pas \u00e9t\u00e9 copi\u00e9 dans le r\u00e9pertoire indiqu\u00e9 car une erreur s'est produite.
+ERROR_COPYING_FILE.useraction=Pour plus d'informations sur la raison pour laquelle le fichier n'a pas \u00e9t\u00e9 copi\u00e9, reportez-vous \u00e0 l'exception r\u00e9f\u00e9renc\u00e9e.
+
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT=CWWKF1280E: Le r\u00e9f\u00e9rentiel Liberty d'IBM WebSphere est inaccessible car l'environnement d'ex\u00e9cution Java (JRE) ne fait pas confiance au certificat du serveur. D\u00e9finissez le certificat du serveur du r\u00e9f\u00e9rentiel en tant que certificat de confiance dans votre environnement d'ex\u00e9cution Java.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.explanation=Une exception java.security.cert.CertPathBuilderException s'est produite lors de la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty car l'environnement d'ex\u00e9cution Java ne reconna\u00eet pas le certificat de s\u00e9curit\u00e9 du serveur du r\u00e9f\u00e9rentiel comme un certificat de confiance. Un certificat de confiance est requis pour v\u00e9rifier l'identit\u00e9 du serveur du r\u00e9f\u00e9rentiel.
+ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT.useraction=D\u00e9finissez le certificat du serveur du r\u00e9f\u00e9rentiel Liberty d'IBM WebSphere en tant que certificat de confiance dans votre environnement d'ex\u00e9cution Java.
+
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT=CWWKF1281E: L'un des r\u00e9f\u00e9rentiels d\u00e9finis dans la configuration est inaccessible car l'environnement d'ex\u00e9cution Java (JRE) ne fait pas confiance au certificat du serveur. D\u00e9finissez le certificat du serveur du r\u00e9f\u00e9rentiel en tant que certificat de confiance dans votre environnement d'ex\u00e9cution Java.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.explanation=Une exception java.security.cert.CertPathBuilderException s'est produite lors de la connexion \u00e0 un r\u00e9f\u00e9rentiel car l'environnement d'ex\u00e9cution Java ne reconna\u00eet pas le certificat de s\u00e9curit\u00e9 du serveur du r\u00e9f\u00e9rentiel comme un certificat de confiance. Un certificat de confiance est requis pour v\u00e9rifier l'identit\u00e9 du serveur du r\u00e9f\u00e9rentiel.
+ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT.useraction=D\u00e9finissez le certificat du serveur du r\u00e9f\u00e9rentiel en tant que certificat de confiance dans votre environnement d'ex\u00e9cution Java.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1282E: Le r\u00e9f\u00e9rentiel {0} est inaccessible car l''environnement d''ex\u00e9cution Java (JRE) ne fait pas confiance au certificat du serveur. D\u00e9finissez le certificat du serveur du r\u00e9f\u00e9rentiel en tant que certificat de confiance dans votre environnement d''ex\u00e9cution Java.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=Une exception java.security.cert.CertPathBuilderException s'est produite lors de la connexion au r\u00e9f\u00e9rentiel car l'environnement d'ex\u00e9cution Java ne reconna\u00eet pas le certificat de s\u00e9curit\u00e9 du serveur du r\u00e9f\u00e9rentiel comme un certificat de confiance. Un certificat de confiance est requis pour v\u00e9rifier l'identit\u00e9 du serveur du r\u00e9f\u00e9rentiel.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=D\u00e9finissez le certificat du serveur du r\u00e9f\u00e9rentiel en tant que certificat de confiance dans votre environnement d'ex\u00e9cution Java.
+
+# In the following 4 messages (CWWKF1282E to CWWKF1285E),
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The webCacheMonitor-1.0 feature cannot be downloaded ...
+# 	The extendedPackage-1.0 addon cannot be downloaded ...
+# 	The ServletSample product sample cannot be downloaded ...
+# 	The SpringSample open source integration cannot be downloaded ...
+ 
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP=CWWKF1283E: L''actif {0} {1} ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 vers {2}. V\u00e9rifiez que le r\u00e9pertoire temporaire existe et est accessible en \u00e9criture puis r\u00e9-ex\u00e9cutez la commande.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.explanation=L'actif sp\u00e9cifi\u00e9 n'a pas \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9 vers le r\u00e9pertoire temporaire. Il se peut que le r\u00e9pertoire n'existe pas ou ne dispose pas d'espace. Sinon, vous ne poss\u00e9dez peut-\u00eatre pas de droits d'acc\u00e8s en \u00e9criture.
+ERROR_FAILED_DOWNLOAD_ASSETS_TO_TEMP.useraction=V\u00e9rifiez que le r\u00e9pertoire temporaire existe et est accessible en \u00e9criture puis r\u00e9-ex\u00e9cutez la commande.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS=CWWKF1284E: L''actif {0} {1} ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9. V\u00e9rifiez que les r\u00e9f\u00e9rentiels d''actifs Liberty configur\u00e9s contiennent l''actif puis r\u00e9-ex\u00e9cutez la commande.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.explanation=L'actif sp\u00e9cifi\u00e9 n'a pas \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9 depuis un des r\u00e9f\u00e9rentiels configur\u00e9s car il n'y figure.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS.useraction=V\u00e9rifiez que les r\u00e9f\u00e9rentiels d'actifs Liberty configur\u00e9s contiennent l'actif puis r\u00e9-ex\u00e9cutez la commande.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO=CWWKF1285E: L''actif {0} {1} ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 depuis le r\u00e9f\u00e9rentiel {2}. V\u00e9rifiez que le r\u00e9f\u00e9rentiel contient l''actif puis r\u00e9-ex\u00e9cutez la commande.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.explanation=L'actif sp\u00e9cifi\u00e9 n'a pas \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9 depuis le r\u00e9f\u00e9rentiel sp\u00e9cifi\u00e9 car celui-ci ne contient pas de version valide de l'actif.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO.useraction=V\u00e9rifiez que le r\u00e9f\u00e9rentiel contient l'actif puis r\u00e9-ex\u00e9cutez la commande.
+
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO=CWWKF1286E: L''actif {0} {1} ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 depuis le r\u00e9f\u00e9rentiel IBM WebSphere Liberty. Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.explanation=L'actif sp\u00e9cifi\u00e9 n'a pas \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9 depuis le r\u00e9f\u00e9rentiel IBM WebSphere Liberty.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_DEFAULT_REPO.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_BUNDLE_IN_ESA=CWWKF1287E: La fonction {0} ne peut pas \u00eatre install\u00e9e car le fichier {1} se trouvant \u00e0 l''int\u00e9rieur du fichier Enterprise Subsystem Archive (ESA) ne constitue pas un fichier bundle. La racine ESA ne doit contenir que des fichiers bundle et des r\u00e9pertoires. Si vous cr\u00e9ez le fichier ESA, v\u00e9rifiez que le contenu du fichier est correct.
+ERROR_INVALID_BUNDLE_IN_ESA.explanation=Pour installer une fonction, la racine du fichier Enterprise Subsystem Archive ne doit contenir que des \u00e9l\u00e9ments du bundle ou des r\u00e9pertoires. Les fichiers bundle doivent repr\u00e9senter des fichiers JAR contenant un fichier manifest.mf valide.
+ERROR_INVALID_BUNDLE_IN_ESA.useraction=Si vous cr\u00e9ez le fichier ESA, v\u00e9rifiez que le contenu du fichier est correct. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+# In the following message CWWKF1288E,
+# {0} will be replaced by an id,
+# {1} will be replaced by a translated word(s): feature, addon, product sample, or open source integration
+# e.g.
+# 	The content of the webCacheMonitor-1.0 feature was changed ..., so the feature is not valid. 
+# 	The content of the extendedPackage-1.0 addon was changed ..., so the addon is not valid. 
+# 	The content of the ServletSample product sample was changed ..., so the sample is not valid. 
+# 	The content of the SpringSample open source integration was changed ..., so the open source integration is not valid. 
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM=CWWKF1288E: Le contenu de {0} {1} a \u00e9t\u00e9 modifi\u00e9 pendant le t\u00e9l\u00e9chargement. Par cons\u00e9quent, {1} n''est pas valide. Ex\u00e9cutez de nouveau la commande.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.explanation=Le total de contr\u00f4le des actifs t\u00e9l\u00e9charg\u00e9s n'est pas correct. Le contenu de l'actif t\u00e9l\u00e9charg\u00e9 n'est pas identique au contenu du r\u00e9f\u00e9rentiel, l'acti ne peut donc pas \u00eatre install\u00e9.
+ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM.useraction=Ex\u00e9cutez de nouveau la commande. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNABLE_TO_CREATE_FILE=CWWKF1289E: Le fichier suivant ne peut pas \u00eatre cr\u00e9\u00e9 : {0}. Assurez-vous que son r\u00e9pertoire parent existe et que vous disposez des droits n\u00e9cessaires pour cr\u00e9er des fichiers dans le r\u00e9pertoire, puis ex\u00e9cutez de nouveau la commande.
+ERROR_UNABLE_TO_CREATE_FILE.explanation=La commande featureManager ou installUtility n'a pas pu installer ou t\u00e9l\u00e9charger l'actif \u00e0 l'emplacement sp\u00e9cifi\u00e9 car le r\u00e9pertoire n'existe pas ou vous ne disposez pas des droits n\u00e9cessaires pour cr\u00e9er des fichiers.
+ERROR_UNABLE_TO_CREATE_FILE.useraction=Assurez-vous que son r\u00e9pertoire parent existe et que vous disposez des droits n\u00e9cessaires pour cr\u00e9er des fichiers dans le r\u00e9pertoire, puis ex\u00e9cutez de nouveau la commande.
+
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1290E: L''actif {0} d\u00e9pend de {1}, qui ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 ou install\u00e9 dans {2} {3} {4}. L''actif {1} dans les r\u00e9f\u00e9rentiels actuellement configur\u00e9s concerne uniquement les \u00e9ditions et versions de produit suivantes : {5}. Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d''installer une version de l''actif qui s''applique \u00e0 votre installation. Si vous ne disposez pas d''un acc\u00e8s Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger cet actif et d''\u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.explanation=L'actif ne peut pas \u00eatre install\u00e9 car il d\u00e9pend d'un actif qui n'est pas disponible. Une version de l'actif obligatoire a \u00e9t\u00e9 d\u00e9tect\u00e9e, mais elle ne s'applique pas \u00e0 la version ou \u00e0 l'\u00e9dition du produit install\u00e9.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d'installer l'actif. Vous pouvez aussi t\u00e9l\u00e9charger wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central, et configurer le package compress\u00e9 en tant r\u00e9f\u00e9rentiel bas\u00e9 sur un r\u00e9pertoire. Si vous ne disposez pas d'un acc\u00e8s Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger cet actif et d'\u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. Pour plus d'informations sur l'installation des actifs, consultez la documentation relative \u00e0 installUtility dans IBM Knowledge Center. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1291E: L''actif {0} d\u00e9pend de {1}, qui ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 ou install\u00e9 dans {2} {3} {4}. L''actif {1} dans le r\u00e9f\u00e9rentiel IBM WebSphere Liberty s''applique uniquement aux \u00e9ditions et versions de produit suivantes : {5}. Si l''actif obligatoire est une fonction que vous avez pr\u00e9alablement t\u00e9l\u00e9charg\u00e9, installez la fonction manquante en indiquant l''emplacement du fichier ESA dans l''option featureManager install --location, et essayez de nouveau d''installer {0}.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.explanation=La fonction, l'additif ou le correctif temporaire ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 ou install\u00e9 car il d\u00e9pend d'un actif qui n'est pas disponible. Une version de l'actif obligatoire a \u00e9t\u00e9 d\u00e9tect\u00e9e, mais elle ne s'applique pas \u00e0 la version ou \u00e0 l'\u00e9dition du produit install\u00e9.
+ERROR_DEPENDENT_INVALID_VERSION_EDITION.useraction=Si l'actif obligatoire est une fonction que vous avez pr\u00e9alablement t\u00e9l\u00e9charg\u00e9, installez la fonction manquante en indiquant l'emplacement du fichier ESA dans l'option featureManager install --location, et renouvelez l'op\u00e9ration. Si le probl\u00e8me persiste, reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1292E: L'option uninstall --force peut \u00eatre sp\u00e9cifi\u00e9e pour une seule fonction en m\u00eame temps. Ex\u00e9cutez la commande uninstall avec l'option --force pour une seule fonction.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=L'option --force a \u00e9t\u00e9 sp\u00e9cifi\u00e9e lors de la d\u00e9sinstallation de plusieurs fonctions.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Ex\u00e9cutez la commande uninstall avec l'option --force pour une seule fonction.
+
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION=CWWKF1293E: La fonction {0} est introuvable sous l''extension de produit {1}. Pour trouver l''extension de produit de la fonction, ex\u00e9cutez la commande productInfo featureInfo.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.explanation=La fonction n'a pas \u00e9t\u00e9 d\u00e9sinstall\u00e9e car elle est introuvable sous l'extension sp\u00e9cifi\u00e9e.
+ERROR_FEATURE_NOT_FOUND_IN_EXTENSION.action=Pour trouver l'extension de produit de la fonction, ex\u00e9cutez la commande productInfo featureInfo. Apr\u00e8s que vous avez identifi\u00e9 la fonctionnalit\u00e9 et l'extension correctes, ex\u00e9cutez de nouveau la commande de d\u00e9sinstallation.
+
+ERROR_EXTENSION_NOT_FOUND=CWWKF1294E: La fonction {0} ne peut pas \u00eatre d\u00e9sinstall\u00e9e car l''extension de produit {1} est introuvable dans le produit. Pour trouver tous les actifs et toutes les extensions de produit install\u00e9s, ex\u00e9cutez la commande productInfo featureInfo.
+ERROR_EXTENSION_NOT_FOUND.explanation=La fonction n'a pas \u00e9t\u00e9 d\u00e9sinstall\u00e9e car l'extension de produit sp\u00e9cifi\u00e9e est introuvable au sein du produit.
+ERROR_EXTENSION_NOT_FOUND.action=Pour trouver tous les actifs et toutes les extensions de produit install\u00e9s, ex\u00e9cutez la commande productInfo featureInfo. Apr\u00e8s que vous avez identifi\u00e9 la fonctionnalit\u00e9 et l'extension correctes, ex\u00e9cutez de nouveau la commande de d\u00e9sinstallation.
+
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION=CWWKF1295E: L''actif {0} ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 ou install\u00e9 dans {1} {2} {3} car il concerne uniquement les \u00e9ditions et versions de produit suivantes : {4}. Utilisez l''action de de recherche installUtility pour extraire une liste d''actifs qui concerne votre installation.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.explanation=L'actif ne s'applique pas \u00e0 l'\u00e9dition ou \u00e0 la version du produit install\u00e9.
+ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION.useraction=Utilisez l'action de recherche installUtility afin d'extraire une liste des actifs qui concerne votre installation.
+
+ERROR_INVALID_PRODUCT_EDITION_VERSION=CWWKF1296E: L''actif {0} ne peut pas \u00eatre t\u00e9l\u00e9charg\u00e9 ou install\u00e9 dans {1} {2} {3} car il concerne uniquement les \u00e9ditions et versions de produit suivantes : {4}. Utilisez l''action de recherche featureManager pour extraire une liste de fonctions qui concerne votre installation.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.explanation=La fonction ou l'additif ne s'applique pas \u00e0 la version actuelle du produit install\u00e9.
+ERROR_INVALID_PRODUCT_EDITION_VERSION.useraction=Utilisez l'action de recherche featureManager afin d'extraire une liste des actifs qui concerne votre installation.
+
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND=CWWKF1297E: La fonction {0} ne peut pas \u00eatre d\u00e9sinstall\u00e9e car l''extension de produit {1} n''a pas \u00e9t\u00e9 trouv\u00e9e dans le produit. Cr\u00e9ez l''extension de produit sp\u00e9cifi\u00e9e ou indiquez une extension de produit existante diff\u00e9rente.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.explanation=La fonction n'a pas \u00e9t\u00e9 install\u00e9e car l'extension de produit sp\u00e9cifi\u00e9e est introuvable au sein du produit.
+ERROR_EXTENSION_FROM_ASSETID_NOT_FOUND.action= Si vous voulez installer la fonction avec l'extension de produit sp\u00e9cifi\u00e9e, cr\u00e9ez cette extension. Vous pouvez aussi indiquer une extension de produit existante diff\u00e9rente. Apr\u00e8s avoir identifi\u00e9 une extension de produit valide, ex\u00e9cutez de nouveau la commande installUtility.
+
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} n''est pas une fonction et par cons\u00e9quent ne peut pas \u00eatre install\u00e9e sur une extension de produit. Ex\u00e9cutez la commande sans indiquer l''extension.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=Seules les fonctions peuvent \u00eatre install\u00e9es sur une extension de produit.
+ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Ex\u00e9cutez de nouveau la commande d'installation installUtility sans indiquer l'extension.
+
+# Following messages for info logging purpose
+LOG_INSTALL_FEATURES=CWWKF1300I: Installation des fonctions suivantes : {0}.
+LOG_INSTALL_FEATURES.explanation=Les fonctions sp\u00e9cifi\u00e9es vont \u00eatre install\u00e9es.
+LOG_INSTALL_FEATURES.useraction=Aucune action n'est requise.
+
+LOG_INSTALL_FIXES=CWWKF1301I: Installation des correctifs suivants : {0}.
+LOG_INSTALL_FIXES.explanation=Les correctifs sp\u00e9cifi\u00e9s vont \u00eatre install\u00e9s.
+LOG_INSTALL_FIXES.useraction=Aucune action n'est requise.
+
+LOG_UNINSTALL_FEATURES=CWWKF1302I: D\u00e9sinstallation des fonctions suivantes : {0}.
+LOG_UNINSTALL_FEATURES.explanation=Les fonctions sp\u00e9cifi\u00e9es vont \u00eatre d\u00e9sinstall\u00e9es.
+LOG_UNINSTALL_FEATURES.useraction=Aucune action n'est requise.
+
+LOG_UNINSTALL_FIXES=CWWKF1303I: D\u00e9sinstallation des correctifs suivants : {0}.
+LOG_UNINSTALL_FIXES.explanation=Les correctifs sp\u00e9cifi\u00e9s vont \u00eatre d\u00e9sinstall\u00e9s.
+LOG_UNINSTALL_FIXES.useraction=Aucune action n'est requise.
+
+LOG_INSTALLED_FEATURE=CWWKF1304I: La fonction {0} a \u00e9t\u00e9 install\u00e9e.
+LOG_INSTALLED_FEATURE.explanation=La fonction sp\u00e9cifi\u00e9e a \u00e9t\u00e9 install\u00e9e.
+LOG_INSTALLED_FEATURE.useraction=Aucune action n'est requise.
+
+LOG_INSTALLED_FIX=CWWKF1305I: Le correctif {0} a \u00e9t\u00e9 install\u00e9.
+LOG_INSTALLED_FIX.explanation=Le correctif sp\u00e9cifi\u00e9 a \u00e9t\u00e9 install\u00e9.
+LOG_INSTALLED_FIX.useraction=Aucune action n'est requise.
+
+LOG_UNINSTALLED_FEATURE=CWWKF1306I: La fonction {0} a \u00e9t\u00e9 d\u00e9sinstall\u00e9e.
+LOG_UNINSTALLED_FEATURE.explanation=La fonction sp\u00e9cifi\u00e9e a \u00e9t\u00e9 d\u00e9sinstall\u00e9e.
+LOG_UNINSTALLED_FEATURE.useraction=Aucune action n'est requise.
+
+LOG_UNINSTALLED_FIX=CWWKF1307I: Le correctif {0} a \u00e9t\u00e9 d\u00e9sinstall\u00e9.
+LOG_UNINSTALLED_FIX.explanation=Le correctif sp\u00e9cifi\u00e9 a \u00e9t\u00e9 d\u00e9sinstall\u00e9.
+LOG_UNINSTALLED_FIX.useraction=Aucune action n'est requise.
+
+LOG_INSTALL_ESA=CWWKF1308I: Installation de {0}.
+LOG_INSTALL_ESA.explanation=Le fichier Enterprise Subsystem Archive (.esa) sp\u00e9cifi\u00e9 sera install\u00e9.
+LOG_INSTALL_ESA.useraction=Aucune action n'est requise.
+
+LOG_REINSTALL_FIXES_WARNING=Avertissement : les correctifs suivants install\u00e9s pr\u00e9c\u00e9demment n''ont pas pu \u00eatre r\u00e9install\u00e9s : {0}. R\u00e9installez-les manuellement.
+LOG_REAPPLY_FIXES_WARNING=CWWKF1309W: Les correctifs suivants n''ont pas pu \u00eatre r\u00e9appliqu\u00e9s : {0}.
+LOG_REAPPLY_FIXES_WARNING.explanation=Les correctifs install\u00e9s ne peuvent pas \u00eatre r\u00e9appliqu\u00e9s.
+LOG_REAPPLY_FIXES_WARNING.useraction=Appliquez \u00e0 nouveau les correctifs manuellement.
+
+LOG_UNABLE_TO_DETERMINE_CODEPAGE=WWKF1310W: Impossible de d\u00e9terminer la page de code syst\u00e8me pour {0}.  Utilisation de la page de codes par d\u00e9faut ({1}).
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.explanation=Le programme d'installation n'a pas pu d\u00e9terminer la page de codes syst\u00e8me et va utiliser la page de codes par d\u00e9faut pour l'installation des fichiers.
+LOG_UNABLE_TO_DETERMINE_CODEPAGE.useraction=Assurez-vous que le syst\u00e8me prend en charge la page de codes par d\u00e9faut.
+
+LOG_INSTALLED_SAMPLE=CWWKF1312I: L''exemple de produit {0} a \u00e9t\u00e9 install\u00e9.
+LOG_INSTALLED_SAMPLE.explanation=L'exemple de produit sp\u00e9cifi\u00e9 a \u00e9t\u00e9 install\u00e9.
+LOG_INSTALLED_SAMPLE.useraction=Aucune action n'est requise.
+
+LOG_INSTALLED_OPENSOURCE=CWWKF1313I: L''int\u00e9gration Open Source {0} a \u00e9t\u00e9 install\u00e9e.
+LOG_INSTALLED_OPENSOURCE.explanation=L'int\u00e9gration Open Source sp\u00e9cifi\u00e9e a \u00e9t\u00e9 install\u00e9e.
+LOG_INSTALLED_OPENSOURCE.useraction=Aucune action n'est requise.
+
+LOG_UNINSTALL_FEATURE_DEPENDENCIES=La fonction qui est en cours de d\u00e9sinstallation est requis par d'autres fonctions install\u00e9es :
+LOG_UNINSTALL_FEATURE_DEPENDENCIES_EXPLANATION=La d\u00e9sinstallation de la fonction peut entra\u00eener un fonctionnement incorrect des fonctions d\u00e9pendantes.
+
+LOG_DEPLOY_SERVER_FEATURES=Le serveur {0} requiert les fonctions suivantes : {1}
+LOG_DEPLOY_ADDITIONAL_FEATURES_REQUIRED=Les serveurs {0} n\u00e9cessitent l''installation des fonctions suppl\u00e9mentaires suivantes : {1}
+LOG_DEPLOY_NO_ADDITIONAL_FEATURES_REQUIRED=Les serveurs {0} ne requi\u00e8rent l''installation d''aucune autre fonction suppl\u00e9mentaire.
+LOG_DEPLOY_FILE=D\u00e9ploiement du package serveur {0}
+
+LOG_NO_REPO_NAME=Aucun nom de r\u00e9f\u00e9rentiel n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9. Le r\u00e9f\u00e9rentiel configur\u00e9 suivant sera ignor\u00e9 : {0}\n
+LOG_DUPLICATE_REPO_NAMES=Des noms de r\u00e9f\u00e9rentiel {0} en double ont \u00e9t\u00e9 d\u00e9tect\u00e9s. Le r\u00e9f\u00e9rentiel configur\u00e9 suivant sera ignor\u00e9 : {1}\n
+LOG_DEFAULT_INVALID_VALUE=Une valeur non valide de "{0}" a \u00e9t\u00e9 sp\u00e9cifi\u00e9e pour la propri\u00e9t\u00e9 "useDefaultRepository". Le r\u00e9f\u00e9rentiel IBM WebSphere Liberty sera activ\u00e9 par d\u00e9faut.\n
+LOG_VALIDATING=Validation du fichier de configuration suivant : {0}\n
+LOG_VALIDATION_DONE=La validation du fichier de configuration a abouti.\n
+
+LOG_DELETING_TEMP_SERVER_DIR=Suppression du r\u00e9pertoire {0} sur le serveur...
+LOG_NOT_DELETING_TEMP_SERVER_DIR=Le r\u00e9pertoire temporaire {0} du serveur n''a pas \u00e9t\u00e9 supprim\u00e9, car il peut contenir des informations sur les erreurs dans le r\u00e9pertoire des journaux. Si vous n''avez pas besoin de ces informations, vous pouvez supprimer manuellement le r\u00e9pertoire {1}.
+LOG_CREATED_TEMP_SERVER_DIR=Le r\u00e9pertoire temporaire {0} a \u00e9t\u00e9 cr\u00e9\u00e9 sur le serveur.
+
+LOG_CANNOT_DELETE_FILE=Impossible de supprimer le fichier {0}. Il sera supprim\u00e9 \u00e0 la fin de l''op\u00e9ration de la machine Java.
+
+LOG_CANNOT_CLOSE_OBJECT=Impossible de supprimer les fichiers temporaires.
+LOG_CANNOT_CLOSE_OBJECT.explanation=L'exemple requiert Java 7 (ou version ult\u00e9rieure) pour la suppression du r\u00e9pertoire installTmp.
+LOG_CANNOT_CLOSE_OBJECT.action=Supprimez manuellement le r\u00e9pertoire installTmp ou bien utilisez Java 7 (ou version ult\u00e9rieure).
+
+LOG_PASSWORD_NOT_ENCODED_PROXY=Le mot de passe du proxy suivant n''est pas cod\u00e9 : {0}. Vous pouvez coder le mot de passe \u00e0 l''aide de la commande securityUtility encode et de l''option --encoding d\u00e9finie sur un type de codage pris en charge : xor (par d\u00e9faut), aes et hash. Par exemple : securityUtility encode --encoding=aes proxyPassword
+LOG_PENDING_UNINSTALLING_FEATURE=Fonctions \u00e0 d\u00e9sinstaller :
+# Following messages for debug logging purpose
+STATE_STARTING_INSTALL=D\u00e9marrage de l'installation...
+STATE_STARTING_UNINSTALL=D\u00e9marrage de la d\u00e9sinstallation...
+STATE_STARTING_DEPLOY=D\u00e9marrage du d\u00e9ploiement...
+STATE_STARTING_DOWNLOAD=D\u00e9marrage du t\u00e9l\u00e9chargement...
+STATE_CHECKING=V\u00e9rification des fonctions...
+STATE_CHECKING_FIXES=V\u00e9rification des correctifs...
+STATE_CHECKING_MISSING_SERVER_FEATURES=Recherche des fonctions manquantes requises par le serveur...
+STATE_CHECKING_ASSETS=V\u00e9rification des actifs...
+STATE_DOWNLOADING=T\u00e9l\u00e9chargement de {0}...
+STATE_DOWNLOADING_DEPENDENCY=T\u00e9l\u00e9chargement d'une fonction d\u00e9pendante...
+STATE_DOWNLOADING_IGNORE_ASSET=L''actif suivant existe d\u00e9j\u00e0 dans le r\u00e9pertoire : {0}\nL''option --overwrite n''est pas sp\u00e9cifi\u00e9e, l''actif ne sera donc pas t\u00e9l\u00e9charg\u00e9.\n
+STATE_DOWNLOADING_REPLACE_ASSET=L''actif suivant existe d\u00e9j\u00e0 dans le r\u00e9pertoire : {0}\nL''option --overwrite est sp\u00e9cifi\u00e9e, l''actif sera t\u00e9l\u00e9charg\u00e9 pour remplacer le fichier existant.\n
+STATE_DOWNLOADING_IGNORE_ASSETS=Les actifs suivants existent d\u00e9j\u00e0 dans le r\u00e9pertoire : {0}\nL''option --overwrite n''est pas sp\u00e9cifi\u00e9e, les actifs ne seront donc pas t\u00e9l\u00e9charg\u00e9s.\n
+STATE_DOWNLOADING_REPLACE_ASSETS=Les actifs suivants existent d\u00e9j\u00e0 dans le r\u00e9pertoire : {0}\nL''option --overwrite est sp\u00e9cifi\u00e9e, les actifs seront donc t\u00e9l\u00e9charg\u00e9s pour remplacer les fichiers existants.\n
+STATE_DOWNLOADING_FEATURES=T\u00e9l\u00e9chargement des fonctions distantes...
+STATE_DOWNLOADING_ASSETS=T\u00e9l\u00e9chargement des actifs distants...
+STATE_INSTALLING=Installation de {0}...
+STATE_INSTALLING_DEPENDENCY=Installation d'une fonction d\u00e9pendante...
+STATE_INSTALLING_FEATURES=Installation des fonctions...
+STATE_INSTALLING_ASSETS=Installation des actifs...
+STATE_UNINSTALLING=D\u00e9sinstallation de {0}...
+STATE_UNINSTALLING_FEATURES=D\u00e9sinstallation des fonctions...
+STATE_REAPPLYING_FIXES=R\u00e9application des correctifs {0}...
+STATE_VALIDATING_FIXES=Validation des correctifs install\u00e9s...
+STATE_SET_SCRIPTS_PERMISSION=D\u00e9finition des permissions des scripts...
+STATE_DEPLOYING=D\u00e9ploiement de {0} en cours...
+STATE_CLEANING=Nettoyage des fichiers temporaires...
+STATE_COMPLETED_INSTALL=Installation termin\u00e9e
+STATE_COMPLETED_UNINSTALL=D\u00e9sinstallation termin\u00e9e
+STATE_COMPLETED_DOWNLOAD=T\u00e9l\u00e9chargement termin\u00e9\n
+STATE_COMPLETED_DEPLOY=D\u00e9ploiement termin\u00e9
+STATE_RESOLVING=R\u00e9solution des fonctions distantes. Ce processus peut prendre quelques minutes.
+STATE_PREPARING_ASSETS=Pr\u00e9paration des actifs pour l'installation. Ce processus peut prendre quelques minutes.
+STATE_INITIALIZING=Initialisation en cours ...
+STATE_CONTACTING_REPO=Contact du r\u00e9f\u00e9rentiel IBM WebSphere Liberty...
+STATE_DOWNLOAD_FILES_OK=\nTous les actifs ont \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9s.
+PROGRESS_STEP=Etape {0} sur {1}
+
+MSG_DOWNLOAD_SUCCESS=Le t\u00e9l\u00e9chargement de la fonction {0} a abouti.
+MSG_CLEANUP_SUCCESS=Le nettoyage des fichiers temporaires a abouti.
+
+MSG_CANCEL_INSTALL=L'installation a \u00e9t\u00e9 annul\u00e9e.
+MSG_TAKE_SEVERAL_MINUTES=Ce processus peut prendre quelques minutes.
+MSG_SEARCHING=Recherche des actifs. Ce processus peut prendre quelques minutes.
+MSG_SEARCHING_FEATURES=Recherche de fonctions...
+MSG_SEARCHING_ADDONS=Recherche d'additifs...
+MSG_SEARCHING_SAMPLES=Recherche d'exemples...
+MSG_SEARCHING_OPENSOURCE=Recherche d'int\u00e9grations \u00e0 source ouverte...
+
+FEATURE_ASSET=fonction
+ADDON_ASSET=additif
+SAMPLE_ASSET=\u00e9chantillon du produit
+OPENSOURCE_ASSET=int\u00e9gration open source
+GENERAL_ASSET=actif
+
+MSG_INVALID_FOR_OS=La ressource de fonction {0} n''est pas valid\u00e9 pour le syst\u00e8me d''exploitation en cours et ne sera pas install\u00e9e.
+
+# Following are validation messages for viewSettings
+MSG_VALIDATION_EMPTY_KEY=Le nom de propri\u00e9t\u00e9 n'est pas sp\u00e9cifi\u00e9. Indiquez un nom de propri\u00e9t\u00e9 valide ou mettez la propri\u00e9t\u00e9 en commentaire si elle est inutilis\u00e9e.
+MSG_VALIDATION_INVALID_KEY={0} n''est pas une propri\u00e9t\u00e9 prise en charge. Indiquez un nom de propri\u00e9t\u00e9 valide ou mettez la propri\u00e9t\u00e9 en commentaire si elle est inutilis\u00e9e.
+MSG_VALIDATION_EMPTY_REPONAME=Le nom de r\u00e9f\u00e9rentiel n'est pas sp\u00e9cifi\u00e9. Indiquez un nom pour le r\u00e9f\u00e9rentiel ou mettez la propri\u00e9t\u00e9 en commentaire si elle est inutilis\u00e9e.
+MSG_VALIDATION_DUPLICATE_KEY=Le nom de propri\u00e9t\u00e9 {0} est un doublon du nom de propri\u00e9t\u00e9 trouv\u00e9 \u00e0 la ligne {1}. Indiquez un nom de propri\u00e9t\u00e9 unique pour chaque propri\u00e9t\u00e9.
+MSG_VALIDATION_EMPTY_VALUE=Aucune valeur n''est sp\u00e9cifi\u00e9e pour la propri\u00e9t\u00e9 {0}. Indiquez une valeur valide pour la propri\u00e9t\u00e9 ou mettez la propri\u00e9t\u00e9 en commentaire si elle est inutilis\u00e9e.
+MSG_VALIDATION_INVALID_DEFAULTREPO_VALUE=La propri\u00e9t\u00e9 useDefaultRepository ne prend pas en charge la valeur {0}. Indiquez une valeur valide, True ou False.
+MSG_VALIDATION_INVALID_PORT_VALUE=La valeur de port {0} n''est pas valide. Indiquez une valeur de port pour le serveur proxy sous la forme d''un entier de 1 \u00e0 65535.
+MSG_VALIDATION_MISSING_PORT_VALUE=La valeur de port n'est pas sp\u00e9cifi\u00e9e. Indiquez une valeur de port pour le serveur proxy sous la forme d'un entier de 1 \u00e0 65535.
+MSG_VALIDATION_MISSING_HOST=Le nom d\u2019h\u00f4te du serveur proxy n'est pas sp\u00e9cifi\u00e9. Indiquez le nom d'h\u00f4te du serveur proxy, ou mettez en commentaire les autres propri\u00e9t\u00e9s de serveur proxy.
+MSG_VALIDATION_INVALID_URL=L''URL suivante n''est pas valide : {0}. Seules les URL HTTP, HTTPS et les URL de fichier sont prises en charge. V\u00e9rifiez que l''URL est correctement indiqu\u00e9e.
+MSG_VALIDATION_UNSUPPORT_PROTOCOL=Le protocole d''URL pur le r\u00e9f\u00e9rentiel suivant n''est pas pris en charge : {0}. Les protocoles pris en charge sont : HTTP, HTTPS, et le protocole de fichier. V\u00e9rifiez que l''URL est correctement indiqu\u00e9e.
+MSG_VALIDATION_INVALID_HOST=Le serveur proxy suivant n''est pas valide : {0}. Indiquez un nom d''h\u00f4te de serveur proxy HTTP valide. Le pr\u00e9fixe http:// n''est pas obligatoire.
+
+VALIDATION_INVALID_VALUE=Valeur non prise en charge
+VALIDATION_INVALID_KEY=Nom de propri\u00e9t\u00e9 non pris en charge
+VALIDATION_EMPTY_KEY=Nom de propri\u00e9t\u00e9 vide
+VALIDATION_EMPTY_VALUE=Valeur vide
+VALIDATION_MISSING_REPONAME=Nom de r\u00e9f\u00e9rentiel manquant
+VALIDATION_MISSING_PORT=Valeur de port manquante
+VALIDATION_INVALID_PORT=Valeur de port non prise en charge
+VALIDATION_MISSING_HOST=Nom d'h\u00f4te manquant
+VALIDATION_INVALID_HOST=Nom d'h\u00f4te non valide
+VALIDATION_INVALID_URL=Format d'URL non pris en charge
+VALIDATION_DUPLICATE_KEY=Nom de propri\u00e9t\u00e9 en double
+VALIDATION_UNSUPPORTED_PROTOCOL=Protocole non pris en charge
+
+# Following for tool
+TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Une ou plusieurs fonctions ont \u00e9t\u00e9 d\u00e9sinstall\u00e9es avec succ\u00e8s : {0}.
+TOOL_UNINSTALL_FEATURE_OK.explanation=La fonction sp\u00e9cifi\u00e9e a \u00e9t\u00e9 d\u00e9sinstall\u00e9e.
+TOOL_UNINSTALL_FEATURE_OK.useraction=Aucune action n'est requise.
+TOOL_UNININSTALL_FEATURE_CONFIRMATION=Avertissement : Assurez-vous que tous les processus serveur sont arr\u00eat\u00e9s avant de d\u00e9sinstaller les fonctions.\nLa d\u00e9sinstallation de fonctions des serveurs en cours d'ex\u00e9cution peut entra\u00eener des erreurs d'ex\u00e9cution ou des comportements inattendus.\n\nAppuyez sur Entr\u00e9e pour continuer, ou tapez "x" pour quitter l'op\u00e9ration de d\u00e9sinstallation des fonctions.
+
+TOOL_PASSWORD_PROMPT=Entrer le mot de passe :
+TOOL_RE_ENTER_PASSWORD_PROMPT=Entrer de nouveau le mot de passe :
+TOOL_PASSWORD_DOES_NOT_MATCH=Les entr\u00e9es ne concordent pas.
+
+TOOL_FEATURES_INSTALLATION_COMPLETED=Toutes les fonctions ont \u00e9t\u00e9 install\u00e9es avec succ\u00e8s.
+TOOL_INSTALLATION_COMPLETED=Tous les actifs ont \u00e9t\u00e9 install\u00e9s avec succ\u00e8s.
+
+ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: Le mot de passe de l'ID utilisateur sp\u00e9cifi\u00e9 \u00e0 l'option --user n'a pas \u00e9t\u00e9 fourni.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=Un mot de passe est requis lorsque l'ID utilisateur est sp\u00e9cifi\u00e9.
+ERROR_TOOL_MISSING_PASSWORD_OPTION.useraction=Utilisez l'option --password ou --passwordfile pour fournir le mot de passe de l'ID utilisateur sp\u00e9cifi\u00e9 dans l'option --user, puis renouvelez l'op\u00e9ration.
+
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION=CWWKF1352E: Impossible de trouver le mot de passe sp\u00e9cifi\u00e9 dans le fichier de mots de passe {0}.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.explanation=Une erreur s'est produite lors de la tentative d'acc\u00e8s au fichier de mots de passe sp\u00e9cifi\u00e9.
+ERROR_TOOL_INVALID_PASSWORD_FILE_OPTION.useraction=Assurez-vous que le fichier sp\u00e9cifi\u00e9 est valide, que le fichier existe, et que l'utilisateur dispose de l'autorisation n\u00e9cessaire pour acc\u00e9der au fichier.
+
+ERROR_TOOL_INVALID_LOG_LEVEL=Le niveau de journalisation sp\u00e9cifi\u00e9 {0} n''est pas valide.  La journalisation n''est pas activ\u00e9e.
+
+ERROR_TOOL_DIRECTORY_NOT_EXISTS=CWWKF1353E: Le r\u00e9pertoire sp\u00e9cifi\u00e9 n''existe pas : {0}
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.explanation=Le syst\u00e8me ne peut pas localiser le r\u00e9pertoire sp\u00e9cifi\u00e9.
+ERROR_TOOL_DIRECTORY_NOT_EXISTS.useraction=Relancez la commande avec un r\u00e9pertoire valide.
+
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA=CWWKF1354E: L''option --downloadOnly ne peut pas \u00eatre utilis\u00e9e pour installer {0}.
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.explanation=Utilisation non valide de l'option --downloadOnly. 
+ERROR_TOOL_DOWNLOADONLY_LOCAL_ESA.useraction=Relancez la commande sans le param\u00e8tre --downloadOnly.
+
+ERROR_TOOL_DOWNLOADONLY_IS_FILE=CWWKF1355E: {0} est un fichier. Un chemin de r\u00e9pertoire est requis.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.explanation=Tentative de t\u00e9l\u00e9chargement des archives du sous-syst\u00e8me dans un fichier.
+ERROR_TOOL_DOWNLOADONLY_IS_FILE.useraction=Relancez la commande avec un chemin de r\u00e9pertoire.
+
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR=CWWKF1356E: Impossible de cr\u00e9er la structure de r\u00e9pertoire {0}.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.explanation=Les r\u00e9pertoires requis pour t\u00e9l\u00e9charger les archives du sous-syst\u00e8me n'ont pas pu \u00eatre cr\u00e9\u00e9s.
+ERROR_TOOL_DOWNLOADONLY_UNABLE_TO_CREATE_DIR.useraction=V\u00e9rifiez que le r\u00e9pertoire indiqu\u00e9 existe et que les autorisations n\u00e9cessaires sont en place pour permettre la cr\u00e9ation de la structure de r\u00e9pertoire. Relancez l'op\u00e9ration.
+
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY=CWWKF1357E: L'option --downloadOnly ne peut pas \u00eatre utilis\u00e9e avec --offlineOnly.
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.explanation=Utilisation non valide de l'option --offlineOnly. 
+ERROR_TOOL_DOWNLOADONLY_WITH_OFFLINEONLY.useraction=Relancez la commande sans l'option --offlineOnly.
+
+ERROR_TOOL_MISSING_DIRECTORY=CWWKF1358E: L''option --location est requise pour {0}.
+ERROR_TOOL_MISSING_DIRECTORY.explanation=L'option --location est introuvable.
+ERROR_TOOL_MISSING_DIRECTORY.useraction=Relancez la commande en incluant l'option --location.
+
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION=CWWKF1359E: La valeur {0} n''est pas valide pour --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.explanation=Vous devez utiliser des valeurs valides pour l'option --downloadOnly.
+ERROR_TOOL_DOWNLOADONLY_INVALID_OPTION.useraction=Ex\u00e9cutez la commande avec une valeur valide pour --downloadOnly, par exemple all.
+
+ERROR_TOOL_LOCATION_WITH_ESA=CWWKF1360E: L'option --location ne peut pas \u00eatre utilis\u00e9e pour installer un fichier Subsystem Archive (.esa).
+ERROR_TOOL_LOCATION_WITH_ESA.explanation=Utilisation non valide de l'option --location. 
+ERROR_TOOL_LOCATION_WITH_ESA.useraction=Relancez la commande sans l'option --location.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED=CWWKF1361E: Les propri\u00e9t\u00e9s du r\u00e9f\u00e9rentiel ne peuvent pas \u00eatre charg\u00e9es \u00e0 partir de {0}. Confirmez que le chemin d''acc\u00e8s au fichier de propri\u00e9t\u00e9s est valide et que ce fichier contient les propri\u00e9t\u00e9s requises.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.explanation=Une erreur s'est produite lors de la tentative d'acc\u00e8s au fichier de propri\u00e9t\u00e9s sp\u00e9cifi\u00e9.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_LOADED.useraction=Assurez-vous que le fichier sp\u00e9cifi\u00e9 est valide, que le fichier existe et qu'il contient les propri\u00e9t\u00e9s requises.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE=CWWKF1362E: Le chemin sp\u00e9cifi\u00e9 {0} n''est pas un fichier.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.explanation=La propri\u00e9t\u00e9 syst\u00e8me destin\u00e9e \u00e0 remplacer l'emplacement par d\u00e9faut du fichier de propri\u00e9t\u00e9s doit \u00eatre d\u00e9finie comme chemin de fichier et non comme r\u00e9pertoire. 
+ERROR_TOOL_REPOSITORY_PROPS_NOT_FILE.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec la propri\u00e9t\u00e9 syst\u00e8me d\u00e9finie par un chemin de fichier valide.
+
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS=CWWKF1363E: Le fichier sp\u00e9cifi\u00e9 {0} n''existe pas.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.explanation=Le syst\u00e8me ne peut pas localiser le fichier de propri\u00e9t\u00e9s des r\u00e9f\u00e9rentiels sp\u00e9cifi\u00e9s.
+ERROR_TOOL_REPOSITORY_PROPS_NOT_EXISTS.useraction=V\u00e9rifiez que le fichier existe dans le chemin sp\u00e9cifi\u00e9 et relancez la commande.
+
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED=CWWKF1364E: Le mot de passe de serveur proxy n'est pas chiffr\u00e9. Le mot de passe doit \u00eatre chiffr\u00e9 \u00e0 l'aide de la commande securityUtility et de l'algorithme de chiffrement AES comme option --encoding recommand\u00e9e.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.explanation=Le mot de passe de serveur proxy doit \u00eatre chiffr\u00e9 \u00e0 l'aide de la commande securityUtility et de l'algorithme de chiffrement AES comme option --encoding recommand\u00e9e.
+ERROR_TOOL_PROXY_PWD_NOT_ENCRYPTED.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec un mot de passe chiffr\u00e9.
+
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED=CWWKF1365E: Le mot de passe de serveur proxy chiffr\u00e9 n'est pas valide. Le mot de passe proxy doit \u00eatre chiffr\u00e9 \u00e0 l'aide de la commande securityUtility et de l'algorithme de chiffrement AES comme option --encoding recommand\u00e9e. 
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.explanation=L'algorithme de chiffrement utilis\u00e9 pour chiffrer le mot de passe proxy n'est pas pris en charge. Le mot de passe proxy doit \u00eatre chiffr\u00e9 \u00e0 l'aide de la commande securityUtility et de l'algorithme de chiffrement AES comme option --encoding recommand\u00e9e.
+ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec un mot de passe chiffr\u00e9 valide.
+
+ERROR_TOOL_PROXY_PORT_MISSING=CWWKF1366E: Le num\u00e9ro de port du serveur proxy n'est pas sp\u00e9cifi\u00e9.
+ERROR_TOOL_PROXY_PORT_MISSING.explanation=Un num\u00e9ro de port est requis lorsque le nom d'h\u00f4te est indiqu\u00e9 pour le serveur proxy.
+ERROR_TOOL_PROXY_PORT_MISSING.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec un num\u00e9ro de port de serveur proxy valide.
+
+ERROR_TOOL_PROXY_HOST_MISSING=CWWKF1367E: Le nom d'h\u00f4te du serveur proxy n'est pas sp\u00e9cifi\u00e9.
+ERROR_TOOL_PROXY_HOST_MISSING.explanation=Un nom d'h\u00f4te est requis lorsque le num\u00e9ro de port est indiqu\u00e9 pour le serveur proxy.
+ERROR_TOOL_PROXY_HOST_MISSING.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec un nom d'h\u00f4te de serveur proxy valide.
+
+ERROR_TOOL_INVALID_PROXY_PORT=CWWKF1368E: Le num\u00e9ro de port du serveur proxy {0} n''est pas valide. Le num\u00e9ro de port doit \u00eatre un nombre compris entre 1 et 65535.
+ERROR_TOOL_INVALID_PROXY_PORT.explanation=Le num\u00e9ro de port de serveur proxy sp\u00e9cifi\u00e9 doit \u00eatre un nombre compris entre 1 et 65535.
+ERROR_TOOL_INVALID_PROXY_PORT.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec un num\u00e9ro de port de serveur proxy valide.
+
+ERROR_TOOL_PROXY_PWD_MISSING=CWWKF1369E: Le mot de passe du serveur proxy n'est pas sp\u00e9cifi\u00e9.
+ERROR_TOOL_PROXY_PWD_MISSING.explanation=Un mot de passe est requis lorsque l'ID utilisateur est indiqu\u00e9 pour le serveur proxy.
+ERROR_TOOL_PROXY_PWD_MISSING.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec le mot de passe de serveur proxy requis.
+
+ERROR_TOOL_UNKNOWN_PROXY_HOST=CWWKF1370E: Le nom d''h\u00f4te de serveur proxy {0} est inconnu.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.explanation=Le nom d'h\u00f4te de serveur proxy ne peut pas \u00eatre r\u00e9solu.
+ERROR_TOOL_UNKNOWN_PROXY_HOST.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec un nom d'h\u00f4te de serveur proxy connu.
+
+ERROR_TOOL_INCORRECT_PROXY_PORT=CWWKF1371E: Echec de la connexion au serveur proxy sur le port {0}.
+ERROR_TOOL_INCORRECT_PROXY_PORT.explanation=Le num\u00e9ro de port proxy sp\u00e9cifi\u00e9 est incorrect. Aucun service n'\u00e9coute sur le num\u00e9ro de port sp\u00e9cifi\u00e9 pour le serveur proxy. 
+ERROR_TOOL_INCORRECT_PROXY_PORT.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec le num\u00e9ro de port de serveur proxy correct.
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWKF1372E: Les donn\u00e9es d'identification de serveur proxy sp\u00e9cifi\u00e9es sont incorrectes.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=Les donn\u00e9es d'identification de serveur proxy sp\u00e9cifi\u00e9es ne peuvent pas \u00eatre authentifi\u00e9es. 
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec les donn\u00e9es d'identification de serveur proxy correctes.
+
+ERROR_NO_REPO_WAS_ENABLED=CWWKF1373E: La commande ne peut pas \u00eatre ex\u00e9cut\u00e9e car aucun r\u00e9f\u00e9rentiel n'est activ\u00e9.
+ERROR_NO_REPO_WAS_ENABLED.explanation=Tous les r\u00e9f\u00e9rentiels de la configuration ont \u00e9t\u00e9 d\u00e9sactiv\u00e9s.
+ERROR_NO_REPO_WAS_ENABLED.useraction=Activez un ou plusieurs r\u00e9f\u00e9rentiels et relancez la commande.
+
+ERROR_TOOL_PWD_NOT_ENCRYPTED=CWWKF1374E: Le mot de passe n'est pas chiffr\u00e9. Le mot de passe doit \u00eatre chiffr\u00e9 \u00e0 l'aide de la commande securityUtility et de l'algorithme de chiffrement AES comme option --encoding recommand\u00e9e.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.explanation=Le mot de passe doit \u00eatre chiffr\u00e9 \u00e0 l'aide de la commande securityUtility.
+ERROR_TOOL_PWD_NOT_ENCRYPTED.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec un mot de passe chiffr\u00e9.
+
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED=CWWKF1375E: Le mot de passe chiffr\u00e9 n'est pas valide. Le mot de passe doit \u00eatre chiffr\u00e9 \u00e0 l'aide de la commande securityUtility et de l'algorithme de chiffrement AES comme option --encoding recommand\u00e9e. 
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.explanation=L'algorithme de chiffrement utilis\u00e9 pour chiffrer le mot de passe n'est pas pris en charge. Le mot de passe doit \u00eatre chiffr\u00e9 \u00e0 l'aide de la commande securityUtility et de l'algorithme de chiffrement AES comme option --encoding recommand\u00e9e.
+ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec un mot de passe chiffr\u00e9 valide.
+
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY=CWWKF1376E: {0} n''est ni un dossier vide, ni un r\u00e9f\u00e9rentiel de r\u00e9pertoires valide. Utilisez un dossier valide ou un r\u00e9f\u00e9rentiel de r\u00e9pertoires existant pour le t\u00e9l\u00e9chargement.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.explanation=Une tentative de t\u00e9l\u00e9chargement vers un r\u00e9pertoire de t\u00e9l\u00e9chargement non valide a \u00e9t\u00e9 effectu\u00e9e.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.useraction=Ex\u00e9cutez \u00e0 nouveau la commande avec un chemin de r\u00e9pertoire valide.
+
+ERROR_TOOL_DIRECTORY_REQUIRED=CWWKF1377E: Un chemin d''acc\u00e8s au fichier valide doit \u00eatre sp\u00e9cifi\u00e9 pour l''option --{0}. Indiquez un chemin d''acc\u00e8s au fichier, puis ex\u00e9cutez de nouveau la commande.
+ERROR_TOOL_DIRECTORY_REQUIRED.explanation=L'option --location exige un chemin d'acc\u00e8s au fichier valide mais aucun chemin n'a \u00e9t\u00e9 sp\u00e9cifi\u00e9 ou le chemin sp\u00e9cifi\u00e9 n'est pas valide.
+ERROR_TOOL_DIRECTORY_REQUIRED.useraction=Avec l'option --location, sp\u00e9cifiez un chemin valide vers lequel t\u00e9l\u00e9charger les fichiers puis ex\u00e9cutez \u00e0 nouveau la commande.
+
+ERROR_TOOL_DIRECTORY_INACCESSIBLE=CWWKF1378E: Le r\u00e9pertoire suivant n''est pas accessible : {0}. V\u00e9rifiez que l''utilisateur actuel dispose de droits en lecture et en \u00e9criture pour ce r\u00e9pertoire. 
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.explanation=La commande n'a pas pu t\u00e9l\u00e9charger les fichiers vers le r\u00e9pertoire sp\u00e9cifi\u00e9 car l'utilisateur actuel ne dispose pas des droits en lecture et en \u00e9criture n\u00e9cessaires.
+ERROR_TOOL_DIRECTORY_INACCESSIBLE.useraction=V\u00e9rifiez que l'utilisateur actuel dispose de droits en lecture et en \u00e9criture sur le r\u00e9pertoire puis ex\u00e9cutez \u00e0 nouveau la commande.
+
+ERROR_TEMP_DIR_NO_SPACE=CWWKF1379E: L''actif ne peut pas \u00eatre re\u00e7u par t\u00e9l\u00e9chargement car l''espace disque disponible dans le r\u00e9pertoire temporaire Java suivant est insuffisant : {0}. Espace disque requis total : {2}. Espace disponible total : {1}. Supprimez les fichiers inutiles dans le r\u00e9pertoire ou remplacez le chemin java.io.tempdir par un autre r\u00e9pertoire, puis ex\u00e9cutez de nouveau la commande.
+ERROR_TEMP_DIR_NO_SPACE.explanation=La commande n'a pas pu recevoir par t\u00e9l\u00e9chargement les fichiers vers le r\u00e9pertoire temporaire Java car ce dernier ne dispose pas de suffisamment d'espace.
+ERROR_TEMP_DIR_NO_SPACE.useraction=Assurez-vous que le r\u00e9pertoire temporaire Java dispose d'un espace suffisant en supprimant les fichiers inutiles ou en rempla\u00e7ant le chemin java.io.tempdir par un autre r\u00e9pertoire, puis ex\u00e9cutez de nouveau la commande.
+
+ERROR_WLP_DIR_NO_SPACE=CWWKF1380E: L''actif ne peut pas \u00eatre install\u00e9 car l''espace disque disponible dans le le r\u00e9pertoire d''installation suivant est insuffisant : {0}. Espace disque requis total : {2}. Espace disponible total : {1}. Supprimez les fichiers inutiles dans le syst\u00e8me de fichiers, puis ex\u00e9cutez de nouveau la commande.
+ERROR_WLP_DIR_NO_SPACE.explanation=La commande ne peut pas installer des actifs dans le r\u00e9pertoire d'installation car ce dernier n'a pas suffisamment d'espace.
+ERROR_WLP_DIR_NO_SPACE.useraction=Assurez-vous que le r\u00e9pertoire d'installation dispose d'un espace suffisant en supprimant les fichiers inutiles dans le syst\u00e8me de fichiers, puis ex\u00e9cutez de nouveau la commande.
+
+ERROR_FAILED_TO_CONNECT_JDK_WRONG=CWWKF1381E: Le r\u00e9f\u00e9rentiel IBM WebSphere Liberty est inaccessible en raison d'une erreur de fabrique de sockets SSL. Cette erreur peut survenir si vous utilisez avec Liberty un SDK Java destin\u00e9 \u00e0 WebSphere Application Server classic. Installez un SDK Java fourni pour Liberty ou effacez les fournisseurs de fabrique de sockets SSL dans le SDK existant comme d\u00e9crit dans la documentation d'identification et de r\u00e9solution des probl\u00e8mes Liberty.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.explanation=Le SDK Java configur\u00e9 semble \u00eatre destin\u00e9 \u00e0 WebSphere Application Server classic. Ce SDK Java ne peut pas \u00eatre utilis\u00e9 tel quel avec WebSphere Application Server Liberty, d'o\u00f9 l'erreur de fabrique de sockets SSL.
+ERROR_FAILED_TO_CONNECT_JDK_WRONG.useraction=Installez et configurez un SDK Java pour Liberty. \n\nVous pouvez \u00e9galement utiliser le SDK existant et contourner le probl\u00e8me en effa\u00e7ant les fournisseurs de fabrique de sockets SSL pour le SDK Java. Pour plus d'informations, reportez-vous \u00e0 la documentation Liberty traitant de l'identification et de la r\u00e9solution des probl\u00e8mes SSL. 
+
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION=CWWKF1382E: Impossible d''obtenir les actifs suivants : {0}. Il se peut qu''un ou plusieurs des r\u00e9f\u00e9rentiels configur\u00e9s ne soit pas accessible ou que les actifs sp\u00e9cifi\u00e9s ne soient pas valides. Assurez-vous que le syst\u00e8me peut acc\u00e9der aux r\u00e9f\u00e9rentiels et utilisez les actions viewSettings et testConnection pour v\u00e9rifier la connexion. Pour identifier les ID des actifs applicables, lancez l''utilitaire de recherche installUtility.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.explanation=Le programme d'installation n'a pas pu extraire les actifs sp\u00e9cifi\u00e9s des r\u00e9f\u00e9rentiels.
+ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=V\u00e9rifiez que les actifs sp\u00e9cifi\u00e9s sont valides, qu'un ID utilisateur et un mot de passe valides ont \u00e9t\u00e9 indiqu\u00e9s et que les r\u00e9f\u00e9rentiels sont accessibles. Vous pouvez utiliser l'action viewSettings afin de v\u00e9rifier les r\u00e9f\u00e9rentiels configur\u00e9s, puis utiliser l'action testConnection pour tester la connexion.
+
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: L''actif {0} d\u00e9pend de {1}, qui n''est pas disponible dans les r\u00e9f\u00e9rentiels configur\u00e9s. Il se peut qu''un ou plusieurs des r\u00e9f\u00e9rentiels configur\u00e9s ne soit pas accessible. Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d''installer l''actif. Si vous ne disposez pas d''un acc\u00e8s Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l''actif manquant et d''\u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. Vous pouvez aussi t\u00e9l\u00e9charger wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central, et configurer le dossier extrait en tant r\u00e9f\u00e9rentiel bas\u00e9 sur un r\u00e9pertoire.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=L'actif ne peut pas \u00eatre install\u00e9 car il d\u00e9pend d'un actif qui n'est pas disponible.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d'installer l'actif. Vous pouvez utiliser l'action viewSettings afin de v\u00e9rifier les r\u00e9f\u00e9rentiels configur\u00e9s, puis utiliser l'action testConnection pour tester la connexion. \n\nVous pouvez \u00e9galement t\u00e9l\u00e9charger le fichier wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central et configurer le dossier d\u00e9compress\u00e9 en tant que r\u00e9f\u00e9rentiel bas\u00e9 r\u00e9pertoire. \n\nSi vous ne disposez pas d'un acc\u00e8s \u00e0 Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l'actif manquant et les \u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. \n\nPour plus d'informations sur l'installation d'actifs, consultez la documentation relative \u00e0 installUtility dans IBM Knowledge Center. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Les actifs {0} sont d\u00e9pendants de {1}, lequel n''est pas disponible dans les r\u00e9f\u00e9rentiels configur\u00e9s. Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d''installer l''actif. Si vous ne disposez pas d''un acc\u00e8s Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l''actif manquant et d''\u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Les actifs ne peuvent pas \u00eatre t\u00e9l\u00e9charg\u00e9s ou install\u00e9s vu qu'ils d\u00e9pendent d'un actif qui n'est pas disponible.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d'installer l'actif. Vous pouvez aussi t\u00e9l\u00e9charger wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central, et configurer le dossier extrait en tant r\u00e9f\u00e9rentiel bas\u00e9 sur un r\u00e9pertoire. Si vous ne disposez pas d'un acc\u00e8s \u00e0 Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger les actifs manquants et les \u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. Pour plus d'informations sur l'installation des actifs, consultez la documentation relative \u00e0 installUtility dans IBM Knowledge Center. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_MISSING_MULTIPLE_DEPENDENT=CWWKF1385E: Les actifs {0} sont d\u00e9pendants de {1}, lequel n''est pas disponible dans le r\u00e9f\u00e9rentiel IBM WebSphere Liberty Repository. Si l''actif obligatoire est une fonction que vous avez pr\u00e9alablement t\u00e9l\u00e9charg\u00e9, installez la fonction manquante en indiquant l''emplacement du fichier ESA dans l''option featureManager install --location, et relancez l''installation de {0}.
+ERROR_MISSING_MULTIPLE_DEPENDENT.explanation=Les fonctions, additifs ou correctifs temporaires ne peuvent pas \u00eatre install\u00e9s car ils sont d\u00e9pendants d'un actif indisponible.
+ERROR_MISSING_MULTIPLE_DEPENDENT.useraction=Si l'actif obligatoire est une fonction que vous avez pr\u00e9alablement t\u00e9l\u00e9charg\u00e9, installez la fonction manquante en indiquant l'emplacement du fichier ESA dans l'option featureManager install --location, et renouvelez l'op\u00e9ration. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_UNKNOWN_OPERATING_SYSTEM=CWWKF1386E: Le syst\u00e8me d'exploitation en cours n'est pas reconnu.
+ERROR_UNKNOWN_OPERATING_SYSTEM.explanation=Des v\u00e9rifications de la compatibilit\u00e9 de syst\u00e8me d'exploitation de fichier sont ignor\u00e9es car votre syst\u00e8me d'exploitation n'est pas reconnu.
+ERROR_UNKNOWN_OPERATING_SYSTEM.useraction=Basculez vers un des syst\u00e8mes d'exploitation suivants : AIX, HP-UX, macOS, Linux, OS/400, Solaris, Windows ou z/OS.
+
+ERROR_UNKNOWN_OSLIST_VALUE=CWWKF1387E: La valeur {0} n''est pas une entr\u00e9e valide pour la directive de syst\u00e8me d''exploitation {1}.
+ERROR_UNKNOWN_OSLIST_VALUE.explanation=Cette valeur sera ignor\u00e9e car il ne s'agit pas d'un nom de syst\u00e8me d'exploitation connu.
+ERROR_UNKNOWN_OSLIST_VALUE.useraction=Modifiez ou supprimez cette valeur de fichier manifeste de fonction.
+
+TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Le t\u00e9l\u00e9chargement de la fonction a abouti.
+TOOL_DOWNLOAD_FEATURE_OK.explanation=La fonction a \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9e.
+TOOL_DOWNLOAD_FEATURE_OK.useraction=Aucune action n'est requise.
+
+TOOL_DOWNLOAD_FEATURES_OK=CWWKF1501I: Le t\u00e9l\u00e9chargement des fonctions a abouti.
+TOOL_DOWNLOAD_FEATURES_OK.explanation=Les fonctions ont \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9es.
+TOOL_DOWNLOAD_FEATURES_OK.useraction=Aucune action n'est requise.
+
+MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: Impossible d''installer le fichier {0} car le type de fichier n''est pas pris en charge. Seule l''installation \u00e0 partir de fichiers ESA est prise en charge.
+MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=Le fichier n'a pas \u00e9t\u00e9 install\u00e9 car un type de fichier non pris en charge a \u00e9t\u00e9 indiqu\u00e9.
+MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Reportez-vous aux informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+
+MSG_STABILIZING_FEATUREMANAGER=Cette action du gestionnaire de fonctions (featureManager) est stabilis\u00e9e. Utilisez l''utilitaire d''installation {0} \u00e0 la place. La commande installUtility est recommand\u00e9e pour l''installation et les actions concernant le r\u00e9f\u00e9rentiel.

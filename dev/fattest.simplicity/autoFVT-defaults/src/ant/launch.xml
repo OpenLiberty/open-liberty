@@ -539,7 +539,7 @@
 			</fileset>
 			<report format="frames" todir="${dir.log.html}" />
 		</junitreport>
-		<echo>HTML report is available at ${dir.log.html}</echo>
+		<echo>HTML report is available at ${dir.log.html}/index.html</echo>
 	</target>
 
 	<!-- Properties used: dir.log -->

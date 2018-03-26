@@ -1,0 +1,3 @@
+Bundle-SymbolicName: springBoot20Server
+Private-Package: com.ibm.ws.springboot.support.web.server.version20.container.*
+Include-Resource: resources/container

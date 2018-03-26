@@ -137,11 +137,34 @@ public final class URITemplate {
 
     private static String escapeCharacters(String expression) {
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < expression.length(); i++) {
-            char ch = expression.charAt(i);
-            sb.append(isReservedCharacter(ch) ? "\\" + ch : ch);
+        // Liberty Change for CXF Begin
+        int length = expression.length();
+        int i = 0;
+        char ch = ' ';
+        for (; i < length; ++i) {
+            ch = expression.charAt(i);
+            if (isReservedCharacter(ch)) {
+                break;
+            }
         }
+
+        if (i == length) {
+            return expression;
+        }
+
+        StringBuilder sb = new StringBuilder(length + 8);
+        sb.append(expression, 0, i);
+        sb.append('\\');
+        sb.append(ch);
+        ++i;
+        for (; i < length; ++i) {
+            ch = expression.charAt(i);
+            if (isReservedCharacter(ch)) {
+                sb.append('\\');
+            }
+            sb.append(ch);
+        }
+        // Liberty Change for CXF End
         return sb.toString();
     }
 
@@ -335,6 +358,11 @@ public final class URITemplate {
     }
 
     // Liberty Change start
+    public static URITemplate createTemplate(Path path, List<Parameter> params, String classNameandPath) {
+
+        return createTemplate(path == null ? null : path.value(), params, classNameandPath);
+    }
+    
     public static URITemplate createTemplate(Path path, List<Parameter> params) {
 
         return createTemplate(path == null ? null : path.value(), params);
@@ -344,32 +372,49 @@ public final class URITemplate {
 
         return createTemplate(path == null ? null : path.value(), Collections.<Parameter> emptyList());
     }
+    
+    public static URITemplate createTemplate(Path path, String classNameandPath) {
+
+        return createTemplate(path == null ? null : path.value(), Collections.<Parameter> emptyList(), classNameandPath);
+    }
 
     public static URITemplate createTemplate(String pathValue) {
-        return createTemplate(pathValue, Collections.<Parameter> emptyList());
+        return createTemplate(pathValue, Collections.<Parameter> emptyList(), pathValue);
+    }
+    
+    public static URITemplate createTemplate(String pathValue, String classNameandPath) {
+        return createTemplate(pathValue, Collections.<Parameter> emptyList(), classNameandPath);
     }
 
     public static URITemplate createTemplate(String pathValue, List<Parameter> params) {
+        return createExactTemplate(pathValue, params, pathValue);
+    }
+    
+    public static URITemplate createTemplate(String pathValue, List<Parameter> params, String classNameandPath) {
         if (pathValue == null) {
             pathValue = "/";
         } else if (!pathValue.startsWith("/")) {
             pathValue = "/" + pathValue;
         }
-        return createExactTemplate(pathValue, params);
+        return createExactTemplate(pathValue, params, classNameandPath);
     }
 
     public static URITemplate createExactTemplate(String pathValue) {
         return createExactTemplate(pathValue, Collections.<Parameter> emptyList());
     }
 
-    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params) {
-        URITemplate template = URI_TEMPLATE_CACHE.get(pathValue);
+    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params) {        
+         return createExactTemplate(pathValue, params, pathValue);
+    }
+    
+    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params, String classNameandPath) {        
+        URITemplate template = URI_TEMPLATE_CACHE.get(classNameandPath);
         if (template == null) {
             template = new URITemplate(pathValue, params);
             if (URI_TEMPLATE_CACHE.size() >= MAX_URI_TEMPLATE_CACHE_SIZE) {
                 URI_TEMPLATE_CACHE.clear();
             }
-            URI_TEMPLATE_CACHE.put(pathValue, template);
+            URI_TEMPLATE_CACHE.put(classNameandPath, template);            
         }
         return template;
     }
