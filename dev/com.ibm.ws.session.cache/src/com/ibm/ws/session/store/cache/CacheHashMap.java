@@ -677,7 +677,7 @@ public class CacheHashMap extends BackedHashMap {
 
     /**
      * Copied from DatabaseHashMap.
-     * Attempts to get the requested attr from the db
+     * Attempts to get the requested attr from the cache
      * Returns null if attr doesn't exist
      * We consider populatedAppData as well
      * populatedAppData is true when session is new or when the entire session is read into memory
@@ -741,7 +741,6 @@ public class CacheHashMap extends BackedHashMap {
 
             if (!contains) {
                 value = null;
-                throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?
             }
         }
         return value;
