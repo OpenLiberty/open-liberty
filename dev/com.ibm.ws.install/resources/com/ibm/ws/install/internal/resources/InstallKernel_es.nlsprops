@@ -130,7 +130,7 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=El instalador no ha podido 
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Aseg\u00farese de que el directorio contiene la caracter\u00edstica y vuelva a intentar la operaci\u00f3n.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: No se ha podido ubicar el ejecutable {0} despu\u00e9s de comprobar las ubicaciones siguientes: {1}
-ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=El instalador no ha podido ubicar el archivo ejecutable
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=El instalador no ha localizado el archivo ejecutable o el instalador no puede localizar el archivo ejecutable.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Aseg\u00farese de que existe el archivo ejecutable en una de las ubicaciones especificadas.
 
 ERROR_EXECUTING_COMMAND=CWWKF1229E: Se ha producido un error al ejecutar el mandato: {0} El mandato ha terminado con c\u00f3digo de salida {1} y el mensaje de error: {2}
@@ -254,7 +254,7 @@ ERROR_ASSET_MISSING_DEPENDENT.explanation=No se puede descargar o instalar el ac
 ERROR_ASSET_MISSING_DEPENDENT.useraction=Configure installUtility para conectar a IBM WebSphere Liberty Repository para descargar o instalar el activo. Como alternativa, descargue el archivo wlp-featureRepo-<versi\u00f3n>.zip del sitio web de IBM Fix Central y configure la carpeta extra\u00edda como un repositorio basado en directorio. Si no tiene acceso a Internet, p\u00f3ngase en contacto con el administrador para descargar el activo que falta y las dependencias y a\u00f1\u00e1dalos a un repositorio configurado. Para obtener m\u00e1s informaci\u00f3n sobre c\u00f3mo instalar activos, consulte la documentaci\u00f3n de installUtility en IBM Knowledge Center. Si el problema persiste, consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: No se han podido obtener los activos siguientes: {0}. Compruebe que los activos especificados sean v\u00e1lidos. Para encontrar los identificadores de los activos correspondientes, ejecute el mandato installUtility find.
-ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=El instalador no ha podido recuperar los activos especificados de los repositorios.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=El instalador no puede recuperar los activos especificados de los repositorios.
 ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Aseg\u00farese de que los activos especificados sean v\u00e1lidos, que se hayan proporcionado un ID de usuario y una contrase\u00f1a v\u00e1lidos, y de que pueda acceder a los repositorios.
 
 ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: El activo {0} no es aplicable a la instalaci\u00f3n del producto {1}.  {2}
