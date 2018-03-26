@@ -11,5 +11,5 @@ Subsystem-Name: JwtSsoToken
 -bundles=com.ibm.ws.security.jwtsso,\
   com.ibm.websphere.org.eclipse.microprofile.jwt.1.0; location:="dev/api/stable/,lib/",\
   com.ibm.ws.security.jwtsso.token
-kind=ga
+kind=beta
 edition=core
