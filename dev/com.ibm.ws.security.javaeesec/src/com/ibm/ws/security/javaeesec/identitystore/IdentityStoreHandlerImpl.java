@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,13 +118,20 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         }
         for (IdentityStore is : identityStores) {
             Set<IdentityStore.ValidationType> validationTypes = is.validationTypes();
-            if (validationTypes.size() == 1 && validationTypes.contains(IdentityStore.ValidationType.PROVIDE_GROUPS)) {
-                Set<String> extraGroups = getGroups(is, result);
+            if (validationTypes != null) {
+                boolean isProvideGroups = validationTypes.contains(IdentityStore.ValidationType.PROVIDE_GROUPS);
+                boolean isValidate = validationTypes.contains(IdentityStore.ValidationType.VALIDATE);
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore : " + is + ", groups : " + extraGroups);
+                    Tr.debug(tc, "IdentityStore : " + is + ", PROVIDE_GROUPS : " + isProvideGroups + ", VALIDATE : " + isValidate);
                 }
-                if (extraGroups != null && !extraGroups.isEmpty()) {
-                    combinedGroups.addAll(extraGroups);
+                if (isProvideGroups && !isValidate) {
+                    Set<String> extraGroups = getGroups(is, result);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "IdentityStore : " + is + ", groups : " + extraGroups);
+                    }
+                    if (extraGroups != null && !extraGroups.isEmpty()) {
+                        combinedGroups.addAll(extraGroups);
+                    }
                 }
             }
         }
