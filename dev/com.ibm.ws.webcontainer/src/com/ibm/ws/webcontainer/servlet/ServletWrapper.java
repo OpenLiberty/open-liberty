@@ -1932,7 +1932,7 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
      * @seecom.ibm.ws.webcontainer.util.CacheTarget#addCacheWrapper(com.ibm.ws.
      * webcontainer.util.CacheWrapper)
      */
-    public void addServletReferenceListener(ServletReferenceListener listener) {
+    public synchronized void addServletReferenceListener(ServletReferenceListener listener) {
         if (this.cacheWrappers == null) {
             cacheWrappers = new ArrayList();
         }

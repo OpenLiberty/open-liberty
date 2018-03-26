@@ -56,7 +56,6 @@ protected final static Logger logger = LoggerFactory.getInstance().getLogger("co
 	{
 		super();
 		cacheTarget = wrapper;
-		cacheTarget.addServletReferenceListener(this);
 		this._pathInfo=req.getPathInfo();
 		this._servletPath = req.getServletPath();
 		this.requestUri = req.getRequestURI();
