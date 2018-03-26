@@ -64,6 +64,11 @@ public abstract class PartialViewContext
     public abstract void setPartialRequest(boolean isPartialRequest);
     
     public abstract void setRenderAll(boolean renderAll);
+
+    /**
+    * @since 2.3
+    */
+    public abstract java.util.List<java.lang.String> getEvalScripts();
     
     /**
      * @since 2.2
@@ -73,9 +78,5 @@ public abstract class PartialViewContext
     {
         return false;
     }
-    
-    public java.util.List<java.lang.String> getEvalScripts()
-    {
-        return null;
-    }
+
 }
