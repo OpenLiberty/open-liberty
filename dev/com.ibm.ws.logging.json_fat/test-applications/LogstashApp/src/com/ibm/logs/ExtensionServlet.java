@@ -50,8 +50,6 @@ public class ExtensionServlet extends HttpServlet {
         logger.logp(java.util.logging.Level.INFO, loggerName, "Method.Info", logMessage);
         logger.logp(java.util.logging.Level.FINE, loggerName, "Method.Info", logMessage);
 
-        LogRecordContext.removeExtension("TESTEXT_int");
-
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         out.println("<html><body>Simple extension servlet</body></html>");

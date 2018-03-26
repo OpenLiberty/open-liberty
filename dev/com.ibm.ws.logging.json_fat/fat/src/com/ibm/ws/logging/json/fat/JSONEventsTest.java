@@ -38,17 +38,12 @@ public abstract class JSONEventsTest {
 
     public static final String APP_NAME = "LogstashApp";
     private static final String EXT_PREFIX = "ext_";
-    private final static String INT_SUFFIX = "_int";
-    private final static String FLOAT_SUFFIX = "_float";
-    private final static String BOOL_SUFFIX = "_bool";
-    private final static String TRUE_BOOL = "true";
-    private final static String FALSE_BOOL = "false";
 
     public abstract LibertyServer getServer();
 
     public abstract RemoteFile getLogFile() throws Exception;
 
-//    @Test
+    @Test
     public void checkMessage() throws Exception {
         final String method = "checkMessage";
         ArrayList<String> messageKeysMandatoryList = new ArrayList<String>(Arrays.asList("ibm_datetime", "type", "host", "ibm_userDir", "ibm_serverName",
@@ -69,7 +64,7 @@ public abstract class JSONEventsTest {
         }
     }
 
-//    @Test
+    @Test
     public void checkAccessLog() throws Exception {
         final String method = "checkAccessLog";
 
@@ -97,7 +92,7 @@ public abstract class JSONEventsTest {
 
     }
 
-//    @Test
+    @Test
     @ExpectedFFDC({ "java.lang.NullPointerException" })
     public void checkFfdc() throws Exception {
         final String method = "checkFfdc";
@@ -125,7 +120,7 @@ public abstract class JSONEventsTest {
 
     }
 
-//    @Test
+    @Test
     public void checkTrace() throws Exception {
         final String method = "checkTrace";
 
@@ -160,7 +155,7 @@ public abstract class JSONEventsTest {
 
         String line = getServer().waitForStringInLog("\\{.*\"module\":\"com.ibm.logs.ExtensionServlet\".*\\}", getLogFile());
 
-        assertNotNull("Cannot find \"module\":\"com.ibm.logs.ExtensionServlet\" from messages.log" + "______" + line, line);
+        assertNotNull("Cannot find \"module\":\"com.ibm.logs.ExtensionServlet\" from messages.log", line);
 
         JsonReader reader = Json.createReader(new StringReader(line));
         JsonObject jsonObj = reader.readObject();

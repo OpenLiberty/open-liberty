@@ -161,27 +161,8 @@ public class LogSource implements Source, WsLogHandler {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
                 KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
-
-                String extKey = "";
-                String extValue = "";
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    extKey = entry.getKey();
-                    extValue = entry.getValue();
-                    boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(extKey, extValue);
-                    if (isValidExt) {
-                        extKey = LogFieldConstants.EXT_PREFIX + extKey;
-                        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                            extensions.addPair(extKey, Integer.parseInt(extValue));
-                        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-                            extensions.addPair(extKey, Float.parseFloat(extValue));
-                        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-                            extensions.addPair(extKey, Boolean.parseBoolean(extValue));
-                        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                            extensions.addPair(extKey, Long.parseLong(extValue));
-                        } else {
-                            extensions.addPair(extKey, extValue);
-                        }
-                    }
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
                 genData.addPairs(extensions);
             }
@@ -237,27 +218,8 @@ public class LogSource implements Source, WsLogHandler {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
                 KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
-
-                String extKey = "";
-                String extValue = "";
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    extKey = entry.getKey();
-                    extValue = entry.getValue();
-                    boolean isValidExt = CollectorJsonHelpers.checkExtSuffixValidity(extKey, extValue);
-                    if (isValidExt) {
-                        extKey = LogFieldConstants.EXT_PREFIX + extKey;
-                        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                            extensions.addPair(extKey, Integer.parseInt(extValue));
-                        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-                            extensions.addPair(extKey, Float.parseFloat(extValue));
-                        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-                            extensions.addPair(extKey, Boolean.parseBoolean(extValue));
-                        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                            extensions.addPair(extKey, Long.parseLong(extValue));
-                        } else {
-                            extensions.addPair(extKey, extValue);
-                        }
-                    }
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
                 genData.addPairs(extensions);
             }

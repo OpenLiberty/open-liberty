@@ -28,15 +28,15 @@ public interface KeyValuePair {
 
     public boolean isBoolean();
 
-    public Integer getIntValue();
+    public int getIntValue();
 
-    public Long getLongValue();
+    public long getLongValue();
 
     public String getStringValue();
 
-    public Float getFloatValue();
+    public float getFloatValue();
 
-    public Boolean getBooleanValue();
+    public boolean getBooleanValue();
 
     public ValueTypes getType();
 

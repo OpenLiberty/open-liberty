@@ -136,9 +136,9 @@ public class CollectorJsonUtils1_1 {
 
                     String value = null;
                     if (kvp.isInteger()) {
-                        value = kvp.getIntValue().toString();
+                        value = Integer.toString(kvp.getIntValue());
                     } else if (kvp.isLong()) {
-                        value = kvp.getLongValue().toString();
+                        value = Long.toString(kvp.getLongValue());
                     } else {
                         value = kvp.getStringValue();
                     }
@@ -184,7 +184,7 @@ public class CollectorJsonUtils1_1 {
 
                     } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
 
-                        CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(kvp.getLongValue().intValue(), 8), false, true, false, false, false);
+                        CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString((int) kvp.getLongValue(), 8), false, true, false, false, false);
 
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
 
@@ -195,9 +195,9 @@ public class CollectorJsonUtils1_1 {
 
                         String value = null;
                         if (kvp.isInteger()) {
-                            value = kvp.getIntValue().toString();
+                            value = Integer.toString(kvp.getIntValue());
                         } else if (kvp.isLong()) {
-                            value = kvp.getLongValue().toString();
+                            value = Long.toString(kvp.getLongValue());
                         } else {
                             value = kvp.getStringValue();
                         }
@@ -267,9 +267,9 @@ public class CollectorJsonUtils1_1 {
 
                     String value = null;
                     if (kvp.isInteger()) {
-                        value = kvp.getIntValue().toString();
+                        value = Integer.toString(kvp.getIntValue());
                     } else if (kvp.isLong()) {
-                        value = kvp.getLongValue().toString();
+                        value = Long.toString(kvp.getLongValue());
                     } else {
                         value = kvp.getStringValue();
                     }
@@ -332,9 +332,9 @@ public class CollectorJsonUtils1_1 {
 
                     String value = null;
                     if (kvp.isInteger()) {
-                        value = kvp.getIntValue().toString();
+                        value = Integer.toString(kvp.getIntValue());
                     } else if (kvp.isLong()) {
-                        value = kvp.getLongValue().toString();
+                        value = Long.toString(kvp.getLongValue());
                     } else {
                         value = kvp.getStringValue();
                     }
@@ -348,13 +348,13 @@ public class CollectorJsonUtils1_1 {
                     for (KeyValuePair k : extensions) {
                         String extKey = k.getKey();
                         if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getIntValue().toString(), false, true, false, false, k.isInteger());
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
                         } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getFloatValue().toString(), false, true, false, false, k.isFloat());
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
                         } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getLongValue().toString(), false, true, false, false, k.isLong());
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
                         } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getBooleanValue().toString(), false, true, false, false, k.isBoolean());
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
                         } else {
                             CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
                         }

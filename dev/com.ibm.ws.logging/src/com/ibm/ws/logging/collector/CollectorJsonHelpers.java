@@ -12,6 +12,8 @@ package com.ibm.ws.logging.collector;
 
 import java.text.SimpleDateFormat;
 
+import com.ibm.ws.logging.data.KeyValuePairList;
+
 /**
  * CollectorJsonHelpers contains methods shared between CollectorjsonUtils and CollectorJsonUtils1_1
  */
@@ -383,100 +385,31 @@ public class CollectorJsonHelpers {
         return sb.toString();
     }
 
-    public static boolean checkExtSuffixValidity(String k, String v) {
-        boolean isValidExt = false;
-        String key = k;
-        String value = v;
-
-        if (key.endsWith(INT_SUFFIX)) {
-            isValidExt = verifyIntValue(value);
-        } else if (key.endsWith(FLOAT_SUFFIX)) {
-            isValidExt = verifyFloatValue(value);
-        } else if (key.endsWith(BOOL_SUFFIX)) {
-            if (value.equals(TRUE_BOOL) || value.equals(FALSE_BOOL)) {
-                isValidExt = true;
+    public static void handleExtensions(KeyValuePairList extensions, String extKey, String extValue) {
+        extKey = "ext_" + extKey;
+        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+            try {
+                extensions.addPair(extKey, Integer.parseInt(extValue));
+            } catch (NumberFormatException e) {
+            }
+        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+            try {
+                extensions.addPair(extKey, Float.parseFloat(extValue));
+            } catch (NumberFormatException e) {
+            }
+        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+            if (extValue.toLowerCase().trim().equals(TRUE_BOOL)) {
+                extensions.addPair(extKey, true);
+            } else if (extValue.toLowerCase().trim().equals(FALSE_BOOL)) {
+                extensions.addPair(extKey, false);
+            }
+        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+            try {
+                extensions.addPair(extKey, Long.parseLong(extValue));
+            } catch (NumberFormatException e) {
             }
         } else {
-            isValidExt = true;
-        }
-        return isValidExt;
-    }
-
-    private static boolean verifyIntValue(String value) {
-        boolean isValid = true;
-        char[] arr = value.toCharArray();
-        for (int i = 0; i < arr.length; i++) {
-            if (i == 0) {
-                if (arr[i] == '-' && arr.length > 1) {
-                    continue;
-                }
-            }
-            if (arr[i] >= '0' && arr[i] <= '9') {
-                continue;
-            } else {
-                isValid = false;
-                break;
-            }
-        }
-        return isValid;
-    }
-
-    private static boolean verifyFloatValue(String s) {
-        boolean isValid = true;
-        boolean decimalFlag = false;
-        char[] arr = s.toCharArray();
-        for (int i = 0; i < arr.length; i++) {
-            if (i == 0) {
-                // If the string has more than 1 characters, and the first position in the string has a -, then it is okay.
-                if (arr[i] == '-' && arr.length > 1) {
-                    continue;
-                }
-            }
-            // If a '.' is found
-            if (arr[i] == '.') {
-                // If the decimal is not in the first spot, not in the last spot and the onlt decimal found
-                if (i > 0 && i < arr.length - 1 && decimalFlag == false) {
-                    // Check if there is a digit before the decimal
-                    if (arr[i - 1] >= '0' && arr[i - 1] <= '9') {
-                        // Set decimal flag
-                        decimalFlag = true;
-                        continue;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    //if the decimal conditions are violated, then the number is invalid
-                    return false;
-                }
-            }
-            // Check if the current character is a digit
-            if (arr[i] >= '0' && arr[i] <= '9') {
-                continue;
-            } else {
-                return false;
-            }
-
-        }
-
-        return isValid;
-    }
-
-    public static boolean addPairBasedOnType(String extKey) {
-        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX) || extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)
-            || extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-            return true;
-        } else {
-            return false;
+            extensions.addPair(extKey, extValue);
         }
     }
-
-    protected static boolean checkIfExtIsQuoteless(String extKey) {
-        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX) || extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)
-            || extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 }
