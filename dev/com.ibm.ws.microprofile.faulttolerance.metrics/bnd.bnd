@@ -30,13 +30,9 @@ Export-Package:
 
 Private-Package: 
 
-Include-Resource: \
-  META-INF/services=resources/META-INF/services
-
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src,resources
-testsrc: test/src
 
 -buildpath: \
         com.ibm.ws.logging;version=latest, \
