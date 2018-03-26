@@ -1,0 +1,2860 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	
+	<!-- ##### Listeners: Object #### -->
+    <listener>
+        <display-name>AdvEnvXMLObjServletRequestListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLObjServletContextListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLObjHttpSessionListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLObjServletRequestAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLObjServletContextAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLObjHttpSessionAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</listener-class>
+    </listener>
+    
+    <!-- ##### Listeners: Primitive #### -->
+    <listener>
+        <display-name>AdvEnvXMLPrimServletRequestListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLPrimServletContextListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLPrimHttpSessionListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLPrimServletRequestAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLPrimServletContextAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvXMLPrimHttpSessionAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</listener-class>
+    </listener>
+	
+	<!-- Filters -->
+    <!-- ##### Filter: Object ##### -->
+    <filter>
+        <display-name>AdvEnvXMLObjFilter</display-name>
+        <filter-name>AdvEnvXMLObjFilter</filter-name>
+        <filter-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdvEnvXMLObjFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- ##### Filter: Primitive ##### -->
+    <filter>
+        <display-name>AdvEnvXMLPrimFilter</display-name>
+        <filter-name>AdvEnvXMLPrimFilter</filter-name>
+        <filter-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdvEnvXMLPrimFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+		
+	<!-- ##### Servlet: BasicEnvPrimXMLServlet ###### -->
+	<!-- Field Injection targets for BasicEnvPrimXMLServlet -->
+	<env-entry>
+	   <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/ifchar</env-entry-name>
+	   <env-entry-type>java.lang.Character</env-entry-type>
+	   <env-entry-value>a</env-entry-value>
+	   <injection-target>
+		  <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+		  <injection-target-name>ifchar</injection-target-name>
+	   </injection-target>
+    </env-entry>
+	
+	<env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>ifbyte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+	<env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>ifshort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>ifint</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>iflong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>ifboolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>ifdouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>iffloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+	
+	<!-- Method Injection targets for BasicEnvPrimXMLServlet -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>imcharMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>imbyteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>imshortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>imintMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>imlongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>imbooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>imdoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvPrimXMLServlet</injection-target-class>
+           <injection-target-name>imfloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+        
+    <!-- ##### Servlet: BasicEnvObjXMLServlet ##### -->	
+	<!-- Field Injection targets for BasicEnvObjXMLServlet -->
+	<env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>ifString</injection-target-name>
+       </injection-target>
+    </env-entry>
+     
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>ifCharacter</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>ifByte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>ifShort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>ifInteger</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>ifLong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>ifBoolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>ifDouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>ifFloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for BasicEnvObjXMLServlet -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value></env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>imStringMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>imCharacterMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>imByteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>imShortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>imIntegerMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>imLongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>imBooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>imDoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.BasicEnvObjXMLServlet</injection-target-class>
+           <injection-target-name>imFloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+        
+    <!-- ##### Listener: AdvEnvXMLObjServletRequestListener ##### --> 
+    <!-- Field Injection targets for AdvEnvXMLObjServletRequestListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>ifString</injection-target-name>
+       </injection-target>
+    </env-entry>
+     
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>ifCharacter</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>ifByte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>ifShort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>ifInteger</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>ifLong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>ifBoolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>ifDouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>ifFloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLObjServletRequestListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value></env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>imStringMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>imCharacterMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>imByteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>imShortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>imIntegerMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>imLongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>imBooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>imDoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestListener</injection-target-class>
+           <injection-target-name>imFloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLObjServletRequestAttributeListener ##### --> 
+    <!-- Field Injection targets for AdvEnvXMLObjServletRequestAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifString</injection-target-name>
+       </injection-target>
+    </env-entry>
+     
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifCharacter</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifByte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifShort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifInteger</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifLong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifBoolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifDouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifFloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLObjServletRequestAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value></env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imStringMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imCharacterMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imByteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imShortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imIntegerMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imLongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imBooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imDoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imFloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLObjServletContextListener ##### --> 
+    <!-- Field Injection targets for AdvEnvXMLObjServletContextListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>ifString</injection-target-name>
+       </injection-target>
+    </env-entry>
+     
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>ifCharacter</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>ifByte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>ifShort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>ifInteger</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>ifLong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>ifBoolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>ifDouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>ifFloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLObjServletContextListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value></env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>imStringMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>imCharacterMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>imByteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>imShortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>imIntegerMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>imLongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>imBooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>imDoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextListener</injection-target-class>
+           <injection-target-name>imFloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLObjServletContextAttributeListener ##### --> 
+    <!-- Field Injection targets for AdvEnvXMLObjServletContextAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifString</injection-target-name>
+       </injection-target>
+    </env-entry>
+     
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifCharacter</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifByte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifShort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifInteger</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifLong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifBoolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifDouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifFloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLObjServletContextAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value></env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imStringMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imCharacterMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imByteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imShortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imIntegerMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imLongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imBooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imDoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imFloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLObjHttpSessionListener ##### --> 
+    <!-- Field Injection targets for AdvEnvXMLObjHttpSessionListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>ifString</injection-target-name>
+       </injection-target>
+    </env-entry>
+     
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>ifCharacter</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>ifByte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>ifShort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>ifInteger</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>ifLong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>ifBoolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>ifDouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>ifFloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLObjHttpSessionListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value></env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>imStringMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>imCharacterMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>imByteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>imShortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>imIntegerMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>imLongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>imBooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>imDoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionListener</injection-target-class>
+           <injection-target-name>imFloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLObjHttpSessionAttributeListener ##### --> 
+    <!-- Field Injection targets for AdvEnvXMLObjHttpSessionAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifString</injection-target-name>
+       </injection-target>
+    </env-entry>
+     
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifCharacter</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifByte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifShort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifInteger</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifLong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifBoolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifDouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifFloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLObjHttpSessionAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value></env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imStringMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imCharacterMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imByteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imShortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imIntegerMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imLongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imBooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imDoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imFloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLObjFilter ##### --> 
+    <!-- Field Injection targets for AdvEnvXMLObjFilter -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>ifString</injection-target-name>
+       </injection-target>
+    </env-entry>
+     
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>ifCharacter</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>ifByte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>ifShort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>ifInteger</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>ifLong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>ifBoolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>ifDouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>ifFloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLObjFilter -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value></env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>imStringMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>imCharacterMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>imByteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>imShortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>imIntegerMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>imLongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>imBooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>imDoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLObjFilter</injection-target-class>
+           <injection-target-name>imFloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ###### Listener Primitive Injection Targets ###### -->
+    <!-- ##### Listener: AdvEnvXMLPrimServletRequestListener ###### -->
+    <!-- Field Injection targets for AdvEnvXMLPrimServletRequestListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+          <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+          <injection-target-name>ifchar</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>ifbyte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>ifshort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>ifint</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>iflong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>ifboolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>ifdouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>iffloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLPrimServletRequestListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>imcharMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>imbyteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>imshortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>imintMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>imlongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>imbooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>imdoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestListener</injection-target-class>
+           <injection-target-name>imfloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLPrimServletRequestAttributeListener ###### -->
+    <!-- Field Injection targets for AdvEnvXMLPrimServletRequestAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+          <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+          <injection-target-name>ifchar</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifbyte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifshort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifint</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>iflong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifboolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>ifdouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>iffloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLPrimServletRequestAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imcharMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imbyteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imshortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imintMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imlongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imbooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imdoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>imfloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLPrimServletContextListener ###### -->
+    <!-- Field Injection targets for AdvEnvXMLPrimServletContextListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+          <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+          <injection-target-name>ifchar</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>ifbyte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>ifshort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>ifint</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>iflong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>ifboolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>ifdouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>iffloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLPrimServletContextListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>imcharMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>imbyteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>imshortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>imintMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>imlongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>imbooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>imdoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextListener</injection-target-class>
+           <injection-target-name>imfloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLPrimServletContextAttributeListener ###### -->
+    <!-- Field Injection targets for AdvEnvXMLPrimServletContextAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+          <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+          <injection-target-name>ifchar</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifbyte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifshort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifint</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>iflong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifboolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>ifdouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>iffloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLPrimServletContextAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imcharMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imbyteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imshortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imintMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imlongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imbooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imdoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimServletContextAttributeListener</injection-target-class>
+           <injection-target-name>imfloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLPrimHttpSessionListener ###### -->
+    <!-- Field Injection targets for AdvEnvXMLPrimHttpSessionListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+          <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+          <injection-target-name>ifchar</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>ifbyte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>ifshort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>ifint</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>iflong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>ifboolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>ifdouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>iffloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLPrimHttpSessionListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>imcharMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>imbyteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>imshortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>imintMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>imlongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>imbooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>imdoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionListener</injection-target-class>
+           <injection-target-name>imfloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- ##### Listener: AdvEnvXMLPrimHttpSessionAttributeListener ###### -->
+    <!-- Field Injection targets for AdvEnvXMLPrimHttpSessionAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+          <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+          <injection-target-name>ifchar</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifbyte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifshort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifint</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>iflong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifboolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>ifdouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>iffloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLPrimHttpSessionAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imcharMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imbyteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imshortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imintMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imlongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imbooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imdoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>imfloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    
+    <!-- ##### Filter: AdvEnvXMLPrimFilter ###### -->
+    <!-- Field Injection targets for AdvEnvXMLPrimFilter -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+          <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+          <injection-target-name>ifchar</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>ifbyte</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>ifshort</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>5</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>ifint</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>100</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>iflong</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>ifboolean</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>100.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>ifdouble</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>100.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>iffloat</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvXMLPrimFilter -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>a</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>imcharMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>imbyteMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>imshortMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>imintMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>0</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>imlongMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>imbooleanMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>0.0D</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>imdoubleMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>0.0F</env-entry-value>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.envxml.web.AdvEnvXMLPrimFilter</injection-target-class>
+           <injection-target-name>imfloatMethod</injection-target-name>
+       </injection-target>
+    </env-entry>
+</web-app>
