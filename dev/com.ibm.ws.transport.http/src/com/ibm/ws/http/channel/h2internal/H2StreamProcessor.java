@@ -33,6 +33,7 @@ import com.ibm.ws.http.channel.h2internal.frames.FrameContinuation;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
 import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
+import com.ibm.ws.http.channel.h2internal.frames.FramePPHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePing;
 import com.ibm.ws.http.channel.h2internal.frames.FramePriority;
 import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
@@ -193,7 +194,7 @@ public class H2StreamProcessor {
      */
     public synchronized void processNextFrame(Frame frame, Constants.Direction direction) throws ProtocolException, StreamClosedException {
 
-        // Make it easy to follow frame processing in the trace by searching for "processNextFrame-" to see all fraame processing
+        // Make it easy to follow frame processing in the trace by searching for "processNextFrame-" to see all frame processing
         boolean doDebugWhile = false;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processNextFrame-entry:  stream: " + myID + " frame type: " + frame.getFrameType().toString() + " direction: " + direction.toString()
@@ -335,6 +336,30 @@ public class H2StreamProcessor {
                                      " after a GOAWAY was sent or Closing invoked.  This frame will be ignored.");
                     }
                     return;
+                }
+
+                // This frame type is artificially generated, process it as a headers frame,
+                // as if it had come in off the wire
+                if (frameType == FrameTypes.PUSHPROMISEHEADERS) {
+                    getHeadersFromFrame();
+                    setHeadersComplete();
+                    try {
+                        processCompleteHeaders(true);
+                        setReadyForRead();
+                    } catch (Http2Exception he) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProcessCompleteHeaders Exception: " + he);
+                        }
+
+                        //Send a reset so that the client knows the push_promise is dead
+                        addFrame = ADDITIONAL_FRAME.RESET;
+                        addFrameException = he;
+                        continue;
+
+                    }
+
+                    return;
+
                 }
 
                 // Header frames must be received in a contiguous chunk; cannot interleave across streams
@@ -1093,7 +1118,7 @@ public class H2StreamProcessor {
     /**
      * Send an artificially created H2 request from a push_promise up to the WebContainer
      */
-    public void sendRequestToWc(FrameHeaders frame) {
+    public void sendRequestToWc(FramePPHeaders frame) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "H2StreamProcessor.sendRequestToWc()");
         }
@@ -1111,46 +1136,20 @@ public class H2StreamProcessor {
             buf.flip();
             TCPReadRequestContext readi = h2HttpInboundLinkWrap.getConnectionContext().getReadInterface();
             readi.setBuffer(buf);
-            currentFrame = frame;
-            getHeadersFromFrame();
-            setHeadersComplete();
+
+            // Call the synchronized method to handle the frame
             try {
-                processCompleteHeaders(true);
+                processNextFrame(frame, Constants.Direction.READ_IN);
             } catch (Http2Exception he) {
+                // ProcessNextFrame() sends a reset/goaway if an error occurs, nothing left but to clean up
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProcessCompleteHeaders Exception: " + he);
+                    Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProcessNextFrame() error, Exception: " + he);
                 }
+
                 // Free the buffer
                 buf.release();
-
-                // Try to send a reset frame on the promised stream so the client knows the promise is dead
-                currentFrame = new FrameRstStream(myID, Constants.CANCEL, false);
-                try {
-                    processNextFrame(currentFrame, Constants.Direction.WRITING_OUT);
-                } catch (Http2Exception e) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "H2StreamProcessor.sendRequestToWc(): ProtocolException when sending a reset frame: " + e);
-                    }
-                }
-
-                // Close the stream and clean up
-                currentFrame = null;
-                muxLink.triggerStreamClose(this);
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "H2StreamProcessor.sendRequestToWc(): Compression exception from ProcessCompleteheaders() when creating the pushed reqeust on stream-id " + myID);
-                }
-                return;
             }
 
-            // If all is well, start a new thread to pass along this frame to wc
-            try {
-                setReadyForRead();
-            } catch (ProtocolException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.exit(tc, "H2StreamProcessor.sendRequestToWc(): " + e);
-                }
-            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1366,7 +1365,7 @@ public class H2StreamProcessor {
      */
     private void getHeadersFromFrame() {
         byte[] hbf = null;
-        if (currentFrame.getFrameType() == FrameTypes.HEADERS) {
+        if (currentFrame.getFrameType() == FrameTypes.HEADERS || currentFrame.getFrameType() == FrameTypes.PUSHPROMISEHEADERS) {
             hbf = ((FrameHeaders) currentFrame).getHeaderBlockFragment();
         } else if (currentFrame.getFrameType() == FrameTypes.CONTINUATION) {
             hbf = ((FrameContinuation) currentFrame).getHeaderBlockFragment();

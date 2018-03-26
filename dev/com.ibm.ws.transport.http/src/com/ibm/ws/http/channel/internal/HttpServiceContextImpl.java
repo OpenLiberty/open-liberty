@@ -32,7 +32,7 @@ import com.ibm.ws.http.channel.h2internal.H2VirtualConnectionImpl;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
-import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
+import com.ibm.ws.http.channel.h2internal.frames.FramePPHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePushPromise;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.h2internal.hpack.H2Headers;
@@ -2283,10 +2283,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings() != null) &&
                 (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings().getEnablePush() == 1)) {
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "prepareOutgoing: Checking to see if push_promise is needed");
-                }
-
                 // Loop through the headers in this message, check for
                 // link header
                 // rel=preload
@@ -2297,7 +2293,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                         header.asString().toLowerCase().contains("rel=preload") &&
                         !header.asString().toLowerCase().contains("nopush")) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "prepareOutgoing: push_promise will be sent");
+                            Tr.debug(tc, "prepareOutgoing: Link header rel=preload found, push_promise will be sent");
                         }
                         handleH2LinkPreload(header, link);
                     }
@@ -5115,11 +5111,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         // Get the next available even numbered promised stream id
         int promisedStreamId = ((H2HttpInboundLinkWrap) link).muxLink.getNextPromisedStreamId();
+
         // Create the push_promise frame to send to the client
         FramePushPromise pushPromiseFrame = new FramePushPromise(streamId, ppHb.toByteArray(), promisedStreamId, 0, true, false, false);
 
         // Create a headers frame to send to wc
-        FrameHeaders headersFrame = new FrameHeaders(streamId, ppHb.toByteArray());
+        FramePPHeaders headersFrame = new FramePPHeaders(streamId, ppHb.toByteArray());
 
         // createNewInboundLink creates new:
         // - H2VirtualConnectionImpl

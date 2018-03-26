@@ -311,7 +311,7 @@ public class Http2LiteModeTests extends FATServletClient {
     }
 
     @Test
-    public void testPushPromiseWc() throws Exception {
+    public void testPushPromisePushBuilder() throws Exception {
         runTest(pushPromisePath, testName.getMethodName());
     }
 
@@ -326,12 +326,7 @@ public class Http2LiteModeTests extends FATServletClient {
     }
 
     @Test
-    public void testPushPromiseClientNotEnabledWc() throws Exception {
-        runTest(pushPromisePath, testName.getMethodName());
-    }
-
-    @Test
-    public void testPushPromiseClientReset() throws Exception {
+    public void testPushPromiseClientNotEnabledPushBuilder() throws Exception {
         runTest(pushPromisePath, testName.getMethodName());
     }
 
