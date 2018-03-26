@@ -59,14 +59,23 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
     protected static String EJB_WAR_PATH = "/EjbinWarServletISLdapDb/";
     protected static String EJB_WAR_NAME2 = "EjbinWarServletISLdap.war";
     protected static String EJB_WAR2_PATH = "/EjbinWarServletISLdap/";
+    protected static String EJB_REALM1_WAR_NAME = "AnnotatedEjbinWarServletLdapRealm1.war";
+    protected static String EJB_REALM1_WAR_PATH = "/AnnotatedEjbinWarServletLdapRealm1/";
+    protected static String EJB_REALM2_WAR_NAME = "AnnotatedEjbinWarServletLdapRealm2.war";
+    protected static String EJB_REALM2_WAR_PATH = "/AnnotatedEjbinWarServletLdapRealm2/";
     protected static String EJB_EAR_NAME = "securityejbinwar2.ear";
     protected static String EJB_APP_NAME = EJB_EAR_NAME;
+    protected static String EJB_EAR_REALM_NAME = "securityejbinwarrealm.ear";
+    protected static String EJB_REALM_APP_NAME = EJB_EAR_REALM_NAME;
     protected static String XML_NAME = "ejbprotectedserver.xml";
+    protected static String XML_REALM_NAME = "ejbprotectedrealmserver.xml";
     protected static String JASPIC_RUN_AS_XML_NAME = "ejbprotectedCustomISRunAsserver.xml";
     protected static String LDAP_RUN_AS_XML_NAME = "ejbprotectedLDAPISRunAsserver.xml";
     protected static String JAR_NAME = "JavaEESecBase.jar";
     protected static String SIMPLE_SERVLET = "SimpleServlet";
     protected static String SIMPLE_SERVLET2 = "SimpleServlet2";
+    protected static String SIMPLE_SERVLET_REALM1 = "SimpleServletRealm1";
+    protected static String SIMPLE_SERVLET_REALM2 = "SimpleServletRealm2";
     protected static String RUNAS_SERVLET = "SimpleServletRunAs";
 
     protected DefaultHttpClient httpclient;
