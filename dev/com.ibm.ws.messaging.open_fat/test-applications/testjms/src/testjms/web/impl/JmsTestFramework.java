@@ -61,25 +61,13 @@ public final class JmsTestFramework implements AutoCloseable {
     }
 
     public int clearQueue(final Queue queue) throws Exception {
-        final int elements = getQueueDepth(queue);
+        int elements = 0;
         try (final MessageConsumer consumer = session.createConsumer(queue)) {
-            for (int i = 0; i < elements; i++) {
-                consumer.receive(RECEIVE_TIMEOUT_MS);
+            while (null != consumer.receiveNoWait()) {
+                elements++;
             }
         }
         return elements;
-    }
-
-    public int getQueueDepth(final Queue queue) throws Exception {
-        int i = 0;
-        try (final QueueBrowser browser = session.createBrowser(queue)) {
-            final Enumeration e = browser.getEnumeration();
-            while (e.hasMoreElements()) {
-                i++;
-                e.nextElement();
-            }
-        }
-        return i;
     }
 
     public void close() throws Exception {
