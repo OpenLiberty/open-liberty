@@ -656,7 +656,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(webReply.message, webReply, webSecurityContext));
                 throw secVE;
             } else if (authResult.getStatus() != AuthResult.CONTINUE) {
-                webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
+                // if AuthResult.FAILURE, then check whether the target uri is protected, if it's not protected, 
+                // return PERMIT_REPLY.
+                if (authResult.getStatus() == AuthResult.FAILURE && unprotectedResource(webRequest) == PERMIT_REPLY) {
+                    webReply = PERMIT_REPLY;
+                } else {
+                    webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
+                }
             }
         }
         return webReply;
