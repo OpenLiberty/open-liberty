@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,13 +110,11 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     @Override
-    @Trivial
     public ClassSourceImpl_Options createOptions() {
         return new ClassSourceImpl_Options();
     }
 
     @Override
-    @Trivial
     public ClassSourceImpl_Options createOptions(boolean useJandex) {
         return new ClassSourceImpl_Options(useJandex);
     }

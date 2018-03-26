@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -205,8 +205,13 @@ public class ModuleAnnotationsImpl implements ModuleAnnotations {
     public void addAppClassLoader(ClassLoader appClassLoader) {
         ClassSource_Factory classSourceFactory = annotationService.getClassSourceFactory();
         try {
+            ApplicationInfo applicationInfo = moduleInfo.getApplicationInfo();
+            ClassSource_Options options = getClassSourceFactory().createOptions();
+            options.setUseJandex(applicationInfo.getUseJandex());
+
             ClassSource clClassSource = classSourceFactory.createClassLoaderClassSource(getClassSource().getInternMap(),
                                                                                         containerName + " parent classloader",
+                                                                                        options,
                                                                                         appClassLoader);
             getClassSource().addClassSource(clClassSource, ClassSource_Aggregate.ScanPolicy.EXTERNAL);
         } catch (ClassSource_Exception e) {
@@ -252,14 +257,19 @@ public class ModuleAnnotationsImpl implements ModuleAnnotations {
                 String containerClassSourceName = containerName + " container";
 
                 //Add the container from the module
-                ClassSource containerClassSource = getClassSourceFactory().createContainerClassSource(useClassSource.getInternMap(), containerClassSourceName,
+                ClassSource containerClassSource = getClassSourceFactory().createContainerClassSource(useClassSource.getInternMap(),
+                                                                                                      containerClassSourceName,
+                                                                                                      options,
                                                                                                       this.moduleInfo.getContainer());
                 useClassSource.addClassSource(containerClassSource, ClassSource_Aggregate.ScanPolicy.SEED);
             } else {
                 for (ContainerInfo containerInfo : moduleClassesContainerInfo.getClassesContainerInfo()) {
                     if (containerInfo.getType() != ContainerInfo.Type.MANIFEST_CLASSPATH) {
                         String name = containerInfo.getName() + " container";
-                        ClassSource containerSource = getClassSourceFactory().createContainerClassSource(useClassSource.getInternMap(), name, containerInfo.getContainer());
+                        ClassSource containerSource = getClassSourceFactory().createContainerClassSource(useClassSource.getInternMap(),
+                                                                                                         name,
+                                                                                                         options,
+                                                                                                         containerInfo.getContainer());
                         useClassSource.addClassSource(containerSource, ClassSource_Aggregate.ScanPolicy.SEED);
                     }
                 }
@@ -269,6 +279,7 @@ public class ModuleAnnotationsImpl implements ModuleAnnotations {
             if (getModuleClassLoader() != null) {
                 ClassSource clSource = getClassSourceFactory().createClassLoaderClassSource(useClassSource.getInternMap(),
                                                                                             containerName + " parent classloader",
+                                                                                            options,
                                                                                             getModuleClassLoader());
                 useClassSource.addClassSource(clSource, ClassSource_Aggregate.ScanPolicy.EXTERNAL);
             }

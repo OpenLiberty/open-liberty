@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -593,10 +593,10 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         		}
         		if ( doLog ) {
-        	        Tr.debug(tc, msg);
+        		    Tr.debug(tc, msg);
         		}
         		if ( doJandexLog ) {
-        			JandexLogger.log(CLASS_NAME,  methodName, msg);
+        		    JandexLogger.log(CLASS_NAME,  methodName, msg);
         		}
         	}
 
@@ -648,6 +648,12 @@ public abstract class ClassSourceImpl implements ClassSource {
     protected boolean basicHasJandexIndex() {
         return false;
     }
+    
+    protected boolean processedUsingJandex = false;
+    
+    public boolean isProcessedUsingJandex() {
+        return processedUsingJandex;
+    }
 
     /**
      * <p>Attempt to process this class source using cache data.</p>
@@ -672,6 +678,8 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( jandexIndex == null ) {
         	return false;
         }
+        
+        processedUsingJandex = true;
 
         String useClassSourceName = getCanonicalName();
 

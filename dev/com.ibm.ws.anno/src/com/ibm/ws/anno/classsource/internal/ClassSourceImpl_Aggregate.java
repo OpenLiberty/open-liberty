@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
+import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts.ResultField;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
@@ -412,6 +413,13 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
             ClassSource_ScanCounts childScanCounts = childSource.getScanResults();
             addResults(childScanCounts);
+            boolean processedUsingJandex = childSource.isProcessedUsingJandex();
+            if (processedUsingJandex) {
+               int processedClassesCount = childScanCounts.getResult(ResultField.PROCESSED_CLASS);
+               System.out.println("[" +  processedClassesCount
+                                      + "] of [" + processedClassesCount + "] classes in [" + childSource.getName() 
+                                      + "]  processed using Jandex");   
+            }
 
             int nextSize = i_seedClassNames.size();
 
