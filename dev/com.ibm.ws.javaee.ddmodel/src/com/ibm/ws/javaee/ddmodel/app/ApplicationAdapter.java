@@ -44,7 +44,12 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
 
     @FFDCIgnore(ParseException.class)
     @Override
-    public Application adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
+    public Application adapt(
+    	Container root,
+    	OverlayContainer rootOverlay,
+    	ArtifactContainer artifactContainer,
+    	Container containerToAdapt) throws UnableToAdaptException {
+
         Application appDD = (Application) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), Application.class);
         if (appDD != null) {
             return appDD;
@@ -90,13 +95,13 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
             if (namespace == null) {
                 if (dtdPublicId != null) {
                     if (APPLICATION_DTD_PUBLIC_ID_12.equals(dtdPublicId)) {
-                        version = 12;
-                        eePlatformVersion = 12;
+                        version = Application.VERSION_1_2;
+                        eePlatformVersion = Application.VERSION_1_2;
                         return new ApplicationType(getDeploymentDescriptorPath());
                     }
                     if (APPLICATION_DTD_PUBLIC_ID_13.equals(dtdPublicId)) {
-                        version = 13;
-                        eePlatformVersion = 13;
+                        version = Application.VERSION_1_3;
+                        eePlatformVersion = Application.VERSION_1_3;
                         return new ApplicationType(getDeploymentDescriptorPath());
                     }
                 }
@@ -116,22 +121,22 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
             if ("1.4".equals(vers)) {
             	// Always supported. The namespace must be correct for the version.
             	if ( "http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
-                    version = 14;
-                    eePlatformVersion = 14;
+                    version = Application.VERSION_1_4;
+                    eePlatformVersion = Application.VERSION_1_4;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
             } else if ("5".equals(vers)) {
             	// Always supported. The namespace must be correct for the version.
                 if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
-                    version = 50;
-                    eePlatformVersion = 50;
+                    version = Application.VERSION_5;
+                    eePlatformVersion = Application.VERSION_5;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
             } else if ("6".equals(vers)) {
             	// Always supported. The namespace must be correct for the version.
                 if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {            	
-                    version = 60;
-                    eePlatformVersion = 60;
+                    version = Application.VERSION_6;
+                    eePlatformVersion = Application.VERSION_6;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
             } else if ("7".equals(vers)) {
@@ -140,8 +145,8 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
             	if ((eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) ||
             	    (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0)) { 
                 	if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-            			version = 70;
-            			eePlatformVersion = 70;
+            			version = Application.VERSION_7;
+            			eePlatformVersion = Application.VERSION_7;
             			return new ApplicationType(getDeploymentDescriptorPath());
             		}
             	}
@@ -150,8 +155,8 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
             	// The namespace must still be correctly set.
             	if (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0) { 
                 	if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-            			version = 80;
-            			eePlatformVersion = 80;
+            			version = Application.VERSION_8;
+            			eePlatformVersion = Application.VERSION_8;
             			return new ApplicationType(getDeploymentDescriptorPath());
             		}
             	}
