@@ -28,6 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -135,23 +136,24 @@ public class FaultToleranceGitTckLauncher {
         HashSet<String> versionedLibraries = new HashSet<>(Arrays.asList("com.ibm.websphere.org.eclipse.microprofile.faulttolerance"));
         String backStopImpl = "1.0"; // Used if there is no impl matching the spec/pom.xml <version> AND impl.version is not set
 
-        MvnUtils.runTCKMvnCmdWithProps(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK", addedProps,
-                                       versionedLibraries, backStopImpl);
+        MvnUtils.runTCKMvnCmdWithProps(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK",
+                                       addedProps, versionedLibraries, backStopImpl);
     }
 
     @Mode(TestMode.LITE)
     @Test
     public void testThatDoesNothingAndCanAlwaysRunAndPass() {
-        String mode = System.getProperty("fat.test.mode");
-        if (!"experimental".equals(mode)) {
+        if (TestModeFilter.FRAMEWORK_TEST_MODE != TestMode.EXPERIMENTAL) {
             System.out.println("\n\n\n");
-            System.out.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + mode + ", run with '-Dfat.test.mode=experimental' to run the TCK");
+            System.out.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + TestModeFilter.FRAMEWORK_TEST_MODE
+                               + ", run with '-Dfat.test.mode=experimental' to run the TCK");
             System.out.println("\n\n\n");
             // In FATs System.out is captured to a file, we try to be kind to any developer and give it to them straight
             if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
                 try (PrintStream screen = new PrintStream(new FileOutputStream(FileDescriptor.out))) {
                     screen.println("\n\n\n");
-                    screen.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + mode + ", run with '-Dfat.test.mode=experimental' to run the TCK");
+                    screen.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + TestModeFilter.FRAMEWORK_TEST_MODE
+                                   + ", run with '-Dfat.test.mode=experimental' to run the TCK");
                     screen.println("\n\n\n");
                 }
             }

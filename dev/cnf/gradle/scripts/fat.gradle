@@ -391,7 +391,7 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
 }
 
 def ebcClone(String url, String branch, String repoPath){
-  project.logger.lifecycle('ERROR: Needs pre-req of https://github.ibm.com/APTribe/CSI-Squad-Backlog/issues/372 to implement git clone of' + url)
+  // Non-local cloning is not implemented for now  
 }
 
 build {

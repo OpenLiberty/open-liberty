@@ -154,7 +154,7 @@ public class MvnUtils {
                 jarsFromWlp.add(jarKey);
                 log(jarKey);
                 // For jars that have more than one version we try to add to the regex the api version
-                if (versionedJars.contains(jarKey)) {
+                if (versionedJars != null && versionedJars.contains(jarKey)) {
                     String versionedJarKey;
                     if (implVersion != null) {
                         // User has passed in impl.version
@@ -628,6 +628,8 @@ public class MvnUtils {
     }
 
     /**
+     * Return the project/version String of a directory's pom.xml file
+     * 
      * @param repo
      * @param subdir
      * @return
