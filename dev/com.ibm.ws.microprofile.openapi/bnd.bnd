@@ -27,15 +27,18 @@ Import-Package: \
 	org.apache.commons.io*;version=1.4;packageType=was_internal,\
 	org.eclipse.microprofile.config.*;version="[1.0,2)",\
 	*
-
-Private-Package: \
-    com.ibm.ws.microprofile.openapi.resources,\
-    com.ibm.ws.microprofile.openapi.impl.*    
     
 Export-Package: \
 	com.ibm.ws.microprofile.openapi,\
-	com.ibm.ws.microprofile.openapi.utils
-		
+	com.ibm.ws.microprofile.openapi.utils,\
+    !com.ibm.ws.microprofile.openapi.impl.validation.resources,\
+    com.ibm.ws.microprofile.openapi.impl.*
+    
+
+Private-Package: \
+    com.ibm.ws.microprofile.openapi.resources,\
+    com.ibm.ws.microprofile.openapi.impl.validation.resources
+    
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
   	META-INF/services=resources/META-INF/services,\
