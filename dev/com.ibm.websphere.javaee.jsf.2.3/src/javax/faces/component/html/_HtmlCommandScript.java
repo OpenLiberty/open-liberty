@@ -32,7 +32,6 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 clazz = "javax.faces.component.html.HtmlCommandScript",template=true,
 tagClass = "org.apache.myfaces.taglib.html.HtmlCommandScriptTag",
 defaultRendererType = "javax.faces.Script",
-implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
 defaultEventName = "action"
 )
 abstract class _HtmlCommandScript extends UICommand

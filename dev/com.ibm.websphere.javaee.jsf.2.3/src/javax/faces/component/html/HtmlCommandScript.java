@@ -31,7 +31,6 @@ import javax.faces.component.UIComponent;
 // WARNING: This file was automatically generated. Do not edit it directly,
 //          or you will lose your changes.
 public class HtmlCommandScript extends javax.faces.component.UICommand
-    implements javax.faces.component.behavior.ClientBehaviorHolder
 {
 
     static public final String COMPONENT_FAMILY =
@@ -52,23 +51,6 @@ public class HtmlCommandScript extends javax.faces.component.UICommand
     }
 
 
-    static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
-        java.util.Collections.unmodifiableCollection(
-            java.util.Arrays.asList(
-             "action"
-        ));
-
-    public java.util.Collection<String> getEventNames()
-    {
-        return CLIENT_EVENTS_LIST;
-    }
-
-    @Override
-    public void addClientBehavior(String eventName, javax.faces.component.behavior.ClientBehavior behavior)
-    {
-        super.addClientBehavior(eventName, behavior);
-        _CommonEventConstants.markEvent(this, eventName);
-    }
 
     //ClientBehaviorHolder default: action
     public String getDefaultEventName()
