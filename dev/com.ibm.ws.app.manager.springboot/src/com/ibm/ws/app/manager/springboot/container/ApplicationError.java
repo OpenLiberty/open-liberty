@@ -43,7 +43,7 @@ public class ApplicationError extends RuntimeException {
      * @param type
      */
     public ApplicationError(Type type) {
-        this(type.toString(), type);
+        this("", type);
     }
 
     public ApplicationError(String message, Type type) {
