@@ -159,11 +159,14 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
-        try {
-            bytes = cache.get(key);
-        } finally {
-            cache.close();
-        }
+        if (cache == null) // cache can be null if test case disables the sessionCache-1.0 feature
+            bytes = null;
+        else
+            try {
+                bytes = cache.get(key);
+            } finally {
+                cache.close();
+            }
 
         assertFalse("Not expecting cache entry " + key + " to have value " + unexpectedValue + ". " + EOLN +
                     "Bytes observed: " + Arrays.toString(bytes),
