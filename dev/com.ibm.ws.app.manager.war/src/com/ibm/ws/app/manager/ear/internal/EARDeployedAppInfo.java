@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -154,9 +154,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         this.nestedModuleMetaDataFactories = factory.getNestedModuleMetaDataFactories();
         this.appMBeanRuntime = factory.appMBeanRuntime;
         this.applicationDD = applicationDD;
-        this.altDDSupportEnabled =
-            ((factory.platformVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) ||
-             (factory.platformVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0));
+        this.altDDSupportEnabled = (factory.platformVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0); // JavaEE7 or higher
         this.preExpansionEarContainer = preExpansionEarContainer;
 
         String appName = applicationDD == null ? null : applicationDD.getApplicationName();

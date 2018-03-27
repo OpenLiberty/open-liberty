@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,11 +116,9 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
                 throw new ParseException(missingDeploymentDescriptorVersion());
             }
 
-            // Note: In TWAS, the namespace is optional.
-
             if ("1.4".equals(vers)) {
             	// Always supported. The namespace must be correct for the version.
-            	if ( "http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
+            	if ("http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
                     version = Application.VERSION_1_4;
                     eePlatformVersion = Application.VERSION_1_4;
                     return new ApplicationType(getDeploymentDescriptorPath());
@@ -140,10 +138,9 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
             } else if ("7".equals(vers)) {
-            	// Supported only when provisioned for java 7 or java 8.
+            	// Supported only when provisioned for java 7 or higher.
             	// The namespace must still be correctly set.
-            	if ((eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) ||
-            	    (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0)) { 
+            	if (eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) {
                 	if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
             			version = Application.VERSION_7;
             			eePlatformVersion = Application.VERSION_7;
@@ -151,7 +148,7 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
             		}
             	}
             } else if ("8".equals(vers)) {
-            	// Supported only when provisioned for java 8.
+            	// Supported only when provisioned for java 8 or higher.
             	// The namespace must still be correctly set.
             	if (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0) { 
                 	if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
