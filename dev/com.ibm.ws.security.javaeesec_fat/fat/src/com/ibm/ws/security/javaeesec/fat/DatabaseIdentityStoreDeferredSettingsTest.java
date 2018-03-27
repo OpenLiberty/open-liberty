@@ -180,7 +180,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("java.sql.SQLSyntaxErrorException")
+    @ExpectedFFDC({ "java.sql.SQLSyntaxErrorException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException" })
     public void callerQuery() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -210,6 +210,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException" })
     public void callerQuery_NULL() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -236,7 +237,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("javax.naming.NameNotFoundException")
+    @ExpectedFFDC({ "javax.naming.NameNotFoundException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException" })
     public void dataSourceLookup() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -261,7 +262,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC({ "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.resource.spi.ResourceAllocationException" })
+    @ExpectedFFDC({ "java.sql.SQLException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException",
+                    "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                    "javax.resource.spi.ResourceAllocationException" })
     public void dataSourceLookup_NoDB() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -314,7 +317,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException" })
     public void dataSourceLookup_Empty() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -457,7 +460,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("java.sql.SQLSyntaxErrorException")
+    @ExpectedFFDC({ "java.sql.SQLSyntaxErrorException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException" })
     public void groupsQuery() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -465,7 +468,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         overrides.put(JavaEESecConstants.GROUPS_QUERY, "select group_name from badtable where caller_name = ?");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
-        verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         String msg = "CWWKS1919W";
         List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
