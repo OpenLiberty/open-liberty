@@ -84,3 +84,4 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.1-bd47e8f
 org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor:2.7.1-bd47e8f
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.1-bd47e8f
 com.ibm.ws.lars:larsServer-memoryBackend:war:1.0.1
+com.ibm.ws.org.apache.commons:commons-compress:1.16.1
