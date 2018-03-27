@@ -19,6 +19,12 @@ src: \
 
 fat.project: true
 
+// This list does not need to be exhaustive, here we cover the fact that
+// we have   <feature>mpFaultTolerance-${server.xml.feature.version}</feature>
+// in server.xml and also include some currently non existing levels.
+tested.features: concurrent-1.0,\
+                 mpFaultTolerance-1.0,\
+                 mpFaultTolerance-1.1
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,6 +70,11 @@ public class MvnUtils {
     public static String mvnOutputFilename = "mvnOutput_TCK";
     static List<String> jarsFromWlp = new ArrayList<String>(3);
     private static File mvnOutput;
+    private static String apiVersion;
+    private static String implVersion;
+    private static String backStopImplVersion;
+    private static Set<String> versionedJars;
+    private static Map<String, String> mavenVersionBindingJarPatches = new HashMap<String, String>();
 
     /**
      * Initialise shared values for a particular server.
@@ -144,8 +150,21 @@ public class MvnUtils {
             for (int i = 0; i < nl.getLength(); i++) {
                 // turn "<systemPath>${jar.name}</systemPath>" into "jar.name"
                 String jarKey = nl.item(i).getTextContent().replaceAll("\\$\\{", "").replaceAll("\\}", "".replaceAll("\\s+", ""));
+
                 jarsFromWlp.add(jarKey);
                 log(jarKey);
+                // For jars that have more than one version we try to add to the regex the api version
+                if (versionedJars.contains(jarKey)) {
+                    String versionedJarKey;
+                    if (implVersion != null) {
+                        // User has passed in impl.version
+                        versionedJarKey = jarKey + "." + implVersion;
+                    } else {
+                        // Get version from pom.xml
+                        versionedJarKey = jarKey + "." + takeOffFinalOrSnapshot(apiVersion);
+                    }
+                    mavenVersionBindingJarPatches.put(jarKey, versionedJarKey);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,6 +172,21 @@ public class MvnUtils {
             throw e;
         }
 
+    }
+
+    /**
+     * @param version
+     * @return
+     */
+    private static String takeOffFinalOrSnapshot(String version) {
+        if (version != null && version.length() > 1) {
+            // Remove anything after a dash
+            String[] bits = version.split("-");
+            version = bits[0];
+            // Remove and Final specifier
+            version = version.replace(".Final", "");
+        }
+        return version;
     }
 
     /**
@@ -203,18 +237,33 @@ public class MvnUtils {
 
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
+     *
+     * @param backStopImpl
      */
-    public static int runTCKVersionedMvnCmd(LibertyServer server, String bucketName, String testName, String tckVersion) throws Exception {
+    public static int runTCKMvnCmdWithProps(LibertyServer server, String bucketName, String testName, Map<String, String> addedProps,
+                                            Set<String> versionedJarKeys, String backStopImpl) throws Exception {
+        apiVersion = addedProps.get("api.version");
+        implVersion = addedProps.get("impl.version");
+        backStopImplVersion = backStopImpl;
+
+        versionedJars = versionedJarKeys;
+
         if (!init) {
             init(server);
         }
-        String[] cmd = concatStringArray(mvnCliRoot, new String[] { "-Dtck.version=" + tckVersion });
+
+        String[] cmd = mvnCliRoot;
+        for (Iterator<Entry<String, String>> iterator = addedProps.entrySet().iterator(); iterator.hasNext();) {
+            Entry<String, String> entry = iterator.next();
+            cmd = concatStringArray(cmd, new String[] { "-D" + entry.getKey() + "=" + entry.getValue() });
+        }
+
         int rc = runCmd(cmd, MvnUtils.tckRunnerDir, mvnOutput);
         String failingTestsList = postProcessTestNgResults();
         // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
         // the TCK regression
         Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
-                            + "The TCK (version=" + tckVersion + ") has thus returned non-zero return code of: "
+                            + "The TCK (" + cmd + ") has thus returned non-zero return code of: "
                             + rc +
                             ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
                             " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
@@ -308,7 +357,30 @@ public class MvnUtils {
         HashMap<String, String> result = new HashMap<String, String>(jars.size());
         for (Iterator<String> iterator = jars.iterator(); iterator.hasNext();) {
             String jarName = iterator.next();
-            String jarPath = resolveJarPath(jarName, server);
+
+            String jarPath;
+            // Sometimes we can add a particular version postfix to the regex bases on a spec pom.xml
+            if (mavenVersionBindingJarPatches.keySet().contains(jarName)) {
+                jarPath = resolveJarPath(mavenVersionBindingJarPatches.get(jarName), server);
+            } else {
+                jarPath = resolveJarPath(jarName, server);
+            }
+
+            // We allow the situation were we want to test the current TCK version N versus a default level of impl
+            // that is passed in from the testcase and used if no impl.version is set. This does not resolve the
+            // server.xml features dynamically but does allow different maven systempath jars for the impl jar
+            if (jarPath == null && backStopImplVersion != null && backStopImplVersion.length() > 0) {
+                jarPath = resolveJarPath(jarName + "." + backStopImplVersion, server);
+            }
+
+            if (jarPath == null) {
+                System.out.println("No jar found");
+            }
+
+            if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
+                // Developers laptop FAT
+                Assert.assertNotNull(jarPath, "The resolved jarPath for " + jarName + " is null in " + server.getInstallRoot());
+            }
             result.put(jarName, jarPath);
         }
         return result;
@@ -536,25 +608,38 @@ public class MvnUtils {
     }
 
     /**
-     * Return the version from the tck/pom.xml
+     * Return the version from the <repo>/spec/pom.xml
+     *
+     * @param repo
+     * @return
+     */
+    public static String getApiSpecVersionAfterClone(File repo) {
+        return getPomVersionInDir(repo, "spec");
+    }
+
+    /**
+     * Return the version from the <repo>/tck/pom.xml
      *
      * @param repo
      * @return
      */
     public static String getTckVersionAfterClone(File repo) {
-        String version = "NOT_SET";
-        Assert.assertTrue("The cloned into directory " + repo.getAbsolutePath() + " does not exist", repo.exists());
+        return getPomVersionInDir(repo, "tck");
+    }
 
-        File tckDir = new File(repo, "tck");
-        Assert.assertTrue("The tck directory " + tckDir.getAbsolutePath() + " does not exist", tckDir.exists());
-
-        File pomXml = new File(tckDir, "pom.xml");
+    /**
+     * @param repo
+     * @param subdir
+     * @return
+     */
+    private static String getPomVersionInDir(File repo, String subdir) {
+        Assert.assertTrue("The cloned into directory " + repo.getAbsolutePath() + " does not exist", repo != null && repo.exists());
+        File dir = new File(repo, subdir);
+        Assert.assertTrue("The pom.xml parent directory " + dir.getAbsolutePath() + " does not exist", dir.exists());
+        File pomXml = new File(dir, "pom.xml");
         Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
-
         String query = "/project/version";
-        version = getQueryInXml(pomXml, query, "", null).trim();
-
-        return version;
+        return getQueryInXml(pomXml, query, "", null).trim();
     }
 
     /**

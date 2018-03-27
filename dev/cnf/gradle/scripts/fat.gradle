@@ -331,7 +331,7 @@ assemble {
   }
 }
 
-ext.gitClone = { proj, branch = 'master', folder = '', site = 'git@github.com', org = 'eclipse' ->
+ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com', org = 'eclipse' ->
 
   // We need to know which MP project at least
   if( proj == null || proj.length() == 0 ){
@@ -339,6 +339,16 @@ ext.gitClone = { proj, branch = 'master', folder = '', site = 'git@github.com', 
     return
   }
 
+  // Default the branch to master but allow -Dbranch= or a parameter coming in
+  if( "NOT_SET".equals( branch ) ){
+    String branchProp = System.getProperty('branch')
+    if( branchProp != null && branchProp.length > 0 ){
+       branch = branchProp
+    }else{
+       branch = "master"
+    }
+  }
+  
   // Default the destination forlder to the project name
   if( folder == null || folder.length() == 0 ){
     folder = proj

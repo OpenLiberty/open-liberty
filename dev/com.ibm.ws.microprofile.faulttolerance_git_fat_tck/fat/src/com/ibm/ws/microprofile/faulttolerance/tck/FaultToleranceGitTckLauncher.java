@@ -11,6 +11,12 @@
 package com.ibm.ws.microprofile.faulttolerance.tck;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -108,15 +114,47 @@ public class FaultToleranceGitTckLauncher {
         File repo = new File(repoParent, GIT_REPO_NAME);
 
         MvnUtils.mvnCleanInstall(repo);
+
+        HashMap<String, String> addedProps = new HashMap<String, String>();
+
+        String apiVersion = MvnUtils.getApiSpecVersionAfterClone(repo);
+        System.out.println("Queried api.version is : " + apiVersion);
+        addedProps.put("api.version", apiVersion);
+
         String tckVersion = MvnUtils.getTckVersionAfterClone(repo);
         System.out.println("Queried tck.version is : " + tckVersion);
+        addedProps.put("tck.version", tckVersion);
 
-        MvnUtils.runTCKVersionedMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK", tckVersion);
+        // A command line -Dprop=value actually gets to here as a environment variable...
+        String implVersion = System.getenv("impl.version");
+        System.out.println("Passed in impl.version is : " + implVersion);
+        addedProps.put("impl.version", implVersion);
+
+        // We store a set of keys that we want the system to add "1.1" or "1.2" etc to
+        // depending on the pom.xml contents.
+        HashSet<String> versionedLibraries = new HashSet<>(Arrays.asList("com.ibm.websphere.org.eclipse.microprofile.faulttolerance"));
+        String backStopImpl = "1.0"; // Used if there is no impl matching the spec/pom.xml <version> AND impl.version is not set
+
+        MvnUtils.runTCKMvnCmdWithProps(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK", addedProps,
+                                       versionedLibraries, backStopImpl);
     }
 
     @Mode(TestMode.LITE)
     @Test
     public void testThatDoesNothingAndCanAlwaysRunAndPass() {
-        // Do nothing
+        String mode = System.getProperty("fat.test.mode");
+        if (!"experimental".equals(mode)) {
+            System.out.println("\n\n\n");
+            System.out.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + mode + ", run with '-Dfat.test.mode=experimental' to run the TCK");
+            System.out.println("\n\n\n");
+            // In FATs System.out is captured to a file, we try to be kind to any developer and give it to them straight
+            if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
+                try (PrintStream screen = new PrintStream(new FileOutputStream(FileDescriptor.out))) {
+                    screen.println("\n\n\n");
+                    screen.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + mode + ", run with '-Dfat.test.mode=experimental' to run the TCK");
+                    screen.println("\n\n\n");
+                }
+            }
+        }
     }
 }
