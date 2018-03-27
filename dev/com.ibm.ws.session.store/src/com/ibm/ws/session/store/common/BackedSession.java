@@ -590,7 +590,7 @@ public abstract class BackedSession extends MemorySession {
 
         if (includeInAppDataChanges && appDataChanges == null) {
             if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
-                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[PUT_VALUE_GUTS], "init appDataChanges");
+                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[GET_VALUE_GUTS], "init appDataChanges");
             }
             appDataChanges = new Hashtable<String, Object>();
         }
@@ -678,10 +678,10 @@ public abstract class BackedSession extends MemorySession {
             }
             if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                 if (!SessionManagerConfig.isHideSessionValues()) {
-                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[PUT_VALUE_GUTS], "storing for " + getId() + " prop " + name + " with value "
+                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[invoker], "storing for " + getId() + " prop " + name + " with value "
                                                                                                                   + value + " via thread " + t);
                 } else {
-                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[PUT_VALUE_GUTS], "storing for " + getId() + " prop " + name + " via thread "
+                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[invoker], "storing for " + getId() + " prop " + name + " via thread "
                                                                                                                   + t);
                 }
             }
