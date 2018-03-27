@@ -43,6 +43,20 @@ public class DefaultSources {
         sources.add(new SystemConfigSource());
         sources.add(new EnvConfigSource());
 
+        addPropertyConfigSources(classloader, sources);
+
+        return sources;
+    }
+
+    /**
+     * Add resources of name {#link ConfigConstants.CONFIG_PROPERTIES} to a List of sources using
+     * the classloader's loadResources method to locate resources.
+     *
+     * @param classloader
+     * @param sources
+     */
+    public static void addPropertyConfigSources(ClassLoader classloader, ArrayList<ConfigSource> sources) {
+
         try {
             Enumeration<URL> propsResources = classloader.getResources(ConfigConstants.CONFIG_PROPERTIES);
             if (propsResources != null) {
@@ -56,8 +70,6 @@ public class DefaultSources {
             //TODO maybe we should just output a warning and continue??
             throw new ConfigException("Could not load " + ConfigConstants.CONFIG_PROPERTIES, e);
         }
-
-        return sources;
     }
 
     /**
