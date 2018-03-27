@@ -10,6 +10,10 @@
  -->
 <server>
    <featureManager>
+        <!--  Currently we set this version property in bootstrap.properties
+              we need to cover what we pull in in bnd.bnd: tested.features
+              as FeatureDependencyProcessor.java does not handle run time
+              properties so we can't fully infer this from cloned pom.xml's for now -->
         <feature>mpFaultTolerance-${server.xml.feature.version}</feature>
         <feature>cdi-1.2</feature>
         <feature>servlet-3.1</feature>
