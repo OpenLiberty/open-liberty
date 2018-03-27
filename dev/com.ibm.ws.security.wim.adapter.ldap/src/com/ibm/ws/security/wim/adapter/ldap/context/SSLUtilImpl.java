@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.wim.env.was;
+package com.ibm.ws.security.wim.adapter.ldap.context;
 
 import static com.ibm.websphere.ssl.JSSEHelper.CONNECTION_INFO_DIRECTION;
 import static com.ibm.websphere.ssl.JSSEHelper.CONNECTION_INFO_REMOTE_HOST;
@@ -36,19 +36,17 @@ import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.ssl.JSSEHelper;
-import com.ibm.ws.security.wim.env.ISSLUtil;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.exception.WIMSystemException;
 
 @Trivial
-public class SSLUtilImpl implements ISSLUtil {
+public class SSLUtilImpl {
 
     /**
      * Register the class to trace service.
      */
     private final static TraceComponent tc = Tr.register(SSLUtilImpl.class);
 
-    @Override
     public Properties getSSLPropertiesOnThread() {
         return AccessController.doPrivileged(new PrivilegedAction<Properties>() {
             @Override
@@ -58,12 +56,10 @@ public class SSLUtilImpl implements ISSLUtil {
         });
     }
 
-    @Override
     public void resetSSLAlias() {
         setSSLPropertiesOnThread(null);
     }
 
-    @Override
     public void setSSLAlias(final String sslAlias, Hashtable<?, ?> ldapEnv) throws WIMException {
         final String METHODNAME = "setSSLAlias";
 
@@ -127,7 +123,6 @@ public class SSLUtilImpl implements ISSLUtil {
         }
     }
 
-    @Override
     public void setSSLPropertiesOnThread(final Properties props) {
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override

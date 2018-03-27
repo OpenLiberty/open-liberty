@@ -25,8 +25,6 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.naming.InvalidNameException;
 import javax.naming.NamingEnumeration;
@@ -907,42 +905,6 @@ public class LdapHelper {
             list.add(rdn);
         }
         return list.toArray(new String[0]);
-    }
-
-    /**
-     * Is the address an IPv6 Address.
-     *
-     * @param host
-     * @return
-     */
-    public static boolean isIPv6Addr(String host) {
-        if (host != null) {
-            if (host.contains("[") && host.contains("]"))
-                host = host.substring(host.indexOf("[") + 1, host.indexOf("]"));
-            host = host.toLowerCase();
-            Pattern p1 = Pattern.compile("^(?:(?:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9](?::|$)){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))$");
-            Pattern p2 = Pattern.compile("^(\\d{1,3}\\.){3}\\d{1,3}$");
-            Matcher m1 = p1.matcher(host);
-            boolean b1 = m1.matches();
-            Matcher m2 = p2.matcher(host);
-            boolean b2 = !m2.matches();
-            return b1 && b2;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Format the given address as an IPv6 Address.
-     *
-     * @param host
-     * @return
-     */
-    public static String formatIPv6Addr(String host) {
-        if (host == null)
-            return null;
-        else
-            return (new StringBuilder()).append("[").append(host).append("]").toString();
     }
 
     /**

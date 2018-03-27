@@ -88,6 +88,7 @@ import com.ibm.ws.security.wim.BaseRepository;
 import com.ibm.ws.security.wim.ConfiguredRepository;
 import com.ibm.ws.security.wim.adapter.ldap.change.ChangeHandlerFactory;
 import com.ibm.ws.security.wim.adapter.ldap.change.IChangeHandler;
+import com.ibm.ws.security.wim.adapter.ldap.context.TimedDirContext;
 import com.ibm.ws.security.wim.util.ControlsHelper;
 import com.ibm.ws.security.wim.util.NodeHelper;
 import com.ibm.ws.security.wim.util.SchemaConstantsInternal;
@@ -293,7 +294,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 iLdapConn.invalidateAttributeCache();
 
                 // Invalidate the search cache
-                iLdapConn.invalidateNamesCache();
+                iLdapConn.invalidateSearchCache();
 
                 // Log this clearAll call
                 String uniqueName = getCallerUniqueName();
@@ -415,11 +416,11 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                     // If group member control is passed, clear the search cache.
                     // This is done in order to correctly fetch members of dynamic groups.
                     if (grpMbrCtrl != null)
-                        iLdapConn.invalidateNamesCache();
+                        iLdapConn.invalidateSearchCache();
                     // If the membership control is passed, clear the search cache as the membership will be determined
                     // by a search
                     if ((grpMbrshipCtrl != null || chkGrpMbrshipCtrl != null))
-                        iLdapConn.invalidateNamesCache();
+                        iLdapConn.invalidateSearchCache();
                 }
                 // If fetched entity is a person or person account
                 else if (iLdapConfigMgr.isPerson(ldapEntry.getType()) || iLdapConfigMgr.isPersonAccount(ldapEntry.getType())) {
@@ -432,21 +433,21 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                             try {
                                 // If membership attr is not found
                                 if (mbrshipAttr == null || (mbrshipAttr.size() == 1 && mbrshipAttr.get(0) == null)) {
-                                    iLdapConn.invalidateNamesCache();
+                                    iLdapConn.invalidateSearchCache();
                                 }
 
                                 // If membership attr does not include dynamic groups i.e. the membership attribute is defined but its scope is not "All"
                                 // or if the membership attribute does not support dynamic groups, then the search results cache need to be cleared.
                                 if (iLdapConfigMgr.getMembershipAttributeScope() != LDAP_ALL_GROUP_MEMBERSHIP && iLdapConfigMgr.supportDynamicGroup()) {
-                                    iLdapConn.invalidateNamesCache();
+                                    iLdapConn.invalidateSearchCache();
                                 }
                             } catch (NamingException e) {
                                 // If there was any exception in fetching the attributes, clear the search results cache.
-                                iLdapConn.invalidateNamesCache();
+                                iLdapConn.invalidateSearchCache();
                             }
                         } else {
                             // If membership attribute is not defined, then clear the search results cache.
-                            iLdapConn.invalidateNamesCache();
+                            iLdapConn.invalidateSearchCache();
                         }
                     }
                 }
@@ -689,7 +690,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 iLdapConn.invalidateAttributeCache();
 
                 // Invalidate the search cache
-                iLdapConn.invalidateNamesCache();
+                iLdapConn.invalidateSearchCache();
 
                 // Log this clearAll call
                 String uniqueName = getCallerUniqueName();
@@ -819,7 +820,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                         }
                         // invalidating the search cache
                         if (ldapEntriesList.size() > 0) {
-                            iLdapConn.invalidateNamesCache();
+                            iLdapConn.invalidateSearchCache();
                         }
                     }
                 }
@@ -3035,9 +3036,9 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             // Check if user wants to bind to LDAP server with input principal name. If not, default
             // behavior is to bind using user DN.
             if (iLdapConfigMgr.isSetUsePrincipalNameForLogin())
-                ctx = iLdapConn.createDirContext(principalName, pwd);
+                ctx = iLdapConn.getContextManager().createDirContext(principalName, pwd);
             else
-                ctx = iLdapConn.createDirContext(dn, pwd);
+                ctx = iLdapConn.getContextManager().createDirContext(dn, pwd);
             ctx.close();
         }
 
@@ -3103,7 +3104,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             iLdapConn.invalidateAttributes(delEntry.getDN(), delEntry.getExtId(), delEntry.getUniqueName());
         }
         // Invalidate Names Cache
-        iLdapConn.invalidateNamesCache();
+        iLdapConn.invalidateSearchCache();
 
         return outRoot;
     }
@@ -3136,7 +3137,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         deletePreExit(dn);
 
         List<String> grpList = getGroups(dn);
-        iLdapConn.destroySubcontext(dn);
+        iLdapConn.getContextManager().destroySubcontext(dn);
         delEntries.add(ldapEntry);
         for (int i = 0; i < grpList.size(); i++) {
             String grpDN = grpList.get(i);
@@ -3419,7 +3420,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             // Active Directory 2003 does not allow userAccountControl when creating.
             accCtrl = attrs.remove(LDAP_ATTR_USER_ACCOUNT_CONTROL);
         }
-        DirContext subCtx = iLdapConn.createSubcontext(dn, attrs);
+        DirContext subCtx = iLdapConn.getContextManager().createSubcontext(dn, attrs);
         try {
             subCtx.close();
         } catch (NamingException e) {
@@ -3445,7 +3446,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             extId = getExtId(dn, extIdName, null);
         }
         // Invalidate Names Cache
-        iLdapConn.invalidateNamesCache();
+        iLdapConn.invalidateSearchCache();
 
         // Construct return data graph
         Entity returnEntity = new Entity();
@@ -3691,7 +3692,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 iLdapConn.invalidateAttributeCache();
 
                 // Invalidate the search cache
-                iLdapConn.invalidateNamesCache();
+                iLdapConn.invalidateSearchCache();
 
                 // Log this clearAll call
                 String uniqueName = getCallerUniqueName();
@@ -3720,7 +3721,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 iLdapConn.invalidateAttributes(externalName, extId, uniqueName);
 
                 // Invalidate the search cache
-                iLdapConn.invalidateNamesCache();
+                iLdapConn.invalidateSearchCache();
             } else if (tc.isWarningEnabled())
                 Tr.warning(tc, WIMMessageKey.UNKNOWN_CLEAR_CACHE_MODE,
                            WIMMessageHelper.generateMsgParms(reposId, cacheMode));
@@ -3936,7 +3937,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         iLdapConn.invalidateAttributes(dn, extId, uniqueName);
 
         // Invalidate Names Cache
-        iLdapConn.invalidateNamesCache();
+        iLdapConn.invalidateSearchCache();
 
         createEntityFromLdapEntry(outRoot, SchemaConstants.DO_ENTITIES, ldapEntry, null);
         return outRoot;
