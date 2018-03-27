@@ -11,10 +11,7 @@
 package com.ibm.ws.security.authentication.jaas.modules;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -26,7 +23,6 @@ import javax.security.auth.spi.LoginModule;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
@@ -35,7 +31,7 @@ import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.internal.jaas.modules.ServerCommonLoginModule;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
-import com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
@@ -64,8 +60,6 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
 
     private final String[] userIdOnlyProperties = { AttributeNameConstants.WSCREDENTIAL_USERID,
                                                     AuthenticationConstants.INTERNAL_ASSERTION_KEY };
-
-    private final String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
 
     private boolean uniquedIdAndSecurityNameLogin = false;
     private boolean useIdAndPasswordLogin = false;
@@ -185,7 +179,6 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                 username = userId;
                 uniqueUserId = ret;
                 setUpTemporarySubject();
-                addJsonWebToken(temporarySubject);
                 updateSharedState();
                 return true;
             }
@@ -260,9 +253,9 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                                                        getRealm(customProperties),
                                                        username);
             }
-            setPrincipalAndCredentials(temporarySubject, username, null, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
-            addJaspicPrincipal(temporarySubject);
-            addJsonWebToken(temporarySubject);
+            setWSPrincipal(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
+            setCredentials(temporarySubject, username, null);
+            setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
             updateSharedState();
         } catch (Exception e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
@@ -296,42 +289,15 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         return realm;
     }
 
-    /**
-     * If a JASPIC provider supplied a Principal via CallerPrincipalCallback
-     * then put the Principal in the Principals set and in the WSCredential
-     *
-     * @param subject
-     */
-    private void addJaspicPrincipal(Subject subject) throws Exception {
-        Principal jaspiPrincipal = (Principal) customProperties.get("com.ibm.wsspi.security.cred.jaspi.principal");
-        if (jaspiPrincipal != null) {
-            WSCredential wsCredential = null;
-            Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
-            Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
-            if (wsCredentialsIterator.hasNext()) {
-                wsCredential = wsCredentialsIterator.next();
-                if (wsCredential != null) // paranoid safety check (it's gm time)
-                    wsCredential.set("com.ibm.wsspi.security.cred.jaspi.principal", jaspiPrincipal);
-            }
-            subject.getPrincipals().add(jaspiPrincipal);
-        }
-    }
-
-    private void addJsonWebToken(Subject subject) {
-        if (customProperties != null && customProperties.get(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN) != null) {
-            MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
-            removeInternalAssertionHashtable(customProperties, jsonWebTokenProperties);
-        }
-    }
-
     private void setUpTemporarySubject() throws Exception {
         temporarySubject = new Subject();
         UserRegistry userRegistry = getUserRegistry();
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       userRegistry.getRealm(),
                                                       uniqueUserId);
-        setPrincipalAndCredentials(temporarySubject, username, urAuthenticatedId, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
-        addJaspicPrincipal(temporarySubject);
+        setWSPrincipal(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
+        setCredentials(temporarySubject, username, urAuthenticatedId);
+        setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
     }
 
     /**
@@ -372,6 +338,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                     ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
                 }
             }
+            JwtSSOTokenHelper.addCustomCacheKeyToJwtSSOToken(subject, (String) customCacheKey);
         }
 
         return true;
@@ -396,16 +363,5 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         uniqueUserId = null;
         urAuthenticatedId = null;
         return true;
-    }
-
-    private void removeInternalAssertionHashtable(Hashtable<String, ?> props, String propNames[]) {
-        Set<Object> publicCredentials = subject.getPublicCredentials();
-        publicCredentials.remove(props);
-        for (String propName : propNames) {
-            props.remove(propName);
-        }
-        if (!props.isEmpty()) {
-            publicCredentials.add(props);
-        }
     }
 }
