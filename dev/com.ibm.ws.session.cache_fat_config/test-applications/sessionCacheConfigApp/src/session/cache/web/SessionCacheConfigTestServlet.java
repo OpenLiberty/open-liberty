@@ -321,6 +321,44 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that all session attributes that have been touched via getAttribute or setAttribute are written to the cache.
+     */
+    public void testWriteContents_GET_AND_SET_ATTRIBUTES(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession(true);
+        try {
+            LinkedList<Long> list = new LinkedList<>();
+            list.addAll(Arrays.asList(350l, 351l, 352l));
+
+            @SuppressWarnings("unchecked")
+            LinkedList<Long> originalList = (LinkedList<Long>) list.clone();
+
+            session.setAttribute("gsaset", (byte) 353);
+            session.setAttribute("gsaget", new BitSet(8));
+            session.setAttribute("gsamod", list);
+
+            // Write all attributes to the cache
+            ((IBMSession) session).sync();
+
+            session.setAttribute("gsaset", (byte) 354); // set
+            ((BitSet) session.getAttribute("gsaget")).flip(4, 7); // get and mutate
+            list.add(355l); // mutate without get
+
+            // Write to cache per the writeContents
+            ((IBMSession) session).sync();
+
+            // Check the cache for values expected per writeContents=GET_AND_SET_ATTRIBUTES
+            BitSet expectedBits = new BitSet(8);
+            expectedBits.flip(4, 7);
+            String sessionId = session.getId();
+            testCacheContains(sessionId + ".gsaset", (byte) 354); // updated
+            testCacheContains(sessionId + ".gsaget", expectedBits); // updated
+            testCacheContains(sessionId + ".gsamod", originalList); // not updated
+        } finally {
+            session.invalidate();
+        }
+    }
+
+    /**
      * Verify that only attributes for which setAttribute is invoked are written to the cache.
      */
     public void testWriteContents_ONLY_SET_ATTRIBUTES(HttpServletRequest request, HttpServletResponse response) throws Exception {
