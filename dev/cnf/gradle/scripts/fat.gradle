@@ -342,14 +342,14 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
   // Default the branch to master but allow -Dbranch= or a parameter coming in
   if( "NOT_SET".equals( branch ) ){
     String branchProp = System.getProperty('branch')
-    if( branchProp != null && branchProp.length > 0 ){
+    if( branchProp != null && branchProp.length() > 0 ){
        branch = branchProp
     }else{
        branch = "master"
     }
   }
   
-  // Default the destination forlder to the project name
+  // Default the destination folder to the project name
   if( folder == null || folder.length() == 0 ){
     folder = proj
   }
