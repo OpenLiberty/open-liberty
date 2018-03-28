@@ -111,6 +111,65 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     }
 
     /**
+     * Start the server with an invalid Hazelcast uri configured on httpSessionCache.
+     * Verify that after correcting the uri, session data is persisted.
+     */
+    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
+    @Test
+    public void testInvalidURI() throws Exception {
+        // Start the server with invalid httpSessionCache uri
+        String invalidHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/servers/sessionCacheServer/server.xml").getAbsolutePath();
+        ServerConfiguration config = savedConfig.clone();
+        config.getHttpSessionCaches().get(0).setUri(invalidHazelcastURI);
+        server.updateServerConfiguration(config);
+        server.startServer();
+
+        try {
+            // Expected: CWWKE0701E: ... CacheException: Error opening URI ...
+            assertEquals(1, server.findStringsInLogs("CWWKE0701E.*CacheException.*URI").size());
+            // Session manager should warn user that sessions will be stored in memory
+            assertEquals(1, server.findStringsInLogs("SESN8501I").size());
+
+            List<String> session = new ArrayList<>();
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testInvalidURI1&value=IU1", session);
+
+            // Correct the URI
+            String validHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+            config.getHttpSessionCaches().get(0).setUri(validHazelcastURI);
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testInvalidURI2&value=IU2", session);
+
+            // second value should be written to the cache
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&useURI=true&attribute=testInvalidURI2&value=IU2", session);
+
+            // first value should not be written to the cache
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&useURI=true&attribute=testInvalidURI1&value=null", session);
+
+            // Remove the URI and let it default to the system property
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(savedConfig);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testInvalidURI3&value=IU3", session);
+
+            // third value should be written to the cache
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&useURI=false&attribute=testInvalidURI3&value=IU3", session);
+
+            // whether or not the second value is written depends on JCache provider's behavior when same URI specified a different way
+
+            // first value should not be written to the cache
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&useURI=false&attribute=testInvalidURI1&value=null", session);
+
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+        } finally {
+            server.stopServer("CWWKE0701E.*CacheException.*URI"); // Expected: CWWKE0701E: ... CacheException: Error opening URI ...
+        }
+    }
+
+    /**
      * Configure httpSessionCache pointing at a library that lacks a valid JCache provider. Access a session before and after,
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before is not.
      */
