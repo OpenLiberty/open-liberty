@@ -54,12 +54,12 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      */
     @After
     public void cleanUpPerTest() throws Exception {
-        if (server.isStarted())
-            try {
+        try {
+            if (server.isStarted())
                 server.stopServer();
-            } finally {
-                server.updateServerConfiguration(savedConfig);
-            }
+        } finally {
+            server.updateServerConfiguration(savedConfig);
+        }
         System.out.println("server configuration restored");
     }
 
@@ -160,7 +160,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     /**
      * Configure httpSessionCache lacking a libraryRef (or bell). Access a session before and after,
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before is not
-     * (the OSGi service backign httpSessionCache config will be unable to activate in the absence of libraryRef).
+     * (the OSGi service backing httpSessionCache config will be unable to activate in the absence of libraryRef).
      */
     @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
