@@ -89,20 +89,17 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         // Verify default behavior: writeContents=ONLY_SET_ATTRIBUTES
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_ONLY_SET_ATTRIBUTES", new ArrayList<>());
 
-        // TODO enable once this function is implemented
         // Reconfigure writeContents=GET_AND_SET_ATTRIBUTES
-        //ServerConfiguration config = server.getServerConfiguration();
-        //HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
-        //httpSessionCache.setWriteContents("GET_AND_SET_ATTRIBUTES");
-        //server.setMarkToEndOfLog();
-        //server.updateServerConfiguration(config);
-        //server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
-
-        //FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_GET_AND_SET_ATTRIBUTES", new ArrayList<>());
-
-        // Reconfigure writeContents=ALL_SESSION_ATTRIBUTES
         ServerConfiguration config = server.getServerConfiguration();
         HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        httpSessionCache.setWriteContents("GET_AND_SET_ATTRIBUTES");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_GET_AND_SET_ATTRIBUTES", new ArrayList<>());
+
+        // Reconfigure writeContents=ALL_SESSION_ATTRIBUTES
         httpSessionCache.setWriteContents("ALL_SESSION_ATTRIBUTES");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
