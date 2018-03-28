@@ -205,7 +205,7 @@ public class LogSource implements Source, WsLogHandler {
         }
 
         //JTSBTS need to look at this message vs formatted message
-        //genData.addPair(LogFieldConstants.MESSAGE, msgBldr.toString());
+        genData.addPair(LogFieldConstants.MESSAGE, messageVal);
         genData.setLogRecordLevel(logRecord.getLevel());
         genData.setLoggerName(logRecord.getLoggerName());
 
