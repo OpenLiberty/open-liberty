@@ -58,6 +58,8 @@ public class DatabaseIdentityStore implements IdentityStore {
     /** The password hash to use for password comparisons. */
     private final PasswordHash passwordHash;
 
+    private InitialContext initialContext = null;
+
     /**
      * Construct a new {@link DatabaseIdentityStore} instance using the specified definitions.
      *
@@ -115,6 +117,14 @@ public class DatabaseIdentityStore implements IdentityStore {
             }
 
             passwordHash.initialize(prepped);
+        }
+
+        try {
+            initialContext = new InitialContext();
+        } catch (NamingException e) {
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "Setting up InitializeContext failed, will try later.", e);
+            }
         }
     }
 
@@ -301,13 +311,16 @@ public class DatabaseIdentityStore implements IdentityStore {
     }
 
     private Connection getConnection(String caller) throws NamingException, SQLException {
-        // datasource could be an expression, look it up fresh everytime.
+        if (initialContext == null) {
+            initialContext = new InitialContext();
+        }
+        // datasource could be an expression, look it up fresh every time.
         String dataSourceLookup = idStoreDefinition.getDataSourceLookup();
         if (dataSourceLookup == null || dataSourceLookup.isEmpty()) {
             throw new IllegalArgumentException("The 'dataSourceLookup' configuration cannot be empty or null.");
         }
 
-        DataSource dataSource = (DataSource) new InitialContext().lookup(dataSourceLookup);
+        DataSource dataSource = (DataSource) initialContext.lookup(dataSourceLookup);
 
         return dataSource.getConnection();
     }
