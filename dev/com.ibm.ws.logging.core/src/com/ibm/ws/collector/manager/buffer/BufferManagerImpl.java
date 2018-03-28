@@ -71,6 +71,7 @@ public class BufferManagerImpl extends BufferManager {
         if (event == null)
             throw new NullPointerException();
 
+        SynchronousHandler[] arrayCopy = null;
         RERWLOCK.readLock().lock();
         try {
             

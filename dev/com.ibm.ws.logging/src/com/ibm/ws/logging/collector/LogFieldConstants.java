@@ -39,6 +39,7 @@ public class LogFieldConstants {
     public static final String DATEOFFIRSTOCCURENCE = "dateOfFirstOccurence";
     public static final String COUNT = "count";
     public static final String IBM_REQUESTSTARTTIME = "ibm_requestStartTime";
+
     public static final String IBM_CLASSNAME = "ibm_className";
     public static final String IBM_EXCEPTIONNAME = "ibm_exceptionName";
     public static final String IBM_PROBEID = "ibm_probeID";
@@ -66,4 +67,18 @@ public class LogFieldConstants {
     public static final String IBM_GC_TYPE = "ibm_gcType";
     public static final String IBM_REASON = "ibm_reason";
     public static final String UTF_8 = "UTF-8";
+
+    //JTSBTS - new
+    public static final String LEVELVALUE = "levelValue";
+    public static final String CORRELATION_ID = "correlationId";
+    public static final String PRODUCT = "product";
+    public static final String COMPONENT = "component";
+    public static final String THREADNAME = "threadName";
+    public static final String ORG = "org";
+    public static final String OBJECT_ID = "objectId";
+
+    public static final String THROWABLE = "throwable";
+    public static final String THROWABLE_LOCALIZED = "throwable_localized";
+    public static final String FORMATTEDMSG = "formattedMsg";
+
 }

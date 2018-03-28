@@ -14,9 +14,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ConcurrentModificationException;
+import java.util.logging.LogRecord;
 
 import com.ibm.ws.logging.internal.impl.BaseTraceService;
 import com.ibm.ws.logging.internal.impl.LogProviderConfigImpl;
+import com.ibm.ws.logging.internal.impl.RoutedMessageImpl;
 
 /**
  *
@@ -25,13 +27,13 @@ public class CapturedOutputHolder extends BaseTraceService {
 
     public static final String nl = System.getProperty("line.separator");
 
-/**
- * A marker for whether we're running command-line or in Eclipse. We want to
- * handle whether we suppress streams differently in those two cases.
- * Eclipse seems to put some of its OSGi configuration data onto
- * the classpath, so take that as the test.
- */
-private static final boolean IS_RUNNING_IN_ECLIPSE = System.getProperty("java.class.path").contains("eclipse/configuration/org.eclipse.osgi/bundles");
+    /**
+     * A marker for whether we're running command-line or in Eclipse. We want to
+     * handle whether we suppress streams differently in those two cases.
+     * Eclipse seems to put some of its OSGi configuration data onto
+     * the classpath, so take that as the test.
+     */
+    private static final boolean IS_RUNNING_IN_ECLIPSE = System.getProperty("java.class.path").contains("eclipse/configuration/org.eclipse.osgi/bundles");
 
     static final PrintStream out = System.out;
     static final PrintStream err = System.err;
@@ -83,6 +85,48 @@ private static final boolean IS_RUNNING_IN_ECLIPSE = System.getProperty("java.cl
             traceLog = systemOut;
         } else {
             traceLog = traceDelegate;
+        }
+    }
+
+    //Overwritten for old BaseTraceService behaviour for echo
+    @Override
+    public void echo(SystemLogHolder holder, LogRecord logRecord) {
+        TraceWriter detailLog = traceLog;
+
+        // Tee to messages.log (always)
+        String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
+        messagesLog.writeRecord(message);
+
+        invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord));
+
+        if (detailLog == systemOut) {
+            // preserve System.out vs. System.err
+            publishTraceLogRecord(holder, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
+        } else {
+            if (copySystemStreams) {
+                // Tee to console.log if we are copying System.out and System.err to system streams.
+                writeFilteredStreamOutput(holder, logRecord);
+            }
+
+            if (TraceComponent.isAnyTracingEnabled()) {
+                publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
+            }
+        }
+    }
+
+    //Overwritten for old BaseTraceService behaviour for publishTraceLogRecord
+    @Override
+    protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
+        if (formattedVerboseMsg == null) {
+            formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
+        }
+        String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
+        invokeTraceRouters(new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, traceDetail, logRecord));
+
+        if (detailLog == systemOut || detailLog == systemErr) {
+            writeStreamOutput((SystemLogHolder) detailLog, traceDetail, false);
+        } else {
+            detailLog.writeRecord(traceDetail);
         }
     }
 
@@ -318,4 +362,5 @@ private static final boolean IS_RUNNING_IN_ECLIPSE = System.getProperty("java.cl
             }
             return "";
         }
-    }}
+    }
+}
