@@ -55,8 +55,7 @@ public class HtmlCommandButton extends javax.faces.component.UICommand
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
-             "change"
-            , "select"
+             "select"
             , "click"
             , "dblclick"
             , "keydown"
@@ -69,6 +68,7 @@ public class HtmlCommandButton extends javax.faces.component.UICommand
             , "mouseup"
             , "blur"
             , "focus"
+            , "change"
             , "action"
         ));
 
@@ -125,18 +125,6 @@ public class HtmlCommandButton extends javax.faces.component.UICommand
     {
         getStateHelper().put(PropertyKeys.accesskey, accesskey ); 
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ACCESSKEY_PROP);
-    }
-    // Property: onchange
-
-    public String getOnchange()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.onchange);
-    }
-    
-    public void setOnchange(String onchange)
-    {
-        getStateHelper().put(PropertyKeys.onchange, onchange ); 
-        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
     // Property: onselect
 
@@ -426,6 +414,18 @@ public class HtmlCommandButton extends javax.faces.component.UICommand
         getStateHelper().put(PropertyKeys.tabindex, tabindex ); 
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.TABINDEX_PROP);
     }
+    // Property: onchange
+
+    public String getOnchange()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.onchange);
+    }
+    
+    public void setOnchange(String onchange)
+    {
+        getStateHelper().put(PropertyKeys.onchange, onchange ); 
+        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
+    }
 
     public void setValueBinding(String name, ValueBinding binding)
     {
@@ -444,7 +444,6 @@ public class HtmlCommandButton extends javax.faces.component.UICommand
          image
         , type
         , accesskey
-        , onchange
         , onselect
         , onclick
         , ondblclick
@@ -469,6 +468,7 @@ public class HtmlCommandButton extends javax.faces.component.UICommand
         , onblur
         , onfocus
         , tabindex
+        , onchange
     }
 
  }

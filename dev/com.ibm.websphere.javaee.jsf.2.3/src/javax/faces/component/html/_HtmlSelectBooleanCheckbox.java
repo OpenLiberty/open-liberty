@@ -41,9 +41,10 @@ implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
 defaultEventName = "valueChange"
 )
 abstract class _HtmlSelectBooleanCheckbox extends UISelectBoolean implements
-_AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,
-_FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
-_StyleProperties, _TabindexProperty, _LabelProperty, _RoleProperty
+    _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,
+    _FocusBlurProperties, _ChangeProperty, _SelectProperty, 
+    _EventProperties, _StyleProperties, _TabindexProperty, _LabelProperty,
+    _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

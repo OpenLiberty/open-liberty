@@ -35,9 +35,10 @@ implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
 defaultEventName = "valueChange"
 )
 abstract class _HtmlInputTextarea extends UIInput implements _AccesskeyProperty,
-    _UniversalProperties, _FocusBlurProperties, _ChangeSelectProperties,
-    _EventProperties, _StyleProperties, _TabindexProperty, 
-    _DisabledReadonlyProperties, _LabelProperty, _RoleProperty
+    _UniversalProperties, _FocusBlurProperties, _ChangeProperty,
+    _SelectProperty, _EventProperties, _StyleProperties, 
+    _TabindexProperty, _DisabledReadonlyProperties, _LabelProperty,
+    _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

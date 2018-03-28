@@ -55,8 +55,7 @@ public class HtmlSelectOneRadio extends javax.faces.component.UISelectOne
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
-             "change"
-            , "select"
+             "select"
             , "click"
             , "dblclick"
             , "keydown"
@@ -69,6 +68,7 @@ public class HtmlSelectOneRadio extends javax.faces.component.UISelectOne
             , "mouseup"
             , "blur"
             , "focus"
+            , "change"
             , "valueChange"
         ));
 
@@ -135,18 +135,6 @@ public class HtmlSelectOneRadio extends javax.faces.component.UISelectOne
     {
         getStateHelper().put(PropertyKeys.accesskey, accesskey ); 
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ACCESSKEY_PROP);
-    }
-    // Property: onchange
-
-    public String getOnchange()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.onchange);
-    }
-    
-    public void setOnchange(String onchange)
-    {
-        getStateHelper().put(PropertyKeys.onchange, onchange ); 
-        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
     // Property: onselect
 
@@ -446,6 +434,18 @@ public class HtmlSelectOneRadio extends javax.faces.component.UISelectOne
     {
         getStateHelper().put(PropertyKeys.enabledClass, enabledClass ); 
     }
+    // Property: onchange
+
+    public String getOnchange()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.onchange);
+    }
+    
+    public void setOnchange(String onchange)
+    {
+        getStateHelper().put(PropertyKeys.onchange, onchange ); 
+        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
+    }
 
     public void setValueBinding(String name, ValueBinding binding)
     {
@@ -465,7 +465,6 @@ public class HtmlSelectOneRadio extends javax.faces.component.UISelectOne
         , layout
         , group
         , accesskey
-        , onchange
         , onselect
         , disabled
         , readonly
@@ -491,6 +490,7 @@ public class HtmlSelectOneRadio extends javax.faces.component.UISelectOne
         , tabindex
         , disabledClass
         , enabledClass
+        , onchange
     }
 
  }

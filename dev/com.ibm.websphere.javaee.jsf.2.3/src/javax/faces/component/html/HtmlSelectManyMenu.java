@@ -55,9 +55,7 @@ public class HtmlSelectManyMenu extends javax.faces.component.UISelectMany
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
-             "change"
-            , "select"
-            , "click"
+             "click"
             , "dblclick"
             , "keydown"
             , "keypress"
@@ -69,6 +67,7 @@ public class HtmlSelectManyMenu extends javax.faces.component.UISelectMany
             , "mouseup"
             , "blur"
             , "focus"
+            , "change"
             , "valueChange"
         ));
 
@@ -102,30 +101,6 @@ public class HtmlSelectManyMenu extends javax.faces.component.UISelectMany
     {
         getStateHelper().put(PropertyKeys.accesskey, accesskey ); 
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ACCESSKEY_PROP);
-    }
-    // Property: onchange
-
-    public String getOnchange()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.onchange);
-    }
-    
-    public void setOnchange(String onchange)
-    {
-        getStateHelper().put(PropertyKeys.onchange, onchange ); 
-        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
-    }
-    // Property: onselect
-
-    public String getOnselect()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.onselect);
-    }
-    
-    public void setOnselect(String onselect)
-    {
-        getStateHelper().put(PropertyKeys.onselect, onselect ); 
-        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONSELECT_PROP);
     }
     // Property: disabled
 
@@ -413,6 +388,18 @@ public class HtmlSelectManyMenu extends javax.faces.component.UISelectMany
     {
         getStateHelper().put(PropertyKeys.enabledClass, enabledClass ); 
     }
+    // Property: onchange
+
+    public String getOnchange()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.onchange);
+    }
+    
+    public void setOnchange(String onchange)
+    {
+        getStateHelper().put(PropertyKeys.onchange, onchange ); 
+        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
+    }
 
     public void setValueBinding(String name, ValueBinding binding)
     {
@@ -429,8 +416,6 @@ public class HtmlSelectManyMenu extends javax.faces.component.UISelectMany
     protected enum PropertyKeys
     {
          accesskey
-        , onchange
-        , onselect
         , disabled
         , readonly
         , onclick
@@ -455,6 +440,7 @@ public class HtmlSelectManyMenu extends javax.faces.component.UISelectMany
         , tabindex
         , disabledClass
         , enabledClass
+        , onchange
     }
 
  }

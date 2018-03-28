@@ -35,11 +35,10 @@ defaultRendererType = "javax.faces.Button",
 implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
 defaultEventName = "action"
 )
-abstract class _HtmlCommandButton extends UICommand
-    implements _FocusBlurProperties, 
+abstract class _HtmlCommandButton extends UICommand implements _FocusBlurProperties, 
     _EventProperties, _StyleProperties, _UniversalProperties,
     _AccesskeyProperty, _TabindexProperty, _AltProperty, 
-    _ChangeSelectProperties, _DisabledReadonlyProperties,
+    _ChangeProperty, _SelectProperty, _DisabledReadonlyProperties,
     _LabelProperty, _RoleProperty
 {
 

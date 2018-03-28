@@ -20,16 +20,8 @@ package javax.faces.component.html;
 
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
 
-interface _ChangeSelectProperties
+interface _SelectProperty
 {
-    /**
-     * HTML: Specifies a script to be invoked when the element is modified.
-     * 
-     */
-    @JSFProperty(clientEvent="change")
-    public abstract String getOnchange();
-
-
     /**
      * HTML: Specifies a script to be invoked when the element is selected.
      * 

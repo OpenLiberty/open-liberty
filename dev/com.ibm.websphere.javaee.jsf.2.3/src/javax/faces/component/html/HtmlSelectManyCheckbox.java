@@ -55,8 +55,7 @@ public class HtmlSelectManyCheckbox extends javax.faces.component.UISelectMany
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
-             "change"
-            , "select"
+             "select"
             , "click"
             , "dblclick"
             , "keydown"
@@ -69,6 +68,7 @@ public class HtmlSelectManyCheckbox extends javax.faces.component.UISelectMany
             , "mouseup"
             , "blur"
             , "focus"
+            , "change"
             , "valueChange"
         ));
 
@@ -146,18 +146,6 @@ public class HtmlSelectManyCheckbox extends javax.faces.component.UISelectMany
     {
         getStateHelper().put(PropertyKeys.accesskey, accesskey ); 
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ACCESSKEY_PROP);
-    }
-    // Property: onchange
-
-    public String getOnchange()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.onchange);
-    }
-    
-    public void setOnchange(String onchange)
-    {
-        getStateHelper().put(PropertyKeys.onchange, onchange ); 
-        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
     // Property: onselect
 
@@ -457,6 +445,18 @@ public class HtmlSelectManyCheckbox extends javax.faces.component.UISelectMany
     {
         getStateHelper().put(PropertyKeys.enabledClass, enabledClass ); 
     }
+    // Property: onchange
+
+    public String getOnchange()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.onchange);
+    }
+    
+    public void setOnchange(String onchange)
+    {
+        getStateHelper().put(PropertyKeys.onchange, onchange ); 
+        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
+    }
 
     public void setValueBinding(String name, ValueBinding binding)
     {
@@ -477,7 +477,6 @@ public class HtmlSelectManyCheckbox extends javax.faces.component.UISelectMany
         , selectedClass
         , unselectedClass
         , accesskey
-        , onchange
         , onselect
         , onclick
         , ondblclick
@@ -503,6 +502,7 @@ public class HtmlSelectManyCheckbox extends javax.faces.component.UISelectMany
         , tabindex
         , disabledClass
         , enabledClass
+        , onchange
     }
 
  }

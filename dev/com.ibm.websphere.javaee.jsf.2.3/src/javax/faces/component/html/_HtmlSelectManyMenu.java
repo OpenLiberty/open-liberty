@@ -56,10 +56,10 @@ implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
 defaultEventName = "valueChange"
 )
 abstract class _HtmlSelectManyMenu extends UISelectMany implements
-_AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,
-_FocusBlurProperties, _ChangeSelectProperties, _EventProperties,
-_StyleProperties, _TabindexProperty, _DisabledClassEnabledClassProperties,
-_LabelProperty, _RoleProperty
+    _AccesskeyProperty, _UniversalProperties, _DisabledReadonlyProperties,
+    _FocusBlurProperties, _ChangeProperty, _EventProperties,
+    _StyleProperties, _TabindexProperty, _DisabledClassEnabledClassProperties,
+    _LabelProperty, _RoleProperty
 {
 
   static public final String COMPONENT_FAMILY =

@@ -55,8 +55,7 @@ public class HtmlSelectBooleanCheckbox extends javax.faces.component.UISelectBoo
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
-             "change"
-            , "select"
+             "select"
             , "click"
             , "dblclick"
             , "keydown"
@@ -69,6 +68,7 @@ public class HtmlSelectBooleanCheckbox extends javax.faces.component.UISelectBoo
             , "mouseup"
             , "blur"
             , "focus"
+            , "change"
             , "valueChange"
         ));
 
@@ -102,18 +102,6 @@ public class HtmlSelectBooleanCheckbox extends javax.faces.component.UISelectBoo
     {
         getStateHelper().put(PropertyKeys.accesskey, accesskey ); 
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ACCESSKEY_PROP);
-    }
-    // Property: onchange
-
-    public String getOnchange()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.onchange);
-    }
-    
-    public void setOnchange(String onchange)
-    {
-        getStateHelper().put(PropertyKeys.onchange, onchange ); 
-        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
     // Property: onselect
 
@@ -391,6 +379,18 @@ public class HtmlSelectBooleanCheckbox extends javax.faces.component.UISelectBoo
         getStateHelper().put(PropertyKeys.tabindex, tabindex ); 
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.TABINDEX_PROP);
     }
+    // Property: onchange
+
+    public String getOnchange()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.onchange);
+    }
+    
+    public void setOnchange(String onchange)
+    {
+        getStateHelper().put(PropertyKeys.onchange, onchange ); 
+        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
+    }
 
     public void setValueBinding(String name, ValueBinding binding)
     {
@@ -407,7 +407,6 @@ public class HtmlSelectBooleanCheckbox extends javax.faces.component.UISelectBoo
     protected enum PropertyKeys
     {
          accesskey
-        , onchange
         , onselect
         , disabled
         , readonly
@@ -431,6 +430,7 @@ public class HtmlSelectBooleanCheckbox extends javax.faces.component.UISelectBoo
         , onblur
         , onfocus
         , tabindex
+        , onchange
     }
 
  }

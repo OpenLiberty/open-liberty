@@ -136,8 +136,7 @@ public class HtmlInputFile extends javax.faces.component.UIInput
     static private final java.util.Collection<String> CLIENT_EVENTS_LIST = 
         java.util.Collections.unmodifiableCollection(
             java.util.Arrays.asList(
-             "change"
-            , "select"
+             "select"
             , "click"
             , "dblclick"
             , "keydown"
@@ -150,6 +149,7 @@ public class HtmlInputFile extends javax.faces.component.UIInput
             , "mouseup"
             , "blur"
             , "focus"
+            , "change"
             , "valueChange"
         ));
 
@@ -218,18 +218,6 @@ public class HtmlInputFile extends javax.faces.component.UIInput
     {
         getStateHelper().put(PropertyKeys.accesskey, accesskey ); 
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ACCESSKEY_PROP);
-    }
-    // Property: onchange
-
-    public String getOnchange()
-    {
-        return (String) getStateHelper().eval(PropertyKeys.onchange);
-    }
-    
-    public void setOnchange(String onchange)
-    {
-        getStateHelper().put(PropertyKeys.onchange, onchange ); 
-        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
     }
     // Property: onselect
 
@@ -519,6 +507,18 @@ public class HtmlInputFile extends javax.faces.component.UIInput
         getStateHelper().put(PropertyKeys.tabindex, tabindex ); 
         _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.TABINDEX_PROP);
     }
+    // Property: onchange
+
+    public String getOnchange()
+    {
+        return (String) getStateHelper().eval(PropertyKeys.onchange);
+    }
+    
+    public void setOnchange(String onchange)
+    {
+        getStateHelper().put(PropertyKeys.onchange, onchange ); 
+        _CommonPropertyConstants.markProperty(this, _CommonPropertyConstants.ONCHANGE_PROP);
+    }
 
     public void setValueBinding(String name, ValueBinding binding)
     {
@@ -538,7 +538,6 @@ public class HtmlInputFile extends javax.faces.component.UIInput
         , size
         , autocomplete
         , accesskey
-        , onchange
         , onselect
         , disabled
         , readonly
@@ -563,6 +562,7 @@ public class HtmlInputFile extends javax.faces.component.UIInput
         , onblur
         , onfocus
         , tabindex
+        , onchange
     }
 
  }
