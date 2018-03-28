@@ -157,24 +157,24 @@ public class LogSource implements Source, WsLogHandler {
         genData.addPair(LogFieldConstants.IBM_MESSAGEID, messageIdVal);
 
         int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
+        genData.addPair(LogFieldConstants.IBM_THREADID, threadIdVal);
+        genData.addPair(LogFieldConstants.MODULE, logRecord.getLoggerName());
+        genData.addPair(LogFieldConstants.SEVERITY, LogFormatUtils.mapLevelToType(logRecord));
+        genData.addPair(LogFieldConstants.LOGLEVEL, LogFormatUtils.mapLevelToRawType(logRecord));
+        genData.addPair(LogFieldConstants.IBM_METHODNAME, logRecord.getSourceMethodName());
+        genData.addPair(LogFieldConstants.IBM_CLASSNAME, logRecord.getSourceClassName());
 
-        genData.addPair("ibm_threadId", threadIdVal);
-        genData.addPair("module", logRecord.getLoggerName());
-        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
-        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
-        genData.addPair("ibm_className", logRecord.getSourceClassName());
         genData.addPair("levelValue", logRecord.getLevel().intValue());
         String threadName = Thread.currentThread().getName();
-        genData.addPair("threadName", threadName);
+        genData.addPair(LogFieldConstants.THREADNAME, threadName);
 
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
 
         if (wsLogRecord != null) {
-            genData.addPair("correlationId", wsLogRecord.getCorrelationId());
-            genData.addPair("org", wsLogRecord.getOrganization());
-            genData.addPair("product", wsLogRecord.getProduct());
-            genData.addPair("component", wsLogRecord.getComponent());
+            genData.addPair(LogFieldConstants.CORRELATION_ID, wsLogRecord.getCorrelationId());
+            genData.addPair(LogFieldConstants.ORG, wsLogRecord.getOrganization());
+            genData.addPair(LogFieldConstants.PRODUCT, wsLogRecord.getProduct());
+            genData.addPair(LogFieldConstants.COMPONENT, wsLogRecord.getComponent());
         }
 
         if (logRecord instanceof WsLogRecord) {
@@ -204,7 +204,7 @@ public class LogSource implements Source, WsLogHandler {
             genData.addPair("throwable_localized", s);
         }
 
-        //JTSBTS need to look at this message vs formatted mesage
+        //JTSBTS need to look at this message vs formatted message
         //genData.addPair(LogFieldConstants.MESSAGE, msgBldr.toString());
         genData.setLogRecordLevel(logRecord.getLevel());
         genData.setLoggerName(logRecord.getLoggerName());

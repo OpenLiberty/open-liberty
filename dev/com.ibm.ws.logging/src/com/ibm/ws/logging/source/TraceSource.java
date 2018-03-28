@@ -141,10 +141,10 @@ public class TraceSource implements Source, WsTraceHandler {
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
 
         if (wsLogRecord != null) {
-            genData.addPair("correlationId", wsLogRecord.getCorrelationId());
-            genData.addPair("org", wsLogRecord.getOrganization());
-            genData.addPair("product", wsLogRecord.getProduct());
-            genData.addPair("component", wsLogRecord.getComponent());
+            genData.addPair(LogFieldConstants.CORRELATION_ID, wsLogRecord.getCorrelationId());
+            genData.addPair(LogFieldConstants.ORG, wsLogRecord.getOrganization());
+            genData.addPair(LogFieldConstants.PRODUCT, wsLogRecord.getProduct());
+            genData.addPair(LogFieldConstants.COMPONENT, wsLogRecord.getComponent());
         }
 
         if (logRecord instanceof WsLogRecord) {
@@ -159,7 +159,6 @@ public class TraceSource implements Source, WsTraceHandler {
         }
 
         genData.setSourceType(sourceName);
-        //return tracedata
         LogTraceData traceData = new LogTraceData(genData);
         traceData.setLevelValue(logRecord.getLevel().intValue());
 

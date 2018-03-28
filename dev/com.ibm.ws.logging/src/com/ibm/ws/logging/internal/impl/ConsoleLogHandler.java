@@ -29,9 +29,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     private SystemLogHolder sysLogHolderOriginal;
 
-    //have two writers systemout and systemerr
     private SystemLogHolder sysErrHolder;
-    private SystemLogHolder sysLogHolder;
     private boolean isTraceStdout = false;
 
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
@@ -130,14 +128,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     public void setWriter(Object writer) {
         this.sysLogHolderOriginal = (SystemLogHolder) writer;
     }
-
-//    public Level getConsoleLogLevel() {
-//        return consoleLogLevel;
-//    }
-
-//    public void setConsoleLogLevel(Level consoleLogLevel) {
-//        this.consoleLogLevel = consoleLogLevel;
-//    }
 
     public boolean getCopySystemStreams() {
         return copySystemStreams;
