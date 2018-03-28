@@ -20,6 +20,7 @@ javac.target: 1.8
 Bundle-Name: WebSphere Spring Boot Support
 Bundle-SymbolicName: com.ibm.ws.app.manager.springboot
 Bundle-Description: WebSphere Spring Boot Support, version ${bVersion}
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Export-Package: \
  com.ibm.ws.app.manager.springboot.container.config,\
  com.ibm.ws.app.manager.springboot.container,\
