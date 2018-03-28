@@ -79,4 +79,11 @@ public interface Application {
      */
     ApplicationMetaData getApplicationMetaData();
 
+    /**
+     * Indicates whether Jandex annotation indexes are to be used for the application.
+     * 
+     * @return
+     */
+    boolean getUseJandex();
+
 }

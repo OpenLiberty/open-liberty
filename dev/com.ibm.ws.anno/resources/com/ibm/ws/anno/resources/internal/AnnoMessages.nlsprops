@@ -553,3 +553,10 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=See the exception and the
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Class scanning internal error: Jandex processing duplicate processing of class [ {0} ].
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} The name of a file or the name of a direcxtory
+ANNO_JANDEX_USAGE=CWWKC0092I: [ {0} ] out of [ {1} ] classes in [ {2} ] were processed using Jandex.
+ANNO_JANDEX_USAGE=CWWKC0092I: This shows the number of classes in a container that were processed using the Jandex Indexer.
+ANNO_JANDEX_USAGE=CWWKC0092I: If Jandex indexes are intended to be used for the application then there is no action.  If Jandex indexes are not to be used for the application, then set the useJandex="true" attribute in the application element in server.xml.
