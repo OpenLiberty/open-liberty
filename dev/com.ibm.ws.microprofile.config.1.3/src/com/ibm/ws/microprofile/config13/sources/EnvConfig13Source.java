@@ -23,10 +23,10 @@ import com.ibm.ws.microprofile.config.sources.EnvConfigSource;
 public class EnvConfig13Source extends EnvConfigSource {
 
     private static final TraceComponent tc = Tr.register(EnvConfig13Source.class);
-    private Pattern p = null;
+    private static Pattern p = null;
 
-    public EnvConfig13Source() {
-        p = Pattern.compile(ConfigConstants.ALLOWABLE_CHARS_IN_ENV_VAR_SOURCE);
+    static {
+        p = Pattern.compile(ConfigConstants.CONFIG13_ALLOWABLE_CHARS_IN_ENV_VAR_SOURCE);
     }
 
     @Override

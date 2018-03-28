@@ -76,6 +76,13 @@ public class MapEnvVarServlet extends FATServlet {
         // Env Variables with no lower case chars or underscores
         getAndCheckEnvVarValue("MPCONFIGFATTESTENVVARIABLE", "mpconfigtestValue");
         getAndCheckEnvVarValue("MPCONFIGFATTESTNOSUCHENVVARIABLE", "not there");
+
+        getAndCheckEnvVarValue("mpconfig_lowcase_fattest_env_variable", "mpconfiglowcasetestValue");
+        getAndCheckEnvVarValue("mpconfig_MIXEDcase_fattest_env_variable", "mpconfigmixedcasetestValue");
+        getAndCheckEnvVarValue("mpconfig_MIXEDcase.fattest_env_variable", "mpconfigmixedcasetestValue");
+        getAndCheckEnvVarValue("mpconfig/MIXEDcase.fattest_env/variable", "mpconfigmixedcasetestValue");
+        getAndCheckEnvVarValue("mpconfig_lowcase_FATTEST_env_variable", "not there");
+        getAndCheckEnvVarValue("mpconfig_lowcase_fattest_env_variable.", "not there");
     }
 
     private void getAndCheckEnvVarValue(String key, String expectedValue) {

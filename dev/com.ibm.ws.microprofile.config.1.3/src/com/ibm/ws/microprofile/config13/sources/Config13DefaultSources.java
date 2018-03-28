@@ -34,7 +34,7 @@ public class Config13DefaultSources extends DefaultSources {
         sources.add(new EnvConfig13Source());
         sources.add(new AppPropertyConfigSource());
 
-        addPropertyConfigSources(classloader, sources);
+        getPropertyConfigSources(classloader, sources);
 
         return sources;
     }

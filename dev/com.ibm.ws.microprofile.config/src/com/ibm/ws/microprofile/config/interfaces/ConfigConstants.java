@@ -40,6 +40,6 @@ public class ConfigConstants {
     public static final long DEFAULT_DYNAMIC_REFRESH_INTERVAL = 500;
     //The minimum refresh rate for dynamic sources ... if the refresh rate is set lower than this then it will be overridden by this value
     public static final long MINIMUM_DYNAMIC_REFRESH_INTERVAL = 500;
-    //The regex to specify allowable characters in an Environment Variable Config Source
-    public static final String ALLOWABLE_CHARS_IN_ENV_VAR_SOURCE = "[^A-Za-z0-9_]";
+    //In MP Config 1.3 this constant provides the regex to specify allowable characters in an Environment Variable Config Source
+    public static final String CONFIG13_ALLOWABLE_CHARS_IN_ENV_VAR_SOURCE = "[^A-Za-z0-9_]";
 }

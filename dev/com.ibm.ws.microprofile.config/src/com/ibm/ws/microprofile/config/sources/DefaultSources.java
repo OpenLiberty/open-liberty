@@ -43,7 +43,7 @@ public class DefaultSources {
         sources.add(new SystemConfigSource());
         sources.add(new EnvConfigSource());
 
-        addPropertyConfigSources(classloader, sources);
+        getPropertyConfigSources(classloader, sources);
 
         return sources;
     }
@@ -55,7 +55,7 @@ public class DefaultSources {
      * @param classloader
      * @param sources
      */
-    public static void addPropertyConfigSources(ClassLoader classloader, ArrayList<ConfigSource> sources) {
+    public static void getPropertyConfigSources(ClassLoader classloader, ArrayList<ConfigSource> sources) {
 
         try {
             Enumeration<URL> propsResources = classloader.getResources(ConfigConstants.CONFIG_PROPERTIES);
