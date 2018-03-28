@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -302,7 +302,10 @@ public class WebAnnotationsImpl implements WebAnnotations {
             Container container = fragment.getFragmentContainer();
 
             try {
-                ClassSource containerSource = getClassSourceFactory().createContainerClassSource(useClassSource.getInternMap(), name, container);
+                ClassSource containerSource = getClassSourceFactory().createContainerClassSource(useClassSource.getInternMap(),
+                                                                                                 name,
+                                                                                                 options,
+                                                                                                 container);
                 useClassSource.addClassSource(containerSource, scanPolicy);
 
                 cName = containerSource.getCanonicalName();
@@ -324,7 +327,10 @@ public class WebAnnotationsImpl implements WebAnnotations {
             ClassSource_Aggregate.ScanPolicy scanPolicy = ClassSource_Aggregate.ScanPolicy.EXCLUDED;
 
             try {
-                ClassSource containerSource = getClassSourceFactory().createContainerClassSource(useClassSource.getInternMap(), name, container);
+                ClassSource containerSource = getClassSourceFactory().createContainerClassSource(useClassSource.getInternMap(),
+                                                                                                 name,
+                                                                                                 options,
+                                                                                                 container);
                 useClassSource.addClassSource(containerSource, scanPolicy);
             } catch (ClassSource_Exception e) {
                 String msg = Tr.formatMessage(tc, "failed.to.create.module.fragment.class.source.CWWKM0468E",
@@ -337,7 +343,10 @@ public class WebAnnotationsImpl implements WebAnnotations {
         ClassLoader cl = getWebModuleClassLoader();
 
         try {
-            ClassSource clSource = getClassSourceFactory().createClassLoaderClassSource(useClassSource.getInternMap(), clName, cl);
+            ClassSource clSource = getClassSourceFactory().createClassLoaderClassSource(useClassSource.getInternMap(),
+                                                                                        clName,
+                                                                                        options,
+                                                                                        cl);
             useClassSource.addClassSource(clSource, ClassSource_Aggregate.ScanPolicy.EXTERNAL);
         } catch (ClassSource_Exception e) {
             String msg = Tr.formatMessage(tc, "failed.to.create.class.source.for.module.classloader.CWWKM0469E",
