@@ -33,8 +33,8 @@ JAVAEESEC_ERROR_NO_HAM.useraction=Investigate any error messages from the HttpAu
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: The Expression Language (EL) expression for the ''{0}'' attribute of the identity store annotation cannot be resolved to a valid value. Ensure that the EL expression and the result are valid and ensure that any referenced beans that are used in the expression are resolvable. The default attribute value of ''{1}'' is used instead.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=The cause of the error is mismatch of the type between the EL result and the expected attribute value. For example, if the expected attribute type is String, the EL result needs to be String.
-JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. Ensure that the EL expressions are valid and that any referenced beans that are used in the expression are resolvable and the type of the result corresponds with the attribute.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.explanation=The cause of the error is a mismatch of the type between the EL result and the expected attribute value. For example, if the expected attribute type is String, the EL result needs to be String.
+JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Make sure that the annotation contains a valid configuration value. Ensure that the EL expressions are valid, that any referenced beans that are used in the expression are resolvable, and that the type of the result corresponds with the attribute.
 
 JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: A hashAlgorithm parameter provided for the hashAlgorithm, {0}, is in the incorrect format. The parameter received is {1}. The required format is name=value.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=A hashAlgorithm parameter list is in the incorrect format and cannot be parsed.
@@ -48,9 +48,9 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: The DatabaseIdentityStore fail
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=A partial list of groups for the caller is returned instead of a complete list of groups because of an error in the query.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Review the provided error and make corrections to the query so that the complete list of groups for the caller can be returned. 
 
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: The credential provided to the IdentityStore is not a UsernamePasswordCredential and cannot be validated.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: The credential provided to the IdentityStore object is not a UsernamePasswordCredential and cannot be validated.
 JAVAEESEC_ERROR_WRONG_CRED.explanation=The credential provided to the IdentityStore object is not a UsernamePasswordCredential class and cannot be validated.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=Review the type of credential passed into the IdentityStore by the HttpAuthMechanism implementation.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Review the type of credential passed into the IdentityStore object by the HttpAuthMechanism implementation.
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: The hash algorithm bean was not found for class {0}.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=The hash algorithm listed in the hashAlgorithm element on the DatabaseIdentityStoreDefinition annotation was not found.
