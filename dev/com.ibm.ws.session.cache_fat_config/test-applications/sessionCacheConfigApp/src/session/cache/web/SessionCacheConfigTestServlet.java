@@ -159,11 +159,14 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
-        try {
-            bytes = cache.get(key);
-        } finally {
-            cache.close();
-        }
+        if (cache == null) // cache can be null if test case disables the sessionCache-1.0 feature
+            bytes = null;
+        else
+            try {
+                bytes = cache.get(key);
+            } finally {
+                cache.close();
+            }
 
         assertFalse("Not expecting cache entry " + key + " to have value " + unexpectedValue + ". " + EOLN +
                     "Bytes observed: " + Arrays.toString(bytes),
@@ -315,6 +318,44 @@ public class SessionCacheConfigTestServlet extends FATServlet {
             testCacheContains(sessionId + ".asaset", true);
             testCacheContains(sessionId + ".asaget", expectedBits);
             testCacheContains(sessionId + ".asamod", list);
+        } finally {
+            session.invalidate();
+        }
+    }
+
+    /**
+     * Verify that all session attributes that have been touched via getAttribute or setAttribute are written to the cache.
+     */
+    public void testWriteContents_GET_AND_SET_ATTRIBUTES(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession(true);
+        try {
+            LinkedList<Long> list = new LinkedList<>();
+            list.addAll(Arrays.asList(350l, 351l, 352l));
+
+            @SuppressWarnings("unchecked")
+            LinkedList<Long> originalList = (LinkedList<Long>) list.clone();
+
+            session.setAttribute("gsaset", (byte) 353);
+            session.setAttribute("gsaget", new BitSet(8));
+            session.setAttribute("gsamod", list);
+
+            // Write all attributes to the cache
+            ((IBMSession) session).sync();
+
+            session.setAttribute("gsaset", (byte) 354); // set
+            ((BitSet) session.getAttribute("gsaget")).flip(4, 7); // get and mutate
+            list.add(355l); // mutate without get
+
+            // Write to cache per the writeContents
+            ((IBMSession) session).sync();
+
+            // Check the cache for values expected per writeContents=GET_AND_SET_ATTRIBUTES
+            BitSet expectedBits = new BitSet(8);
+            expectedBits.flip(4, 7);
+            String sessionId = session.getId();
+            testCacheContains(sessionId + ".gsaset", (byte) 354); // updated
+            testCacheContains(sessionId + ".gsaget", expectedBits); // updated
+            testCacheContains(sessionId + ".gsamod", originalList); // not updated
         } finally {
             session.invalidate();
         }

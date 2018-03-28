@@ -106,8 +106,6 @@ public class CacheStoreService implements SessionStoreService {
         // httpSessionCache writeContents accepts ONLY_SET_ATTRIBUTES in place of ONLY_UPDATED_ATTRIBUTES to better reflect the behavior provided
         if (writeContents == null || "ONLY_SET_ATTRIBUTES".equals(writeContents))
             configurationProperties.put("writeContents", "ONLY_UPDATED_ATTRIBUTES");
-        else if (!"ALL_SESSION_ATTRIBUTES".equals(writeContents))
-            throw new IllegalArgumentException("writeContents: " + writeContents);
 
         // default/disallow advanced properties from httpSessionDatabase
         configurationProperties.put("noAffinitySwitchBack", "TIME_BASED_WRITE".equals(writeFrequency));
