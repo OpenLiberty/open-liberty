@@ -21,6 +21,7 @@ package org.apache.cxf.jaxrs.sse.client;
 import java.lang.IllegalArgumentException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -226,41 +227,7 @@ public class SseEventSourceImpl implements SseEventSource {
                 ArrayList retryArray = (ArrayList)retryAfter;
                 if (!retryArray.isEmpty()) {
                     //There should only be one entry
-                    String retryValue = (String)retryArray.get(0);
-
-                    // RETRY_AFTER is a String that can either correspond to seconds (long) 
-                    // or a HTTP-Date (ex. "Fri, 31 Dec 1999 23:59:59 GMT"
-                    if (retryValue.contains(":")) {
-                        //handle date
-                        try {
-                            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-                            Date retryDate = sdf.parse(retryValue);
-
-                            long retryTime = retryDate.getTime();
-                            long now = System.currentTimeMillis();
-                            long delayTime = retryTime - now;
-                            if (delayTime <= 0) {
-                                LOG.fine("SSE RETRY_AFTER Date value represents a time already past");
-                            } else {
-                                this.delay = delayTime;
-                                //HTTP Date is in seconds
-                                this.unit = TimeUnit.MILLISECONDS;
-                            }
-                        } catch (IllegalArgumentException ex) {
-                            LOG.fine("SSE RETRY_AFTER Date value format incorrect:  " + ex);
-                        } catch (ParseException e2) {
-                            LOG.fine("SSE RETRY_AFTER Date value cannot be parsed: " + e2);
-                        }
-                    } else {
-                        try {
-                            Long retryLong = Long.valueOf(retryValue);
-                            this.delay = retryLong.longValue();
-                            //The RETRY_AFTER value is in seconds so change units
-                            this.unit = TimeUnit.SECONDS;
-                        } catch (NumberFormatException e) {
-                            LOG.fine("SSE RETRY_AFTER Incorrect time value: " + e);
-                        }
-                    }
+                    handleRetry((String)retryArray.get(0));
                 }
             }
 
@@ -304,6 +271,65 @@ public class SseEventSourceImpl implements SseEventSource {
         }
     }
 
+    private void handleRetry(String retryValue) {
+
+
+        // RETRY_AFTER is a String that can either correspond to seconds (long) 
+        // or a HTTP-Date (which can be one of 7 variations)"
+        if (!(retryValue.contains(":"))) {
+            // Must be a long since all dates include ":"
+            try {
+                Long retryLong = Long.valueOf(retryValue);
+                this.delay = retryLong.longValue();
+                //The RETRY_AFTER value is in seconds so change units
+                this.unit = TimeUnit.SECONDS;
+            } catch (NumberFormatException e) {
+                LOG.fine("SSE RETRY_AFTER Incorrect time value: " + e);
+            }
+        } else {
+            char[] retryValueArray = retryValue.toCharArray();
+            //handle date
+            try {
+                SimpleDateFormat sdf = null;
+                // Determine the appropriate HTTP-Date pattern
+                if (retryValueArray[3] == ',') {
+                    sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z"); // RTC 822, updated by RFC 1123
+                } else if (retryValueArray[6] == ',') {
+                    sdf = new SimpleDateFormat("EEEEEE, dd-MMM-yy HH:mm:ss z"); // RFC 850, obsoleted by RFC 1036
+                } else if (retryValueArray[7] == ',') {
+                    sdf = new SimpleDateFormat("EEEEEEE, dd-MMM-yy HH:mm:ss z"); // RFC 850, obsoleted by RFC 1036
+                } else if (retryValueArray[8] == ',') {
+                    sdf = new SimpleDateFormat("EEEEEEEE, dd-MMM-yy HH:mm:ss z"); // RFC 850, obsoleted by RFC 1036
+                } else if (retryValueArray[9] == ',') {
+                    sdf = new SimpleDateFormat("EEEEEEEEE, dd-MMM-yy HH:mm:ss z"); // RFC 850, obsoleted by RFC 1036
+                } else if (retryValueArray[8] == ',') {
+                    sdf = new SimpleDateFormat("EEEEEEEE, dd-MMM-yy HH:mm:ss z"); // RFC 850, obsoleted by RFC 1036
+                } else if (retryValueArray[8] == ' ') {
+                    sdf = new SimpleDateFormat("EEE MMM  d HH:mm:ss yyyy");  // ANSI C's asctime() format
+                } else {
+                    sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy"); // ANSI C's asctime() format
+                }
+                Date retryDate = sdf.parse(retryValue);
+
+                long retryTime = retryDate.getTime();
+                long now = System.currentTimeMillis();
+                long delayTime = retryTime - now;
+                if (delayTime <= 0) {
+                    LOG.fine("SSE RETRY_AFTER Date value represents a time already past");
+                } else {
+                    this.delay = delayTime;
+                    //HTTP Date is in milliseconds
+                    this.unit = TimeUnit.MILLISECONDS;
+                }
+            } catch (IllegalArgumentException ex) {
+                LOG.fine("SSE RETRY_AFTER Date value format incorrect:  " + ex);
+            } catch (ParseException e2) {
+                LOG.fine("SSE RETRY_AFTER Date value cannot be parsed: " + e2);
+            }
+        }
+
+    }
+
     @Override
     public boolean isOpen() {
         return isOpened;
@@ -340,14 +366,6 @@ public class SseEventSourceImpl implements SseEventSource {
         return processor.close(timeout, tunit); 
     }
 
-    public long getDelay() {
-        return this.delay;
-    }
-
-    public TimeUnit getDelayUnit() {
-        return this.unit;
-    }
-    
     private void scheduleReconnect(long tdelay, TimeUnit tunit, String lastEventId) {
         // If delay == RECONNECT_NOT_SET, no reconnection attempt should be performed
         if (tdelay < 0 || executor == null) {
@@ -378,5 +396,20 @@ public class SseEventSourceImpl implements SseEventSource {
         
         LOG.fine("The reconnection attempt to " + target.getUri() + " is scheduled in "
             + tunit.toMillis(tdelay) + "ms");
+    }
+
+    @Override
+    public String toString() {
+        return (this.getClass().getName() +
+                "|target=" + target +
+                "|listeners=" + listeners +
+                "|state=" + state +
+                "|executor=" + executor +
+                "|managedExecutor=" + managedExecutor +
+                "|processor = " + processor +
+                "|unit=" + unit +
+                "|delay=" + delay +
+                "|isOpened=" + isOpened);
+
     }
 }

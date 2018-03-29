@@ -28,7 +28,11 @@ import componenttest.topology.utils.FATServletClient;
 import jaxrs21sse.delay.DelaySseTestServlet;
 
 /**
- * This test of delay SSE function.
+ * This test of delay SSE function. It will test the following scenarios.
+ * 1. SSE open/connect fails with a 503 (containing a retry time in seconds)
+ * 2. SSE open/connect fails with a 503 (containing a HTTP Date to retry)
+ * 3. The SSE event flows but sets the reconnect delay to force a retry.
+ * 4. The SSE event flows resetting the reconnect delay.
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 1.8)

@@ -13,6 +13,7 @@
  */
 package jaxrs21sse.delay;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.ws.rs.ApplicationPath;
@@ -54,8 +55,12 @@ public class DelaySseResource extends Application {
             long delayTime2 = System.currentTimeMillis() + 10000;
             //get the Date to send
             Date testDate = new Date(delayTime2);
-            throw new WebApplicationException(Response.status(503).header(HttpHeaders.RETRY_AFTER, testDate.toString()).build());
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+            String sdfString = sdf.format(testDate);
+            System.out.println("Jim... sdfString = " + sdfString);
+            throw new WebApplicationException(Response.status(503).header(HttpHeaders.RETRY_AFTER, sdfString).build());
         } else if (retry == 2) {
+            retry = 3;
             delayTime = System.currentTimeMillis() - startTime;
             //Since HTTP dates are in seconds we need to allow for a slightly lower result
             if (!((delayTime >= 12500) && (delayTime <= 14000))) {
@@ -64,7 +69,21 @@ public class DelaySseResource extends Application {
                 returnMessage = "Retry Test Successful";
             }
             try (SseEventSink s = eventSink) {
-                s.send(sse.newEventBuilder().data(returnMessage).reconnectDelay(30000L).build());
+                s.send(sse.newEventBuilder().data(returnMessage).reconnectDelay(5000L).build());
+            }
+            if (!eventSink.isClosed()) {
+                DelaySseTestServlet.resourceFailures.add("AutoClose in DelaySseResource.send3retries failed for eventSink");
+            }
+        } else if (retry == 3) {
+            delayTime = System.currentTimeMillis() - startTime;
+            //Since HTTP dates are in seconds we need to allow for a slightly lower result
+            if (!((delayTime >= 17500) && (delayTime <= 19000))) {
+                returnMessage = "Test 2 failed.  Expected delay time (13000 to 14000), actual delay time:  " + delayTime;
+            } else {
+                returnMessage = "Reset Test Successful";
+            }
+            try (SseEventSink s = eventSink) {
+                s.send(sse.newEventBuilder().data(returnMessage).build());
             }
             //reset
             retry = 0;
