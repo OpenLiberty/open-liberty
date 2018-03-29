@@ -29,6 +29,24 @@ public class GenericData {
         pairs = new ArrayList<Pair>();
     }
 
+    public GenericData(int size) {
+        pairs = new ArrayList<Pair>(size);
+    }
+
+    public void setPair(int index, String key, String value) {
+        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        pairs.add(index, kvp);
+    }
+
+    public void setPair(int index, String key, Number value) {
+        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+        pairs.add(index, kvp);
+    }
+
+    public void setPairs(int index, KeyValuePairList kvps) {
+        pairs.add(index, kvps);
+    }
+
     public void addPair(String key, String value) {
         KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
         pairs.add(kvp);

@@ -171,68 +171,29 @@ public class CollectorJsonUtils {
 
     private static String jsonifyTraceAndMessage(int maxFieldLength, String wlpUserDir,
                                                  String serverName, String hostName, String eventType, Object event, String[] tags) {
-        GenericData genData = null;
-        if (event instanceof LogTraceData) {
-            LogTraceData logTraceData = (LogTraceData) event;
-            genData = logTraceData.getGenData();
-        } else {
-            genData = (GenericData) event;
-        }
+        LogTraceData logData = (LogTraceData) event;
+
         StringBuilder sb = new StringBuilder();
         boolean isFirstField = true;
-        ArrayList<Pair> pairs = genData.getPairs();
-        KeyValuePair kvp = null;
-        String key = null;
-        String value = null;
 
         sb.append("{");
 
         isFirstField = CollectorJsonHelpers.addCommonFields(sb, hostName, wlpUserDir, serverName, isFirstField, eventType);
 
-        for (Pair p : pairs) {
-
-            if (p instanceof KeyValuePair) {
-
-                kvp = (KeyValuePair) p;
-                key = kvp.getKey();
-                value = kvp.getValue();
-
-                if (key.equals(LogFieldConstants.LOGLEVEL) || key.equals(LogFieldConstants.COMPONENT) || key.equals(LogFieldConstants.CORRELATION_ID)
-                    || key.equals(LogFieldConstants.THREADNAME) || key.equals(LogFieldConstants.LEVELVALUE) || key.equals(LogFieldConstants.PRODUCT)
-                    || key.equals(LogFieldConstants.ORG) || key.equals(LogFieldConstants.OBJECT_ID) || key.equals(LogFieldConstants.THROWABLE)
-                    || key.equals(LogFieldConstants.THROWABLE_LOCALIZED)
-                    || key.equals(LogFieldConstants.FORMATTEDMSG)) {
-
-                }
-
-                else if (key.equals(LogFieldConstants.MESSAGE)) {
-
-                    String formattedValue = CollectorJsonHelpers.formatMessage(value, maxFieldLength);
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, isFirstField, kvp.isNumber());
-
-                } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
-                    key = LogFieldConstants.THREADID;
-                    isFirstField = isFirstField
-                                   & !CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(Integer.parseInt(value), 8), false, true, false, isFirstField,
-                                                                     false);
-
-                } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
-                    key = LogFieldConstants.DATETIME;
-                    String datetime = CollectorJsonHelpers.dateFormatTL.get().format(Long.parseLong(value));
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, isFirstField, false);
-
-                } else if (key.equals(LogFieldConstants.MODULE)) {
-                    key = LogFieldConstants.LOGGERNAME;
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp.isNumber());
-                } else {
-                    if (key.contains(LogFieldConstants.IBM_TAG)) {
-                        key = CollectorJsonHelpers.removeIBMTag(key);
-                    }
-                    isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, isFirstField, kvp.isNumber());
-
-                }
-            }
-        }
+        String formattedValue = CollectorJsonHelpers.formatMessage(logData.getMessage(), maxFieldLength);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey(), formattedValue, false, true, false, isFirstField, false);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey(), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false,
+                                                                      isFirstField, false);
+        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey(), datetime, false, true, false, isFirstField, false);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getLoggerNameKey(), logData.getModule(), false, true, false, isFirstField, false);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getMessageIdKey(), logData.getMessageId(), false, true, false, isFirstField, false);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getSeverityKey(), logData.getSeverity(), false, true, false, isFirstField, false);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getMethodNameKey(), logData.getMethodName(), false, true, false, isFirstField, false);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getClassNameKey(), logData.getClassName(), false, true, false, isFirstField, false);
+        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getSequenceKey(), logData.getSequence(), false, true, false, isFirstField, false);
+        /* We need to figure out a way to print extensions */
+//        isFirstField = isFirstField & !CollectorJsonHelpers.addToJSON(sb, logData.getExtensionsKey(), logData.getExtensions(), false, true, false, isFirstField, false);
 
         if (tags != null) {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));

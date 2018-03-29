@@ -67,11 +67,11 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
         Integer levelVal = null;
         String loggerName = null;
         if (event instanceof LogTraceData) {
-            genData = ((LogTraceData) event).getGenData();
             levelVal = ((LogTraceData) event).getLevelValue();
-        } else if (event instanceof GenericData) {
-            genData = (GenericData) event;
         }
+
+        genData = (GenericData) event;
+
         loggerName = genData.getLoggerName();
 
         /*

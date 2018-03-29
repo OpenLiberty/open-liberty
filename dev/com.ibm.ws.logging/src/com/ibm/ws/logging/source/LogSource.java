@@ -25,7 +25,6 @@ import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
-import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
@@ -133,12 +132,12 @@ public class LogSource implements Source, WsLogHandler {
     }
 
     public LogTraceData parse(RoutedMessage routedMessage) {
-        GenericData genData = new GenericData();
+        LogTraceData logData = new LogTraceData();
         LogRecord logRecord = routedMessage.getLogRecord();
         String messageVal = extractMessage(routedMessage, logRecord);
 
         long dateVal = logRecord.getMillis();
-        genData.addPair("ibm_datetime", dateVal);
+        logData.setDatetime(dateVal);
 
         String messageIdVal = null;
 
@@ -146,26 +145,26 @@ public class LogSource implements Source, WsLogHandler {
             messageIdVal = parseMessageId(messageVal);
         }
 
-        genData.addPair("ibm_messageId", messageIdVal);
+        logData.setMessageId(messageIdVal);
 
         int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
-        genData.addPair("ibm_threadId", threadIdVal);
-        genData.addPair("module", logRecord.getLoggerName());
-        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
-        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
-        genData.addPair("ibm_className", logRecord.getSourceClassName());
-        genData.addPair("levelValue", logRecord.getLevel().intValue());
+        logData.setThreadId(threadIdVal);
+        logData.setModule(logRecord.getLoggerName());
+        logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
+        logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
+        logData.setMethodName(logRecord.getSourceMethodName());
+        logData.setClassName(logRecord.getSourceClassName());
+        logData.setLevelValue(logRecord.getLevel().intValue());
         String threadName = Thread.currentThread().getName();
-        genData.addPair("threadName", threadName);
+        logData.setThreadName(threadName);
 
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
 
         if (wsLogRecord != null) {
-            genData.addPair("correlationId", wsLogRecord.getCorrelationId());
-            genData.addPair("org", wsLogRecord.getOrganization());
-            genData.addPair("product", wsLogRecord.getProduct());
-            genData.addPair("component", wsLogRecord.getComponent());
+            logData.setCorrelationId(wsLogRecord.getCorrelationId());
+            logData.setOrg(wsLogRecord.getOrganization());
+            logData.setProduct(wsLogRecord.getProduct());
+            logData.setComponent(wsLogRecord.getComponent());
         }
 
         KeyValuePairList extensions = new KeyValuePairList();
@@ -179,35 +178,31 @@ public class LogSource implements Source, WsLogHandler {
             }
         }
 
-        genData.addPairs(extensions);
-        genData.addPair("ibm_sequence", sequenceNumber.next(dateVal));
-        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
+        logData.setExtensions(extensions);
+        logData.setSequence(sequenceNumber.next(dateVal));
 
         Throwable thrown = logRecord.getThrown();
         if (thrown != null) {
             String stackTrace = DataFormatHelper.throwableToString(thrown);
             if (stackTrace != null) {
-                genData.addPair("throwable", stackTrace);
+                logData.setThrowable(stackTrace);
             }
             String s = thrown.getLocalizedMessage();
             if (s == null) {
                 s = thrown.toString();
             }
-            genData.addPair("throwable_localized", s);
+            logData.setThrowableLocalized(s);
         }
 
-        genData.addPair("message", messageVal);
+        logData.setMessage(messageVal);
 
         if (routedMessage.getFormattedMsg() != null) {
-            genData.addPair("formattedMsg", routedMessage.getFormattedMsg());
+            logData.setFormattedMsg(routedMessage.getFormattedMsg());
         }
 
-        genData.setSourceType(sourceName);
-        genData.setLoggerName(logRecord.getLoggerName());
-        //return logtracedata
-        LogTraceData logData = new LogTraceData(genData);
+        logData.setSourceType(sourceName);
+        logData.setLoggerName(logRecord.getLoggerName());
         logData.setLevelValue(logRecord.getLevel().intValue());
-        logData.setLogLevel(LogFormatUtils.mapLevelToRawType(logRecord));
         return logData;
 
     }
