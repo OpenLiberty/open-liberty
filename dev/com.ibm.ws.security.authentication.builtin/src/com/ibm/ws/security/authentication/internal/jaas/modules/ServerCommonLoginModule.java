@@ -39,6 +39,8 @@ import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.ws.security.credentials.ExpirableCredential;
 import com.ibm.ws.security.jaas.common.modules.CommonLoginModule;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
+import com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
@@ -51,6 +53,7 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
  */
 public abstract class ServerCommonLoginModule extends CommonLoginModule implements LoginModule {
     private static final TraceComponent tc = Tr.register(ServerCommonLoginModule.class);
+    private final String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
 
     protected SubjectHelper subjectHelper = new SubjectHelper();
 
@@ -120,26 +123,45 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
     }
 
     /**
-     * Set the relevant Principal for this login module into the Subject,
+     * Set the relevant Credentials for this login module into the Subject,
      * and set the credentials for the determined accessId.
      *
      * @throws Exception
      */
-    protected void setPrincipalAndCredentials(Subject subject,
-                                              String securityName,
-                                              String urAuthenticatedId,
-                                              String newSecurityName,
-                                              String accessId,
-                                              String authMethod) throws Exception {
-        Principal principal = new WSPrincipal(newSecurityName, accessId, authMethod);
-        subject.getPrincipals().add(principal);
+    protected void setCredentials(Subject subject,
+                                  String securityName,
+                                  String urAuthenticatedId) throws Exception {
+//        Principal principal = new WSPrincipal(securityName, accessId, authMethod);
         if (urAuthenticatedId != null && !urAuthenticatedId.equals(securityName)) {
             Hashtable<String, String> subjectHash = new Hashtable<String, String>();
-            subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, securityName);
+            subjectHash.put(AuthenticationConstants.UR_AUTHENTICATED_USERID_KEY, urAuthenticatedId);
             subject.getPrivateCredentials().add(subjectHash);
+
         }
         CredentialsService credentialsService = getCredentialsService();
         credentialsService.setCredentials(subject);
+    }
+
+    protected void setWSPrincipal(Subject subject, String securityName, String accessId, String authMethod) throws Exception {
+        Principal principal = new WSPrincipal(securityName, accessId, authMethod);
+        subject.getPrincipals().add(principal);
+    }
+
+    /**
+     * @param subject
+     * @param securityName
+     * @param accessId
+     * @param authMethod
+     * @param customProperties TODO
+     */
+    protected void setPrincipals(Subject subject, String securityName, String accessId, String authMethod, Hashtable<String, ?> customProperties) throws Exception {
+//        Principal principal = new WSPrincipal(securityName, accessId, authMethod);
+//        subject.getPrincipals().add(principal);
+        if (customProperties != null) {
+            addJaspicPrincipal(subject, customProperties);
+        }
+        addJsonWebToken(subject, customProperties);
+
     }
 
     /**
@@ -271,8 +293,9 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
                 @Override
                 public Object run() throws Exception {
                     temporarySubject = new Subject();
-                    setPrincipalAndCredentials(temporarySubject, securityName, null, securityName, accessId, authMethod);
-
+                    setWSPrincipal(temporarySubject, securityName, accessId, authMethod);
+                    setCredentials(temporarySubject, securityName, null);
+                    setPrincipals(temporarySubject, securityName, accessId, authMethod, null);
                     // Commit the newly created elements into the original Subject
                     subject.getPrincipals().addAll(temporarySubject.getPrincipals());
                     subject.getPublicCredentials().addAll(temporarySubject.getPublicCredentials());
@@ -293,5 +316,40 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
             return true;
         else
             return false;
+    }
+
+    protected void removeInternalAssertionHashtable(Hashtable<String, ?> props, String propNames[]) {
+        Set<Object> publicCredentials = subject.getPublicCredentials();
+        publicCredentials.remove(props);
+        for (String propName : propNames) {
+            props.remove(propName);
+        }
+        if (!props.isEmpty()) {
+            publicCredentials.add(props);
+        }
+    }
+
+    private void addJaspicPrincipal(Subject subject, Hashtable<String, ?> customProperties) throws Exception {
+        Principal jaspiPrincipal = (Principal) customProperties.get(AuthenticationConstants.JASPI_PRINCIPAL);
+        if (jaspiPrincipal != null) {
+            WSCredential wsCredential = null;
+            Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+            Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+            if (wsCredentialsIterator.hasNext()) {
+                wsCredential = wsCredentialsIterator.next();
+                if (wsCredential != null) // paranoid safety check (it's gm time)
+                    wsCredential.set(AuthenticationConstants.JASPI_PRINCIPAL, jaspiPrincipal);
+            }
+            subject.getPrincipals().add(jaspiPrincipal);
+        }
+    }
+
+    private void addJsonWebToken(Subject subject, Hashtable<String, ?> customProperties) {
+        String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
+        if (customProperties != null && customProperties.get(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN) != null) {
+            MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
+            removeInternalAssertionHashtable(customProperties, jsonWebTokenProperties);
+        }
+        JwtSSOTokenHelper.createJwtSSOToken(subject);
     }
 }

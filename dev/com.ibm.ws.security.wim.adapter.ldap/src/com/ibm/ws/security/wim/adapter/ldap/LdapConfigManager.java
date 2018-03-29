@@ -36,6 +36,7 @@ import javax.naming.directory.Attributes;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.security.CertificateMapper;
 import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
@@ -277,6 +278,11 @@ public class LdapConfigManager {
     private String[] iCertFilterEles = null;
 
     /**
+     * {@link CertificateMapper} ID.
+     */
+    private String iCertificateMapperId;
+
+    /**
      * Flag indicating whether user wants to use input principal name for login.
      */
     private final boolean usePrincipalNameForLogin = false;
@@ -422,16 +428,28 @@ public class LdapConfigManager {
      * @throws WIMException
      */
     public void initialize(Map<String, Object> configProps) throws WIMException {
-        final String METHODNAME = "initialize(configProps, configAdminRef)";
+        final String METHODNAME = "initialize(configProps)";
         iLdapType = (String) configProps.get(ConfigConstants.CONFIG_PROP_LDAP_SERVER_TYPE);
         if (iLdapType == null) {
             iLdapType = ConfigConstants.CONFIG_LDAP_IDS52;
         } else {
             iLdapType = iLdapType.toUpperCase();
         }
+
+        /*
+         * Initialize certificate mapping.
+         */
         setCertificateMapMode((String) configProps.get(ConfigConstants.CONFIG_PROP_CERTIFICATE_MAP_MODE));
         if (ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE.equalsIgnoreCase(getCertificateMapMode())) {
+
             setCertificateFilter((String) configProps.get(ConfigConstants.CONFIG_PROP_CERTIFICATE_FILTER));
+
+        } else if (ConfigConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(getCertificateMapMode())) {
+
+            this.iCertificateMapperId = (String) configProps.get(ConfigConstants.CONFIG_PROP_CERTIFICATE_MAPPER_ID);
+            if (this.iCertificateMapperId == null) {
+                Tr.warning(tc, "No certificateMapperId was found for this registry."); // TODO LOCALIZE
+            }
         }
 
         List<HashMap<String, String>> baseEntries = new ArrayList<HashMap<String, String>>();
@@ -2309,9 +2327,10 @@ public class LdapConfigManager {
         return iMbrAttrsAllScope;
     }
 
+    @SuppressWarnings("unchecked")
     @Trivial
-    public List getLdapEntities() {
-        return (List) ((ArrayList<LdapEntity>) iLdapEntities).clone();
+    public List<LdapEntity> getLdapEntities() {
+        return (List<LdapEntity>) ((ArrayList<LdapEntity>) iLdapEntities).clone();
     }
 
     /**
@@ -2477,6 +2496,11 @@ public class LdapConfigManager {
     }
 
     @Trivial
+    public String getCertificateMapperId() {
+        return iCertificateMapperId;
+    }
+
+    @Trivial
     public String getCertificateMapMode() {
         return iCertMapMode;
     }
@@ -2498,10 +2522,8 @@ public class LdapConfigManager {
 
     public String getCertificateLDAPFilter(X509Certificate cert) throws CertificateMapperException {
         if (iCertFilterEles == null) {
-            throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, Tr.formatMessage(
-                                                                                                            tc,
-                                                                                                            WIMMessageKey.INVALID_CERTIFICATE_FILTER,
-                                                                                                            "null"));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_CERTIFICATE_FILTER, "null");
+            throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, msg);
         }
 
         StringBuffer filter = new StringBuffer();
@@ -2546,17 +2568,13 @@ public class LdapConfigManager {
                 // TBD - filter.append (cert.getSubjectUniqueID());
             } else if (str.equals("${TBSCertificate}") || str.equals("$[TBSCertificate]")) {
                 // filter.append (cert.getTBSCertificate());
-                throw new CertificateMapperException(WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED, Tr.formatMessage(
-                                                                                                                 tc,
-                                                                                                                 WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED,
-                                                                                                                 null));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED, null);
+                throw new CertificateMapperException(WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED, msg);
             } else if (str.equals("${Version}") || str.equals("$[Version]")) {
                 filter.append(cert.getVersion());
             } else {
-                throw new CertificateMapperException(WIMMessageKey.UNKNOWN_CERTIFICATE_ATTRIBUTE, Tr.formatMessage(
-                                                                                                                   tc,
-                                                                                                                   WIMMessageKey.UNKNOWN_CERTIFICATE_ATTRIBUTE,
-                                                                                                                   WIMMessageHelper.generateMsgParms(str)));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.UNKNOWN_CERTIFICATE_ATTRIBUTE, WIMMessageHelper.generateMsgParms(str));
+                throw new CertificateMapperException(WIMMessageKey.UNKNOWN_CERTIFICATE_ATTRIBUTE, msg);
             }
         }
         return filter.toString();
@@ -3024,6 +3042,8 @@ public class LdapConfigManager {
     private void setCertificateMapMode(String certMapMode) {
         if (ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE.equalsIgnoreCase(certMapMode)) {
             iCertMapMode = ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE;
+        } else if (ConfigConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(certMapMode)) {
+            iCertMapMode = ConfigConstants.CONFIG_VALUE_CUSTOM_MODE;
         } else {
             iCertMapMode = ConfigConstants.CONFIG_VALUE_EXTACT_DN_MODE;
         }
@@ -3202,7 +3222,7 @@ public class LdapConfigManager {
         return iLoginProps;
     }
 
-    public Map getAttributes() {
+    public Map<String, LdapAttribute> getAttributes() {
         return iAttrNameToAttrMap;
     }
 }

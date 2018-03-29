@@ -34,7 +34,6 @@ import com.ibm.wsspi.security.wim.model.Control;
 import com.ibm.wsspi.security.wim.model.Entity;
 import com.ibm.wsspi.security.wim.model.Group;
 import com.ibm.wsspi.security.wim.model.IdentifierType;
-import com.ibm.wsspi.security.wim.model.PersonAccount;
 import com.ibm.wsspi.security.wim.model.Root;
 import com.ibm.wsspi.security.wim.model.SearchControl;
 
@@ -157,7 +156,7 @@ public class SearchBridge {
                         //returnValue.setHasMore();
                         break;
                     }
-                    PersonAccount loginAccount = (PersonAccount) returnedList.get(count);
+                    Entity loginAccount = returnedList.get(count);
                     // d115256
                     if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                         Object value = loginAccount.get(outputAttrName);
@@ -317,7 +316,7 @@ public class SearchBridge {
                         //returnValue.setHasMore();
                         break;
                     }
-                    Group group = (Group) returnedList.get(count);
+                    Entity group = returnedList.get(count);
                     boolean isEntityTypeGrp = false;
                     if (callGetAPI) {
                         //isEntityTypeGrp = SchemaManager.singleton().isSuperType(Service.DO_GROUP,

@@ -29,8 +29,6 @@ subprojects {
     task publish { }
     task releaseNeeded { dependsOn release }
     task copyPiiFiles { }
-    task prereqFeatureResources { }
-    task publishFeatureResources { }
   }
 
   /* For Java 9 builds, set the --release compiler flag to keep bootclasspath in sync */

@@ -469,14 +469,14 @@ public interface ConfigConstants {
     String CONFIG_PROP_SEARCHFILTER = "searchFilter";
     String CONFIG_PROP_TRANSLATE_RDN = "translateRDN";
     String CONFIG_PROP_CERTIFICATE_MAP_MODE = "certificateMapMode";
-    // String CONFIG_VALUE_EXTACT_DN_MODE = "exactDNMode";
     String CONFIG_VALUE_EXTACT_DN_MODE = "EXACT_DN";
-    // String CONFIG_VALUE_FILTER_DESCRIPTOR_MODE = "filterDescriptorMode";
     String CONFIG_VALUE_FILTER_DESCRIPTOR_MODE = "CERTIFICATE_FILTER";
+    String CONFIG_VALUE_CUSTOM_MODE = "CUSTOM";
     String[] CONFIG_PROP_CERTIFICATE_MAP_MODE_VALUES = {
-                                                         CONFIG_VALUE_EXTACT_DN_MODE, CONFIG_VALUE_FILTER_DESCRIPTOR_MODE
+                                                         CONFIG_VALUE_EXTACT_DN_MODE, CONFIG_VALUE_FILTER_DESCRIPTOR_MODE, CONFIG_VALUE_CUSTOM_MODE
     };
     String CONFIG_PROP_CERTIFICATE_FILTER = "certificateFilter";
+    String CONFIG_PROP_CERTIFICATE_MAPPER_ID = "certificateMapperId";
     /**
      * The name of the property "readOnly" in the vmm configuration
      */

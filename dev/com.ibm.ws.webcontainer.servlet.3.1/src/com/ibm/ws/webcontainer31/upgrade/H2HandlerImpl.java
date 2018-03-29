@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -24,9 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.channel.h2internal.H2UpgradeHandler;
+import com.ibm.ws.http2.upgrade.H2UpgradeHandler;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
-import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 
@@ -42,6 +39,12 @@ public class H2HandlerImpl implements H2Handler {
      */
     @Override
     public boolean isH2Request(HttpInboundConnection hic, ServletRequest request) throws ServletException {
+        
+        //first check if H2 is enabled for this channel/port
+        if (!((Http2InboundConnection)hic).isHTTP2UpgradeRequest(null, true) ){
+            return false;
+        }
+        
         Map<String, String> headers = new HashMap<String, String>();
         HttpServletRequest hsrt = (HttpServletRequest) request;
         Enumeration<String> headerNames = hsrt.getHeaderNames();
@@ -52,7 +55,8 @@ public class H2HandlerImpl implements H2Handler {
             String value = hsrt.getHeader(key);
             headers.put(key, value);
         }
-        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(headers);
+        //check if this request is asking to do H2
+        return ((Http2InboundConnection)hic).isHTTP2UpgradeRequest(headers, false);
     }
 
     /**

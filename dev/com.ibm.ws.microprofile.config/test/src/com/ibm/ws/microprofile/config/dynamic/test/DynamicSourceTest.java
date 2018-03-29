@@ -44,9 +44,8 @@ public class DynamicSourceTest {
         Config config = builder.build();
 
         //check that initially that is all we can see
-        Iterable<String> keys = config.getPropertyNames();
-        TestUtils.assertContains(keys, key1);
-        TestUtils.assertNotContains(keys, key2);
+        TestUtils.assertContainsKey(config, key1);
+        TestUtils.assertNotContainsKey(config, key2);
 
         String value = config.getValue(key1, String.class);
         assertEquals(value1, value);
@@ -55,9 +54,8 @@ public class DynamicSourceTest {
         configSource.put(key2, value2);
 
         //... [refreshInterval] seconds won't have elapsed yet so it shouldn't show up in the config yet
-        keys = config.getPropertyNames();
-        TestUtils.assertContains(keys, key1);
-        TestUtils.assertNotContains(keys, key2);
+        TestUtils.assertContainsKey(config, key1);
+        TestUtils.assertNotContainsKey(config, key2);
 
         //now wait [refreshInterval] seconds
         try {
@@ -67,9 +65,8 @@ public class DynamicSourceTest {
         }
 
         //now the new key should show up
-        keys = config.getPropertyNames();
-        TestUtils.assertContains(keys, key1);
-        TestUtils.assertContains(keys, key2);
+        TestUtils.assertContainsKey(config, key1);
+        TestUtils.assertContainsKey(config, key2);
 
         value = config.getValue(key1, String.class);
         assertEquals(value1, value);
@@ -86,9 +83,8 @@ public class DynamicSourceTest {
         }
 
         //now only the second key should show up
-        keys = config.getPropertyNames();
-        TestUtils.assertNotContains(keys, key1);
-        TestUtils.assertContains(keys, key2);
+        TestUtils.assertNotContainsKey(config, key1);
+        TestUtils.assertContainsKey(config, key2);
 
         value = config.getValue(key2, String.class);
         assertEquals(value2, value);

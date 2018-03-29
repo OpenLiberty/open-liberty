@@ -169,7 +169,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     /** {@inheritDoc} */
     @Override
     public SecurityCookieImpl preInvoke(EJBRequestData request) throws EJBAccessDeniedException {
-        Subject invokedSubject = subjectManager.getInvocationSubject();
+        Subject invokedSubject= subjectManager.getInvocationSubject();
         Subject callerSubject = subjectManager.getCallerSubject();
 
         EJBMethodMetaData methodMetaData = request.getEJBMethodMetaData();
@@ -178,7 +178,10 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
             invokedSubject = setNullSubjectWhenExpired(invokedSubject);
             callerSubject = setNullSubjectWhenExpired(callerSubject);
         }
-        SecurityCookieImpl securityCookie = new SecurityCookieImpl(invokedSubject, callerSubject);
+        Subject originalInvokedSubject = invokedSubject;
+        Subject originalCallerSubject = callerSubject;
+
+//        SecurityCookieImpl securityCookie = new SecurityCookieImpl(invokedSubject, callerSubject);
         if (setUnauthenticatedSubjectIfNeeded(invokedSubject, callerSubject)) {
             invokedSubject = subjectManager.getInvocationSubject();
             callerSubject = subjectManager.getCallerSubject();
@@ -191,6 +194,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
         performDelegation(methodMetaData, subjectToAuthorize);
         subjectManager.setCallerSubject(subjectToAuthorize);
+        SecurityCookieImpl securityCookie = new SecurityCookieImpl(originalInvokedSubject, originalCallerSubject, subjectManager.getInvocationSubject(), subjectToAuthorize);
         return securityCookie;
     }
 
@@ -202,11 +206,24 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     public void postInvoke(EJBRequestData request, SecurityCookieImpl preInvokeResult) throws EJBAccessDeniedException {
         if (preInvokeResult != null) {
             SecurityCookieImpl securityCookie = preInvokeResult;
-            Subject invokedSubject = securityCookie.getInvokedSubject();
-            Subject receivedSubject = securityCookie.getReceivedSubject();
+            Subject invocationSubject = subjectManager.getInvocationSubject();
+            Subject callerSubject = subjectManager.getCallerSubject();
+            // A unit test might set either invocationSubject or callerSubject as null.
+            if ((invocationSubject == null || invocationSubject.equals(securityCookie.getAdjustedInvokedSubject())) &&
+                (callerSubject == null || callerSubject.equals(securityCookie.getAdjustedReceivedSubject()))) {
+                // if invocation and caller subject are unchanged, this means that a programmatic authentication
+                // was not carried out, thus put the original subject back. 
+                // otherwise, keep the current subjects in order to preserve the subjects from the programmatic login.
+                Subject invokedSubject = securityCookie.getInvokedSubject();
+                Subject receivedSubject = securityCookie.getReceivedSubject();
 
-            subjectManager.setCallerSubject(receivedSubject);
-            subjectManager.setInvocationSubject(invokedSubject);
+                subjectManager.setCallerSubject(receivedSubject);
+                subjectManager.setInvocationSubject(invokedSubject);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Subjects have been changed, preserving the current Subjects.");
+                }
+            }
         }
     }
 

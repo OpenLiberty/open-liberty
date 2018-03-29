@@ -14,9 +14,12 @@ import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_BUNDLE_PREFIX;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_NAMESPACE;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_THIN_APPS_DIR;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.VIRTUAL_HOST_END;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.VIRTUAL_HOST_START;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_BND_NAME;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_VIRTUAL_HOST_END;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_VIRTUAL_HOST_START;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_BND_NAME;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_VIRTUAL_HOST_END;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_VIRTUAL_HOST_START;
 import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.SPRING_LIB_INDEX_FILE;
 
 import java.io.BufferedReader;
@@ -62,9 +65,7 @@ import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
-import com.ibm.ws.app.manager.springboot.container.config.HttpEndpoint;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
-import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instance;
 import com.ibm.ws.app.manager.springboot.support.SpringBootApplication;
@@ -94,7 +95,9 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
+import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 public class SpringBootApplicationImpl extends DeployedAppInfoBase implements SpringBootConfigFactory, SpringBootApplication {
     private static final TraceComponent tc = Tr.register(SpringBootApplicationImpl.class);
@@ -205,7 +208,18 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             virtualHostConfig.getAndUpdate((b) -> {
                 if (b != null) {
                     try {
-                        b.uninstall();
+                        // If the framework is stopping then we avoid uninstalling the bundle.
+                        // This is necessary because config admin will no process the
+                        // config bundle deletion while the framework is shutting down.
+                        // Here we leave the bundle installed and we will clean it up
+                        // on restart when the Spring Boot app handler is activated.
+                        // This way the configurations can be removed before re-starting
+                        // the spring boot applications
+                        if (!FrameworkState.isStopping()) {
+                            b.uninstall();
+                        }
+                    } catch (IllegalStateException e) {
+                        // auto FFDC here
                     } catch (BundleException e) {
                         // auto FFDC here
                     }
@@ -258,16 +272,6 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (libertyConfig.getVirtualHosts().size() != 1) {
                 throw new IllegalStateException("Only one virtualHost is allowed: " + libertyConfig.getVirtualHosts());
             }
-
-            // fill out the pids to wire the virtualHost to the httpEndpoint
-            HttpEndpoint httpEndpoint = libertyConfig.getHttpEndpoints().iterator().next();
-            VirtualHost virtualHost = libertyConfig.getVirtualHosts().iterator().next();
-
-            httpEndpoint.setId("springHttpEndpoint-" + id);
-            virtualHost.setAllowFromEndpoint(httpEndpoint.getId());
-            virtualHost.setId("springVirtualHost-" + id);
-            libertyConfig.setDescription("springConfig-" + id);
-
             StringWriter result = new StringWriter();
             try {
                 ServerConfigurationWriter.getInstance().write(libertyConfig, result);
@@ -278,6 +282,17 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             }
             return result.toString();
         }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfig#getId()
+         */
+        @Override
+        public String getId() {
+            return this.id;
+        }
+
     }
 
     private final ApplicationInformation<DeployedAppInfo> applicationInformation;
@@ -395,8 +410,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     }
 
     private static void thinSpringApp(LibIndexCache libIndexCache, File springAppFile, File thinSpringAppFile, long lastModified) throws IOException, NoSuchAlgorithmException {
-        File libIndexCacheFile = libIndexCache.getLibIndexRoot();
-        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, libIndexCacheFile, true);
+        File parent = libIndexCache.getLibIndexParent();
+        File workarea = libIndexCache.getLibIndexWorkarea();
+        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent);
         springBootThinUtil.execute();
         thinSpringAppFile.setLastModified(lastModified);
     }
@@ -424,7 +440,11 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     public Container createContainerFor(String id) throws IOException, UnableToAdaptException {
         Container container = setupContainer(applicationInformation.getPid(), rawContainer, factory);
         AddEntryToOverlay virtualHostBnd = container.adapt(AddEntryToOverlay.class);
-        virtualHostBnd.add(XML_BND_NAME, getVirtualHostConfig(id));
+
+        // Add both XML and XMI here incase an old web.xml file is used;
+        // easier to just supply both here than figure out which to supply
+        virtualHostBnd.add(XML_BND_NAME, getVirtualHostConfig(XML_VIRTUAL_HOST_START, id, XML_VIRTUAL_HOST_END));
+        virtualHostBnd.add(XMI_BND_NAME, getVirtualHostConfig(XMI_VIRTUAL_HOST_START, id, XMI_VIRTUAL_HOST_END));
         return container;
     }
 
@@ -461,10 +481,10 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         return super.uninstallApp();
     }
 
-    private String getVirtualHostConfig(String id) {
-        StringBuilder builder = new StringBuilder(VIRTUAL_HOST_START);
+    private String getVirtualHostConfig(String start, String id, String end) {
+        StringBuilder builder = new StringBuilder(start);
         builder.append("springVirtualHost-" + id);
-        builder.append(VIRTUAL_HOST_END);
+        builder.append(end);
         return builder.toString();
     }
 
@@ -499,7 +519,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             Container libContainer = libEntry.adapt(Container.class);
             if (libContainer != null) {
                 for (Entry entry : libContainer) {
-                    if (entry.getName().toLowerCase().endsWith(".jar") && !entry.getName().contains("tomcat-")) {
+                    if (!SpringBootThinUtil.isEmbeddedContainerImpl(entry.getName())) {
                         String jarEntryName = entry.getName();
                         Container jarContainer = entry.adapt(Container.class);
                         if (jarContainer != null) {
@@ -518,7 +538,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         List<ContainerInfo> result = new ArrayList<>();
         Map<String, String> indexMap = readIndex(indexFile);
         for (Map.Entry<String, String> entry : indexMap.entrySet()) {
-            Container libContainer = libIndexCache.getLibraryContainer(entry.getValue());
+            Container libContainer = libIndexCache.getLibraryContainer(entry);
             if (libContainer == null) {
                 throw new UnableToAdaptException("No library found for:" + entry.getKey() + "=" + entry.getValue());
             }
@@ -683,5 +703,15 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     @Override
     public void rootContextClosed() {
         uninstallApp();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory#getServerDir()
+     */
+    @Override
+    public File getServerDir() {
+        return factory.getLocationAdmin().resolveResource(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR).asFile();
     }
 }

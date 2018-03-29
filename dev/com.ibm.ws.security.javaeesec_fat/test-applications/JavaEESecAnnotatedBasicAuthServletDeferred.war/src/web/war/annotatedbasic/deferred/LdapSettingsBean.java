@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -192,22 +192,24 @@ public class LdapSettingsBean {
         return prop;
     }
 
-    public Set<ValidationType> getUseFor() throws IOException {
+    public ValidationType[] getUseFor() throws IOException {
         refreshConfiguration();
 
-        String prop = getProperty("useFor");
-        Set<ValidationType> results = null;
-        if (prop != null) {
-            results = new HashSet<ValidationType>();
+        Set<ValidationType> resultsSet = new HashSet<ValidationType>();
 
+        String prop = getProperty("useFor");
+        if (prop != null) {
             if (prop.contains("VALIDATE")) {
-                results.add(ValidationType.VALIDATE);
+                resultsSet.add(ValidationType.VALIDATE);
             }
             if (prop.contains("PROVIDE_GROUPS")) {
-                results.add(ValidationType.PROVIDE_GROUPS);
+                resultsSet.add(ValidationType.PROVIDE_GROUPS);
             }
         }
-
+        ValidationType[] results = null;
+        if (resultsSet.size() > 0) {
+            results = resultsSet.toArray(new ValidationType[resultsSet.size()]);
+        }
         System.out.println(CLASS_NAME + ".getUseFor() returns: " + results);
         return results;
     }

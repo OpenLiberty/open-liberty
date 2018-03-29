@@ -1,0 +1,2498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+    <!-- ##### Listeners: Object #### -->
+    <listener>
+        <display-name>AdvEnvMixObjServletRequestListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixObjServletContextListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixObjHttpSessionListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixObjServletRequestAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixObjServletContextAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixObjHttpSessionAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener</listener-class>
+    </listener>
+    
+    <!-- ##### Listeners: Primitive #### -->
+    <listener>
+        <display-name>AdvEnvMixPrimServletRequestListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixPrimServletContextListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixPrimHttpSessionListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixPrimServletRequestAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixPrimServletContextAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvEnvMixPrimHttpSessionAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener</listener-class>
+    </listener>
+    
+    <!-- Filters -->
+    <!-- ##### Filter: Object ##### -->
+    <filter>
+        <display-name>AdvEnvMixObjFilter</display-name>
+        <filter-name>AdvEnvMixObjFilter</filter-name>
+        <filter-class>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdvEnvMixObjFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!-- ##### Filter: Primitive ##### -->
+    <filter>
+        <display-name>AdvEnvMixPrimFilter</display-name>
+        <filter-name>AdvEnvMixPrimFilter</filter-name>
+        <filter-class>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdvEnvMixPrimFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+	
+	<!-- ###### Servlet:  BasicEnvPrimMixServlet ######-->
+	<!-- Field Injection targets for BasicEnvPrimMixServlet -->
+	<env-entry>
+	   <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/ifchar</env-entry-name>
+	   <env-entry-type>java.lang.Character</env-entry-type>
+	   <env-entry-value>o</env-entry-value>
+	</env-entry>
+	
+	<env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+	
+	<env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+	
+	<!-- Method Injection targets for BasicEnvPrimMixServlet -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/JNDI_Ann_char</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/JNDI_Ann_byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/JNDI_Ann_short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/JNDI_Ann_int</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/JNDI_Ann_long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/JNDI_Ann_boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/JNDI_Ann_double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvPrimMixServlet/JNDI_Ann_float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+	<!-- /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ -->
+	
+	<!-- ##### Servlet: BasicEnvObjMixServlet ##### -->
+    <!-- Field Injection targets for BasicEnvPrimMixServlet -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for BasicEnvObjMixServlet -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/JNDI_Class_Ann_String</env-entry-name>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/JNDI_Class_Ann_Character</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/JNDI_Class_Ann_Byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/JNDI_Class_Ann_Short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/JNDI_Class_Ann_Integer</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/JNDI_Class_Ann_Long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/JNDI_Class_Ann_Boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/JNDI_Class_Ann_Double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.BasicEnvObjMixServlet/JNDI_Class_Ann_Float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    <!-- ############### START LISTENER OBJECT TARGETS ################# -->
+    
+    <!-- ##### Listener: AdvEnvMixObjServletRequestListener ##### -->
+    <!-- Field Injection targets for AdvEnvMixObjServletRequestListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixObjServletRequestListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/JNDI_Class_Ann_String</env-entry-name>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/JNDI_Class_Ann_Character</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/JNDI_Class_Ann_Byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/JNDI_Class_Ann_Short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/JNDI_Class_Ann_Integer</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/JNDI_Class_Ann_Long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/JNDI_Class_Ann_Boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/JNDI_Class_Ann_Double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestListener/JNDI_Class_Ann_Float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    
+    
+    <!-- ##### Listener: AdvEnvMixObjServletRequestAttributeListener ##### -->
+    <!-- Field Injection targets for AdvEnvMixObjServletRequestAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixObjServletRequestAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/JNDI_Class_Ann_String</env-entry-name>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/JNDI_Class_Ann_Character</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/JNDI_Class_Ann_Byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/JNDI_Class_Ann_Short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/JNDI_Class_Ann_Integer</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/JNDI_Class_Ann_Long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/JNDI_Class_Ann_Boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/JNDI_Class_Ann_Double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletRequestAttributeListener/JNDI_Class_Ann_Float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    <!-- ##### Listener: AdvEnvMixObjServletContextListener ##### -->
+    <!-- Field Injection targets for AdvEnvMixObjServletContextListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixObjServletContextListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/JNDI_Class_Ann_String</env-entry-name>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/JNDI_Class_Ann_Character</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/JNDI_Class_Ann_Byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/JNDI_Class_Ann_Short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/JNDI_Class_Ann_Integer</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/JNDI_Class_Ann_Long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/JNDI_Class_Ann_Boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/JNDI_Class_Ann_Double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextListener/JNDI_Class_Ann_Float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    <!-- ##### Listener: AdvEnvMixObjServletContextAttributeListener ##### -->
+    <!-- Field Injection targets for AdvEnvMixObjServletContextAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixObjServletContextAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/JNDI_Class_Ann_String</env-entry-name>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/JNDI_Class_Ann_Character</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/JNDI_Class_Ann_Byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/JNDI_Class_Ann_Short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/JNDI_Class_Ann_Integer</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/JNDI_Class_Ann_Long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/JNDI_Class_Ann_Boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/JNDI_Class_Ann_Double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjServletContextAttributeListener/JNDI_Class_Ann_Float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    <!-- ##### Listener: AdvEnvMixObjHttpSessionListener ##### -->
+    <!-- Field Injection targets for AdvEnvMixObjHttpSessionListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixObjHttpSessionListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/JNDI_Class_Ann_String</env-entry-name>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/JNDI_Class_Ann_Character</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/JNDI_Class_Ann_Byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/JNDI_Class_Ann_Short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/JNDI_Class_Ann_Integer</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/JNDI_Class_Ann_Long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/JNDI_Class_Ann_Boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/JNDI_Class_Ann_Double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionListener/JNDI_Class_Ann_Float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    <!-- ##### Listener: AdvEnvMixObjHttpSessionAttributeListener ##### -->
+    <!-- Field Injection targets for AdvEnvMixObjHttpSessionAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixObjHttpSessionAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/JNDI_Class_Ann_String</env-entry-name>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/JNDI_Class_Ann_Character</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/JNDI_Class_Ann_Byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/JNDI_Class_Ann_Short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/JNDI_Class_Ann_Integer</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/JNDI_Class_Ann_Long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/JNDI_Class_Ann_Boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/JNDI_Class_Ann_Double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjHttpSessionAttributeListener/JNDI_Class_Ann_Float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    <!-- ##### Listener: AdvEnvMixObjFilter ##### -->
+    <!-- Field Injection targets for AdvEnvMixObjFilter -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/ifString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/ifCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/ifByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/ifShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/ifInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/ifLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/ifBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/ifDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/ifFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixObjFilter -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/imString</env-entry-name>
+       <env-entry-type>java.lang.String</env-entry-type>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/imCharacter</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/imByte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/imShort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/imInteger</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/imLong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/imBoolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/imDouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/imFloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/JNDI_Class_Ann_String</env-entry-name>
+       <env-entry-value>uebrigens</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/JNDI_Class_Ann_Character</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/JNDI_Class_Ann_Byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/JNDI_Class_Ann_Short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/JNDI_Class_Ann_Integer</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/JNDI_Class_Ann_Long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/JNDI_Class_Ann_Boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/JNDI_Class_Ann_Double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixObjFilter/JNDI_Class_Ann_Float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    
+    
+    
+    
+    <!-- ############  START LISTENER PRIMITIVE TARGETS ############ -->
+    
+    <!-- ###### Listener:  AdvEnvMixPrimServletRequestListener ######-->
+    <!-- Field Injection targets for AdvEnvMixPrimServletRequestListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixPrimServletRequestListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/JNDI_Ann_char</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/JNDI_Ann_byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/JNDI_Ann_short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/JNDI_Ann_int</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/JNDI_Ann_long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/JNDI_Ann_boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/JNDI_Ann_double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestListener/JNDI_Ann_float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    
+    <!-- ###### Listener:  AdvEnvMixPrimServletRequestAttributeListener ######-->
+    <!-- Field Injection targets for AdvEnvMixPrimServletRequestAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixPrimServletRequestAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/JNDI_Ann_char</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/JNDI_Ann_byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/JNDI_Ann_short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/JNDI_Ann_int</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/JNDI_Ann_long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/JNDI_Ann_boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/JNDI_Ann_double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletRequestAttributeListener/JNDI_Ann_float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    
+    <!-- ###### Listener:  AdvEnvMixPrimServletContextListener ######-->
+    <!-- Field Injection targets for AdvEnvMixPrimServletContextListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixPrimServletContextListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/JNDI_Ann_char</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/JNDI_Ann_byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/JNDI_Ann_short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/JNDI_Ann_int</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/JNDI_Ann_long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/JNDI_Ann_boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/JNDI_Ann_double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextListener/JNDI_Ann_float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    
+    
+    <!-- ###### Listener:  AdvEnvMixPrimServletContextAttributeListener ######-->
+    <!-- Field Injection targets for AdvEnvMixPrimServletContextAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixPrimServletContextAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/JNDI_Ann_char</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/JNDI_Ann_byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/JNDI_Ann_short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/JNDI_Ann_int</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/JNDI_Ann_long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/JNDI_Ann_boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/JNDI_Ann_double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimServletContextAttributeListener/JNDI_Ann_float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    
+    <!-- ###### Listener:  AdvEnvMixPrimHttpSessionListener ######-->
+    <!-- Field Injection targets for AdvEnvMixPrimHttpSessionListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixPrimHttpSessionListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/JNDI_Ann_char</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/JNDI_Ann_byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/JNDI_Ann_short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/JNDI_Ann_int</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/JNDI_Ann_long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/JNDI_Ann_boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/JNDI_Ann_double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionListener/JNDI_Ann_float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    
+    <!-- ###### Listener:  AdvEnvMixPrimHttpSessionAttributeListener ######-->
+    <!-- Field Injection targets for AdvEnvMixPrimHttpSessionAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixPrimHttpSessionAttributeListener -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/JNDI_Ann_char</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/JNDI_Ann_byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/JNDI_Ann_short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/JNDI_Ann_int</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/JNDI_Ann_long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/JNDI_Ann_boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/JNDI_Ann_double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimHttpSessionAttributeListener/JNDI_Ann_float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- ###### Filter:  AdvEnvMixPrimFilter ######-->
+    <!-- Field Injection targets for AdvEnvMixPrimFilter -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/ifchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/ifbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/ifshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/ifint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/iflong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/ifboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/ifdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/iffloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Method Injection targets for AdvEnvMixPrimFilter -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/imchar</env-entry-name>
+       <env-entry-type>java.lang.Character</env-entry-type>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/imbyte</env-entry-name>
+       <env-entry-type>java.lang.Byte</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/imshort</env-entry-name>
+       <env-entry-type>java.lang.Short</env-entry-type>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/imint</env-entry-name>
+       <env-entry-type>java.lang.Integer</env-entry-type>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/imlong</env-entry-name>
+       <env-entry-type>java.lang.Long</env-entry-type>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/imboolean</env-entry-name>
+       <env-entry-type>java.lang.Boolean</env-entry-type>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/imdouble</env-entry-name>
+       <env-entry-type>java.lang.Double</env-entry-type>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/imfloat</env-entry-name>
+       <env-entry-type>java.lang.Float</env-entry-type>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+    
+    <!-- Class-level annotation descriptors. If these don't exist, the resources won't be created -->
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/JNDI_Ann_char</env-entry-name>
+       <env-entry-value>o</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/JNDI_Ann_byte</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/JNDI_Ann_short</env-entry-name>
+       <env-entry-value>1</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/JNDI_Ann_int</env-entry-name>
+       <env-entry-value>158</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/JNDI_Ann_long</env-entry-name>
+       <env-entry-value>254</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/JNDI_Ann_boolean</env-entry-name>
+       <env-entry-value>true</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/JNDI_Ann_double</env-entry-name>
+       <env-entry-value>856.93D</env-entry-value>
+    </env-entry>
+    
+    <env-entry>
+       <env-entry-name>com.ibm.ws.injection.envmix.web.AdvEnvMixPrimFilter/JNDI_Ann_float</env-entry-name>
+       <env-entry-value>548.72F</env-entry-value>
+    </env-entry>
+</web-app>

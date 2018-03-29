@@ -550,6 +550,10 @@ public class JwtUtils {
 			Collection<String> aliases = kss.getTrustedCertEntriesInKeyStore(trustStoreRef);
 			// check for NO aliases in the trust store
 			if (aliases == null || aliases.size() == 0) {
+				X509Certificate cert = kss.getX509CertificateFromKeyStore(trustStoreRef);
+				if (cert != null) {
+					return cert.getPublicKey();
+				}
 				String errorMsg = Tr.formatMessage(tc, "JWT_SIGNER_CERT_NOT_AVAILABLE");
 				throw new InvalidTokenException(errorMsg);
 

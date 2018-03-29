@@ -20,8 +20,10 @@ public class HttpEndpoint extends ConfigElement {
 
     @XmlElement(name = "tcpOptions")
     private TcpOptions tcpOptions;
-    @XmlElement(name="httpOptions")
+    @XmlElement(name = "httpOptions")
     private HttpOptions httpOptions;
+    @XmlElement(name = "sslOptions")
+    private SslOptions sslOptions;
     private String host;
     private Integer httpPort;
     private Integer httpsPort;
@@ -44,6 +46,16 @@ public class HttpEndpoint extends ConfigElement {
             this.httpOptions = new HttpOptions();
         }
         return this.httpOptions;
+    }
+
+    /**
+     * @return Ssl options for this configuration
+     */
+    public SslOptions getSslOptions() {
+        if (this.sslOptions == null) {
+            this.sslOptions = new SslOptions();
+        }
+        return this.sslOptions;
     }
 
     /**

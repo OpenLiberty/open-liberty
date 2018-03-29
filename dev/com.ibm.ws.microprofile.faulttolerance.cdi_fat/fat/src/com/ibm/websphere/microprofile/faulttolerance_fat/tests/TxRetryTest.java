@@ -35,13 +35,6 @@ public class TxRetryTest extends LoggingTest {
                                          "SUCCESS");
     }
 
-    @Test
-    public void testRetryMultiTran() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/TxFaultTolerance/retry?testMethod=testRetryMultiTran",
-                                         "SUCCESS");
-    }
-
     /** {@inheritDoc} */
     @Override
     protected SharedServer getSharedServer() {

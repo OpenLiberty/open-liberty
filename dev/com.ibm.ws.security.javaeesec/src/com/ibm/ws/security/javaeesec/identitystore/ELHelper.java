@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package com.ibm.ws.security.javaeesec.identitystore;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -367,20 +367,18 @@ class ELHelper {
          * The expression language value takes precedence over the direct setting.
          */
         if (useForExpression.isEmpty()) {
-            result = new HashSet<ValidationType>(Arrays.asList(useFor));
+            result = EnumSet.copyOf(Arrays.asList(useFor));
         } else {
             /*
              * Evaluate the EL expression to get the value.
              */
             Object obj = evaluateElExpression(useForExpression);
-            if (obj instanceof Object[]) {
-                result = new HashSet(Arrays.asList(obj));
-                immediate = isImmediateExpression(useForExpression);
-            } else if (obj instanceof Set) {
-                result = (Set<ValidationType>) obj;
+            if (obj instanceof ValidationType[]) {
+                ValidationType[] types = (ValidationType[])obj;
+                result = EnumSet.copyOf(Arrays.asList(types));
                 immediate = isImmediateExpression(useForExpression);
             } else {
-                throw new IllegalArgumentException("Expected 'useForExpression' to evaluate to a Set<ValidationType>.");
+                throw new IllegalArgumentException("Expected 'useForExpression' to evaluate to an array of ValidationType.");
             }
         }
 

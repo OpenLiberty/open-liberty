@@ -402,7 +402,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         BlockableIncrementFunction increment1 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor1", null, null, false);
         BlockableIncrementFunction increment2 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor2", null, null, false);
         BlockableIncrementFunction increment3 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor3", null, null, false);
-        BlockableIncrementFunction increment4 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor3", null, null, false);
+        BlockableIncrementFunction increment4 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor4", null, null, false);
         CompletableFuture<Integer> cf0 = new ManagedCompletableFuture<Integer>(sameThreadExecutor);
         CompletableFuture<Integer> cf1 = cf0.thenApplyAsync(increment1);
         CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment2);
@@ -432,8 +432,10 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertTrue(executorThreadName, executorThreadName.startsWith("Default Executor-thread-"));
         assertNotSame(servletThread, increment3.executionThread);
 
-        // Async action 4 isn't actually async either. It runs from the thread that executed the previous stage, which tries to submit it
+        // Async action 4 might run on the thread that executed the previous stage, or on the servlet thread if cf3.get finds it first
         assertEquals(increment3.executionThread, increment4.executionThread);
+        assertTrue("Expecting to run on " + increment3.executionThread + " or " + servletThread + ". Instead: " + increment4.executionThread,
+                   increment4.executionThread.equals(increment3.executionThread) || increment4.executionThread.equals(servletThread));
     }
 
     /**

@@ -57,7 +57,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
 
     /**
      * Gets the required Callback objects needed by this login module.
-     * 
+     *
      * @param callbackHandler
      * @return
      * @throws IOException
@@ -102,8 +102,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
             collectiveCert = plugin.isCollectiveCertificateChain(certChain);
             if (collectiveCert || plugin.isCollectiveCACertificate(certChain)) {
                 handleCollectiveLogin(certChain, plugin, collectiveCert);
-            }
-            else {
+            } else {
                 CertificateAuthenticator certAuthen = getCertificateAuthenticator(certChain);
                 if (certAuthen != null) {
                     handleCertificateAuthenticator(certChain, certAuthen);
@@ -157,7 +156,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
                                                       "JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR",
                                                       new Object[] { dn, e },
                                                       "CWWKS1102E: CLIENT-CERT Authentication failed for the client certificate with dn " + dn + ". An internal error occurred: "
-                                                                      + e.getLocalizedMessage());
+                                                                              + e.getLocalizedMessage());
             if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
                 Tr.error(tc, "JAAS_AUTHENTICATION_FAILED_CERT_INTERNAL_ERROR", dn, e.getLocalizedMessage());
             }
@@ -168,13 +167,12 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
     /**
      * Get the accessid components (type, realm, username) from the
      * CertificateAuthenticator and create the Principal and credentials
-     * 
+     *
      * @param certChain
      * @param bob
      */
     private void handleCertificateAuthenticator(X509Certificate[] certChain,
-                                                CertificateAuthenticator certAuthen)
-                    throws Exception {
+                                                CertificateAuthenticator certAuthen) throws Exception {
         String type = certAuthen.getType();
         if (type == null)
             type = AccessIdUtil.TYPE_USER;
@@ -191,22 +189,20 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
      * See if there is a CertificateAuthenticator service that will
      * vouch for this cert chain. Return the 1st authenticator that
      * return true from authenticateCertificateChain()
-     * 
+     *
      * @param certChain
      * @throws LoginException
      * @return
      */
-    private CertificateAuthenticator getCertificateAuthenticator(X509Certificate[] certChain)
-                    throws LoginException {
+    private CertificateAuthenticator getCertificateAuthenticator(X509Certificate[] certChain) throws LoginException {
         CertificateAuthenticator certAuthen = null;
-        ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certAuthens =
-                        JAASServiceImpl.getCertificateAuthenticators();
+        ConcurrentServiceReferenceMap<String, CertificateAuthenticator> certAuthens = JAASServiceImpl.getCertificateAuthenticators();
         Set<String> keys = certAuthens.keySet();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "CertificateAuthenticator keys:", keys);
         }
         // Iterate through the CertificateAuthenticators and call
-        // authenticateCertificateChain. Return the 1st one to return true. 
+        // authenticateCertificateChain. Return the 1st one to return true.
         for (String key : keys) {
             CertificateAuthenticator current = certAuthens.getService(key);
             if (current.authenticateCertificateChain(certChain)) {
@@ -219,14 +215,15 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
 
     /**
      * Handles a collective certificate login.
-     * 
+     *
      * @param certChain
      * @param x509Subject
      * @throws InvalidNameException
      * @throws AuthenticationException
      * @throws Exception
      */
-    private void handleCollectiveLogin(X509Certificate certChain[], CollectiveAuthenticationPlugin plugin, boolean collectiveCert) throws InvalidNameException, AuthenticationException, Exception {
+    private void handleCollectiveLogin(X509Certificate certChain[], CollectiveAuthenticationPlugin plugin,
+                                       boolean collectiveCert) throws InvalidNameException, AuthenticationException, Exception {
         // If the chain is not authenticated, it will throw an AuthenticationException
         plugin.authenticateCertificateChain(certChain, collectiveCert);
         X509Certificate cert = certChain[0];
@@ -241,7 +238,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
 
     /**
      * Add unique ID and call setPrincipalAndCredentials
-     * 
+     *
      * @param accessId
      * @throws Exception
      */
@@ -249,8 +246,9 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         temporarySubject = new Subject();
         Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
         hashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, AccessIdUtil.getUniqueId(accessId));
+        setWSPrincipal(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
+        setCredentials(temporarySubject, username, username);
         temporarySubject.getPublicCredentials().add(hashtable);
-        setPrincipalAndCredentials(temporarySubject, username, null, username, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
         temporarySubject.getPublicCredentials().remove(hashtable);
     }
 
@@ -293,7 +291,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
      * be necessary to create a placeholder instead of a subject and modify the credentials
      * service to return a set of credentials or update the holder in order to place in
      * the shared state.
-     * 
+     *
      * @throws Exception
      */
     private void setUpTemporarySubject() throws Exception {
@@ -302,8 +300,9 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         String accessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER,
                                                       ur.getRealm(),
                                                       ur.getUniqueUserId(username));
-        setPrincipalAndCredentials(temporarySubject, username, authenticatedId, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
-
+        setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
+        setCredentials(temporarySubject, securityName, username);
+        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
     }
 
     /** {@inheritDoc} */

@@ -15,10 +15,11 @@
             <method-selectors>
                 <method-selector>
                     <script language="beanshell">
+                    <!-- There's a race condition that causes these TCK tests to occasionally fail
+                         if the execution service has threads available but is slow to start work -->
                          <![CDATA[
-                        !method.getDeclaringClass().getSimpleName().startsWith("BulkheadAsynchTest") &&
-                        !method.getDeclaringClass().getSimpleName().startsWith("BulkheadAsynchRetryTest") &&
-                        !method.getDeclaringClass().getSimpleName().startsWith("BulkheadSynchRetryTest")
+                        !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
+                        !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10")
                     ]]>
                     </script>
                 </method-selector>

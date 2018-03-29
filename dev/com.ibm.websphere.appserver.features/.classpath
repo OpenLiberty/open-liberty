@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="visibility/auto"/>
+	<classpathentry kind="src" path="visibility/private"/>
+	<classpathentry kind="src" path="visibility/protected"/>
+	<classpathentry kind="src" path="visibility/public"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

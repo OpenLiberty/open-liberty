@@ -1,0 +1,68 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: FAT HTTP2 Client
+Bundle-SymbolicName: com.ibm.ws.http2.client
+Bundle-Description: FAT HTTP2 Client; version=${bVersion}
+
+publish.wlp.jar.disabled: false
+test.project: true
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"   
+
+javac.source: 1.8
+javac.target: 1.8
+
+Export-Package: \
+  com.ibm.ws.genericbnf.internal, \
+  com.ibm.ws.http2.test, \
+  com.ibm.ws.http2.test.connection, \
+  com.ibm.ws.http2.test.frames, \
+  com.ibm.ws.http2.test.helpers, \
+  com.ibm.ws.http2.test.exceptions, \
+  com.ibm.ws.http2.test.listeners, \
+  com.ibm.ws.http.channel.internal, \
+  com.ibm.ws.http.channel.internal.cookies, \
+  com.ibm.ws.http.channel.internal.inbound, \
+  com.ibm.ws.http.channel.internal.outbound, \
+  com.ibm.ws.http.channel.internal.values, \
+  com.ibm.ws.http.channel.h2internal, \
+  com.ibm.ws.http.channel.h2internal.exceptions, \
+  com.ibm.ws.http.channel.h2internal.frames, \
+  com.ibm.ws.http.channel.h2internal.hpack, \
+  com.ibm.ws.http.channel.h2internal.huffman, \
+  com.ibm.ws.http.channel.h2internal.priority, \
+  com.ibm.ws.http.dispatcher.internal, \
+  com.ibm.ws.http.dispatcher.internal.channel, \
+  com.ibm.ws.http.internal, \
+  com.ibm.ws.http.logging.internal
+  
+Import-Package: \
+  !com.ibm.ws.http.channel.h2internal, \
+  !com.ibm.ws.http.channel.h2internal.exceptions, \
+  !com.ibm.ws.http.channel.h2internal.frames, \
+  !com.ibm.ws.http.channel.h2internal.hpack, \
+  !com.ibm.ws.http.channel.h2internal.huffman, \
+  !com.ibm.ws.http.channel.h2internal.priority, \
+  *
+    
+-dsannotations: com.ibm.ws.http2.test.CFWManager
+
+-buildpath: \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.kernel.service;version=latest

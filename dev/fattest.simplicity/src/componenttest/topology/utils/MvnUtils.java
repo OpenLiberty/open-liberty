@@ -11,7 +11,10 @@
 package componenttest.topology.utils;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,23 +24,28 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.ibm.websphere.simplicity.PortType;
 import com.ibm.ws.fat.util.Props;
@@ -62,6 +70,11 @@ public class MvnUtils {
     public static String mvnOutputFilename = "mvnOutput_TCK";
     static List<String> jarsFromWlp = new ArrayList<String>(3);
     private static File mvnOutput;
+    private static String apiVersion;
+    private static String implVersion;
+    private static String backStopImplVersion;
+    private static Set<String> versionedJars;
+    private static Map<String, String> mavenVersionBindingJarPatches = new HashMap<String, String>();
 
     /**
      * Initialise shared values for a particular server.
@@ -137,8 +150,21 @@ public class MvnUtils {
             for (int i = 0; i < nl.getLength(); i++) {
                 // turn "<systemPath>${jar.name}</systemPath>" into "jar.name"
                 String jarKey = nl.item(i).getTextContent().replaceAll("\\$\\{", "").replaceAll("\\}", "".replaceAll("\\s+", ""));
+
                 jarsFromWlp.add(jarKey);
                 log(jarKey);
+                // For jars that have more than one version we try to add to the regex the api version
+                if (versionedJars != null && versionedJars.contains(jarKey)) {
+                    String versionedJarKey;
+                    if (implVersion != null) {
+                        // User has passed in impl.version
+                        versionedJarKey = jarKey + "." + implVersion;
+                    } else {
+                        // Get version from pom.xml
+                        versionedJarKey = jarKey + "." + takeOffFinalOrSnapshot(apiVersion);
+                    }
+                    mavenVersionBindingJarPatches.put(jarKey, versionedJarKey);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,6 +172,21 @@ public class MvnUtils {
             throw e;
         }
 
+    }
+
+    /**
+     * @param version
+     * @return
+     */
+    private static String takeOffFinalOrSnapshot(String version) {
+        if (version != null && version.length() > 1) {
+            // Remove anything after a dash
+            String[] bits = version.split("-");
+            version = bits[0];
+            // Remove and Final specifier
+            version = version.replace(".Final", "");
+        }
+        return version;
     }
 
     /**
@@ -196,15 +237,70 @@ public class MvnUtils {
 
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
+     *
+     * @param backStopImpl
+     */
+    public static int runTCKMvnCmdWithProps(LibertyServer server, String bucketName, String testName, Map<String, String> addedProps,
+                                            Set<String> versionedJarKeys, String backStopImpl) throws Exception {
+        apiVersion = addedProps.get("api.version");
+        implVersion = addedProps.get("impl.version");
+        backStopImplVersion = backStopImpl;
+
+        versionedJars = versionedJarKeys;
+
+        if (!init) {
+            init(server);
+        }
+
+        String[] cmd = mvnCliRoot;
+        for (Iterator<Entry<String, String>> iterator = addedProps.entrySet().iterator(); iterator.hasNext();) {
+            Entry<String, String> entry = iterator.next();
+            cmd = concatStringArray(cmd, new String[] { "-D" + entry.getKey() + "=" + entry.getValue() });
+        }
+
+        int rc = runCmd(cmd, MvnUtils.tckRunnerDir, mvnOutput);
+        String failingTestsList = postProcessTestNgResults();
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+        Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
+                            + "The TCK (" + cmd + ") has thus returned non-zero return code of: "
+                            + rc +
+                            ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
+                            " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
+        return rc;
+    }
+
+    /**
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
      */
     public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName) throws Exception {
         if (!init) {
             init(server);
         }
         // Everything under autoFVT/results is collected from the child build machine
-
         int rc = runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
-        Assert.assertEquals("mvn returned non-zero: " + rc, 0, rc);
+        String failingTestsList = postProcessTestNgResults();
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+        Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
+                            + "The TCK has thus returned non-zero return code of: "
+                            + rc +
+                            ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
+                            " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
+        return rc;
+    }
+
+    /**
+     * Prepare the TestNg Result XML files for inclusion in Simplicity html processing and return a list of failing tests
+     *
+     * @return A list of non passing tests
+     * @throws IOException
+     * @throws SAXException
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     */
+    private static String postProcessTestNgResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException {
+
         File src = new File(MvnUtils.resultsDir, "tck/surefire-reports/junitreports");
         File tgt = new File(MvnUtils.resultsDir, "junit");
         try {
@@ -215,13 +311,19 @@ public class MvnUtils {
                               + src.getAbsolutePath(), nsfe);
         }
 
-        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
-        // the TCK regression
-        Assert.assertEquals(bucketName + ":" + testName + ":TCK has returned non-zero return code of: " + rc +
-                            " This indicates test failure, see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
-                            " and ...autoFVT/results/tck/surefire-reports/index.html", 0, rc);
-
-        return rc;
+        // Get the failing tests out of testng-results.xml
+        String failingTestsList = getNonPassingTestsNamesList();
+        if (failingTestsList != null && failingTestsList.length() > 0) {
+            String[] nonPassed = failingTestsList.split("\\s");
+            if (nonPassed.length > 0) {
+                printStdOutAndScreenIfLocal("\nTCK TESTS THAT DID NOT PASS:");
+                for (int i = 0; i < nonPassed.length; i++) {
+                    printStdOutAndScreenIfLocal("                               " + nonPassed[i]);
+                }
+                printStdOutAndScreenIfLocal("\n");
+            }
+        }
+        return failingTestsList;
     }
 
     /**
@@ -237,6 +339,7 @@ public class MvnUtils {
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
+        pb.redirectErrorStream(true);
         log("Running command " + Arrays.asList(cmd));
         Process p = pb.start();
         int exitCode = p.waitFor();
@@ -254,7 +357,30 @@ public class MvnUtils {
         HashMap<String, String> result = new HashMap<String, String>(jars.size());
         for (Iterator<String> iterator = jars.iterator(); iterator.hasNext();) {
             String jarName = iterator.next();
-            String jarPath = resolveJarPath(jarName, server);
+
+            String jarPath;
+            // Sometimes we can add a particular version postfix to the regex bases on a spec pom.xml
+            if (mavenVersionBindingJarPatches.keySet().contains(jarName)) {
+                jarPath = resolveJarPath(mavenVersionBindingJarPatches.get(jarName), server);
+            } else {
+                jarPath = resolveJarPath(jarName, server);
+            }
+
+            // We allow the situation were we want to test the current TCK version N versus a default level of impl
+            // that is passed in from the testcase and used if no impl.version is set. This does not resolve the
+            // server.xml features dynamically but does allow different maven systempath jars for the impl jar
+            if (jarPath == null && backStopImplVersion != null && backStopImplVersion.length() > 0) {
+                jarPath = resolveJarPath(jarName + "." + backStopImplVersion, server);
+            }
+
+            if (jarPath == null) {
+                System.out.println("No jar found");
+            }
+
+            if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
+                // Developers laptop FAT
+                Assert.assertNotNull(jarPath, "The resolved jarPath for " + jarName + " is null in " + server.getInstallRoot());
+            }
             result.put(jarName, jarPath);
         }
         return result;
@@ -412,4 +538,145 @@ public class MvnUtils {
 
     }
 
+    /**
+     * @return A space separated list of non-PASSing test results
+     * @throws SAXException
+     * @throws IOException
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     */
+    public static String getNonPassingTestsNamesList() throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
+        String notPassingTestsQuery = "/testng-results/suite/test/class/test-method[@status!='PASS']/@name";
+        File testngResults = new File(MvnUtils.resultsDir, "tck/surefire-reports/testng-results.xml");
+        HashSet<String> excludes = new HashSet<String>(Arrays.asList("arquillianBeforeTest", "arquillianAfterTest"));
+        String notPassingTestsResultString = getQueryInXml(testngResults, notPassingTestsQuery, " ", excludes);
+        return notPassingTestsResultString;
+    }
+
+    /**
+     * This method will print a String reliably to the 'standard' Standard.out
+     * (i.e. the developers screen when running locally)
+     *
+     * @param msg
+     */
+    private static void printStdOutAndScreenIfLocal(String msg) {
+        // If running locally print to screen and stdout if different else print to 'stdout' only
+        if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
+            // Developers laptop FAT
+            PrintStream screen = new PrintStream(new FileOutputStream(FileDescriptor.out));
+            screen.println(msg);
+            if (!System.out.equals(screen)) {
+                System.out.println(msg);
+            }
+        } else {
+            // Build engine FAT
+            System.out.println(msg);
+        }
+    }
+
+    /**
+     * @param repo
+     */
+    public static int mvnCleanInstall(File dir) {
+
+        String mvn = "mvn";
+        if (System.getProperty("os.name").contains("Windows")) {
+            mvn = mvn + ".cmd";
+        }
+
+        String[] mvnCleanInstall = new String[] { mvn, "clean", "install" };
+
+        File results = Props.getInstance().getFileProperty(Props.DIR_LOG); //typically ${component_Root_Directory}/results
+        File output = new File(results, "mvnCleanInstall.out");
+
+        // Everything under autoFVT/results is collected from the child build machine
+        int rc = -1;
+        try {
+            rc = runCmd(mvnCleanInstall, dir, output);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+        Assert.assertEquals("maven clean install in " + dir + " has a non-zero return code of: "
+                            + rc +
+                            ".\nThis indicates build failure", 0, rc);
+
+        return rc;
+
+    }
+
+    /**
+     * Return the version from the <repo>/spec/pom.xml
+     *
+     * @param repo
+     * @return
+     */
+    public static String getApiSpecVersionAfterClone(File repo) {
+        return getPomVersionInDir(repo, "spec");
+    }
+
+    /**
+     * Return the version from the <repo>/tck/pom.xml
+     *
+     * @param repo
+     * @return
+     */
+    public static String getTckVersionAfterClone(File repo) {
+        return getPomVersionInDir(repo, "tck");
+    }
+
+    /**
+     * Return the project/version String of a directory's pom.xml file
+     * 
+     * @param repo
+     * @param subdir
+     * @return
+     */
+    private static String getPomVersionInDir(File repo, String subdir) {
+        Assert.assertTrue("The cloned into directory " + repo.getAbsolutePath() + " does not exist", repo != null && repo.exists());
+        File dir = new File(repo, subdir);
+        Assert.assertTrue("The pom.xml parent directory " + dir.getAbsolutePath() + " does not exist", dir.exists());
+        File pomXml = new File(dir, "pom.xml");
+        Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
+        String query = "/project/version";
+        return getQueryInXml(pomXml, query, "", null).trim();
+    }
+
+    /**
+     * Return the result of a XPath query on a file
+     *
+     * @param xml file
+     * @param query as a XPath String
+     * @return result of query into the xml
+     */
+    private static String getQueryInXml(File xml, String query, String seperatorPrefix, Set<String> excludes) {
+        String result = "";
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document docTestngResults = builder.parse(xml);
+            XPathFactory xPathFactory = XPathFactory.newInstance();
+            XPath xpath = xPathFactory.newXPath();
+            XPathExpression xpr = xpath.compile(query);
+            NodeList nodes = (NodeList) xpr.evaluate(docTestngResults, XPathConstants.NODESET);
+
+            if (nodes.getLength() > 0) {
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    String value = nodes.item(i).getNodeValue();
+                    if (value == null || value.length() == 0) {
+                        value = nodes.item(i).getTextContent();
+                    }
+                    if (excludes == null || !excludes.contains(value)) {
+                        result += seperatorPrefix + value;
+                    }
+                }
+            }
+
+        } catch (Throwable t) {
+            MvnUtils.log(t.getMessage());
+        }
+        return result;
+    }
 }

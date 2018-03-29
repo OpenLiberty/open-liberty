@@ -30,7 +30,7 @@ import junit.framework.Assert;
 
 /**
  * <p>Test that a JAXRS application works even if the opentracing
- * features is enabled without a Tracer.</p>
+ * feature is enabled without a Tracer.</p>
  * 
  * <p>The test suite:</p>
  *

@@ -19,9 +19,11 @@ import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.credential.BasicAuthenticationCredential;
+import javax.security.enterprise.credential.Credential;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,7 +43,6 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
     private String realmName = null;
-    private final String DEFAULT_REALM = "defaultRealm";
     private Utils utils = new Utils();
 
     @Override
@@ -52,14 +53,29 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
         setRealmName();
         Subject clientSubject = httpMessageContext.getClientSubject();
-        String authHeader = httpMessageContext.getRequest().getHeader("Authorization");
 
-        if (authHeader == null) {
-            status = handleNoAuthorizationHeader(httpMessageContext);
-        } else {
-            status = handleAuthorizationHeader(authHeader, clientSubject, httpMessageContext);
+        AuthenticationParameters authParams = httpMessageContext.getAuthParameters();
+        Credential cred = null;
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "AuthenticationParameters : " + authParams);
         }
+        if (authParams != null) {
+            cred = authParams.getCredential();
+        }
+        if (cred != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Credential is found.");
+            }
+            status = utils.handleAuthenticate(getCDI(), realmName, cred, clientSubject, httpMessageContext);
+        } else {
+            String authHeader = httpMessageContext.getRequest().getHeader("Authorization");
 
+            if (authHeader == null) {
+                status = handleNoAuthorizationHeader(httpMessageContext);
+            } else {
+                status = handleAuthorizationHeader(authHeader, clientSubject, httpMessageContext);
+            }
+        }
         return status;
     }
 
@@ -73,7 +89,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         }
         if (realmName == null || realmName.trim().isEmpty()) {
             Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_REALM_NAME");
-            realmName = DEFAULT_REALM;
+            realmName = JavaEESecConstants.DEFAULT_REALM;
         }
     }
 

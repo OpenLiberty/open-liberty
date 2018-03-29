@@ -32,8 +32,8 @@ public interface SpringBootConfig {
      * to the factoryParamType and called to create instances
      * for the configuration.
      *
-     * @param config           liberty server configuration
-     * @param factoryParam     a factory specific parameter
+     * @param config liberty server configuration
+     * @param factoryParam a factory specific parameter
      * @param factoryParamtype the helper specific parameter type
      */
     <T> void configure(ServerConfiguration config, T factoryParam, Class<T> factoryParamType);
@@ -49,4 +49,11 @@ public interface SpringBootConfig {
      * and stopping the http endpoint.
      */
     void stop();
+
+    /**
+     * Spring boot config id
+     * 
+     * @return Spring boot config id
+     */
+    String getId();
 }

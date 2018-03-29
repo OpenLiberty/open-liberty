@@ -82,28 +82,36 @@ public class FramePushPromise extends Frame {
 
         setFlags();
 
-        int payloadIndex = 4;
-        int paddedLength = 0;
-
+        int payloadIndex = 0;
+        int paddingLength = 0;
         if (PADDED_FLAG) {
             // The padded field is present; set the paddedLength to represent the actual size of the data we want
-            paddedLength = payloadLength - frp.grabNextByte();
+            paddingLength = frp.grabNextByte();
             payloadIndex++;
         }
 
+        // grab the reserved bit
         byte nextPayloadByte = frp.grabNextByte();
-
-        // set the reserved bit
+        payloadIndex++;
         reservedBit = utils.getReservedBit(nextPayloadByte);
 
+        // grab the promised stream ID
         nextPayloadByte = (byte) (nextPayloadByte & Constants.MASK_7F);
         promisedStreamID = frp.grabNext24BitInt(nextPayloadByte);
+        payloadIndex += 3;
 
-        // grab all the buffered data
-        headerBlockFragment = new byte[paddedLength];
+        // grab the header block fragment
+        int headerBlockLength = payloadLength - payloadIndex - paddingLength;
+        headerBlockFragment = new byte[headerBlockLength];
+        for (int i = 0; payloadIndex++ < payloadLength - paddingLength;)
+            headerBlockFragment[i++] = frp.grabNextByte();
 
-        for (int i = 0; payloadIndex++ < paddedLength; i++)
-            headerBlockFragment[i] = frp.grabNextByte();
+        // consume any padding for this frame
+        if (PADDED_FLAG) {
+            for (; payloadIndex++ < payloadLength;) {
+                frp.grabNextByte();
+            }
+        }
     }
 
     @Override

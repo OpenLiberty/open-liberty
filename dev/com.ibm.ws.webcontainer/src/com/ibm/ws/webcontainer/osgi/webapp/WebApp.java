@@ -56,7 +56,7 @@ import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MetaDataService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.http.channel.h2internal.H2UpgradeHandler;
+import com.ibm.ws.http2.upgrade.H2UpgradeHandler;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
@@ -573,7 +573,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
   public String getRealPath(String path, boolean checkDocRoot)
   {
       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
-          logger.entering(CLASS_NAME, "getRealPath", " passed in path is: " + path);
+          logger.entering(CLASS_NAME, "getRealPath", new Object[]{path, checkDocRoot});
       
       //if (webAppInfo != null)
       //{
@@ -581,6 +581,10 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
       //}
        
     String basePath = null;
+
+    if (path == null || path.equals("")) {
+        path = "/";
+    }
       
     if(container != null){
         
