@@ -377,4 +377,22 @@ public class CollectorJsonHelpers {
         return sb.toString();
     }
 
+    protected static String jsonRemoveSpace(String s) {
+        StringBuilder sb = new StringBuilder();
+        boolean isLine = false;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '\n') {
+                sb.append(c);
+                isLine = true;
+            } else if (c == ' ' && isLine) {
+            } else if (isLine && c != ' ') {
+                isLine = false;
+                sb.append(c);
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
 }

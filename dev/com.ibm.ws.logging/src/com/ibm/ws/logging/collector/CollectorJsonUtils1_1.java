@@ -311,8 +311,11 @@ public class CollectorJsonUtils1_1 {
                 }
 
                 else if (key.equals(LogFieldConstants.MESSAGE)) {
-
-                    String formattedValue = CollectorJsonHelpers.formatMessage(kvp.getStringValue(), maxFieldLength);
+                    String message = kvp.getStringValue();
+                    if (genData.getLogLevel().equals("ENTRY") || genData.getLogLevel().equals("EXIT")) {
+                        message = CollectorJsonHelpers.jsonRemoveSpace(message);
+                    }
+                    String formattedValue = CollectorJsonHelpers.formatMessage(message, maxFieldLength);
                     CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, false);
 
                 } else if (key.equals(LogFieldConstants.IBM_THREADID)) {

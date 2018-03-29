@@ -183,6 +183,7 @@ public class LogSource implements Source, WsLogHandler {
         genData.setSourceType(sourceName);
         genData.setLogRecordLevel(logRecord.getLevel());
         genData.setLoggerName(logRecord.getLoggerName());
+        genData.setLogLevel(LogFormatUtils.mapLevelToRawType(logRecord));
 
         return genData;
 
