@@ -986,9 +986,11 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     public boolean authenticate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         JaspiService jaspiService = null;
         boolean isNewAuthenticate = false;
+        boolean isCredentialPresent = false;
         if (isJaspiEnabled) {
             jaspiService = (JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
             isNewAuthenticate = jaspiService.isProcessingNewAuthentication(req);
+            isCredentialPresent = jaspiService.isCredentialPresent(req);
         }
         if (!isNewAuthenticate) {
             // if JSR-375 HttpAuthenticationMechanism is not enabled, and if there is a valid subject in the context, return it.
@@ -1014,17 +1016,19 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         }
         if (authResult.getStatus() == AuthResult.SUCCESS) {
             getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult, true, !isNewAuthenticate);
-        } else if (!isNewAuthenticate) {
-            String realm = authResult.realm;
-            if (realm == null) {
-                realm = collabUtils.getUserRegistryRealm(securityServiceRef);
-            }
-            webReply = createReplyForAuthnFailure(authResult, realm);
+        } else {
             result = false;
-            authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
+            if (!isCredentialPresent) {
+                String realm = authResult.realm;
+                if (realm == null) {
+                    realm = collabUtils.getUserRegistryRealm(securityServiceRef);
+                }
+                webReply = createReplyForAuthnFailure(authResult, realm);
+                authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
+            }
         }
 
-        if (!isNewAuthenticate && !resp.isCommitted() && webReply != null) {
+        if (!isCredentialPresent && !resp.isCommitted() && webReply != null) {
             webReply.writeResponse(resp);
         }
 
