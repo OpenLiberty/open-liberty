@@ -30,7 +30,6 @@ import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
-import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
 import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
@@ -112,23 +111,17 @@ public class LogSource implements Source, WsLogHandler {
     @Trivial
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
-        if (!ThreadLocalHandler.get()) {
 
-            LogRecord logRecord = routedMessage.getLogRecord();
-            if (logRecord != null && bufferMgr != null) {
-//<<<<<<< HEAD
-//                GenericData parsedMessage = parse(routedMessage);
-//                if (!BufferManagerEMQHelper.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
-//                    BufferManagerEMQHelper.removeEMQTrigger();
-//=======
-                LogTraceData parsedMessage = parse(routedMessage);
-                if (!BufferManagerEMQHelper.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
-                    BufferManagerEMQHelper.removeEMQTrigger();
-//>>>>>>> parent of 0e7b6af... Revert "#1441 Merge JTS into BTS and format events at handlers"
-                }
-                bufferMgr.add(parsedMessage);
+        LogRecord logRecord = routedMessage.getLogRecord();
+        if (logRecord != null && bufferMgr != null) {
+
+            LogTraceData parsedMessage = parse(routedMessage);
+            if (!BufferManagerEMQHelper.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
+                BufferManagerEMQHelper.removeEMQTrigger();
             }
+            bufferMgr.add(parsedMessage);
         }
+
     }
 
     private String extractMessage(RoutedMessage routedMessage, LogRecord logRecord) {
@@ -164,7 +157,7 @@ public class LogSource implements Source, WsLogHandler {
         genData.addPair(LogFieldConstants.IBM_METHODNAME, logRecord.getSourceMethodName());
         genData.addPair(LogFieldConstants.IBM_CLASSNAME, logRecord.getSourceClassName());
 
-        genData.addPair("levelValue", logRecord.getLevel().intValue());
+        genData.addPair(LogFieldConstants.LEVELVALUE, logRecord.getLevel().intValue());
         String threadName = Thread.currentThread().getName();
         genData.addPair(LogFieldConstants.THREADNAME, threadName);
 
@@ -195,13 +188,13 @@ public class LogSource implements Source, WsLogHandler {
         if (thrown != null) {
             String stackTrace = DataFormatHelper.throwableToString(thrown);
             if (stackTrace != null) {
-                genData.addPair("throwable", stackTrace);
+                genData.addPair(LogFieldConstants.THROWABLE, stackTrace);
             }
             String s = thrown.getLocalizedMessage();
             if (s == null) {
                 s = thrown.toString();
             }
-            genData.addPair("throwable_localized", s);
+            genData.addPair(LogFieldConstants.THROWABLE_LOCALIZED, s);
         }
 
         //JTSBTS need to look at this message vs formatted message
@@ -210,7 +203,7 @@ public class LogSource implements Source, WsLogHandler {
         genData.setLoggerName(logRecord.getLoggerName());
 
         if (routedMessage.getFormattedMsg() != null) {
-            genData.addPair("formattedMsg", routedMessage.getFormattedMsg());
+            genData.addPair(LogFieldConstants.FORMATTEDMSG, routedMessage.getFormattedMsg());
         }
 
         genData.setSourceType(sourceName);

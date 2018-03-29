@@ -35,7 +35,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
     private BaseTraceFormatter formatter = null;
     private Integer consoleLogLevel = null;
-    //private Level consoleLogLevel;
+
     private boolean copySystemStreams = false;
 
     private BaseTraceService BTS = null;
@@ -97,9 +97,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 }
                 messageOutput = formatter.traceFormatGenData(genData);
             } // copySystemStream and stderr/stdout level=700
-            else if (copySystemStreams && (levelVal == 700)) {
+            else if (copySystemStreams && (levelVal == WsLevel.CONFIG.intValue())) {
                 if (logLevel != null) {
-                    if (logLevel.equals("SystemErr")) {
+                    if (logLevel.equals(LoggingConstants.SYSTEM_ERR)) {
                         isStderr = true;
                     }
                 }

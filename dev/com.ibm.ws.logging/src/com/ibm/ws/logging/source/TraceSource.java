@@ -87,11 +87,9 @@ public class TraceSource implements Source, WsTraceHandler {
 
     /** {@inheritDoc} */
     public void publish(RoutedMessage routedMessage, Object id) {
-        //Publish the message if it is not coming from a handler thread
-        if (!ThreadLocalHandler.get()) {
-            if (routedMessage.getLogRecord() != null && bufferMgr != null) {
-                bufferMgr.add(parse(routedMessage, id));
-            }
+
+        if (routedMessage.getLogRecord() != null && bufferMgr != null) {
+            bufferMgr.add(parse(routedMessage, id));
         }
     }
 
@@ -129,14 +127,14 @@ public class TraceSource implements Source, WsTraceHandler {
         String sequenceNum = sequenceNumber.next(datetimeValue);
         genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceNum);
 
-        genData.addPair("levelValue", logRecord.getLevel().intValue());
+        genData.addPair(LogFieldConstants.LEVELVALUE, logRecord.getLevel().intValue());
 
         String threadName = Thread.currentThread().getName();
-        genData.addPair("threadName", threadName);
+        genData.addPair(LogFieldConstants.THREADNAME, threadName);
 
         if (id != null) {
             Integer objid = System.identityHashCode(id);
-            genData.addPair("objectId", objid);
+            genData.addPair(LogFieldConstants.OBJECT_ID, objid);
         }
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
 

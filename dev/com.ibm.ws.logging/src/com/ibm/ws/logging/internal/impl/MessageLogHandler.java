@@ -54,7 +54,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
         TraceWriter traceWriter = traceWriterOriginal;
         if (traceWriter == null)
             return;
-
+        String currFormat = format;
         /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
@@ -69,7 +69,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
 
         String evensourcetType = getSourceTypeFromDataObject(genData);
         String messageOutput = null;
-        if (format.equals(LoggingConstants.JSON_FORMAT)) {
+        if (currFormat.equals(LoggingConstants.JSON_FORMAT)) {
             if (genData.getJsonMessage() == null) {
                 genData.setJsonMessage((String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
             }
@@ -79,7 +79,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
                 messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
             }
 
-        } else if (format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) && formatter != null) {
+        } else if (currFormat.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) && formatter != null) {
             messageOutput = formatter.messageLogFormat(genData);
 
         }
