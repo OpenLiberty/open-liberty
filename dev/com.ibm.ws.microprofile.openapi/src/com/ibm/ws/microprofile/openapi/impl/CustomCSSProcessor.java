@@ -82,6 +82,7 @@ public final class CustomCSSProcessor implements FileMonitor {
     private final List<String> filesToMonitor = new ArrayList<String>();
     private final CustomCSSWABUpdater updater;
 
+    private final Object cssUpdaterLock = new Object();
     private final ConcurrentLinkedQueue<CSSUpdate> cssUpdates = new ConcurrentLinkedQueue<CSSUpdate>();
 
     public class CSSUpdate {
@@ -217,7 +218,7 @@ public final class CustomCSSProcessor implements FileMonitor {
 
     private void processCSSUpdates(ScheduledExecutorService executor) {
         if (cssUpdates.size() > 0) {
-            final CustomCSSProcessor cssUpdator = this;
+            final Object cssUpdator = cssUpdaterLock;
             // Create a Runnable to process updates.
             // The ExecutorService may run it in a new thread.
             Runnable bundleUpdater = new Runnable() {
