@@ -26,7 +26,6 @@ public class GenericData {
     private String loggerName = null;
 
     private String jsonMessage = null;
-    private String logLevel = null;
 
     public GenericData() {
         pairs = new ArrayList<Pair>();
@@ -131,13 +130,4 @@ public class GenericData {
     public void setJsonMessage(String jsonMessage) {
         this.jsonMessage = jsonMessage;
     }
-
-    public String getLogLevel() {
-        return logLevel;
-    }
-
-    public void setLogLevel(String logLevel) {
-        this.logLevel = logLevel;
-    }
-
 }

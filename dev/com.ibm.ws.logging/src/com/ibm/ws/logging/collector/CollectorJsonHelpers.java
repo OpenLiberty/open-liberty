@@ -11,6 +11,10 @@
 package com.ibm.ws.logging.collector;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.Pair;
 
 /**
  * CollectorJsonHelpers contains methods shared between CollectorjsonUtils and CollectorJsonUtils1_1
@@ -394,5 +398,20 @@ public class CollectorJsonHelpers {
             }
         }
         return sb.toString();
+    }
+
+    protected static String getLogLevel(ArrayList<Pair> pairs) {
+        KeyValuePair kvp = null;
+        String loglevel = null;
+        for (Pair p : pairs) {
+            if (p instanceof KeyValuePair) {
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals(LogFieldConstants.LOGLEVEL)) {
+                    loglevel = kvp.getStringValue();
+                    break;
+                }
+            }
+        }
+        return loglevel;
     }
 }

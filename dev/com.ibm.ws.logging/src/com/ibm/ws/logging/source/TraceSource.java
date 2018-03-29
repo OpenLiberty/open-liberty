@@ -129,8 +129,6 @@ public class TraceSource implements Source, WsTraceHandler {
             }
         }
         genData.setSourceType(sourceName);
-        genData.setLogLevel(LogFormatUtils.mapLevelToRawType(logRecord));
-
         return genData;
 
     }

@@ -193,8 +193,11 @@ public class CollectorJsonUtils {
 
                 else if (key.equals(LogFieldConstants.MESSAGE)) {
                     String message = kvp.getStringValue();
-                    if (genData.getLogLevel().equals("ENTRY") || genData.getLogLevel().equals("EXIT")) {
-                        message = CollectorJsonHelpers.jsonRemoveSpace(message);
+                    String loglevel = CollectorJsonHelpers.getLogLevel(pairs);
+                    if (loglevel != null) {
+                        if (loglevel.equals("ENTRY") || loglevel.equals("EXIT")) {
+                            message = CollectorJsonHelpers.jsonRemoveSpace(message);
+                        }
                     }
                     String formattedValue = CollectorJsonHelpers.formatMessage(message, maxFieldLength);
                     CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, false);
