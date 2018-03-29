@@ -31,7 +31,10 @@ WS-TraceGroup: \
 
 
 Export-Package: \
-   com.ibm.ws.security.mp.jwt
+   com.ibm.ws.security.mp.jwt, \
+   com.ibm.ws.security.mp.jwt.impl, \
+   com.ibm.ws.security.mp.jwt.error, \
+   com.ibm.ws.security.mp.jwt.tai
 
 
 Import-Package: \

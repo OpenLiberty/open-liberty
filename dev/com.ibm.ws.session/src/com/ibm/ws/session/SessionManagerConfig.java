@@ -71,6 +71,7 @@ public class SessionManagerConfig implements Cloneable {
     private boolean enableTimeBasedWrite = false;
     private long mPropertyWriterInterval = 120;
     private boolean writeAllProperties = false;
+    private boolean writeGetAndSetAttributes; 
 
     // Tells us if scheduledInvalidation is enabled and contains parameters
     private boolean scheduledInvalidation = false;
@@ -608,6 +609,17 @@ public class SessionManagerConfig implements Cloneable {
 
     public final void setwriteAllProperties() {
         writeAllProperties = true;
+    }
+
+    /**
+     * @returns true if writeContents is configured to GET_AND_SET_ATTRIBUTES
+     */
+    public final boolean writeGetAndSetAttributes() {
+        return writeGetAndSetAttributes;
+    }
+
+    final void setWriteGetAndSetAttributes() {
+        writeGetAndSetAttributes = true;
     }
 
     // scheduledInvalidation

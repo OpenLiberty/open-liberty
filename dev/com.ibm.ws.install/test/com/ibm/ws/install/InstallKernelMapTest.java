@@ -21,9 +21,9 @@ import java.util.HashMap;
 import org.junit.Rule;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.install.internal.InstallKernelMap;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -145,6 +145,31 @@ public class InstallKernelMapTest {
         try {
             ikm.put("debug", "");
             fail("InstallKernelMap.put(debug) didn't throw exception.");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            ikm.put("debug", "");
+            fail("InstallKernelMap.put(debug) didn't throw exception.");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            ikm.put("local.esa.download.dir", "");
+            fail("InstallKernelMap.put(local.esa.download.dir) didn't throw exception.");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            ikm.put("install.local.esa", "");
+            fail("InstallKernelMap.put(install.local.esa) didn't throw exception.");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            ikm.put("features.to.resolve", "");
+            fail("InstallKernelMap.put(features.to.resolve) didn't throw exception.");
+        } catch (IllegalArgumentException e) {
+        }
+        try {
+            ikm.put("single.json.file", "");
+            fail("InstallKernelMap.put(single.json.file) didn't throw exception.");
         } catch (IllegalArgumentException e) {
         }
         try {

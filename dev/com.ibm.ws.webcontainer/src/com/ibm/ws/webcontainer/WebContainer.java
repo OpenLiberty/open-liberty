@@ -27,6 +27,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -194,7 +195,7 @@ public abstract class WebContainer extends BaseContainer {
 
     protected static boolean decodePlusSign = true; //default to not decoding the plus sign per URL Spec
 
-    protected final static Map _cacheMap = new ConcurrentHashMap(invocationCacheSize);
+    protected final static ConcurrentMap _cacheMap = new ConcurrentHashMap(invocationCacheSize);
     final private static AtomicInteger _cacheSize = new AtomicInteger();
 
     protected boolean vHostCompatFlag = true;
@@ -1209,44 +1210,40 @@ public abstract class WebContainer extends BaseContainer {
             logger.logp(Level.FINE, CLASS_NAME, "addToCache", "WebApp = " + app);
         }
 
-        synchronized (s) { // synch on IServletWrapper to prevent duplicate CachedServletWrappers
-
-            // PK80333 Start
-            if (app.getDestroyed()) {
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
-                {
-                    logger.logp(Level.FINE, CLASS_NAME, "addToCache", "Not caching as the webapp is destroyed");
-                }
-                return;
+        // PK80333 Start
+        if (app.getDestroyed()) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
+            {
+                logger.logp(Level.FINE, CLASS_NAME, "addToCache", "Not caching as the webapp is destroyed");
             }
-            // PK80333 End
+            return;
+        }
+        // PK80333 End
 
-            StringBuilder cacheKey = (StringBuilder) cacheKeyStringBuilder.get();
-            if (cacheKey == null) {
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
-                {
-                    logger.logp(Level.FINE, CLASS_NAME, "addToCache", "cache key is null");
-                }
-                return;
+        StringBuilder cacheKey = (StringBuilder) cacheKeyStringBuilder.get();
+        if (cacheKey == null) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
+            {
+                logger.logp(Level.FINE, CLASS_NAME, "addToCache", "cache key is null");
             }
-            String cacheKeyStr = cacheKey.toString();
-            if (_cacheMap.containsKey(cacheKeyStr)) {
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
-                {
-                    logger.logp(Level.FINE, CLASS_NAME, "addToCache", "Already cached cacheKey --> " + cacheKey);
-                }
-                return;
-            } else {
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15 
-                {
-                    logger.logp(Level.FINE, CLASS_NAME, "addToCache", "Adding to cache cacheKey --> " + cacheKey + " uri -->" + req.getRequestURI() + " servletWrapper -->"
+            return;
+        }
+        String cacheKeyStr = cacheKey.toString();
+        // Servlet 4.0 : Use CacheServletWrapperFactory
+        CacheServletWrapper wrapper =  cacheServletWrapperFactory.createCacheServletWrapper((IServletWrapper) s, req, cacheKeyStr, app);
+        if (_cacheMap.putIfAbsent(cacheKeyStr, wrapper) != null) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
+            {
+                logger.logp(Level.FINE, CLASS_NAME, "addToCache", "Already cached cacheKey --> " + cacheKey);
+            }
+        } else {
+            ((IServletWrapper)s).addServletReferenceListener(wrapper);
+            // keep a rough count of the number of items in the cache
+            _cacheSize.incrementAndGet();
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15 
+            {
+                logger.logp(Level.FINE, CLASS_NAME, "addToCache", "Added to cache cacheKey --> " + cacheKey + " uri -->" + req.getRequestURI() + " servletWrapper -->"
                                                                       + ((IServletWrapper) s).getServletName());
-                }
-                // Servlet 4.0 : Use CacheServletWrapperFactory
-                CacheServletWrapper wrapper =  cacheServletWrapperFactory.createCacheServletWrapper((IServletWrapper) s, req, cacheKeyStr, app);
-                // keep a rough count of the number of items in the cache
-                _cacheMap.put(cacheKeyStr, wrapper);
-                _cacheSize.incrementAndGet();
             }
         }
         // End 253010

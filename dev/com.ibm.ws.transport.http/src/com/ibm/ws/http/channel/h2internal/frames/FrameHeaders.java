@@ -71,26 +71,6 @@ public class FrameHeaders extends Frame {
     }
 
     /**
-     * Read frame constructor for pushed headers
-     */
-    public FrameHeaders(int streamId, byte[] headerBlockFragment) {
-        super(streamId, 0, (byte) 0x00, false, FrameDirection.READ);
-        frameType = FrameTypes.HEADERS;
-
-        if (headerBlockFragment != null) {
-            payloadLength += headerBlockFragment.length;
-        }
-        this.headerBlockFragment = headerBlockFragment;
-
-        this.END_STREAM_FLAG = false;
-        this.END_HEADERS_FLAG = true;
-
-        frameType = FrameTypes.HEADERS;
-        setInitialized();
-
-    }
-
-    /**
      * Write frame constructor
      */
     public FrameHeaders(int streamId, byte[] headerBlockFragment, int streamDependency, int paddingLength, int weight,

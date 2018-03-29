@@ -28,8 +28,10 @@ import componenttest.topology.utils.HttpUtils;
 @SuiteClasses({
                 SessionCacheOneServerTest.class,
                 SessionCacheTwoServerTest.class,
-                SessionCacheTimeoutTest.class
+                SessionCacheTimeoutTest.class,
+                SessionCacheTwoServerTimeoutTest.class
 })
+
 public class FATSuite {
 
     public static String run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {

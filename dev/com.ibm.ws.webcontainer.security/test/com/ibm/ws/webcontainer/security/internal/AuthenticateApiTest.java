@@ -112,6 +112,10 @@ public class AuthenticateApiTest {
                 allowing(req).getCookies();
                 allowing(req).getRemoteUser();
                 allowing(req).getUserPrincipal();
+                allowing(req).getHeader("Authorization");
+                allowing(ssoCookieHelper).addJwtSsoCookiesToResponse(null, req, resp);
+                allowing(req).getMethod();
+                will(returnValue("GET"));
             }
         });
 
@@ -149,6 +153,10 @@ public class AuthenticateApiTest {
                 allowing(req).getRemoteUser();
                 allowing(req).getUserPrincipal();
                 allowing(securityService).getUserRegistryService();
+                allowing(req).getHeader("Authorization");
+                allowing(ssoCookieHelper).addJwtSsoCookiesToResponse(null, req, resp);
+                allowing(req).getMethod();
+                will(returnValue("GET"));
             }
         });
 

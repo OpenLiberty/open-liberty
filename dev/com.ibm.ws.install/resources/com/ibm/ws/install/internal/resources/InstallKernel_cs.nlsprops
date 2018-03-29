@@ -130,7 +130,7 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Instala\u010dn\u00ed progra
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Zkontrolujte, zda dan\u00fd adres\u00e1\u0159 tuto funkci obsahuje, a operaci zopakujte.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Nelze naj\u00edt spustiteln\u00fd soubor {0} po kontrole t\u011bchto um\u00edst\u011bn\u00ed: {1}
-ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Instala\u010dn\u00ed program nem\u016f\u017ee naj\u00ed spustiteln\u00fd soubor
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Instala\u010dn\u00ed program nenalezl spustiteln\u00fd soubor." nebo "Instala\u010dn\u00ed program nem\u016f\u017ee naj\u00edt spustiteln\u00fd soubor.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Zkontrolujte, zda tento spustiteln\u00fd soubor v jednom z uveden\u00fdch um\u00edst\u011bn\u00ed existuje.
 
 ERROR_EXECUTING_COMMAND=CWWKF1229E: Do\u0161lo k chyb\u011b p\u0159i prov\u00e1d\u011bn\u00ed p\u0159\u00edkazu: {0}  P\u0159\u00edkaz vr\u00e1til k\u00f3d ukon\u010den\u00ed {1} a chybovou zpr\u00e1vu: {2}

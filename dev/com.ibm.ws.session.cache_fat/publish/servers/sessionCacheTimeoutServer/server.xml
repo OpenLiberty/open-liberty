@@ -3,7 +3,6 @@
     <featureManager>
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
-        <feature>jdbc-4.1</feature>
         <feature>jndi-1.0</feature>
     </featureManager>
     
@@ -23,11 +22,24 @@
     <!-- Use this config for testing sessionDatabase 
     <featureManager>
         <feature>sessionDatabase-1.0</feature>
+        <feature>jdbc-4.1</feature>
     </featureManager>
    
     <httpSessionDatabase id="FATDB" dataSourceRef="DerbyDS"/>
     
     <httpSession storageRef="FATDB" maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="5s" reaperPollInterval="30"/>
+    
+    	<library id="DerbyLib">
+	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	</library>
+    
+    	<authData id="DerbyAuth" user="userName" password="userPassword"/>    
+    <dataSource id="DerbyDS" jndiName="jdbc/derby" containerAuthDataRef="DerbyAuth">
+	    <jdbcDriver libraryRef="DerbyLib"/>
+	    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
+	</dataSource>
+	
+	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 	-->
 
     <application location="sessionCacheApp.war">
@@ -38,16 +50,10 @@
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
     </library>
 
-	<library id="DerbyLib">
-	    <file name="${shared.resource.dir}/derby/derby.jar"/>
-	</library>
+
 
     <!-- Used for testing that data source can be stored in a session -->
-	<authData id="DerbyAuth" user="userName" password="userPassword"/>    
-    <dataSource id="DerbyDS" jndiName="jdbc/derby" containerAuthDataRef="DerbyAuth">
-	    <jdbcDriver libraryRef="DerbyLib"/>
-	    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
-	</dataSource>
+
 	
 	<!-- Perms needed because the application uses Hazelcast directly   -->
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
@@ -66,7 +72,6 @@
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
 
     <javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
-	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
     <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
     <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>

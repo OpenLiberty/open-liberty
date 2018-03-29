@@ -57,6 +57,8 @@ import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.impl.weld.injection.BdaInjectionServicesImpl;
@@ -81,6 +83,8 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
  *
  */
 public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive {
+
+    private static final TraceComponent tc = Tr.register(BeanDeploymentArchiveImpl.class);
 
     //the classes which is directly in this archive
     private final Set<String> archiveClassNames = new HashSet<String>();
@@ -822,7 +826,14 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
      */
     @Override
     public void addEjbDescriptor(EjbDescriptor<?> ejbDescriptor) {
-        if (getBeanDiscoveryMode() != BeanDiscoveryMode.NONE) {
+    	
+    	boolean cdiEnabled = (getBeanDiscoveryMode() != BeanDiscoveryMode.NONE || cdiDeployment.isCDIEnabled(id));
+    	
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.entry(tc, "addEjbDescriptor entry. id: " + id + " cdiEnabled: " + cdiEnabled + " ejbDescriptor: " + ejbDescriptor.toString());         
+        }
+    	
+        if (cdiEnabled) {
             this.ejbDescriptors.add(ejbDescriptor);
             Class<?> beanClass = ejbDescriptor.getBeanClass();
             this.beanClasses.put(beanClass.getName(), beanClass);

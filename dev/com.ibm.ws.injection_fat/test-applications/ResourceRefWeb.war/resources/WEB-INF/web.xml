@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+    
+    <!-- Listeners -->
+    <listener>
+        <display-name>AdvResRefRequestListener</display-name>
+        <listener-class>com.ibm.ws.injection.resref.web.AdvResRefServletRequestListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvResRefServletContextListener</display-name>
+        <listener-class>com.ibm.ws.injection.resref.web.AdvResRefServletContextListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvResRefHttpSessionListener</display-name>
+        <listener-class>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvResRefHttpSessionAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvResRefServletContextAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.resref.web.AdvResRefServletContextAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvResRefServletRequestAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.resref.web.AdvResRefServletRequestAttributeListener</listener-class>
+    </listener>
+    
+    <!-- Filters -->
+    <filter>
+        <display-name>AdvResourceRefFilter</display-name>
+        <filter-name>AdvResourceRefFilter</filter-name>
+        <filter-class>com.ibm.ws.injection.resref.web.AdvResourceRefFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdvResourceRefFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+	<!-- ######## Servlet: BasicResourceRefServlet ############## -->
+	<!-- Field injection targets -->
+	<resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.BasicResourceRefServlet/dsFldXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.BasicResourceRefServlet</injection-target-class>
+           <injection-target-name>dsFldXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+	
+	<!-- Method injection target -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.BasicResourceRefServlet/dsMthdXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.BasicResourceRefServlet</injection-target-class>
+           <injection-target-name>dataSourceXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- ######## Listener: AdvResRefServletRequestListener ############## -->
+    <!-- Field injection targets -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefServletRequestListener/dsFldXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefServletRequestListener</injection-target-class>
+           <injection-target-name>dsFldXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- Method injection target -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefServletRequestListener/dsMthdXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefServletRequestListener</injection-target-class>
+           <injection-target-name>dataSourceXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- ######## Listener: AdvResRefServletContextListener ############## -->
+    <!-- Field injection targets -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefServletContextListener/dsFldXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefServletContextListener</injection-target-class>
+           <injection-target-name>dsFldXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- Method injection target -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefServletContextListener/dsMthdXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefServletContextListener</injection-target-class>
+           <injection-target-name>dataSourceXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- ######## Listener: AdvResRefServletContextAttributeListener ############## -->
+    <!-- Field injection targets -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefServletContextAttributeListener/dsFldXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefServletContextAttributeListener</injection-target-class>
+           <injection-target-name>dsFldXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- Method injection target -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefServletContextAttributeListener/dsMthdXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefServletContextAttributeListener</injection-target-class>
+           <injection-target-name>dataSourceXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- ######## Listener: AdvResRefHttpSessionListener ############## -->
+    <!-- Field injection targets -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionListener/dsFldXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionListener</injection-target-class>
+           <injection-target-name>dsFldXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- Method injection target -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionListener/dsMthdXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionListener</injection-target-class>
+           <injection-target-name>dataSourceXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- ######## Listener: AdvResRefHttpSessionAttributeListener ############## -->
+    <!-- Field injection targets -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionAttributeListener/dsFldXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>dsFldXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- Method injection target -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionAttributeListener/dsMthdXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefHttpSessionAttributeListener</injection-target-class>
+           <injection-target-name>dataSourceXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- ######## Listener: AdvResRefServletRequestAttributeListener ############## -->
+    <!-- Field injection targets -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefServletRequestAttributeListener/dsFldXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>dsFldXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- Method injection target -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResRefServletRequestAttributeListener/dsMthdXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResRefServletRequestAttributeListener</injection-target-class>
+           <injection-target-name>dataSourceXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!--  Filters -->
+    <!-- ######## Filter: AdvResRefServletRequestAttributeListener ############## -->
+    <!-- Field injection targets -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResourceRefFilter/dsFldXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResourceRefFilter</injection-target-class>
+           <injection-target-name>dsFldXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+    
+    <!-- Method injection target -->
+    <resource-ref>
+       <res-ref-name>com.ibm.ws.injection.resref.web.AdvResourceRefFilter/dsMthdXMLBnd</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+       <injection-target>
+           <injection-target-class>com.ibm.ws.injection.resref.web.AdvResourceRefFilter</injection-target-class>
+           <injection-target-name>dataSourceXMLBnd</injection-target-name>
+       </injection-target>
+       <lookup-name>jdbc/TestDataSource</lookup-name>
+    </resource-ref>
+</web-app>
