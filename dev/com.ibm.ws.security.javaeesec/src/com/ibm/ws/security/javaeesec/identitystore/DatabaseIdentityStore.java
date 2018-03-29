@@ -205,7 +205,7 @@ public class DatabaseIdentityStore implements IdentityStore {
             callerOnly = true;
             caller = ((CallerOnlyCredential) credential).getCaller();
         } else {
-            Tr.warning(tc, "JAVAEESEC_WARNING_WRONG_CRED");
+            Tr.error(tc, "JAVAEESEC_ERROR_WRONG_CRED");
             return CredentialValidationResult.NOT_VALIDATED_RESULT;
         }
 
