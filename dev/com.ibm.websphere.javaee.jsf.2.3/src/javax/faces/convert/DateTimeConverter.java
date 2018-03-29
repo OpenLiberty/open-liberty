@@ -462,7 +462,7 @@ public class DateTimeConverter
         throw new ConverterException("invalid style '" + name + "'");
     }
     
-    public boolean isJava8DateTimeFormatter()
+    private boolean isJava8DateTimeFormatter()
     {
         String type = getType();
         if (type != null)
