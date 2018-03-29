@@ -57,7 +57,6 @@ public class DelaySseResource extends Application {
             Date testDate = new Date(delayTime2);
             SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
             String sdfString = sdf.format(testDate);
-            System.out.println("Jim... sdfString = " + sdfString);
             throw new WebApplicationException(Response.status(503).header(HttpHeaders.RETRY_AFTER, sdfString).build());
         } else if (retry == 2) {
             retry = 3;
