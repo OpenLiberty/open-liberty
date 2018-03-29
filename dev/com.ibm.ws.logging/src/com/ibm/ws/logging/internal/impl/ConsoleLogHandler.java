@@ -67,14 +67,16 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          */
         GenericData genData = null;
         Integer levelVal = null;
+        String loggerName = null;
         if (event instanceof LogTraceData) {
-            genData = ((LogTraceData) event).getGenData();
             levelVal = ((LogTraceData) event).getLevelValue();
-        } else if (event instanceof GenericData) {
-            genData = (GenericData) event;
         }
 
         String eventSourceType = getSourceTypeFromDataObject(genData);
+
+        genData = (GenericData) event;
+
+        loggerName = genData.getLoggerName();
 
         /*
          * To write out to the console must determine if we are JSON or BASIC
@@ -125,7 +127,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
         } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
             //if traceFilename=stdout write everything to console.log in trace format
-            String logLevel = ((LogTraceData) event).getLogLevel();
+            String logLevel = ((LogTraceData) event).getLoglevel();
             if (isTraceStdout) {
                 //check if message need to be written to stderr
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {

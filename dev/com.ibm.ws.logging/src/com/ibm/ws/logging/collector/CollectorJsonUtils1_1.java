@@ -292,92 +292,49 @@ public class CollectorJsonUtils1_1 {
     private static String jsonifyTraceAndMessage(int maxFieldLength, String wlpUserDir,
                                                  String serverName, String hostName, String eventType, Object event, String[] tags) {
 
-        GenericData genData = null;
-        if (event instanceof LogTraceData) {
-            LogTraceData logTraceData = (LogTraceData) event;
-            genData = logTraceData.getGenData();
-        } else {
-            genData = (GenericData) event;
-        }
+        LogTraceData logData = (LogTraceData) event;
         StringBuilder sb = null;
 
-        ArrayList<Pair> pairs = genData.getPairs();
         ArrayList<KeyValuePair> extensions = null;
         KeyValuePairList kvpl = null;
-        KeyValuePair kvp = null;
-        String key = null;
 
         if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE))
             sb = CollectorJsonHelpers.startMessageJson1_1(hostName, wlpUserDir, serverName);
         if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE))
             sb = CollectorJsonHelpers.startTraceJson1_1(hostName, wlpUserDir, serverName);
-        for (Pair p : pairs) {
-
-            if (p instanceof KeyValuePair) {
-
-                kvp = (KeyValuePair) p;
-                key = kvp.getKey();
-
-                if (key.equals(LogFieldConstants.SEVERITY) || key.equals(LogFieldConstants.COMPONENT) || key.equals(LogFieldConstants.CORRELATION_ID)
-                    || key.equals(LogFieldConstants.THREADNAME) || key.equals(LogFieldConstants.LEVELVALUE) || key.equals(LogFieldConstants.PRODUCT)
-                    || key.equals(LogFieldConstants.ORG) || key.equals(LogFieldConstants.OBJECT_ID) || key.equals(LogFieldConstants.THROWABLE)
-                    || key.equals(LogFieldConstants.THROWABLE_LOCALIZED)
-                    || key.equals(LogFieldConstants.FORMATTEDMSG)) {
-
-                }
-
-                else if (key.equals(LogFieldConstants.MESSAGE)) {
-                    String message = kvp.getStringValue();
-                    String loglevel = CollectorJsonHelpers.getLogLevel(pairs);
-                    if (loglevel != null) {
-                        if (loglevel.equals("ENTRY") || loglevel.equals("EXIT")) {
-                            message = CollectorJsonHelpers.jsonRemoveSpace(message);
-                        }
-                    }
-                    String formattedValue = CollectorJsonHelpers.formatMessage(message, maxFieldLength);
-                    CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, false);
-
-                } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
-
-                    CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false,
-                                                   false);
-
-                } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
-
-                    String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                    CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, false, false);
-
+        String message = logData.getMessage();
+        String loglevel = logData.getLoglevel();
+        if (loglevel != null) {
+            if (loglevel.equals("ENTRY") || loglevel.equals("EXIT")) {
+                message = CollectorJsonHelpers.jsonRemoveSpace(message);
+            }
+        }
+        String formattedValue = CollectorJsonHelpers.formatMessage(message, maxFieldLength);
+        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey1_1(), formattedValue, false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey1_1(), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false, false);
+        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
+        CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey1_1(), datetime, false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getMessageIdKey1_1(), logData.getMessageId(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getModuleKey1_1(), logData.getModule(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getLoglevelKey1_1(), logData.getLoglevel(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getMethodNameKey1_1(), logData.getMethodName(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getClassNameKey1_1(), logData.getClassName(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getSequenceKey1_1(), logData.getSequence(), false, true, false, false);
+        kvpl = logData.getExtensions();
+        if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
+            extensions = kvpl.getKeyValuePairs();
+            for (KeyValuePair k : extensions) {
+                String extKey = k.getKey();
+                if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+                    CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
+                } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+                    CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
+                } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+                    CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
+                } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+                    CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
                 } else {
-
-                    String value = null;
-                    if (kvp.isInteger()) {
-                        value = Integer.toString(kvp.getIntValue());
-                    } else if (kvp.isLong()) {
-                        value = Long.toString(kvp.getLongValue());
-                    } else {
-                        value = kvp.getStringValue();
-                    }
-                    CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
-
-                }
-            } else if (p instanceof KeyValuePairList) {
-                kvpl = (KeyValuePairList) p;
-                if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
-                    extensions = kvpl.getKeyValuePairs();
-                    for (KeyValuePair k : extensions) {
-                        String extKey = k.getKey();
-                        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
-                        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
-                        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
-                        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
-                        } else {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
-                        }
-                    }
+                    CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
                 }
             }
         }

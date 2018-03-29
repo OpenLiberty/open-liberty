@@ -135,12 +135,12 @@ public class LogSource implements Source, WsLogHandler {
 
     public LogTraceData parse(RoutedMessage routedMessage) {
 
-        GenericData genData = new GenericData();
+        LogTraceData logData = new LogTraceData();
         LogRecord logRecord = routedMessage.getLogRecord();
         String messageVal = extractMessage(routedMessage, logRecord);
 
         long dateVal = logRecord.getMillis();
-        genData.addPair(LogFieldConstants.IBM_DATETIME, dateVal);
+        logData.setDatetime(dateVal);
 
         String messageIdVal = null;
 
@@ -148,27 +148,26 @@ public class LogSource implements Source, WsLogHandler {
             messageIdVal = parseMessageId(messageVal);
         }
 
-        genData.addPair(LogFieldConstants.IBM_MESSAGEID, messageIdVal);
+        logData.setMessageId(messageIdVal);
 
         int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
-        genData.addPair(LogFieldConstants.IBM_THREADID, threadIdVal);
-        genData.addPair(LogFieldConstants.MODULE, logRecord.getLoggerName());
-        genData.addPair(LogFieldConstants.SEVERITY, LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair(LogFieldConstants.LOGLEVEL, LogFormatUtils.mapLevelToRawType(logRecord));
-        genData.addPair(LogFieldConstants.IBM_METHODNAME, logRecord.getSourceMethodName());
-        genData.addPair(LogFieldConstants.IBM_CLASSNAME, logRecord.getSourceClassName());
-
-        genData.addPair(LogFieldConstants.LEVELVALUE, logRecord.getLevel().intValue());
+        logData.setThreadId(threadIdVal);
+        logData.setModule(logRecord.getLoggerName());
+        logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
+        logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
+        logData.setMethodName(logRecord.getSourceMethodName());
+        logData.setClassName(logRecord.getSourceClassName());
+        logData.setLevelValue(logRecord.getLevel().intValue());
         String threadName = Thread.currentThread().getName();
-        genData.addPair(LogFieldConstants.THREADNAME, threadName);
+        logData.setThreadName(threadName);
 
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
 
         if (wsLogRecord != null) {
-            genData.addPair(LogFieldConstants.CORRELATION_ID, wsLogRecord.getCorrelationId());
-            genData.addPair(LogFieldConstants.ORG, wsLogRecord.getOrganization());
-            genData.addPair(LogFieldConstants.PRODUCT, wsLogRecord.getProduct());
-            genData.addPair(LogFieldConstants.COMPONENT, wsLogRecord.getComponent());
+            logData.setCorrelationId(wsLogRecord.getCorrelationId());
+            logData.setOrg(wsLogRecord.getOrganization());
+            logData.setProduct(wsLogRecord.getProduct());
+            logData.setComponent(wsLogRecord.getComponent());
         }
 
         if (logRecord instanceof WsLogRecord) {
@@ -178,39 +177,34 @@ public class LogSource implements Source, WsLogHandler {
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
-                genData.addPairs(extensions);
+                logData.setExtensions(extensions);
             }
         }
 
-        genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceNumber.next(dateVal));
-        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
+        logData.setSequence(sequenceNumber.next(dateVal));
 
         Throwable thrown = logRecord.getThrown();
         if (thrown != null) {
             String stackTrace = DataFormatHelper.throwableToString(thrown);
             if (stackTrace != null) {
-                genData.addPair(LogFieldConstants.THROWABLE, stackTrace);
+                logData.setThrowable(stackTrace);
             }
             String s = thrown.getLocalizedMessage();
             if (s == null) {
                 s = thrown.toString();
             }
-            genData.addPair(LogFieldConstants.THROWABLE_LOCALIZED, s);
+            logData.setThrowableLocalized(s);
         }
 
-        //JTSBTS need to look at this message vs formatted message
-        genData.addPair(LogFieldConstants.MESSAGE, messageVal);
-        genData.setLogRecordLevel(logRecord.getLevel());
-        genData.setLoggerName(logRecord.getLoggerName());
+        logData.setMessage(messageVal);
 
         if (routedMessage.getFormattedMsg() != null) {
-            genData.addPair(LogFieldConstants.FORMATTEDMSG, routedMessage.getFormattedMsg());
+            logData.setFormattedMsg(routedMessage.getFormattedMsg());
         }
 
-        genData.setSourceType(sourceName);
-        LogTraceData logData = new LogTraceData(genData);
+        logData.setSourceType(sourceName);
+        logData.setLoggerName(logRecord.getLoggerName());
         logData.setLevelValue(logRecord.getLevel().intValue());
-        logData.setLogLevel(LogFormatUtils.mapLevelToRawType(logRecord));
 
         return logData;
 

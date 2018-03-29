@@ -18,9 +18,12 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
+<<<<<<< HEAD
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
+=======
+>>>>>>> 7460574... Issue #2421: make getting fields from GenericData in Handlers more efficient
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
@@ -109,43 +112,42 @@ public class TraceSource implements Source, WsTraceHandler {
 
     public LogTraceData parse(RoutedMessage routedMessage, Object id) {
 
-        GenericData genData = new GenericData();
+        LogTraceData traceData = new LogTraceData();
         LogRecord logRecord = routedMessage.getLogRecord();
         String verboseMessage = routedMessage.getFormattedVerboseMsg();
 
         if (verboseMessage == null) {
-            genData.addPair(LogFieldConstants.MESSAGE, logRecord.getMessage());
+            traceData.setMessage(logRecord.getMessage());
         } else {
-            genData.addPair(LogFieldConstants.MESSAGE, verboseMessage);
+            traceData.setMessage(verboseMessage);
         }
 
         long datetimeValue = logRecord.getMillis();
-        genData.addPair(LogFieldConstants.IBM_DATETIME, datetimeValue);
-        genData.addPair(LogFieldConstants.IBM_THREADID, logRecord.getThreadID());
-        genData.addPair(LogFieldConstants.MODULE, logRecord.getLoggerName());
-        genData.addPair(LogFieldConstants.SEVERITY, LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair(LogFieldConstants.LOGLEVEL, LogFormatUtils.mapLevelToRawType(logRecord));
-        genData.addPair(LogFieldConstants.IBM_METHODNAME, logRecord.getSourceMethodName());
-        genData.addPair(LogFieldConstants.IBM_CLASSNAME, logRecord.getSourceClassName());
+        traceData.setDatetime(datetimeValue);
+        traceData.setThreadId(logRecord.getThreadID());
+        traceData.setModule(logRecord.getLoggerName());
+        traceData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
+        traceData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
+        traceData.setMethodName(logRecord.getSourceMethodName());
+        traceData.setClassName(logRecord.getSourceClassName());
         String sequenceNum = sequenceNumber.next(datetimeValue);
-        genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceNum);
-
-        genData.addPair(LogFieldConstants.LEVELVALUE, logRecord.getLevel().intValue());
+        traceData.setSequence(sequenceNum);
+        traceData.setLevelValue(logRecord.getLevel().intValue());
 
         String threadName = Thread.currentThread().getName();
-        genData.addPair(LogFieldConstants.THREADNAME, threadName);
+        traceData.setThreadName(threadName);
 
         if (id != null) {
             Integer objid = System.identityHashCode(id);
-            genData.addPair(LogFieldConstants.OBJECT_ID, objid);
+            traceData.setObjectId(objid);
         }
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
 
         if (wsLogRecord != null) {
-            genData.addPair(LogFieldConstants.CORRELATION_ID, wsLogRecord.getCorrelationId());
-            genData.addPair(LogFieldConstants.ORG, wsLogRecord.getOrganization());
-            genData.addPair(LogFieldConstants.PRODUCT, wsLogRecord.getProduct());
-            genData.addPair(LogFieldConstants.COMPONENT, wsLogRecord.getComponent());
+            traceData.setCorrelationId(wsLogRecord.getCorrelationId());
+            traceData.setOrg(wsLogRecord.getOrganization());
+            traceData.setProduct(wsLogRecord.getProduct());
+            traceData.setComponent(wsLogRecord.getComponent());
         }
 
         if (logRecord instanceof WsLogRecord) {
@@ -155,11 +157,11 @@ public class TraceSource implements Source, WsTraceHandler {
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
-                genData.addPairs(extensions);
+                traceData.setExtensions(extensions);
             }
         }
-        genData.setSourceType(sourceName);
-        LogTraceData traceData = new LogTraceData(genData);
+
+        traceData.setSourceType(sourceName);
         traceData.setLevelValue(logRecord.getLevel().intValue());
 
         return traceData;

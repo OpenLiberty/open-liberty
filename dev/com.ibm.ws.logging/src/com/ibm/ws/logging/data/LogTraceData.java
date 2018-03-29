@@ -10,59 +10,428 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
-import java.util.ArrayList;
-
 /**
  *
  */
-public class LogTraceData {
-    private Integer levelValue;
-    private GenericData genData;
-    private String logLevel;
+public class LogTraceData extends GenericData {
 
-    public LogTraceData(GenericData genData) {
-        setGenData(genData);
+    private final static String[] NAMES1_1 = {
+                                               "ibm_datetime",
+                                               "ibm_messageId",
+                                               "ibm_threadId",
+                                               "module",
+                                               "severity",
+                                               "loglevel",
+                                               "ibm_methodName",
+                                               "ibm_className",
+                                               "levelValue",
+                                               "threadName",
+                                               "correlationId",
+                                               "org",
+                                               "product",
+                                               "component",
+                                               "ibm_sequence",
+                                               "throwable",
+                                               "throwable_localized",
+                                               "message",
+                                               "formattedMsg",
+                                               "extensions",
+                                               "objectId"
+    };
+
+    public final static String[] NAMES = {
+                                           "datetime",
+                                           "messageId",
+                                           "threadId",
+                                           "loggerName",
+                                           "severity",
+                                           "loglevel",
+                                           "methodName",
+                                           "className",
+                                           "levelValue",
+                                           "threadName",
+                                           "correlationId",
+                                           "org",
+                                           "product",
+                                           "component",
+                                           "sequence",
+                                           "throwable",
+                                           "throwable_localized",
+                                           "message",
+                                           "formattedMsg",
+                                           "extensions",
+                                           "objectId"
+    };
+
+    public LogTraceData() {
+        super(21);
     }
 
-    public Integer getLevelValue() {
-        return levelValue;
+    public void setDatetime(long l) {
+        setPair(0, l);
     }
 
-    public void setLevelValue(Integer levelValue) {
-        this.levelValue = levelValue;
+    public void setMessageId(String s) {
+        setPair(1, s);
     }
 
-    public GenericData getGenData() {
-        return genData;
+    public void setThreadId(int i) {
+        setPair(2, i);
     }
 
-    public void setGenData(GenericData genData) {
-        this.genData = genData;
+    public void setModule(String s) {
+        setPair(3, s);
     }
 
-    public ArrayList<Pair> getPairs() {
-        return genData.getPairs();
+    public void setSeverity(String s) {
+        setPair(4, s);
     }
 
-    public String getSourceType() {
-        return genData.getSourceType();
+    public void setLoglevel(String s) {
+        setPair(5, s);
     }
 
-    public String getMessageID() {
-        return genData.getMessageID();
+    public void setMethodName(String s) {
+        setPair(6, s);
     }
 
-    @Override
-    public String toString() {
-        return genData.toString();
+    public void setClassName(String s) {
+        setPair(7, s);
     }
 
-    public String getLogLevel() {
-        return logLevel;
+    public void setLevelValue(int i) {
+        setPair(8, i);
     }
 
-    public void setLogLevel(String logLevel) {
-        this.logLevel = logLevel;
+    public void setThreadName(String s) {
+        setPair(9, s);
+    }
+
+    public void setCorrelationId(String s) {
+        setPair(10, s);
+    }
+
+    public void setOrg(String s) {
+        setPair(11, s);
+    }
+
+    public void setProduct(String s) {
+        setPair(12, s);
+    }
+
+    public void setComponent(String s) {
+        setPair(13, s);
+    }
+
+    public void setSequence(String s) {
+        setPair(14, s);
+    }
+
+    public void setThrowable(String s) {
+        setPair(15, s);
+    }
+
+    public void setThrowableLocalized(String s) {
+        setPair(16, s);
+    }
+
+    public void setMessage(String s) {
+        setPair(17, s);
+    }
+
+    public void setFormattedMsg(String s) {
+        setPair(18, s);
+    }
+
+    public void setExtensions(KeyValuePairList kvps) {
+        setPairs(19, kvps);
+    }
+
+    public void setObjectId(Integer i) {
+        setPair(20, i);
+    }
+
+    private void setPair(int index, String s) {
+        setPair(index, NAMES1_1[index], s);
+    }
+
+    private void setPair(int index, int i) {
+        setPair(index, NAMES1_1[index], i);
+    }
+
+    private void setPair(int index, long l) {
+        setPair(index, NAMES1_1[index], l);
+    }
+
+    public String getDatetimeKey() {
+        return NAMES[0];
+    }
+
+    public String getMessageIdKey() {
+        return NAMES[1];
+    }
+
+    public String getThreadIdKey() {
+        return NAMES[2];
+    }
+
+    public String getModuleKey() {
+        return NAMES[3];
+    }
+
+    public String getSeverityKey() {
+        return NAMES[4];
+    }
+
+    public String getLoglevelKey() {
+        return NAMES[5];
+    }
+
+    public String getMethodNameKey() {
+        return NAMES[6];
+    }
+
+    public String getClassNameKey() {
+        return NAMES[7];
+    }
+
+    public String getLevelValueKey() {
+        return NAMES[8];
+    }
+
+    public String getThreadNameKey() {
+        return NAMES[9];
+    }
+
+    public String getCorrelationIdKey() {
+        return NAMES[10];
+    }
+
+    public String getOrgKey() {
+        return NAMES[11];
+    }
+
+    public String getProductKey() {
+        return NAMES[12];
+    }
+
+    public String getComponentKey() {
+        return NAMES[13];
+    }
+
+    public String getSequenceKey() {
+        return NAMES[14];
+    }
+
+    public String getThrowableKey() {
+        return NAMES[15];
+    }
+
+    public String getThrowableLocalizedKey() {
+        return NAMES[16];
+    }
+
+    public String getMessageKey() {
+        return NAMES[17];
+    }
+
+    public String getFormattedMsgKey() {
+        return NAMES[18];
+    }
+
+    public String getExtensionsKey() {
+        return NAMES[19];
+    }
+
+    public String getObjectIdKey() {
+        return NAMES[20];
+    }
+
+    public String getDatetimeKey1_1() {
+        return NAMES1_1[0];
+    }
+
+    public String getMessageIdKey1_1() {
+        return NAMES1_1[1];
+    }
+
+    public String getThreadIdKey1_1() {
+        return NAMES1_1[2];
+    }
+
+    public String getModuleKey1_1() {
+        return NAMES1_1[3];
+    }
+
+    public String getSeverityKey1_1() {
+        return NAMES1_1[4];
+    }
+
+    public String getLoglevelKey1_1() {
+        return NAMES1_1[5];
+    }
+
+    public String getMethodNameKey1_1() {
+        return NAMES1_1[6];
+    }
+
+    public String getClassNameKey1_1() {
+        return NAMES1_1[7];
+    }
+
+    public String getLevelValueKey1_1() {
+        return NAMES1_1[8];
+    }
+
+    public String getThreadNameKey1_1() {
+        return NAMES1_1[9];
+    }
+
+    public String getCorrelationIdKey1_1() {
+        return NAMES1_1[10];
+    }
+
+    public String getOrgKey1_1() {
+        return NAMES1_1[11];
+    }
+
+    public String getProductKey1_1() {
+        return NAMES1_1[12];
+    }
+
+    public String getComponentKey1_1() {
+        return NAMES1_1[13];
+    }
+
+    public String getSequenceKey1_1() {
+        return NAMES1_1[14];
+    }
+
+    public String getThrowableKey1_1() {
+        return NAMES1_1[15];
+    }
+
+    public String getThrowableLocalizedKey1_1() {
+        return NAMES1_1[16];
+    }
+
+    public String getMessageKey1_1() {
+        return NAMES1_1[17];
+    }
+
+    public String getFormattedMsgKey1_1() {
+        return NAMES1_1[18];
+    }
+
+    public String getExtensionsKey1_1() {
+        return NAMES1_1[19];
+    }
+
+    public String getObjectIdKey1_1() {
+        return NAMES1_1[20];
+    }
+
+    public long getDatetime() {
+        return getLongValue(0);
+    }
+
+    public String getMessageId() {
+        return getStringValue(1);
+    }
+
+    public int getThreadId() {
+        return getIntValue(2);
+    }
+
+    public String getModule() {
+        return getStringValue(3);
+    }
+
+    public String getSeverity() {
+        return getStringValue(4);
+    }
+
+    public String getLoglevel() {
+        return getStringValue(5);
+    }
+
+    public String getMethodName() {
+        return getStringValue(6);
+    }
+
+    public String getClassName() {
+        return getStringValue(7);
+    }
+
+    public int getLevelValue() {
+        return getIntValue(8);
+    }
+
+    public String getThreadName() {
+        return getStringValue(9);
+    }
+
+    public String getCorrelationId() {
+        return getStringValue(10);
+    }
+
+    public String getOrg() {
+        return getStringValue(11);
+    }
+
+    public String getProduct() {
+        return getStringValue(12);
+    }
+
+    public String getComponent() {
+        return getStringValue(13);
+    }
+
+    public String getSequence() {
+        return getStringValue(14);
+    }
+
+    public String getThrowable() {
+        return getStringValue(15);
+    }
+
+    public String getThrowableLocalized() {
+        return getStringValue(16);
+    }
+
+    public String getMessage() {
+        return getStringValue(17);
+    }
+
+    public String getFormattedMsg() {
+        return getStringValue(18);
+    }
+
+    public KeyValuePairList getExtensions() {
+        return getValues(19);
+    }
+
+    public int getObjectId() {
+        return getIntValue(20);
+    }
+
+    private String getStringValue(int index) {
+        KeyValueStringPair kvp = (KeyValueStringPair) getPairs().get(index);
+        return kvp.getStringValue();
+    }
+
+    private int getIntValue(int index) {
+        KeyValueIntegerPair kvp = (KeyValueIntegerPair) getPairs().get(index);
+        return kvp.getIntValue();
+    }
+
+    private long getLongValue(int index) {
+        KeyValueLongPair kvp = (KeyValueLongPair) getPairs().get(index);
+        return kvp.getLongValue();
+    }
+
+    private KeyValuePairList getValues(int index) {
+        return (KeyValuePairList) getPairs().get(index);
     }
 
 }

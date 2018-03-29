@@ -15,7 +15,6 @@ import java.util.List;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -52,14 +51,8 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
-        GenericData genData = null;
 
-        //check if event is a LogTraceData, if it is then we must extract the genericData.
-        if (event instanceof LogTraceData) {
-            genData = ((LogTraceData) event).getGenData();
-        } else if (event instanceof GenericData) {
-            genData = (GenericData) event;
-        }
+        GenericData genData = (GenericData) event;
 
         String eventSourceType = getSourceTypeFromDataObject(genData);
         String messageOutput = null;
