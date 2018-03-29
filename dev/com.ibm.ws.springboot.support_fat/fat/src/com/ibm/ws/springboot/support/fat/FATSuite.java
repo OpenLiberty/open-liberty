@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 CommonWebServerTests15.class,
@@ -33,7 +35,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 MissingServletTests20.class,
                 NeedSpringBoot15FeatureTests.class,
                 NeedSpringBoot20FeatureTests.class,
-                NoServletRequiredAppTests15.class
+                NoServletRequiredAppTests15.class,
+                SpringBootUtilityThinTest.class
 })
 
 public class FATSuite {

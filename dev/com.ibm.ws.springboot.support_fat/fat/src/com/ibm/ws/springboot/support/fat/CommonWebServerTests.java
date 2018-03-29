@@ -12,15 +12,10 @@ package com.ibm.ws.springboot.support.fat;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-
 import componenttest.topology.utils.HttpUtils;
 
 public abstract class CommonWebServerTests extends AbstractSpringTests {
-   
+
     public void testBasicSpringBootApplication() throws Exception {
         assertNotNull("The application was not installed", server
                         .waitForStringInLog("CWWKZ0001I:.*"));
