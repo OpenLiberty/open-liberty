@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,7 +135,8 @@ public class InfoVisitor extends ClassVisitor {
             super(Opcodes.ASM5);
         }
 
-        void setMethodInfo(MethodInfoImpl mii) {
+        @SuppressWarnings("unchecked")
+		void setMethodInfo(MethodInfoImpl mii) {
             methodInfo = mii;
             annotations = new LinkedList<AnnotationInfoImpl>();
             paramAnnotations = new List[mii.getParameterTypeNames().size()];

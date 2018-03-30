@@ -173,6 +173,16 @@ public class ArrayClassInfo extends ClassInfoImpl {
         return false;
     }
 
+    @Override
+    public boolean isInherited() {
+        return false;
+    }
+
+    @Override
+    public boolean isRepeatable() {
+        return false;
+    }
+    
     // TODO: Should this be a test of whether the other type is an array type and
     //       the other type's element type is assignable from this array's element type?
 

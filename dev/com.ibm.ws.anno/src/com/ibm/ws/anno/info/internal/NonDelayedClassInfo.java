@@ -26,6 +26,7 @@ import org.objectweb.asm.Opcodes;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.wsspi.anno.info.AnnotationInfo;
 import com.ibm.wsspi.anno.info.ClassInfo;
 
 public class NonDelayedClassInfo extends ClassInfoImpl {
@@ -47,6 +48,9 @@ public class NonDelayedClassInfo extends ClassInfoImpl {
     private final boolean isArtificial;
 
     private final boolean isInterface;
+
+    private Boolean isInherited;
+    private Boolean isRepeatable;
 
     private final String packageName;
     private PackageInfoImpl packageInfo;
@@ -203,6 +207,31 @@ public class NonDelayedClassInfo extends ClassInfoImpl {
         return isInterface; // Derived from getModifiers(); see the constructor.
     }
 
+    //
+    
+    @Override
+    public boolean isInherited() {
+        if ( isInherited == null ) {
+        	if ( !isAnnotationClass() ) {
+        		isInherited = Boolean.FALSE;
+        	} else {
+        		isInherited = Boolean.valueOf( isAnnotationPresent(AnnotationInfo.JAVA_LANG_ANNOTATION_INHERITED) );
+        	}
+        }
+        return isInherited.booleanValue();
+    }
+
+    @Override
+    public boolean isRepeatable() {
+        if ( isRepeatable == null ) {
+        	if ( !isAnnotationClass() ) {
+        		isRepeatable = Boolean.FALSE;
+        	} else {
+        		isRepeatable = Boolean.valueOf( isAnnotationPresent(AnnotationInfo.JAVA_LANG_ANNOTATION_REPEATABLE) );
+        	}
+        }
+        return isRepeatable.booleanValue();
+    }
     //
 
     @Override

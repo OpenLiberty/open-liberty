@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,6 @@ public class AnnotationInfoImpl implements AnnotationInfo {
 
         this.annotationClassName = infoStore.internClassName(annotationClassName);
         this.annotationClassInfo = null;
-        this.isInherited = false;
 
         this.values = null;
 
@@ -136,30 +135,33 @@ public class AnnotationInfoImpl implements AnnotationInfo {
     }
 
     protected ClassInfoImpl annotationClassInfo;
-    protected boolean isInherited;
 
     protected void resolveAnnotationClassInfo() {
         this.annotationClassInfo = getInfoStore().getDelayableClassInfo(getAnnotationClassName());
-        this.isInherited = getAnnotationClassInfo().isAnnotationPresent(AnnotationInfo.JAVA_LANG_ANNOTATION_INHERITED);
-
     }
 
     @Override
     public ClassInfoImpl getAnnotationClassInfo() {
-        if (this.annotationClassInfo == null) {
+        if ( this.annotationClassInfo == null) {
             resolveAnnotationClassInfo();
         }
-
         return this.annotationClassInfo;
     }
 
     @Override
     public boolean isInherited() {
-        if (this.annotationClassInfo == null) {
+        if ( this.annotationClassInfo == null ) {
             resolveAnnotationClassInfo();
         }
+        return this.annotationClassInfo.isInherited();
+    }
 
-        return this.isInherited;
+    @Override
+    public boolean isRepeatable() {
+        if ( this.annotationClassInfo == null ) {
+            resolveAnnotationClassInfo();
+        }
+        return this.annotationClassInfo.isRepeatable();
     }
 
     //

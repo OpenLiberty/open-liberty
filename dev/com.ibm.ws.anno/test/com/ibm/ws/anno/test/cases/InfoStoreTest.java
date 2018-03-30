@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,12 @@ package com.ibm.ws.anno.test.cases;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,9 +45,12 @@ import com.ibm.ws.anno.info.internal.InfoStoreFactoryImpl;
 import com.ibm.ws.anno.info.internal.InfoStoreImpl;
 import com.ibm.ws.anno.info.internal.NonDelayedClassInfo;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service;
+import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory;
 import com.ibm.ws.anno.test.data.BClass;
 import com.ibm.ws.anno.test.data.CIntf;
 import com.ibm.ws.anno.test.data.DerivedBase;
+import com.ibm.ws.anno.test.data.repeat.RE_Element;
+import com.ibm.ws.anno.test.data.repeat.RE_Elements;
 import com.ibm.ws.anno.test.data.sub.InheritAnno;
 import com.ibm.ws.anno.test.data.sub.SubBase;
 import com.ibm.wsspi.anno.classsource.ClassSource;
@@ -62,37 +67,67 @@ import com.ibm.wsspi.anno.info.Info;
 import com.ibm.wsspi.anno.info.InfoStore;
 import com.ibm.wsspi.anno.info.InfoStoreException;
 import com.ibm.wsspi.anno.info.MethodInfo;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 import junit.framework.Assert;
 import test.common.SharedOutputManager;
 
 /**
- *
+ * Info tests which use locally the locally compiled test data.
+ * 
+ * These tests are distinguished from other tests which use pre-packaged
+ * data.
  */
 public class InfoStoreTest {
-    static InfoStore infoStore;
-    private static final String SELF_ANNO_TARGET = "com.ibm.ws.anno.test.data.SelfAnnoTarget";
-    private static final String SELF_ANNO = "com.ibm.ws.anno.test.data.sub.SelfAnno";
-
-    SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all").logTo(TestConstants.BUILD_LOGS + this.getClass().getSimpleName());
+    private final SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all").logTo(TestConstants.BUILD_LOGS + this.getClass().getSimpleName());
 
     @Rule
     public TestRule outputRule = outputMgr;
 
+    //
+    
+    private static String classesDir;
+    private static ClassSource_Aggregate classSource;
+    private static AnnotationTargets_Targets annotationTargets;
+    private static InfoStore infoStore;
+
+    /**
+     * Prepare to run tests.
+     * 
+     * Set the classes directory from system property "test.classesDir".
+     * 
+     * Create a class source ({@link ClassSource_Aggregate} on the classes directory.
+     * 
+     * Create a info store ({@link InfoStore} using the class source.
+     */
     @BeforeClass
-    public static void setup() throws ClassSource_Exception, InfoStoreException {
+    public static void setup() throws Exception {
+        String testClassesDir = System.getProperty("test.classesDir", "bin_test");
+
         AnnotationServiceImpl_Service annoService = new AnnotationServiceImpl_Service();
 
         ClassSourceImpl_Factory factory = annoService.getClassSourceFactory();
-
-        ClassSource_Aggregate classSource = factory.createAggregateClassSource("AnnoInfoTest");
-        String testClassesDir = System.getProperty("test.classesDir", "bin_test");
+        classSource = factory.createAggregateClassSource("AnnoInfoTest");
+        // throws ClassSource_Exception
         factory.addDirectoryClassSource(classSource, testClassesDir, testClassesDir, ScanPolicy.SEED);
+        // throws ClassSourceException
+        factory.addClassLoaderClassSource(classSource, "AnnoInfoTest.ClassLoader", InfoStoreTest.class.getClassLoader());
+        // throws ClassSource_Exception
+
+        AnnotationTargetsImpl_Factory targetsFactory = annoService.getAnnotationTargetsFactory();
+        annotationTargets = targetsFactory.createTargets();
+        // throws AnnotationTargets_Exception
+        annotationTargets.scan(classSource);
+        // throws AnnotationTargets_Exception
 
         InfoStoreFactoryImpl infoFactory = annoService.getInfoStoreFactory();
         infoStore = infoFactory.createInfoStore(classSource);
+        // throws InfoStoreException
     }
+
+    //
 
     @Test
     public void testPrivateMethods() {
@@ -391,6 +426,9 @@ public class InfoStoreTest {
         validateClassInfos(cache, 98); // just added a new one so count should be 98
 
     }
+
+    private static final String SELF_ANNO_TARGET = "com.ibm.ws.anno.test.data.SelfAnnoTarget";
+    private static final String SELF_ANNO = "com.ibm.ws.anno.test.data.sub.SelfAnno";
 
     @Test
     public void testRecursiveClassAnnotation() {
