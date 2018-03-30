@@ -12,7 +12,6 @@ package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.enterprise.AuthenticationException;
@@ -36,7 +35,7 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 public class CustomFormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(CustomFormAuthenticationMechanism.class);
-    private Utils utils = new Utils();
+    private final Utils utils = new Utils();
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -98,7 +97,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         if (status == AuthenticationStatus.SUCCESS) {
             rspStatus = HttpServletResponse.SC_OK;
         } else {
-            rspStatus = HttpServletResponse.SC_FORBIDDEN;
+            rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
             // TODO: Audit invalid user or password
         }
         if (rsp != null) {

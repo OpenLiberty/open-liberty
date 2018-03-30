@@ -651,18 +651,16 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 // Do not invoke the target servlet. Do not set anything in the response as
                 // the response may be committed.
                 //
+                String reason = authResult.getReason();
+                if (reason != null && reason.contains("SEND_FAILURE") && unprotectedResource(webRequest) == PERMIT_REPLY) {
+                    return PERMIT_REPLY;
+                }
 
-                webReply = new ReturnReply(webRequest.getHttpServletResponse().getStatus(), authResult.getReason());
+                webReply = new ReturnReply(webRequest.getHttpServletResponse().getStatus(), reason);
                 SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(webReply.message, webReply, webSecurityContext));
                 throw secVE;
             } else if (authResult.getStatus() != AuthResult.CONTINUE) {
-                // if AuthResult.FAILURE, then check whether the target uri is protected, if it's not protected, 
-                // return PERMIT_REPLY.
-                if (authResult.getStatus() == AuthResult.FAILURE && unprotectedResource(webRequest) == PERMIT_REPLY) {
-                    webReply = PERMIT_REPLY;
-                } else {
-                    webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
-                }
+                webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
             }
         }
         return webReply;
@@ -1558,7 +1556,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     private void setModuleMetaDataToThreadLocal(Object key) {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData)cmd.getModuleMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "set WebModuleMetaData : " + wmmd);
         }

@@ -657,20 +657,21 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                     break;
 
                 default:
-                    authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC provider with status: " + responseStatus);
+                    authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authenticated with status: " + responseStatus);
                     break;
             }
 
         } else if (AuthStatus.SEND_FAILURE == status) {
             pretty = "SEND_FAILURE";
-            String detail = "JASPIC Authenticated with status: " + pretty + ", AuthResult.FAILURE";
-            authResult = new AuthenticationResult(AuthResult.FAILURE, detail);
+            String detail = "Returning response from JASPIC Authenticated with status: " + pretty + ", AuthResult.FAILURE";
+            authResult = new AuthenticationResult(AuthResult.RETURN, detail);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, detail);
         } else {
-            authResult = new AuthenticationResult(AuthResult.FAILURE, "JASPIC Authentication failed, unexpected JASPIC AuthStatus: " + status);
+            authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authentication failed, unexpected JASPIC AuthStatus: " + status);
         }
-        if (authResult.getStatus().equals(AuthResult.FAILURE)) {
+
+        if (authResult.getStatus().equals(AuthResult.RETURN)) {
             Tr.info(tc, "JASPI_PROVIDER_FAILED_AUTHENTICATE", new Object[] { status, jaspiRequest.getHttpServletRequest().getRequestURI(),
                                                                              jaspiProviderServiceRef.getService() != null ? jaspiProviderServiceRef.getService().getClass() : null });
         }

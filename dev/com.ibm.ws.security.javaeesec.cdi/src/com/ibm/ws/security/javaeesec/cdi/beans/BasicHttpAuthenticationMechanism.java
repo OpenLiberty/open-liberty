@@ -31,8 +31,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
@@ -43,7 +43,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
     private String realmName = null;
-    private Utils utils = new Utils();
+    private final Utils utils = new Utils();
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -84,7 +84,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         if (mpp != null) {
             Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
             if (props != null) {
-                realmName = (String)props.get(JavaEESecConstants.REALM_NAME);
+                realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
             }
         }
         if (realmName == null || realmName.trim().isEmpty()) {
@@ -120,7 +120,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private AuthenticationStatus handleAuthorizationHeader(@Sensitive String authorizationHeader, Subject clientSubject,
                                                            HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        int rspStatus = HttpServletResponse.SC_FORBIDDEN;
+        int rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
         if (authorizationHeader.startsWith("Basic ")) {
             String encodedHeader = authorizationHeader.substring(6);
             String basicAuthHeader = decodeCookieString(encodedHeader);
