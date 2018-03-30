@@ -112,7 +112,7 @@ public class CacheStoreService implements SessionStoreService {
         configurationProperties.put("onlyCheckInCacheDuringPreInvoke", false);
         configurationProperties.put("optimizeCacheIdIncrements", true);
         configurationProperties.put("scheduleInvalidation", scheduleInvalidationFirstHour != null || scheduleInvalidationSecondHour != null);
-        configurationProperties.put("sessionPersistenceMode", "DATABASE"); // TODO at some point, allow a value of JCACHE
+        configurationProperties.put("sessionPersistenceMode", "JCACHE");
         // TODO decide whether or not to externalize useInvalidatedId
         configurationProperties.put("useMultiRowSchema", true);
         
