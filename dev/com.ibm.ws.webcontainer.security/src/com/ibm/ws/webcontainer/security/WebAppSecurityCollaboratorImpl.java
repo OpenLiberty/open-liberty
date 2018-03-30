@@ -1019,12 +1019,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         } else {
             result = false;
             if (!isCredentialPresent) {
-                String realm = authResult.realm;
-                if (realm == null) {
-                    realm = collabUtils.getUserRegistryRealm(securityServiceRef);
-                }
+                String realm = authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef);
+                authResult.setTargetRealm(realm);
                 webReply = createReplyForAuthnFailure(authResult, realm);
-                authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
             }
         }
 
