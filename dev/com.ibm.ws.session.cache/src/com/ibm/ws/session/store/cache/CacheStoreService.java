@@ -140,18 +140,27 @@ public class CacheStoreService implements SessionStoreService {
         }
 
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
-        cachingProvider = Caching.getCachingProvider(library.getClassLoader());
+        ClassLoader loader = library.getClassLoader();
+
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcInvoke("Caching", "getCachingProvider", loader);
+
+        cachingProvider = Caching.getCachingProvider(loader);
 
         tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
-        if (trace && tc.isDebugEnabled())
+
+        if (trace && tc.isDebugEnabled()) {
+            CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
+            Tr.debug(this, tc, "caching provider class is " + cachingProvider.getClass().getName());
             CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
+        }
 
         cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
 
         tcCacheManager = "CacheManager" + Integer.toHexString(System.identityHashCode(cacheManager));
 
         if (trace && tc.isDebugEnabled()) {
-            CacheHashMap.tcReturn(tcCachingProvider, "getCacheManager", tcCacheManager);
+            CacheHashMap.tcReturn(tcCachingProvider, "getCacheManager", tcCacheManager, cacheManager);
             CacheHashMap.tcInvoke(tcCachingProvider, "isSupported", "STORE_BY_REFERENCE");
         }
 
