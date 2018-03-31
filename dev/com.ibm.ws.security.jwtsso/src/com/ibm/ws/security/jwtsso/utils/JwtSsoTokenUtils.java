@@ -67,6 +67,13 @@ public class JwtSsoTokenUtils {
 		return isValid;
 	}
 
+	private JwtConsumer getConsumer() throws InvalidConsumerException {
+		if (consumer == null) {
+			consumer = JwtConsumer.create(consumerId);
+		}
+		return consumer;
+	}
+
 	/**
 	 * Given a JwtToken string, build a JsonWebToken Principal from it using
 	 * Consumer API.
@@ -84,7 +91,7 @@ public class JwtSsoTokenUtils {
 		// }
 		JwtToken token = null;
 		try {
-			token = consumer.createJwt(jwtTokenString);
+			token = getConsumer().createJwt(jwtTokenString);
 		} catch (InvalidTokenException | InvalidConsumerException e) {
 			// ffdc
 			return null;
@@ -194,9 +201,8 @@ public class JwtSsoTokenUtils {
 	}
 
 	private JwtToken recreateJwt(String tokenstr) throws Exception {
-		// TODO Auto-generated method stub
 		try {
-			return consumer.createJwt(tokenstr);
+			return getConsumer().createJwt(tokenstr);
 		} catch (InvalidTokenException | InvalidConsumerException e) {
 			// ffdc
 			throw e;
@@ -204,7 +210,6 @@ public class JwtSsoTokenUtils {
 	}
 
 	public boolean isJwtValid(String tokenstr) {
-		// TODO Auto-generated method stub
 		try {
 			if (recreateJwt(tokenstr) == null) {
 				return false;
@@ -225,7 +230,6 @@ public class JwtSsoTokenUtils {
 	}
 
 	private Object getClaim(String payload, String claim) {
-		// TODO Auto-generated method stub
 		try {
 			return JsonUtils.claimFromJsonObject(payload, claim);
 		} catch (Exception e) {

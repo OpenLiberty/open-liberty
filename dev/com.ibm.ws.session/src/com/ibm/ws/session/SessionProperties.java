@@ -841,8 +841,12 @@ final public class SessionProperties {
         }
         s = "writeContents";
         sValue = propertyToString(xtpProperties.get(s));
-        if (sValue != null && sValue.equals("ALL_SESSION_ATTRIBUTES")) {
-            smc.setwriteAllProperties(); // otherwise, default to ONLY_UPDATED_ATTRIBUTES
+        if (sValue != null) {
+            if (sValue.equals("ALL_SESSION_ATTRIBUTES"))
+                smc.setwriteAllProperties();
+            else if (sValue.equals("GET_AND_SET_ATTRIBUTES"))
+                smc.setWriteGetAndSetAttributes();
+            // otherwise, default to ONLY_UPDATED_ATTRIBUTES
         }
 
         return true;

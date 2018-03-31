@@ -62,8 +62,14 @@ public interface JaspiService {
     boolean isAnyProviderRegistered(WebRequest webRequest);
 
     /**
-     * returns true if JSR-375 HttpAuthenticationMechansim is avaiable and newAuthentication attribute is set as truen in AuthenticationParameters.
+     * returns true if JSR-375 HttpAuthenticationMechansim is avaiable and newAuthentication attribute is set as true in AuthenticationParameters.
      * otherwise return false;
      */
     boolean isProcessingNewAuthentication(HttpServletRequest req);
+
+    /**
+     * returns true if JSR-375 HttpAuthenticationMechansim is avaiable and credential object is set in AuthenticationParameters.
+     * otherwise return false;
+     */
+    boolean isCredentialPresent(HttpServletRequest req);
 }

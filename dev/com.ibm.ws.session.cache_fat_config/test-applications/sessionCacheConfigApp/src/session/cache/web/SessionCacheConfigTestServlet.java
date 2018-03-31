@@ -15,16 +15,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
+import javax.cache.CacheManager;
 import javax.cache.Caching;
+import javax.cache.spi.CachingProvider;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -114,7 +118,12 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         String type = request.getParameter("type");
         Object expectedValue = toType(type, expected);
 
-        testCacheContains(key, expectedValue);
+        boolean useURI = Boolean.parseBoolean(request.getParameter("useURI"));
+
+        if (useURI)
+            testCacheViaURIContains(key, expectedValue);
+        else
+            testCacheContains(key, expectedValue);
     }
 
     /**
@@ -159,15 +168,42 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
-        try {
-            bytes = cache.get(key);
-        } finally {
-            cache.close();
-        }
+        if (cache == null) // cache can be null if test case disables the sessionCache-1.0 feature
+            bytes = null;
+        else
+            try {
+                bytes = cache.get(key);
+            } finally {
+                cache.close();
+            }
 
         assertFalse("Not expecting cache entry " + key + " to have value " + unexpectedValue + ". " + EOLN +
                     "Bytes observed: " + Arrays.toString(bytes),
                     Arrays.equals(unexpectedBytes, bytes));
+    }
+
+    /**
+     * Verify that the cache contains the specified attribute and value.
+     */
+    private void testCacheViaURIContains(String key, Object expectedValue) throws Exception {
+        byte[] expectedBytes = expectedValue == null ? null : toBytes(expectedValue);
+
+        System.out.println("testCacheContains cache entry " + key + " should have value: " + expectedValue);
+        System.out.println("as a byte array, this is: " + Arrays.toString(expectedBytes));
+
+        // need to use same config file as server.xml
+        File hazelcastConfigFile = new File((String) InitialContext.doLookup("hazelcast/configlocation"));
+
+        byte[] bytes;
+        CachingProvider provider = Caching.getCachingProvider(Class.forName("com.hazelcast.cache.HazelcastCachingProvider").getClassLoader());
+        CacheManager cacheManager = provider.getCacheManager(hazelcastConfigFile.toURI(), null, new Properties());
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        bytes = cache.get(key);
+
+        assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
+                   "Bytes expected: " + Arrays.toString(expectedBytes) + EOLN +
+                   "Bytes observed: " + Arrays.toString(bytes),
+                   Arrays.equals(expectedBytes, bytes));
     }
 
     /**
@@ -315,6 +351,44 @@ public class SessionCacheConfigTestServlet extends FATServlet {
             testCacheContains(sessionId + ".asaset", true);
             testCacheContains(sessionId + ".asaget", expectedBits);
             testCacheContains(sessionId + ".asamod", list);
+        } finally {
+            session.invalidate();
+        }
+    }
+
+    /**
+     * Verify that all session attributes that have been touched via getAttribute or setAttribute are written to the cache.
+     */
+    public void testWriteContents_GET_AND_SET_ATTRIBUTES(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession(true);
+        try {
+            LinkedList<Long> list = new LinkedList<>();
+            list.addAll(Arrays.asList(350l, 351l, 352l));
+
+            @SuppressWarnings("unchecked")
+            LinkedList<Long> originalList = (LinkedList<Long>) list.clone();
+
+            session.setAttribute("gsaset", (byte) 353);
+            session.setAttribute("gsaget", new BitSet(8));
+            session.setAttribute("gsamod", list);
+
+            // Write all attributes to the cache
+            ((IBMSession) session).sync();
+
+            session.setAttribute("gsaset", (byte) 354); // set
+            ((BitSet) session.getAttribute("gsaget")).flip(4, 7); // get and mutate
+            list.add(355l); // mutate without get
+
+            // Write to cache per the writeContents
+            ((IBMSession) session).sync();
+
+            // Check the cache for values expected per writeContents=GET_AND_SET_ATTRIBUTES
+            BitSet expectedBits = new BitSet(8);
+            expectedBits.flip(4, 7);
+            String sessionId = session.getId();
+            testCacheContains(sessionId + ".gsaset", (byte) 354); // updated
+            testCacheContains(sessionId + ".gsaget", expectedBits); // updated
+            testCacheContains(sessionId + ".gsamod", originalList); // not updated
         } finally {
             session.invalidate();
         }

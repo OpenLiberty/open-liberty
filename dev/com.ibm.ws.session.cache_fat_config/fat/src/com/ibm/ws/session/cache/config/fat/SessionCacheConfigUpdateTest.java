@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.junit.After;
@@ -27,6 +28,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.HttpSessionCache;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
@@ -40,7 +43,7 @@ import componenttest.topology.utils.FATServletClient;
 public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     private static final String APP_NAME = "sessionCacheConfigApp";
-    private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
+    private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME); // jcacheApp not included because it isn't normally configured
     private static final String[] APP_RECYCLE_LIST = new String[] { "CWWKZ0009I.*" + APP_NAME, "CWWKZ000[13]I.*" + APP_NAME };
     private static final String[] EMPTY_RECYCLE_LIST = new String[0];
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
@@ -67,6 +70,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.web");
+        ShrinkHelper.defaultApp(server, "jcacheApp", "test.cache.web");
+        server.removeInstalledAppForValidation("jcacheApp"); // This application is available for tests to add but not configured by default.
 
         String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
         server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
@@ -82,6 +87,36 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     }
 
     /**
+     * Verify that application usage of a caching provider does not interfere with the sessionCache feature.
+     */
+    @Test
+    public void testApplicationClosesCachingProvider() throws Exception {
+        // Add application: jcacheApp
+        ServerConfiguration config = server.getServerConfiguration();
+        Application jcacheApp = new Application();
+        ClassloaderElement jcacheApp_classloader = new ClassloaderElement();
+        jcacheApp_classloader.getCommonLibraryRefs().add("HazelcastLib");
+        jcacheApp.getClassloaders().add(jcacheApp_classloader);
+        jcacheApp.setLocation("jcacheApp.war");
+        config.getApplications().add(jcacheApp);
+
+        Set<String> appNames = new TreeSet<String>(APP_NAMES);
+        appNames.add("jcacheApp");
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_RECYCLE_LIST);
+
+        // Application obtains the CachingProvider for the same configured library and closes the provider
+        // TODO FATSuite.run(server, "jcacheApp/JCacheConfigTestServlet", "testCloseCachingProvider", null);
+
+        // Access a session - this will only work if sessionCache feature has used a different CachingProvider instance
+        List<String> session = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "getSessionId", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+    }
+
+    /**
      * Update the configured value of the writeContents attribute while the server is running. Confirm the configured behavior.
      */
     @Test
@@ -89,20 +124,17 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         // Verify default behavior: writeContents=ONLY_SET_ATTRIBUTES
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_ONLY_SET_ATTRIBUTES", new ArrayList<>());
 
-        // TODO enable once this function is implemented
         // Reconfigure writeContents=GET_AND_SET_ATTRIBUTES
-        //ServerConfiguration config = server.getServerConfiguration();
-        //HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
-        //httpSessionCache.setWriteContents("GET_AND_SET_ATTRIBUTES");
-        //server.setMarkToEndOfLog();
-        //server.updateServerConfiguration(config);
-        //server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
-
-        //FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_GET_AND_SET_ATTRIBUTES", new ArrayList<>());
-
-        // Reconfigure writeContents=ALL_SESSION_ATTRIBUTES
         ServerConfiguration config = server.getServerConfiguration();
         HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        httpSessionCache.setWriteContents("GET_AND_SET_ATTRIBUTES");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_GET_AND_SET_ATTRIBUTES", new ArrayList<>());
+
+        // Reconfigure writeContents=ALL_SESSION_ATTRIBUTES
         httpSessionCache.setWriteContents("ALL_SESSION_ATTRIBUTES");
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
