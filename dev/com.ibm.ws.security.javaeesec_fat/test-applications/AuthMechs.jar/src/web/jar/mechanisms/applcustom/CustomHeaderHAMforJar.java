@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,8 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
 @ApplicationScoped
-public class CustomHeaderHAM implements HttpAuthenticationMechanism {
-    private static Logger log = Logger.getLogger(CustomHeaderHAM.class.getName());
+public class CustomHeaderHAMforJar implements HttpAuthenticationMechanism {
+    private static Logger log = Logger.getLogger(CustomHeaderHAMforJar.class.getName());
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,

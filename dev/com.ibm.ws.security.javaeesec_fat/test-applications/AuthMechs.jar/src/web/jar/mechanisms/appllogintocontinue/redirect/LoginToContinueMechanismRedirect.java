@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web.jar.mechanisms.appllogintocontinue.forward;
+package web.jar.mechanisms.appllogintocontinue.redirect;
 import java.util.logging.Logger;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -36,9 +36,9 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
 @ApplicationScoped
-@LoginToContinue(errorPage="/loginError.jsp", loginPage="/login.jsp")
-public class LoginToContinueMechanism implements HttpAuthenticationMechanism {
-    private static Logger log = Logger.getLogger(LoginToContinueMechanism.class.getName());
+@LoginToContinue(errorPage="/loginError.jsp", loginPage="/login.jsp", useForwardToLogin=false, useForwardToLoginExpression="")
+public class LoginToContinueMechanismRedirect implements HttpAuthenticationMechanism {
+    private static Logger log = Logger.getLogger(LoginToContinueMechanismRedirect.class.getName());
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
