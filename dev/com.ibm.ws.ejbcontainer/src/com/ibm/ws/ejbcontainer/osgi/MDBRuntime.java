@@ -16,6 +16,7 @@ import javax.transaction.xa.Xid;
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.container.BeanOFactory;
 import com.ibm.ejs.container.BeanOFactory.BeanOFactoryType;
+import com.ibm.ejs.container.MessageEndpointCollaborator;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
 
 /**
@@ -59,6 +60,13 @@ public interface MDBRuntime extends BeanRuntime {
      */
     Class<?> getMessageEndpointImplClass(BeanMetaData bmd) throws ClassNotFoundException;
 
+    /**
+     * Retrieves the message endpoint collaborator instance.
+     *
+     * @return The message endpoint collaborator instance.
+     */
+    public MessageEndpointCollaborator getMessageEndpointCollaborator();
+    
     /**
      * Method to get the XAResource corresponding to an ActivationSpec from the RRSXAResourceFactory
      * 
