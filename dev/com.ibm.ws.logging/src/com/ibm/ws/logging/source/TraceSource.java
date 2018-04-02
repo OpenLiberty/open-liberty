@@ -17,6 +17,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
@@ -120,10 +121,10 @@ public class TraceSource implements Source, WsTraceHandler {
 
         if (logRecord instanceof WsLogRecord) {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
-                KeyValuePairList extensions = new KeyValuePairList();
+                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    extensions.addPair(entry.getKey(), entry.getValue());
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
                 genData.addPairs(extensions);
             }

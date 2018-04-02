@@ -37,6 +37,7 @@ public abstract class JSONEventsTest {
     protected static final Class<?> c = JSONEventsTest.class;
 
     public static final String APP_NAME = "LogstashApp";
+    private static final String EXT_PREFIX = "ext_";
 
     public abstract LibertyServer getServer();
 
@@ -146,6 +147,91 @@ public abstract class JSONEventsTest {
 
     }
 
+    @Test
+    public void checkExtensions() throws Exception {
+        final String method = "checkExt";
+        getServer().addInstalledAppForValidation(APP_NAME);
+        TestUtils.runApp(getServer(), "extension");
+
+        String line = getServer().waitForStringInLog("\\{.*\"module\":\"com.ibm.logs.ExtensionServlet\".*\\}", getLogFile());
+
+        assertNotNull("Cannot find \"module\":\"com.ibm.logs.ExtensionServlet\" from messages.log", line);
+
+        JsonReader reader = Json.createReader(new StringReader(line));
+        JsonObject jsonObj = reader.readObject();
+        reader.close();
+
+        if (!checkExtensions(jsonObj)) {
+            Log.info(c, method, "Message line:" + line);
+            Assert.fail("Test failed with one or more extension related errors");
+        }
+    }
+
+    public boolean checkExtensions(JsonObject jsonObj) throws Exception {
+        final String method = "checkExtensions";
+
+        boolean isValid = true;
+
+        ArrayList<String> extensionKeysMandatoryList = new ArrayList<String>(Arrays.asList("ext_correctBooleanExtension_bool", "ext_correctBooleanExtension2_bool",
+                                                                                           "ext_correctIntExtension_int", "ext_correctIntExtension2_int",
+                                                                                           "ext_correctStringExtension", "ext_correctFloatExtension_float",
+                                                                                           "ext_correctFloatExtension2_float"));
+        ArrayList<String> invalidFields = new ArrayList<String>();
+
+        String value = "";
+        for (String key : jsonObj.keySet()) {
+            if (extensionKeysMandatoryList.contains(key)) {
+                if (key.equals("ext_correctIntExtension_int")) {
+                    if (jsonObj.getInt(key) != 12345) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctIntExtension2_int")) {
+                    if (jsonObj.getInt(key) != -12345) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctBooleanExtension_bool")) {
+                    if (jsonObj.getBoolean(key) != true) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctBooleanExtension2_bool")) {
+                    if (jsonObj.getBoolean(key) != false) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctStringExtension")) {
+                    if (!jsonObj.getString(key).toString().equals("Testing string 1234")) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctFloatExtension_float")) {
+                    if ((Float.parseFloat(jsonObj.get(key).toString())) != 100.123f) {
+                        invalidFields.add(key);
+                    }
+                } else if (key.equals("ext_correctFloatExtension2_float")) {
+                    if ((Float.parseFloat(jsonObj.get(key).toString())) != -100.123f) {
+                        invalidFields.add(key);
+                    }
+                }
+                extensionKeysMandatoryList.remove(key);
+                value = "" + jsonObj.get(key);
+                Log.finer(c, method, "key=" + key + ", value=" + value);
+            }
+
+            if (key.startsWith("wrongExtension")) {
+                invalidFields.add(key);
+            }
+        }
+
+        if (extensionKeysMandatoryList.size() > 0) {
+            isValid = false;
+            Log.info(c, method, "Mandatory keys missing:" + extensionKeysMandatoryList.toString());
+        }
+        if (invalidFields.size() > 0) {
+            isValid = false;
+            Log.info(c, method, "Invalid keys found:" + invalidFields.toString());
+        }
+
+        return isValid;
+    }
+
     private boolean checkJsonMessage(JsonObject jsonObj, ArrayList<String> mandatoryKeyList, ArrayList<String> optionalKeyList) {
         final String method = "checkJsonMessage";
 
@@ -159,6 +245,9 @@ public abstract class JSONEventsTest {
                 Log.finer(c, method, "key=" + key + ", value=" + value);
             } else if (optionalKeyList.contains(key)) {
                 optionalKeyList.remove(key);
+                value = "" + jsonObj.get(key);
+                Log.finer(c, method, "key=" + key + ", value=" + value);
+            } else if (key.startsWith(EXT_PREFIX)) {
                 value = "" + jsonObj.get(key);
                 Log.finer(c, method, "key=" + key + ", value=" + value);
             } else {

@@ -15,16 +15,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
+import javax.cache.CacheManager;
 import javax.cache.Caching;
+import javax.cache.spi.CachingProvider;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -114,7 +118,12 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         String type = request.getParameter("type");
         Object expectedValue = toType(type, expected);
 
-        testCacheContains(key, expectedValue);
+        boolean useURI = Boolean.parseBoolean(request.getParameter("useURI"));
+
+        if (useURI)
+            testCacheViaURIContains(key, expectedValue);
+        else
+            testCacheContains(key, expectedValue);
     }
 
     /**
@@ -171,6 +180,30 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         assertFalse("Not expecting cache entry " + key + " to have value " + unexpectedValue + ". " + EOLN +
                     "Bytes observed: " + Arrays.toString(bytes),
                     Arrays.equals(unexpectedBytes, bytes));
+    }
+
+    /**
+     * Verify that the cache contains the specified attribute and value.
+     */
+    private void testCacheViaURIContains(String key, Object expectedValue) throws Exception {
+        byte[] expectedBytes = expectedValue == null ? null : toBytes(expectedValue);
+
+        System.out.println("testCacheContains cache entry " + key + " should have value: " + expectedValue);
+        System.out.println("as a byte array, this is: " + Arrays.toString(expectedBytes));
+
+        // need to use same config file as server.xml
+        File hazelcastConfigFile = new File((String) InitialContext.doLookup("hazelcast/configlocation"));
+
+        byte[] bytes;
+        CachingProvider provider = Caching.getCachingProvider(Class.forName("com.hazelcast.cache.HazelcastCachingProvider").getClassLoader());
+        CacheManager cacheManager = provider.getCacheManager(hazelcastConfigFile.toURI(), null, new Properties());
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        bytes = cache.get(key);
+
+        assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
+                   "Bytes expected: " + Arrays.toString(expectedBytes) + EOLN +
+                   "Bytes observed: " + Arrays.toString(bytes),
+                   Arrays.equals(expectedBytes, bytes));
     }
 
     /**

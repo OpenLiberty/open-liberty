@@ -93,6 +93,8 @@ public class SSOAuthenticator implements WebAuthenticator {
     }
 
     //TODO Need a new design to improve performance when we have multiple cookie with the same name.
+    //TODO:  multi-cookies are in now, but we need to add removing them when logging out.
+
     /**
      * @param req
      * @param res
@@ -161,21 +163,11 @@ public class SSOAuthenticator implements WebAuthenticator {
      */
     private AuthenticationResult handleJwtSSO(HttpServletRequest req, HttpServletResponse res) {
         String jwtCookieName = JwtSSOTokenHelper.getJwtCookieName();
-        if (jwtCookieName == null) {
+        if (jwtCookieName == null) { // jwtsso feature not active
             return null;
         }
+        String encodedjwtssotoken = getJwtSsoTokenFromCookies(req, jwtCookieName);
 
-        String[] hdrVals = CookieHelper.getCookieValues(getCookies(req), jwtCookieName);
-        String encodedjwtssotoken = null;
-        if (hdrVals != null) {
-            for (int n = 0; n < hdrVals.length; n++) {
-                String hdrVal = hdrVals[n];
-                if (hdrVal != null && hdrVal.length() > 0) {
-                    encodedjwtssotoken = hdrVal;
-                    break;
-                }
-            }
-        }
         if (encodedjwtssotoken == null) { //jwt sso cookie is missing, look at the auth header
             encodedjwtssotoken = getJwtBearerToken(req);
         }
@@ -184,6 +176,48 @@ public class SSOAuthenticator implements WebAuthenticator {
         else
             return authenticateWithJwt(req, res, encodedjwtssotoken);
 
+    }
+
+    /**
+     * The token can be split across multiple cookies if it is over 3900 chars.
+     * Look for subsequent cookies and concatenate them in that case.
+     * The counterpart for this method is in SSOCookieHelperImpl.
+     *
+     * @param req
+     * @return the token String or null if nothing found.
+     */
+    protected String getJwtSsoTokenFromCookies(HttpServletRequest req, String baseName) {
+
+        StringBuffer tokenStr = new StringBuffer();
+        String cookieName = baseName;
+        for (int i = 1; i <= 99; i++) {
+            if (i > 1) {
+                cookieName = baseName + (i < 10 ? "0" : "") + i; //name02... name99
+            }
+            String cookieValue = getCookieValue(req, cookieName);
+            if (cookieValue == null) {
+                break;
+            }
+            if (cookieValue.length() > 0) {
+                tokenStr.append(cookieValue);
+            }
+        }
+        return tokenStr.length() > 0 ? tokenStr.toString() : null;
+    }
+
+    protected String getCookieValue(HttpServletRequest req, String cookieName) {
+        String[] hdrVals = CookieHelper.getCookieValues(getCookies(req), cookieName);
+        String result = null;
+        if (hdrVals != null) {
+            for (int n = 0; n < hdrVals.length; n++) {
+                String hdrVal = hdrVals[n];
+                if (hdrVal != null && hdrVal.length() > 0) {
+                    result = hdrVal;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     /**

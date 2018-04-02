@@ -552,22 +552,21 @@ public final class ResourceUtils {
             return getClassNameandPath(className, path.value()); 
         }        
     }
-    
-    private static String getClassNameandPath (String className, String pathValue) {        
-        if (pathValue == null) {
-            pathValue = "/";
-        } else if (!pathValue.startsWith("/")) {
-            pathValue = "/" + pathValue;
-        }     
-        
-        StringBuilder sb = new StringBuilder().append("/").append(className).append(pathValue);
-        
-        for (int index = 0; index < sb.length(); index++) {
-            if (sb.charAt(index) == '.') {
-                sb.setCharAt(index, '_');
+
+    private static String getClassNameandPath (String className, String pathValue) {
+        int pathLength = pathValue == null ? 0 : pathValue.length();
+        StringBuilder sb = new StringBuilder(className.length() + pathLength + 1);
+        sb.append('/').append(className);
+
+        if (pathLength == 0) {
+            sb.append('/');
+        } else {
+            if (pathValue.charAt(0) != '/') {
+                sb.append('/');
             }
+            sb.append(pathValue);
         }
-        
+
         return sb.toString();
     }
 // end Liberty change

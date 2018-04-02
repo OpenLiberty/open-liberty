@@ -20,6 +20,8 @@
 package org.apache.cxf.jaxrs.provider;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -141,7 +144,7 @@ public abstract class ProviderFactory {
     //Liberty code change start
     //defect 178126
     //A cache for getGenericInterfaces
-    private static final ConcurrentHashMap<ClassPair, Type[]> genericInterfacesCache = new ConcurrentHashMap<ClassPair, Type[]>();
+    private static final ConcurrentHashMap<ClassWeakReference, Map<ClassWeakReference, Type[]>> genericInterfacesCache = new ConcurrentHashMap<>();
     private static final Type[] emptyType = new Type[] {};
 
     //Liberty code change end
@@ -1323,8 +1326,7 @@ public abstract class ProviderFactory {
         if (Object.class == cls) {
             return emptyType;
         }
-        ClassPair classPair = new ClassPair(cls, expectedClass);
-        Type[] cachedTypes = genericInterfacesCache.get(classPair);
+        Type[] cachedTypes = getTypes(cls, expectedClass);
         if (cachedTypes != null)
             return cachedTypes;
         if (expectedClass != null) {
@@ -1333,21 +1335,21 @@ public abstract class ProviderFactory {
                 Class<?> actualType = InjectionUtils.getActualType(genericSuperType);
                 if (actualType != null && actualType.isAssignableFrom(expectedClass)) {
                     Type[] tempTypes = new Type[] { genericSuperType };
-                    genericInterfacesCache.put(classPair, tempTypes);
+                    putTypes(cls, expectedClass, tempTypes);
                     return tempTypes;
                 } else if (expectedClass.isAssignableFrom(actualType)) {
-                    genericInterfacesCache.put(classPair, emptyType);
+                    putTypes(cls, expectedClass, emptyType);
                     return emptyType;
                 }
             }
         }
         Type[] types = cls.getGenericInterfaces();
         if (types.length > 0) {
-            genericInterfacesCache.put(classPair, types);
+            putTypes(cls, expectedClass, types);
             return types;
         }
         Type[] superGenericTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass);
-        genericInterfacesCache.put(classPair, superGenericTypes);
+        putTypes(cls, expectedClass, superGenericTypes);
         return superGenericTypes;
     }
 
@@ -1655,77 +1657,140 @@ public abstract class ProviderFactory {
         sortReaders();
         sortWriters();
     }
-}
 
-//Liberty code change start
-//defect 178126
-class ClassPair {
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((firstClass == null) ? 0 : firstClass.hashCode());
-        result = prime * result + ((secondClass == null) ? 0 : secondClass.hashCode());
-        result = prime * result + ((firstClassLoader == null) ? 0 : firstClassLoader.hashCode());
-        result = prime * result + ((secondClassLoader == null) ? 0 : secondClassLoader.hashCode());
-        return result;
-    }
+    //Liberty code change start
+    //defect 178126
+    private static final ClassWeakReference NULL_REFERENCE = new ClassWeakReference(ClassWeakReference.class);
+    private static final ReferenceQueue<Class<?>> referenceQueue = new ReferenceQueue<>();
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ClassPair other = (ClassPair) obj;
-        if (firstClass == null) {
-            if (other.firstClass != null)
-                return false;
-        } else if (!firstClass.equals(other.firstClass))
-            return false;
-        if (secondClass == null) {
-            if (other.secondClass != null)
-                return false;
-        } else if (!secondClass.equals(other.secondClass))
-            return false;
-
-        if (firstClassLoader == null) {
-            if (other.firstClassLoader != null)
-                return false;
-        } else if (!firstClassLoader.equals(other.firstClassLoader))
-            return false;
-        if (secondClassLoader == null) {
-            if (other.secondClassLoader != null)
-                return false;
-        } else if (!secondClassLoader.equals(other.secondClassLoader))
-            return false;
-
-        return true;
-    }
-
-    private String getClassLoaderString(final Class<?> cls) {
-        return cls == null ? null : AccessController.doPrivileged(new PrivilegedAction<String>() {
-
-            @Override
-            public String run() {
-                ClassLoader cl = cls.getClassLoader();
-                return cl == null ? null : cl.getClass().getName() + "." + cl.hashCode();
+    private static void poll() {
+        ClassWeakReference key;
+        while ((key = (ClassWeakReference) referenceQueue.poll()) != null) {
+            Map<ClassWeakReference, ?> map = key.getOwningMap();
+            if (map != null) {
+                if (map instanceof ConcurrentHashMap) {
+                    map.remove(key);
+                } else {
+                    Collection<Map<ClassWeakReference, Type[]>> values = genericInterfacesCache.values();
+                    for (Iterator<Map<ClassWeakReference, Type[]>> it = values.iterator(); it.hasNext();) {
+                        Map<ClassWeakReference, Type[]> value = it.next();
+                        if (value == map) {
+                            it.remove();
+                            break;
+                        }
+                    }
+                }
             }
-        });
+        }
     }
 
-    private final String firstClass;
-    private final String secondClass;
-    private final String firstClassLoader;
-    private final String secondClassLoader;
-
-    public ClassPair(Class<?> firstClass, Class<?> secondClass) {
-        this.firstClass = firstClass == null ? null : firstClass.getName();
-        this.secondClass = secondClass == null ? null : secondClass.getName();
-        this.firstClassLoader = getClassLoaderString(firstClass);
-        this.secondClassLoader = getClassLoaderString(secondClass);
+    private static Type[] getTypes(Class<?> cls, Class<?> expectedCls) {
+        poll();
+        Map<ClassWeakReference, Type[]> interfacesMap = genericInterfacesCache.get(new ClassWeakReference(cls));
+        if (interfacesMap != null) {
+            return interfacesMap.get(expectedCls == null ? NULL_REFERENCE : new ClassWeakReference(expectedCls));
+        }
+        return null;
     }
+
+    /**
+     * Add a new expected class and Type[] to the Map of Maps. If there is only one expected class
+     * for a given class, then we will use a Collections.singletonMap(). Otherwise we will convert to a
+     * ConcurrentHashMap. This reduces overhead when there is only one expected Class.
+     *
+     * @param cls
+     * @param expectedCls
+     * @param types
+     */
+    private static void putTypes(Class<?> cls, Class<?> expectedCls, Type[] types) {
+        poll();
+        Map<ClassWeakReference, Type[]> interfacesMap = genericInterfacesCache.get(new ClassWeakReference(cls));
+        if (interfacesMap != null) {
+            if (interfacesMap instanceof ConcurrentHashMap) {
+                ClassWeakReference expectedClassRef = expectedCls == null ? NULL_REFERENCE :
+                    new ClassWeakReference(expectedCls, interfacesMap, referenceQueue);
+                interfacesMap.put(expectedClassRef, types);
+            } else {
+                // If it already got added, then we can skip making the ConcurrentHashMap.
+                if (interfacesMap.get(expectedCls == null ? NULL_REFERENCE : new ClassWeakReference(expectedCls)) == null) {
+                    // Take the old entry from the Collections.singletonMap and put it in a new ConcurrentHashMap.
+                    Map<ClassWeakReference, Type[]> oldMap = interfacesMap;
+                    interfacesMap = new ConcurrentHashMap<>();
+                    Iterator<Map.Entry<ClassWeakReference, Type[]>> it = oldMap.entrySet().iterator();
+                    if (it.hasNext()) {
+                        Map.Entry<ClassWeakReference, Type[]> entry = it.next();
+                        ClassWeakReference oldKey = entry.getKey();
+                        // Need to change the owning map to the new ConcurrentHashMap.
+                        oldKey.setOwningMap(interfacesMap);
+                        interfacesMap.put(oldKey, entry.getValue());
+                    }
+
+                    ClassWeakReference expectedClassRef = expectedCls == null ? NULL_REFERENCE : new ClassWeakReference(expectedCls, interfacesMap, referenceQueue);
+                    interfacesMap.put(expectedClassRef, types);
+                    genericInterfacesCache.put(new ClassWeakReference(cls, genericInterfacesCache, referenceQueue),
+                                               interfacesMap);
+                }
+            }
+        } else {
+            if (expectedCls == null) {
+                interfacesMap = Collections.singletonMap(NULL_REFERENCE, types);
+            } else {
+                ClassWeakReference expectedClassRef = new ClassWeakReference(expectedCls, null, referenceQueue);
+                interfacesMap = Collections.singletonMap(expectedClassRef, types);
+                expectedClassRef.setOwningMap(interfacesMap);
+            }
+            genericInterfacesCache.put(new ClassWeakReference(cls, genericInterfacesCache, referenceQueue), interfacesMap);
+        }
+    }
+
+    private static class ClassWeakReference extends WeakReference<Class<?>> {
+        private final int hash;
+        private volatile Map<ClassWeakReference, ?> owningMap;
+
+        ClassWeakReference(Class<?> referent) {
+            super(referent);
+            owningMap = null;
+            hash = referent.hashCode();
+        }
+
+        ClassWeakReference(Class<?> referent, Map<ClassWeakReference, ?> owningMap,
+                           ReferenceQueue<Class<?>> referenceQueue) {
+            super(referent, referenceQueue);
+            this.owningMap = owningMap;
+            hash = referent.hashCode();
+        }
+
+        Map<ClassWeakReference, ?> getOwningMap() {
+            return owningMap;
+        }
+
+        void setOwningMap(Map<ClassWeakReference, ?> owningMap) {
+            this.owningMap = owningMap;
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+
+            if (obj instanceof ClassWeakReference) {
+                return get() == ((ClassWeakReference) obj).get();
+            }
+
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            Class<?> referent = get();
+            return new StringBuilder("ClassWeakReference: ").append(referent == null ? null : referent.getName()).toString();
+        }
+    }
+    //Liberty code change end
 }
-//Liberty code change end

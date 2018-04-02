@@ -162,9 +162,9 @@ public class TraceHandlerImpl implements Handler {
                 KeyValuePair kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals(key)) {
                     if (kvp.isInteger()) {
-                        return kvp.getIntValue().toString();
+                        return Integer.toString(kvp.getIntValue());
                     } else if (kvp.isLong()) {
-                        return kvp.getLongValue().toString();
+                        return Long.toString(kvp.getLongValue());
                     } else {
                         return kvp.getStringValue();
                     }

@@ -66,4 +66,6 @@ public class LogFieldConstants {
     public static final String IBM_GC_TYPE = "ibm_gcType";
     public static final String IBM_REASON = "ibm_reason";
     public static final String UTF_8 = "UTF-8";
+    public static final String EXT_PREFIX = "ext_";
+    public static final String EXTENSIONS_KVPL = "extensions";
 }

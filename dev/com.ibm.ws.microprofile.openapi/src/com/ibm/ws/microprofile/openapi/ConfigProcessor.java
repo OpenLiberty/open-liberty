@@ -13,7 +13,9 @@ package com.ibm.ws.microprofile.openapi;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.Config;
@@ -60,24 +62,19 @@ public class ConfigProcessor {
 
     public ConfigProcessor(ClassLoader appClassloader) {
         config = ConfigProvider.getConfig(appClassloader);
-        try {
-            modelReaderClassName = config.getOptionalValue(OASConfig.MODEL_READER, String.class).orElse(null);
-            scanDisabled = config.getOptionalValue(OASConfig.SCAN_DISABLE, Boolean.class).orElse(false);
-            openAPIFilterClassName = config.getOptionalValue(OASConfig.FILTER, String.class).orElse(null);
-            validation = config.getOptionalValue(VALIDATION, Boolean.class).orElse(VALIDATION_DEFAULT_VALUE);
-            pollingInterval = config.getOptionalValue(FILE_POLLING_INTERVAL, Integer.class).filter(v -> v >= 0).orElse(FILE_POLLING_INTERVAL_DEFAULT_VALUE);
 
-            classesToScan = getConfigPropAsSet(OASConfig.SCAN_CLASSES);
-            packagesToScan = getConfigPropAsSet(OASConfig.SCAN_PACKAGES);
-            classesToExclude = getConfigPropAsSet(OASConfig.SCAN_EXCLUDE_CLASSES);
-            packagesToExclude = getConfigPropAsSet(OASConfig.SCAN_EXCLUDE_PACKAGES);
+        modelReaderClassName = getOptionalValue(OASConfig.MODEL_READER, String.class, null);
+        scanDisabled = getOptionalValue(OASConfig.SCAN_DISABLE, Boolean.class, false);
+        openAPIFilterClassName = getOptionalValue(OASConfig.FILTER, String.class, null);
+        validation = getOptionalValue(VALIDATION, Boolean.class, VALIDATION_DEFAULT_VALUE);
+        pollingInterval = getOptionalValue(FILE_POLLING_INTERVAL, Integer.class, FILE_POLLING_INTERVAL_DEFAULT_VALUE, v -> v >= 0);
 
-            retrieveServers();
-        } catch (IllegalArgumentException e) {
-            if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Failed to read config: " + e.getMessage());
-            }
-        }
+        classesToScan = getConfigPropAsSet(OASConfig.SCAN_CLASSES);
+        packagesToScan = getConfigPropAsSet(OASConfig.SCAN_PACKAGES);
+        classesToExclude = getConfigPropAsSet(OASConfig.SCAN_EXCLUDE_CLASSES);
+        packagesToExclude = getConfigPropAsSet(OASConfig.SCAN_EXCLUDE_PACKAGES);
+
+        retrieveServers();
     }
 
     public String getModelReaderClassName() {
@@ -124,18 +121,41 @@ public class ConfigProcessor {
         return pollingInterval;
     }
 
+    private <T> T getOptionalValue(String propertyName, Class<T> propertyType, T defaultValue) {
+        return getOptionalValue(propertyName, propertyType, defaultValue, null);
+    }
+
+    private <T> T getOptionalValue(String propertyName, Class<T> propertyType, T defaultValue, Predicate<? super T> filter) {
+        try {
+            Optional<T> optional = config.getOptionalValue(propertyName, propertyType);
+            if (filter != null) {
+                optional = optional.filter(filter);
+            }
+            return optional.orElse(defaultValue);
+        } catch (IllegalArgumentException e) {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Failed to read config: " + e.getMessage());
+            }
+        }
+        return defaultValue;
+    }
+
     private Set<String> getConfigPropAsSet(String configProperty) {
-        String[] configValues = config.getOptionalValue(configProperty, String[].class).orElse(null);
+        String[] configValues = getOptionalValue(configProperty, String[].class, null);
         if (configValues == null || configValues.length == 0) {
             return null;
         } else {
             Set<String> configPropSet = new HashSet<>();
             for (String s : configValues) {
-                configPropSet.add(s);
+                if (s != null && StringUtils.isNotBlank(s)) {
+                    configPropSet.add(s);
+                }
+            }
+            if (configPropSet.isEmpty()) {
+                return null;
             }
             return configPropSet;
         }
-
     }
 
     private void retrieveServers() {
