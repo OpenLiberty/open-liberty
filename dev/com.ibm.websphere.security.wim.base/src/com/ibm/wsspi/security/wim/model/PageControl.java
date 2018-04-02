@@ -25,37 +25,35 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for PageControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="PageControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Control">
- * &lt;attribute name="size" type="{http://www.w3.org/2001/XMLSchema}int" default="0" />
- * &lt;attribute name="cookie" type="{http://www.w3.org/2001/XMLSchema}hexBinary" />
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="PageControl"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Control"&gt;
+ * &lt;attribute name="size" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+ * &lt;attribute name="cookie" type="{http://www.w3.org/2001/XMLSchema}hexBinary" /&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The PageControl object extends the Control object, and contains two properties:
- * 
+ *
  * <ul>
  * <li><b>size</b>: indicates the size of the page.</li>
- * 
+ *
  * <li><b>cookie</b>: contains the cookie returned from a PageResponseControl
  * to the server can get the next page to the search. For the first call of a paging search,
  * this property should not be set to any value.</li>
- * 
+ *
  * </ul>
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PageControl")
-public class PageControl
-                extends Control
-{
+public class PageControl extends Control {
 
     @XmlAttribute(name = "size")
     protected Integer size;
@@ -74,10 +72,10 @@ public class PageControl
 
     /**
      * Gets the value of the <b>size</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
+     *
      */
     public int getSize() {
         if (size == null) {
@@ -89,10 +87,10 @@ public class PageControl
 
     /**
      * Sets the value of the <b>size</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Integer }
-     * 
+     *
      */
     public void setSize(int value) {
         this.size = value;
@@ -100,10 +98,10 @@ public class PageControl
 
     /**
      * Returns a true if the <b>size</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean}
-     * 
+     *
      */
 
     public boolean isSetSize() {
@@ -120,10 +118,10 @@ public class PageControl
 
     /**
      * Gets the value of the <b>startIndex</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
+     *
      */
     public int getStartIndex() {
         if (startIndex == null) {
@@ -135,10 +133,10 @@ public class PageControl
 
     /**
      * Sets the value of the <b>startIndex</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Integer }
-     * 
+     *
      */
     public void setStartIndex(int value) {
         this.startIndex = value;
@@ -146,10 +144,10 @@ public class PageControl
 
     /**
      * Returns a true if the <b>startIndex</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean}
-     * 
+     *
      */
 
     public boolean isSetStartIndex() {
@@ -166,13 +164,13 @@ public class PageControl
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
 
     @Override
@@ -188,10 +186,10 @@ public class PageControl
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     @Override
@@ -207,12 +205,12 @@ public class PageControl
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
+     *
      */
     @Override
     public void set(String propName, Object value) {
@@ -227,10 +225,10 @@ public class PageControl
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      */
 
     @Override
@@ -246,7 +244,7 @@ public class PageControl
 
     /**
      * Gets the name of this model object, <b>PageControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -257,10 +255,10 @@ public class PageControl
 
     /**
      * Gets a list of all supported properties for this model object, <b>PageControl</b>
-     * 
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -289,10 +287,10 @@ public class PageControl
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -316,7 +314,7 @@ public class PageControl
     /**
      * Gets a list of any model objects which this model object, <b>PageControl</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -332,9 +330,9 @@ public class PageControl
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -353,7 +351,7 @@ public class PageControl
 
     /**
      * Gets a set of any model objects which extend this model object, <b>PageControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -367,7 +365,7 @@ public class PageControl
 
     /**
      * Returns this model object, <b>PageControl</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */

@@ -30,16 +30,16 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="PartyRole">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}RolePlayer">
- * &lt;sequence>
- * &lt;element name="primaryRolePlayer" type="{http://www.ibm.com/websphere/wim}RolePlayer"/>
- * &lt;element name="relatedRolePlayer" type="{http://www.ibm.com/websphere/wim}RolePlayer" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="PartyRole"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}RolePlayer"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="primaryRolePlayer" type="{http://www.ibm.com/websphere/wim}RolePlayer"/&gt;
+ * &lt;element name="relatedRolePlayer" type="{http://www.ibm.com/websphere/wim}RolePlayer" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The PartyRole object extends the RolePlayer object and defines a role. It defines two properties:

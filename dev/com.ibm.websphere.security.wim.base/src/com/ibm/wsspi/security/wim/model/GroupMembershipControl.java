@@ -24,33 +24,33 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for GroupMembershipControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="GroupMembershipControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}GroupControl">
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="GroupMembershipControl"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}GroupControl"&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The GroupMembershipControl object extends from the abstract GroupControl object.
- * 
+ *
  * <p> The GroupControl DataObject contains the following properties that are inherited by
  * GroupMembershipControl: <b>level</b>, <b>properties</b>, <b>searchBases</b>, <b>countLimit</b>,
  * <b>timeLimit</b>, <b>modifyMode</b> and <b>expression</b>.
- * 
+ *
  * <p> GroupMembershipControl is used in the input Root object of both the get() API and update() API.
- * 
+ *
  * <p> In the get() API, GroupMembershipControl is used for requesting the groups to which an entity
  * belongs. If theGroupMembershipControl is added to the input Root object, then the groups the
  * entity belongs to will be returned.
- * 
+ *
  * <p> GroupMembershipControl can also be used for specifying the properties to be returned for groups
  * as well as the level of nested groups to be returned.
- * 
+ *
  * <ul>
  * <li><b>level</b>
  * <ul>
@@ -60,10 +60,10 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * groups and their immediate groups.</li>
  * </ul>
  * </ul>
- * 
+ *
  * <p> In an update() API call, GroupMembershipControl can be used to specify the assign or un-assign mode
  * through the <b>modifyMode</b> property.
- * 
+ *
  * <ul>
  * <li><b>modifyMode</b>
  * <ul>
@@ -72,24 +72,22 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <li><b>3</b>: the groups contained in the entity object will remove the entity from their members.</li>
  * </ul>
  * </ul>
- * 
+ *
  * <p> Since GroupMembershipControl is also extended from SearchControl, you can specify property <b>expression</b>
  * and other search properties like <b>countLimit</b>, and <b>timeLimit</b> in GroupMembershipControl to only return those
  * groups which satisfy the search criteria. For example, it is possible to add the property <b>expression</b>
  * with value: @xsi:type='Group' and cn='Admin*' to only return those groups whose cn property starts
  * with Admin.
- * 
- * <li><b>treeView</b>: used to indicate whether the hierarchy of the nested groups should be
+ *
+ * <p><b>treeView</b>: used to indicate whether the hierarchy of the nested groups should be
  * kept in the output Root object or not. If it is set to true, the hierarchy relationship of the
  * immediate groups and nested groups of different levels are kept in the Root object. If it is set to false,
- * all groups are put in a flat structure by pointing to the same groups property of the entity.</li>
- * 
+ * all groups are put in a flat structure by pointing to the same groups property of the entity.</p>
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "GroupMembershipControl")
-public class GroupMembershipControl
-                extends GroupControl
-{
+public class GroupMembershipControl extends GroupControl {
 
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -104,13 +102,13 @@ public class GroupMembershipControl
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     @Override
     public Object get(String propName) {
@@ -119,10 +117,10 @@ public class GroupMembershipControl
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     @Override
     public boolean isSet(String propName) {
@@ -131,12 +129,12 @@ public class GroupMembershipControl
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
+     *
      */
     @Override
     public void set(String propName, Object value) {
@@ -145,10 +143,10 @@ public class GroupMembershipControl
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      */
     @Override
     public void unset(String propName) {
@@ -157,7 +155,7 @@ public class GroupMembershipControl
 
     /**
      * Gets the name of this model object, <b>GroupMembershipControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -168,10 +166,10 @@ public class GroupMembershipControl
 
     /**
      * Gets a list of all supported properties for this model object, <b>GroupMembershipControl</b>
-     * 
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -196,10 +194,10 @@ public class GroupMembershipControl
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -227,7 +225,7 @@ public class GroupMembershipControl
     /**
      * Gets a list of any model objects which this model object, <b>GroupMembershipControl</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -242,9 +240,9 @@ public class GroupMembershipControl
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -262,7 +260,7 @@ public class GroupMembershipControl
 
     /**
      * Gets a set of any model objects which extend this model object, <b>GroupMembershipControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -276,7 +274,7 @@ public class GroupMembershipControl
 
     /**
      * Returns this model object, <b>GroupMembershipControl</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */

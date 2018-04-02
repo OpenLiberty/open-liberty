@@ -24,31 +24,31 @@ import javax.xml.bind.annotation.XmlType;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
- * 
+ *
  * <p>Java class for AddressType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="AddressType">
- * &lt;complexContent>
- * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- * &lt;sequence>
- * &lt;element name="nickName" type="{http://www.w3.org/2001/XMLSchema}string"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}street" maxOccurs="unbounded"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}city"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}stateOrProvinceName"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}postalCode"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}countryName"/>
- * &lt;/sequence>
- * &lt;/restriction>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="AddressType"&gt;
+ * &lt;complexContent&gt;
+ * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="nickName" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}street" maxOccurs="unbounded"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}city"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}stateOrProvinceName"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}postalCode"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}countryName"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/restriction&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The AddressType object is used to describe the physical location of an entity, and has
  * the following property names:
- * 
+ *
  * <ul>
  * <li><b>nickName</b>: an alias name for the physical location of an entity. For example: myHomeAddress </li>
  * <li><b>street</b>: the physical address of the object to which the entry corresponds,
@@ -58,16 +58,16 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <li><b>postalCode</b>: the corresponding post office code of the entity. For example, 78758</li>
  * <li><b>countryName</b>: the name of the country associated with the entity. For example. United States</li>
  * </ul>
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AddressType", propOrder = {
-                                            "nickName",
-                                            "street",
-                                            "city",
-                                            "stateOrProvinceName",
-                                            "postalCode",
-                                            "countryName"
+                                             "nickName",
+                                             "street",
+                                             "city",
+                                             "stateOrProvinceName",
+                                             "postalCode",
+                                             "countryName"
 })
 public class AddressType {
 
@@ -96,10 +96,10 @@ public class AddressType {
 
     /**
      * Gets the value of the <b>nickName</b> property.
-     * 
+     *
      * @return
      *         returned object is {@link String }
-     * 
+     *
      */
     public String getNickName() {
         return nickName;
@@ -107,10 +107,10 @@ public class AddressType {
 
     /**
      * Sets the value of the <b>nickName</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setNickName(String value) {
         this.nickName = value;
@@ -118,10 +118,10 @@ public class AddressType {
 
     /**
      * Returns true if the <b>nickName</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSetNickName() {
@@ -130,24 +130,25 @@ public class AddressType {
 
     /**
      * Gets the value of the <b>street</b> property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the street property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
      * getStreet().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getStreet() {
         if (street == null) {
@@ -158,10 +159,10 @@ public class AddressType {
 
     /**
      * Returns true if the <b>street</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetStreet() {
         return ((this.street != null) && (!this.street.isEmpty()));
@@ -169,7 +170,7 @@ public class AddressType {
 
     /**
      * Resets the <b>street</b> property to null.
-     * 
+     *
      */
     public void unsetStreet() {
         this.street = null;
@@ -177,10 +178,10 @@ public class AddressType {
 
     /**
      * Gets the value of the <b>city</b> property.
-     * 
+     *
      * @return
      *         returned object is {@link String }
-     * 
+     *
      */
     public String getCity() {
         return city;
@@ -188,10 +189,10 @@ public class AddressType {
 
     /**
      * Sets the value of the <b>city</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setCity(String value) {
         this.city = value;
@@ -199,10 +200,10 @@ public class AddressType {
 
     /**
      * Returns true if the <b>city</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSetCity() {
@@ -211,10 +212,10 @@ public class AddressType {
 
     /**
      * Gets the value of the <b>stateOrProvinceName</b> property.
-     * 
+     *
      * @return
      *         returned object is {@link String }
-     * 
+     *
      */
     public String getStateOrProvinceName() {
         return stateOrProvinceName;
@@ -222,10 +223,10 @@ public class AddressType {
 
     /**
      * Sets the value of the <b>stateOrProvinceName</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setStateOrProvinceName(String value) {
         this.stateOrProvinceName = value;
@@ -233,10 +234,10 @@ public class AddressType {
 
     /**
      * Returns true if the <b>stateOrProvinceName</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSetStateOrProvinceName() {
@@ -245,10 +246,10 @@ public class AddressType {
 
     /**
      * Gets the value of the <b>postalCode</b> property.
-     * 
+     *
      * @return
      *         returned object is {@link String }
-     * 
+     *
      */
     public String getPostalCode() {
         return postalCode;
@@ -256,10 +257,10 @@ public class AddressType {
 
     /**
      * Sets the value of the <b>postalCode</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setPostalCode(String value) {
         this.postalCode = value;
@@ -267,10 +268,10 @@ public class AddressType {
 
     /**
      * Returns a true if the <b>postCode</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean}
-     * 
+     *
      */
     public boolean isSetPostalCode() {
         return (this.postalCode != null);
@@ -278,10 +279,10 @@ public class AddressType {
 
     /**
      * Gets the value of the <b>countryName</b> property.
-     * 
+     *
      * @return
      *         returned object is {@link String }
-     * 
+     *
      */
     public String getCountryName() {
         return countryName;
@@ -289,10 +290,10 @@ public class AddressType {
 
     /**
      * Sets the value of the <b>countryName</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setCountryName(String value) {
         this.countryName = value;
@@ -300,10 +301,10 @@ public class AddressType {
 
     /**
      * Returns a true if the <b>countryName</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean}
-     * 
+     *
      */
 
     public boolean isSetCountryName() {
@@ -312,13 +313,13 @@ public class AddressType {
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
 
     public Object get(String propName) {
@@ -345,10 +346,10 @@ public class AddressType {
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSet(String propName) {
@@ -375,12 +376,12 @@ public class AddressType {
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
+     *
      */
     public void set(String propName, Object value) {
         if (propName.equals("nickName")) {
@@ -405,10 +406,10 @@ public class AddressType {
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      */
 
     public void unset(String propName) {
@@ -419,7 +420,7 @@ public class AddressType {
 
     /**
      * Gets the name of this model object, <b>AddressType</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -429,10 +430,10 @@ public class AddressType {
 
     /**
      * Gets a list of all supported properties for this model object, <b>AddressType</b>
-     * 
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -469,10 +470,10 @@ public class AddressType {
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -493,7 +494,7 @@ public class AddressType {
     /**
      * Gets a list of any model objects which this model object, <b>AddressType</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -507,9 +508,9 @@ public class AddressType {
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -527,7 +528,7 @@ public class AddressType {
 
     /**
      * Gets a set of any model objects which extend this model object, <b>AddressType</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -541,7 +542,7 @@ public class AddressType {
 
     /**
      * Returns this model object, <b>AddressType</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */

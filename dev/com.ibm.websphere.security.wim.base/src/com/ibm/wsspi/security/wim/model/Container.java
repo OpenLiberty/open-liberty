@@ -28,15 +28,15 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="Container">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Entity">
- * &lt;sequence>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}cn" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Container"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Entity"&gt;
+ * &lt;sequence&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}cn" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The Container object represents a general container object, which is an object that contains other objects. It is designed for ease of integration with LDAP.

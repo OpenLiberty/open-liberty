@@ -34,23 +34,23 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="Entity">
- * &lt;complexContent>
- * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- * &lt;sequence>
- * &lt;element name="identifier" type="{http://www.ibm.com/websphere/wim}IdentifierType" minOccurs="0"/>
- * &lt;element name="viewIdentifiers" type="{http://www.ibm.com/websphere/wim}ViewIdentifierType" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}parent" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}children" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}groups" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}createTimestamp" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}modifyTimestamp" minOccurs="0"/>
- * &lt;element name="entitlementInfo" type="{http://www.ibm.com/websphere/wim}EntitlementInfoType" minOccurs="0"/>
- * &lt;element name="changeType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/restriction>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Entity"&gt;
+ * &lt;complexContent&gt;
+ * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="identifier" type="{http://www.ibm.com/websphere/wim}IdentifierType" minOccurs="0"/&gt;
+ * &lt;element name="viewIdentifiers" type="{http://www.ibm.com/websphere/wim}ViewIdentifierType" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}parent" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}children" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}groups" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}createTimestamp" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}modifyTimestamp" minOccurs="0"/&gt;
+ * &lt;element name="entitlementInfo" type="{http://www.ibm.com/websphere/wim}EntitlementInfoType" minOccurs="0"/&gt;
+ * &lt;element name="changeType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/restriction&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The Entity object represents a VMM entity. All other entity types, like Person, Group, and
@@ -910,7 +910,7 @@ public class Entity {
     }
 
     /**
-     * @param propertyName
+     * @param propName
      * @return
      *         returned object is {@link boolean}
      */

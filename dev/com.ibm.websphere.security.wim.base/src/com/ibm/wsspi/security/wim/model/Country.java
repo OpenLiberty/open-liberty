@@ -29,17 +29,17 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="Country">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}GeographicLocation">
- * &lt;sequence>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}c" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}countryName" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}description" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Country"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}GeographicLocation"&gt;
+ * &lt;sequence&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}c" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}countryName" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}description" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The Country object extends the GeographicLocation object, and represents information related to a country.

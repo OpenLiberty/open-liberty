@@ -28,24 +28,24 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for SortControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="SortControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Control">
- * &lt;sequence>
- * &lt;element name="sortKeys" type="{http://www.ibm.com/websphere/wim}SortKeyType" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element name="locale" type="{http://www.w3.org/2001/XMLSchema}language"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="SortControl"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Control"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="sortKeys" type="{http://www.ibm.com/websphere/wim}SortKeyType" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element name="locale" type="{http://www.w3.org/2001/XMLSchema}language"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The SortControl object extends the Control object and defines two properties:
- * 
+ *
  * <ul>
  * <li><b>sortKeys</b>: contains a list of attributes will be used to do the sorting.
  * For each attribute a sorting order can be specified by the <b>ascendingOrder</b> property in
@@ -53,19 +53,17 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * descending order. The caller needs to set the <b>ascendingOrder</b> property to false.
  * The properties included in the SortControl object must be listed in the property list of
  * the SearchControl.</li>
- * 
+ *
  * <li><b>locale</b>: indicates which language will be used during the sorting operation.</li>
  * </ul>
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SortControl", propOrder = {
-                                            "sortKeys",
-                                            "locale"
+                                             "sortKeys",
+                                             "locale"
 })
-public class SortControl
-                extends Control
-{
+public class SortControl extends Control {
 
     protected List<com.ibm.wsspi.security.wim.model.SortKeyType> sortKeys;
     @XmlElement(required = true)
@@ -85,24 +83,25 @@ public class SortControl
 
     /**
      * Gets the value of the sortKeys property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the sortKeys property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
      * getSortKeys().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.SortKeyType }
-     * 
-     * 
+     *
+     *
      */
     public List<com.ibm.wsspi.security.wim.model.SortKeyType> getSortKeys() {
         if (sortKeys == null) {
@@ -121,10 +120,10 @@ public class SortControl
 
     /**
      * Gets the value of the locale property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getLocale() {
         return locale;
@@ -132,10 +131,10 @@ public class SortControl
 
     /**
      * Sets the value of the locale property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setLocale(String value) {
         this.locale = value;

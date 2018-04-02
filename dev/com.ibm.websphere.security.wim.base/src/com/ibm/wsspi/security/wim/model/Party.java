@@ -27,33 +27,31 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for Party complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="Party">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}RolePlayer">
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Party"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}RolePlayer"&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The Party object extends the RolePlayer object, and represents a Party which is extended by Person,
  * Group, OrgContainer and LoginAccount.
- * 
+ *
  **/
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Party")
 @XmlSeeAlso({
-             Group.class,
-             OrgContainer.class,
-             Person.class,
-             LoginAccount.class
+              Group.class,
+              OrgContainer.class,
+              Person.class,
+              LoginAccount.class
 })
-public class Party
-                extends RolePlayer
-{
+public class Party extends RolePlayer {
 
     private static List mandatoryProperties = null;
     private static List transientProperties = null;

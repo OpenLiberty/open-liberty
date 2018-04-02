@@ -29,31 +29,31 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="OrgContainer">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Party">
- * &lt;sequence>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}o" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}ou" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}dc" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}cn" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}telephoneNumber" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}facsimileTelephoneNumber" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}postalAddress" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}l" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}localityName" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}st" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}stateOrProvinceName" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}street" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}postalCode" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}businessAddress" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}description" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}businessCategory" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}seeAlso" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="OrgContainer"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Party"&gt;
+ * &lt;sequence&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}o" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}ou" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}dc" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}cn" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}telephoneNumber" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}facsimileTelephoneNumber" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}postalAddress" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}l" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}localityName" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}st" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}stateOrProvinceName" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}street" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}postalCode" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}businessAddress" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}description" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}businessCategory" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}seeAlso" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The OrgContainer object represents either and Organization or OrganizationalUnit, and

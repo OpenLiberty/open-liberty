@@ -30,13 +30,13 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="Person">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Party">
- * &lt;group ref="{http://www.ibm.com/websphere/wim}PersonPropertyGroup"/>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Person"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Party"&gt;
+ * &lt;group ref="{http://www.ibm.com/websphere/wim}PersonPropertyGroup"/&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The Person object extends the Party object and is used to represent a user or principal.

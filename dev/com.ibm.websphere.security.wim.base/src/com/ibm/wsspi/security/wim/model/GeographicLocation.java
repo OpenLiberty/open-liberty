@@ -29,14 +29,14 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="GeographicLocation">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Entity">
- * &lt;sequence>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="GeographicLocation"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Entity"&gt;
+ * &lt;sequence&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The GeographicalLocation object extends the Entity object, and is itself
