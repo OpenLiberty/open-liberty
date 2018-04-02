@@ -73,7 +73,7 @@ import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.http.policy.impl.ServerPolicyCalculator;
 import org.apache.cxf.transport.https.CertConstraints;
 import org.apache.cxf.transport.https.CertConstraintsInterceptor;
-import org.apache.cxf.transport.sse.SseHttpTransportFactory;
+//import org.apache.cxf.transport.sse.SseHttpTransportFactory;
 import org.apache.cxf.transports.http.configuration.HTTPServerPolicy;
 import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.addressing.ContextUtils;
@@ -558,7 +558,7 @@ public abstract class AbstractHTTPDestination
 
         cproviderFactory = bus.getExtension(ContinuationProviderFactory.class);
         
-        bus.setExtension(new SseHttpTransportFactory(registry), SseHttpTransportFactory.class);
+//        bus.setExtension(new SseHttpTransportFactory(registry), SseHttpTransportFactory.class);
     }
 
     private synchronized HTTPServerPolicy calcServerPolicyInternal(Message m) {
