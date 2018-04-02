@@ -59,4 +59,8 @@
   <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
 
   <javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
+
+  <!-- Allow the application to access OSGi service registry in order to obtain the CacheManager instance that is used by sessionCache feature -->
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
 </server>

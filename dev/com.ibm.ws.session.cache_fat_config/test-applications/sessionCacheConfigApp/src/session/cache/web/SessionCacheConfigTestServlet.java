@@ -15,20 +15,18 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
-import javax.cache.spi.CachingProvider;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +44,39 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
     // Maximum number of nanoseconds for test to wait
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    /**
+     * Utility method to obtain the cache manager instance of the CacheStoreService
+     */
+    private CacheManager getCacheManager() throws Exception {
+        Class<?> c = Thread.currentThread().getContextClassLoader().getClass();
+        ClassLoader cl = c.getClassLoader();
+
+        Class<?> FrameworkUtil = cl.loadClass("org.osgi.framework.FrameworkUtil");
+        Class<?> ServiceReference = cl.loadClass("org.osgi.framework.ServiceReference");
+
+        Object bundle = FrameworkUtil
+                        .getMethod("getBundle", Class.class)
+                        .invoke(null, c);
+        Object bundleContext = bundle.getClass()
+                        .getMethod("getBundleContext")
+                        .invoke(bundle);
+        Object ref = bundleContext.getClass()
+                        .getMethod("getServiceReference", String.class)
+                        .invoke(bundleContext, "com.ibm.ws.session.SessionStoreService");
+        Object cacheStoreService = bundleContext.getClass()
+                        .getMethod("getService", ServiceReference)
+                        .invoke(bundleContext, ref);
+        try {
+            Field f = cacheStoreService.getClass().getDeclaredField("cacheManager");
+            f.setAccessible(true);
+            return (CacheManager) f.get(cacheStoreService);
+        } finally {
+            bundleContext.getClass()
+                            .getMethod("ungetService", ServiceReference)
+                            .invoke(bundleContext, ref);
+        }
+    }
 
     /**
      * Gets the current value of an attribute from the cache and writes it to the servlet response
@@ -191,14 +222,9 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         System.out.println("testCacheContains cache entry " + key + " should have value: " + expectedValue);
         System.out.println("as a byte array, this is: " + Arrays.toString(expectedBytes));
 
-        // need to use same config file as server.xml
-        File hazelcastConfigFile = new File((String) InitialContext.doLookup("hazelcast/configlocation"));
-
-        byte[] bytes;
-        CachingProvider provider = Caching.getCachingProvider(Class.forName("com.hazelcast.cache.HazelcastCachingProvider").getClassLoader());
-        CacheManager cacheManager = provider.getCacheManager(hazelcastConfigFile.toURI(), null, new Properties());
+        CacheManager cacheManager = getCacheManager();
         Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
-        bytes = cache.get(key);
+        byte[] bytes = cache.get(key);
 
         assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
                    "Bytes expected: " + Arrays.toString(expectedBytes) + EOLN +
