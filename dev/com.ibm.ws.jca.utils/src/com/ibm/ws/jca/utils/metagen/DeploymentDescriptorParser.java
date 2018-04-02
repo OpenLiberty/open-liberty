@@ -72,11 +72,9 @@ public class DeploymentDescriptorParser {
 
     private static JAXBContext raContext, wlpRaContext, ra10Context = null;
 
-    private static EntityResolver resolver = new org.xml.sax.EntityResolver()
-    {
+    private static EntityResolver resolver = new org.xml.sax.EntityResolver() {
         @Override
-        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
-        {
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
             // do not resolve the external url for the dtd.
             if (systemId != null)
                 if (systemId.toLowerCase().endsWith(".dtd") || systemId.toLowerCase().endsWith(".xsd")) {
@@ -114,7 +112,7 @@ public class DeploymentDescriptorParser {
     /**
      * This method is used to inspect the ra.xml and check if its a 1.0 RA. This is called only
      * if we fail parsing the ra.xml using JAXB for 1.5/1.6
-     * 
+     *
      * @param xmlStream The ra.xml file
      * @return whether the resource adapter is a 1.0 resource adapter
      */
@@ -141,7 +139,7 @@ public class DeploymentDescriptorParser {
 
     /**
      * Converts a ra.xml (or wlp-ra.xml) into a RaConnector/RaConnector10 or WlpRaConnector object.
-     * 
+     *
      * @param xmlStream the stream to the wlp-/ra.xml file
      * @return the parsed xml file
      * @throws SAXException
@@ -189,9 +187,9 @@ public class DeploymentDescriptorParser {
 
     /**
      * Called for parsing the ra.xml/wlp-ra.xml dd for the resource adapter.
-     * 
+     *
      * @param ddEntry Entry corresponding to the deployment descriptor
-     * 
+     *
      * @throws JAXBException
      * @throws SAXException
      * @throws ParserConfigurationException
@@ -220,7 +218,7 @@ public class DeploymentDescriptorParser {
     // That will happen in ConnectorAdapter
     /**
      * Combines a converted wlp-ra.xml into a parsed ra.xml
-     * 
+     *
      * @param raConnector the combined parsed ra.xml file, annotations, java bean properties, if any
      * @param wlpRaConnector the parsed wlp-ra.xml file
      * @throw InvalidPropertyException
@@ -307,11 +305,12 @@ public class DeploymentDescriptorParser {
                             raConnectionDefinition.copyWlpSettings(wlpConnectionDefinition);
                             if (wlpConnectionDefinition.getConfigProperties() != null) {
                                 List<WlpRaConfigProperty> wlpConfigProperties = wlpConnectionDefinition.getConfigProperties();
-                                // process connection-definition config-property 
+                                // process connection-definition config-property
                                 for (WlpRaConfigProperty wlpConfigProperty : wlpConfigProperties) {
                                     if (wlpConfigProperty.addWlpPropertyToMetatype()) {
                                         if (raConnectionDefinition.isConfigPropertyAlreadyDefined(wlpConfigProperty.getWlpPropertyName()))
-                                            throw new InvalidPropertyException(Tr.formatMessage(tc, "J2CA9908.duplicate.copy", wlpConfigProperty.getWlpPropertyName(), adapterName));
+                                            throw new InvalidPropertyException(Tr.formatMessage(tc, "J2CA9908.duplicate.copy", wlpConfigProperty.getWlpPropertyName(),
+                                                                                                adapterName));
                                         else {
                                             RaConfigProperty property = new RaConfigProperty();
                                             property.copyWlpSettings(wlpConfigProperty);
@@ -396,7 +395,7 @@ public class DeploymentDescriptorParser {
             String JCA15NamespaceURI = "http://java.sun.com/xml/ns/j2ee";
             String JCA16NamespaceURI = "http://java.sun.com/xml/ns/javaee";
             String JCA17NamespaceURI = "http://xmlns.jcp.org/xml/ns/javaee";
-            namespaceURI = namespaceURI.trim().toLowerCase();
+            namespaceURI = namespaceURI.trim().toLowerCase().intern(); // on zOS it is required that Namespace URIs are interned
             //Convert the older namespaces as we need to process for multiple namespaces with the same objects.
             if (namespaceURI.equals(JCA15NamespaceURI) || namespaceURI.equals(JCA16NamespaceURI)) {
                 super.startElement(JCA17NamespaceURI, localName, qualifiedName, attributes);
