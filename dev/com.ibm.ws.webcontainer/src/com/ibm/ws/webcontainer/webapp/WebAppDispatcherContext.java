@@ -86,7 +86,15 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
     protected WebApp _webapp;
 
     private DispatcherType dispatcherType = DispatcherType.REQUEST;
-
+    private boolean isNamedDispatcher = false;
+    
+    public void setNamedDispatcher(boolean b){
+        isNamedDispatcher = b;
+    }
+    
+    public boolean isNamedDispatcher(){
+        return isNamedDispatcher;
+    }
 
     /* (non-Javadoc)
      * @see com.ibm.ws.webcontainer.webapp.IWebAppDispatcherContext#setParentContext(com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext)
