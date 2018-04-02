@@ -40,6 +40,7 @@ import org.eclipse.microprofile.openapi.spi.OASFactoryResolver;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.openapi.impl.model.ComponentsImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.ExternalDocumentationImpl;
 import com.ibm.ws.microprofile.openapi.impl.model.OpenAPIImpl;
@@ -116,6 +117,7 @@ public class OASFactoryResolverImpl extends OASFactoryResolver {
         OASFactoryResolver.setInstance(this);
     }
 
+    @Trivial
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Constructible> T createObject(Class<T> clazz) {

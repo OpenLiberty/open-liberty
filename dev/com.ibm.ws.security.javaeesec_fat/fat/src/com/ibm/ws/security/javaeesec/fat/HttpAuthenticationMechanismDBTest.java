@@ -150,7 +150,7 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
                                         "badpwd",
-                                        HttpServletResponse.SC_FORBIDDEN);
+                                        HttpServletResponse.SC_UNAUTHORIZED);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -169,7 +169,7 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
     public void testJaspiAnnotatedDBBasicNullUserPwd() throws Exception {
         executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
                                         null,
-                                        HttpServletResponse.SC_FORBIDDEN);
+                                        HttpServletResponse.SC_UNAUTHORIZED);
 
         String msg = NullPointerException.class.getName();
         List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
@@ -195,7 +195,7 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "baduser",
                                         "pwd",
-                                        HttpServletResponse.SC_FORBIDDEN);
+                                        HttpServletResponse.SC_UNAUTHORIZED);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -239,7 +239,7 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER_DUPE,
                                         Constants.DB_USER1_PWD,
-                                        HttpServletResponse.SC_FORBIDDEN);
+                                        HttpServletResponse.SC_UNAUTHORIZED);
 
         String msg = "CWWKS1924W";
         List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
@@ -266,7 +266,7 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER_NOPWD,
                                         Constants.DB_USER1_PWD,
-                                        HttpServletResponse.SC_FORBIDDEN);
+                                        HttpServletResponse.SC_UNAUTHORIZED);
 
         String msg = "CWWKS1923W";
         List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);

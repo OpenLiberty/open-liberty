@@ -10,9 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.impl;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * A holder to hold whether a converter is found and the converted value.
  */
+@Trivial
 public class ConversionStatus {
     private boolean converterFound = false;
     private Object converted = null;
@@ -37,5 +40,10 @@ public class ConversionStatus {
     public void setConverted(Object converted) {
         this.converterFound = true;
         this.converted = converted;
+    }
+
+    @Override
+    public String toString() {
+        return "Converver Found=" + this.converterFound;
     }
 }

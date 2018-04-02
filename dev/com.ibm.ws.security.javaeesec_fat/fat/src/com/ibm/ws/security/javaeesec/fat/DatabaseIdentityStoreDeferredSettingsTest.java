@@ -15,6 +15,7 @@ import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getRemoteUserFo
 import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getUserPrincipalFound;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -187,7 +188,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         overrides.put(JavaEESecConstants.CALLER_QUERY, "select password from badtable where name = ?");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         String msg = "CWWKS1918E";
         List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
@@ -217,7 +218,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         FATHelper.resetMarksInLogs(server);
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
         server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerQuery' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -243,7 +244,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         overrides.put(JavaEESecConstants.DS_LOOKUP, "java:comp/InvalidDataSource");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -268,7 +269,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         overrides.put(JavaEESecConstants.DS_LOOKUP, "jdbc/NoDatabase");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -322,7 +323,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         FATHelper.resetMarksInLogs(server);
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
         server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'dataSourceLookup' configuration for the identity store.");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());

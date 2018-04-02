@@ -427,3 +427,18 @@ display.unresolved.jsl.useraction=Upewnij si\u0119, \u017ce nazwa pliku tego ele
 JOB_GROUP_NAME_NOT_VALID=CWWKY0044W: Nazwa obiektu operationGroup {0} nie zosta\u0142a rozstrzygni\u0119ta na poprawn\u0105 nazw\u0119 grupy.
 JOB_GROUP_NAME_NOT_VALID.explanation=Pr\u00f3by uzyskania dost\u0119pu do tego zadania przy u\u017cyciu dost\u0119pu grupy mog\u0105 si\u0119 nie powie\u015b\u0107, je\u015bli wyst\u0105pi\u0105 pr\u00f3by u\u017cycia niepoprawnej nazwy grupy.
 JOB_GROUP_NAME_NOT_VALID.useraction=Popraw nazw\u0119 grupy w pliku konfiguracyjnym serwera.
+
+#BATCH_TABLES_NOT_CURRENT=CWWKY045W: The configured Java batch table {0} was not detected to be at the latest version {1}. The table was instead detected to have been created at version {2}. The createTables setting for the database store is set to {3}. 
+BATCH_TABLES_NOT_CURRENT=CWWKY0045W: Wykryto, \u017ce skonfigurowana tabela {0} zadania wsadowego Java nie jest w najnowszej wersji {1}. Wykryto, \u017ce tabela zosta\u0142a utworzona w wersji {2}. Ustawienie createTables dla sk\u0142adnicy bazy danych ma warto\u015b\u0107 {3}. 
+BATCH_TABLES_NOT_CURRENT.explanation=Wykryto, \u017ce okre\u015blona tabela \u015brodowiska wykonawczego zadania wsadowego Java nie zosta\u0142a utworzona w najnowszej wersji.
+BATCH_TABLES_NOT_CURRENT.useraction=Sprawd\u017a ustawienie parametru createTables dla magazynu bazy danych. Je\u015bli parametr createTables jest ustawiony na warto\u015b\u0107 true, okre\u015bl, dlaczego nie powiod\u0142o si\u0119 automatyczne utworzenie tej tabeli. Je\u015bli ustawiono warto\u015b\u0107 false, wymagan\u0105 tabel\u0119 musi utworzy\u0107 administrator (lub administrator DBA).
+
+#BATCH_TABLES_CURRENT=CWWKY046I: The configured Java batch tables were detected to have been created at the latest table version.
+BATCH_TABLES_CURRENT=CWWKY0046I: Wykryto, \u017ce skonfigurowane tabele zada\u0144 wsadowych Java nie zosta\u0142y utworzone w najnowszej wersji tabeli.
+BATCH_TABLES_CURRENT.explanation=Wykryto, \u017ce skonfigurowane tabele zada\u0144 wsadowych Java nie zosta\u0142y utworzone w najnowszej wersji tabeli przez utworzenie automatyczne lub utworzenie r\u0119czne przez administratora.
+BATCH_TABLES_CURRENT.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#BATCH_SECURITY_NOT_ACTIVE=CWWKY047W: Security is not enabled in this server, Group Security associated with job instance {0} will not be enabled.
+BATCH_SECURITY_NOT_ACTIVE=CWWKY0047W: Opcja zabezpieczaj\u0105ca nie jest w\u0142\u0105czona na tym serwerze. Zabezpieczenia grupy powi\u0105zane z instancj\u0105 zadania {0} nie zostan\u0105 w\u0142\u0105czone.
+BATCH_SECURITY_NOT_ACTIVE.explanation=Zabezpieczenia nie s\u0105 w\u0142\u0105czone dla tego serwera, dlatego powi\u0105zania bezpiecze\u0144stwa zada\u0144 wsadowych grupy nie zostan\u0105 utrwalone dla przywo\u0142ywanej instancji zadania. Oznacza to, \u017ce teraz ani w dowolnym momencie w przysz\u0142o\u015bci nie mo\u017cna u\u017cy\u0107 r\u00f3l batchGroupAdmin i batchGroupMonitor do uzyskania autoryzacji w celu dzia\u0142ania na tym zadaniu. 
+BATCH_SECURITY_NOT_ACTIVE.useraction= Je\u015bli wymuszenie zabezpiecze\u0144 grupy zada\u0144 wsadowych Java jest po\u017c\u0105dane, nale\u017cy w\u0142\u0105czy\u0107 zabezpieczenia dla tego serwera. 

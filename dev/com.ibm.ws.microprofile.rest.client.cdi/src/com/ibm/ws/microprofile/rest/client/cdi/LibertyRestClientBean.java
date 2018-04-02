@@ -43,8 +43,12 @@ import org.apache.cxf.microprofile.client.CxfTypeSafeClientBuilder;
 import org.apache.cxf.microprofile.client.config.ConfigFacade;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 public class LibertyRestClientBean implements Bean<Object>, PassivationCapable {
+    private final static TraceComponent tc = Tr.register(LibertyRestClientExtension.class);
+    
     public static final String REST_URL_FORMAT = "%s/mp-rest/url";
     public static final String REST_SCOPE_FORMAT = "%s/mp-rest/scope";
     private static final Default DEFAULT_LITERAL = new DefaultLiteral();
@@ -57,7 +61,11 @@ public class LibertyRestClientBean implements Bean<Object>, PassivationCapable {
         this.clientInterface = clientInterface;
         this.beanManager = beanManager;
         this.scope = this.readScope();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "<init> - clientInterface=" + clientInterface + " beanManager=" + beanManager + " scope=" + scope);
+        }
     }
+
     @Override
     public String getId() {
         return clientInterface.getName();
@@ -80,18 +88,29 @@ public class LibertyRestClientBean implements Bean<Object>, PassivationCapable {
 
     @Override
     public Object create(CreationalContext<Object> creationalContext) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "create - creationalContext=" + creationalContext);
+        }
         CxfTypeSafeClientBuilder builder = new CxfTypeSafeClientBuilder();
         String baseUrl = getBaseUrl();
+        Object client = null;
         try {
-            return builder.baseUrl(new URL(baseUrl)).build(clientInterface);
+            client = builder.baseUrl(new URL(baseUrl)).build(clientInterface);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("The value of URL was invalid " + baseUrl);
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "create - creationalContext=" + creationalContext + " client=" + client + " baseUrl=" + baseUrl);
+        }
+        return client;
     }
 
     @Override
     public void destroy(Object instance, CreationalContext<Object> creationalContext) {
-
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "destroy - instance=" + instance + " creationalContext=" + creationalContext);
+        }
+        creationalContext.release();
     }
 
     @Override
@@ -158,7 +177,7 @@ public class LibertyRestClientBean implements Bean<Object>, PassivationCapable {
             return possibleScopes.get(0).annotationType();
         } else {
             throw new IllegalArgumentException("The client interface " + clientInterface
-                    + " has multiple scopes defined " + possibleScopes);
+                                               + " has multiple scopes defined " + possibleScopes);
         }
     }
 

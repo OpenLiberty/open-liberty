@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.logging.data.AccessLogData;
+import com.ibm.ws.logging.collector.LogFieldConstants;
+import com.ibm.ws.logging.data.GenericData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
@@ -33,6 +34,7 @@ public class AccessLogSource implements Source {
 
     private final String sourceName = "com.ibm.ws.http.logging.source.accesslog";
     private final String location = "memory";
+    private static String USER_AGENT_HEADER = "User-Agent";
 
     private BufferManager bufferMgr = null;
     private AccessLogHandler accessLogHandler;
@@ -109,31 +111,35 @@ public class AccessLogSource implements Source {
             HttpResponseMessage response = recordData.getResponse();
 
             if (request != null) {
-                long requestStartTime = recordData.getStartTime();
-                String uriPath = request.getRequestURI();
-                String requestMethod = request.getMethod();
-                String queryString = request.getQueryString();
-                String localIP = recordData.getLocalIP();
-                String localPort = recordData.getLocalPort();
-                String remoteHost = recordData.getRemoteAddress();
-                String userAgent = request.getHeader("User-Agent").asString();
-                String requestProtocol = request.getVersion();
-                long responseSize = recordData.getBytesWritten();
-                int responseCode = response.getStatusCodeAsInt();
-                long elapsedTime = recordData.getElapsedTime();
-                long timestamp = recordData.getTimestamp();
 
-                String sequence = requestStartTime + "_" + String.format("%013X", seq.incrementAndGet());
+                GenericData genData = new GenericData();
 
-                AccessLogData data = new AccessLogData(uriPath, requestMethod, queryString, localIP, localPort, requestStartTime, remoteHost, userAgent, requestProtocol, responseSize, responseCode, elapsedTime, timestamp, sequence);
-                bufferMgr.add(data);
+                long requestStartTimeVal = recordData.getStartTime();
+                genData.addPair(LogFieldConstants.IBM_REQUESTSTARTTIME, requestStartTimeVal);
+                genData.addPair(LogFieldConstants.IBM_URIPATH, request.getRequestURI());
+                genData.addPair(LogFieldConstants.IBM_REQUESTMETHOD, request.getMethod());
+                genData.addPair(LogFieldConstants.IBM_QUERYSTRING, request.getQueryString());
+                genData.addPair(LogFieldConstants.IBM_REQUESTHOST, recordData.getLocalIP());
+                genData.addPair(LogFieldConstants.IBM_REQUESTPORT, recordData.getLocalPort());
+                genData.addPair(LogFieldConstants.IBM_REMOTEHOST, recordData.getRemoteAddress());
+                genData.addPair(LogFieldConstants.IBM_USERAGENT, request.getHeader(USER_AGENT_HEADER).asString());
+                genData.addPair(LogFieldConstants.IBM_REQUESTPROTOCOL, request.getVersion());
+                genData.addPair(LogFieldConstants.IBM_BYTESRECEIVED, recordData.getBytesWritten());
+                genData.addPair(LogFieldConstants.IBM_RESPONSECODE, response.getStatusCodeAsInt());
+                genData.addPair(LogFieldConstants.IBM_ELAPSEDTIME, recordData.getElapsedTime());
+                genData.addPair(LogFieldConstants.IBM_DATETIME, recordData.getTimestamp());
+
+                String sequenceVal = requestStartTimeVal + "_" + String.format("%013X", seq.incrementAndGet());
+                genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceVal);
+
+                genData.setSourceType(sourceName);
+
+                bufferMgr.add(genData);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Added a event to buffer " + data);
+                    Tr.debug(tc, "Added a event to buffer " + genData);
                 }
             }
         }
-
     }
-
 }

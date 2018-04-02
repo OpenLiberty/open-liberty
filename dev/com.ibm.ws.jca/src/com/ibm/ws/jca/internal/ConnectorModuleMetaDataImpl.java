@@ -33,7 +33,6 @@ import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.jca.metadata.ConnectorModuleMetaData;
 import com.ibm.ws.jca.utils.metagen.MetaGenConstants;
 import com.ibm.ws.jca.utils.xml.ra.RaConnector;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataImpl;
@@ -222,12 +221,12 @@ public class ConnectorModuleMetaDataImpl extends MetaDataImpl implements Connect
      */
     private String getIDFromSupertype(String raPid, int startIndex) throws Exception {
 
-        BundleContext bundleContext = PrivHelper.getBundleContext(FrameworkUtil.getBundle(getClass()));
-        ServiceReference<ConfigurationAdmin> configAdminRef = PrivHelper.getServiceReference(bundleContext, ConfigurationAdmin.class);
+        BundleContext bundleContext = Utils.priv.getBundleContext(FrameworkUtil.getBundle(getClass()));
+        ServiceReference<ConfigurationAdmin> configAdminRef = Utils.priv.getServiceReference(bundleContext, ConfigurationAdmin.class);
         try {
             String filter = "(" + Constants.SERVICE_PID + "=" + raPid + ")";
 
-            ConfigurationAdmin configAdmin = PrivHelper.getService(bundleContext, configAdminRef);
+            ConfigurationAdmin configAdmin = Utils.priv.getService(bundleContext, configAdminRef);
             Configuration[] configurations = configAdmin.listConfigurations(filter);
             if (configurations != null) {
                 String id = (String) configurations[0].getProperties().get("id");
@@ -290,9 +289,9 @@ public class ConnectorModuleMetaDataImpl extends MetaDataImpl implements Connect
      * @return configured properties for an embedded resource adapter, if any.
      */
     private final Dictionary<String, Object> getConfigForEmbeddedResourceAdapter() throws UnableToAdaptException {
-        BundleContext bundleContext = PrivHelper.getBundleContext(FrameworkUtil.getBundle(getClass()));
-        ServiceReference<ConfigurationAdmin> configAdminRef = PrivHelper.getServiceReference(bundleContext, ConfigurationAdmin.class);
-        ConfigurationAdmin configAdmin = PrivHelper.getService(bundleContext, configAdminRef);
+        BundleContext bundleContext = Utils.priv.getBundleContext(FrameworkUtil.getBundle(getClass()));
+        ServiceReference<ConfigurationAdmin> configAdminRef = Utils.priv.getServiceReference(bundleContext, ConfigurationAdmin.class);
+        ConfigurationAdmin configAdmin = Utils.priv.getService(bundleContext, configAdminRef);
         try {
             // go through all child resourceAdapter configurations until we find the right one, if any
             String parentPid = (String) config.get(SOURCE_PID); // TODO remove once the supertype of application is gone

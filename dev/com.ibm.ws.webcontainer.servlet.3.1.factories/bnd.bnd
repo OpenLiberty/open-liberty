@@ -30,7 +30,15 @@ Service-Component: \
   com.ibm.ws.webcontainer.v31.dd; \
     implementation:=com.ibm.ws.javaee.version.ServletVersion; \
     provide:=com.ibm.ws.javaee.version.ServletVersion; \
-    properties:="version:Integer=31"
+    properties:="version:Integer=31", \
+  com.ibm.ws.webcontainer.v31.httpTransportBehavior; \
+    implementation:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
+    provide:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
+    properties:="useEE7Streams:Boolean=true", \
+  com.ibm.ws.webcontainer.v31.httpProtocolBehavior; \
+  	implementation:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+  	provide:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+  	properties:="httpVersionSetting:String=2.0_Optional_Off"
  
 Private-Package: \
  com.ibm.ws.webcontainer31.async.factory, \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,10 +39,9 @@ public class XMLValidator extends TypeValidator<XML> {
         if (t != null) {
             if (StringUtils.isNotBlank(t.getNamespace())) {
                 String namespace = t.getNamespace();
-                String object = "XML";
                 if (!ValidatorUtils.isValidURI(namespace)) {
-                    final String message = Tr.formatMessage(tc, "invalidUri", object, namespace);
-                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, null, message));
+                    final String message = Tr.formatMessage(tc, "invalidUri", namespace);
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                 }
             }
         }

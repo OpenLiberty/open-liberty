@@ -359,22 +359,33 @@ public class HttpChain implements ChainEventListener {
                 }
 
                 // SSL Channel
-                if (isHttps) {
-                    ChannelData sslChannel = cfw.getChannel(sslName);
-                    if (sslChannel == null) {
-                        sslChannel = cfw.addChannel(sslName, cfw.lookupFactory("SSLChannel"), new HashMap<Object, Object>(sslOptions));
-                    }
-                }
+               if (isHttps) {
+                   ChannelData sslChannel = cfw.getChannel(sslName);
+                   if (sslChannel == null) {
+                       chanProps = new HashMap<Object, Object>(sslOptions);
+                       // Put the protocol version, which allows the http channel to dynamically
+                       // know what http version it will use.
+                       if(owner.getProtocolVersion() != null){
+                         chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
+                       }
+                      sslChannel = cfw.addChannel(sslName, cfw.lookupFactory("SSLChannel"), chanProps);
+                   }
+               }
 
-                // HTTP Channel
-                ChannelData httpChannel = cfw.getChannel(httpName);
-                if (httpChannel == null) {
-                    chanProps = new HashMap<Object, Object>(httpOptions);
-                    // Put the endpoint id, which allows us to find the registered access log
-                    // dynamically
-                    chanProps.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
-                    httpChannel = cfw.addChannel(httpName, cfw.lookupFactory("HTTPInboundChannel"), chanProps);
-                }
+               // HTTP Channel
+               ChannelData httpChannel = cfw.getChannel(httpName);
+               if (httpChannel == null) {
+                   chanProps = new HashMap<Object, Object>(httpOptions);
+                   // Put the endpoint id, which allows us to find the registered access log
+                   // dynamically
+                   chanProps.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
+                   // Put the protocol version, which allows the http channel to dynamically
+                   // know what http version it will use.
+                   if (owner.getProtocolVersion() != null){
+                     chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
+                   }
+                   httpChannel = cfw.addChannel(httpName, cfw.lookupFactory("HTTPInboundChannel"), chanProps);
+               }
 
                 // HTTPDispatcher Channel
                 ChannelData httpDispatcher = cfw.getChannel(dispatcherName);

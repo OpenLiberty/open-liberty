@@ -45,6 +45,8 @@ public class CustomCacheKeyProvider implements CacheKeyProvider {
     private static final AtomicServiceReference<TokenManager> tokenManager = new AtomicServiceReference<TokenManager>("tokenManager");
     private final SubjectHelper subjectHelper = new SubjectHelper();
     private final static String OIDC_ACCESS_TOKEN = "oidc_access_token";
+    private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
+    private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
     protected void setTokenManager(ServiceReference<TokenManager> ref) {
         tokenManager.setReference(ref);
@@ -111,6 +113,7 @@ public class CustomCacheKeyProvider implements CacheKeyProvider {
         if (customProperties != null) {
             customCacheKey = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
         }
+        //TODO: how's about jwt token
         if (customCacheKey == null) {
             SingleSignonToken ssoToken = AccessController.doPrivileged(new PrivilegedAction<SingleSignonToken>() {
 

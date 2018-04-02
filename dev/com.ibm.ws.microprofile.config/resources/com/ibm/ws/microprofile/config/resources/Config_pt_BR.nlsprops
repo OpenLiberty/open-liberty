@@ -94,6 +94,28 @@ no.such.element.CWMCG0015E=CWMCG0015E: A propriedade {0} n\u00e3o foi localizada
 no.such.element.CWMCG0015E.explanation=A propriedade solicitada n\u00e3o existia em nenhuma das fontes configuradas.
 no.such.element.CWMCG0015E.useraction=Inclua a propriedade em uma das origens existentes ou inclua uma nova fonte que contenha a propriedade.
 
+# The server is unable to cancel the asynchronous update thread for the {0} Config Source.
+future.update.not.cancelled.CWMCG0016E=CWMCG0016E: O servidor n\u00e3o \u00e9 capaz de cancelar o encadeamento de atualiza\u00e7\u00e3o ass\u00edncrona para a Origem de configura\u00e7\u00e3o {0}.
+future.update.not.cancelled.CWMCG0016E.explanation=A tentativa de cancelar uma futura atualiza\u00e7\u00e3o ass\u00edncrona falhou. Geralmente, isso \u00e9 causado por uma chamada de atualiza\u00e7\u00e3o em execu\u00e7\u00e3o longa para uma inst\u00e2ncia ConfigSource.
+future.update.not.cancelled.CWMCG0016E.useraction=Revise os logs message.log e FFDC do servidor para identificar o problema.
+
+# No implicit String constructor methods found for the {0} class.
+implicit.string.constructor.method.not.found.CWMCG0017E=CWMCG0017E: Nenhum m\u00e9todo construtor de Sequ\u00eancia impl\u00edcito localizado para a classe {0}.
+implicit.string.constructor.method.not.found.CWMCG0017E.explanation=Nenhum m\u00e9todo construtor de Sequ\u00eancia v\u00e1lido foi localizado na classe especificada.
+implicit.string.constructor.method.not.found.CWMCG0017E.useraction=Verifique se a classe especificada tem um m\u00e9todo construtor de Sequ\u00eancia v\u00e1lido. Para determinar quais m\u00e9todos s\u00e3o v\u00e1lidos, consulte a especifica\u00e7\u00e3o MicroProfile Config.
+
+# The {0} Generic Type Variable for the {1} conversion type is not supported.
+generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: A Vari\u00e1vel de tipo gen\u00e9rico {0} para o tipo de convers\u00e3o {1} n\u00e3o \u00e9 suportada.
+generic.type.variables.notsupported.CWMCG0018E.explanation=Foi feita uma tentativa de converter usando uma Vari\u00e1vel de tipo gen\u00e9rico, como List<T>. Esse processo n\u00e3o \u00e9 suportado.
+generic.type.variables.notsupported.CWMCG0018E.useraction=Em vez disso, use um tipo de argumento concreto, como List<String>.
+
+# Environment Variables Config Source
+environment.variables.config.source=Origem de configura\u00e7\u00e3o de vari\u00e1veis de ambiente
+# Properties File Config Source: {0}
+properties.file.config.source=Origem de configura\u00e7\u00e3o do arquivo de propriedades: {0}
+# System Properties Config Source
+system.properties.config.source=Origem de configura\u00e7\u00e3o de propriedades de sistema
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -11,12 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
-
 Bundle-SymbolicName: com.ibm.websphere.javaee.jcache.1.1
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Export-Package: \
    javax.cache;version="1.1", \
@@ -36,6 +31,8 @@ Include-Resource: \
   @${repo; javax.cache:cache-api;1.1.0}
 
 instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
 	javax.cache:cache-api;version=1.1.0

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ public class SecurityRequirementValidator extends TypeValidator<SecurityRequirem
                     List<String> value = t.get(name);
                     if ("oauth2".equals(type) || "openIdConnect".equals(type)) {
                         if (value == null || value.isEmpty()) {
-                            final String message = Tr.formatMessage(tc, "securityRequirementScopeNamesRequired", name, value);
+                            final String message = Tr.formatMessage(tc, "securityRequirementScopeNamesRequired", name);
                             helper.addValidationEvent(
                                                       new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
                         }

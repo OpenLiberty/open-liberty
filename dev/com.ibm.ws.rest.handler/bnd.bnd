@@ -47,7 +47,7 @@ instrument.classesExcludes: com/ibm/ws/rest/handler/internal/resources/*.class
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.ws.org.apache.commons.fileupload.1.2.1;version=latest,\
+	com.ibm.ws.org.apache.commons.fileupload;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\

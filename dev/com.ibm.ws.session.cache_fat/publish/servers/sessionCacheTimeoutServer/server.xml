@@ -1,0 +1,82 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+     <!-- Use this config for sessionCache -->
+     <featureManager>
+        <feature>sessionCache-1.0</feature>
+    </featureManager>   
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="5s" reaperPollInterval="30"/>
+    <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES">
+        <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+    </httpSessionCache>
+
+    <jndiEntry jndiName="jcache/hazelcast.config" value="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+
+    <!-- Use this config for testing sessionDatabase 
+    <featureManager>
+        <feature>sessionDatabase-1.0</feature>
+        <feature>jdbc-4.1</feature>
+    </featureManager>
+   
+    <httpSessionDatabase id="FATDB" dataSourceRef="DerbyDS"/>
+    
+    <httpSession storageRef="FATDB" maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="5s" reaperPollInterval="30"/>
+    
+    	<library id="DerbyLib">
+	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	</library>
+    
+    	<authData id="DerbyAuth" user="userName" password="userPassword"/>    
+    <dataSource id="DerbyDS" jndiName="jdbc/derby" containerAuthDataRef="DerbyAuth">
+	    <jdbcDriver libraryRef="DerbyLib"/>
+	    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
+	</dataSource>
+	
+	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	-->
+
+    <application location="sessionCacheApp.war">
+        <classloader commonLibraryRef="HazelcastLib"/>
+    </application>
+
+    <library id="HazelcastLib">
+        <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
+    </library>
+
+
+
+    <!-- Used for testing that data source can be stored in a session -->
+
+	
+	<!-- Perms needed because the application uses Hazelcast directly   -->
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="enableContextClassLoaderOverride"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="getenv.HZ_PHONE_HOME_ENABLED"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="shutdownHooks"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.net.NetPermission" name="getNetworkInformation"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
+
+    <javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
+
+    <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
+    <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
+    <!-- Needed for hazelcast JVM shutdown hook -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
+    
+    
+</server>

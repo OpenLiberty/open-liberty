@@ -48,6 +48,16 @@ public class SecurityEJBA03Bean extends SecurityEJBBeanBase implements SecurityE
         return context;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see web.ejb.jar.bean.SecurityEJBBeanBase#getSecurityContext()
+     */
+    @Override
+    protected SecurityContext getSecurityContext() {
+        return securityContext;
+    }
+
     @Override
     protected Logger getLogger() {
         return logger;

@@ -5,7 +5,7 @@ Bundle-Name: OpenAPI UI
 Bundle-SymbolicName: com.ibm.ws.microprofile.openapi.ui
 Bundle-Description: OpenAPI User Interface, version ${bVersion}
 
-Web-ContextPath: /api/explorer
+Web-ContextPath: /openapi/ui
 
 IBM-Authorization-Roles: com.ibm.ws.management
 

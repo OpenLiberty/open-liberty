@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,8 @@
 package com.ibm.ws.webcontainer40.srt.http;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -127,15 +127,16 @@ public class HttpPushBuilderTest {
         String path = pb.getPath();
         assertTrue(path.equals(testPath));
 
-        boolean caughtIllegalArgumentException = false;
+        boolean caughtIllegalStateException = false;
         try {
+            // Want to ensure that we get an IllegalStateException if path is null
             pb.method("GET");
             pb.path(null);
             pb.push();
         } catch (java.lang.IllegalStateException exc) {
-            caughtIllegalArgumentException = true;
+            caughtIllegalStateException = true;
         }
-        assertTrue(caughtIllegalArgumentException);
+        assertTrue(caughtIllegalStateException);
 
         pb.path("/testpath");
         pb.queryString("test=queryStringForPush");
@@ -164,17 +165,74 @@ public class HttpPushBuilderTest {
             }
         });
 
-        boolean caughtHttp2PushException = false;
+        caughtIllegalStateException = false;
         try {
             pb.push();
         } catch (java.lang.IllegalStateException exc) {
-            caughtHttp2PushException = true;
+            caughtIllegalStateException = true;
         }
-        assertFalse(caughtHttp2PushException);
+
+        // No exception should have been thrown
+        assertFalse(caughtIllegalStateException);
 
         assertTrue(pb.getPath() == null);
         assertTrue(pb.getQueryString() == null);
-        assertTrue("Referer header = " + pb.getHeader("Referer"),pb.getHeader("Referer").equals("/UnitTest/TestAPI_path?test=queryStringFromRequest"));
+        assertTrue("Referer header = " + pb.getHeader("Referer"), pb.getHeader("Referer").equals("/UnitTest/TestAPI_path?test=queryStringFromRequest"));
+    }
+
+    /**
+     * Ensure that you can not call push(), push() without calling path() between
+     * the two push() calls.
+     */
+    @Test
+    public void testAPI_Push_Error_Condition() throws Exception {
+        HttpPushBuilder pb = new HttpPushBuilder(srtReq, null, null, null);
+
+        boolean caughtIllegalStateException = false;
+
+        pb.method("GET");
+        pb.queryString("test=queryStringForPush");
+        pb.path("/testpath");
+        context.checking(new Expectations() {
+            {
+
+                oneOf(srtReq).getRequestURI();
+                will(returnValue("/UnitTest/TestAPI_Push_Error_Condition"));
+
+                oneOf(srtReq).getQueryString();
+                will(returnValue("test=queryStringFromRequest"));
+
+                oneOf(srtReq).getQueryString();
+                will(returnValue("test=queryStringFromRequest"));
+
+                oneOf(srtReq).getIRequest();
+                will(returnValue(IReq40));
+
+                oneOf(IReq40).getHttpRequest();
+                will(returnValue(hReq));
+
+                oneOf(hReq).pushNewRequest(pb);
+            }
+        });
+
+        try {
+            pb.push();
+        } catch (java.lang.IllegalStateException exc) {
+            caughtIllegalStateException = true;
+        }
+
+        // The initial push should work just fine, since we have set the path.
+        assertFalse(caughtIllegalStateException);
+
+        try {
+            pb.push();
+        } catch (java.lang.IllegalStateException exc) {
+            caughtIllegalStateException = true;
+        }
+
+        // The second push should throw an IlleglaStateException since path was not
+        // called between the pushes.
+        assertTrue(caughtIllegalStateException);
     }
 
     @Test
@@ -214,14 +272,16 @@ public class HttpPushBuilderTest {
 
         HttpPushBuilder pb = new HttpPushBuilder(srtReq, null, headerList, null);
 
-        assertTrue("Expected Content-Type " + headers.get("Content-Type") + " but was " + pb.getHeader("Content-Type"),pb.getHeader("Content-Type").equals(headers.get("Content-Type")));
-        assertTrue("Expected Date " + headers.get("Date") + " but was " + pb.getHeader("Date"),pb.getHeader("Date").equals(headers.get("Date")));
-        assertTrue("Expected From " + headers.get("From") + " but was " + pb.getHeader("From"),pb.getHeader("From").equals(headers.get("From")));
-        assertTrue("Expected MaxForwards " + headers.get("MaxForwards") + " but was " + pb.getHeader("MaxForwards"),pb.getHeader("MaxForwards").equals(headers.get("MaxForwards")));
+        assertTrue("Expected Content-Type " + headers.get("Content-Type") + " but was " + pb.getHeader("Content-Type"),
+                   pb.getHeader("Content-Type").equals(headers.get("Content-Type")));
+        assertTrue("Expected Date " + headers.get("Date") + " but was " + pb.getHeader("Date"), pb.getHeader("Date").equals(headers.get("Date")));
+        assertTrue("Expected From " + headers.get("From") + " but was " + pb.getHeader("From"), pb.getHeader("From").equals(headers.get("From")));
+        assertTrue("Expected MaxForwards " + headers.get("MaxForwards") + " but was " + pb.getHeader("MaxForwards"),
+                   pb.getHeader("MaxForwards").equals(headers.get("MaxForwards")));
 
         Iterator<String> headerNames = pb.getHeaderNames().iterator();
         ArrayList<String> hNames = new ArrayList<String>();
-        
+
         while (headerNames.hasNext()) {
             String name = headerNames.next();
             headers.remove(name);
@@ -238,13 +298,13 @@ public class HttpPushBuilderTest {
         pb.addHeader("testAddHeader", "testAddValue2");
         pb.setHeader("testSetHeader", "testSetValue1");
         pb.setHeader("testSetHeader", "testSetValue2");
-        
+
         Set<HeaderField> hdrs = pb.getHeaders();
 
         assertTrue(pb.getHeaderNames().size() == 2);
-        
-        boolean addValue1Found=false, addValue2Found=false,setValue2Found=false;
-        
+
+        boolean addValue1Found = false, addValue2Found = false, setValue2Found = false;
+
         Iterator<HeaderField> hdrsIterator = hdrs.iterator();
         while (hdrsIterator.hasNext()) {
             HeaderField hdr = hdrsIterator.next();
@@ -254,21 +314,20 @@ public class HttpPushBuilderTest {
                 } else if (hdr.asString().equals("testAddValue2") && !addValue2Found) {
                     addValue2Found = true;
                 } else {
-                    assertTrue("Unexpected header found : " + hdr.getName() + "=" + hdr.asString(),false);
+                    assertTrue("Unexpected header found : " + hdr.getName() + "=" + hdr.asString(), false);
                 }
             } else if (hdr.getName().equals("testSetHeader")) {
                 if (hdr.asString().equals("testSetValue2") && !setValue2Found) {
                     setValue2Found = true;
                 } else {
-                    assertTrue("Unexpected header found : " + hdr.getName() + "=" + hdr.asString(),false);
+                    assertTrue("Unexpected header found : " + hdr.getName() + "=" + hdr.asString(), false);
                 }
             }
         }
-        
+
         assertTrue("Expected testAddHeader value of testAddValue1 but it was not found", addValue1Found);
         assertTrue("Expected testAddHeader value of testAddValue2 but it was not found", addValue2Found);
         assertTrue("Expected testSetHeader value of testSetValue2 but it was not found", setValue2Found);
-        
 
     }
 
@@ -303,7 +362,7 @@ public class HttpPushBuilderTest {
         }
 
     }
-    
+
     @Test
     public void testAPI_conditionalHeadersAfterPush() throws Exception {
 
@@ -315,28 +374,27 @@ public class HttpPushBuilderTest {
         headers.put("If-None-Match", "noneMatch");
         headers.put("If-Range", "range");
         headers.put("If-Unmodified-Since", "Tue, 07 Feb 2017 13050:00 GMT");
-        
+
         StringTokenizer imE = new StringTokenizer(headers.get("If-Match"), "&");
         StringTokenizer imsE = new StringTokenizer(headers.get("If-Modified-Since"), "&");
         StringTokenizer inmE = new StringTokenizer(headers.get("If-None-Match"), "&");
         StringTokenizer irE = new StringTokenizer(headers.get("If-Range"), "&");
         StringTokenizer iusE = new StringTokenizer(headers.get("If-Unmodified-Since"), "&");
 
-
         context.checking(new Expectations() {
             {
                 oneOf(srtReq).getHeaders("If-Match");
                 will(returnValue(imE));
-                
+
                 oneOf(srtReq).getHeaders("If-Modified-Since");
                 will(returnValue(imsE));
-                
+
                 oneOf(srtReq).getHeaders("If-None-Match");
                 will(returnValue(inmE));
-                
+
                 oneOf(srtReq).getHeaders("If-Range");
                 will(returnValue(irE));
-                
+
                 oneOf(srtReq).getHeaders("If-Unmodified-Since");
                 will(returnValue(iusE));
             }
@@ -358,13 +416,13 @@ public class HttpPushBuilderTest {
                 will(returnValue(hReq));
 
                 allowing(hReq).pushNewRequest(pb);
-                
+
                 ignoring(srtReq).getQueryString();
             }
         });
-        
+
         //Add the conditional headers to the PB
-        for(Map.Entry<String, String> header : headers.entrySet()) {
+        for (Map.Entry<String, String> header : headers.entrySet()) {
             pb.addHeader(header.getKey(), header.getValue());
         }
 
@@ -372,12 +430,11 @@ public class HttpPushBuilderTest {
         try {
             pb.path("/testPath");
             pb.push();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             fail("Exception thrown during push: " + e.getMessage());
         }
-        
-        for(Map.Entry<String, String> header : headers.entrySet())
+
+        for (Map.Entry<String, String> header : headers.entrySet())
             assertNull("Found unexpected " + header.getKey() + " header after push with value: " + pb.getHeader(header.getKey()), pb.getHeader(header.getKey()));
 
     }

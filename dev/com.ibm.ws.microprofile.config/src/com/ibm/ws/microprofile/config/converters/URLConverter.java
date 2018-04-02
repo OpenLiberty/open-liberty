@@ -13,11 +13,14 @@ package com.ibm.ws.microprofile.config.converters;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  *
  */
 public class URLConverter extends BuiltInConverter {
 
+    @Trivial
     public URLConverter() {
         super(URL.class);
     }

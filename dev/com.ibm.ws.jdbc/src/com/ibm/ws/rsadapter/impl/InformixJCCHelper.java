@@ -123,7 +123,7 @@ public class InformixJCCHelper extends InformixHelper {
         try {
             Method m = methRef.get();
             if (m == null) {
-                Class<?> c = PrivHelper.loadClass(mcf.jdbcDriverLoader, "com.ibm.db2.jcc.DB2Connection");
+                Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, "com.ibm.db2.jcc.DB2Connection");
                 methRef.set(m = c.getMethod(methName, paramTypes));
             }
 

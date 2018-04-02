@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+
+bVersion=1.0
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: WebSphere Spring Boot Application Closer
+Bundle-SymbolicName: com.ibm.ws.springboot.support.shutdown
+Bundle-Description: WebSphere Spring Boot Application Closer, version ${bVersion}
+Private-Package: com.ibm.ws.springboot.support.osgi.shutdown.*
+
+Include-Resource: springBootCloser.jar
+
+Provide-Capability: spring.boot.support; jars:List<String>=springBootCloser.jar; version:Version=1.0
+
+instrument.disabled: true
+
+-buildpath: \
+	org.springframework:spring-core;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-context;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-aop;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-expression;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-beans;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework.boot:spring-boot-autoconfigure;strategy=exact;version=1.5.9.RELEASE, \
+	org.springframework.boot:spring-boot;strategy=exact;version=1.5.9.RELEASE, \
+	org.springframework.boot:spring-boot-autoconfigure;strategy=exact;version=2.0.0.RELEASE, \
+	org.springframework.boot:spring-boot;strategy=exact;version=2.0.0.RELEASE, \
+	com.ibm.ws.app.manager.springboot;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations
+
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1
+
+-dsannotations: com.ibm.ws.springboot.support.osgi.shutdown.ShutdownSpringBootSupport
+-dsannotations-inherit: true
+
+-make= (*).(jar); type=bnd; recipe="bnd/$1.bnd"

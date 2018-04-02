@@ -42,6 +42,7 @@ import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.ws.security.delegation.DelegationProvider;
 import com.ibm.ws.security.jaas.common.callback.CallbackHandlerAuthenticationData;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
@@ -59,6 +60,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
     static final String KEY_DEFAULT_DELEGATION_PROVIDER = "defaultDelegationProvider";
     static final String KEY_CREDENTIALS_SERVICE = "credentialsService";
+    private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
+    private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
     private final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
     private final AtomicServiceReference<UserRegistryService> userRegistryServiceRef = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTRY_SERVICE);
@@ -310,9 +313,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Subject subject = null;
         AuthCacheService authCacheService = getAuthCacheService();
         if (authCacheService != null && authenticationData != null) {
+            String jwtSSOToken = (String) authenticationData.get(AuthenticationData.JWT_TOKEN);
             String ssoToken = (String) authenticationData.get(AuthenticationData.TOKEN64);
-            if (ssoToken != null) {
-                subject = findSubjectByTokenContents(authCacheService, ssoToken, null, authenticationData);
+            if (jwtSSOToken != null) {
+                subject = findSubjectByTokenContents(authCacheService, jwtSSOToken, null, authenticationData);
+            } else if (ssoToken != null) {
+                String oid = (String) authenticationData.get(AuthenticationData.AUTHENTICATION_MECH_OID);
+                if (oid == null || oid.equals(LTPA_OID)) {
+                    subject = findSubjectByTokenContents(authCacheService, ssoToken, null, authenticationData);
+                }
             } else {
                 byte[] ssoTokenBytes = (byte[]) authenticationData.get(AuthenticationData.TOKEN);
                 if (ssoTokenBytes != null) {
@@ -342,21 +351,32 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Subject findSubjectByTokenContents(AuthCacheService authCacheService, String token, byte[] ssoTokenBytes,
                                                AuthenticationData authenticationData) throws AuthenticationException {
         Subject subject = null;
+        String oid = (String) authenticationData.get(AuthenticationData.AUTHENTICATION_MECH_OID);
         if (token != null) {
-            subject = authCacheService.getSubject(token);
+            if (oid == null || oid.equals(LTPA_OID)) {
+                subject = authCacheService.getSubject(token);
+            } else if (oid != null && oid.equals(JWT_OID)) {
+                String cacheKey = JwtSSOTokenHelper.getCacheKeyForJwtSSOToken(subject, token);
+                subject = authCacheService.getSubject(cacheKey);
+            }
         }
         if (subject == null && ssoTokenBytes != null) {
             subject = authCacheService.getSubject(ssoTokenBytes);
         }
         if (subject == null) {
-            if (ssoTokenBytes == null && token != null) {
-                ssoTokenBytes = Base64Coder.base64DecodeString(token);
-            }
-            if (ssoTokenBytes == null) {
-                throw new AuthenticationException("Invalid LTPA Token");
-            }
+            String customCacheKey = null;
+            if (oid == null || oid.equals(LTPA_OID)) {
+                if (ssoTokenBytes == null && token != null) {
+                    ssoTokenBytes = Base64Coder.base64DecodeString(token);
+                }
+                if (ssoTokenBytes == null) {
+                    throw new AuthenticationException("Invalid LTPA Token");
+                }
+                customCacheKey = CustomCacheKeyProvider.getCustomCacheKey(authCacheService, ssoTokenBytes, authenticationData);
 
-            String customCacheKey = CustomCacheKeyProvider.getCustomCacheKey(authCacheService, ssoTokenBytes, authenticationData);
+            } else if (oid != null && oid.equals(JWT_OID)) {
+                customCacheKey = JwtSSOTokenHelper.getCustomCacheKeyFromJwtSSOToken(token);
+            }
             if (customCacheKey != null) {
                 subject = authCacheService.getSubject(customCacheKey);
                 if (subject == null) {

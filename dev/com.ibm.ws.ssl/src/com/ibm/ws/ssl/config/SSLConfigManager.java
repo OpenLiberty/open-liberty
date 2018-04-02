@@ -1429,6 +1429,8 @@ public class SSLConfigManager {
         String urlHostNameVerification = getGlobalProperty(Constants.SSLPROP_URL_HOSTNAME_VERIFICATION);
 
         if (urlHostNameVerification == null || urlHostNameVerification.equalsIgnoreCase("false") || urlHostNameVerification.equalsIgnoreCase("no")) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "com.ibm.ssl.performURLHostNameVerification disabled");
             HostnameVerifier verifier = new HostnameVerifier() {
                 @Override
                 public boolean verify(String urlHostname, SSLSession session) {
@@ -1440,6 +1442,9 @@ public class SSLConfigManager {
             if (!reinitialize) {
                 Tr.info(tc, "ssl.disable.url.hostname.verification.CWPKI0027I");
             }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "com.ibm.ssl.performURLHostNameVerification enabled");
         }
     }
 

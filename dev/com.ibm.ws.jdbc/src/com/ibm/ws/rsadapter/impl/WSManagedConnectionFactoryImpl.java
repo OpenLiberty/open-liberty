@@ -71,6 +71,7 @@ import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig; 
@@ -96,6 +97,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory implements
                 ValidatingManagedConnectionFactory, FFDCSelfIntrospectable {
     private static final long serialVersionUID = -56589160441993572L;
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /**
      * Count of initialized instances of this class.
@@ -301,7 +303,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         instanceID = NUM_INITIALIZED.incrementAndGet();
         dataSourceImplClass = ds.getClass();
         dataSourceInterface = ifc;
-        jdbcDriverLoader = PrivHelper.getClassLoader(dataSourceImplClass);
+        jdbcDriverLoader = priv.getClassLoader(dataSourceImplClass);
         supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
 
         String dataSourceImplClassName = dataSourceImplClass.getName();

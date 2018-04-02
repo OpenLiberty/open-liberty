@@ -97,6 +97,7 @@ public class FATOpentracing implements FATOpentracingConstants {
     // OpenTrace FAT server ...
 
     private static LibertyServer server;
+    private static final boolean usingMicroProfile = false;
 
     private static void setUpServer() throws Exception {
         server = LibertyServerFactory.getLibertyServer(OPENTRACING_FAT_SERVER1_NAME);
@@ -361,6 +362,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         for ( int spanNo = actualSpanCount - expectedSpanCount; spanNo < actualSpanCount; spanNo++ ) {
             FATUtilsSpans.CompletedSpan nextSpan = completedSpans.get(spanNo);
+            
             String nextTraceId = nextSpan.getTraceId();
             String nextSpanId = nextSpan.getSpanId();
             String nextParentId = nextSpan.getParentId();
@@ -553,7 +555,7 @@ public class FATOpentracing implements FATOpentracingConstants {
         List<String> responseLines =
             FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl); // throws Exception
 
-        FATLogging.info(CLASS, methodName, "Reponse:");
+        FATLogging.info(CLASS, methodName, "Response:");
 
         int lineNo = 0;
         for ( String responseLine : responseLines ) {
@@ -614,7 +616,13 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** The completed span event must be be for a get tracer state request. ***
 
-        assertEq("Operation", "GET:com.ibm.ws.testing.opentracing.service.FATOpentracingService.getTracerState", completedSpan.getOperation());
+        String operationName;
+        if (usingMicroProfile) {
+            operationName = "GET:com.ibm.ws.testing.opentracing.service.FATOpentracingService.getTracerState";
+        } else {
+            operationName = requestUrl;
+        }
+        assertEq("Operation", operationName, completedSpan.getOperation());
 
         // *** The completed span must have valid state and finish times. ***
 
@@ -683,7 +691,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** And is expected to have the response text as specified through the request parameter. ***
 
-        assertEq("Reponse text",
+        assertEq("Response text",
                  responseText, actualResponseLines.get(0));
     }
 
@@ -745,7 +753,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** And is expected to have the response text as specified through the request parameter. ***
 
-        assertEq("Reponse text",
+        assertEq("Response text",
                  responseText, actualResponseLines.get(0));
     }
 
@@ -854,7 +862,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** And is expected to have the response text as specified through the request parameter. ***
 
-        assertEq("Reponse text",
+        assertEq("Response text",
                  responseText, actualResponseLines.get(0));
    }
 
@@ -891,8 +899,6 @@ public class FATOpentracing implements FATOpentracingConstants {
         verifyNestedSpans0();
         verifyTracerStateEvent();
     }
-
-    //
 
     /**
      * <p>Test requests through the nesting service.</p>
@@ -965,8 +971,6 @@ public class FATOpentracing implements FATOpentracingConstants {
         verifyTracerStateEvent();
     }
 
-    //
-
     /**
      * <p>Test requests through the nesting service.</p>
      *
@@ -1038,8 +1042,6 @@ public class FATOpentracing implements FATOpentracingConstants {
         verifyTracerStateEvent();
     }
 
-    //
-
     public static final boolean IS_ASYNC = true;
     public static final boolean IS_SYNC = false;
 
@@ -1080,7 +1082,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** And is expected to have the response text as specified through the request parameter. ***
 
-        assertEq("Reponse text",
+        assertEq("Response text",
                  responseText, actualResponseLines.get(0));
     }
 
@@ -1618,7 +1620,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** And is expected to have the response text as specified through the request parameter. ***
 
-        assertEq("Reponse text",
+        assertEq("Response text",
                  responseText, actualResponseLines.get(0));
     }
     

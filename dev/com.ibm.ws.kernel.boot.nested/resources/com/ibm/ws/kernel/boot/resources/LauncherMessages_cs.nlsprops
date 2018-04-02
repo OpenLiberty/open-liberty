@@ -675,6 +675,10 @@ error.server.resume.command.port.disabled=CWWKE0945E: Byl p\u0159ijat po\u017ead
 error.server.resume.command.port.disabled.explanation=P\u0159\u00edkazov\u00fd port serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. P\u0159\u00edkazov\u00fd port je pro tento server zak\u00e1zan\u00fd, proto po\u017eadavek na obnoven\u00ed nelze zpracovat. Uv\u011bdomte si, \u017ee p\u0159\u00edkazov\u00fd port se standardn\u011b vypnul, kdy\u017e se server spustil jako spu\u0161t\u011bn\u00e1 \u00faloha na syst\u00e9mu z/OS.
 error.server.resume.command.port.disabled.useraction=Povolte p\u0159\u00edkazov\u00fd port pro tento server. Pokud je server spu\u0161t\u011bn jako spu\u0161t\u011bn\u00e1 \u00faloha v syst\u00e9mu z/OS, lze tuto obnovu alternativn\u011b po\u017eadovat z konzoly oper\u00e1tora.
 
+warning.server.status.invalid.targets=CWWKE0946W: Byl p\u0159ijat po\u017eadavek na stav pro specifick\u00e9 komponenty, ale seznam komponent v c\u00edlov\u00e9 volb\u011b byl pr\u00e1zdn\u00fd. Neprovedla se \u017e\u00e1dn\u00e1 akce.
+warning.server.status.invalid.targets.explanation=U\u017eivatel vydal po\u017eadavek na stav s pr\u00e1zdn\u00fdm c\u00edlov\u00fdm seznamem v c\u00edlov\u00e9 volb\u011b. Po\u017eadavek byl dokon\u010den, ale neprovedla se \u017e\u00e1dn\u00e1 akce.
+warning.server.status.invalid.targets.useraction=Ur\u010dete v c\u00edlov\u00e9 volb\u011b seznam komponent, kter\u00e9 maj\u00ed zkontrolovat stav. Chcete-li zkontrolovat v\u0161echny komponenty na serveru, kter\u00e9 lze pozastavit, zadejte po\u017eadavek na stav bez c\u00edlov\u00e9 volby.
+
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.
 info.serverStartedWithPID=Server {0} byl spu\u0161t\u011bn s ID procesu {1}.

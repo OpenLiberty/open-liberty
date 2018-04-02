@@ -94,6 +94,26 @@ no.such.element.CWMCG0015E=CWMCG0015E: Die Eigenschaft {0} wurde nicht in der Ko
 no.such.element.CWMCG0015E.explanation=Die angeforderte Eigenschaft ist in keiner der konfigurierten Quellen vorhanden.
 no.such.element.CWMCG0015E.useraction=F\u00fcgen Sie die Eigenschaft einer der vorhandenen Quellen hinzu oder f\u00fcgen Sie eine neue Quelle hinzu, die diese Eigenschaft enth\u00e4lt.
 
+# The server is unable to cancel the asynchronous update thread for the {0} Config Source.
+future.update.not.cancelled.CWMCG0016E=CWMCG0016E: Der Thread f\u00fcr die asynchrone Aktualisierung f\u00fcr die ConfigSource-Instanz {0} kann nicht vom Server abgebrochen werden.
+future.update.not.cancelled.CWMCG0016E.explanation=Der Versuch, eine k\u00fcnftige asynchrone Aktualisierung abzubrechen, ist fehlgeschlagen. In der Regel wird dies von einem Aktualisierungsaufruf an eine ConfigSource-Instanz mit einer langen Ausf\u00fchrungsdauer verursacht.
+future.update.not.cancelled.CWMCG0016E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# No implicit String constructor methods found for the {0} class.
+implicit.string.constructor.method.not.found.CWMCG0017E=CWMCG0017E: Es wurden keine impliziten Konstruktormethoden f\u00fcr Zeichenfolgen f\u00fcr die Klasse {0} gefunden.
+implicit.string.constructor.method.not.found.CWMCG0017E.explanation=Es wurden keine g\u00fcltigen Konstruktormethoden f\u00fcr Zeichenfolgen in der angegebenen Klasse gefunden.
+implicit.string.constructor.method.not.found.CWMCG0017E.useraction=Stellen Sie sicher, dass die angegebene Klasse eine g\u00fcltige Konstruktormethode f\u00fcr Zeichenfolgen hat. Informationen zu den g\u00fcltigen Methoden finden Sie in der MicroProfile-Config-Spezifikation. 
+# The {0} Generic Type Variable for the {1} conversion type is not supported.
+generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: Die generische Typvariable {0} f\u00fcr den Konvertierungstyp {1} wird nicht unterst\u00fctzt.
+generic.type.variables.notsupported.CWMCG0018E.explanation=Es wurde versucht, eine Konvertierung mit einer generischen Typvariablen (z. B. List<T>) zu erstellen. Dies wird nicht unterst\u00fctzt.
+generic.type.variables.notsupported.CWMCG0018E.useraction=Verwenden Sie stattdessen einen konkreten Argumenttyp, z. B. Liste<Zeichenfolge>.
+# Environment Variables Config Source
+environment.variables.config.source=Konfigurationsquelle f\u00fcr Umgebungsvariablen
+# Properties File Config Source: {0}
+properties.file.config.source=Konfigurationsquelle f\u00fcr Eigenschaftendatei: {0}
+# System Properties Config Source
+system.properties.config.source=Konfigurationsquelle f\u00fcr Systemeigenschaften
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message
 #-----------------------------------------------------------------------------------------------------------------------------

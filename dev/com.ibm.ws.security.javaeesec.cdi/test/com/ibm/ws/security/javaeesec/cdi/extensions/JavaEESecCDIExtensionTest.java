@@ -20,9 +20,12 @@ import static org.junit.Assert.assertTrue;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -35,6 +38,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.util.TypeLiteral;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
@@ -51,6 +55,7 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapSearchScope;
 import javax.security.enterprise.identitystore.PasswordHash;
+import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -99,6 +104,8 @@ public class JavaEESecCDIExtensionTest {
     private final WebModuleMetaData wmmd2 = context.mock(WebModuleMetaData.class, "wmmd2");
     private final J2EEName j2en1 = context.mock(J2EEName.class, "j2en1");
     private final J2EEName j2en2 = context.mock(J2EEName.class, "j2en2");
+    private final ProcessBeanAttributes pba = context.mock(ProcessBeanAttributes.class, "pba1");
+    
 
     private final static String MODULE_NAME1 = "module1.war";
     private final static String MODULE_NAME2 = "module2.war";
@@ -990,6 +997,206 @@ public class JavaEESecCDIExtensionTest {
         assertTrue("the result should be true.", j3ce.equalsLdapDefinition(lisd1, lisd2));
     }
 
+    @Test
+    public void processBasicHttpAuthMechNeededVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                one(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processBasicHttpAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processBasicHttpAuthMechNeededNoVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                never(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processBasicHttpAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processFormAuthMechNeededVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                one(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processFormAuthMechNeededNoVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                never(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processCustomFormAuthMechNeededVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(FormAuthenticationMechanism.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                one(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processCustomFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void processCustomFormAuthMechNeededNoVeto() {
+        List<Class> cls = new ArrayList<Class>();
+        cls.add(ApplicationHAM.class);
+        cls.add(BasicHttpAuthenticationMechanism.class);
+        cls.add(FormAuthenticationMechanism.class);
+        cls.add(CustomFormAuthenticationMechanism.class);
+
+        final Map<String, ModuleProperties> mm = createModuleMap(cls);
+
+        context.checking(new Expectations() {
+            {
+                never(pba).veto();
+            }
+        });
+
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension() {
+            @Override
+            protected Map<String, ModuleProperties> getModuleMap() {
+                return mm;
+            }
+        };
+        
+        j3ce.processCustomFormAuthMechNeeded(pba, bm);
+    }
+
+    @Test
+    public void equalsDatabaseDefinitionStrings() {
+        String KEY[] = {"callerQuery", "dataSourceLookup", "groupsQuery",  JavaEESecConstants.PRIORITY_EXPRESSION, JavaEESecConstants.USE_FOR_EXPRESSION};
+        List<String> KEYS = Arrays.asList(KEY);
+        String VALUE1="value1";
+        String VALUE2="value2";
+        for (String key : KEYS) {
+            equalsDatabaseDefinitionTest(key, VALUE1, VALUE2);
+        }
+    }
+
+    @Test
+    public void equalsDatabaseDefinitionClasses() {
+        equalsDatabaseDefinitionTest("hashAlgorithm", CustomPasswordHash1.class, CustomPasswordHash2.class);
+    }
+
+    @Test
+    public void equalsDatabaseDefinitionIntegers() {
+        equalsDatabaseDefinitionTest(JavaEESecConstants.PRIORITY, new Integer(10), new Integer(20));
+    }
+
+    @Test
+    public void equalsDatabaseDefinitionHashAlgorithmParameters() {
+        String param1[] = {"key1=value1", "key2=value2", "key3=value3"};
+        String param2[] = {"key1=value3", "key2=value2", "key3=value1"};
+
+        equalsDatabaseDefinitionTest("hashAlgorithmParameters", param1, param2);
+    }
+
+    @Test
+    public void equalsDatabaseDefinitionUseFor() {
+        String key = JavaEESecConstants.USE_FOR;
+
+        equalsDatabaseDefinitionTest(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS }, new ValidationType[] { ValidationType.VALIDATE });
+        equalsDatabaseDefinitionTest(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE }, new ValidationType[] { ValidationType.PROVIDE_GROUPS });
+        equalsDatabaseDefinitionTest(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE }, new ValidationType[] { ValidationType.PROVIDE_GROUPS});
+
+        Map map1 = new HashMap<String, Object>();
+        map1.put(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE });
+        Map map2 = new HashMap<String, Object>();
+        map2.put(key, new ValidationType[] { ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS });
+        DatabaseIdentityStoreDefinition disd1 = getDatabaseDefinitionForEqualsTest(map1);
+        DatabaseIdentityStoreDefinition disd2 = getDatabaseDefinitionForEqualsTest(map2);
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
+        assertTrue("the result should be true.", j3ce.equalsDatabaseDefinition(disd1, disd2));
+    }
+
     private void equalsLdapDefinitionTest(String key, Object value1, Object value2) {
         LdapIdentityStoreDefinition lisd1, lisd2;
         Map map1 = new HashMap<String, Object>();
@@ -1001,6 +1208,19 @@ public class JavaEESecCDIExtensionTest {
         JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
         assertTrue("the result should be true.", j3ce.equalsLdapDefinition(lisd1, lisd1));
         assertFalse("the result should be false.", j3ce.equalsLdapDefinition(lisd1, lisd2));
+    }
+
+    private void equalsDatabaseDefinitionTest(String key, Object value1, Object value2) {
+        DatabaseIdentityStoreDefinition disd1, disd2;
+        Map map1 = new HashMap<String, Object>();
+        map1.put(key, value1);
+        Map map2 = new HashMap<String, Object>();
+        map2.put(key, value2);
+        disd1 = getDatabaseDefinitionForEqualsTest(map1);
+        disd2 = getDatabaseDefinitionForEqualsTest(map2);
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
+        assertTrue("the result should be true.", j3ce.equalsDatabaseDefinition(disd1, disd1));
+        assertFalse("the result should be false.", j3ce.equalsDatabaseDefinition(disd1, disd2));
     }
 
     public @interface InvalidAnnotation {}
@@ -1451,6 +1671,67 @@ public class JavaEESecCDIExtensionTest {
         return annotation;
     }
 
+    private DatabaseIdentityStoreDefinition getDatabaseDefinitionForEqualsTest(final Map<String, Object> overrides) {
+        DatabaseIdentityStoreDefinition annotation = new DatabaseIdentityStoreDefinition() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return null;
+            }
+
+            @Override
+            public String callerQuery() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.CALLER_QUERY)) ? (String) overrides.get(JavaEESecConstants.CALLER_QUERY) : "";
+            }
+
+            @Override
+            public String dataSourceLookup() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.DS_LOOKUP)) ? (String) overrides.get(JavaEESecConstants.DS_LOOKUP) : JavaEESecConstants.DEFAULT_DS_NAME;
+            }
+
+            @Override
+            public String groupsQuery() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.GROUPS_QUERY)) ? (String) overrides.get(JavaEESecConstants.GROUPS_QUERY) : "";
+            }
+
+            @Override
+            public Class<? extends PasswordHash> hashAlgorithm() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.PWD_HASH_ALGORITHM)) ? (Class<? extends PasswordHash>) overrides.get(JavaEESecConstants.PWD_HASH_ALGORITHM) : Pbkdf2PasswordHash.class;
+            }
+
+            @Override
+            public String[] hashAlgorithmParameters() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.PWD_HASH_PARAMETERS)) ? (String[]) overrides.get(JavaEESecConstants.PWD_HASH_PARAMETERS) : new String[] {};
+            }
+
+            @Override
+            public int priority() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY)) ? (Integer) overrides.get(JavaEESecConstants.PRIORITY) : 70;
+            }
+
+            @Override
+            public String priorityExpression() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.PRIORITY_EXPRESSION) : "";
+            }
+
+            @Override
+            public ValidationType[] useFor() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.USE_FOR)) ? (ValidationType[]) overrides.get(JavaEESecConstants.USE_FOR) : new ValidationType[] { ValidationType.PROVIDE_GROUPS,
+                                                                                                                                                                      ValidationType.VALIDATE };
+            }
+
+            @Override
+            public String useForExpression() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.USE_FOR_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.USE_FOR_EXPRESSION) : "";
+            }
+        };
+        return annotation;
+    }
+
     /**
      *
      *
@@ -1473,6 +1754,23 @@ public class JavaEESecCDIExtensionTest {
         mmds.put(url2, wmmd2);
     }
 
+    private Map<String, ModuleProperties> createModuleMap(List<Class> cls) {
+        Map<String, ModuleProperties> mm = new LinkedHashMap<String, ModuleProperties>();
+        Iterator<Class> it = cls.iterator();
+        int i = 1;
+        while(it.hasNext()) {
+            Class cl = it.next();
+            Map<Class<?>, Properties> amm = new HashMap<Class<?>, Properties>();
+            amm.put(cl, new Properties());
+            // since location is not used, set null.
+            ModuleProperties mp = new ModuleProperties(amm);
+            // since module name does not matter, just put some dummy string.
+            mm.put(("item-" + Integer.toString(i)), mp);
+            i++;
+        }
+        return mm;
+    }
+
     class HAMClass1 {};
     class HAMClass2 {};
     class ApplicationHAM implements HttpAuthenticationMechanism {
@@ -1493,6 +1791,34 @@ public class JavaEESecCDIExtensionTest {
         public void cleanSubject(HttpServletRequest request,
                                  HttpServletResponse response,
                                  HttpMessageContext httpMessageContext) {
+        }
+    }
+
+    class CustomPasswordHash1 implements PasswordHash {
+        @Override
+        public  void initialize(Map<String,String> parameters) {
+        }
+        @Override
+        public String generate(char[] password) {
+            return null;
+        }
+        @Override
+        public boolean verify(char[] password, String hashedPassword) {
+            return true;
+        }
+    }
+
+    class CustomPasswordHash2 implements PasswordHash {
+        @Override
+        public  void initialize(Map<String,String> parameters) {
+        }
+        @Override
+        public String generate(char[] password) {
+            return null;
+        }
+        @Override
+        public boolean verify(char[] password, String hashedPassword) {
+            return false;
         }
     }
 }

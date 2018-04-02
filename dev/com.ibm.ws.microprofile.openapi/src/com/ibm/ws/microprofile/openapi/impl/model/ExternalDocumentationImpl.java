@@ -14,6 +14,9 @@ import java.util.Objects;
 
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * ExternalDocumentation
  *
@@ -98,9 +101,10 @@ public class ExternalDocumentationImpl implements ExternalDocumentation {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class ExternalDocumentation {\n");
+        sb = (description != null) ? sb.append("    description: ").append(toIndentedString(description)).append("\n") : sb.append("");
+        sb = (url != null) ? sb.append("    url: ").append(toIndentedString(url)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
 
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    url: ").append(toIndentedString(url)).append("\n");
         sb.append("}");
         return sb.toString();
     }

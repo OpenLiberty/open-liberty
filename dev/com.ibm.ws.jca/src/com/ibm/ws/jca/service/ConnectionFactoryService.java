@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.jca.service;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -39,7 +44,8 @@ import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jca.internal.BootstrapContextImpl;
 import com.ibm.ws.jca.internal.ResourceAdapterMetaData;
 import com.ibm.ws.jca.internal.Utils;
-import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
+import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -58,6 +64,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 //@Component(pid="com.ibm.ws.jca.connectionFactory.supertype")
 public class ConnectionFactoryService extends AbstractConnectionFactoryService implements ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ConnectionFactoryService.class);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /**
      * Name of reference to the ConnectionManagerService
@@ -126,6 +133,12 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      * Implementation class name for the managed connection factory.
      */
     private String mcfImplClassName;
+
+    /**
+     * MQ Queue manager id function is enabled by default. This will automatically be disabled if
+     * this function is not required by the resource adapter.
+     */
+    private boolean qmidenabled = true;
 
     /**
      * Config properties.
@@ -379,7 +392,7 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
         if (connectionManagerRef == null)
             conMgrSvc = ConnectionManagerService.createDefaultService(jndiName);
         else
-            conMgrSvc = (ConnectionManagerService) PrivHelper.locateService(componentContext, CONNECTION_MANAGER);
+            conMgrSvc = (ConnectionManagerService) priv.locateService(componentContext, CONNECTION_MANAGER);
         conMgrSvc.addObserver(this);
         isInitialized.set(true);
 
@@ -456,5 +469,39 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
             String embeddedApp = metadata.getJ2EEName().getApplication();
             Utils.checkAccessibility(jndiName, adapterName, embeddedApp, currentApp, false);
         }
+    }
+
+    @Override
+    @FFDCIgnore(NoSuchMethodException.class)
+    public void setMQQueueManager(Serializable xaresinfo) throws Exception {
+        if (qmidenabled) {
+            Class<? extends Object> mcfImplClass = ((Object) mcf).getClass();
+            Integer recoveryToken = null;
+            try {
+                Method mcfSetQmid = mcfImplClass.getMethod("setQmid", String.class);
+
+                ArrayList<Byte> byteList = (ArrayList<Byte>) xaresinfo;
+                byte[] bytes = new byte[byteList.size()];
+                int i = 0;
+                for (Byte b : byteList)
+                    bytes[i++] = b;
+                ResourceRefInfo resRefInfo = (ResourceRefInfo) ConnectorService.deserialize(bytes);
+                Class<? extends Object> resRefInfoImplClass = resRefInfo.getClass();
+                Method resRefGetQmid = resRefInfoImplClass.getMethod("getQmid", (Class<?>[]) null);
+                String qmid = (String) resRefGetQmid.invoke(resRefInfo, (Object[]) null);
+                if (qmid != null) {
+                    mcfSetQmid.invoke((Object) mcf, qmid);
+                }
+            } catch (NoSuchMethodException nsme) {
+                qmidenabled = false;
+            } catch (InvocationTargetException ite) {
+                qmidenabled = false;
+            } catch (IllegalAccessException e) {
+                qmidenabled = false;
+            } catch (IllegalArgumentException e) {
+                qmidenabled = false;
+            }
+        }
+
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,31 +21,33 @@ import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 @ApplicationScoped
 public class MetricRegistryFactory {
 
+    public static SharedMetricRegistries SHARED_METRIC_REGISTRIES;
+
     @Produces
     @ApplicationScoped
     public static MetricRegistry getDefaultRegistry() {
-        return SharedMetricRegistries.getOrCreate(MetricRegistry.Type.APPLICATION.getName());
+        return SHARED_METRIC_REGISTRIES.getOrCreate(MetricRegistry.Type.APPLICATION.getName());
     }
 
     @Produces
     @ApplicationScoped
     @RegistryType(type = MetricRegistry.Type.APPLICATION)
     public static MetricRegistry getApplicationRegistry() {
-        return SharedMetricRegistries.getOrCreate(MetricRegistry.Type.APPLICATION.getName());
+        return SHARED_METRIC_REGISTRIES.getOrCreate(MetricRegistry.Type.APPLICATION.getName());
     }
 
     @Produces
     @ApplicationScoped
     @RegistryType(type = MetricRegistry.Type.BASE)
     public static MetricRegistry getBaseRegistry() {
-        return SharedMetricRegistries.getOrCreate(MetricRegistry.Type.BASE.getName());
+        return SHARED_METRIC_REGISTRIES.getOrCreate(MetricRegistry.Type.BASE.getName());
     }
 
     @Produces
     @ApplicationScoped
     @RegistryType(type = MetricRegistry.Type.VENDOR)
     public static MetricRegistry getVendorRegistry() {
-        return SharedMetricRegistries.getOrCreate(MetricRegistry.Type.VENDOR.getName());
+        return SHARED_METRIC_REGISTRIES.getOrCreate(MetricRegistry.Type.VENDOR.getName());
     }
 
 }

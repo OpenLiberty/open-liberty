@@ -35,6 +35,7 @@ import org.eclipse.microprofile.config.spi.Converter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 
 /**
@@ -93,6 +94,7 @@ public class DefaultConverters {
     /**
      * @return defaultConverters
      */
+    @Trivial
     public static PriorityConverterMap getDefaultConverters() {
         return defaultConverters;
     }

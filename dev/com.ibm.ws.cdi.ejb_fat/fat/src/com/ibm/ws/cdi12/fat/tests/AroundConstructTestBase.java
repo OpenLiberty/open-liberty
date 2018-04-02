@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.AfterClass;
@@ -105,9 +107,11 @@ public abstract class AroundConstructTestBase extends LoggingTest {
                         .add(new FileAsset(new File("test-applications/postConstructErrorMessageApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
                         .addAsLibrary(utilLib);
 
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
         ShrinkHelper.exportDropinAppToServer(server, aroundConstructApp);
         ShrinkHelper.exportDropinAppToServer(server, postConstructErrorMessageApp);
-        server.waitForStringInLogUsingMark("CWWKZ0001I.*Application aroundConstructApp started");
+        assertNotNull("aroundConstructApp started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*aroundConstructApp"));
+        assertNotNull("postConstructErrorMessageApp started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*postConstructErrorMessageApp"));
     }
 
     @ClassRule

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2013,2014,2015,2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import javax.naming.directory.Attributes;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.security.CertificateMapper;
 import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
@@ -277,6 +278,11 @@ public class LdapConfigManager {
     private String[] iCertFilterEles = null;
 
     /**
+     * {@link CertificateMapper} ID.
+     */
+    private String iCertificateMapperId;
+
+    /**
      * Flag indicating whether user wants to use input principal name for login.
      */
     private final boolean usePrincipalNameForLogin = false;
@@ -422,16 +428,28 @@ public class LdapConfigManager {
      * @throws WIMException
      */
     public void initialize(Map<String, Object> configProps) throws WIMException {
-        final String METHODNAME = "initialize(configProps, configAdminRef)";
+        final String METHODNAME = "initialize(configProps)";
         iLdapType = (String) configProps.get(ConfigConstants.CONFIG_PROP_LDAP_SERVER_TYPE);
         if (iLdapType == null) {
             iLdapType = ConfigConstants.CONFIG_LDAP_IDS52;
         } else {
             iLdapType = iLdapType.toUpperCase();
         }
+
+        /*
+         * Initialize certificate mapping.
+         */
         setCertificateMapMode((String) configProps.get(ConfigConstants.CONFIG_PROP_CERTIFICATE_MAP_MODE));
         if (ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE.equalsIgnoreCase(getCertificateMapMode())) {
+
             setCertificateFilter((String) configProps.get(ConfigConstants.CONFIG_PROP_CERTIFICATE_FILTER));
+
+        } else if (ConfigConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(getCertificateMapMode())) {
+
+            this.iCertificateMapperId = (String) configProps.get(ConfigConstants.CONFIG_PROP_CERTIFICATE_MAPPER_ID);
+            if (this.iCertificateMapperId == null) {
+                Tr.warning(tc, "No certificateMapperId was found for this registry."); // TODO LOCALIZE
+            }
         }
 
         List<HashMap<String, String>> baseEntries = new ArrayList<HashMap<String, String>>();
@@ -485,7 +503,7 @@ public class LdapConfigManager {
         setMemberAttributes(groupProps);
         setMembershipAttribute(groupProps);
         setDynaMemberAttributes(groupProps);
-        setGroupSeachScope(configProps);
+        setGroupSearchScope(configProps);
 
         setAttributes(configProps);
         setExtIdAttributes(configProps);
@@ -496,41 +514,6 @@ public class LdapConfigManager {
         setFilters(configProps);
         setGroupMemberFilter();
 
-/*
- * TODO:: How do we support custom properties?
- * List propList = reposConfig.getList(CONFIG_DO_CUSTOM_PROPERTIES);
- * if (propList != null & !propList.isEmpty()) {
- * iCustomProperties = new HashMap<String, String>();
- * String propName = null;
- * String propValue = null;
- * for (int j=0; j < propList.size(); j++){
- * DataObject propDO = (DataObject) propList.get(j);
- * propName = (String)propDO.getString(CONFIG_PROP_NAME);
- * propValue = (String)propDO.getString(CONFIG_PROP_VALUE);
- * iCustomProperties.put(propName, propValue);
- * }
- * if (iCustomProperties.containsKey(CONFIG_CUSTOM_PROP_USE_INPUT_PRINCIPALNAME_FOR_LOGIN)) {
- * propValue = iCustomProperties.get(CONFIG_CUSTOM_PROP_USE_INPUT_PRINCIPALNAME_FOR_LOGIN);
- * if (propValue.equalsIgnoreCase("true"))
- * usePrincipalNameForLogin = true;
- * }
- * if (iCustomProperties.containsKey(CONFIG_CUSTOM_PROP_RETURN_NESTED_NON_GROUP_MEMBERS)) {
- * propValue = iCustomProperties.get(CONFIG_CUSTOM_PROP_RETURN_NESTED_NON_GROUP_MEMBERS);
- * if (propValue.equalsIgnoreCase("true"))
- * includeGroupInSearchEntityTypes = true;
- * }
- * if (iCustomProperties.containsKey(CONFIG_CUSTOM_PROP_USE_ENCODING_IN_SEARCH_EXPRESSION)) {
- * useEncodingInSearchExpression = iCustomProperties.get(CONFIG_CUSTOM_PROP_USE_ENCODING_IN_SEARCH_EXPRESSION);
- * try{
- * COPYRIGHT_NOTICE.getBytes(useEncodingInSearchExpression);
- * }
- * catch(UnsupportedEncodingException e) {
- * trcLogger.logp(Level.WARNING, CLASSNAME, METHODNAME, "java.io.UnsupportedEncodingException: " + e.getMessage());
- * useEncodingInSearchExpression = "ISO8859_1"; // Default
- * }
- * }
- * }
- */
         // TODO:: This is also deleted?
         // iNeedTranslateRDN = reposConfig.getBoolean(ConfigConstants.CONFIG_PROP_TRANSLATE_RDN);
 
@@ -551,30 +534,29 @@ public class LdapConfigManager {
 
         if (tc.isDebugEnabled()) {
             StringBuffer strBuf = new StringBuffer();
-            strBuf.append(" LDAPServerType: ").append(iLdapType).append("\n");
+            strBuf.append("\n\nLDAPServerType: ").append(iLdapType).append("\n");
             strBuf.append("Nodes: ").append(WIMTraceHelper.printObjectArray(iNodes)).append("\n");
             strBuf.append("ReposNodes: ").append(WIMTraceHelper.printObjectArray(iLdapNodes)).append("\n");
             strBuf.append("TopReposNodes: ").append(WIMTraceHelper.printObjectArray(iTopLdapNodes)).append("\n");
             strBuf.append("NeedSwitchNode: ").append(iNeedSwitchNode).append("\n");
             strBuf.append("LDAPEntities: ").append("\n");
             for (int i = 0; i < iLdapEntities.size(); i++) {
-                strBuf.append(iLdapEntities.get(i).toString());
+                strBuf.append("   " + iLdapEntities.get(i).toString()).append("\n");
             }
-            strBuf.append("\r\nGroupMemberAttrs: ").append(iMbrAttrMap).append("memberAttrs: ").append(
-                                                                                                       WIMTraceHelper.printObjectArray(iMbrAttrs)).append("scopes: ").append(
-                                                                                                                                                                             WIMTraceHelper.printPrimitiveArray(iMbrAttrScope)).append(
-                                                                                                                                                                                                                                       "\n");
+
+            strBuf.append("GroupMemberAttrs: ").append(iMbrAttrMap).append("\n");
+            strBuf.append("   memberAttrs: ").append(WIMTraceHelper.printObjectArray(iMbrAttrs)).append("\n");
+            strBuf.append("   scopes: ").append(WIMTraceHelper.printPrimitiveArray(iMbrAttrScope)).append("\n");
             strBuf.append("GroupMemberFilter: ").append(iGrpMbrFilter).append("\n");
             strBuf.append("GroupDynaMemberAttrs: ").append(iDynaMbrAttrMap).append("\n");
             strBuf.append("DynaGroupFilter: ").append(iDynaGrpFilter).append("\n");
-            strBuf.append("GroupMembershipAttrs: ").append(iMembershipAttrName).append(" scope: ").append(
-                                                                                                          iMembershipAttrScope).append("\n");
+            strBuf.append("GroupMembershipAttrs: ").append(iMembershipAttrName).append("\n");
+            strBuf.append("   scope: ").append(iMembershipAttrScope).append("\n");
 
             strBuf.append("PropToAttrMap: ").append(iPropToAttrMap).append("\n");
             strBuf.append("AttrToPropMap: ").append(iAttrToPropMap).append("\n");
             strBuf.append("ExtIds: ").append(iExtIds).append("\n");
             strBuf.append("AllAttrs: ").append(iAttrs).append("\n");
-            // strBuf.append("ConfidentialAttrs: ").append(iConAttrs).append("\n");
             strBuf.append("LoginAttrs: ").append(iLoginAttrs).append("\n");
             strBuf.append("iUserFilter: ").append(iUserFilter).append("\n");
             strBuf.append("iGroupFilter: ").append(iGroupFilter).append("\n");
@@ -852,7 +834,7 @@ public class LdapConfigManager {
             // Parse the group member id map
             if (iGroupMemberIdMap != null) {
                 // Check if iGroupMemberIdMap have ibm-allGroups , if true then do the nested search for group members
-                iLdapOperationalAttr = (iGroupMemberIdMap.contains(IBM_ALL_GROUPS));
+                iLdapOperationalAttr = iGroupMemberIdMap.toLowerCase().contains(IBM_ALL_GROUPS.toLowerCase());
 
                 // Clear the membership attribute if we were using the default. Otherwise keep it, as it was explicitly set
                 if (iDefaultMembershipAttr) {
@@ -909,8 +891,9 @@ public class LdapConfigManager {
                             iMbrAttrsAllScope = false;
                         }
                     }
-                } else if (tc.isDebugEnabled())
+                } else if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Could not find entity for Group!!");
+                }
 
             }
 
@@ -1426,6 +1409,7 @@ public class LdapConfigManager {
                 iMembershipAttrName = null;
             } else {
                 iMembershipAttrName = name;
+
                 String scope = (String) mbrshipAttr.get(ConfigConstants.CONFIG_PROP_SCOPE);
                 if (scope == null) {
                     iMembershipAttrScope = LdapConstants.LDAP_DIRECT_GROUP_MEMBERSHIP;
@@ -2343,9 +2327,10 @@ public class LdapConfigManager {
         return iMbrAttrsAllScope;
     }
 
+    @SuppressWarnings("unchecked")
     @Trivial
-    public List getLdapEntities() {
-        return (List) ((ArrayList<LdapEntity>) iLdapEntities).clone();
+    public List<LdapEntity> getLdapEntities() {
+        return (List<LdapEntity>) ((ArrayList<LdapEntity>) iLdapEntities).clone();
     }
 
     /**
@@ -2511,6 +2496,11 @@ public class LdapConfigManager {
     }
 
     @Trivial
+    public String getCertificateMapperId() {
+        return iCertificateMapperId;
+    }
+
+    @Trivial
     public String getCertificateMapMode() {
         return iCertMapMode;
     }
@@ -2532,10 +2522,8 @@ public class LdapConfigManager {
 
     public String getCertificateLDAPFilter(X509Certificate cert) throws CertificateMapperException {
         if (iCertFilterEles == null) {
-            throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, Tr.formatMessage(
-                                                                                                            tc,
-                                                                                                            WIMMessageKey.INVALID_CERTIFICATE_FILTER,
-                                                                                                            "null"));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_CERTIFICATE_FILTER, "null");
+            throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, msg);
         }
 
         StringBuffer filter = new StringBuffer();
@@ -2580,17 +2568,13 @@ public class LdapConfigManager {
                 // TBD - filter.append (cert.getSubjectUniqueID());
             } else if (str.equals("${TBSCertificate}") || str.equals("$[TBSCertificate]")) {
                 // filter.append (cert.getTBSCertificate());
-                throw new CertificateMapperException(WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED, Tr.formatMessage(
-                                                                                                                 tc,
-                                                                                                                 WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED,
-                                                                                                                 null));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED, null);
+                throw new CertificateMapperException(WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED, msg);
             } else if (str.equals("${Version}") || str.equals("$[Version]")) {
                 filter.append(cert.getVersion());
             } else {
-                throw new CertificateMapperException(WIMMessageKey.UNKNOWN_CERTIFICATE_ATTRIBUTE, Tr.formatMessage(
-                                                                                                                   tc,
-                                                                                                                   WIMMessageKey.UNKNOWN_CERTIFICATE_ATTRIBUTE,
-                                                                                                                   WIMMessageHelper.generateMsgParms(str)));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.UNKNOWN_CERTIFICATE_ATTRIBUTE, WIMMessageHelper.generateMsgParms(str));
+                throw new CertificateMapperException(WIMMessageKey.UNKNOWN_CERTIFICATE_ATTRIBUTE, msg);
             }
         }
         return filter.toString();
@@ -3058,6 +3042,8 @@ public class LdapConfigManager {
     private void setCertificateMapMode(String certMapMode) {
         if (ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE.equalsIgnoreCase(certMapMode)) {
             iCertMapMode = ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE;
+        } else if (ConfigConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(certMapMode)) {
+            iCertMapMode = ConfigConstants.CONFIG_VALUE_CUSTOM_MODE;
         } else {
             iCertMapMode = ConfigConstants.CONFIG_VALUE_EXTACT_DN_MODE;
         }
@@ -3162,7 +3148,7 @@ public class LdapConfigManager {
  * }
  */
 
-    private void setGroupSeachScope(Map<String, Object> configProps) {
+    private void setGroupSearchScope(Map<String, Object> configProps) {
         if (configProps.get("recursiveSearch") != null &&
             configProps.get("recursiveSearch") instanceof Boolean)
             iRecursiveSearch = (Boolean) configProps.get("recursiveSearch");
@@ -3180,7 +3166,7 @@ public class LdapConfigManager {
 
     @Trivial
     public boolean updateGroupMembership() {
-        if (getLdapType().startsWith("DOMINO") || getLdapType().startsWith("SUNONE"))
+        if (LdapConstants.DOMINO_LDAP_SERVER.equalsIgnoreCase(iLdapType) || LdapConstants.SUN_LDAP_SERVER.equalsIgnoreCase(iLdapType))
             return true;
         else
             return false;
@@ -3199,7 +3185,7 @@ public class LdapConfigManager {
      * @return
      */
     private String defaultDummyMember() {
-        if (iLdapType.startsWith(LdapConstants.IDS_LDAP_SERVER) || iLdapType.startsWith(LdapConstants.DOMINO_LDAP_SERVER)) {
+        if (LdapConstants.IDS_LDAP_SERVER.equalsIgnoreCase(iLdapType) || LdapConstants.DOMINO_LDAP_SERVER.equalsIgnoreCase(iLdapType)) {
             return LdapConstants.LDAP_DUMMY_MEMBER_DEFAULT;
         } else
             return null;
@@ -3236,7 +3222,7 @@ public class LdapConfigManager {
         return iLoginProps;
     }
 
-    public Map getAttributes() {
+    public Map<String, LdapAttribute> getAttributes() {
         return iAttrNameToAttrMap;
     }
 }

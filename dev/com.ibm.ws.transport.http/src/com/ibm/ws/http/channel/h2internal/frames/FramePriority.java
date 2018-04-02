@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,24 +69,31 @@ public class FramePriority extends Frame {
         // |E|                  Stream Dependency (31)                     | Weight (8) |
         // +-+-------------+-----------------------------------------------+------------+
 
-        try {
-            byte firstPayloadByte = frp.grabNextByte();
+        if (payloadLength == 5) {
+            try {
+                byte firstPayloadByte = frp.grabNextByte();
 
-            exclusive = utils.getReservedBit(firstPayloadByte);
+                exclusive = utils.getReservedBit(firstPayloadByte);
 
-            firstPayloadByte = (byte) (firstPayloadByte & Constants.MASK_7F);
-            streamDependency = frp.grabNext24BitInt(firstPayloadByte);
+                firstPayloadByte = (byte) (firstPayloadByte & Constants.MASK_7F);
+                streamDependency = frp.grabNext24BitInt(firstPayloadByte);
 
-            // convert signed byte to integer as if the byte was unsigned.
-            weight = (0x00FF & frp.grabNextByte());
+                // convert signed byte to integer as if the byte was unsigned.
+                weight = (0x00FF & frp.grabNextByte());
 
-            // weight comes over the wire as 0 - 255, but as per spec instructions should be 1 - 256 internally
-            weight = weight + 1;
-        } catch (FrameSizeException e) {
-            e.setConnectionError(false);
-            throw e;
+                // weight comes over the wire as 0 - 255, but as per spec instructions should be 1 - 256 internally
+                weight = weight + 1;
+            } catch (FrameSizeException e) {
+                e.setConnectionError(false);
+                throw e;
+            }
+        } else {
+            for (int i = 0; i < payloadLength; i++) {
+                // clear out the bad payload from the buffer
+                frp.grabNextByte();
+            }
+            throw new FrameSizeException("PRIORITY frame must have a length of 5 octets");
         }
-
     }
 
     @Override
@@ -111,12 +118,17 @@ public class FramePriority extends Frame {
     }
 
     @Override
-    public void validate(H2ConnectionSettings settings) throws ProtocolException {
+    public void validate(H2ConnectionSettings settings) throws FrameSizeException, ProtocolException {
         if (streamId == 0) {
             throw new ProtocolException("PRIORITY frame stream ID cannot be 0x0");
-        }
-        if (this.streamId == this.streamDependency) {
-            throw new ProtocolException("PRIORITY frame stream cannot depend on itself");
+        } else if (this.streamId == this.streamDependency) {
+            ProtocolException pe = new ProtocolException("PRIORITY frame stream cannot depend on itself");
+            pe.setConnectionError(false);
+            throw pe;
+        } else if (this.payloadLength != 5) {
+            FrameSizeException fse = new FrameSizeException("PRIORITY frame must have a length of 5 octets");
+            fse.setConnectionError(false);
+            throw fse;
         }
 
     }

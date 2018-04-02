@@ -31,8 +31,7 @@ public class TokenCallback implements Callback, Serializable {
         this.credToken = AuthenticationHelper.copyCredToken(token);
     }
 
-    public @Sensitive
-    byte[] getToken() {
+    public @Sensitive byte[] getToken() {
         return AuthenticationHelper.copyCredToken(credToken);
     }
 

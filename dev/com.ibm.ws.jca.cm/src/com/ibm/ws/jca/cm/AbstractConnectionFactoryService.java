@@ -418,6 +418,9 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
 
             // TODO supply class loader identifier if resource was loaded from application
             ManagedConnectionFactory mcf = getManagedConnectionFactory(null);
+
+            setMQQueueManager(xaresinfo);
+
             Subject subject = getSubjectForRecovery(mcf, xaresinfo);
             mc = mcf.createManagedConnection(subject, null);
             xa = mc.getXAResource();
@@ -548,4 +551,12 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
             lock.writeLock().unlock();
         }
     }
+
+    /**
+     * Set the MQ QMID if one is available.
+     *
+     * @return constant indicating the transaction support of the resource adapter.
+     */
+    public abstract void setMQQueueManager(Serializable xaresinfo) throws Exception;
+
 }

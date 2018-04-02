@@ -12,11 +12,14 @@ package com.ibm.ws.microprofile.config.converters;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  *
  */
 public class AtomicIntegerConverter extends BuiltInConverter {
 
+    @Trivial
     public AtomicIntegerConverter() {
         super(AtomicInteger.class);
     }

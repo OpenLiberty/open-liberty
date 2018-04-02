@@ -68,7 +68,7 @@ MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=A kiszolg\u00e1l\u00f3 elind\u00
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Ellen\u0151rizze, hogy a c\u00edmzett a megadott n\u00e9vvel be lett-e \u00e1ll\u00edtva. Ha a konfigur\u00e1ci\u00f3 l\u00e9tezik, akkor v\u00e1rja meg, hogy a c\u00edmzett el\u00e9rhet\u0151 legyen.
 
 MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: A(z) {0} \u00fczenetvez\u00e9relt komponenshez tartoz\u00f3 \u00fczenet v\u00e9gpont a(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban nem lett aktiv\u00e1lva, mert a(z) {3} aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s az autoStart=false be\u00e1ll\u00edt\u00e1ssal lett konfigur\u00e1lva.
-MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=Az \u00fczenet v\u00e9gpont nem lett aktiv\u00e1lva, mert az aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s autoStart=false be\u00e1ll\u00edt\u00e1ssal lett konfigur\u00e1lva. Az \u00fczenet v\u00e9gpont egy resume parancs kiad\u00e1sakor lesz aktiv\u00e1lva.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=Az \u00fczenet v\u00e9gpont nem lett aktiv\u00e1lva, mert az aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s autoStart=false be\u00e1ll\u00edt\u00e1ssal lett konfigur\u00e1lva.  Az \u00fczenet v\u00e9gpont egy resume parancs kiad\u00e1sakor lesz aktiv\u00e1lva.
 MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=Nincs teend\u0151.
 
 MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: A sz\u00fcneteltet\u00e9si m\u0171veletnek nincs hat\u00e1sa, mivel a(z) {0} beanhez tartoz\u00f3 \u00fczenet v\u00e9gpont a(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban m\u00e1r sz\u00fcneteltetve van.

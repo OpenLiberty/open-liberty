@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.h2internal.priority.Node;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
@@ -114,6 +115,8 @@ public class H2InboundLink extends HttpInboundLink {
 
     int h2NextPromisedStreamId = 0;
 
+    private String authority = null;
+
     private H2HeaderTable readContextTable = null;
     private H2HeaderTable writeContextTable = null;
 
@@ -130,10 +133,16 @@ public class H2InboundLink extends HttpInboundLink {
     private boolean oneTimeEntry = false;
 
     public boolean isContinuationExpected() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isContinuationExpected: " + continuationFrameExpected);
+        }
         return continuationFrameExpected;
     }
 
     public void setContinuationExpected(boolean expected) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setContinuationExpected: " + expected);
+        }
         this.continuationFrameExpected = expected;
     }
 
@@ -220,8 +229,10 @@ public class H2InboundLink extends HttpInboundLink {
     /**
      * Handle the receipt of the MAGIC string from the client: initialize the control stream 0 and and send out a settings frame to
      * acknowledge the MAGIC string
+     * 
+     * @throws StreamClosedException
      */
-    public void processConnectionPrefaceMagic() {
+    public void processConnectionPrefaceMagic() throws ProtocolException, StreamClosedException {
         connection_preface_string_rcvd = true;
         H2StreamProcessor controlStream = createNewInboundLink(0);
         controlStream.completeConnectionPreface();
@@ -324,6 +335,11 @@ public class H2InboundLink extends HttpInboundLink {
         streamTable.put(streamID, streamProcessor);
         highestClientStreamId = streamID;
 
+        // add stream 0 to the table, in case we need to write out any control frames prior to initialization completion
+        streamID = 0;
+        streamProcessor = new H2StreamProcessor(streamID, wrap, this, StreamState.OPEN);
+        streamTable.put(streamID, streamProcessor);
+
         // pull the settings header out of the request;
         // process it and apply it to the stream
         String settings = headers.get("HTTP2-Settings");
@@ -332,7 +348,7 @@ public class H2InboundLink extends HttpInboundLink {
                 Tr.debug(tc, "handleHTTP2UpgradeRequest, processing upgrade header settings : " + settings);
             }
             getConnectionSettings().processUpgradeHeaderSettings(settings);
-        } catch (ProtocolException e1) {
+        } catch (Http2Exception e1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleHTTP2UpgradeRequest an error occurred processing the settings during connection initialization");
             }
@@ -830,7 +846,7 @@ public class H2InboundLink extends HttpInboundLink {
                 Tr.debug(tc, "HttpDispatcherLink found: " + hdLink);
             }
             try {
-                hdLink.close(initialVC, null);
+                hdLink.close(initialVC, exceptionForCloseFromHere);
             } catch (Exception consume) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "closeConnectionLink: consuming exception: " + consume);
@@ -1110,7 +1126,7 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public boolean significantlyPastCloseTime(int streamID) {
-        if (streamTable.contains(streamID))
+        if (streamTable.containsKey(streamID))
             return false;
         if (closeTable.containsKey(streamID)) {
             H2StreamProcessor streamProcessor = closeTable.get(streamID);
@@ -1149,6 +1165,24 @@ public class H2InboundLink extends HttpInboundLink {
 
     public int getHighestClientStreamId() {
         return highestClientStreamId;
+    }
+
+    /**
+     * Set the authority string to use for the :authority header
+     *
+     * @param String
+     */
+    protected void setAuthority(String a) {
+        this.authority = a;
+    }
+
+    /**
+     * Get the server authority string to use for the :authority header. Needed for push promise frames.
+     *
+     * @return authority String
+     */
+    public String getAuthority() {
+        return this.authority;
     }
 
 }

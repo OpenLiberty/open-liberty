@@ -16,7 +16,8 @@ Bundle-Description: Ldap adapter, version ${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.wim.adapter.ldap
 
 Export-Package: \
-  com.ibm.ws.security.wim.adapter.ldap;provide:=true
+  com.ibm.ws.security.wim.adapter.ldap;provide:=true, \
+  com.ibm.ws.security.wim.adapter.ldap.context;provide:=true
 
 Private-Package: \
   com.ibm.ws.config.xml.internal.nester, \
@@ -32,7 +33,8 @@ Import-Package: \
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
 
--dsannotations: com.ibm.ws.security.wim.adapter.ldap.LdapAdapter
+-dsannotations: com.ibm.ws.security.wim.adapter.ldap.LdapAdapter, \
+  com.ibm.ws.security.wim.adapter.ldap.LdapConfigManager
 
 instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.class
 
@@ -41,6 +43,7 @@ instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.cla
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.security.wim.base;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
+	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.wim.core;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
@@ -55,4 +58,7 @@ instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.cla
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.security;version=latest
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.org.apache.directory.server;version=latest,\
+	org.apache.directory.server:apacheds-service;version=latest,\
+	com.ibm.ws.crypto.passwordutil;version=latest

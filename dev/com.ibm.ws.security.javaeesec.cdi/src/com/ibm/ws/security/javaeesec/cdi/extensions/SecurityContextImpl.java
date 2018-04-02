@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.metadata.MatchResponse;
 import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 /**
@@ -125,28 +126,31 @@ public class SecurityContextImpl implements SecurityContext {
     public boolean hasAccessToWebResource(String resource, String... methods) {
 
         String appName = getApplicationName();
-        SecurityMetadata securityMetadata = getSecurityMetadata();
-        SecurityConstraintCollection collection = securityMetadata.getSecurityConstraintCollection();
-
+        SecurityMetadata securityMetadata = WebConfigUtils.getSecurityMetadata();
+        SecurityConstraintCollection collection = null;
+        if (securityMetadata != null) {
+            collection = securityMetadata.getSecurityConstraintCollection();
+        }
         if (null != collection) {
 
             AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
             Subject callerSubject = getCallerSubject();
 
-            for (String method : methods) {
-                MatchResponse matchResponse = collection.getMatchResponse(resource, method);
+            List<MatchResponse> matchResponses = collection.getMatchResponses(resource, methods);
 
-                if (matchResponse.equals(MatchResponse.NO_MATCH_RESPONSE)) {
+            for (MatchResponse response : matchResponses) {
+
+                if (response.equals(MatchResponse.NO_MATCH_RESPONSE)) {
                     // There are no constraints so user has access
                     return true;
                 }
 
-                if (matchResponse.isAccessPrecluded()) {
+                if (response.isAccessPrecluded()) {
                     //This methods access is precluded proceed to next method
                     continue;
                 }
 
-                List<String> roles = matchResponse.getRoles();
+                List<String> roles = response.getRoles();
 
                 if (roles != null && !roles.isEmpty()) {
                     if (authService.isAuthorized(appName, roles, callerSubject)) {
@@ -196,13 +200,4 @@ public class SecurityContextImpl implements SecurityContext {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         return cmd.getJ2EEName().getApplication();
     }
-
-    private SecurityMetadata getSecurityMetadata() {
-        SecurityMetadata secMetadata = null;
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
-        secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
-        return secMetadata;
-    }
-
 }

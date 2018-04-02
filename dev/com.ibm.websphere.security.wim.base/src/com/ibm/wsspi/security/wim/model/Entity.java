@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,9 +30,9 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for Entity complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Entity">
  * &lt;complexContent>
@@ -51,13 +52,13 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The Entity object represents a VMM entity. All other entity types, like Person, Group, and
  * OrgContainer are extended from this Entity object.
- * 
+ *
  * <p> The Entity object has several properties: <b>identifier</b>, <b>viewIdentifiers</b>, <b>entitlementInfo</b>, and <b>changeType</b>,
  * each of which are represented themselves by objects.
- * 
+ *
  * <ul>
  * <li><b>identifier</b>: contains a single IdentifierType object.</li>
  * <li><b>viewIdentifiers</b>: contains a list of ViewIdentifierType objects.</li>
@@ -73,26 +74,36 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <li><b>modifyTimestamp</b>: indicates when the Entity was last modified.</li>
  * <li><b>changeType</b>: indicates the operation being performed on this Entity: add, delete, modify or rename.</li>
  * </ul>
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Entity", propOrder = {
-                                       "identifier",
-                                       "viewIdentifiers",
-                                       "parent",
-                                       "children",
-                                       "groups",
-                                       "createTimestamp",
-                                       "modifyTimestamp",
-                                       "entitlementInfo",
-                                       "changeType"
+                                        "identifier",
+                                        "viewIdentifiers",
+                                        "parent",
+                                        "children",
+                                        "groups",
+                                        "createTimestamp",
+                                        "modifyTimestamp",
+                                        "entitlementInfo",
+                                        "changeType"
 })
 @XmlSeeAlso({
-             Container.class,
-             GeographicLocation.class,
-             RolePlayer.class
+              Container.class,
+              GeographicLocation.class,
+              RolePlayer.class
 })
 public class Entity {
+
+    private static final String PROP_IDENTIFIER = "identifier";
+    private static final String PROP_VIEW_IDENTIFIERS = "viewIdentifiers";
+    private static final String PROP_PARENT = "parent";
+    private static final String PROP_CHILDREN = "children";
+    private static final String PROP_GROUPS = "groups";
+    private static final String PROP_CREATE_TIMESTAMP = "createTimestamp";
+    private static final String PROP_MODIFY_TIMESTAMP = "modifyTimestamp";
+    private static final String PROP_ENTITLEMENT_INFO = "entitlementInfo";
+    private static final String PROP_CHANGE_TYPE = "changeType";
 
     protected IdentifierType identifier;
     protected List<com.ibm.wsspi.security.wim.model.ViewIdentifierType> viewIdentifiers;
@@ -105,6 +116,7 @@ public class Entity {
     protected Date modifyTimestamp;
     protected EntitlementInfoType entitlementInfo;
     protected String changeType;
+
     private List deletedProperties = null;
     private static List mandatoryProperties = null;
     private static List transientProperties = null;
@@ -114,6 +126,9 @@ public class Entity {
     private static ArrayList superTypeList = null;
     private static HashSet subTypeList = null;
     static HashMap subTypeMap = null;
+
+    /** The set of multi-valued properties for this entity type. */
+    private static final Set<String> MULTI_VALUED_PROPERTIES;
 
     @SuppressWarnings("unused")
     private final static TraceComponent tc = Tr.register(Entity.class);
@@ -127,14 +142,19 @@ public class Entity {
         setSuperTypes();
         setSubTypes();
         setSubTypeMap();
+
+        MULTI_VALUED_PROPERTIES = new HashSet<String>();
+        MULTI_VALUED_PROPERTIES.add(PROP_CHILDREN);
+        MULTI_VALUED_PROPERTIES.add(PROP_GROUPS);
+        MULTI_VALUED_PROPERTIES.add(PROP_VIEW_IDENTIFIERS);
     }
 
     /**
      * Gets the value of the <b>identifier</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link IdentifierType }
-     * 
+     *
      */
     public IdentifierType getIdentifier() {
         return identifier;
@@ -142,10 +162,10 @@ public class Entity {
 
     /**
      * Sets the value of the <b>identifier</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link IdentifierType }
-     * 
+     *
      */
     public void setIdentifier(IdentifierType value) {
         this.identifier = value;
@@ -153,10 +173,10 @@ public class Entity {
 
     /**
      * Returns true if the <b>identifier</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSetIdentifier() {
@@ -165,24 +185,25 @@ public class Entity {
 
     /**
      * Gets the value of the <b>viewIdentifiers</b> property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the viewIdentifiers property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getViewIdentifiers().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.ViewIdentifierType }
-     * 
-     * 
+     *
+     *
      */
     public List<com.ibm.wsspi.security.wim.model.ViewIdentifierType> getViewIdentifiers() {
         if (viewIdentifiers == null) {
@@ -193,10 +214,10 @@ public class Entity {
 
     /**
      * Returns true if the <b>viewIdentifiers</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetViewIdentifiers() {
         return ((this.viewIdentifiers != null) && (!this.viewIdentifiers.isEmpty()));
@@ -204,7 +225,7 @@ public class Entity {
 
     /**
      * Resets the <b>viewIdentifiers</b> property to null.
-     * 
+     *
      */
     public void unsetViewIdentifiers() {
         this.viewIdentifiers = null;
@@ -212,10 +233,10 @@ public class Entity {
 
     /**
      * Gets the value of the <b>parent</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link Entity }
-     * 
+     *
      */
     public Entity getParent() {
         return parent;
@@ -223,10 +244,10 @@ public class Entity {
 
     /**
      * Sets the value of the <b>parent</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Entity }
-     * 
+     *
      */
     public void setParent(Entity value) {
         this.parent = value;
@@ -234,10 +255,10 @@ public class Entity {
 
     /**
      * Returns true if the <b>parent</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetParent() {
         return (this.parent != null);
@@ -245,24 +266,25 @@ public class Entity {
 
     /**
      * Gets the value of the <b>children</b> property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the children property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getChildren().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link Entity }
-     * 
-     * 
+     *
+     *
      */
     public List<Entity> getChildren() {
         if (children == null) {
@@ -273,10 +295,10 @@ public class Entity {
 
     /**
      * Returns true if the <b>children</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetChildren() {
         return ((this.children != null) && (!this.children.isEmpty()));
@@ -284,7 +306,7 @@ public class Entity {
 
     /**
      * Resets the <b>children</b> property to null.
-     * 
+     *
      */
     public void unsetChildren() {
         this.children = null;
@@ -292,24 +314,25 @@ public class Entity {
 
     /**
      * Gets the value of the <b>groups</b> property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the groups property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getGroups().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.Group }
-     * 
-     * 
+     *
+     *
      */
     public List<com.ibm.wsspi.security.wim.model.Group> getGroups() {
         if (groups == null) {
@@ -320,10 +343,10 @@ public class Entity {
 
     /**
      * Returns true if the <b>groups</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSetGroups() {
@@ -332,7 +355,7 @@ public class Entity {
 
     /**
      * Resets the <b>groups</b> property to null.
-     * 
+     *
      */
 
     public void unsetGroups() {
@@ -341,10 +364,10 @@ public class Entity {
 
     /**
      * Gets the value of the <b>createTimestamp</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link Date }
-     * 
+     *
      */
     public Date getCreateTimestamp() {
         return createTimestamp;
@@ -352,10 +375,10 @@ public class Entity {
 
     /**
      * Sets the value of the <b>createTimestamp</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Date }
-     * 
+     *
      */
     public void setCreateTimestamp(Date value) {
         this.createTimestamp = value;
@@ -363,10 +386,10 @@ public class Entity {
 
     /**
      * Returns true if the <b>createTimestamp</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetCreateTimestamp() {
         return (this.createTimestamp != null);
@@ -374,10 +397,10 @@ public class Entity {
 
     /**
      * Gets the value of the <b>modifyTimestamp</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link Date }
-     * 
+     *
      */
     public Date getModifyTimestamp() {
         return modifyTimestamp;
@@ -385,10 +408,10 @@ public class Entity {
 
     /**
      * Sets the value of the <b>modifyTimestamp</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Date }
-     * 
+     *
      */
     public void setModifyTimestamp(Date value) {
         this.modifyTimestamp = value;
@@ -396,10 +419,10 @@ public class Entity {
 
     /**
      * Returns true if the <b>modifyTimeStamp</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetModifyTimestamp() {
         return (this.modifyTimestamp != null);
@@ -407,10 +430,10 @@ public class Entity {
 
     /**
      * Gets the value of the <b>entitlementInfo</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link EntitlementInfoType }
-     * 
+     *
      */
     public EntitlementInfoType getEntitlementInfo() {
         return entitlementInfo;
@@ -418,10 +441,10 @@ public class Entity {
 
     /**
      * Sets the value of the <b>entitlementInfo</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link EntitlementInfoType }
-     * 
+     *
      */
     public void setEntitlementInfo(EntitlementInfoType value) {
         this.entitlementInfo = value;
@@ -429,10 +452,10 @@ public class Entity {
 
     /**
      * Returns true if the <b>entitlementInfo</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetEntitlementInfo() {
         return (this.entitlementInfo != null);
@@ -440,10 +463,10 @@ public class Entity {
 
     /**
      * Gets the value of the <b>changeType</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getChangeType() {
         return changeType;
@@ -451,10 +474,10 @@ public class Entity {
 
     /**
      * Sets the value of the <b>changeType</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setChangeType(String value) {
         this.changeType = value;
@@ -462,10 +485,10 @@ public class Entity {
 
     /**
      * Returns true if the <b>changeType</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetChangeType() {
         return (this.changeType != null);
@@ -473,40 +496,40 @@ public class Entity {
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     public Object get(String propName) {
-        if (propName.equals("identifier")) {
+        if (propName.equals(PROP_IDENTIFIER)) {
             return getIdentifier();
         }
-        if (propName.equals("viewIdentifiers")) {
+        if (propName.equals(PROP_VIEW_IDENTIFIERS)) {
             return getViewIdentifiers();
         }
-        if (propName.equals("parent")) {
+        if (propName.equals(PROP_PARENT)) {
             return getParent();
         }
-        if (propName.equals("children")) {
+        if (propName.equals(PROP_CHILDREN)) {
             return getChildren();
         }
-        if (propName.equals("groups")) {
+        if (propName.equals(PROP_GROUPS)) {
             return getGroups();
         }
-        if (propName.equals("createTimestamp")) {
+        if (propName.equals(PROP_CREATE_TIMESTAMP)) {
             return getCreateTimestamp();
         }
-        if (propName.equals("modifyTimestamp")) {
+        if (propName.equals(PROP_MODIFY_TIMESTAMP)) {
             return getModifyTimestamp();
         }
-        if (propName.equals("entitlementInfo")) {
+        if (propName.equals(PROP_ENTITLEMENT_INFO)) {
             return getEntitlementInfo();
         }
-        if (propName.equals("changeType")) {
+        if (propName.equals(PROP_CHANGE_TYPE)) {
             return getChangeType();
         }
         return null;
@@ -514,37 +537,37 @@ public class Entity {
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSet(String propName) {
-        if (propName.equals("identifier")) {
+        if (propName.equals(PROP_IDENTIFIER)) {
             return isSetIdentifier();
         }
-        if (propName.equals("viewIdentifiers")) {
+        if (propName.equals(PROP_VIEW_IDENTIFIERS)) {
             return isSetViewIdentifiers();
         }
-        if (propName.equals("parent")) {
+        if (propName.equals(PROP_PARENT)) {
             return isSetParent();
         }
-        if (propName.equals("children")) {
+        if (propName.equals(PROP_CHILDREN)) {
             return isSetChildren();
         }
-        if (propName.equals("groups")) {
+        if (propName.equals(PROP_GROUPS)) {
             return isSetGroups();
         }
-        if (propName.equals("createTimestamp")) {
+        if (propName.equals(PROP_CREATE_TIMESTAMP)) {
             return isSetCreateTimestamp();
         }
-        if (propName.equals("modifyTimestamp")) {
+        if (propName.equals(PROP_MODIFY_TIMESTAMP)) {
             return isSetModifyTimestamp();
         }
-        if (propName.equals("entitlementInfo")) {
+        if (propName.equals(PROP_ENTITLEMENT_INFO)) {
             return isSetEntitlementInfo();
         }
-        if (propName.equals("changeType")) {
+        if (propName.equals(PROP_CHANGE_TYPE)) {
             return isSetChangeType();
         }
         return false;
@@ -552,58 +575,58 @@ public class Entity {
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
+     *
      */
     public void set(String propName, Object value) {
-        if (propName.equals("identifier")) {
+        if (propName.equals(PROP_IDENTIFIER)) {
             setIdentifier(((IdentifierType) value));
         }
-        if (propName.equals("viewIdentifiers")) {
+        if (propName.equals(PROP_VIEW_IDENTIFIERS)) {
             getViewIdentifiers().add(((com.ibm.wsspi.security.wim.model.ViewIdentifierType) value));
         }
-        if (propName.equals("parent")) {
+        if (propName.equals(PROP_PARENT)) {
             setParent(((Entity) value));
         }
-        if (propName.equals("children")) {
+        if (propName.equals(PROP_CHILDREN)) {
             getChildren().add(((com.ibm.wsspi.security.wim.model.Entity) value));
         }
-        if (propName.equals("groups")) {
+        if (propName.equals(PROP_GROUPS)) {
             getGroups().add(((com.ibm.wsspi.security.wim.model.Group) value));
         }
-        if (propName.equals("createTimestamp")) {
+        if (propName.equals(PROP_CREATE_TIMESTAMP)) {
             setCreateTimestamp(((Date) value));
         }
-        if (propName.equals("modifyTimestamp")) {
+        if (propName.equals(PROP_MODIFY_TIMESTAMP)) {
             setModifyTimestamp(((Date) value));
         }
-        if (propName.equals("entitlementInfo")) {
+        if (propName.equals(PROP_ENTITLEMENT_INFO)) {
             setEntitlementInfo(((EntitlementInfoType) value));
         }
-        if (propName.equals("changeType")) {
+        if (propName.equals(PROP_CHANGE_TYPE)) {
             setChangeType(((String) value));
         }
     }
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      */
     public void unset(String propName) {
-        if (propName.equals("viewIdentifiers")) {
+        if (propName.equals(PROP_VIEW_IDENTIFIERS)) {
             unsetViewIdentifiers();
         }
-        if (propName.equals("children")) {
+        if (propName.equals(PROP_CHILDREN)) {
             unsetChildren();
         }
-        if (propName.equals("groups")) {
+        if (propName.equals(PROP_GROUPS)) {
             unsetGroups();
         }
 
@@ -615,7 +638,7 @@ public class Entity {
 
     /**
      * Gets the name of this model object, <b>Entity</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -628,8 +651,8 @@ public class Entity {
             return;
         }
         mandatoryProperties = new ArrayList();
-        mandatoryProperties.add("identifier");
-        mandatoryProperties.add("createTimestamp");
+        mandatoryProperties.add(PROP_IDENTIFIER);
+        mandatoryProperties.add(PROP_CREATE_TIMESTAMP);
     }
 
     private static synchronized void setTransientPropertyNames() {
@@ -637,18 +660,18 @@ public class Entity {
             return;
         }
         transientProperties = new ArrayList();
-        transientProperties.add("identifier");
-        transientProperties.add("viewIdentifier");
-        transientProperties.add("parent");
-        transientProperties.add("children");
-        transientProperties.add("groups");
-        transientProperties.add("entitlementInfo");
-        transientProperties.add("changeType");
+        transientProperties.add(PROP_IDENTIFIER);
+        transientProperties.add(PROP_VIEW_IDENTIFIERS);
+        transientProperties.add(PROP_PARENT);
+        transientProperties.add(PROP_CHILDREN);
+        transientProperties.add(PROP_GROUPS);
+        transientProperties.add(PROP_ENTITLEMENT_INFO);
+        transientProperties.add(PROP_CHANGE_TYPE);
     }
 
     /**
      * Returns true if the provided property is a mandatory property; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean}
      */
@@ -666,7 +689,7 @@ public class Entity {
 
     /**
      * Returns true if the provided property is a persistent property; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean}
      */
@@ -714,10 +737,10 @@ public class Entity {
 
     /**
      * Gets a list of all supported properties for this model object, <b>Entity</b>
-     * 
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -733,15 +756,15 @@ public class Entity {
         } else {
             {
                 List names = new ArrayList();
-                names.add("identifier");
-                names.add("viewIdentifiers");
-                names.add("parent");
-                names.add("children");
-                names.add("groups");
-                names.add("createTimestamp");
-                names.add("modifyTimestamp");
-                names.add("entitlementInfo");
-                names.add("changeType");
+                names.add(PROP_IDENTIFIER);
+                names.add(PROP_VIEW_IDENTIFIERS);
+                names.add(PROP_PARENT);
+                names.add(PROP_CHILDREN);
+                names.add(PROP_GROUPS);
+                names.add(PROP_CREATE_TIMESTAMP);
+                names.add(PROP_MODIFY_TIMESTAMP);
+                names.add(PROP_ENTITLEMENT_INFO);
+                names.add(PROP_CHANGE_TYPE);
                 propertyNames = Collections.unmodifiableList(names);
                 return propertyNames;
             }
@@ -752,23 +775,23 @@ public class Entity {
         if (dataTypeMap == null) {
             dataTypeMap = new HashMap();
         }
-        dataTypeMap.put("identifier", "IdentifierType");
-        dataTypeMap.put("viewIdentifiers", "ViewIdentifierType");
-        dataTypeMap.put("parent", "Entity");
-        dataTypeMap.put("children", "Entity");
-        dataTypeMap.put("groups", "Group");
-        dataTypeMap.put("createTimestamp", "Date");
-        dataTypeMap.put("modifyTimestamp", "Date");
-        dataTypeMap.put("entitlementInfo", "EntitlementInfoType");
-        dataTypeMap.put("changeType", "String");
+        dataTypeMap.put(PROP_IDENTIFIER, "IdentifierType");
+        dataTypeMap.put(PROP_VIEW_IDENTIFIERS, "ViewIdentifierType");
+        dataTypeMap.put(PROP_PARENT, "Entity");
+        dataTypeMap.put(PROP_CHILDREN, "Entity");
+        dataTypeMap.put(PROP_GROUPS, "Group");
+        dataTypeMap.put(PROP_CREATE_TIMESTAMP, "Date");
+        dataTypeMap.put(PROP_MODIFY_TIMESTAMP, "Date");
+        dataTypeMap.put(PROP_ENTITLEMENT_INFO, "EntitlementInfoType");
+        dataTypeMap.put(PROP_CHANGE_TYPE, "String");
     }
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -789,7 +812,7 @@ public class Entity {
     /**
      * Gets a list of any model objects which this model object, <b>Entity</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -803,9 +826,9 @@ public class Entity {
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -864,7 +887,7 @@ public class Entity {
 
     /**
      * Gets a set of any model objects which extend this model object, <b>Entity</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -877,7 +900,7 @@ public class Entity {
 
     /**
      * Returns this model object, <b>Entity</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -898,5 +921,16 @@ public class Entity {
             }
         }
         return false;
+    }
+
+    /**
+     * Return whether the specified property is a multi-valued property and capable of holding
+     * multiple values.
+     *
+     * @param propName The property name to check.
+     * @return True if the property is multi-value, false otherwise.
+     */
+    public boolean isMultiValuedProperty(String propName) {
+        return MULTI_VALUED_PROPERTIES.contains(propName);
     }
 }

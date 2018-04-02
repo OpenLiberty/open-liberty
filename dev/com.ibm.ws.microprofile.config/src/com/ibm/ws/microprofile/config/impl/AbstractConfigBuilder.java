@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.config.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -25,6 +26,7 @@ import com.ibm.ws.microprofile.config.converters.DefaultConverters;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.converters.UserConverter;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.microprofile.config.sources.DefaultSources;
 
 /**
@@ -127,23 +129,51 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
         synchronized (this) {
             for (Converter<?> con : converters) {
                 UserConverter<?> userConverter = UserConverter.newInstance(con);
-                userConverters.addConverter(userConverter);
+                addUserConverter(userConverter);
             }
         }
         return this;
     }
 
-    public <T> ConfigBuilder withConverter(Class<T> type, int priority, Converter<T> converter) {
+    /** {@inheritDoc} */
+    @Override
+    public WebSphereConfig build() {
+        WebSphereConfig config = null;
         synchronized (this) {
-            UserConverter<?> userConverter = UserConverter.newInstance(type, priority, converter);
-            userConverters.addConverter(userConverter);
+            SortedSources sources = getSources();
+            PriorityConverterMap converters = getConverters();
+            ScheduledExecutorService executor = getScheduledExecutorService();
+            long refreshInterval = getRefreshInterval();
+            ClassLoader classLoader = getClassLoader();
+            ConversionManager conversionManager = getConversionManager(converters, classLoader);
+
+            config = buildConfig(conversionManager, sources, executor, refreshInterval);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled()) {
+                Tr.debug(tc, "Config dump: {0}", config.dump());
+            }
         }
-        return this;
+        return config;
     }
 
     /////////////////////////////////////////////
-    // ALL PROTECTED METHODS MUST ONLY BE CALLED FROM WITHIN A 'synchronized(this)' BLOCK
+    // ALL NON-PUBLIC METHODS MUST ONLY BE CALLED FROM WITHIN A 'synchronized(this)' BLOCK
     /////////////////////////////////////////////
+
+    protected void addUserConverter(UserConverter<?> userConverter) {
+        userConverters.addConverter(userConverter);
+    }
+
+    /**
+     * Construct a new WebSphereConfig object
+     *
+     * @param conversionManager
+     * @param sources
+     * @param executor
+     * @param refreshInterval
+     * @return
+     */
+    protected abstract WebSphereConfig buildConfig(ConversionManager conversionManager, SortedSources sources, ScheduledExecutorService executor, long refreshInterval);
 
     /**
      * Get the sources, default, discovered and user registered sources are
@@ -154,15 +184,35 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
      * @return sources as a sorted set
      */
     protected SortedSources getSources() {
-        SortedSources sources = new SortedSources(this.userSources);
-        if (addDefaultSources) {
+        SortedSources sources = new SortedSources(getUserSources());
+        if (addDefaultSourcesFlag()) {
             sources.addAll(DefaultSources.getDefaultSources(getClassLoader()));
         }
-        if (addDiscoveredSources) {
+        if (addDiscoveredSourcesFlag()) {
             sources.addAll(DefaultSources.getDiscoveredSources(getClassLoader()));
         }
         sources = sources.unmodifiable();
         return sources;
+    }
+
+    protected SortedSet<ConfigSource> getUserSources() {
+        return this.userSources;
+    }
+
+    protected boolean addDefaultSourcesFlag() {
+        return this.addDefaultSources;
+    }
+
+    protected boolean addDiscoveredSourcesFlag() {
+        return this.addDiscoveredSources;
+    }
+
+    protected boolean addDefaultConvertersFlag() {
+        return this.addDefaultConverters;
+    }
+
+    protected boolean addDiscoveredConvertersFlag() {
+        return this.addDiscoveredConverters;
     }
 
     /**
@@ -178,11 +228,11 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
         PriorityConverterMap allConverters = new PriorityConverterMap();
 
         //add the default converters
-        if (addDefaultConverters) {
+        if (addDefaultConvertersFlag()) {
             allConverters.addAll(getDefaultConverters());
         }
         //add the discovered converters
-        if (addDiscoveredConverters) {
+        if (addDiscoveredConvertersFlag()) {
             allConverters.addAll(DefaultConverters.getDiscoveredConverters(getClassLoader()));
         }
         //finally add the programatically added converters
@@ -222,10 +272,6 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
         return refreshInterval;
     }
 
-    /////////////////////////////////////////////
-    // ALL PRIVATE METHODS MUST ONLY BE CALLED FROM WITHIN A 'synchronized(this)' BLOCK
-    /////////////////////////////////////////////
-
     private static String getRefreshRateSystemProperty() {
         String prop = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
@@ -253,4 +299,12 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
     protected ClassLoader getClassLoader() {
         return classloader;
     }
+
+    protected ConversionManager getConversionManager(PriorityConverterMap converters, ClassLoader classLoader) {
+        return new ConversionManager(converters, classLoader);
+    }
+
+    /////////////////////////////////////////////
+    // ALL NON-PUBLIC METHODS MUST ONLY BE CALLED FROM WITHIN A 'synchronized(this)' BLOCK
+    /////////////////////////////////////////////
 }

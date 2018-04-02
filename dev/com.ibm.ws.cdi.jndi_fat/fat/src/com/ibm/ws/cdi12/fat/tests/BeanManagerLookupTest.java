@@ -12,25 +12,17 @@ package com.ibm.ws.cdi12.fat.tests;
 
 import java.io.File;
 
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
-import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.BuildShrinkWrap;
+import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
 
 /**
  * These tests verify that you can look up the bean manager as per http://docs.jboss.org/cdi/spec/1.1/cdi-spec.html#provider
@@ -42,16 +34,20 @@ public class BeanManagerLookupTest extends LoggingTest {
     public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12BasicServer");
 
     @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
+    public static Archive<?> buildShrinkWrap() {
 
-       WebArchive beanManagerLookupApp = ShrinkWrap.create(WebArchive.class, "beanManagerLookupApp.war")
-                        .addClass("cdi12.beanmanagerlookup.test.BeanManagerLookupServlet")
-                        .addClass("cdi12.beanmanagerlookup.test.MyBean")
-                        .add(new FileAsset(new File("test-applications/beanManagerLookupApp.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
+        WebArchive beanManagerLookupApp = ShrinkWrap.create(WebArchive.class, "beanManagerLookupApp.war");
+        beanManagerLookupApp.addClass("cdi12.beanmanagerlookup.test.BeanManagerLookupServlet");
+        beanManagerLookupApp.addClass("cdi12.beanmanagerlookup.test.MyBean");
 
-       return ShrinkWrap.create(EnterpriseArchive.class,"beanManagerLookupApp.ear")
-                        .add(new FileAsset(new File("test-applications/beanManagerLookupApp.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(beanManagerLookupApp);
+        beanManagerLookupApp.add(new FileAsset(new File("test-applications/beanManagerLookupApp.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "beanManagerLookupApp.ear");
+        ear.add(new FileAsset(new File("test-applications/beanManagerLookupApp.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
+        ear.add(new FileAsset(new File("test-applications/beanManagerLookupApp.ear/resources/META-INF/application.xml")), "/META-INF/application.xml");
+        ear.addAsModule(beanManagerLookupApp);
+
+        return ear;
     }
 
     /*

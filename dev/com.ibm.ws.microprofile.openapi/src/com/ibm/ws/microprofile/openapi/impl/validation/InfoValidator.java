@@ -35,12 +35,14 @@ public class InfoValidator extends TypeValidator<Info> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Info t) {
-        ValidatorUtils.validateRequiredField(t.getVersion(), context, "version").ifPresent(helper::addValidationEvent);
-        ValidatorUtils.validateRequiredField(t.getTitle(), context, "title").ifPresent(helper::addValidationEvent);
-        if (t.getTermsOfService() != null) {
-            if (!ValidatorUtils.isValidURL(t.getTermsOfService())) {
-                final String message = Tr.formatMessage(tc, "infoTermsOfServiceInvalidURL", t.getTermsOfService());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("termsOfService"), message));
+        if (t != null) {
+            ValidatorUtils.validateRequiredField(t.getVersion(), context, "version").ifPresent(helper::addValidationEvent);
+            ValidatorUtils.validateRequiredField(t.getTitle(), context, "title").ifPresent(helper::addValidationEvent);
+            if (t.getTermsOfService() != null) {
+                if (!ValidatorUtils.isValidURI(t.getTermsOfService())) {
+                    final String message = Tr.formatMessage(tc, "infoTermsOfServiceInvalidURL", t.getTermsOfService());
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("termsOfService"), message));
+                }
             }
         }
     }

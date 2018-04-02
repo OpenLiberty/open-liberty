@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,17 +35,21 @@ public class ContactValidator extends TypeValidator<Contact> {
     /** {@inheritDoc} */
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Contact t) {
-        if (t.getUrl() != null) {
-            if (!ValidatorUtils.isValidURL(t.getUrl())) {
-                final String message = Tr.formatMessage(tc, "contactInvalidURL", t.getUrl());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("url"), message));
+        if (t != null) {
+            String url = t.getUrl();
+            if (url != null) {
+                if (!ValidatorUtils.isValidURI(url)) {
+                    final String message = Tr.formatMessage(tc, "contactInvalidURL", url);
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("url"), message));
+                }
             }
-        }
 
-        if (t.getEmail() != null) {
-            if (!ValidatorUtils.isValidEmailAddress(t.getEmail())) {
-                final String message = Tr.formatMessage(tc, "contactInvalidEmail", t.getEmail());
-                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("email"), message));
+            String email = t.getEmail();
+            if (email != null) {
+                if (!ValidatorUtils.isValidEmailAddress(email)) {
+                    final String message = Tr.formatMessage(tc, "contactInvalidEmail", email);
+                    helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("email"), message));
+                }
             }
         }
     }

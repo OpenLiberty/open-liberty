@@ -10,15 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.session.store.cache;
 
-import java.util.ArrayList;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
-import javax.cache.Cache;
-import javax.cache.CacheException;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
-import javax.cache.configuration.Configuration;
-import javax.cache.configuration.MutableConfiguration;
+import javax.cache.configuration.OptionalFeature;
 import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
@@ -35,7 +35,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
@@ -52,17 +51,13 @@ public class CacheStoreService implements SessionStoreService {
     
     private static final TraceComponent tc = Tr.register(CacheStoreService.class);
     
-    private Map<String, Object> configurationProperties;
-
-    /**
-     * For single-cache path, the whole session is store as an entry in this cache.
-     * For multi-cache path, separate caches are created per application to store the session properties each as their own cache entry,
-     * and this cache only contains information about the session rather than its contents.
-     */
-    @SuppressWarnings("rawtypes")
-    Cache<String, ArrayList> cache;
+    Map<String, Object> configurationProperties;
+    private static final String BASE_PREFIX = "properties";
+    private static final int BASE_PREFIX_LENGTH = BASE_PREFIX.length();
+    private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; //3 is the length of .0.
 
     CacheManager cacheManager;
+    CachingProvider cachingProvider;
 
     private volatile boolean completedPassivation = true;
 
@@ -71,6 +66,21 @@ public class CacheStoreService implements SessionStoreService {
 
     @Reference
     protected SerializationService serializationService;
+
+    /**
+     * Indicates whether or not the caching provider supports store by reference.
+     */
+    boolean supportsStoreByReference;
+
+    /**
+     * Trace identifier for the cache manager
+     */
+    String tcCacheManager;
+
+    /**
+     * Trace identifier for the caching provider.
+     */
+    private String tcCachingProvider;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected volatile UserTransaction userTransaction;
@@ -83,37 +93,85 @@ public class CacheStoreService implements SessionStoreService {
      * @param props service properties
      */
     @Activate
-    @FFDCIgnore(CacheException.class)
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        configurationProperties = props;
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
-        CachingProvider provider = Caching.getCachingProvider(library.getClassLoader());
-        cacheManager = provider.getCacheManager(null, null, null);
-        cache = cacheManager.getCache("com.ibm.ws.session.cache", String.class, ArrayList.class);
-        if (cache == null) {
-            @SuppressWarnings("rawtypes")
-            Configuration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>().setTypes(String.class, ArrayList.class);
+        configurationProperties = new HashMap<String, Object>(props);
+
+        Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
+        Object scheduleInvalidationSecondHour = configurationProperties.get("scheduleInvalidationSecondHour");
+        Object writeContents = configurationProperties.get("writeContents");
+        Object writeFrequency = configurationProperties.get("writeFrequency");
+
+        // httpSessionCache writeContents accepts ONLY_SET_ATTRIBUTES in place of ONLY_UPDATED_ATTRIBUTES to better reflect the behavior provided
+        if (writeContents == null || "ONLY_SET_ATTRIBUTES".equals(writeContents))
+            configurationProperties.put("writeContents", "ONLY_UPDATED_ATTRIBUTES");
+
+        // default/disallow advanced properties from httpSessionDatabase
+        configurationProperties.put("noAffinitySwitchBack", "TIME_BASED_WRITE".equals(writeFrequency));
+        configurationProperties.put("onlyCheckInCacheDuringPreInvoke", false);
+        configurationProperties.put("optimizeCacheIdIncrements", true);
+        configurationProperties.put("scheduleInvalidation", scheduleInvalidationFirstHour != null || scheduleInvalidationSecondHour != null);
+        configurationProperties.put("sessionPersistenceMode", "JCACHE");
+        // TODO decide whether or not to externalize useInvalidatedId
+        configurationProperties.put("useMultiRowSchema", true);
+        
+        Properties vendorProperties = new Properties();
+        
+        String uriValue = (String) props.get("uri");
+        URI uri = null;
+        if(uriValue != null)
             try {
-                cache = cacheManager.createCache("com.ibm.ws.session.cache", config);
+                uri = new URI(uriValue);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
+            }
+        
+        for (Map.Entry<String, Object> entry : props.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Created a new session info cache", cache);
-            } catch (CacheException x) {
-                cache = cacheManager.getCache("com.ibm.ws.session.cache", String.class, ArrayList.class);
-                if (cache == null)
-                    throw x;
+            //properties start with properties.0.
+            if (key.length () > TOTAL_PREFIX_LENGTH && key.charAt(BASE_PREFIX_LENGTH) == '.' && key.startsWith(BASE_PREFIX)) {
+                key = key.substring(TOTAL_PREFIX_LENGTH);
+                if (!key.equals("config.referenceType")) 
+                    vendorProperties.setProperty(key, (String) value);
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Using session info cache", cache);
+        // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
+        ClassLoader loader = library.getClassLoader();
+
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcInvoke("Caching", "getCachingProvider", loader);
+
+        cachingProvider = Caching.getCachingProvider(loader);
+
+        tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
+
+        if (trace && tc.isDebugEnabled()) {
+            CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
+            Tr.debug(this, tc, "caching provider class is " + cachingProvider.getClass().getName());
+            CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
+        }
+
+        cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
+
+        tcCacheManager = "CacheManager" + Integer.toHexString(System.identityHashCode(cacheManager));
+
+        if (trace && tc.isDebugEnabled()) {
+            CacheHashMap.tcReturn(tcCachingProvider, "getCacheManager", tcCacheManager, cacheManager);
+            CacheHashMap.tcInvoke(tcCachingProvider, "isSupported", "STORE_BY_REFERENCE");
+        }
+
+        supportsStoreByReference = cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE);
+
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcReturn(tcCachingProvider, "isSupported", supportsStoreByReference);
     }
 
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
-        if ("true".equals(configurationProperties.get("useMultiRowSchema")))
-            smc.setUsingMultirow(true); // TODO temporary code for experimenting with cache entry per session property
         IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
         store.setLoader(new SessionLoader(serializationService, classLoader, applicationSessionStore));
         setCompletedPassivation(false);
@@ -128,37 +186,22 @@ public class CacheStoreService implements SessionStoreService {
      */
     @Deactivate
     protected void deactivate(ComponentContext context) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcInvoke(tcCacheManager, "close");
+
         cacheManager.close();
-    }
 
-    /**
-     * Obtains the session cache for the specified application.
-     * For multi-cache path, each session property is a separate entry in this cache.
-     * 
-     * @param appName the application name.
-     * @return the cache.
-     */
-    Cache<String, byte[]> getCache(String appName) {
-        // TODO replace / and : characters (per spec for cache names) and ensure the name is still unique.
-        String cacheName = "com.ibm.ws.session.cache." + appName;
-
-        // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
-        Cache<String, byte[]> cache = cacheManager.getCache(cacheName, String.class, byte[].class);
-        if (cache == null) {
-            Configuration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
-                            .setTypes(String.class, byte[].class);
-            try {
-                cache = cacheManager.createCache(cacheName, config);
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Created a new session property cache");
-            } catch (CacheException x) {
-                cache = cacheManager.getCache(cacheName, String.class, byte[].class);
-                if (cache == null)
-                    throw x;
-            }
+        if (trace && tc.isDebugEnabled()) {
+            CacheHashMap.tcReturn(tcCacheManager, "close");
+            CacheHashMap.tcInvoke(tcCachingProvider, "close");
         }
-        return cache;
+
+        // TODO this could have consequences for other users of the provider. Look into using a separate classloader that delegates to the common one for the library.
+        cachingProvider.close();
+
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcReturn(tcCachingProvider, "close");
     }
 
     @Override

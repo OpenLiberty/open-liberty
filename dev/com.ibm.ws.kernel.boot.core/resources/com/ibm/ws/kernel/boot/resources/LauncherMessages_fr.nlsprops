@@ -668,9 +668,12 @@ error.server.pause.command.port.disabled.explanation=Le port de commande du serv
 error.server.pause.command.port.disabled.useraction=Activez le port de commande pour ce serveur. Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, cette mise en pause peut aussi \u00eatre demand\u00e9e depuis la console op\u00e9rateur.
 
 error.server.resume.command.port.disabled=CWWKE0945E: Une demande de reprise a \u00e9t\u00e9 re\u00e7ue pour le serveur {0}, mais le port de commande du serveur est d\u00e9sactiv\u00e9. Impossible de traiter la demande. Activez le port de commande et r\u00e9essayez.
-error.server.resume.command.port.disabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution. Le port de commande est d\u00e9sactiv\u00e9 pour ce serveur ; par cons\u00e9quent, la demande de reprise n'a pas pu \u00eatre trait\u00e9e. \
-Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
+error.server.resume.command.port.disabled.explanation=Le port de commande du serveur est requis pour la communication avec un serveur en cours d'ex\u00e9cution. Le port de commande est d\u00e9sactiv\u00e9 pour ce serveur ; par cons\u00e9quent, la demande de reprise n'a pas pu \u00eatre trait\u00e9e. Notez que le port de commande est d\u00e9sactiv\u00e9 par d\u00e9faut lorsqu'un serveur est lanc\u00e9 en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS.
 error.server.resume.command.port.disabled.useraction=Activez le port de commande pour ce serveur. Si le serveur s'ex\u00e9cute en tant que t\u00e2che d\u00e9marr\u00e9e sous z/OS, cette reprise peut aussi \u00eatre demand\u00e9e depuis la console op\u00e9rateur.
+
+warning.server.status.invalid.targets=CWWKE0946W: Une demande de statut a \u00e9t\u00e9 re\u00e7ue pour des composants sp\u00e9cifiques, mais la liste des composants dans l'option target est vide. Aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.status.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de statut avec une liste de cibles vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
+warning.server.status.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target la liste des composants pour lesquels v\u00e9rifier le statut. Pour v\u00e9rifier le statut cumul\u00e9 de tous les composants pouvant \u00eatre mis en pause sur le serveur, \u00e9mettez la demande de statut sans l'option target.
 
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.

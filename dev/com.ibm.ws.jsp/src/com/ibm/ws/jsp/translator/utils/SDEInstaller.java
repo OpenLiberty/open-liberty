@@ -8,6 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+//APARS:
+//PI89577    hmpadill    11/16/17    JSPs containg Java 8 specific syntaxes might fail to compile 
 package com.ibm.ws.jsp.translator.utils;
 
 import java.io.File;
@@ -252,6 +254,7 @@ public class SDEInstaller {
                 case 3 : // Integer
                 case 4 : // Float
                 case 12 : // NameAndType
+                case 18 : // InvokeDynamic PI89577
                     if (verbose) {
                         System.out.println(i + " copying 4 bytes");
                     }

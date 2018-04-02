@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -32,7 +33,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
+import com.ibm.ws.microprofile.config.impl.SourcedValueImpl;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
+import com.ibm.ws.microprofile.config.sources.StaticConfigSource;
 
 public class CompositeConfig implements Closeable, ConfigListener {
 
@@ -83,6 +86,12 @@ public class CompositeConfig implements Closeable, ConfigListener {
      * @return
      */
     private PollingDynamicConfig addConfig(ConfigSource source, ScheduledExecutorService executor, long refreshInterval) {
+        //if it is an internal static config source then it should not refresh
+        //this is a hack for now ... dynamic config sources will be fixed properly in the next version
+        if (source instanceof StaticConfigSource) {
+            refreshInterval = 0;
+        }
+
         //we wrap each source up as an archaius config
         PollingDynamicConfig archaiusConfig = new PollingDynamicConfig(source, executor, refreshInterval);
 
@@ -114,37 +123,14 @@ public class CompositeConfig implements Closeable, ConfigListener {
      * TODO: Cache keys
      */
     public Set<String> getKeySet() {
-        boolean dumpEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDumpEnabled();
-        StringBuilder dump = null; //dump debug only
-        boolean first = true; //dump debug only
-
         HashSet<String> result = new HashSet<>();
-
-        if (dumpEnabled) {
-            dump = new StringBuilder("getKeySet: [");
-        }
 
         for (PollingDynamicConfig config : children) {
             Iterator<String> iter = config.getKeys();
             while (iter.hasNext()) {
                 String key = iter.next();
-                boolean added = result.add(key);
-                if (dumpEnabled && added) {
-                    if (!first) {
-                        dump.append(";\n");
-                    } else {
-                        first = false;
-                    }
-                    dump.append("Key=");
-                    dump.append(key);
-                    dump.append(", Source=");
-                    dump.append(config.getSourceID());
-                }
+                result.add(key);
             }
-        }
-        if (dumpEnabled) {
-            dump.append("]");
-            Tr.dump(tc, dump.toString());
         }
 
         return result;
@@ -155,25 +141,23 @@ public class CompositeConfig implements Closeable, ConfigListener {
     @Trivial
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[");
-
-        for (PollingDynamicConfig child : children) {
-            sb.append(child).append(" ");
-        }
-        sb.append("]");
+        sb.append("CompositeConfig[");
+        sb.append(hashCode());
+        sb.append("](");
+        sb.append(children.size());
+        sb.append(" children");
+        sb.append(")");
         return sb.toString();
     }
 
+    @Trivial
     public String dump() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[");
-
         Set<String> keys = getKeySet();
+        keys = new TreeSet<String>(keys);
         Iterator<String> keyItr = keys.iterator();
         while (keyItr.hasNext()) {
             String key = keyItr.next();
-            sb.append(key);
-            sb.append("=");
             SourcedValue rawCompositeValue = getRawCompositeValue(key);
             if (rawCompositeValue == null) {
                 sb.append("null");
@@ -181,11 +165,10 @@ public class CompositeConfig implements Closeable, ConfigListener {
                 sb.append(rawCompositeValue);
             }
             if (keyItr.hasNext()) {
-                sb.append(",");
+                sb.append("\n");
             }
         }
 
-        sb.append("]");
         return sb.toString();
 
     }
@@ -199,30 +182,31 @@ public class CompositeConfig implements Closeable, ConfigListener {
     }
 
     public SourcedValue getSourcedValue(Type type, String key) {
+        SourcedValue sourcedValue = null;
         SourcedValue rawProp = getRawCompositeValue(key);
-        if (rawProp == null) {
-            return null;
-        } else {
+        if (rawProp != null) {
             Object value = this.conversionManager.convert((String) rawProp.getValue(), type);
-            SourcedValue composite = new SourcedValueImpl(value, type, rawProp.getSource());
-            return composite;
+            sourcedValue = new SourcedValueImpl(key, value, type, rawProp.getSource());
         }
+        return sourcedValue;
     }
 
     /**
      * @param key
      * @return
      */
+    @Trivial
     private SourcedValue getRawCompositeValue(String key) {
+        SourcedValue raw = null;
         for (PollingDynamicConfig child : children) {
-            if (child.containsKey(key)) {
-                String value = child.getRawProperty(key);
+            String value = child.getRawProperty(key);
+            if (value != null || child.containsKey(key)) {
                 String source = child.getSourceID();
-                SourcedValue raw = new SourcedValueImpl(value, String.class, source);
-                return raw;
+                raw = new SourcedValueImpl(key, value, String.class, source);
+                break;
             }
         }
-        return null;
+        return raw;
     }
 
 }

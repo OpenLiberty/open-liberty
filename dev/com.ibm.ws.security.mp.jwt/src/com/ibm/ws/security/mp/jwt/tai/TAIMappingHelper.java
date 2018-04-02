@@ -43,6 +43,17 @@ public class TAIMappingHelper {
     Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
 
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
+    boolean addJwtPrincipalToSubject = false;
+
+    public TAIMappingHelper(@Sensitive String decodedPayload) throws MpJwtProcessingException {
+        decodedTokenPayload = decodedPayload;
+        config = null;
+        addJwtPrincipalToSubject = true;
+        if (decodedTokenPayload != null) {
+            claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, "upn", "groups", false);
+            setUsername();
+        }
+    }
 
     public TAIMappingHelper(@Sensitive String decodedPayload, MicroProfileJwtConfig clientConfig) throws MpJwtProcessingException {
         String methodName = "<init>";
@@ -67,10 +78,21 @@ public class TAIMappingHelper {
         }
         jwtPrincipal = createJwtPrincipal(jwtToken);
         String issuer = getIssuer(jwtPrincipal);
-        customProperties = populateCustomProperties(issuer, config.getMapToUserRegistry());
+        customProperties = populateCustomProperties(issuer, getmaptoURconfig());
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName);
         }
+    }
+
+    /**
+     * @return
+     */
+    private boolean getmaptoURconfig() {
+
+        if (config != null) {
+            return config.getMapToUserRegistry();
+        }
+        return false;
     }
 
     public Subject createSubjectFromCustomProperties(@Sensitive JwtToken jwt) {
@@ -83,10 +105,15 @@ public class TAIMappingHelper {
         //            subject.getPrivateCredentials().add(jwt);
         //        }
 
+        if (addJwtPrincipalToSubject) {
+            subject.getPrincipals().add(jwtPrincipal);
+            customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
+        }
         customProperties.put(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN, jwtPrincipal);
 
-        subject.getPrivateCredentials().add(jwtPrincipal);
+        //        subject.getPrivateCredentials().add(jwtPrincipal);
         subject.getPrivateCredentials().add(customProperties);
+
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, subject);
         }
@@ -206,6 +233,9 @@ public class TAIMappingHelper {
         }
         // Default realm to the issuer
         String realm = issuer;
+        if (isRealmEndsWithSlash(realm)) {
+            realm = updateRealm(realm);
+        }
 
         //        if (realm == null) {
         //            // runtime default
@@ -219,6 +249,23 @@ public class TAIMappingHelper {
             Tr.exit(tc, methodName, realm);
         }
         return realm;
+    }
+
+    /**
+     * @param realm
+     * @return
+     */
+    private boolean isRealmEndsWithSlash(String realm) {
+        return (realm != null && realm.length() > 1 && realm.endsWith("/"));
+    }
+
+    /**
+     * @param realm
+     * @return
+     */
+    private String updateRealm(String realm) {
+        // remove the trailing slash
+        return realm.substring(0, realm.length() - 1);
     }
 
     String getUniqueId(String realm) {

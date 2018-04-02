@@ -74,3 +74,11 @@ function parseFilter(filter) {
 	}
 	return res;
 }
+
+function getOAuth2Url() {
+	var url = location.href;
+	var path = location.pathname;
+	var index = url.indexOf(path);
+	
+	return url.substring(0, index) + "/openapi/ui/oauth2-redirect.html";
+}

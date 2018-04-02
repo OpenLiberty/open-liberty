@@ -292,7 +292,7 @@ public class WsocHandlerImpl implements WsocHandler {
         hp.addResponseHeaders();
         hp.determineAndSetSubProtocol(); // Question: do we need to re-determine this based on the headers after the user has modified the response?
         hp.determineAndSetExtensions();
-        hp.modifyHandshake();
+        hp.modifyHandshake(ep, endPointConfig);
 
         ParametersOfInterest poi = hp.getParametersOfInterest();
         poi.setEndpointManager(container.getEndpointManager());

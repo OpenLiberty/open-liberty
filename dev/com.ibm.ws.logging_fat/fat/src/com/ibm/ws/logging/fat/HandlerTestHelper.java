@@ -141,17 +141,17 @@ public class HandlerTestHelper {
 
         assertTrue("No Liberty logs found in " + logFilePath, !lines.isEmpty());
         List<String> rawLevels = new ArrayList<String>();
-        rawLevels.add("logLevelRaw=CONFIG");
-        rawLevels.add("logLevelRaw=FINE");
-        rawLevels.add("logLevelRaw=FINER");
-        rawLevels.add("logLevelRaw=FINEST");
-        rawLevels.add("logLevelRaw=ENTRY");
-        rawLevels.add("logLevelRaw=EXIT");
+        rawLevels.add("loglevel=CONFIG");
+        rawLevels.add("loglevel=FINE");
+        rawLevels.add("loglevel=FINER");
+        rawLevels.add("loglevel=FINEST");
+        rawLevels.add("loglevel=ENTRY");
+        rawLevels.add("loglevel=EXIT");
 
         // check for each log level
         for (String string : lines) {
             Log.info(c, "findAllLogsFromRESTHandlerTraceLogger", "--------------> 1:" + string);
-            if (string.contains("logLevelRaw=")) {
+            if (string.contains("loglevel=")) {
                 Iterator<String> lvls = rawLevels.iterator();
                 while (lvls.hasNext()) {
                     String level = lvls.next();
@@ -443,7 +443,7 @@ public class HandlerTestHelper {
                    !lines.isEmpty());
         Log.info(c, testName, "FFDC event for RuntimeException was successfully received at the handler");
         // *** Verify FFDC threadID with MessageLogData.threadID
-        findString = "MessageLogData.*threadId=" + threadID + ",";
+        findString = "com.ibm.ws.logging.source.message.*threadId=" + threadID + ",";
         lines = server.findStringsInLogsAndTraceUsingMark(findString);
         assertTrue("FFDC.threadID[" + threadID + "] does not match with MessageLogData threadID : " + line,
                    !lines.isEmpty());

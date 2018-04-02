@@ -664,6 +664,9 @@ error.server.resume.command.port.disabled=CWWKE0945E: Es wurde eine Anforderung 
 error.server.resume.command.port.disabled.explanation=Der Serverbefehlsport ist f\u00fcr die Kommunikation mit einem aktiven Server erforderlich. Der Befehlsport f\u00fcr diesen Server ist inaktiviert, daher konnte die Anforderung zur Wiederaufnahme nicht verarbeitet werden. Beachten Sie, dass der Befehlsport standardm\u00e4\u00dfig inaktiviert ist, wenn ein Server als gestartete Task unter z/OS gestartet wird.
 error.server.resume.command.port.disabled.useraction=Aktivieren Sie den Befehlsport f\u00fcr diesen Server. Wenn der Server als gestartete Task unter z/OS ausgef\u00fchrt wird, k\u00f6nnen Sie diese Anforderung zur Wiederaufnahme alternativ auch \u00fcber die Bedienerkonsole anfordern.
 
+warning.server.status.invalid.targets=CWWKE0946W: Es wurde eine Statusanforderung f\u00fcr bestimmte Komponenten empfangen, die Komponentenliste f\u00fcr die Zieloption war jedoch leer. Es wurde keine Aktion ausgef\u00fchrt.
+warning.server.status.invalid.targets.explanation=Ein Benutzer hat eine Statusanforderung mit einer leeren Zielliste f\u00fcr die Zieloption abgesetzt. Die Anforderung wurde zwar ausgef\u00fchrt, es wurde jedoch keine Aktion ausgef\u00fchrt.
+warning.server.status.invalid.targets.useraction=Geben Sie f\u00fcr die Zieloption eine Liste mit Komponenten an, um den zugeh\u00f6rigen Status anzuzeigen. Setzen Sie die Statusanforderung ohne die Zieloption ab, wenn Sie den kumulativen Status aller anhaltbaren Komponenten im Server \u00fcberpr\u00fcfen m\u00f6chten. 
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

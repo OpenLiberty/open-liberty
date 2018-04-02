@@ -15,6 +15,7 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerImpl;
 
 /**
@@ -27,21 +28,26 @@ public class ServerInfo {
     private int httpsPort = -1;
     private String host;
     private String applicationPath;
+    private boolean isUserServer = false;
 
     public ServerInfo() {
 
     }
 
-    public ServerInfo(String host, int httpPort, int httpsPort) {
+    public ServerInfo(String host, int httpPort, int httpsPort, String applicationPath, boolean isUserServer) {
         this.host = host;
         this.httpPort = httpPort;
         this.httpsPort = httpsPort;
+        this.applicationPath = applicationPath;
+        this.isUserServer = isUserServer;
     }
 
     public ServerInfo(ServerInfo serverInfo) {
         this.host = serverInfo.host;
         this.httpPort = serverInfo.httpPort;
         this.httpsPort = serverInfo.httpsPort;
+        this.applicationPath = serverInfo.applicationPath;
+        this.isUserServer = serverInfo.isUserServer;
     }
 
     /**
@@ -100,12 +106,35 @@ public class ServerInfo {
         this.applicationPath = applicationPath;
     }
 
+    /**
+     * @return value to indicate whether the server information was set by user
+     */
+    public boolean getIsUserServer() {
+        return isUserServer;
+    }
+
+    /**
+     * @param isUserServer value to indicate whether the server information was set by user
+     */
+    public void setIsUserServer(boolean isUserServer) {
+        this.isUserServer = isUserServer;
+    }
+
+    @Trivial
     public void updateOpenAPIWithServers(OpenAPI openapi) {
-        if (openapi.getServers() != null && openapi.getServers().size() > 0) {
+        if (isUserServer) {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
+            }
             return;
         }
+
+        //Remove any servers added by Liberty previously
+        openapi.setServers(null);
+
         if (httpPort > 0) {
-            String url = "http://" + host + ":" + httpPort;
+            String port = httpPort == 80 ? "" : (":" + httpPort);
+            String url = "http://" + host + port;
             if (applicationPath != null) {
                 url += applicationPath;
             }
@@ -113,12 +142,20 @@ public class ServerInfo {
             openapi.addServer(server);
         }
         if (httpsPort > 0) {
-            String secureUrl = "https://" + host + ":" + httpsPort;
+            String port = httpsPort == 443 ? "" : (":" + httpsPort);
+            String secureUrl = "https://" + host + port;
             if (applicationPath != null) {
                 secureUrl += applicationPath;
             }
             Server secureServer = new ServerImpl().url(secureUrl);
             openapi.addServer(secureServer);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ServerInfo [host=" + this.host + ", httpPort=" + this.httpPort + ", httpsPort="
+               + this.httpsPort + ", applicationPath=" + this.applicationPath + ", isUserServer="
+               + this.isUserServer + "]";
     }
 }

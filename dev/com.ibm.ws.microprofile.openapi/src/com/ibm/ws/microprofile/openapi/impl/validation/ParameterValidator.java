@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,45 +39,48 @@ public class ParameterValidator extends TypeValidator<Parameter> {
     @Override
     public void validate(ValidationHelper helper, Context context, String key, Parameter t) {
 
-        String reference = t.getRef();
+        if (t != null) {
 
-        if (reference != null && !reference.isEmpty()) {
-            ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
-            return;
-        }
+            String reference = t.getRef();
 
-        ValidatorUtils.validateRequiredField(t.getName(), context, "name").ifPresent(helper::addValidationEvent);
+            if (reference != null && !reference.isEmpty()) {
+                ValidatorUtils.referenceValidatorHelper(reference, t, helper, context, key);
+                return;
+            }
 
-        In in = t.getIn();
-        ValidatorUtils.validateRequiredField(in, context, "in").ifPresent(helper::addValidationEvent);
+            ValidatorUtils.validateRequiredField(t.getName(), context, "name").ifPresent(helper::addValidationEvent);
 
-        if (in != null && in != In.COOKIE && in != In.HEADER && in != In.PATH && in != In.QUERY) {
-            final String message = Tr.formatMessage(tc, "parameterInFieldInvalid", t.getName(), in);
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("in"), message));
-        }
+            In in = t.getIn();
+            ValidatorUtils.validateRequiredField(in, context, "in").ifPresent(helper::addValidationEvent);
 
-        // The examples object is mutually exclusive of the example object.
-        if ((t.getExample() != null) && (t.getExamples() != null && !t.getExamples().isEmpty())) {
-            final String message = Tr.formatMessage(tc, "parameterExampleOrExamples", t.getName());
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
-        }
+            if (in != null && in != In.COOKIE && in != In.HEADER && in != In.PATH && in != In.QUERY) {
+                final String message = Tr.formatMessage(tc, "parameterInFieldInvalid", in, t.getName());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("in"), message));
+            }
 
-        Schema schema = t.getSchema();
-        Content content = t.getContent();
-        // A parameter MUST contain either a schema property, or a content property, but not both.
-        if (schema == null && content == null) {
-            final String message = Tr.formatMessage(tc, "parameterSchemaOrContent", t.getName());
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
-        }
-        if (schema != null && content != null) {
-            final String message = Tr.formatMessage(tc, "parameterSchemaAndContent", t.getName());
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
-        }
+            // The examples object is mutually exclusive of the example object.
+            if ((t.getExample() != null) && (t.getExamples() != null && !t.getExamples().isEmpty())) {
+                final String message = Tr.formatMessage(tc, "parameterExampleOrExamples", t.getName());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.WARNING, context.getLocation(), message));
+            }
 
-        // The 'content' map MUST only contain one entry.
-        if (content != null && content.size() > 1) {
-            final String message = Tr.formatMessage(tc, "parameterContentMapMustNotBeEmpty", t.getName());
-            helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("content"), message));
+            Schema schema = t.getSchema();
+            Content content = t.getContent();
+            // A parameter MUST contain either a schema property, or a content property, but not both.
+            if (schema == null && content == null) {
+                final String message = Tr.formatMessage(tc, "parameterSchemaOrContent", t.getName());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
+            if (schema != null && content != null) {
+                final String message = Tr.formatMessage(tc, "parameterSchemaAndContent", t.getName());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation(), message));
+            }
+
+            // The 'content' map MUST only contain one entry.
+            if (content != null && content.size() > 1) {
+                final String message = Tr.formatMessage(tc, "parameterContentMapMustNotBeEmpty", t.getName());
+                helper.addValidationEvent(new ValidationEvent(ValidationEvent.Severity.ERROR, context.getLocation("content"), message));
+            }
         }
     }
 }

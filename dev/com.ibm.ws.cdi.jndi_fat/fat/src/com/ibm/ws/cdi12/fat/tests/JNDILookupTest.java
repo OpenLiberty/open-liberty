@@ -10,20 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
@@ -36,11 +30,12 @@ public class JNDILookupTest extends LoggingTest {
     public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12JNDIServer");
 
     @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
-        return ShrinkWrap.create(WebArchive.class, "jndiLookup.war")
-                        .add(new FileAsset(new File("test-applications/jndiLookup.war/resources/META-INF/tmp/permissions.xml")), "/WEB-INF/permissions.xml")
-                        .addClass("com.ibm.ws.cdi12.test.jndi.LookupServlet")
-                        .addClass("com.ibm.ws.cdi12.test.jndi.JNDIStrings");
+    public static Archive<?> buildShrinkWrap() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "jndiLookup.war");
+        war.add(new FileAsset(new File("test-applications/jndiLookup.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
+        war.addClass("com.ibm.ws.cdi12.test.jndi.LookupServlet");
+        war.addClass("com.ibm.ws.cdi12.test.jndi.JNDIStrings");
+        return war;
     }
 
     @Override

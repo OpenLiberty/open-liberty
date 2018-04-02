@@ -141,7 +141,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler, msg);
 
         // Since I didn't specify -DEFAULT, route() should return true.
-        assertTrue(msgRouter.route(msg));
+        assertTrue("msg route should return true",msgRouter.route(msg));
     }
 
     /**
@@ -167,7 +167,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler, msg);
 
         // Since I didn't specify -DEFAULT, route() should return true.
-        assertTrue(msgRouter.route(msg));
+        assertTrue("msg route should return true",msgRouter.route(msg));
     }
 
     /**
@@ -202,7 +202,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         // mockLogHandler should not be called. No expectations to set up.
 
         // Since I didn't specify -DEFAULT, route() should return true.
-        assertTrue(msgRouter.route(msg));
+        assertTrue("msg route should return true",msgRouter.route(msg));
     }
 
     /**
@@ -226,7 +226,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler, msg);
 
         // Since I specified -DEFAULT, route() should return false.
-        assertFalse(msgRouter.route(msg));
+        assertFalse("msg route should return false",msgRouter.route(msg));
     }
 
     /**
@@ -250,7 +250,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler, msg);
 
         // Since I didn't specify -DEFAULT, route() should return true.
-        assertTrue(msgRouter.route(msg));
+        assertTrue("msg route should return true",msgRouter.route(msg));
 
         // Remove the LogHandler.
         msgRouter.unsetWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
@@ -258,7 +258,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         // mockLogHandler now should not be called. No expectations to set up.
 
         // Since I didn't specify -DEFAULT, route() should return true.
-        assertTrue(msgRouter.route(msg));
+        assertTrue("msg route should return true",msgRouter.route(msg));
     }
 
     /**
@@ -281,7 +281,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler, msg);
 
         // Since I specified -DEFAULT, route() should return false.
-        assertFalse(msgRouter.route(msg));
+        assertFalse("msg route should return false",msgRouter.route(msg));
     }
 
     /**
@@ -321,10 +321,10 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler2, msgShort);
 
         // route(msg1234) should return false; the others true.
-        assertFalse(msgRouter.route(msg1234));
-        assertTrue(msgRouter.route(msg1235));
-        assertTrue(msgRouter.route(msg1236));
-        assertTrue(msgRouter.route(msgShort));
+        assertFalse("msg1234 route should return false",msgRouter.route(msg1234));
+        assertTrue("msg1235 route should return true",msgRouter.route(msg1235));
+        assertTrue("msg1236 route should return true",msgRouter.route(msg1236));
+        assertTrue("msgShort route should return true",msgRouter.route(msgShort));
     }
 
     /**
@@ -350,7 +350,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler, msg);
 
         // Since I didn't specify -DEFAULT, route() should return true.
-        assertTrue(msgRouter.route(msg));
+        assertTrue("msg route should return true", msgRouter.route(msg));
 
         // Override and add MYLOGHANDLER1 to the list.
         Properties props1 = new Properties();
@@ -362,7 +362,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler1, msg);
 
         // Since I didn't specify -DEFAULT, route() should return true.
-        assertTrue(msgRouter.route(msg));
+        assertTrue("msg route should return true", msgRouter.route(msg));
     }
 
     /**
@@ -394,7 +394,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         // mockLogHandler should not get called.  No expectations to set up.
 
         // Since we're not routing anywhere, route() should return true.
-        assertTrue(msgRouter.route(msg));
+        assertTrue("msg route should return true",msgRouter.route(msg));
     }
 
     /**
@@ -466,9 +466,9 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler, msg1236);
 
         // All should return true.
-        assertTrue(msgRouter.route(msg1234));
-        assertTrue(msgRouter.route(msg1235));
-        assertTrue(msgRouter.route(msg1236));
+        assertTrue("msg1234 route should return true",msgRouter.route(msg1234));
+        assertTrue("msg1235 route should return true",msgRouter.route(msg1235));
+        assertTrue("msg1236 route should return true",msgRouter.route(msg1236));
     }
 
     /**
@@ -500,9 +500,9 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         setupWsLogHandlerExpectations(mockWsLogHandler1, msg1236);
 
         // Should return true (-DEFAULT is ignored for '*' LogHandlers)
-        assertTrue(msgRouter.route(msg1234));
-        assertTrue(msgRouter.route(msg1235));
-        assertTrue(msgRouter.route(msg1236));
+        assertTrue("msg1234 route should return true",msgRouter.route(msg1234));
+        assertTrue("msg1235 route should return true",msgRouter.route(msg1235));
+        assertTrue("msg1236 route should return true",msgRouter.route(msg1236));
     }
 
     /**
@@ -527,7 +527,7 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
 
         // Route another message.  Will be added to earlierMessages queue.
         // No LogHandlers yet.
-        assertTrue(msgRouter.route(msg1236));
+        assertTrue("msg1236 route should return true",msgRouter.route(msg1236));
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();
@@ -568,10 +568,10 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
 
         // Route messages.  Will be added to earlierMessages queue.
         // No LogHandlers yet.
-        assertTrue(msgRouter.route(msg1234));
-        assertTrue(msgRouter.route(msg1235));
-        assertTrue(msgRouter.route(msg1236));
-        assertTrue(msgRouter.route(msgShort));
+        assertTrue("msg1234 route should return true",msgRouter.route(msg1234));
+        assertTrue("msg1235 route should return true",msgRouter.route(msg1235));
+        assertTrue("msg1236 route should return true",msgRouter.route(msg1236));
+        assertTrue("msgShort route should return true",msgRouter.route(msgShort));
 
         // Set up MessageRouter.properties.
         Properties props = new Properties();

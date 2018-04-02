@@ -21,6 +21,8 @@ package org.apache.cxf.jaxrs.client;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -309,7 +311,14 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
             proxyImpl = createClientProxy(cri, isRoot, actualState, varValues);
             initClient(proxyImpl, ep, actualState == null);
 
-            ClassLoader theLoader = proxyLoader == null ? cri.getServiceClass().getClassLoader() : proxyLoader;
+            final Class<?> serviceClass = cri.getServiceClass();
+            ClassLoader theLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
+                @Override
+                public ClassLoader run() {
+                    return proxyLoader == null ? serviceClass.getClassLoader() : proxyLoader;
+                }
+            });
             Class<?>[] ifaces = new Class[]{Client.class, InvocationHandlerAware.class, cri.getServiceClass()};
             Client actualClient = (Client)ProxyHelper.getProxy(theLoader, ifaces, proxyImpl);
             proxyImpl.setProxyClient(actualClient);

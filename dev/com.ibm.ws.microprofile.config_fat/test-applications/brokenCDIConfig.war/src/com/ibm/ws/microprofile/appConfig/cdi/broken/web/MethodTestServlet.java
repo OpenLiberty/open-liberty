@@ -10,37 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.appConfig.cdi.broken.web;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.microprofile.appConfig.cdi.broken.beans.ConfigUnnamedMethodInjectionBean;
-import com.ibm.ws.microprofile.appConfig.cdi.web.AbstractBeanServlet;
+
+import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/methodUnnamed")
-public class MethodTestServlet extends AbstractBeanServlet {
+public class MethodTestServlet extends FATServlet {
 
     @Inject
     ConfigUnnamedMethodInjectionBean configBean3;
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            super.doGet(req, resp);
-        } catch (IllegalArgumentException t) {
-            //we know this is going to break
-            resp.getWriter().println("java.lang.IllegalArgumentException: " + t.getMessage());
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object getBean() {
-        return configBean3;
-    }
 }

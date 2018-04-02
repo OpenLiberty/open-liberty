@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@ import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
  *
  */
 public class Util {
+
+    public static SharedMetricRegistries SHARED_METRIC_REGISTRIES;
 
     public static Map<String, Metric> getMetricsAsMap(String registryName, String metricName) throws NoSuchRegistryException, NoSuchMetricException, EmptyRegistryException {
         MetricRegistry registry = getRegistry(registryName);
@@ -81,7 +83,7 @@ public class Util {
         if (!Constants.REGISTRY_NAMES_LIST.contains(registryName)) {
             throw new NoSuchRegistryException();
         }
-        return SharedMetricRegistries.getOrCreate(registryName);
+        return SHARED_METRIC_REGISTRIES.getOrCreate(registryName);
     }
 
     public static Map<String, Number> getTimerNumbers(Timer timer) {

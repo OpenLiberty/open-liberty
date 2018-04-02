@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2015 IBM Corporation and others.
+ * Copyright (c) 1998, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,8 +54,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
  * @see EJSContainer
  * @see com.ibm.ejs.container.activator.Activator
  **/
-public final class StatefulBeanReaper implements Runnable
-{
+public final class StatefulBeanReaper implements Runnable {
     private static final TraceComponent tc = Tr.register(StatefulBeanReaper.class,
                                                          "EJBCache",
                                                          "com.ibm.ejs.container.container");
@@ -124,8 +123,7 @@ public final class StatefulBeanReaper implements Runnable
             Tr.exit(tc, "<init> : sweep = " + ivSweepInterval + " ms");
     }
 
-    public void start()
-    {
+    public void start() {
         // F743-33394 - Don't start an alarm until the first bean is added.
     }
 
@@ -156,34 +154,25 @@ public final class StatefulBeanReaper implements Runnable
             ivIsRunning = true; // F743-33394
         }
 
-        try
-        {
+        try {
             // Go through the list of beans and check to see if any of
             // them needs to be removed
             sweep();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             FFDCFilter.processException(e, CLASS_NAME + ".alarm", "226", this);
             Tr.warning(tc, "UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W",
                        new Object[] { this, e }); //p111002.5
-        } finally
-        {
-            synchronized (this)
-            {
+        } finally {
+            synchronized (this) {
                 ivIsRunning = false; // F743-33394
 
-                if (ivIsCanceled)
-                {
+                if (ivIsCanceled) {
                     // The reaper was canceled while we were sweeping.  Notify
                     // the canceling thread that we're done.
                     notify();
-                }
-                else if (numObjects != 0)
-                {
+                } else if (numObjects != 0) {
                     startAlarm(); // F743-33394
-                }
-                else
-                {
+                } else {
                     ivScheduledFuture = null; // F73234
                 }
             }
@@ -197,13 +186,11 @@ public final class StatefulBeanReaper implements Runnable
     /**
      * Go through the list of bean ids and cleanup beans which have timed out.
      */
-    public void sweep()
-    {
+    public void sweep() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "Sweep : Stateful Beans = " + ivStatefulBeanList.size());
 
-        for (Enumeration<TimeoutElement> e = ivStatefulBeanList.elements(); e.hasMoreElements();)
-        {
+        for (Enumeration<TimeoutElement> e = ivStatefulBeanList.elements(); e.hasMoreElements();) {
             TimeoutElement elt = e.nextElement();
 
             // If the bean has timed out, regardless of whether it has been
@@ -229,30 +216,25 @@ public final class StatefulBeanReaper implements Runnable
      * This method is invoked just before container termination to clean
      * up stateful beans which have been passivated.
      */
-    public void finalSweep(StatefulPassivator passivator)
-    {
+    public void finalSweep(StatefulPassivator passivator) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "finalSweep : Stateful Beans = " + ivStatefulBeanList.size());
 
-        for (Enumeration<TimeoutElement> e = ivStatefulBeanList.elements(); e.hasMoreElements();)
-        {
+        for (Enumeration<TimeoutElement> e = ivStatefulBeanList.elements(); e.hasMoreElements();) {
             TimeoutElement elt = e.nextElement();
 
-            if (elt.passivated)
-            {
+            if (elt.passivated) {
                 try {
                     // If the bean hasn't already been removed (possibly by the
                     // regular sweep(), then go ahead and remove the file. d129562
-                    if (remove(elt.beanId))
-                    {
+                    if (remove(elt.beanId)) {
                         passivator.remove(elt.beanId, false); //LIDB2018-1
                     }
 
                 } catch (RemoteException ex) {
                     FFDCFilter.processException(ex, CLASS_NAME + ".finalSweep",
                                                 "298", this);
-                    Tr.warning(tc, "REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W"
-                               , new Object[] { elt.beanId, ex }); //p111002.3
+                    Tr.warning(tc, "REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W", new Object[] { elt.beanId, ex }); //p111002.3
                 }
             }
         }
@@ -270,8 +252,7 @@ public final class StatefulBeanReaper implements Runnable
      *         timeout element for this bean
      */
     // F61004.5
-    public TimeoutElement getTimeoutElement(BeanId beanId)
-    {
+    public TimeoutElement getTimeoutElement(BeanId beanId) {
         return ivStatefulBeanList.get(beanId);
     }
 
@@ -282,20 +263,17 @@ public final class StatefulBeanReaper implements Runnable
      * timed out; otherwise, returns false.
      */
     // d112258
-    public boolean beanExistsAndTimedOut(TimeoutElement elt, BeanId beanId)
-    {
+    public boolean beanExistsAndTimedOut(TimeoutElement elt, BeanId beanId) {
         // If the bean does not exist in the Reaper's list, return false.  This
         // may occur if remove() has been called on the bean, while the reaper
         // is attempting to time it out.
-        if (elt == null)
-        {
+        if (elt == null) {
             if (ivSfFailoverCache != null) // LIDB2018-1
             {
                 return ivSfFailoverCache.beanExistsAndTimedOut(beanId);
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Session bean not in Reaper: Timeout = false");
             }
 
@@ -315,16 +293,13 @@ public final class StatefulBeanReaper implements Runnable
      * @return see description of method.
      */
     //LIDB2018-1 renamed old beanTimedOut method and clarified description.
-    public boolean beanDoesNotExistOrHasTimedOut(TimeoutElement elt, BeanId beanId)
-    {
-        if (elt == null)
-        {
+    public boolean beanDoesNotExistOrHasTimedOut(TimeoutElement elt, BeanId beanId) {
+        if (elt == null) {
             // Not in the reaper list, but it might be in local
             // failover cache if not in reaper list.  So check it if
             // there is a local SfFailoverCache object (e.g. when SFSB
             // failover is enabled to use failover cache).
-            if (ivSfFailoverCache != null)
-            {
+            if (ivSfFailoverCache != null) {
                 // Not in reaper list, but SFSB failover enabled.
                 // Have local SfFailoverCache determine if bean does not exist
                 // or has timed out.
@@ -342,8 +317,7 @@ public final class StatefulBeanReaper implements Runnable
         return elt.isTimedOut(); // F61004.5
     }
 
-    private void deleteBean(BeanId beanId)
-    {
+    private void deleteBean(BeanId beanId) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "deleteBean " + beanId);
@@ -369,8 +343,7 @@ public final class StatefulBeanReaper implements Runnable
     /**
      * Add a new bean to the list of beans to be checked for timeouts
      */
-    public void add(StatefulBeanO beanO)
-    {
+    public void add(StatefulBeanO beanO) {
         BeanId id = beanO.beanId;
         TimeoutElement elt = beanO.ivTimeoutElement;
 
@@ -380,12 +353,10 @@ public final class StatefulBeanReaper implements Runnable
         // LIDB2775-23.4 Begins
         Object obj = ivStatefulBeanList.put(id, elt);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, (obj != null) ? "Stateful bean information replaced"
-                            : "Stateful bean information added");
+            Tr.debug(tc, (obj != null) ? "Stateful bean information replaced" : "Stateful bean information added");
         // LIDB2775-23.4 Ends
 
-        synchronized (this)
-        {
+        synchronized (this) {
             if (numObjects == 0 && !ivIsCanceled) // F743-33394
             {
                 startAlarm();
@@ -439,12 +410,10 @@ public final class StatefulBeanReaper implements Runnable
      *            returned for.
      **/
     // d103404.1
-    public synchronized Iterator<BeanId> getPassivatedStatefulBeanIds(J2EEName homeName)
-    {
+    public synchronized Iterator<BeanId> getPassivatedStatefulBeanIds(J2EEName homeName) {
         ArrayList<BeanId> beanList = new ArrayList<BeanId>();
 
-        for (Enumeration<TimeoutElement> e = ivStatefulBeanList.elements(); e.hasMoreElements();)
-        {
+        for (Enumeration<TimeoutElement> e = ivStatefulBeanList.elements(); e.hasMoreElements();) {
             TimeoutElement elt = e.nextElement();
 
             if (homeName.equals(elt.beanId.getJ2EEName())
@@ -455,14 +424,11 @@ public final class StatefulBeanReaper implements Runnable
     }
 
     // LIDB2775-23.4 Begins
-    public long getBeanTimeoutTime(BeanId beanId)
-    {
+    public long getBeanTimeoutTime(BeanId beanId) {
         TimeoutElement elt = ivStatefulBeanList.get(beanId);
         long timeoutTime = 0;
-        if (elt != null)
-        {
-            if (elt.timeout != 0)
-            {
+        if (elt != null) {
+            if (elt.timeout != 0) {
                 timeoutTime = elt.lastAccessTime + elt.timeout;
                 if (timeoutTime < 0) { // F743-6605.1
                     timeoutTime = Long.MAX_VALUE; // F743-6605.1
@@ -524,8 +490,7 @@ public final class StatefulBeanReaper implements Runnable
 
     private void stopAlarm() // F743-33394, F73234
     {
-        if (ivScheduledFuture != null)
-        {
+        if (ivScheduledFuture != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "stopping alarm: " + ivScheduledFuture);
             ivScheduledFuture.cancel(false);
@@ -540,21 +505,19 @@ public final class StatefulBeanReaper implements Runnable
     {
         ivIsCanceled = true;
         stopAlarm();
-        ivActivator = null;
 
         // F743-33394 - Wait for the sweep to finish.
-        while (ivIsRunning)
-        {
-            try
-            {
+        while (ivIsRunning) {
+            try {
                 wait();
-            } catch (InterruptedException ex)
-            {
+            } catch (InterruptedException ex) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "interrupted", ex);
                 Thread.currentThread().interrupt();
             }
         }
+
+        ivActivator = null;
     }
 
     /**

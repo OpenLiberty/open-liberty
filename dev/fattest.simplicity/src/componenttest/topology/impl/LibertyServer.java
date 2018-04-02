@@ -89,6 +89,7 @@ import com.ibm.ws.fat.util.ACEScanner;
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.LogPolice;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -987,38 +988,17 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
-        if (GLOBAL_JAVA2SECURITY) {
+        if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY) {
             RemoteFile f = getServerBootstrapPropertiesFile();
             if (serverNeedsToRunWithJava2Security()) {
-                addJava2SecurityPropertiesToBootstrapFile(f);
+                addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             } else {
                 LOG.warning("The build is configured to run FAT tests with Java 2 Security enabled, but the FAT server " + getServerName() +
                             " is exempt from Java 2 Security regression testing.");
             }
 
-            Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because GLOBAL_JAVA2SECURITY=true");
-        }
-        if (GLOBAL_DEBUG_JAVA2SECURITY) {
-            // update the bootstrap.properties file with the java 2 security property
-            RemoteFile f = getServerBootstrapPropertiesFile();
-            if (f.exists()) {
-                java.io.OutputStream w = f.openForWriting(true);
-                try {
-                    w.write("\n".getBytes());
-                    w.write("websphere.java.security=true".getBytes());
-                    w.write("\n".getBytes());
-                    w.write("websphere.java.security.norethrow=true".getBytes());
-                    w.write("\n".getBytes());
-                    w.write("websphere.java.security.unique=true".getBytes());
-                    w.write("\n".getBytes());
-                } catch (Exception e) {
-                    Log.info(c, "getServerBootstrapPropertiesFile", "caught exception updating bootstap.properties file with Java 2 Security properties, e: ", e.getMessage());
-                }
-                w.flush();
-                w.close();
-            }
-            Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because GLOBAL_DEBUG_JAVA2SECURITY=true");
-            isJava2SecurityEnabled = true;
+            String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
+            Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
         }
 
         // Look for forced server trace..
@@ -1297,14 +1277,18 @@ public class LibertyServer implements LogMonitorClient {
         return j2secEnabled;
     }
 
-    private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f) throws Exception {
+    private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f, boolean debug) throws Exception {
         java.io.OutputStream w = f.openForWriting(true);
         try {
             w.write("\n".getBytes());
             w.write("websphere.java.security".getBytes());
             w.write("\n".getBytes());
-            w.write("websphere.java.security.norethrow=false".getBytes());
+            w.write(("websphere.java.security.norethrow=" + debug).getBytes());
             w.write("\n".getBytes());
+            if (debug) {
+                w.write("websphere.java.security.unique=true".getBytes());
+                w.write("\n".getBytes());
+            }
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Successfully updated bootstrap.properties file with Java 2 Security properties");
         } catch (Exception e) {
             Log.info(c, "addJava2SecurityPropertiesToBootstrapFile", "Caught exception updating bootstap.properties file with Java 2 Security properties, e: ", e.getMessage());
@@ -2080,8 +2064,13 @@ public class LibertyServer implements LogMonitorClient {
                 resetLogOffsets();
                 clearMessageCounters();
             }
-            if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY)
-                new ACEScanner(this).run();
+            if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY) {
+                try {
+                    new ACEScanner(this).run();
+                } catch (Throwable t) {
+                    LOG.logp(Level.WARNING, c.getName(), "stopServer", "Caught exception trying to scan for AccessControlExceptions", t);
+                }
+            }
             if (postStopServerArchive)
                 postStopServerArchive();
             // Delete marker for stopped server
@@ -2341,7 +2330,11 @@ public class LibertyServer implements LogMonitorClient {
 
             RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
             LocalFile toReceive = new LocalFile(destination, l);
-            Log.finest(c, "recursivelyCopyDirectory", "Getting: " + toCopy.getAbsolutePath());
+            String absPath = toCopy.getAbsolutePath();
+            Log.finest(c, "recursivelyCopyDirectory", "Getting: " + absPath);
+
+            if (absPath.endsWith(".log"))
+                LogPolice.measureUsedTrace(toCopy.length());
 
             if (toCopy.isDirectory()) {
                 // Recurse
@@ -2349,19 +2342,19 @@ public class LibertyServer implements LogMonitorClient {
             } else {
                 try {
                     if (skipArchives
-                        && (toCopy.getAbsolutePath().endsWith(".jar")
-                            || toCopy.getAbsolutePath().endsWith(".war")
-                            || toCopy.getAbsolutePath().endsWith(".ear")
-                            || toCopy.getAbsolutePath().endsWith(".rar")
+                        && (absPath.endsWith(".jar")
+                            || absPath.endsWith(".war")
+                            || absPath.endsWith(".ear")
+                            || absPath.endsWith(".rar")
                             //If we're only getting logs, skip jars, wars, ears, zips, unless they are server dump zips
-                            || (toCopy.getAbsolutePath().endsWith(".zip") && !toCopy.getName().contains(serverToUse + ".dump")))) {
-                        Log.finest(c, "recursivelyCopyDirectory", "Skipping: " + toCopy.getAbsolutePath());
+                            || (absPath.endsWith(".zip") && !toCopy.getName().contains(serverToUse + ".dump")))) {
+                        Log.finest(c, "recursivelyCopyDirectory", "Skipping: " + absPath);
                         continue;
                     }
 
                     // We're only going to attempt to move log files. Because of ffdc log checking, we
                     // can't move those. But we should move other log files..
-                    boolean isLog = (toCopy.getAbsolutePath().contains("logs") && !toCopy.getAbsolutePath().contains("ffdc"))
+                    boolean isLog = (absPath.contains("logs") && !absPath.contains("ffdc"))
                                     || toCopy.getName().contains("javacore")
                                     || toCopy.getName().contains("heapdump")
                                     || toCopy.getName().contains("Snap")

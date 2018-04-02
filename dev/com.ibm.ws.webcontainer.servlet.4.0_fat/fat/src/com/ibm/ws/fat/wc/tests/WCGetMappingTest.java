@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,7 +111,7 @@ public class WCGetMappingTest extends LoggingTest {
     @Mode(TestMode.FULL)
     public void test_HttpServletRequestGetMapping_ContextRootMapping_Include() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), "/TestGetMapping/pathIncMatch?dispatchPath=/",
-                                     "Mapping values: mappingMatch: CONTEXT_ROOT matchValue:  pattern:  servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathIncMatch pattern: /pathIncMatch servletName: GetMappingIncServlet");
     }
 
     /**
@@ -125,7 +125,7 @@ public class WCGetMappingTest extends LoggingTest {
     @Mode(TestMode.FULL)
     public void test_HttpServletRequestGetMapping_ContextRootMapping_Async() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), "/TestGetMapping/pathAsyncMatch?dispatchPath=/",
-                                     "Mapping values: mappingMatch: CONTEXT_ROOT matchValue:  pattern:  servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathAsyncMatch pattern: /pathAsyncMatch servletName: GetMappingAsyncServlet");
     }
 
     /**
@@ -165,7 +165,7 @@ public class WCGetMappingTest extends LoggingTest {
     public void test_HttpServletRequestGetMapping_PathMapping_Include() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(),
                                      "/TestGetMapping/pathIncMatch?dispatchPath=pathMatch/testPath",
-                                     "ServletMapping values: mappingMatch: PATH matchValue: testPath pattern: /pathMatch/* servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathIncMatch pattern: /pathIncMatch servletName: GetMappingIncServlet");
     }
 
     /**
@@ -179,7 +179,7 @@ public class WCGetMappingTest extends LoggingTest {
     public void test_HttpServletRequestGetMapping_PathMapping_Async() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(),
                                      "/TestGetMapping/pathAsyncMatch?dispatchPath=pathMatch/testPath",
-                                     "ServletMapping values: mappingMatch: PATH matchValue: testPath pattern: /pathMatch/* servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathAsyncMatch pattern: /pathAsyncMatch servletName: GetMappingAsyncServlet");
     }
 
     /**
@@ -217,7 +217,7 @@ public class WCGetMappingTest extends LoggingTest {
     @Mode(TestMode.FULL)
     public void test_HttpServletRequestGetMapping_DefaultMapping_Include() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(), "/TestGetMapping/pathIncMatch?dispatchPath=invalid",
-                                     "ServletMapping values: mappingMatch: DEFAULT matchValue:  pattern: / servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathIncMatch pattern: /pathIncMatch servletName: GetMappingIncServlet");
     }
 
     /**
@@ -231,7 +231,7 @@ public class WCGetMappingTest extends LoggingTest {
     public void test_HttpServletRequestGetMapping_DefaultMapping_Async() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(),
                                      "/TestGetMapping/pathAsyncMatch?dispatchPath=invalid",
-                                     "ServletMapping values: mappingMatch: DEFAULT matchValue:  pattern: / servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathAsyncMatch pattern: /pathAsyncMatch servletName: GetMappingAsyncServlet");
     }
 
     /**
@@ -271,7 +271,7 @@ public class WCGetMappingTest extends LoggingTest {
     public void test_HttpServletRequestGetMapping_ExactMapping_Include() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(),
                                      "/TestGetMapping/pathIncMatch?dispatchPath=exactMatch",
-                                     "ServletMapping values: mappingMatch: EXACT matchValue: exactMatch pattern: /exactMatch servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathIncMatch pattern: /pathIncMatch servletName: GetMappingIncServlet");
     }
 
     /**
@@ -285,7 +285,7 @@ public class WCGetMappingTest extends LoggingTest {
     public void test_HttpServletRequestGetMapping_ExactMapping_Async() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(),
                                      "/TestGetMapping/pathAsyncMatch?dispatchPath=exactMatch",
-                                     "ServletMapping values: mappingMatch: EXACT matchValue: exactMatch pattern: /exactMatch servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathAsyncMatch pattern: /pathAsyncMatch servletName: GetMappingAsyncServlet");
     }
 
     /**
@@ -328,7 +328,7 @@ public class WCGetMappingTest extends LoggingTest {
     public void test_HttpServletRequestGetMapping_ExtensionMapping_Include() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(),
                                      "/TestGetMapping/pathIncMatch?dispatchPath=extensionMatch.extension",
-                                     "ServletMapping values: mappingMatch: EXTENSION matchValue: extensionMatch pattern: *.extension servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathIncMatch pattern: /pathIncMatch servletName: GetMappingIncServlet");
     }
 
     /**
@@ -343,7 +343,7 @@ public class WCGetMappingTest extends LoggingTest {
     public void test_HttpServletRequestGetMapping_ExtensionMapping_Async() throws Exception {
         SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(),
                                      "/TestGetMapping/pathAsyncMatch?dispatchPath=extensionMatch.extension",
-                                     "ServletMapping values: mappingMatch: EXTENSION matchValue: extensionMatch pattern: *.extension servletName: GetMappingTestServlet");
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathAsyncMatch pattern: /pathAsyncMatch servletName: GetMappingAsyncServlet");
     }
 
 }

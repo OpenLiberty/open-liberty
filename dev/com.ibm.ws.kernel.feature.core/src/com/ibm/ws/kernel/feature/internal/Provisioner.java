@@ -73,6 +73,7 @@ import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry.BundleRepositoryH
 import com.ibm.ws.kernel.provisioning.ContentBasedLocalBundleRepository;
 import com.ibm.ws.kernel.provisioning.LibertyBootRuntime;
 import com.ibm.ws.kernel.provisioning.packages.SharedPackageInspector.PackageType;
+import com.ibm.ws.kernel.service.util.ResolutionReportHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -174,31 +175,31 @@ public class Provisioner {
             //This can happen when the kernel bundle is discarded because of a timestamp change on disk to the kernel bundle jar which causes it to move to system.bundle region.
             //We want only system bundle to be present inside the system.bundle region
             try {
-				ApiRegion.update(featureManager.getDigraph(), new Callable<RegionDigraph>() {
-				    @Override
-				    public RegionDigraph call() throws Exception {
-				        RegionDigraph copy;
-				        try {
-				            copy = original.copy();
-				        } catch (BundleException e) {
-				            // have to throw this here
-				            throw e;
-				        }
-				        Region fromSystemRegion = copy.getRegion(Constants.SYSTEM_BUNDLE_SYMBOLICNAME);
-				        Region toKernelRegion = copy.getRegion(REGION_KERNEL);
+                ApiRegion.update(featureManager.getDigraph(), new Callable<RegionDigraph>() {
+                    @Override
+                    public RegionDigraph call() throws Exception {
+                        RegionDigraph copy;
+                        try {
+                            copy = original.copy();
+                        } catch (BundleException e) {
+                            // have to throw this here
+                            throw e;
+                        }
+                        Region fromSystemRegion = copy.getRegion(Constants.SYSTEM_BUNDLE_SYMBOLICNAME);
+                        Region toKernelRegion = copy.getRegion(REGION_KERNEL);
 
-				        for (long bundleId : fromSystemRegion.getBundleIds()) {
-				            if (bundleId > 0) {
-				                fromSystemRegion.removeBundle(bundleId);
-				                toKernelRegion.addBundle(bundleId);
-				            }
-				        }
-				        return copy;
-				    }
-				});
-			} catch (BundleException e) {
-				throw new IllegalStateException(e);
-			}
+                        for (long bundleId : fromSystemRegion.getBundleIds()) {
+                            if (bundleId > 0) {
+                                fromSystemRegion.removeBundle(bundleId);
+                                toKernelRegion.addBundle(bundleId);
+                            }
+                        }
+                        return copy;
+                    }
+                });
+            } catch (BundleException e) {
+                throw new IllegalStateException(e);
+            }
         }
         kernelRegion = original.getRegion(mgr.bundleContext.getBundle());
 
@@ -534,8 +535,21 @@ public class Provisioner {
         }
 
         FrameworkWiring wiring = adaptSystemBundle(bContext, FrameworkWiring.class);
-        if (wiring != null)
-            wiring.resolveBundles(bundlesToResolve);
+        if (wiring != null) {
+            ResolutionReportHelper rrh = null;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                rrh = new ResolutionReportHelper();
+                rrh.startHelper(bContext);
+            }
+            try {
+                wiring.resolveBundles(bundlesToResolve);
+            } finally {
+                if (rrh != null) {
+                    rrh.stopHelper();
+                    Tr.debug(this, tc, rrh.getResolutionReportString());
+                }
+            }
+        }
     }
 
     /**
