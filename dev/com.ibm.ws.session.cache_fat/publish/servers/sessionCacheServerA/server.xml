@@ -11,7 +11,7 @@
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="10m"/>
 
-    <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES">
+    <httpSessionCache libraryRef="HazelcastLib" writeContents="GET_AND_SET_ATTRIBUTES">
         <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
     </httpSessionCache>
 
