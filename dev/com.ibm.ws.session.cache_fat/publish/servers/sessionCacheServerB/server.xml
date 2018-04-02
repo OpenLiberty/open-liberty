@@ -3,6 +3,7 @@
     <featureManager>
         <feature>bells-1.0</feature>
         <feature>cdi-2.0</feature>
+        <feature>monitor-1.0</feature>
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
         <feature>sessionCache-1.0</feature>
@@ -46,5 +47,8 @@
     <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
     
     <javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
+
+    <!--  Permissions for application to access mbeans -->
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 
 </server>
