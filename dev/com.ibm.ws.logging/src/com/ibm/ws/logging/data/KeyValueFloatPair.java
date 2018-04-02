@@ -13,12 +13,11 @@ package com.ibm.ws.logging.data;
 /**
  *
  */
-public class KeyValueIntegerPair implements Pair, KeyValuePair {
-
+public class KeyValueFloatPair implements Pair, KeyValuePair {
     private final String key;
-    private final int value;
+    private final float value;
 
-    public KeyValueIntegerPair(String key, int value) {
+    public KeyValueFloatPair(String key, float value) {
         this.key = key;
         this.value = value;
     }
@@ -30,7 +29,7 @@ public class KeyValueIntegerPair implements Pair, KeyValuePair {
 
     @Override
     public boolean isInteger() {
-        return true;
+        return false;
     }
 
     @Override
@@ -40,7 +39,7 @@ public class KeyValueIntegerPair implements Pair, KeyValuePair {
 
     @Override
     public boolean isFloat() {
-        return false;
+        return true;
     }
 
     @Override
@@ -50,32 +49,32 @@ public class KeyValueIntegerPair implements Pair, KeyValuePair {
 
     @Override
     public String getStringValue() {
-        throw new UnsupportedOperationException("Cannot call getStringValue method on KeyValueIntegerPair class");
+        throw new UnsupportedOperationException("Cannot call getStringValue method on KeyValueFloatPair class");
     }
 
     @Override
     public int getIntValue() {
-        return value;
+        throw new UnsupportedOperationException("Cannot call getIntValue method on KeyValueFloatPair class");
     }
 
     @Override
     public long getLongValue() {
-        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueIntegerPair class");
+        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueFloatPair class");
     }
 
     @Override
     public float getFloatValue() {
-        throw new UnsupportedOperationException("Cannot call getFloatValue method on KeyValueIntegerPair class");
+        return value;
     }
 
     @Override
     public boolean getBooleanValue() {
-        throw new UnsupportedOperationException("Cannot call getBooleanValue method on KeyValueIntegerPair class");
+        throw new UnsupportedOperationException("Cannot call getBooleanValue method on KeyValueFloatPair class");
     }
 
     @Override
     public ValueTypes getType() {
-        return ValueTypes.INTEGER;
+        return ValueTypes.FLOAT;
     }
 
     @Override
