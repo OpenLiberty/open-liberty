@@ -25,8 +25,8 @@ import io.opentracing.Tracer;
  * <p>Tracer factory service.</p>
  *
  * <p>This is the service transition from the tracer manager to the service defined tracer
- * factory.  The expectation is that a tracer factory will be supplied through a user feature,
- * with the tracer factory handling all details of creating and initializing tracers.  For example,
+ * factory. The expectation is that a tracer factory will be supplied through a user feature,
+ * with the tracer factory handling all details of creating and initializing tracers. For example,
  * tracers are expected to connect to a trace event handler -- a server which accepts and collates
  * trace events.</p>
  */
@@ -38,9 +38,22 @@ public class OpentracingUserFeatureAccessService {
 
     private static OpentracingTracerFactory opentracingTracerFactory;
 
+    private static boolean factoryFirstUse = true;
+
     @Reference
     public void setOpentracingTracerFactory(OpentracingTracerFactory opentracingTracerFactory) {
         OpentracingUserFeatureAccessService.opentracingTracerFactory = opentracingTracerFactory;
+        factoryFirstUse = false;
+
+        if (opentracingTracerFactory != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
+                Tr.info(tc, "OPENTRACING_NEW_TRACERFACTORY", opentracingTracerFactory.getClass().getName());
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
+                Tr.error(tc, "OPENTRACING_NO_TRACERFACTORY");
+            }
+        }
     }
 
     //
@@ -56,24 +69,39 @@ public class OpentracingUserFeatureAccessService {
      */
     @Trivial
     public static Tracer getTracerInstance(String appName) {
-        String prefix = "getTracerInstance";
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-            Tr.entry(tc, prefix, appName);
+        String methodName = "getTracerInstance";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, methodName, appName);
         }
 
-        Tracer tracer;
-        try {
-            tracer = opentracingTracerFactory.newInstance(appName);
-            if ( tracer == null ) {
-                Tr.error(tc, "OPENTRACING_TRACERFACTORY_RETURNED_NULL");
+        Tracer tracer = null;
+
+        if (opentracingTracerFactory != null) {
+            try {
+                tracer = opentracingTracerFactory.newInstance(appName);
+            } catch (Throwable t) {
+                Tr.error(tc, "OPENTRACING_COULD_NOT_CREATE_TRACER", t);
             }
-        } catch ( Exception e ) {
-            tracer = null;
-            Tr.error(tc, "OPENTRACING_COULD_NOT_CREATE_TRACER", e.getMessage());
         }
 
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-            Tr.exit(tc, prefix, OpentracingUtils.getTracerText(tracer));
+        // It's not worth synchronizing around this and creating a
+        // bottleneck, since the only purpose is to print an error
+        // message if there is no factory configured. In the worst
+        // (and unlikely) case, this may cause a handful of those error messages to
+        // be printed instead of the expected 1, and this is fine
+        // to avoid the performance impact.
+        if (factoryFirstUse) {
+            factoryFirstUse = false;
+
+            if (opentracingTracerFactory == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
+                    Tr.error(tc, "OPENTRACING_NO_TRACERFACTORY");
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName, OpentracingUtils.getTracerText(tracer));
         }
         return tracer;
     }

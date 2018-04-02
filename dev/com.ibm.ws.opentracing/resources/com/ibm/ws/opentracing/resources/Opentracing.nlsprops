@@ -86,6 +86,14 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Invocation of user supplied 
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=The feature constructs Tracer implementations with a user provided OpentracingTracerFactory. The OpentracingTracerFactory.newInstance method returned null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determine why the user supplied OpentracingTracerFactory newInstance method returned null.
 
+OPENTRACING_NEW_TRACERFACTORY=CWMOT0007I: A user supplied OpentracingTracerFactory has been configured: {0}
+OPENTRACING_NEW_TRACERFACTORY.explanation=This is an informational message confirming an OpentracingTracerFactory has been configured.
+OPENTRACING_NEW_TRACERFACTORY.useraction=None.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: A user supplied OpentracingTracerFactory has not been configured so OpenTracing will not track requests.
+OPENTRACING_NO_TRACERFACTORY.explanation=The OpenTracing features are not functional if there is no user supplied OpentracingTracerFactory. Any JAX-RS requests will execute normally but they will not be tracked.
+OPENTRACING_NO_TRACERFACTORY.useraction=Consult the documentation for OpenTracing for how to configure a user supplied OpentracingTracerFactory.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -45,5 +45,4 @@ public class OpentracingTCKLauncher {
     public void launchOpentracingTck() throws Exception {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing_fat", this.getClass() + ":launchOpentracingTck");
     }
-
 }
