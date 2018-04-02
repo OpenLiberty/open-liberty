@@ -1,7 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.sessionStore-1.1
+symbolicName=com.ibm.websphere.appserver.sessionStore-1.0.0.JCache
 visibility=private
 singleton=true
-Subsystem-Version: 1.1.0
 kind=beta
 edition=core
