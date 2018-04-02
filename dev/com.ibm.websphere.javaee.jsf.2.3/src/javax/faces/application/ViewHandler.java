@@ -408,12 +408,6 @@ public abstract class ViewHandler
         Set<String> set = Collections.emptySet();
         return Collections.unmodifiableSet(set);
     }
-
-    /**
-     * Indicates the port used for websocket connections.
-     */
-    @JSFWebConfigParam(since = "2.3")
-    public static final java.lang.String WEBSOCKET_PORT = "javax.faces.WEBSOCKET_PORT";
     
     /**
      * Return a JSF URL that represents a websocket connection for the passed channel and channelToken
@@ -423,13 +417,8 @@ public abstract class ViewHandler
      * @param channelAndToken
      * @return 
      */
-    public String getWebsocketURL(FacesContext context, String channelAndToken)
-    {
-        String url = context.getExternalContext().getRequestContextPath() + 
-                "/javax.faces.push/"+channelAndToken;
-        return url;
-    }
-    
+    public abstract String getWebsocketURL(FacesContext context, String channelAndToken);
+
     /**
      * @since 2.3
      * @param facesContext
