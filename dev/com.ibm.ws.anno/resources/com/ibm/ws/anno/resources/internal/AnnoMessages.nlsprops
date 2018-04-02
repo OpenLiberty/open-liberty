@@ -561,6 +561,6 @@ ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 # # {4} The name of a file or the name of a directory
 # # Read - Past tense. 
 ANNO_JANDEX_USAGE=CWWKC0092I: Read Jandex indexes for {0} out of {1} archives ({2} out of {3} classes) in {4}. 
-ANNO_JANDEX_USAGE=CWWKC0092I.explanation=: This shows the number of classes in a container that were processed by reading Jandex indexes rather than by scanning the actual class files.
-ANNO_JANDEX_USAGE=CWWKC0092I.useraction=: If Jandex indexes are intended to be read for the application then there is no action.  If Jandex indexes are not to be read for the application, then set the useJandex="false" attribute in the application element in server.xml. Alternatively, set useJandex="false" in the applicationManger element in server.xml to ignore Jandex indexes in all applications.
+ANNO_JANDEX_USAGE.explanation=This shows the number of archives in the module that were processed by reading Jandex indexes rather than by scanning the actual class files.  It also shows the total number of classes in the application that were processed by reading Jandex indexes.
+ANNO_JANDEX_USAGE.useraction=If Jandex indexes are intended to be read for the application then there is no action.  If Jandex indexes are not to be read for the application, then set the useJandex="false" attribute in the application element in server.xml. Alternatively, set useJandex="false" in the applicationManger element in server.xml to ignore Jandex indexes in all applications.
 
