@@ -129,7 +129,6 @@ public class TraceSource implements Source, WsTraceHandler {
                 genData.addPairs(extensions);
             }
         }
-
         genData.setSourceType(sourceName);
         return genData;
 
