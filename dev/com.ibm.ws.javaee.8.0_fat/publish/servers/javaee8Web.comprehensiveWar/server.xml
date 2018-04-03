@@ -10,12 +10,12 @@
  -->
 
 <server>
+    <include location="../fatTestPorts.xml"/>
+
     <featureManager>
         <feature>webProfile-8.0</feature>
         <feature>componenttest-1.0</feature>
     </featureManager>
-
-    <include location="../fatTestPorts.xml"/>
 
     <dataSource id="DefaultDataSource">
     	<jdbcDriver libraryRef="DerbyLib"/>
