@@ -26,4 +26,10 @@
       <actions>read</actions>
    </permission>
 
+   <permission>
+      <class-name>java.net.SocketPermission</class-name>
+      <name>*</name>
+      <actions>connect,resolve</actions>
+   </permission>
+
 </permissions>

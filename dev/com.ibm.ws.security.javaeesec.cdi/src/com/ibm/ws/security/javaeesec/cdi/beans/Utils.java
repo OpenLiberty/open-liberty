@@ -13,7 +13,6 @@ package com.ibm.ws.security.javaeesec.cdi.beans;
 import java.security.AccessController;
 import java.security.Principal;
 import java.security.PrivilegedAction;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
@@ -52,12 +51,12 @@ public class Utils {
     public Utils() {}
 
     protected AuthenticationStatus validateUserAndPassword(CDI cdi, String realmName, Subject clientSubject, @Sensitive UsernamePasswordCredential credential,
-                                                         HttpMessageContext httpMessageContext) throws AuthenticationException {
+                                                           HttpMessageContext httpMessageContext) throws AuthenticationException {
         return validateCredential(cdi, realmName, clientSubject, credential, httpMessageContext);
     }
 
     protected AuthenticationStatus validateCredential(CDI cdi, String realmName, Subject clientSubject, @Sensitive Credential credential,
-                                                         HttpMessageContext httpMessageContext) throws AuthenticationException {
+                                                      HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         if(isIdentityStoreAvailable(cdi)) {
             IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler(cdi);
@@ -106,6 +105,7 @@ public class Utils {
         }
         return status;
     }
+
     private AuthenticationStatus validateWithUserRegistry(Subject clientSubject, @Sensitive Credential credential,
                                                           CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
@@ -140,7 +140,7 @@ public class Utils {
         String uniqueId = callerUniqueId != null ? callerUniqueId : callerPrincipalName;
 
         setCommonAttributes(subjectHashtable, realm, callerPrincipalName);
-        setUniqueId(subjectHashtable, realm, uniqueId);
+        setUniqueIdAndCacheKey(subjectHashtable, realm, uniqueId);
         setGroups(subjectHashtable, result.getCallerGroups());
     }
 
@@ -151,8 +151,10 @@ public class Utils {
         subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, callerPrincipalName);
     }
 
-    private void setUniqueId(Hashtable<String, Object> subjectHashtable, String realm, String uniqueId) {
-        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:" + realm + "/" + uniqueId);
+    private void setUniqueIdAndCacheKey(Hashtable<String, Object> subjectHashtable, String realm, String uniqueId) {
+        String accessId = "user:" + realm + "/" + uniqueId;
+        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, accessId);
+        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, accessId);
     }
 
     private void setGroups(Hashtable<String, Object> subjectHashtable, Set<String> groups) {
@@ -168,7 +170,6 @@ public class Utils {
             subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, new ArrayList<String>());
         }
     }
-
 
     private Hashtable<String, Object> getSubjectHashtable(final Subject clientSubject) {
         Hashtable<String, Object> subjectHashtable = getSubjectExistingHashtable(clientSubject);

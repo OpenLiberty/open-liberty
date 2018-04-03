@@ -47,6 +47,8 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean includePathInWASReqURL = false;
     private final Boolean trackLoggedOutSSOCookies = false;
     private final Boolean useOnlyCustomCookieName = false;
+    private final String jaspicSessionCookieName = "jaspicSession";
+    private final Boolean jaspicSessionForMechanismsEnabled = true;
 
     WebAdminSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -262,6 +264,18 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public String getBasicAuthRealmName() {
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getJaspicSessionCookieName() {
+        return jaspicSessionCookieName;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isJaspicSessionForMechanismsEnabled() {
+        return jaspicSessionForMechanismsEnabled;
     }
 
 }

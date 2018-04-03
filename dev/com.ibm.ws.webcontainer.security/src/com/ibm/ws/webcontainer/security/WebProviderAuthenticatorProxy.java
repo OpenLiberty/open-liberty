@@ -106,6 +106,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                             requestProps.put("javax.servlet.http.registerSession.subject", authResult.getSubject());
                             webRequest.setProperties(requestProps);
                         }
+
                         authResult = jaspiAuthenticator.authenticate(webRequest);
                         if (authResult.getStatus() != AuthResult.CONTINUE) {
                             if (!isNewAuth) {
@@ -157,7 +158,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     if (reqProps != null) {
                         registerSession = Boolean.valueOf((String) reqProps.get("javax.servlet.http.registerSession")).booleanValue();
                     }
-                    if (registerSession) {
+                    if (registerSession || webAppSecurityConfig.isJaspicSessionForMechanismsEnabled()) {
                         SSOCookieHelper ssoCh = new SSOCookieHelperImpl(webAppSecurityConfig, webAppSecurityConfig.getJaspicSessionCookieName());
                         ssoCh.addSSOCookiesToResponse(authResult.getSubject(),
                                                       webRequest.getHttpServletRequest(),
