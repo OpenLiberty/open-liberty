@@ -9,11 +9,6 @@ group = 'com.ibm.ws.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
-repositories {
-	mavenCentral()
-}
-
-
 dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
