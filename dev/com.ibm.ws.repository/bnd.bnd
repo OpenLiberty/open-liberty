@@ -39,6 +39,8 @@ Private-Package: com.ibm.ws.repository.resources.internal, \
     org.eclipse.osgi;version=latest
 
 -testpath: \
-    org.jmockit:jmockit;version=1.25,\
-    org.hamcrest:hamcrest-all;version=1.3,\
-    ../build.sharedResources/lib/junit/old/junit.jar;version=file
+    org.jmockit:jmockit;version=1.25, \
+    org.hamcrest:hamcrest-all;version=1.3, \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    com.ibm.ws.logging;version=latest, \
+    com.ibm.ws.org.glassfish.json.1.0;version=latest
