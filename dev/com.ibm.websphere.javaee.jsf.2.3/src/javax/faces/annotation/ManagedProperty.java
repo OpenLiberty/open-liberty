@@ -33,5 +33,5 @@ import javax.inject.Qualifier;
 @Retention(value=RetentionPolicy.RUNTIME)
 public @interface ManagedProperty
 {
-    public String value() default "";
+    public String value();
 }
