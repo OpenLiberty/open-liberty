@@ -10,10 +10,11 @@
  *******************************************************************************/
 
 compileTestJava {
+    dependsOn ':wlp-rasInstrumentation:jar'
     doLast {
         ant.taskdef(name: 'instrumentWithFFDC', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentWithFFDC') {
             classpath {
-                fileset(dir: cnf.file('lib'), includes: 'ras-instrumentation.jar')
+                fileset(dir: project(':wlp-rasInstrumentation').buildDir, includes: 'wlp-rasInstrumentation.jar')
             }
         }
         ant.instrumentWithFFDC() {

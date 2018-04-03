@@ -1,0 +1,33 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+rootProject.ext.instrumentForTraceInputFiles = { tasks.getByPath(':wlp-rasInstrumentation:jar') }
+rootProject.ext.instrumentForTraceTaskdef = { ant ->
+    ant.taskdef(name: 'instrumentForTrace', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentForTrace',
+                classpath: rootProject.project(':wlp-rasInstrumentation').configurations.archives.artifacts.files.asPath)
+}
+
+rootProject.ext.nlsTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/mantis/nls/antlib.xml') {
+        classpath {
+            fileset(dir: cnf.file('mavenlibs'), includes: "commons-*.jar")
+            fileset(dir: cnf.file('mavenlibs'), includes: "mantis-*.jar")
+        }
+    }
+}
+
+rootProject.ext.portSelectorTaskdef = { ant ->
+    ant.taskdef(name: 'portSelector', classname: 'com.ibm.aries.buildtasks.PortSelector') {
+        classpath {
+            fileset(dir: cnf.file('mavenlibs'), includes: "infra.buildtasks*.jar")
+        }
+    }
+}
