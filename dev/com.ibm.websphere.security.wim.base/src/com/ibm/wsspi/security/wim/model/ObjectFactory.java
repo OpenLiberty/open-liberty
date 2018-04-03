@@ -17,20 +17,19 @@ import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the com.ibm.wsspi.security.wim.model package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the com.ibm.wsspi.security.wim.model package.
+ * <p>An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
+ * and classes representing the binding of schema
+ * type definitions, element declarations and model
+ * groups. Factory methods for each of these are
  * provided in this class.
- * 
+ *
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -93,14 +92,13 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.ibm.wsspi.security.wim.model
-     * 
+     *
      */
-    public ObjectFactory() {
-    }
+    public ObjectFactory() {}
 
     /**
      * Create an instance of {@link PropertyControl }
-     * 
+     *
      */
     public PropertyControl createPropertyControl() {
         return new PropertyControl();
@@ -108,7 +106,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Root }
-     * 
+     *
      */
     public Root createRoot() {
         return new Root();
@@ -116,7 +114,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link AddressType }
-     * 
+     *
      */
     public AddressType createAddressType() {
         return new AddressType();
@@ -124,7 +122,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Entity }
-     * 
+     *
      */
     public Entity createEntity() {
         return new Entity();
@@ -132,7 +130,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link IdentifierType }
-     * 
+     *
      */
     public IdentifierType createIdentifierType() {
         return new IdentifierType();
@@ -140,7 +138,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Group }
-     * 
+     *
      */
     public Group createGroup() {
         return new Group();
@@ -148,7 +146,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link DescendantControl }
-     * 
+     *
      */
     public DescendantControl createDescendantControl() {
         return new DescendantControl();
@@ -156,7 +154,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Locality }
-     * 
+     *
      */
     public Locality createLocality() {
         return new Locality();
@@ -164,7 +162,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link GroupMemberControl }
-     * 
+     *
      */
     public GroupMemberControl createGroupMemberControl() {
         return new GroupMemberControl();
@@ -172,7 +170,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Party }
-     * 
+     *
      */
     public Party createParty() {
         return new Party();
@@ -180,7 +178,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link GroupMembershipControl }
-     * 
+     *
      */
     public GroupMembershipControl createGroupMembershipControl() {
         return new GroupMembershipControl();
@@ -188,7 +186,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link HierarchyControl }
-     * 
+     *
      */
     public HierarchyControl createHierarchyControl() {
         return new HierarchyControl();
@@ -196,7 +194,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Context }
-     * 
+     *
      */
     public Context createContext() {
         return new Context();
@@ -204,7 +202,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link DeleteControl }
-     * 
+     *
      */
     public DeleteControl createDeleteControl() {
         return new DeleteControl();
@@ -212,7 +210,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link LoginControl }
-     * 
+     *
      */
     public LoginControl createLoginControl() {
         return new LoginControl();
@@ -220,7 +218,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link RolePlayer }
-     * 
+     *
      */
     public RolePlayer createRolePlayer() {
         return new RolePlayer();
@@ -228,7 +226,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link CacheControl }
-     * 
+     *
      */
     public CacheControl createCacheControl() {
         return new CacheControl();
@@ -236,7 +234,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SortKeyType }
-     * 
+     *
      */
     public SortKeyType createSortKeyType() {
         return new SortKeyType();
@@ -244,7 +242,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PartyRole }
-     * 
+     *
      */
     public PartyRole createPartyRole() {
         return new PartyRole();
@@ -252,7 +250,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link OrgContainer }
-     * 
+     *
      */
     public OrgContainer createOrgContainer() {
         return new OrgContainer();
@@ -260,7 +258,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Container }
-     * 
+     *
      */
     public Container createContainer() {
         return new Container();
@@ -268,7 +266,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link CheckPointType }
-     * 
+     *
      */
     public CheckPointType createCheckPointType() {
         return new CheckPointType();
@@ -276,7 +274,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link LoginAccount }
-     * 
+     *
      */
     public LoginAccount createLoginAccount() {
         return new LoginAccount();
@@ -284,7 +282,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link EntitlementType }
-     * 
+     *
      */
     public EntitlementType createEntitlementType() {
         return new EntitlementType();
@@ -292,7 +290,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ExternalNameControl }
-     * 
+     *
      */
     public ExternalNameControl createExternalNameControl() {
         return new ExternalNameControl();
@@ -300,7 +298,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ViewIdentifierType }
-     * 
+     *
      */
     public ViewIdentifierType createViewIdentifierType() {
         return new ViewIdentifierType();
@@ -308,7 +306,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link LangType }
-     * 
+     *
      */
     public LangType createLangType() {
         return new LangType();
@@ -316,7 +314,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link AncestorControl }
-     * 
+     *
      */
     public AncestorControl createAncestorControl() {
         return new AncestorControl();
@@ -324,7 +322,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ChangeResponseControl }
-     * 
+     *
      */
     public ChangeResponseControl createChangeResponseControl() {
         return new ChangeResponseControl();
@@ -332,7 +330,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link GeographicLocation }
-     * 
+     *
      */
     public GeographicLocation createGeographicLocation() {
         return new GeographicLocation();
@@ -340,7 +338,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ChangeControl }
-     * 
+     *
      */
     public ChangeControl createChangeControl() {
         return new ChangeControl();
@@ -348,7 +346,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PageResponseControl }
-     * 
+     *
      */
     public PageResponseControl createPageResponseControl() {
         return new PageResponseControl();
@@ -356,7 +354,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PageControl }
-     * 
+     *
      */
     public PageControl createPageControl() {
         return new PageControl();
@@ -364,7 +362,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link CheckGroupMembershipControl }
-     * 
+     *
      */
     public CheckGroupMembershipControl createCheckGroupMembershipControl() {
         return new CheckGroupMembershipControl();
@@ -372,7 +370,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SearchResponseControl }
-     * 
+     *
      */
     public SearchResponseControl createSearchResponseControl() {
         return new SearchResponseControl();
@@ -380,7 +378,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SearchControl }
-     * 
+     *
      */
     public SearchControl createSearchControl() {
         return new SearchControl();
@@ -388,7 +386,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Person }
-     * 
+     *
      */
     public Person createPerson() {
         return new Person();
@@ -396,7 +394,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link EntitlementInfoType }
-     * 
+     *
      */
     public EntitlementInfoType createEntitlementInfoType() {
         return new EntitlementInfoType();
@@ -404,7 +402,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Country }
-     * 
+     *
      */
     public Country createCountry() {
         return new Country();
@@ -412,7 +410,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PersonAccount }
-     * 
+     *
      */
     public PersonAccount createPersonAccount() {
         return new PersonAccount();
@@ -420,7 +418,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link GroupControl }
-     * 
+     *
      */
     public GroupControl createGroupControl() {
         return new GroupControl();
@@ -428,7 +426,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SortControl }
-     * 
+     *
      */
     public SortControl createSortControl() {
         return new SortControl();
@@ -436,7 +434,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PropertyControl.ContextProperties }
-     * 
+     *
      */
     public PropertyControl.ContextProperties createPropertyControlContextProperties() {
         return new PropertyControl.ContextProperties();
@@ -444,7 +442,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "seeAlso")
     public JAXBElement<String> createSeeAlso(String value) {
@@ -453,7 +451,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "postalAddress")
     public JAXBElement<String> createPostalAddress(String value) {
@@ -462,7 +460,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link IdentifierType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "secretary")
     public JAXBElement<IdentifierType> createSecretary(IdentifierType value) {
@@ -471,7 +469,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link IdentifierType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "manager")
     public JAXBElement<IdentifierType> createManager(IdentifierType value) {
@@ -480,7 +478,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Entity }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "children")
     public JAXBElement<Entity> createChildren(Entity value) {
@@ -489,7 +487,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "kerberosId")
     public JAXBElement<String> createKerberosId(String value) {
@@ -498,7 +496,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "city")
     public JAXBElement<String> createCity(String value) {
@@ -507,7 +505,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "description")
     public JAXBElement<String> createDescription(String value) {
@@ -516,7 +514,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "mail")
     public JAXBElement<String> createMail(String value) {
@@ -525,7 +523,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Root }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "Root")
     public JAXBElement<Root> createRoot(Root value) {
@@ -534,7 +532,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "displayName")
     public JAXBElement<String> createDisplayName(String value) {
@@ -543,7 +541,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "uid")
     public JAXBElement<String> createUid(String value) {
@@ -552,7 +550,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "initials")
     public JAXBElement<String> createInitials(String value) {
@@ -561,7 +559,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "realm")
     public JAXBElement<String> createRealm(String value) {
@@ -570,7 +568,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "createTimestamp")
     public JAXBElement<XMLGregorianCalendar> createCreateTimestamp(XMLGregorianCalendar value) {
@@ -579,7 +577,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "principalName")
     public JAXBElement<String> createPrincipalName(String value) {
@@ -588,7 +586,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "employeeNumber")
     public JAXBElement<String> createEmployeeNumber(String value) {
@@ -597,7 +595,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "modifyTimestamp")
     public JAXBElement<XMLGregorianCalendar> createModifyTimestamp(XMLGregorianCalendar value) {
@@ -606,7 +604,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "postalCode")
     public JAXBElement<String> createPostalCode(String value) {
@@ -614,17 +612,17 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link byte[]}{@code >}}
-     * 
+     * Create an instance of {@link JAXBElement }{@code <byte[]>}
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "jpegPhoto")
     public JAXBElement<byte[]> createJpegPhoto(byte[] value) {
-        return new JAXBElement<byte[]>(_JpegPhoto_QNAME, byte[].class, null, ((byte[]) value));
+        return new JAXBElement<byte[]>(_JpegPhoto_QNAME, byte[].class, null, (value));
     }
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "stateOrProvinceName")
     public JAXBElement<String> createStateOrProvinceName(String value) {
@@ -633,7 +631,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "labeledURI")
     public JAXBElement<String> createLabeledURI(String value) {
@@ -642,7 +640,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "cn")
     public JAXBElement<String> createCn(String value) {
@@ -651,7 +649,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Entity }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "parent")
     public JAXBElement<Entity> createParent(Entity value) {
@@ -660,7 +658,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "ibm-jobTitle")
     public JAXBElement<String> createIbmJobTitle(String value) {
@@ -669,7 +667,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "street")
     public JAXBElement<String> createStreet(String value) {
@@ -678,7 +676,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "ibm-primaryEmail")
     public JAXBElement<String> createIbmPrimaryEmail(String value) {
@@ -687,7 +685,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "sn")
     public JAXBElement<String> createSn(String value) {
@@ -696,7 +694,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "ou")
     public JAXBElement<String> createOu(String value) {
@@ -705,7 +703,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "dc")
     public JAXBElement<String> createDc(String value) {
@@ -714,7 +712,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "st")
     public JAXBElement<String> createSt(String value) {
@@ -722,17 +720,17 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link byte[]}{@code >}}
-     * 
+     * Create an instance of {@link JAXBElement }{@code <byte[]>}
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "certificate")
     public JAXBElement<byte[]> createCertificate(byte[] value) {
-        return new JAXBElement<byte[]>(_Certificate_QNAME, byte[].class, null, ((byte[]) value));
+        return new JAXBElement<byte[]>(_Certificate_QNAME, byte[].class, null, (value));
     }
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "localityName")
     public JAXBElement<String> createLocalityName(String value) {
@@ -741,7 +739,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "title")
     public JAXBElement<String> createTitle(String value) {
@@ -750,7 +748,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "givenName")
     public JAXBElement<String> createGivenName(String value) {
@@ -759,7 +757,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "departmentNumber")
     public JAXBElement<String> createDepartmentNumber(String value) {
@@ -768,7 +766,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "carLicense")
     public JAXBElement<String> createCarLicense(String value) {
@@ -777,7 +775,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "mobile")
     public JAXBElement<String> createMobile(String value) {
@@ -786,7 +784,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "homePostalAddress")
     public JAXBElement<String> createHomePostalAddress(String value) {
@@ -795,7 +793,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "countryName")
     public JAXBElement<String> createCountryName(String value) {
@@ -804,7 +802,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "c")
     public JAXBElement<String> createC(String value) {
@@ -813,7 +811,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Entity }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "members")
     public JAXBElement<Entity> createMembers(Entity value) {
@@ -822,7 +820,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link Group }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "groups")
     public JAXBElement<Group> createGroups(Group value) {
@@ -831,7 +829,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "pager")
     public JAXBElement<String> createPager(String value) {
@@ -840,7 +838,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "preferredLanguage")
     public JAXBElement<String> createPreferredLanguage(String value) {
@@ -849,7 +847,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link AddressType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "businessAddress")
     public JAXBElement<AddressType> createBusinessAddress(AddressType value) {
@@ -858,7 +856,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "l")
     public JAXBElement<String> createL(String value) {
@@ -867,7 +865,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "o")
     public JAXBElement<String> createO(String value) {
@@ -876,7 +874,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "facsimileTelephoneNumber")
     public JAXBElement<String> createFacsimileTelephoneNumber(String value) {
@@ -884,17 +882,17 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link byte[]}{@code >}}
-     * 
+     * Create an instance of {@link JAXBElement }{@code <byte[]>}
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "password")
     public JAXBElement<byte[]> createPassword(byte[] value) {
-        return new JAXBElement<byte[]>(_Password_QNAME, byte[].class, null, ((byte[]) value));
+        return new JAXBElement<byte[]>(_Password_QNAME, byte[].class, null, (value));
     }
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "roomNumber")
     public JAXBElement<String> createRoomNumber(String value) {
@@ -903,7 +901,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "employeeType")
     public JAXBElement<String> createEmployeeType(String value) {
@@ -912,7 +910,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "businessCategory")
     public JAXBElement<String> createBusinessCategory(String value) {
@@ -921,7 +919,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "telephoneNumber")
     public JAXBElement<String> createTelephoneNumber(String value) {
@@ -930,7 +928,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link AddressType }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://www.ibm.com/websphere/wim", name = "homeAddress")
     public JAXBElement<AddressType> createHomeAddress(AddressType value) {
