@@ -233,11 +233,11 @@ public class CollectorJsonUtils {
                     for (KeyValuePair k : extensions) {
                         String extKey = k.getKey();
                         if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(kvp.getIntValue()), false, true, false, false, true);
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
                         } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
                             CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
                         } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                            CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(kvp.getLongValue()), false, true, false, false, true);
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
                         } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
                             CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
                         } else {
