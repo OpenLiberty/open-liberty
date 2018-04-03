@@ -17,11 +17,16 @@ import java.util.Hashtable;
 import javax.management.NotificationBroadcasterSupport;
 
 import com.ibm.websphere.application.ApplicationMBean;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.ApplicationManager;
 
 @Trivial
 public final class ApplicationConfig {
+
+    private static final TraceComponent tc = Tr.register(ApplicationConfig.class);
+
     private final String _configPid;
     private final Dictionary<String, ?> _config;
     private final ApplicationManager _applicationManager;
@@ -61,6 +66,47 @@ public final class ApplicationConfig {
             }
         }
         _name = name;
+
+        displayJandexMessages();
+    }
+
+    private static boolean ONE_TIME_MSGS_DISPLAYED = false;
+
+    private void displayJandexMessages() {
+
+        boolean useJandexForAll = _applicationManager.getUseJandex();
+
+        if (!ONE_TIME_MSGS_DISPLAYED) {
+            if (useJandexForAll) {
+                Tr.info(tc, "APPLICATION_JANDEX_ENABLED_ALL");
+            }
+            ONE_TIME_MSGS_DISPLAYED = true;
+        }
+
+        boolean useJandexForApplication = false;
+        boolean useJandexForApplicationIsSet = false;
+
+        if (_config != null) {
+            Object useJandex = _config.get(AppManagerConstants.USE_JANDEX);
+            if (useJandex instanceof Boolean) {
+                useJandexForApplicationIsSet = true;
+
+                if ((Boolean) useJandex) {
+                    useJandexForApplication = true;
+
+                } else {
+                    Tr.info(tc, "APPLICATION_JANDEX_DISABLED", _name);
+                }
+            }
+        }
+
+        if (useJandexForAll) {
+            if (useJandexForApplicationIsSet && useJandexForApplication) {
+                Tr.info(tc, "APPLICATION_JANDEX_DISABLED", _name);
+            }
+        } else {
+            Tr.info(tc, "APPLICATION_JANDEX_ENABLED", _name);
+        }
     }
 
     //public ApplicationConfig(String configPid, Dictionary<String, ?> config) {
@@ -142,9 +188,8 @@ public final class ApplicationConfig {
     public boolean getUseJandex() {
         // First try to get the value from the application configuration
         // which overrides the value on the application manager configuration.
-        Dictionary<String, ?> config = _config;
-        if (config != null) {
-            Object result = config.get(AppManagerConstants.USE_JANDEX);
+        if (_config != null) {
+            Object result = _config.get(AppManagerConstants.USE_JANDEX);
             if (result instanceof Boolean) {
                 return (Boolean) result;
             }
