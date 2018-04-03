@@ -27,6 +27,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.LDAPFatUtils;
 import componenttest.topology.utils.LDAPUtils;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
@@ -100,7 +101,7 @@ public class GetUserSecurityCustomLDAP {
         String securityName = "cn=vmmtestuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com";
 
         Log.info(c, "getUserSecurityName", "Checking with a valid user.");
-        assertEquals(securityName, servlet.getUserSecurityName(user));
+        LDAPFatUtils.assertDNsEqual("User security name didn't match expected value.", securityName, servlet.getUserSecurityName(user));
     }
 
 }
