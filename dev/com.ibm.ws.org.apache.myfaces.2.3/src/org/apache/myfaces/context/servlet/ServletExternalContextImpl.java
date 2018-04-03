@@ -83,7 +83,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
      * Indicates the port used for websocket connections.
      */
     @JSFWebConfigParam(since = "2.3")
-    public static final java.lang.String WEBSOCKET_PORT = "javax.faces.WEBSOCKET_PORT";
+    public static final java.lang.String WEBSOCKET_ENDPOINT_PORT = "javax.faces.WEBSOCKET_ENDPOINT_PORT";
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
@@ -462,7 +462,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         checkNull(url, "url");
         FacesContext facesContext = getCurrentFacesContext();
         Integer port = WebConfigParamUtils.getIntegerInitParameter(
-                getCurrentFacesContext().getExternalContext(), WEBSOCKET_PORT);
+                getCurrentFacesContext().getExternalContext(), WEBSOCKET_ENDPOINT_PORT);
         port = (port == 0) ? null : port;
         if (port != null && 
             !port.equals(facesContext.getExternalContext().getRequestServerPort()))
