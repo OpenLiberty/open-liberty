@@ -432,13 +432,7 @@ public class WsLogger extends Logger implements TraceStateChangeListener {
     public void entering(String sourceClass, String sourceMethod, Object params[]) {
         if (isLoggable(Level.FINER)) {
             String msg = "ENTRY";
-            if (params != null) {
-                StringBuilder sb = new StringBuilder(msg);
-                for (int i = 0; i < params.length; i++) {
-                    sb.append(" {").append(i).append("}");
-                }
-                msg = sb.toString();
-            }
+            msg = buildParamsMsg(msg, params);
             logp(Level.FINER, sourceClass, sourceMethod, msg, params);
         }
     }
@@ -704,6 +698,26 @@ public class WsLogger extends Logger implements TraceStateChangeListener {
      */
     public void setProduct(String product) {
         this.ivProduct = product;
+    }
+
+    private String buildParamsMsg(String prefix, Object params[]) {
+        if (params != null) {
+            StringBuilder sb = new StringBuilder(prefix);
+            sb.append("[").append(params.length).append("]");
+            for (int i = 0; i < params.length; i++) {
+                if(params[i] instanceof String) {
+                    String s = (String)params[i];
+                    if (s != null && s.length() == 0)
+                        sb.append(" ''''");
+                    else
+                        sb.append(" ").append(s);
+                } else {
+                    sb.append(" {").append(i).append("}");
+                }
+            }
+            return sb.toString();
+        }
+        return prefix;
     }
 
 }
