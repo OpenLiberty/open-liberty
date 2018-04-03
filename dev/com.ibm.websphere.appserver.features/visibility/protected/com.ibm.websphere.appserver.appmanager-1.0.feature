@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.appmanager-1.1
+symbolicName=com.ibm.websphere.appserver.appmanager-1.0
 visibility=protected
 IBM-API-Package: com.ibm.websphere.security; type="ibm-api", \
  com.ibm.websphere.security.auth; type="ibm-api", \
