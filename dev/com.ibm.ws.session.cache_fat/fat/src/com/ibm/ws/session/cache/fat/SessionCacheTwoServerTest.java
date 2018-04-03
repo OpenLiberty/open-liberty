@@ -196,6 +196,23 @@ public class SessionCacheTwoServerTest extends FATServletClient {
     }
 
     /**
+     * Verify that CacheMXBean and CacheStatisticsMXBean provided for each of the caches created by the sessionCache feature
+     * can be obtained and report statistics about the cache.
+     */
+    // TODO enable once sessionCache is tied in to monitor feature @Test
+    public void testMXBeansEnabled() throws Exception {
+        appB.invokeServlet("testMXBeansEnabled", new ArrayList<>());
+    }
+
+    /**
+     * Verify that CacheMXBean and CacheStatisticsMXBean are not registered.
+     */
+    @Test
+    public void testMXBeansNotEnabled() throws Exception {
+        appA.invokeServlet("testMXBeansNotEnabled", new ArrayList<>());
+    }
+
+    /**
      * Verify that SessionScoped CDI bean preserves its state across session calls.
      */
     @Test
