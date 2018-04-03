@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 public class TestMarker extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    public static final String PARAM_ACTION = "action";
+    public static final String PARAM_TEST_NAME = "testCaseName";
+
     public TestMarker() {
         super();
     }
@@ -35,7 +38,7 @@ public class TestMarker extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("-----------------------------------------------------------------------------------------");
-        System.out.println(request.getParameter("action") + " TEST CASE: " + request.getParameter("testCaseName"));
+        System.out.println(request.getParameter(PARAM_ACTION) + " TEST CASE: " + request.getParameter(PARAM_TEST_NAME));
         System.out.println("-----------------------------------------------------------------------------------------");
     }
 }
