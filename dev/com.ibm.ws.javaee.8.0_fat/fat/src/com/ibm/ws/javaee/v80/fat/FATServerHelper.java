@@ -63,6 +63,45 @@ public class FATServerHelper {
     }
 
     /**
+     * Package a WAR with a JAR and add the WAR to a server.
+     *
+     * The rules of {@link #addToServer} are followed, using a null
+     * EAR name.
+     *
+     * @param targetServer The server to which to add the EAR or WAR.
+     * @param targetDir The directory of the server in which to place
+     *     the EAR or WAR.
+     * @param warName The name of the WAR which is to be created and added.
+     * @param warPackageNames The names of packages to be placed in the WAR.
+     * @param addWarResources Control parameter: Tells if resources are to
+     *     be added for the WAR.
+     *
+     * @param jarName The name of the JAR which is to be created and added.
+     * @param jarPackageNames The names of packages to be placed in the JAR.
+     *     EAR, WAR, and JAR.
+     * @param addJarResources Control parameter: Tells if resources are to
+     *     be added for the JAR.
+     *
+     * @throws Exception Thrown if any of the steps fails.
+     */
+    public static boolean addWarToServer(
+        LibertyServer targetServer, String targetDir,
+        String warName, String[] warPackageNames, boolean addWarResources,
+        String jarName, String[] jarPackageNames, boolean addJarResources) throws Exception {
+
+        String earName = null;
+        boolean addEarResources = DO_NOT_ADD_RESOURCES;
+
+        return addToServer(
+            targetServer, targetDir,
+            earName, addEarResources,
+            warName, warPackageNames, addWarResources,
+            jarName, jarPackageNames, addJarResources);
+    }
+
+
+
+    /**
      * Conditionally, package a JAR, WAR, and EAR and add them to a
      * server.
      *

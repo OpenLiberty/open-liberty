@@ -25,11 +25,11 @@ import componenttest.topology.impl.LibertyServer;
 import testservlet40.jar.servlets.SimpleFragmentServlet;
 
 /**
- * Test of Application 8 and Servlet 4 parsing using the 'javaee-8.0'
+ * Test of Application 8 and Servlet 4 parsing using the 'webProfile-8.0'
  * feature.
  *
  * This test puts together a server definition which uses feature
- * 'javaee-8.0' with a simple EAR which uses Application 8 and which
+ * 'webProfile-8.0' with a simple EAR which uses Application 8 and which
  * contains a Servlet 4 WAR.
  *
  * The expected test result is that the EAR and WAR start with no errors.
@@ -39,7 +39,7 @@ import testservlet40.jar.servlets.SimpleFragmentServlet;
  * however, the test only configures the fragment servlet.
  */
 @RunWith(FATRunner.class)
-public class FullProfileSimpleEarTest implements FATAppConstants {
+public class WebProfileSimpleEarTest implements FATAppConstants {
 
     @Server(JAVA8_WEB_SIMPLE_EAR_SERVER_NAME)
     @TestServlet(servlet = SimpleFragmentServlet.class,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,25 +24,22 @@ import javax.servlet.http.HttpServletResponse;
  * initalize applications. This should be shared with other application so we don't have a ton
  * of Hello World servlets around.
  */
-@WebServlet("/SimpleTestServlet")
-public class SimpleTestServlet extends HttpServlet {
+@WebServlet("/SimpleClassesServlet")
+public class SimpleClassesServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public SimpleTestServlet() {
+    public SimpleClassesServlet() {
         super();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletOutputStream sos = response.getOutputStream();
-
-        sos.println("Hello World");
-
+        sos.println("Hello World (Classes)");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
-
 }
