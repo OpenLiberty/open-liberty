@@ -11,7 +11,6 @@
 package com.ibm.ws.logging.data;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 public class GenericData {
 
@@ -21,9 +20,9 @@ public class GenericData {
 
     private String sourceType;
 
-    private Level logRecordLevel = null;
-
     private String loggerName = null;
+
+    private String jsonMessage = null;
 
     public GenericData() {
         pairs = new ArrayList<Pair>();
@@ -34,12 +33,17 @@ public class GenericData {
     }
 
     public void setPair(int index, String key, String value) {
-        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
         pairs.add(index, kvp);
     }
 
-    public void setPair(int index, String key, Number value) {
-        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+    public void setPair(int index, String key, int value) {
+        KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
+        pairs.add(index, kvp);
+    }
+
+    public void setPair(int index, String key, long value) {
+        KeyValueLongPair kvp = new KeyValueLongPair(key, value);
         pairs.add(index, kvp);
     }
 
@@ -48,12 +52,17 @@ public class GenericData {
     }
 
     public void addPair(String key, String value) {
-        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
         pairs.add(kvp);
     }
 
-    public void addPair(String key, Number value) {
-        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+    public void addPair(String key, int value) {
+        KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
+        pairs.add(kvp);
+    }
+
+    public void addPair(String key, long value) {
+        KeyValueLongPair kvp = new KeyValueLongPair(key, value);
         pairs.add(kvp);
     }
 
@@ -73,14 +82,6 @@ public class GenericData {
         this.sourceType = sourceType;
     }
 
-    public void setLogRecordLevel(Level logRecordLevel) {
-        this.logRecordLevel = logRecordLevel;
-    }
-
-    public Level getLogRecordLevel() {
-        return logRecordLevel;
-    }
-
     public void setLoggerName(String loggerName) {
         this.loggerName = loggerName;
     }
@@ -95,7 +96,7 @@ public class GenericData {
             if (p instanceof KeyValuePair) {
                 KeyValuePair kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals("ibm_messageId")) {
-                    return kvp.getValue();
+                    return kvp.getStringValue();
                 }
             }
         }
@@ -107,7 +108,6 @@ public class GenericData {
     public String toString() {
         KeyValuePair kvp;
         String key;
-        String val;
         StringBuilder sb = new StringBuilder();
         String comma = ",";
         sb.append("GenericData [");
@@ -116,16 +116,31 @@ public class GenericData {
             if (p instanceof KeyValuePair) {
                 kvp = (KeyValuePair) p;
                 key = kvp.getKey();
-                val = kvp.getValue();
                 sb.append(comma);
                 if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
                     key = "threadID";
                 }
-                sb.append(key + "=" + val);
+                if (kvp.isInteger()) {
+                    sb.append(key + "=" + kvp.getIntValue());
+                } else if (kvp.isLong()) {
+                    sb.append(key + "=" + kvp.getLongValue());
+                } else {
+                    sb.append(key + "=" + kvp.getStringValue());
+
+                }
             }
         }
+
         sb.append("]");
         return sb.toString();
+    }
+
+    public String getJsonMessage() {
+        return jsonMessage;
+    }
+
+    public void setJsonMessage(String jsonMessage) {
+        this.jsonMessage = jsonMessage;
     }
 
 }

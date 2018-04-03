@@ -28,6 +28,7 @@ import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TruncatableThrowable;
+import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.ws.collector.manager.buffer.SimpleRotatingSoftQueue;
 import com.ibm.ws.kernel.boot.logging.LoggerHandlerManager;
@@ -235,7 +236,7 @@ public class BaseTraceService implements TrService {
         // LogManager, which might print errors due to misconfiguration.
         captureSystemStreams();
         //Remove EMQ from BufferManager after a certain amount of time has passed
-        BufferManagerImpl.removeEMQByTimer();
+        BufferManagerEMQHelper.removeEMQByTimer();
     }
 
     protected void registerLoggerHandlerSingleton() {
@@ -349,7 +350,6 @@ public class BaseTraceService implements TrService {
             messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
             collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
             messageLogHandler.setWriter(messagesLog);
-
         }
         if (consoleLogHandler == null) {
             consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
@@ -357,7 +357,6 @@ public class BaseTraceService implements TrService {
             consoleLogHandler.setWriter(systemOut);
             consoleLogHandler.setSysErrHolder(systemErr);
         }
-        consoleLogHandler.setCopySystemStreams(copySystemStreams);
 
         /*
          * If messageFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
@@ -389,8 +388,9 @@ public class BaseTraceService implements TrService {
                 } else {
                     consoleLogHandler.setTraceStdout(false);
                 }
-                consoleLogHandler.modified(new ArrayList<String>());
+                messageLogHandler.modified(new ArrayList<String>());
                 updateConduitSyncHandlerConnection(filteredList, consoleLogHandler);
+                consoleLogHandler.setCopySystemStreams(copySystemStreams);
             }
         }
 
@@ -431,7 +431,7 @@ public class BaseTraceService implements TrService {
             messageLogHandler.setFormatter(formatter);
         }
         consoleLogHandler.setFormatter(formatter);
-        consoleLogHandler.setBaseTraceService(this);
+        consoleLogHandler.setBTS(this);
         consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
     }
 
@@ -608,11 +608,13 @@ public class BaseTraceService implements TrService {
         }
         invokeMessageRouters(routedMessage);
         if (logSource != null) {
+            //logSource.publish(routedMessage);
             publishToLogSource(routedMessage);
         }
-
         //send events to handlers
-        if (TraceComponent.isAnyTracingEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled())
+
+        {
             publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
         }
     }
@@ -727,6 +729,7 @@ public class BaseTraceService implements TrService {
 
             formattedMsg = formatter.formatMessage(logRecord);
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
+
             RoutedMessage routedMessage = null;
             if (externalMessageRouter.get() != null) {
                 String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
@@ -756,6 +759,7 @@ public class BaseTraceService implements TrService {
 
             // logSource only receives "normal" messages and messages that are not hidden.
             if (logSource != null) {
+                //logSource.publish(routedMessage);
                 publishToLogSource(routedMessage);
             }
         }

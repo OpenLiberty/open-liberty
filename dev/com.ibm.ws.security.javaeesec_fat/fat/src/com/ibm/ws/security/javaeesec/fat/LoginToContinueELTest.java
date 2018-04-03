@@ -11,15 +11,11 @@
 package com.ibm.ws.security.javaeesec.fat;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.exception.LdapException;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.client.params.ClientPNames;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,24 +23,20 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
+import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
+import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-
-import com.ibm.ws.security.javaeesec.fat_helper.Constants;
-import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
-import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
-import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
 @MinimumJavaLevel(javaLevel = 1.8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
@@ -75,7 +67,6 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
     protected static String LOGIN_FORM_URI = "/" + APP_NAME + "/j_security_check";
     protected static String EL_SERVLET = "/" + APP_NAME + "/LoginToContinueProps";
 
-
     protected static String ORIGINAL_TITLE_LOGIN_PAGE = "Original login page for the form login test";
     protected static String ORIGINAL_TITLE_ERROR_PAGE = "Original Form Login Error Page";
     protected static String ALTERNATIVE_TITLE_LOGIN_PAGE = "Alternative login page for the form login test";
@@ -86,7 +77,8 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
     protected static String PARAM_USE_FORWARD = "&useForwardToLogin=";
 
     protected static String ORIGINAL_SETTING = EL_SERVLET + PARAM_ERROR_PAGE + ORIGINAL_ERROR + PARAM_LOGIN_PAGE + ORIGINAL_LOGIN + PARAM_USE_FORWARD + ORIGINAL_USE_FORWARD;
-    protected static String ALTERNATIVE_SETTING = EL_SERVLET + PARAM_ERROR_PAGE + ALTERNATIVE_ERROR + PARAM_LOGIN_PAGE + ALTERNATIVE_LOGIN + PARAM_USE_FORWARD + ALTERNATIVE_USE_FORWARD;
+    protected static String ALTERNATIVE_SETTING = EL_SERVLET + PARAM_ERROR_PAGE + ALTERNATIVE_ERROR + PARAM_LOGIN_PAGE + ALTERNATIVE_LOGIN + PARAM_USE_FORWARD
+                                                  + ALTERNATIVE_USE_FORWARD;
     protected static String INVALID_SETTING = EL_SERVLET + PARAM_ERROR_PAGE + INVALID_ERROR + PARAM_LOGIN_PAGE + INVALID_LOGIN + PARAM_USE_FORWARD + INVALID_USE_FORWARD;
 
     protected static String SETTING_MESSAGE = "ServletName: LoginToContinueTest";
@@ -95,7 +87,7 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
     protected static String PASSWORD = "s3cur1ty";
     protected static String INVALIDPASSWORD = "invalid";
 
-    protected DefaultHttpClient httpclient;   
+    protected DefaultHttpClient httpclient;
 
     protected static LocalLdapServer ldapServer;
 
@@ -107,8 +99,7 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
     public TestName name = new TestName();
 
     @BeforeClass
-    public static void setUp() throws Exception {
-    }
+    public static void setUp() throws Exception {}
 
     @AfterClass
     public static void tearDown() throws Exception {
@@ -137,7 +128,8 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
     }
 
     protected void startServer(String servletPackage) throws Exception {
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", servletPackage, "web.war.servlets.el.ltc", "web.war.identitystores");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", servletPackage, "web.war.servlets.el.ltc", "web.war.identitystores",
+                                               "web.war.identitystores.scoped.application");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_NAME);
@@ -176,7 +168,7 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> EL is resolved every invocations.
-     * </OL>                                
+     * </OL>
      */
     @Mode(TestMode.LITE)
     @Test
@@ -205,11 +197,11 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
      * Verify the following:
      * <OL>
      * <LI> EL is resolved every invocations.
-     * </OL>                                
+     * </OL>
      */
     @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC({"javax.naming.AuthenticationException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     public void testLoginToContinueELDeferredErrorPage() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         startServer("web.war.servlets.el.ltc.deferred");

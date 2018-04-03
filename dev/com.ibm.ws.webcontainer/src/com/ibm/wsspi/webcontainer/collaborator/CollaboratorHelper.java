@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -445,11 +445,19 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
                 }
             }
 
+            boolean servletRequestListenersNotificationNeeded = true;
             if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY)) {
                 securityEnforced = dispatchContext.isEnforceSecurity() // PK70824
                                   || (httpRequest!=null && httpRequest.getDispatcherType().equals(DispatcherType.ERROR));
+                // Invoke notifyServletRequestCreated here because JSR 375 requires that all CDI scopes are available.
+                if (securityCollaborator.isCDINeeded()) {
+                    // Invoke notifyServletRequestCreated here because JSR 375 requires that all CDI scopes are available. 
+                    collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));
+                    servletRequestListenersNotificationNeeded = false;
+                }
+                
                 Object securityObject = securityCollaborator.preInvoke(httpRequest, httpResponse, servletName, securityEnforced);
-                collabMetaData.setSecurityObject(securityObject);
+                collabMetaData.setSecurityObject(securityObject); 
             }
 
             if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.CONNECTION)) {
@@ -480,7 +488,9 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
             
             //HttpServletRequest javadocs describe it as:
             //Interface for receiving notification events about requests coming into and going out of scope of a web application. 
-            collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));                
+            if (servletRequestListenersNotificationNeeded) { 
+                collabMetaData.setServletRequestCreated(webApp.notifyServletRequestCreated(httpRequest));
+            }
             
         } finally {
             if (sessionSecurityIntegrationEnabled) {
@@ -505,6 +515,14 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
 
         boolean sessionInvoke = collabMetaData.isSessionInvokeRequired();
 
+        // Invoke security collaborator here because JSR 375 requires that all CDI scopes are available.
+        boolean postInvokeForSecureResponseNeeded = true;
+        if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY) && securityCollaborator.isCDINeeded()) {
+            postInvokeForSecureResponseNeeded = false;
+            Object secObject = collabMetaData.getSecurityObject();
+            this.securityCollaborator.postInvokeForSecureResponse(secObject);
+        }
+        
         //HttpServletRequest javadocs describe it as:
         //Interface for receiving notification events about requests coming into and going out of scope of a web application. 
         WebContainerRequestState reqState = com.ibm.wsspi.webcontainer.WebContainerRequestState.getInstance(false); // start PI26908
@@ -552,11 +570,11 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
         }
 
         if (collabMetaData.isPostInvokeNecessary()){
-        	if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.INVOCATION) && collabMetaData.isPostInvokeNecessary()) {
-            	IInvocationCollaborator[] webAppInvocationCollaborators = collabMetaData.getServletContext().getWebAppInvocationCollaborators();
-            	doInvocationCollaboratorsPostInvoke(webAppInvocationCollaborators, cmd, httpRequest, httpResponse);
-        	}
-		}
+            if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.INVOCATION) && collabMetaData.isPostInvokeNecessary()) {
+                IInvocationCollaborator[] webAppInvocationCollaborators = collabMetaData.getServletContext().getWebAppInvocationCollaborators();
+                doInvocationCollaboratorsPostInvoke(webAppInvocationCollaborators, cmd, httpRequest, httpResponse);
+            }
+        }
         
         if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.CONNECTION)) {
             HandleList _connectionHandleList = collabMetaData.getConnectionHandleList();
@@ -570,6 +588,9 @@ public abstract class CollaboratorHelper implements ICollaboratorHelper {
 
         if (colEnum != null && colEnum.contains(CollaboratorInvocationEnum.SECURITY)) {
             Object secObject = collabMetaData.getSecurityObject();
+            if (postInvokeForSecureResponseNeeded) {
+                this.securityCollaborator.postInvokeForSecureResponse(secObject);
+            }
             this.securityCollaborator.postInvoke(secObject);
         }
         

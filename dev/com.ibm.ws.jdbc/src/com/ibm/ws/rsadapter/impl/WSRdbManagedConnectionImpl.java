@@ -4243,8 +4243,13 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             // If the driver is pre-4.1
             x = e;
         } catch (SQLException e) {
-                // In case the driver is not 4.1 compliant but says it is 
+            // In case the driver is not 4.1 compliant but says it is 
+            String sqlMessge = e.getMessage() == null ? "" : e.getMessage();
             if (AdapterUtil.isUnsupportedException(e))
+                x = e;
+            //try to catch any other variation of not supported, does not support, unsupported, etc.
+            //this is needed by several JDBC drivers, but one known driver is DataDirect OpenEdge JDBC Driver
+            else if(sqlMessge.contains("support"))
                 x = e;
             else
                 throw e;
@@ -4324,7 +4329,12 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             x = e;
         } catch (SQLException e) {
             // In case the driver is not 4.1 compliant but says it is 
+            String sqlMessge = e.getMessage() == null ? "" : e.getMessage();
             if (AdapterUtil.isUnsupportedException(e))
+                x = e;
+            //try to catch any other variation of not supported, does not support, unsupported, etc.
+            //this is needed by several JDBC drivers, but one known driver is DataDirect OpenEdge JDBC Driver
+            else if(sqlMessge.contains("support"))
                 x = e;
             else
                 throw e;

@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.util.ByteArray;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.StringUtil;
@@ -44,6 +45,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected static final ConcurrentMap<ByteArray, String> cookieByteStringCache = new ConcurrentHashMap<ByteArray, String>(20);
     private static int MAX_COOKIE_STRING_ENTRIES = 100;
     private String cookieName = null;
+    protected boolean isJwtCookie = false;
 
     private final WebAppSecurityConfig config;
 
@@ -67,8 +69,15 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      **/
     @Override
     public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+new Exception("Toshi").printStackTrace();
         if (!allowToAddCookieToResponse(req))
             return;
+        addJwtSsoCookiesToResponse(subject, req, resp);
+
+        if (!JwtSSOTokenHelper.shouldAlsoIncludeLtpaCookie()) {
+            return;
+        }
+
         SingleSignonToken ssoToken = getDefaultSSOTokenFromSubject(subject);
         if (ssoToken == null) {
             return;
@@ -89,6 +98,36 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         Cookie ssoCookie = createCookie(req, cookieByteString);
         resp.addCookie(ssoCookie);
 
+    }
+
+    /**
+     * @param subject
+     * @param req
+     * @param resp
+     */
+    @Override
+    public void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+        String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
+        if (cookieByteString != null) {
+            Cookie ssoCookie = createJwtCookie(req, cookieByteString);
+            resp.addCookie(ssoCookie);
+            isJwtCookie = true;
+        }
+
+    }
+
+    public Cookie createJwtCookie(HttpServletRequest req, String cookieValue) {
+        Cookie ssoCookie = new Cookie("jwtToken", cookieValue);
+        ssoCookie.setMaxAge(-1);
+        ssoCookie.setPath("/");
+        ssoCookie.setSecure(config.getSSORequiresSSL());
+        ssoCookie.setHttpOnly(config.getHttpOnlyCookies());
+
+        String domainName = getSSODomainName(req, config.getSSODomainList(), config.getSSOUseDomainFromURL());
+        if (domainName != null) {
+            ssoCookie.setDomain(domainName);
+        }
+        return ssoCookie;
     }
 
     /**
@@ -150,9 +189,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      */
     @Override
     public void removeSSOCookieFromResponse(HttpServletResponse resp) {
-	if (resp instanceof com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) {
-	    ((com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) resp).removeCookie(getSSOCookiename());
-	}
+        if (resp instanceof com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) {
+            ((com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) resp).removeCookie(getSSOCookiename());
+        }
     }
 
     /**

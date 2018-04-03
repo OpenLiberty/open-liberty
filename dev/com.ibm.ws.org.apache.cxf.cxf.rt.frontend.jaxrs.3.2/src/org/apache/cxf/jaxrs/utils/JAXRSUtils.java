@@ -19,6 +19,8 @@
 
 package org.apache.cxf.jaxrs.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -90,6 +92,7 @@ import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.io.ReaderInputStream;
 import org.apache.cxf.jaxrs.JAXRSServiceImpl;
@@ -1306,6 +1309,13 @@ public final class JAXRSUtils {
         List<MediaType> types = JAXRSUtils.intersectMimeTypes(ori.getConsumeTypes(), contentType);
 
         final ProviderFactory pf = ServerProviderFactory.getInstance(m);
+        // Liberty change start
+        // copy the input stream so that it is not inadvertently closed
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        IOUtils.copy(is, baos);
+        final byte[] copiedBytes = baos.toByteArray();
+        m.setContent(ByteArrayInputStream.class, new ByteArrayInputStream(copiedBytes));
+        // Liberty change end
         for (MediaType type : types) {
             List<ReaderInterceptor> readers = pf.createMessageBodyReaderInterceptor(
                                                                                     targetTypeClass,
@@ -1321,7 +1331,7 @@ public final class JAXRSUtils {
                                                      targetTypeClass,
                                                      parameterType,
                                                      parameterAnnotations,
-                                                     is,
+                                                     new ByteArrayInputStream(copiedBytes), // Liberty change
                                                      type,
                                                      m);
                 } catch (IOException e) {

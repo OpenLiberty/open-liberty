@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@ package com.ibm.ws.microprofile.appConfig.cdi.web;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
+
+import org.junit.Test;
 
 import com.ibm.ws.microprofile.appConfig.cdi.beans.ConfigPropertyBean;
 
@@ -26,5 +28,30 @@ public class ConfigPropertyTestServlet extends AbstractBeanServlet {
     @Override
     public Object getBean() {
         return configBean;
+    }
+
+    @Test
+    public void testNullKey() throws Exception {
+        test("nullKey", "nullKeyValue");
+    }
+
+    @Test
+    public void testEmptyKey() throws Exception {
+        test("emptyKey", "emptyKeyValue");
+    }
+
+    @Test
+    public void testDefaultKey() throws Exception {
+        test("defaultKey", "defaultKeyValue");
+    }
+
+    @Test
+    public void testDefaultValueNotUsed() throws Exception {
+        test("URL_KEY", "http://www.ibm.com");
+    }
+
+    @Test
+    public void testDefaultValue() throws Exception {
+        test("DEFAULT_URL_KEY", "http://www.default.com");
     }
 }

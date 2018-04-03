@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.ws.security.registry.CertificateMapFailedException;
@@ -147,7 +148,7 @@ public class UserRegistryServletConnection implements UserRegistry {
                 }
             });
         } catch (Exception e) {
-            logger.severe("Exception occured while trying to access servlet");
+            logger.log(Level.SEVERE, "Exception occured while trying to access servlet", e);
             e.printStackTrace();
             result = e.toString();
         }

@@ -336,7 +336,7 @@ public class LogTraceData extends GenericData {
     }
 
     public String getMessageId() {
-        return getValue(1);
+        return getStringValue(1);
     }
 
     public int getThreadId() {
@@ -344,23 +344,23 @@ public class LogTraceData extends GenericData {
     }
 
     public String getModule() {
-        return getValue(3);
+        return getStringValue(3);
     }
 
     public String getSeverity() {
-        return getValue(4);
+        return getStringValue(4);
     }
 
     public String getLoglevel() {
-        return getValue(5);
+        return getStringValue(5);
     }
 
     public String getMethodName() {
-        return getValue(6);
+        return getStringValue(6);
     }
 
     public String getClassName() {
-        return getValue(7);
+        return getStringValue(7);
     }
 
     public int getLevelValue() {
@@ -368,43 +368,43 @@ public class LogTraceData extends GenericData {
     }
 
     public String getThreadName() {
-        return getValue(9);
+        return getStringValue(9);
     }
 
     public String getCorrelationId() {
-        return getValue(10);
+        return getStringValue(10);
     }
 
     public String getOrg() {
-        return getValue(11);
+        return getStringValue(11);
     }
 
     public String getProduct() {
-        return getValue(12);
+        return getStringValue(12);
     }
 
     public String getComponent() {
-        return getValue(13);
+        return getStringValue(13);
     }
 
     public String getSequence() {
-        return getValue(14);
+        return getStringValue(14);
     }
 
     public String getThrowable() {
-        return getValue(15);
+        return getStringValue(15);
     }
 
     public String getThrowableLocalized() {
-        return getValue(16);
+        return getStringValue(16);
     }
 
     public String getMessage() {
-        return getValue(17);
+        return getStringValue(17);
     }
 
     public String getFormattedMsg() {
-        return getValue(18);
+        return getStringValue(18);
     }
 
     public KeyValuePairList getExtensions() {
@@ -415,19 +415,19 @@ public class LogTraceData extends GenericData {
         return getIntValue(20);
     }
 
-    public String getValue(int index) {
-        KeyValuePair kvp = (KeyValuePair) getPairs().get(index);
-        return kvp.getValue();
+    public String getStringValue(int index) {
+        KeyValueStringPair kvp = (KeyValueStringPair) getPairs().get(index);
+        return kvp.getStringValue();
     }
 
     public int getIntValue(int index) {
-        KeyValuePair kvp = (KeyValuePair) getPairs().get(index);
-        return Integer.parseInt(kvp.getValue());
+        KeyValueIntegerPair kvp = (KeyValueIntegerPair) getPairs().get(index);
+        return kvp.getIntValue();
     }
 
     public long getLongValue(int index) {
-        KeyValuePair kvp = (KeyValuePair) getPairs().get(index);
-        return Long.parseLong(kvp.getValue());
+        KeyValueLongPair kvp = (KeyValueLongPair) getPairs().get(index);
+        return kvp.getLongValue();
     }
 
     public KeyValuePairList getValues(int index) {

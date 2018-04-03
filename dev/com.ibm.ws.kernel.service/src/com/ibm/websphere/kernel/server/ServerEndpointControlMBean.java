@@ -77,9 +77,9 @@ public interface ServerEndpointControlMBean {
     public boolean isPaused(String targets) throws MBeanException;
 
     /**
-     * Returns the name of all endpoints that can be paused/resumed
+     * Returns the name of all endpoints that can be paused/resumed.
      *
-     * @return List of endpoints and their state
+     * @return List of names of all endpoints that can be paused/resumed.
      */
     public List<String> listEndpoints();
 

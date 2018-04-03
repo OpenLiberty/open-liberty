@@ -71,26 +71,6 @@ public class FrameHeaders extends Frame {
     }
 
     /**
-     * Read frame constructor for pushed headers
-     */
-    public FrameHeaders(int streamId, byte[] headerBlockFragment) {
-        super(streamId, 0, (byte) 0x00, false, FrameDirection.READ);
-        frameType = FrameTypes.HEADERS;
-
-        if (headerBlockFragment != null) {
-            payloadLength += headerBlockFragment.length;
-        }
-        this.headerBlockFragment = headerBlockFragment;
-
-        this.END_STREAM_FLAG = false;
-        this.END_HEADERS_FLAG = true;
-
-        frameType = FrameTypes.HEADERS;
-        setInitialized();
-
-    }
-
-    /**
      * Write frame constructor
      */
     public FrameHeaders(int streamId, byte[] headerBlockFragment, int streamDependency, int paddingLength, int weight,
@@ -248,7 +228,9 @@ public class FrameHeaders extends Frame {
         } else if (this.paddingLength >= this.payloadLength) {
             throw new ProtocolException("HEADERS padding length must be less than the length of the payload");
         } else if (this.streamId == this.streamDependency) {
-            throw new ProtocolException("HEADERS frame stream cannot depend on itself");
+            ProtocolException pe = new ProtocolException("HEADERS frame stream cannot depend on itself");
+            pe.setConnectionError(false);
+            throw pe;
         } else if (this.paddingLength < 0) {
             throw new ProtocolException("HEADERS padding length is invalid");
         }

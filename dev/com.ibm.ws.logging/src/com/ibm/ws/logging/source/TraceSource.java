@@ -85,11 +85,8 @@ public class TraceSource implements Source, WsTraceHandler {
 
     /** {@inheritDoc} */
     public void publish(RoutedMessage routedMessage, Object id) {
-        //Publish the message if it is not coming from a handler thread
-        if (!ThreadLocalHandler.get()) {
-            if (routedMessage.getLogRecord() != null && bufferMgr != null) {
-                bufferMgr.add(parse(routedMessage, id));
-            }
+        if (routedMessage.getLogRecord() != null && bufferMgr != null) {
+            bufferMgr.add(parse(routedMessage, id));
         }
     }
 
@@ -97,11 +94,11 @@ public class TraceSource implements Source, WsTraceHandler {
     @Override
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
-        //if (!ThreadLocalHandler.get()) {
-        if (routedMessage.getLogRecord() != null && bufferMgr != null) {
-            bufferMgr.add(parse(routedMessage, null));
+        if (!ThreadLocalHandler.get()) {
+            if (routedMessage.getLogRecord() != null && bufferMgr != null) {
+                bufferMgr.add(parse(routedMessage, null));
+            }
         }
-        // }
     }
 
     public LogTraceData parse(RoutedMessage routedMessage, Object id) {
@@ -109,6 +106,7 @@ public class TraceSource implements Source, WsTraceHandler {
         LogTraceData traceData = new LogTraceData();
         LogRecord logRecord = routedMessage.getLogRecord();
         String verboseMessage = routedMessage.getFormattedVerboseMsg();
+
         if (verboseMessage == null) {
             traceData.setMessage(logRecord.getMessage());
         } else {
@@ -143,18 +141,16 @@ public class TraceSource implements Source, WsTraceHandler {
             traceData.setComponent(wsLogRecord.getComponent());
         }
 
-        KeyValuePairList extensions = new KeyValuePairList();
-        Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
-                extMap = ((WsLogRecord) logRecord).getExtensions();
+                KeyValuePairList extensions = new KeyValuePairList();
+                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     extensions.addPair(entry.getKey(), entry.getValue());
                 }
+                traceData.setExtensions(extensions);
             }
         }
-
-        traceData.setExtensions(extensions);
 
         traceData.setSourceType(sourceName);
         traceData.setLevelValue(logRecord.getLevel().intValue());

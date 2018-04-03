@@ -439,11 +439,14 @@ public class BaseTraceFormatter extends Formatter {
 
                 kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals(LogFieldConstants.FORMATTEDMSG)) {
-                    message = kvp.getValue();
+                    //message = kvp.getValue();
+                    message = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.LEVELVALUE)) {
-                    levelValue = Integer.parseInt(kvp.getValue());
+                    //levelValue = Integer.parseInt(kvp.getValue());
+                    levelValue = kvp.getIntValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE_LOCALIZED)) {
-                    throwable = kvp.getValue();
+                    //throwable = kvp.getValue();
+                    throwable = kvp.getStringValue();
                 }
             }
         }
@@ -515,17 +518,23 @@ public class BaseTraceFormatter extends Formatter {
 
                 kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
-                    message = kvp.getValue();
+                    //message = kvp.getValue();
+                    message = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
-                    datetime = Long.parseLong(kvp.getValue());
+                    //datetime = Long.parseLong(kvp.getValue());
+                    datetime = kvp.getLongValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.SEVERITY)) {
-                    level = kvp.getValue();
+                    //level = kvp.getValue();
+                    level = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.MODULE)) {
-                    loggerName = kvp.getValue();
+                    // loggerName = kvp.getValue();
+                    loggerName = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_CLASSNAME)) {
-                    srcClassName = kvp.getValue();
+                    //srcClassName = kvp.getValue();
+                    srcClassName = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE)) {
-                    throwable = kvp.getValue();
+                    //throwable = kvp.getValue();
+                    throwable = kvp.getStringValue();
                 }
 
             }
@@ -703,35 +712,50 @@ public class BaseTraceFormatter extends Formatter {
 
                 kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
-                    txt = kvp.getValue();
+                    //txt = kvp.getValue();
+                    txt = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
-                    ibm_datetime = Long.parseLong(kvp.getValue());
+                    //ibm_datetime = Long.parseLong(kvp.getValue());
+                    ibm_datetime = kvp.getLongValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.SEVERITY)) {
-                    sym = " " + kvp.getValue() + " ";
+                    //sym = " " + kvp.getValue() + " ";
+                    sym = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_CLASSNAME)) {
-                    className = kvp.getValue();
+                    //className = kvp.getValue();
+                    className = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_METHODNAME)) {
-                    method = kvp.getValue();
+                    //method = kvp.getValue();
+                    method = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.MODULE)) {
-                    loggerName = kvp.getValue();
+                    //loggerName = kvp.getValue();
+                    loggerName = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.OBJECT_ID)) {
-                    id = Integer.parseInt(kvp.getValue());
+                    //id = Integer.parseInt(kvp.getValue());
+                    id = kvp.getIntValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.CORRELATION_ID)) {
-                    corrId = kvp.getValue();
+                    //corrId = kvp.getValue();
+                    corrId = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.ORG)) {
-                    org = kvp.getValue();
+                    org = kvp.getStringValue();
+                    //org = kvp.getValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.PRODUCT)) {
-                    prod = kvp.getValue();
+                    prod = kvp.getStringValue();
+                    //prod = kvp.getValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.COMPONENT)) {
-                    component = kvp.getValue();
+                    component = kvp.getStringValue();
+                    //component = kvp.getValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.LOGLEVEL)) {
-                    logLevel = kvp.getValue();
+                    logLevel = kvp.getStringValue();
+                    //logLevel = kvp.getValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.THREADNAME)) {
-                    threadName = kvp.getValue();
+                    // threadName = kvp.getValue();
+                    threadName = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.LEVELVALUE)) {
-                    levelVal = Integer.parseInt(kvp.getValue());
+                    //levelVal = Integer.parseInt(kvp.getValue());
+                    levelVal = kvp.getIntValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.THROWABLE)) {
-                    stackTrace = kvp.getValue();
+                    stackTrace = kvp.getStringValue();
+                    //stackTrace = kvp.getValue();
                 }
 
             }
@@ -1082,15 +1106,19 @@ public class BaseTraceFormatter extends Formatter {
     }
 
     /**
+     * <<<<<<< HEAD
      * Returns filteredStream of genData's message where it hides
      * internal classes with " at [internal classes]" for stack traces
+     * =======
+     * Outputs filteredStream of genData
+     * >>>>>>> c8b9b2ad61c44f95c5e65fb9657afaf5d4bad50d
      *
      * @param genData object to filter
      * @return filtered message of the genData
      */
     protected String formatStreamOutput(GenericData genData) {
         String txt = null;
-        String loggerName = null;
+        String loglevel = null;
         KeyValuePair kvp = null;
 
         ArrayList<Pair> pairs = genData.getPairs();
@@ -1099,16 +1127,20 @@ public class BaseTraceFormatter extends Formatter {
             if (p instanceof KeyValuePair) {
 
                 kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
-                    txt = kvp.getValue();
-                } else if (kvp.getKey().equals(LogFieldConstants.MODULE)) {
-                    loggerName = kvp.getValue();
+
+                if (kvp.getKey().equals("message")) {
+                    //txt = kvp.getValue();
+                    txt = kvp.getStringValue();
+                } else if (kvp.getKey().equals("loglevel")) {
+                    //loglevel = kvp.getValue();
+                    loglevel = kvp.getStringValue();
                 }
             }
         }
+
         String message = filterStackTraces(txt);
         if (message != null) {
-            if (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR)) {
+            if (loglevel.equals("SystemErr")) {
                 message = "[err] " + message;
             }
         }

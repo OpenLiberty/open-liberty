@@ -33,7 +33,7 @@ import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.H2StreamProcessor;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
-import com.ibm.ws.http.channel.h2internal.frames.FrameHeaders;
+import com.ibm.ws.http.channel.h2internal.frames.FramePPHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePushPromise;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
@@ -329,7 +329,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             this.setScheme(pseudoHeaders.get(HpackConstants.SCHEME));
         }
         if (pseudoHeaders.containsKey(HpackConstants.AUTHORITY)) {
-            parseAuthority(pseudoHeaders.get(HpackConstants.AUTHORITY).getBytes(), 0);
+            parseH2Authority(pseudoHeaders.get(HpackConstants.AUTHORITY).getBytes());
         }
 
     }
@@ -1219,6 +1219,28 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     }
 
     /**
+     * Parse the authority information from the authority pseudo-header.
+     * authority is [userinfo@] host [:port]
+     *
+     * @param data
+     */
+    private void parseH2Authority(byte[] data) {
+        if (data.length == 0) {
+            throw new IllegalArgumentException("Invalid authority: " + GenericUtils.getEnglishString(data));
+        }
+        int i = 0;
+        int host_start = i;
+        for (; i < data.length; i++) {
+            // find either a "@" or "/"
+            if ('@' == data[i]) {
+                // Note: we're just cutting off the userinfo section for now
+                host_start = i + 1;
+            }
+        }
+        parseURLHost(data, host_start, data.length);
+    }
+
+    /**
      * Parse the scheme marker out of the input data and then start the parse
      * for the next section. If any errors are encountered, then an exception
      * is thrown.
@@ -1885,6 +1907,16 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         return getServiceContext().getStartNanoTime();
     }
 
+    public String getRemoteUser() {
+        String remoteUser = "";
+
+        if (getServiceContext() instanceof HttpInboundServiceContextImpl) {
+            remoteUser = ((HttpInboundServiceContextImpl) getServiceContext()).getRemoteUser();
+        }
+
+        return remoteUser;
+    }
+
     /*
      * isPushSupported
      * - called by WebContainer to determine whether or not push_promise is supported
@@ -2043,13 +2075,11 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                 Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The attempt to write an HTTP/2 Push Promise frame resulted in an IOException. Exception {0}" + ioe);
             }
             return;
-            //throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The attempt to write an HTTP/2 Push Promise frame resulted in an IOException. Exception {0}");
         } catch (CompressionException ce) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The attempt to encode an HTTP/2 Push Promise frame resulted in a CompressionException. Exception {0}" + ce);
             }
             return;
-            //throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The attempt to write an HTTP/2 Push Promise frame resulted in a CompressionException. Exception {0}");
         }
 
         // Get the next available even numbered promised stream id
@@ -2066,9 +2096,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                 Tr.exit(tc, "pushNewRequest exit; cannot create new push stream -"
                             + " the max number of concurrent streams has already been reached on link: " + link);
             }
-            //throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  the max number of concurrent streams has already been reached on link " + link);
             return;
-
         }
         ((H2HttpInboundLinkWrap) link).setPushPromise(true);
         // Update the promised stream state to Localreserved
@@ -2085,7 +2113,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         FramePushPromise pushPromiseFrame = new FramePushPromise(streamId, ppStream.toByteArray(), promisedStreamId, 0, true, false, false);
 
         // Create a headers frame to send to wc, as if it had come in from the client
-        FrameHeaders headersFrame = new FrameHeaders(streamId, ppStream.toByteArray());
+        FramePPHeaders headersFrame = new FramePPHeaders(streamId, ppStream.toByteArray());
 
         // Get the existing stream processor and send the push_promise frame to the client
         H2StreamProcessor existingSP = ((H2HttpInboundLinkWrap) link).muxLink.getStreamProcessor(streamId);
@@ -2103,7 +2131,6 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                 Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The client connection using stream-id " + streamId + " has been closed, push() was ignored..");
             }
             return;
-            //throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The client connection using stream-id " + streamId + " has been closed, push() was ignored.");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

@@ -16,10 +16,13 @@ public class SessionCacheApp {
     static final String SERVLET_NAME = "SessionCacheTestServlet";
     final LibertyServer s;
 
-    public SessionCacheApp(LibertyServer s, String... packages) throws Exception {
+    public SessionCacheApp(LibertyServer s, boolean isDropinApp, String... packages) throws Exception {
         Objects.requireNonNull(s);
         this.s = s;
-        ShrinkHelper.defaultDropinApp(s, APP_NAME, packages);
+        if (isDropinApp)
+            ShrinkHelper.defaultDropinApp(s, APP_NAME, packages);
+        else
+            ShrinkHelper.defaultApp(s, APP_NAME, packages);
     }
 
     public String invokeServlet(String testName, List<String> session) throws Exception {
@@ -43,7 +46,7 @@ public class SessionCacheApp {
 
     public <T> void sessionGet(String key, T expectedValue, List<String> session) throws Exception {
         String type = expectedValue == null ? String.class.getName() : expectedValue.getClass().getName();
-        invokeServlet("sessionGet&key=" + key + "&expectedValue=" + expectedValue + "&type=" + type + "&createSession", session);
+        invokeServlet("sessionGet&key=" + key + "&expectedValue=" + expectedValue + "&type=" + type, session);
     }
 
 }

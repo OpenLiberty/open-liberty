@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 
 /**
@@ -93,23 +94,24 @@ public class DatabaseSettingsBean {
         return result;
     }
 
-    public Set<ValidationType> getUseFor() throws IOException {
+    public ValidationType[] getUseFor() throws IOException {
         refreshConfiguration();
 
-        Set<ValidationType> results = null;
+        Set<ValidationType> resultsSet = new HashSet<ValidationType>();
 
         String prop = getProperty(JavaEESecConstants.USE_FOR);
         if (prop != null) {
-            results = new HashSet<ValidationType>();
-
             if (prop.contains("VALIDATE")) {
-                results.add(ValidationType.VALIDATE);
+                resultsSet.add(ValidationType.VALIDATE);
             }
             if (prop.contains("PROVIDE_GROUPS")) {
-                results.add(ValidationType.PROVIDE_GROUPS);
+                resultsSet.add(ValidationType.PROVIDE_GROUPS);
             }
         }
-
+        ValidationType[] results = null;
+        if (resultsSet.size() > 0) {
+            results = resultsSet.toArray(new ValidationType[resultsSet.size()]);
+        }
         System.out.println(CLASS_NAME + ".getUseFor() returns: " + results);
         return results;
     }
@@ -128,7 +130,6 @@ public class DatabaseSettingsBean {
      * @throws IOException If there was an error writing to the backing file.
      */
     public static void updateDatabaseSettingsBean(String directory, Map<String, String> overrides) throws IOException {
-
         Properties props = new Properties();
         props.put(JavaEESecConstants.CALLER_QUERY, "select password from callers where name = ?");
         props.put(JavaEESecConstants.DS_LOOKUP, "java:comp/DefaultDataSource");
@@ -143,6 +144,45 @@ public class DatabaseSettingsBean {
         FileOutputStream fout = new FileOutputStream(directory + "/DatabaseSettingsBean.props");
         props.store(fout, "");
         fout.close();
+
+        if (!overrides.isEmpty()) {
+            for (int i = 0; i < 3; i++) { // if the build machines are struggling, we can have timing issues reading in updated values.
+                Properties checkProps = new Properties();
+                checkProps.load(new FileReader(directory + "/DatabaseSettingsBean.props"));
+
+                boolean allprops = true;
+                for (String prop : overrides.keySet()) {
+                    String fileProp = (String) checkProps.get(prop);
+                    if (fileProp == null) {
+                        Log.info(DatabaseSettingsBean.class, "updateDatabaseSettingsBean", "could not find " + prop + " in DatabaseSettingsBean.props");
+                        allprops = false;
+                        break;
+                    } else if (!fileProp.equals(overrides.get(prop))) {
+                        Log.info(DatabaseSettingsBean.class, "updateDatabaseSettingsBean", "did not change " + prop + " to " + overrides.get(prop) + " yet.");
+                        allprops = false;
+                        break;
+                    } else {
+                        Log.info(DatabaseSettingsBean.class, "updateDatabaseSettingsBean", prop + " set to " + fileProp);
+                    }
+                }
+
+                if (allprops) {
+                    Log.info(DatabaseSettingsBean.class, "updateDatabaseSettingsBean", " DatabaseSettingsBean.props are good.");
+                    break;
+                }
+
+                if (i == 3) {
+                    throw new IllegalStateException("Failed to update DatabaseSettingsBean.props for EL testing");
+                }
+
+                Log.info(DatabaseSettingsBean.class, "updateDatabaseSettingsBean", "sleep and check DatabaseSettingsBean.props again.");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+
+                }
+            }
+        }
     }
 
     /**

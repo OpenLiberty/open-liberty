@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 3.0
+ * @version 4.0
  */
-@org.osgi.annotation.versioning.Version("3.0")
+@org.osgi.annotation.versioning.Version("4.0")
 package com.ibm.wsspi.http.ee8;

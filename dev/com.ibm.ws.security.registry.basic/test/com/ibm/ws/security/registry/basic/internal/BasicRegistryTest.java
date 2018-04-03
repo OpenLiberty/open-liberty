@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,52 +78,52 @@ public class BasicRegistryTest {
                 return new User[] {
                                     new User() {
 
-                                    @Override
-                                    public String name() {
-                                        return "notGrouped";
-                                    }
+                                        @Override
+                                        public String name() {
+                                            return "notGrouped";
+                                        }
 
-                                    @Override
-                                    public SerializableProtectedString password() {
-                                        return new SerializableProtectedString("nopwd".toCharArray());
-                                    }
-                                },
+                                        @Override
+                                        public SerializableProtectedString password() {
+                                            return new SerializableProtectedString("nopwd".toCharArray());
+                                        }
+                                    },
                                     new User() {
 
-                                    @Override
-                                    public String name() {
-                                        return "user1";
-                                    }
+                                        @Override
+                                        public String name() {
+                                            return "user1";
+                                        }
 
-                                    @Override
-                                    public SerializableProtectedString password() {
-                                        return new SerializableProtectedString("pass1".toCharArray());
-                                    }
-                                },
+                                        @Override
+                                        public SerializableProtectedString password() {
+                                            return new SerializableProtectedString("pass1".toCharArray());
+                                        }
+                                    },
                                     new User() {
 
-                                    @Override
-                                    public String name() {
-                                        return "user 2";
-                                    }
+                                        @Override
+                                        public String name() {
+                                            return "user 2";
+                                        }
 
-                                    @Override
-                                    public SerializableProtectedString password() {
-                                        return new SerializableProtectedString("pass 2".toCharArray());
-                                    }
-                                },
+                                        @Override
+                                        public SerializableProtectedString password() {
+                                            return new SerializableProtectedString("pass 2".toCharArray());
+                                        }
+                                    },
                                     new User() {
 
-                                    @Override
-                                    public String name() {
-                                        return "CN=dnUser";
-                                    }
+                                        @Override
+                                        public String name() {
+                                            return "CN=dnUser";
+                                        }
 
-                                    @Override
-                                    public SerializableProtectedString password() {
-                                        return new SerializableProtectedString("pwd".toCharArray());
+                                        @Override
+                                        public SerializableProtectedString password() {
+                                            return new SerializableProtectedString("pwd".toCharArray());
+                                        }
                                     }
-                                }
                 };
             }
 
@@ -132,81 +132,91 @@ public class BasicRegistryTest {
                 return new Group[] {
                                      new Group() {
 
-                                    @Override
-                                    public String name() {
-                                        return "group0";
-                                    }
+                                         @Override
+                                         public String name() {
+                                             return "group0";
+                                         }
 
-                                    @Override
-                                    public Member[] member() {
-                                        return new Member[] {};
-                                    }
-                                },
+                                         @Override
+                                         public Member[] member() {
+                                             return new Member[] {};
+                                         }
+                                     },
                                      new Group() {
 
-                                    @Override
-                                    public String name() {
-                                        return "group1";
-                                    }
+                                         @Override
+                                         public String name() {
+                                             return "group1";
+                                         }
 
-                                    @Override
-                                    public Member[] member() {
-                                        return new Member[] {
-                                                              new Member() {
+                                         @Override
+                                         public Member[] member() {
+                                             return new Member[] {
+                                                                   new Member() {
 
-                                                            @Override
-                                                            public String name() {
-                                                                return "user1";
-                                                            }
-                                                        }
-                                        };
-                                    }
-                                },
+                                                                       @Override
+                                                                       public String name() {
+                                                                           return "user1";
+                                                                       }
+                                                                   }
+                                             };
+                                         }
+                                     },
                                      new Group() {
 
-                                    @Override
-                                    public String name() {
-                                        return "my group 2";
-                                    }
+                                         @Override
+                                         public String name() {
+                                             return "my group 2";
+                                         }
 
-                                    @Override
-                                    public Member[] member() {
-                                        return new Member[] {
-                                                              new Member() {
+                                         @Override
+                                         public Member[] member() {
+                                             return new Member[] {
+                                                                   new Member() {
 
-                                                            @Override
-                                                            public String name() {
-                                                                return "user1";
-                                                            }
-                                                        },
-                                                              new Member() {
+                                                                       @Override
+                                                                       public String name() {
+                                                                           return "user1";
+                                                                       }
+                                                                   },
+                                                                   new Member() {
 
-                                                            @Override
-                                                            public String name() {
-                                                                return "user 2";
-                                                            }
-                                                        }
-                                        };
-                                    }
-                                },
+                                                                       @Override
+                                                                       public String name() {
+                                                                           return "user 2";
+                                                                       }
+                                                                   }
+                                             };
+                                         }
+                                     },
                                      new Group() {
 
-                                    @Override
-                                    public String name() {
-                                        return "myGroupWithNoUsers";
-                                    }
+                                         @Override
+                                         public String name() {
+                                             return "myGroupWithNoUsers";
+                                         }
 
-                                    @Override
-                                    public Member[] member() {
-                                        return new Member[] {};
-                                    }
-                                }
+                                         @Override
+                                         public Member[] member() {
+                                             return new Member[] {};
+                                         }
+                                     }
                 };
             }
 
             @Override
             public String config_id() {
                 return "configId";
+            }
+
+            @Override
+            public String certificateMapMode() {
+                return null;
+            }
+
+            @Override
+            public String certificateMapperId() {
+                return null;
             }
         };
         BasicRegistry reg = new BasicRegistry();
@@ -240,6 +250,16 @@ public class BasicRegistryTest {
             @Override
             public String config_id() {
                 return "empty";
+            }
+
+            @Override
+            public String certificateMapMode() {
+                return null;
+            }
+
+            @Override
+            public String certificateMapperId() {
+                return null;
             }
         };
         BasicRegistry reg = new BasicRegistry();

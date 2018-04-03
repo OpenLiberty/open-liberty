@@ -72,11 +72,13 @@ public interface AuthenticationData {
     /**
      * The key used to set an authentication mechanism OID given a String.
      */
-    public static final String AUTHENTICATION_MECH_OID = null;
+    public static final String AUTHENTICATION_MECH_OID = "AUTHENTICATION_MECH_OID";
+
+    public static final String JWT_TOKEN = "JWT_TOKEN";
 
     /**
      * Sets the key-value pair.
-     * 
+     *
      * @param key
      * @param value
      */
@@ -84,7 +86,7 @@ public interface AuthenticationData {
 
     /**
      * Retrieves the stored value for the key.
-     * 
+     *
      * @param key
      * @return
      */

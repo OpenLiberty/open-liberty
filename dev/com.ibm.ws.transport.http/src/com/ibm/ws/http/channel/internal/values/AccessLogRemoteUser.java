@@ -10,31 +10,33 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.values;
 
+import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
-import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 public class AccessLogRemoteUser extends AccessLogData {
 
-	public AccessLogRemoteUser() {
-		super("%u");
-	}
+    public AccessLogRemoteUser() {
+        super("%u");
+    }
 
-	@Override
-	public boolean set(StringBuilder accessLogEntry,
-			HttpResponseMessage response, HttpRequestMessage request, Object data) {
+    @Override
+    public boolean set(StringBuilder accessLogEntry,
+                       HttpResponseMessage response, HttpRequestMessage request, Object data) {
 
-		String remoteUser = null;
-		if(request != null){
-			remoteUser = request.getHeader(HttpHeaderKeys.HDR_$WSRU).asString();
-		}
+        String remoteUser = null;
+        if (request != null) {
+            HttpRequestMessageImpl requestMessageImpl = null;
+            requestMessageImpl = (HttpRequestMessageImpl) request;
+            remoteUser = requestMessageImpl.getRemoteUser();
+        }
 
-		if(remoteUser != null){
-			accessLogEntry.append(remoteUser);
-		} else {
-			accessLogEntry.append("-");
-		}
+        if (remoteUser != null && !remoteUser.equals("")) {
+            accessLogEntry.append(remoteUser);
+        } else {
+            accessLogEntry.append("-");
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

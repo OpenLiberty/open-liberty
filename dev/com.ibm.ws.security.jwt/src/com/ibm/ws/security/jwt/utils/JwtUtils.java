@@ -51,6 +51,7 @@ import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwt.config.JwtConfig;
+import com.ibm.ws.security.jwt.internal.JwtConfigUtil;
 import com.ibm.ws.security.jwt.registry.RegistryClaims;
 import com.ibm.ws.security.wim.VMMService;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -549,6 +550,10 @@ public class JwtUtils {
 			Collection<String> aliases = kss.getTrustedCertEntriesInKeyStore(trustStoreRef);
 			// check for NO aliases in the trust store
 			if (aliases == null || aliases.size() == 0) {
+				X509Certificate cert = kss.getX509CertificateFromKeyStore(trustStoreRef);
+				if (cert != null) {
+					return cert.getPublicKey();
+				}
 				String errorMsg = Tr.formatMessage(tc, "JWT_SIGNER_CERT_NOT_AVAILABLE");
 				throw new InvalidTokenException(errorMsg);
 
@@ -581,6 +586,11 @@ public class JwtUtils {
 		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Date resultdate = new Date(current);
 		return sdf.format(resultdate);
+	}
+
+	@Sensitive
+	public static String processProtectedString(Map<String, Object> props, String cfgKey) {
+		return JwtConfigUtil.processProtectedString(props, cfgKey);
 	}
 
 }

@@ -183,7 +183,7 @@ public class PollingDynamicConfig implements Closeable {
             if (future != null) {
                 if (!(future.isDone() || future.isCancelled())) {
                     boolean cancelled = future.cancel(true);
-                    if (!cancelled && TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    if (!cancelled && tc.isWarningEnabled()) {
                         Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
                     }
                 }
@@ -212,7 +212,11 @@ public class PollingDynamicConfig implements Closeable {
      */
     @Trivial
     protected String getRawProperty(String key) {
-        return current.get(key);
+        String rawValue = source.getValue(key);
+        if (rawValue != null) {
+            current.put(key, rawValue);
+        }
+        return rawValue;
     }
 
     /**

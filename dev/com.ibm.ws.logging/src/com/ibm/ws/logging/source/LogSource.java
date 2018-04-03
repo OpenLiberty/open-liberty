@@ -21,10 +21,11 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
+import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
@@ -110,17 +111,17 @@ public class LogSource implements Source, WsLogHandler {
     @Trivial
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
-        //if (!ThreadLocalHandler.get()) {
-        LogRecord logRecord = routedMessage.getLogRecord();
 
+        LogRecord logRecord = routedMessage.getLogRecord();
         if (logRecord != null && bufferMgr != null) {
+
             LogTraceData parsedMessage = parse(routedMessage);
-            if (!BufferManagerImpl.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
-                BufferManagerImpl.removeEMQTrigger();
+            if (!BufferManagerEMQHelper.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
+                BufferManagerEMQHelper.removeEMQTrigger();
             }
             bufferMgr.add(parsedMessage);
         }
-        //}
+
     }
 
     private String extractMessage(RoutedMessage routedMessage, LogRecord logRecord) {
@@ -132,7 +133,9 @@ public class LogSource implements Source, WsLogHandler {
     }
 
     public LogTraceData parse(RoutedMessage routedMessage) {
+
         LogTraceData logData = new LogTraceData();
+
         LogRecord logRecord = routedMessage.getLogRecord();
         String messageVal = extractMessage(routedMessage, logRecord);
 
@@ -167,18 +170,17 @@ public class LogSource implements Source, WsLogHandler {
             logData.setComponent(wsLogRecord.getComponent());
         }
 
-        KeyValuePairList extensions = new KeyValuePairList();
-        Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
-                extMap = ((WsLogRecord) logRecord).getExtensions();
+                KeyValuePairList extensions = new KeyValuePairList();
+                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     extensions.addPair(entry.getKey(), entry.getValue());
                 }
+                logData.setExtensions(extensions);
             }
         }
 
-        logData.setExtensions(extensions);
         logData.setSequence(sequenceNumber.next(dateVal));
 
         Throwable thrown = logRecord.getThrown();
@@ -194,24 +196,70 @@ public class LogSource implements Source, WsLogHandler {
             logData.setThrowableLocalized(s);
         }
 
+        //JTSBTS need to look at this message vs formatted message
         logData.setMessage(messageVal);
 
         if (routedMessage.getFormattedMsg() != null) {
             logData.setFormattedMsg(routedMessage.getFormattedMsg());
         }
-
-        logData.setSourceType(sourceName);
         logData.setLoggerName(logRecord.getLoggerName());
+        logData.setSourceType(sourceName);
+
         logData.setLevelValue(logRecord.getLevel().intValue());
+
         return logData;
 
     }
 
     /* Overloaded method for test, should be removed down the line */
-    public LogTraceData parse(RoutedMessage routedMessage, LogRecord logRecord) {
-        //BaseTraceService.rawSystemOut.println("LogSource: Nothing should come through this parse");
-        return parse(routedMessage);
+    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
 
+        LogTraceData logData = new LogTraceData();
+        String messageVal = extractMessage(routedMessage, logRecord);
+
+        long dateVal = logRecord.getMillis();
+        logData.setDatetime(dateVal);
+
+        String messageIdVal = null;
+
+        if (messageVal != null) {
+            messageIdVal = parseMessageId(messageVal);
+        }
+
+        logData.setMessageId(messageIdVal);
+
+        int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
+        logData.setThreadId(threadIdVal);
+        logData.setLoggerName(logRecord.getLoggerName());
+        logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
+        logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
+        logData.setMethodName(logRecord.getSourceMethodName());
+        logData.setClassName(logRecord.getSourceClassName());
+
+        if (logRecord instanceof WsLogRecord) {
+            KeyValuePairList extensions = new KeyValuePairList();
+            Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
+            for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                extensions.addPair(entry.getKey(), entry.getValue());
+            }
+            logData.setExtensions(extensions);
+        }
+
+        logData.setSequence(sequenceNumber.next(dateVal));
+
+        Throwable thrown = logRecord.getThrown();
+        StringBuilder msgBldr = new StringBuilder();
+        msgBldr.append(messageVal);
+        if (thrown != null) {
+            String stackTrace = DataFormatHelper.throwableToString(thrown);
+            if (stackTrace != null) {
+                msgBldr.append(LINE_SEPARATOR).append(stackTrace);
+            }
+        }
+        logData.setMessage(msgBldr.toString());
+        logData.setSourceType(sourceName);
+
+        return logData;
     }
 
     /**

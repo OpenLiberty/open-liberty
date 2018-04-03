@@ -161,7 +161,7 @@ public abstract class FileServletWrapper implements IServletWrapper, IServletWra
 
   }
 
-    public void addServletReferenceListener(ServletReferenceListener wrapper) {
+    public synchronized void addServletReferenceListener(ServletReferenceListener wrapper) {
         if (listeners == null) {
       listeners = new ArrayList();
     }

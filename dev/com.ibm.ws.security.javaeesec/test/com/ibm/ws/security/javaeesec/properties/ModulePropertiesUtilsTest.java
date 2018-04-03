@@ -46,6 +46,7 @@ import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.javaeesec.CDIHelperTestWrapper;
+import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 import test.common.SharedOutputManager;
 
@@ -67,11 +68,12 @@ public class ModulePropertiesUtilsTest {
     private ModulePropertiesProvider mpp;
     private Instance<ModulePropertiesProvider> mppi;
     private Instance<HttpAuthenticationMechanism> hami;
-    private BeanManager bm1, bm2;
+    private BeanManager bm, bm1, bm2;
     private CDIService cs;
     private CDIHelperTestWrapper chtw;
     private Bean bean1, bean2;
     private CreationalContext cc;
+    private WebModuleMetaData wmmd;
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.*=all");
 
@@ -108,6 +110,7 @@ public class ModulePropertiesUtilsTest {
         mpp = mockery.mock(ModulePropertiesProvider.class);
         mppi = mockery.mock(Instance.class, "mppi");
         hami = mockery.mock(Instance.class, "hami");
+        bm = mockery.mock(BeanManager.class, "bm");
         bm1 = mockery.mock(BeanManager.class, "bm1");
         bm2 = mockery.mock(BeanManager.class, "bm2");
         cs = mockery.mock(CDIService.class);
@@ -117,6 +120,7 @@ public class ModulePropertiesUtilsTest {
         chtw = new CDIHelperTestWrapper(mockery, bm2);
         chtw.setCDIService(cs);
         mpu = new ModulePropertiesUtilsDouble();
+        wmmd = mockery.mock(WebModuleMetaData.class, "wmmd");
     }
 
     @After
@@ -130,10 +134,23 @@ public class ModulePropertiesUtilsTest {
      *
      */
     @Test
-    public void testGetJ2EEModuleName() {
+    public void testGetJ2EEModuleNameWithComponentMetaData() {
         final String MODULENAME = "ModuleName";
-        withModuleName(MODULENAME);
+        withComponentMetaDataModuleName(MODULENAME);
         mpu.setComponentMetaData(cmd);
+        mpu.setWebModuleMetaData(null);
+        assertTrue("A module name should be returned.", mpu.getJ2EEModuleName().equals(MODULENAME));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetJ2EEModuleNameWithWebModuleMetaData() {
+        final String MODULENAME = "ModuleName";
+        withWebModuleMetaDataModuleName(MODULENAME);
+        mpu.setComponentMetaData(null);
+        mpu.setWebModuleMetaData(wmmd);
         assertTrue("A module name should be returned.", mpu.getJ2EEModuleName().equals(MODULENAME));
     }
 
@@ -143,6 +160,7 @@ public class ModulePropertiesUtilsTest {
     @Test
     public void testGetJ2EEModuleNameCMDNull() {
         mpu.setComponentMetaData(null);
+        mpu.setWebModuleMetaData(null);
         assertNull("null should be returned.", mpu.getJ2EEModuleName());
     }
 
@@ -150,10 +168,23 @@ public class ModulePropertiesUtilsTest {
      *
      */
     @Test
-    public void testGetJ2EEApplicationName() {
+    public void testGetJ2EEApplicationNameWithComponentMetaData() {
         final String APPLNAME = "ApplicationName";
-        withAppName(APPLNAME);
+        withComponentMetaDataAppName(APPLNAME);
         mpu.setComponentMetaData(cmd);
+        mpu.setWebModuleMetaData(null);
+        assertTrue("A module name should be returned.", mpu.getJ2EEApplicationName().equals(APPLNAME));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetJ2EEApplicationNameWithWebModuleMetaData() {
+        final String APPLNAME = "ApplicationName";
+        withWebModuleMetaDataAppName(APPLNAME);
+        mpu.setComponentMetaData(null);
+        mpu.setWebModuleMetaData(wmmd);
         assertTrue("A module name should be returned.", mpu.getJ2EEApplicationName().equals(APPLNAME));
     }
 
@@ -174,6 +205,8 @@ public class ModulePropertiesUtilsTest {
         mpu.setComponentMetaData(cmd);
         mockery.checking(new Expectations() {
             {
+                one(cdi).getBeanManager();
+                will(returnValue(bm));
                 one(cdi).select(ModulePropertiesProvider.class);
                 will(returnValue(null));
             }
@@ -189,6 +222,8 @@ public class ModulePropertiesUtilsTest {
         mpu.setComponentMetaData(cmd);
         mockery.checking(new Expectations() {
             {
+                one(cdi).getBeanManager();
+                will(returnValue(bm));
                 one(cdi).select(ModulePropertiesProvider.class);
                 will(returnValue(null));
             }
@@ -199,6 +234,36 @@ public class ModulePropertiesUtilsTest {
         } catch (RuntimeException e) {
             assertEquals("The message of RuntimeException does not match.", e.getMessage(), "ModulePropertiesProvider object cannot be identified.");
         }
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testIsHttpAuthenticationMechanismNoBM() {
+        mpu.setComponentMetaData(cmd);
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).getBeanManager();
+                will(returnValue(null));
+            }
+        });
+        assertFalse("false should be returned.", mpu.isHttpAuthenticationMechanism());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetHttpAuthenticationMechanismNoBM() {
+        mpu.setComponentMetaData(cmd);
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).getBeanManager();
+                will(returnValue(null));
+            }
+        });
+        assertFalse("false should be returned.", mpu.isHttpAuthenticationMechanism());
     }
 
     /**
@@ -239,7 +304,7 @@ public class ModulePropertiesUtilsTest {
         final String APPLNAME = "ApplicationName";
         final String MODULENAME = "ModuleName";
         List<Class> list = new ArrayList<Class>();
-        withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
+        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
         // since one of multiple modules might not have a HAM configured, there is no error/warning message logged. Only a debug message.
@@ -255,7 +320,7 @@ public class ModulePropertiesUtilsTest {
         List<Class> list = new ArrayList<Class>();
         list.add(String.class);
         list.add(String.class);
-        withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
+        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
         // since CDI code checks this condition and log the error, only debug output is logged for this case.
@@ -284,7 +349,7 @@ public class ModulePropertiesUtilsTest {
         final String MODULENAME = "ModuleName";
         List<Class> list = new ArrayList<Class>();
         list.add(String.class);
-        withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
+        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
         withBeanManager(bm2);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
@@ -301,7 +366,7 @@ public class ModulePropertiesUtilsTest {
         final String MODULENAME = "ModuleName";
         List<Class> list = new ArrayList<Class>();
         list.add(String.class);
-        withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, false, true);
+        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, false, true);
         withBeanManager(bm2);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
@@ -328,7 +393,7 @@ public class ModulePropertiesUtilsTest {
         final List<Class> list = new ArrayList<Class>();
         list.add(String.class);
         final Set<Bean> hams = new HashSet<Bean>();
-        withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
+        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
         withBeanManager(bm1).withModuleHAM(String.class, hams);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
@@ -350,19 +415,20 @@ public class ModulePropertiesUtilsTest {
     }
 
     /*************** support methods **************/
-    private ModulePropertiesUtilsTest withAppName(final String name) {
+    private ModulePropertiesUtilsTest withComponentMetaDataAppName(final String name) {
         mockery.checking(new Expectations() {
             {
                 one(cmd).getJ2EEName();
                 will(returnValue(j2n));
                 one(j2n).getApplication();
                 will(returnValue(name));
+                never(wmmd).getJ2EEName();
             }
         });
         return this;
     }
 
-    private ModulePropertiesUtilsTest withModuleName(final String name) {
+    private ModulePropertiesUtilsTest withComponentMetaDataModuleName(final String name) {
         mockery.checking(new Expectations() {
             {
                 one(cmd).getModuleMetaData();
@@ -371,6 +437,7 @@ public class ModulePropertiesUtilsTest {
                 will(returnValue(j2n));
                 one(j2n).getModule();
                 will(returnValue(name));
+                never(wmmd).getJ2EEName();
             }
         });
         return this;
@@ -380,6 +447,8 @@ public class ModulePropertiesUtilsTest {
     private ModulePropertiesUtilsTest withModulePropertiesProvider(boolean isUnsatisfied, boolean isAmbiguous) {
         mockery.checking(new Expectations() {
             {
+                one(cdi).getBeanManager();
+                will(returnValue(bm));
                 one(cdi).select(ModulePropertiesProvider.class);
                 will(returnValue(mppi));
                 allowing(mppi).isUnsatisfied();
@@ -486,9 +555,35 @@ public class ModulePropertiesUtilsTest {
         return this;
     }
 
-    class ModulePropertiesUtilsDouble extends ModulePropertiesUtils {
-        ComponentMetaData meta = null;
+    private ModulePropertiesUtilsTest withWebModuleMetaDataModuleName(final String name) {
+        mockery.checking(new Expectations() {
+            {
+                one(wmmd).getJ2EEName();
+                will(returnValue(j2n));
+                one(j2n).getModule();
+                will(returnValue(name));
+                never(cmd).getModuleMetaData();
+            }
+        });
+        return this;
+    }
+    private ModulePropertiesUtilsTest withWebModuleMetaDataAppName(final String name) {
+        mockery.checking(new Expectations() {
+            {
+                one(wmmd).getJ2EEName();
+                will(returnValue(j2n));
+                one(j2n).getApplication();
+                will(returnValue(name));
+                never(cmd).getJ2EEName();
+            }
+        });
+        return this;
+    }
 
+
+    class ModulePropertiesUtilsDouble extends ModulePropertiesUtils {
+        ComponentMetaData cmd = null;
+        WebModuleMetaData wmmd = null;
         @Override
         protected CDI getCDI() {
             return cdi;
@@ -496,11 +591,21 @@ public class ModulePropertiesUtilsTest {
 
         @Override
         protected ComponentMetaData getComponentMetaData() {
-            return meta;
+            return cmd;
         }
 
-        protected void setComponentMetaData(ComponentMetaData meta) {
-            this.meta = meta;
+        protected void setComponentMetaData(ComponentMetaData cmd) {
+            this.cmd = cmd;
         }
+
+        @Override
+        protected WebModuleMetaData getWebModuleMetaData() {
+            return wmmd;
+        }
+
+        protected void setWebModuleMetaData(WebModuleMetaData wmmd) {
+            this.wmmd = wmmd;
+        }
+
     };
 }

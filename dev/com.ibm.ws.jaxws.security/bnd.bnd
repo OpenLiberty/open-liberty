@@ -43,15 +43,15 @@ Private-Package: com.ibm.ws.jaxws.security.internal, \
 instrument.classesExcludes: com/ibm/ws/jaxws/security/internal/resources/*.class
 
 -buildpath: \
-    org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20180124-1753,\
+    org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20180308-1806,\
 	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20170927-0015,\
+	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20180308-1806,\
 	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20180308-1806,\
 	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
 	org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180308-1806,\
+	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20180308-1806,\
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\

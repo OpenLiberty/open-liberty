@@ -12,8 +12,8 @@
     <include location="../fatTestPorts.xml"/>
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
-
-    <bell libraryRef="HazelcastLib"/>
+    
+    <bell libraryRef="HazelcastLib" service="javax.cache.spi.CachingProvider"/>
 
     <library id="HazelcastLib">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
@@ -25,44 +25,32 @@
 
     <!-- Used for testing that data source can be stored in a session -->
 	<authData id="DerbyAuth" user="userName" password="userPassword"/>    
-    <dataSource jndiName="jdbc/derby" containerAuthDataRef="DerbyAuth">
+    <dataSource id="DerbyDS" jndiName="jdbc/derby" containerAuthDataRef="DerbyAuth">
 	    <jdbcDriver libraryRef="DerbyLib"/>
 	    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
 	</dataSource>
+	
+	<!-- Perms needed because the application uses Hazelcast directly   -->
+	<javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="enableContextClassLoaderOverride"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="getenv.HZ_PHONE_HOME_ENABLED"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="shutdownHooks"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.net.NetPermission" name="getNetworkInformation"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
+    
+    <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
+    <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
+    <!-- Needed for hazelcast JVM shutdown hook -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
 
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-	<variable name="hazelcast" value="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
-    <javaPermission codebase="${hazelcast}" className="java.io.FilePermission" actions="read" name="hazelcast.xml"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="enableContextClassLoaderOverride"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="getClassLoader"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="getenv.HZ_PHONE_HOME_ENABLED"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="shutdownHooks"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-    <javaPermission codebase="${hazelcast}" className="java.net.NetPermission" name="getNetworkInformation"/>
-    <javaPermission codebase="${hazelcast}" className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
-    <javaPermission codebase="${hazelcast}" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
-	<javaPermission codebase="${hazelcast}" className="java.util.PropertyPermission" actions="read,write" name="*"/>
-
-    <variable name="hazelcast" value="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
-    <javaPermission codebase="${hazelcast}" className="java.io.FilePermission" actions="read" name="hazelcast.xml"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="enableContextClassLoaderOverride"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="getClassLoader"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="getenv.HZ_PHONE_HOME_ENABLED"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.RuntimePermission" name="shutdownHooks"/>
-    <javaPermission codebase="${hazelcast}" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-    <javaPermission codebase="${hazelcast}" className="java.net.NetPermission" name="getNetworkInformation"/>
-    <javaPermission codebase="${hazelcast}" className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
-    <javaPermission codebase="${hazelcast}" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
-	<javaPermission codebase="${hazelcast}" className="java.util.PropertyPermission" actions="read,write" name="*"/>	
+	<javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
 </server>

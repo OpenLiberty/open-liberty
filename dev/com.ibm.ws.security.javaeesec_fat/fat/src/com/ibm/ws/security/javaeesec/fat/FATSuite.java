@@ -52,7 +52,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 DatabaseIdentityStoreDeferredSettingsTest.class,
                 EAREJBModuleTest.class,
                 MultipleModuleGlobalLoginTest.class,
-                MultipleModuleRunAsTest.class
+                MultipleModuleRunAsTest.class,
+                ScopedTest.class
 })
 
 /**
