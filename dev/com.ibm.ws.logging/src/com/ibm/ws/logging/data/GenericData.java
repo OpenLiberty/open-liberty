@@ -11,19 +11,12 @@
 package com.ibm.ws.logging.data;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 public class GenericData {
-
-    //Marker class, genericdatamemeber interface
 
     private final ArrayList<Pair> pairs;
 
     private String sourceType;
-
-    private Level logRecordLevel = null;
-
-    private String loggerName = null;
 
     private String jsonMessage = null;
 
@@ -36,22 +29,22 @@ public class GenericData {
     }
 
     public void setPair(int index, String key, String value) {
-        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
         pairs.add(index, kvp);
     }
 
-    public void setPair(int index, String key, Number value) {
-        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+    public void setPair(int index, String key, int value) {
+        KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
+        pairs.add(index, kvp);
+    }
+
+    public void setPair(int index, String key, long value) {
+        KeyValueLongPair kvp = new KeyValueLongPair(key, value);
         pairs.add(index, kvp);
     }
 
     public void setPairs(int index, KeyValuePairList kvps) {
         pairs.add(index, kvps);
-    }
-
-    public void addPair(String key, String value) {
-        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
-        pairs.add(kvp);
     }
 
     public void addPair(String key, int value) {
@@ -78,35 +71,6 @@ public class GenericData {
 
     public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
-    }
-
-    public void setLogRecordLevel(Level logRecordLevel) {
-        this.logRecordLevel = logRecordLevel;
-    }
-
-    public Level getLogRecordLevel() {
-        return logRecordLevel;
-    }
-
-    public void setLoggerName(String loggerName) {
-        this.loggerName = loggerName;
-    }
-
-    public String getLoggerName() {
-        return loggerName;
-    }
-
-    //Method created to accomodate some tests, must remove down the line
-    public String getMessageID() {
-        for (Pair p : pairs) {
-            if (p instanceof KeyValuePair) {
-                KeyValuePair kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals("ibm_messageId")) {
-                    return kvp.getStringValue();
-                }
-            }
-        }
-        return "";
     }
 
     /** {@inheritDoc} */

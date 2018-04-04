@@ -138,7 +138,7 @@ public class TraceSource implements Source, WsTraceHandler {
         traceData.setThreadName(threadName);
 
         if (id != null) {
-            Integer objid = System.identityHashCode(id);
+            int objid = System.identityHashCode(id);
             traceData.setObjectId(objid);
         }
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);

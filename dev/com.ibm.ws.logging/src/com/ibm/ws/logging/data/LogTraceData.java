@@ -39,28 +39,28 @@ public class LogTraceData extends GenericData {
                                                "objectId"
     };
 
-    public final static String[] NAMES = {
-                                           "datetime",
-                                           "messageId",
-                                           "threadId",
-                                           "loggerName",
-                                           "severity",
-                                           "loglevel",
-                                           "methodName",
-                                           "className",
-                                           "levelValue",
-                                           "threadName",
-                                           "correlationId",
-                                           "org",
-                                           "product",
-                                           "component",
-                                           "sequence",
-                                           "throwable",
-                                           "throwable_localized",
-                                           "message",
-                                           "formattedMsg",
-                                           "extensions",
-                                           "objectId"
+    private final static String[] NAMES = {
+                                            "datetime",
+                                            "messageId",
+                                            "threadId",
+                                            "loggerName",
+                                            "severity",
+                                            "loglevel",
+                                            "methodName",
+                                            "className",
+                                            "levelValue",
+                                            "threadName",
+                                            "correlationId",
+                                            "org",
+                                            "product",
+                                            "component",
+                                            "sequence",
+                                            "throwable",
+                                            "throwable_localized",
+                                            "message",
+                                            "formattedMsg",
+                                            "extensions",
+                                            "objectId"
     };
 
     public LogTraceData() {
@@ -147,7 +147,7 @@ public class LogTraceData extends GenericData {
         setPairs(19, kvps);
     }
 
-    public void setObjectId(Integer i) {
+    public void setObjectId(int i) {
         setPair(20, i);
     }
 
