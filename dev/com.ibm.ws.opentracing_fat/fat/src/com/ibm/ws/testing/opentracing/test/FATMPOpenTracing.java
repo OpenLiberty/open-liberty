@@ -73,7 +73,6 @@ public class FATMPOpenTracing {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        Assert.assertNotNull("Expecting CWMOT0007I message", server.waitForStringInLogUsingMark("CWMOT0007I", 0));
         server.stopServer();
     }
 
