@@ -45,14 +45,8 @@ public class OpentracingUserFeatureAccessService {
         OpentracingUserFeatureAccessService.opentracingTracerFactory = opentracingTracerFactory;
         factoryFirstUse = false;
 
-        if (opentracingTracerFactory != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
-                Tr.info(tc, "OPENTRACING_NEW_TRACERFACTORY", opentracingTracerFactory.getClass().getName());
-            }
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
-                Tr.error(tc, "OPENTRACING_NO_TRACERFACTORY");
-            }
+        if (opentracingTracerFactory == null) {
+            Tr.error(tc, "OPENTRACING_NO_TRACERFACTORY");
         }
     }
 
@@ -94,9 +88,7 @@ public class OpentracingUserFeatureAccessService {
             factoryFirstUse = false;
 
             if (opentracingTracerFactory == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
-                    Tr.error(tc, "OPENTRACING_NO_TRACERFACTORY");
-                }
+                Tr.error(tc, "OPENTRACING_NO_TRACERFACTORY");
             }
         }
 
