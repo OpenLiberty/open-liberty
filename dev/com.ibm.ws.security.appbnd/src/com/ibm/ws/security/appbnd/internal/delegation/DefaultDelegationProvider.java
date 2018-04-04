@@ -169,7 +169,7 @@ public class DefaultDelegationProvider implements DelegationProvider {
         String username = runAs.getUserid();
         String password = PasswordUtil.passwordDecode(runAs.getPassword());
         IdentityStoreHandlerService identityStoreHandlerService = getIdentityStoreHandlerService();
-        if (identityStoreHandlerService != null && identityStoreHandlerService.isIdentityStoreHanderAvailable()) {
+        if (identityStoreHandlerService != null && identityStoreHandlerService.isIdentityStoreAvailable()) {
             Subject inSubject;
             if (password != null) {
                 inSubject= identityStoreHandlerService.createHashtableInSubject(username, password);

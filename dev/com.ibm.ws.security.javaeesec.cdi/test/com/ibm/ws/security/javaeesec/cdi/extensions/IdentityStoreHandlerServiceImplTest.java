@@ -29,6 +29,7 @@ import javax.security.enterprise.credential.CallerOnlyCredential;
 import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
+import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
 import org.hamcrest.Description;
@@ -102,23 +103,16 @@ public class IdentityStoreHandlerServiceImplTest {
     }
 
     @Test
-    public void testIsIdentityStoreHanderAvailable_True() throws Exception {
+    public void testIsIdentityStoreAvailable_True() throws Exception {
         withHttpAuthenticationMechanism(true);
-        withIdentityStoreHandler(identityStoreHandler);
-        assertTrue("the result should be true.", ishsi.isIdentityStoreHanderAvailable());
+        withIdentityStore();
+        assertTrue("the result should be true.", ishsi.isIdentityStoreAvailable());
     }
 
     @Test
     public void testIsIdentityStoreHanderAvailable_FalseNoHAM() throws Exception {
         withHttpAuthenticationMechanism(false);
-        assertFalse("the result should be false.", ishsi.isIdentityStoreHanderAvailable());
-    }
-
-    @Test
-    public void testIsIdentityStoreHanderAvailable_FalseNoIDStoreHandler() throws Exception {
-        withHttpAuthenticationMechanism(true);
-        withoutIdentityStoreHandler(false, true);
-        assertFalse("the result should be false.", ishsi.isIdentityStoreHanderAvailable());
+        assertFalse("the result should be false.", ishsi.isIdentityStoreAvailable());
     }
 
     @Test
@@ -245,6 +239,23 @@ public class IdentityStoreHandlerServiceImplTest {
                 will(returnValue(false));
                 one(storeHandlerInstance).get();
                 will(returnValue(identityStoreHandler));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private IdentityStoreHandlerServiceImplTest withIdentityStore() {
+        final Instance<IdentityStore> IDStoreInstance = mockery.mock(Instance.class);
+
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).select(IdentityStore.class);
+                will(returnValue(IDStoreInstance));
+                one(IDStoreInstance).isUnsatisfied();
+                will(returnValue(false));
+                one(IDStoreInstance).isAmbiguous();
+                will(returnValue(false));
             }
         });
         return this;

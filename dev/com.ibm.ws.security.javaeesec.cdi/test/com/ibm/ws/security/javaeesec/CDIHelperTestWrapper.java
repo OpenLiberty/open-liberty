@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.RememberMeIdentityStore;
 
 import org.jmock.Expectations;
@@ -51,6 +52,8 @@ public class CDIHelperTestWrapper {
                 will(returnValue(creationalContext));
                 allowing(currentModuleBeanManager).getReference(bean, RememberMeIdentityStore.class, creationalContext);
                 will(returnValue(rememberMeIdentityStore));
+                allowing(currentModuleBeanManager).getBeans(IdentityStore.class);
+                will(returnValue(beans));
             }
         });
     }

@@ -31,12 +31,14 @@ import javax.security.enterprise.credential.BasicAuthenticationCredential;
 import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
+import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
@@ -47,25 +49,6 @@ public class Utils {
 
     public Utils() {}
 
-    protected boolean validateResult(CredentialValidationResult result) throws AuthenticationException {
-        Principal principal = result.getCallerPrincipal();
-        String username = null;
-        if (principal != null) {
-            username = principal.getName();
-        }
-        if (username == null) {
-            Tr.error(tc, "JAVAEESEC_CDI_ERROR_USERNAME_NULL");
-            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_USERNAME_NULL");
-            throw new AuthenticationException(msg);
-        }
-        if (result.getCallerUniqueId() == null) {
-            Tr.error(tc, "JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL");
-            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL");
-            throw new AuthenticationException(msg);
-        }
-        return true;
-    }
-
     protected AuthenticationStatus validateUserAndPassword(CDI cdi, String realmName, Subject clientSubject, @Sensitive UsernamePasswordCredential credential,
                                                          HttpMessageContext httpMessageContext) throws AuthenticationException {
         return validateCredential(cdi, realmName, clientSubject, credential, httpMessageContext);
@@ -74,15 +57,19 @@ public class Utils {
     protected AuthenticationStatus validateCredential(CDI cdi, String realmName, Subject clientSubject, @Sensitive Credential credential,
                                                          HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler(cdi);
-        if (identityStoreHandler != null) {
-            status = validateWithIdentityStore(realmName, clientSubject, credential, identityStoreHandler);
-        } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "IdentityStoreHandler bean is not found. Use a User Registry which is defined by server.xml.");
+        if(isIdentityStoreAvailable(cdi)) {
+            IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler(cdi);
+            if (identityStoreHandler != null) {
+                status = validateWithIdentityStore(realmName, clientSubject, credential, identityStoreHandler);
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IdentityStoreHandler bean is not found. ");
+                }
+                throw new AuthenticationException("No IdentityStoreHandler found");
             }
+        } else {
             if (!logNoIDWarning) {
-                Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER");
+                Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE");
                 logNoIDWarning = true;
             }
             // If an identity store is not available, fall back to the original user registry.
@@ -231,6 +218,21 @@ public class Utils {
             identityStoreHandler = storeHandlerInstance.get();
         }
         return identityStoreHandler;
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean isIdentityStoreAvailable(CDI cdi) {
+        Instance<IdentityStore> identityStoreInstances = cdi.select(IdentityStore.class);
+        if (identityStoreInstances != null && !identityStoreInstances.isUnsatisfied() && !identityStoreInstances.isAmbiguous()) {
+            return true;
+        }
+        // If the mechanism is from the extension, then the identity stores from the application need to be found using the app's bean manager.
+        if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
+            if (!CDIHelper.getBeansFromCurrentModule(IdentityStore.class).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isSupportedCredential(@Sensitive Credential cred) {
