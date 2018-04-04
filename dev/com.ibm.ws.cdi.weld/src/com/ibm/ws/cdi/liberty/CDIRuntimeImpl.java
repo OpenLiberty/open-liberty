@@ -47,6 +47,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
@@ -395,9 +396,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                 CDIArchive archive = application.getModuleArchives().iterator().next();
                 beginContext(archive);
                 setContext = true;
-        }
-            getCDIContainer().applicationStarting(application);
-            getCDIContainer().finalizeApplicationStarting(application);//This split is just to keep the CDIContainerImpl code conistant across liberty & websphere. 
+            }
+            WebSphereCDIDeployment webSphereCDIDeployment = getCDIContainer().startInitialization(application);
+            if (webSphereCDIDeployment != null) { 
+                getCDIContainer().endInitialization(webSphereCDIDeployment);//This split is just to keep the CDIContainerImpl code conistant across liberty & websphere. 
+            }
         } catch (CDIException e) {
             throw new StateChangeException(e);
         } finally {
@@ -405,8 +408,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                 CDIUtils.getAndSetLoader(oldCl);
             }
             if (setContext) {
-                ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
-                accessor.endContext();
+                endContext();
             }
         }
     }

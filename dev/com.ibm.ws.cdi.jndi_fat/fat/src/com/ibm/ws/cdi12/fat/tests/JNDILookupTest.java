@@ -38,13 +38,13 @@ public class JNDILookupTest extends LoggingTest {
         jar.addClass("com.ibm.ws.cdi12.test.jndi.observer.ObserverBean");
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, "jndiLookup.war");
-        war.add(new FileAsset(new File("test-applications/jndiLookup.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
         war.addClass("com.ibm.ws.cdi12.test.jndi.LookupServlet");
         war.addClass("com.ibm.ws.cdi12.test.jndi.JNDIStrings");
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "jndiLookup.ear");
         ear.addAsLibrary(jar);
         ear.addAsModule(war);
+        ear.add(new FileAsset(new File("test-applications/jndiLookup.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
         ear.add(new FileAsset(new File("test-applications/jndiLookup.ear/resources/META-INF/application.xml")), "/META-INF/application.xml");
 
         return ear;

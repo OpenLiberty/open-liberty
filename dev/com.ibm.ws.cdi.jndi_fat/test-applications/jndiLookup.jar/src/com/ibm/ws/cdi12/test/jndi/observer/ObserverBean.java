@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class ObserverBean {
         try {
             result = (String)new InitialContext().lookup("java:app/env/com.ibm.ws.cdi.jndi.test.result");
         } catch (NamingException e) {
-            result = "test failed";
+            result = "test failed " + e.getMessage();
         }
     }
 }
