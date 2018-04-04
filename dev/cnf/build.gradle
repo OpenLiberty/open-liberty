@@ -20,8 +20,9 @@ dependencies {
     binaries "com.fasterxml.jackson.core:jackson-annotations:2.2.3"
     binaries "com.fasterxml.jackson.core:jackson-core:2.2.3"
     binaries "com.fasterxml.jackson.core:jackson-databind:2.2.3"
-    binaries "org.osgi:osgi.core:5.0.0"
+    binaries "org.osgi:org.osgi.core:6.0.0"
     binaries "org.apache.aries:org.apache.aries.util:1.1.3"
+    binaries "commons-io:commons-io:2.4"
     binaries "commons-lang:commons-lang:2.4"
     binaries "org.apache.commons:commons-math:2.2"
     binaries "org.eclipse.jdt.core.compiler:ecj:4.3.1"
@@ -32,11 +33,25 @@ dependencies {
     binaries "biz.aQute.bnd:biz.aQute.bnd:3.5.0"
     binaries "biz.aQute.bnd:biz.aQute.bnd.annotation:3.5.0"
     binaries "biz.aQute.bnd:org.osgi.impl.bundle.repoindex.cli:3.5.0"
+    binaries "org.apache.maven:maven-model:3.5.0"
+    binaries "javax.json:javax.json-api:1.1.2"
+    binaries "org.glassfish:javax.json:1.1.2"
+    binaries "org.codehaus.plexus:plexus-utils:3.0.24"
+    binaries "org.apache.ant:ant:1.9.6"
 }
 
 task copyMavenLibs(type: Copy) {
     from configurations.binaries
     into project.file('mavenlibs')
+}
+
+task refreshPlugins {
+    dependsOn ':wlp-bndPlugins:jar'
+}
+
+task refresh {
+    dependsOn copyMavenLibs
+    dependsOn refreshPlugins
 }
 
 task cleanRepos(type: Delete) {
@@ -49,16 +64,29 @@ task cleanRepos(type: Delete) {
     }
 }
 
-clean{
-    dependsOn cleanRepos
-}
-
 task initialize {
     dependsOn cleanRepos
-    dependsOn copyMavenLibs
+    dependsOn refresh
     doLast {
         println "Gradle Initialized"
     }
+}
+
+clean {
+    dependsOn cleanRepos
+}
+
+classes {
+    dependsOn refreshPlugins
+}
+
+def pluginsProject = project(':wlp-bndPlugins')
+
+/* bnd plugins influence bundle contents, so add plugins project output to jar inputs */
+parent.subprojects {
+  if (project != pluginsProject) {
+    jar.inputs.files pluginsProject.sourceSets.main.output
+  }
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -70,7 +98,7 @@ DirectoryScanner.removeDefaultExclude("**/.gitattributes")
 
 String getVersionFromReleaseRepo(String org, String name) {
     def versions = []
-    cnf.project.fileTree(dir: 'release/' + org + '/' + name, include: '**/*.pom').visit { entry ->
+    project.fileTree(dir: 'release/' + org + '/' + name, include: '**/*.pom', exclude: '**/.bnd/**').visit { entry ->
         if (entry.isDirectory()) {
             String relPath = "$entry.relativePath"
             versions.add(relPath)
@@ -114,26 +142,15 @@ task createGradleBootstrap {
         }
 
         String org = 'dev'
-        cnf.fileTree(dir: '..', include: '**/*.feature').visit { feature ->
-            if (feature.isDirectory()) return
-
-            Properties props = new Properties()
-            props.load(new FileInputStream(feature.getFile()))
-
-            String text = feature.getFile().getText()
-            if (props['kind']=="ga" || props['kind']=="beta") {
-                String featureArtifactId = props['symbolicName']
-                String featureName = feature.name.substring(0, feature.name.size() - ".feature".length())
-                if (featureArtifactId == null) {
-                    featureArtifactId = featureName
-                }
-
-                String rev = getVersionFromReleaseRepo(org, featureArtifactId)
-                if (rev != null) {
-                    depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa\'')
-                    depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@esa.metadata.zip\'')
-                    depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + rev + '@pom\'')
-                }
+        Map<String,Properties> featureMap = featureMap()
+        featureMap.keySet().each { featureName ->
+            def featureProps = featureMap.get(featureName)
+            if ('ga'.equals(featureProps.get('kind')) || 'beta'.equals(featureProps.get('kind'))) {
+                String featureArtifactId = featureName
+                String version = getVersionFromReleaseRepo(org, featureName)
+                depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + version + '@esa\'')
+                depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + version + '@esa.metadata.zip\'')
+                depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + version + '@pom\'')
             }
         }
 
@@ -314,7 +331,7 @@ task zipGradleBootstrap(type: Zip) {
     }
     from new File(project.buildDir, 'replacements')
     into 'com.ibm.websphere.features.internal.openliberty', {
-        from rootProject.fileTree(dir: 'com.ibm.websphere.appserver.features', include: '**/*.feature').collect {
+        from rootProject.fileTree(dir: 'com.ibm.websphere.appserver.features', include: 'visibility/**/*.feature').collect {
             if (!it.isDirectory()) {
                 it
             }
@@ -330,4 +347,115 @@ publishing {
         artifact zipGradleBootstrap
     }
   }
+}
+
+task printProjectDependencies() {
+    doLast {
+        def kernelProps = new Properties()
+        def kernelFile = rootProject.file('com.ibm.ws.kernel.boot/publish/platform/kernel-1.0.mf')
+        def kernelText = kernelFile.getText()
+        def startIndex = kernelText.indexOf('Subsystem-Content:')
+        startIndex = kernelText.indexOf(':', startIndex)
+        def endIndex = kernelText.indexOf('\n', ++startIndex)
+        while (endIndex > 0) {
+            if (++endIndex == kernelText.length())
+                break
+            if (kernelText.charAt(endIndex) != ' ')
+                break
+            endIndex = kernelText.indexOf('\n', endIndex)
+        }
+        def content = kernelText.substring(startIndex, endIndex)
+        content.replaceAll('"[^"]*"', '#').split(',').each { elem ->
+            println elem.trim().replaceAll(';.*', '')
+        }
+
+        Map dependencyMap = new LinkedHashMap()
+        rootProject.fileTree(dir: '.', include: '*/bnd.bnd').each { bndFile ->
+            def bndProps = new Properties()
+            bndFile.withInputStream { bndProps.load(it) }
+            if ('false'.equals(bndProps.get('feature.project', 'false')) && 'false'.equals(bndProps.get('test.project', bndProps.get('fat.project', 'false')))) {
+                dependencyMap.put(bndFile.getParentFile().getName(), populateProjectDeps(bndFile, bndProps));
+            }
+        }
+        println 'Size before root project removal: ' + dependencyMap.size()
+
+        List dependencyLevels = new ArrayList()
+        Set seenProjects = new TreeSet()
+        dependencyMap.each { item, list ->
+            boolean isRoot = true
+            list.each { bnd ->
+                if (!bnd.contains(':')) {
+                    isRoot = false
+                }
+            }
+            if (isRoot) {
+                seenProjects.add(item)
+            }
+        }
+        List rootProjects = new ArrayList()
+        println 'Number of root projects found: ' + seenProjects.size()
+        seenProjects.each {
+            println it
+            dependencyMap.remove(it)
+            rootProjects.add(it)
+        }
+        dependencyLevels.add(0, rootProjects)
+        println 'Size after root project removal: ' + dependencyMap.size()
+        rootProjects.each { pivot ->
+            println pivot
+        }
+        int level = 0
+        while (dependencyMap.size() > 0) {
+            level++
+            println 'Buildable projects at level: ' + level
+            dependencyLevels.add(level, nextPivot(dependencyMap, seenProjects))
+            println 'Seen projects size: ' + seenProjects.size()
+            println 'Size after buildable project removal: ' + dependencyMap.size()
+            dependencyLevels.get(level).each { pivot ->
+                println pivot
+            }
+        }
+    }
+}
+
+List nextPivot(Map dependencyMap, Set seenProjects) {
+    List buildableProjects = new ArrayList()
+    dependencyMap.keySet().each { item ->
+        List list = dependencyMap.get(item)
+        boolean isBuildable = true
+        list.each { bnd ->
+            if (!bnd.contains(':') && !seenProjects.contains(bnd) && dependencyMap.containsKey(bnd)) {
+                isBuildable = false
+            }
+        }
+        if (isBuildable) {
+            seenProjects.add(item)
+            buildableProjects.add(item)
+        }
+    }
+    println 'Number of buildable projects found: ' + buildableProjects.size()
+    buildableProjects.each { item ->
+        dependencyMap.remove(item)
+    }
+    return buildableProjects
+}
+
+List populateProjectDeps(File bndFile, Properties bndProps) {
+    List dependents = new LinkedList()
+    String path = bndProps.get('-buildpath')
+    if (path != null)
+        return populateProjectDeps(bndFile, path, dependents)
+    path = bndProps.get('-dependson')
+    if (path != null)
+        return populateProjectDeps(bndFile, path, dependents)
+    return dependents
+}
+
+List populateProjectDeps(File bndFile, String path, List dependents) {
+    path = path.replaceAll('"[^"]*"', '#')
+    path.split(',').each { pathElem ->
+        if (pathElem.indexOf('version=file') == -1)
+            dependents.add(pathElem.replaceAll(';.*', '').trim())
+    }
+    return dependents
 }

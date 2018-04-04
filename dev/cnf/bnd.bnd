@@ -13,3 +13,8 @@
 -nobundles=true
 
 instrument.disabled: true
+
+-dependson: \
+  build.image, \
+  wlp-bndPlugins, \
+  wlp-rasInstrumentation

@@ -108,7 +108,8 @@ junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 mockito: org.mockito.mockito-core;version="[1.9,2)",\
   org.objenesis;version="[2.1,3)"
 
--pluginpath: ${if;${driver;gradle};${workspace}/cnf/lib/wlp-bndPlugins.jar,${workspace}/cnf/mavenlibs/org.apache.aries.util-1.1.3.jar;}
+build.bnd.plugins.classes: com.ibm.ws.build.bnd.plugins.ExternalPackageProcessor,com.ibm.ws.build.bnd.plugins.BundleManifestValidator
+build.bnd.plugins.path: ${workspace}/wlp-bndPlugins/build/libs/wlp-bndPlugins.jar,${workspace}/cnf/mavenlibs/org.apache.aries.util-1.1.3.jar
 
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class

@@ -24,7 +24,8 @@ Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclip
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"
 
 #tell bnd to use our Externals plugin
--plugin: ${if;${driver;gradle};com.ibm.ws.build.bnd.plugins.ExternalPackageProcessor, com.ibm.ws.build.bnd.plugins.BundleManifestValidator;}
+-plugin.build.bnd.plugins: ${if;${driver;gradle};${build.bnd.plugins.classes};}
+-pluginpath: ${if;${driver;gradle};${build.bnd.plugins.path};}
 
 #require explicitly specifying all ds and metatype annotated classes.
 -dsannotations:

@@ -27,5 +27,5 @@ generate.replacement: false
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	org.apache.ant:ant;version=1.9.6,\
 	biz.aQute.bnd:biz.aQute.bnd;version=3.5.0;packages=**,\
-	org.apache.aries:org.apache.aries.util;version=1.0.0,\
-	lib/junit-report.jar;version=file
+	org.apache.aries:org.apache.aries.util;version=1.1.3,\
+	com.ibm.ws.componenttest:infra.buildtasks-core;version=4.0.0
