@@ -486,7 +486,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestRegistersJaspicSession() throws Exception {
-        setHttpMessageContextExpectations(true).withAuthorizationHeader(authzHeader).withAuthenticationRequest(false);
+        setHttpMessageContextExpectations(true).withAuthParamsExpectations(null).withAuthorizationHeader(authzHeader).withAuthenticationRequest(false);
         withIdentityStoreHandlerResult(validResult);
         withJaspicSessionEnabled(true);
         withoutJaspicSessionPrincipal();
@@ -568,7 +568,7 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     private BasicHttpAuthenticationMechanismTest withNewAuthenticate(Credential cred) {
-        setNewAuthenticateExpectations().withAuthParamsExpectations(ap).withCredentialExpectations(cred);
+        setHttpMessageContextExpectations(true).setNewAuthenticateExpectations().withAuthParamsExpectations(ap).withCredentialExpectations(cred);
         withJaspicSessionEnabled(false);
         return this;
     }
@@ -593,15 +593,9 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     private BasicHttpAuthenticationMechanismTest setNewAuthenticateExpectations() {
-        final MessageInfo messageInfo = createMessageInfo(true);
         mockery.checking(new Expectations() {
             {
-                one(httpMessageContext).getClientSubject();
-                will(returnValue(clientSubject));
-                never(httpMessageContext).getRequest();
                 never(httpMessageContext).getResponse();
-                allowing(httpMessageContext).getMessageInfo();
-                will(returnValue(messageInfo));
             }
         });
         return this;

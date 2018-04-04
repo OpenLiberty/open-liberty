@@ -493,8 +493,6 @@ public class FormAuthenticationMechanismTest {
             {
                 allowing(hmc).getClientSubject();
                 will(returnValue(cs));
-                one(hmc).getAuthParameters();
-                will(returnValue(null));
                 allowing(hmc).getRequest();
                 will(returnValue(request));
                 allowing(hmc).getResponse();
@@ -547,6 +545,12 @@ public class FormAuthenticationMechanismTest {
                 will(returnValue(value));
             }
         });
+
+        if (value == false) {
+            withAuthParamsExpectations(null);
+        } else {
+            withAuthParamsExpectations(ap).withCredentialExpectations(null);
+        }
         return this;
     }
 
@@ -579,17 +583,15 @@ public class FormAuthenticationMechanismTest {
         return this;
     }
 
-    private FormAuthenticationMechanismTest withNewAuthenticate(Credential cred) {
-        setNewAuthenticateExpectations().withAuthParamsExpectations(ap).withCredentialExpectations(cred);
+    private FormAuthenticationMechanismTest withNewAuthenticate(Credential cred) throws Exception {
+        withMessageContext().setNewAuthenticateExpectations().withAuthParamsExpectations(ap).withCredentialExpectations(cred);
+        withJaspicSessionEnabled(false);
         return this;
     }
 
     private FormAuthenticationMechanismTest setNewAuthenticateExpectations() {
         mockery.checking(new Expectations() {
             {
-                one(hmc).getClientSubject();
-                will(returnValue(cs));
-                never(hmc).getRequest();
                 never(hmc).getResponse();
             }
         });
