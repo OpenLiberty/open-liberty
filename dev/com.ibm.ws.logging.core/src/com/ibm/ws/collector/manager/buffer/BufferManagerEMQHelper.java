@@ -32,7 +32,7 @@ public class BufferManagerEMQHelper {
             }
     }
     
-    public static boolean getEMQRemovedFlag() {
+    public synchronized static boolean getEMQRemovedFlag() {
         return EMQRemovedFlag;
     }
 

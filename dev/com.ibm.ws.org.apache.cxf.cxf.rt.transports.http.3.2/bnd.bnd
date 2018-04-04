@@ -21,6 +21,5 @@ javac.target: 1.8
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.ws.logging.core,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.core

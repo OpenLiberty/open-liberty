@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.ws.microprofile.config.sources.DefaultSources;
+import com.ibm.ws.microprofile.config.sources.SystemConfigSource;
 
 public class Config13DefaultSources extends DefaultSources {
 
@@ -27,9 +28,13 @@ public class Config13DefaultSources extends DefaultSources {
      * @return the default sources found
      */
     public static ArrayList<ConfigSource> getDefaultSources(ClassLoader classloader) {
-        ArrayList<ConfigSource> sources = DefaultSources.getDefaultSources(classloader);
+        ArrayList<ConfigSource> sources = new ArrayList<>();
 
+        sources.add(new SystemConfigSource());
+        sources.add(new EnvConfig13Source());
         sources.add(new AppPropertyConfigSource());
+
+        getPropertyConfigSources(classloader, sources);
 
         return sources;
     }

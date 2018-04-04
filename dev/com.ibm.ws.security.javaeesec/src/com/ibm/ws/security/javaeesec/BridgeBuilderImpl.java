@@ -84,6 +84,17 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
         return false;
     }
 
+    @Override
+    public boolean isCredentialPresent(HttpServletRequest req) {
+        if (getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
+            AuthenticationParameters authParams = (AuthenticationParameters) req.getAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
+            if (authParams != null) {
+                return (authParams.getCredential() != null);
+            }
+        }
+        return false;
+    }
+
     protected ModulePropertiesUtils getModulePropertiesUtils() {
         return ModulePropertiesUtils.getInstance();
     }

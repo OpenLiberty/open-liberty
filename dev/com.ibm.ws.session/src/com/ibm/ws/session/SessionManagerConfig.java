@@ -23,10 +23,11 @@ public class SessionManagerConfig implements Cloneable {
     private boolean usingWebContainerSM = true;
     private boolean useContextRootForSessionCookiePath = false;
 
-    // One of the next 3 boolean values will tell us what type of configuration we
+    // One of the next 4 boolean values will tell us what type of configuration we
     // are using
     private boolean usingMemory = false;
     private boolean usingDatabase = false;
+    private boolean usingJCache = false;
     private boolean usingMemToMem = false;
 
     // Tells us whether SSL Tracking/url rewriting and/or cookies are enabled ...
@@ -71,6 +72,7 @@ public class SessionManagerConfig implements Cloneable {
     private boolean enableTimeBasedWrite = false;
     private long mPropertyWriterInterval = 120;
     private boolean writeAllProperties = false;
+    private boolean writeGetAndSetAttributes; 
 
     // Tells us if scheduledInvalidation is enabled and contains parameters
     private boolean scheduledInvalidation = false;
@@ -274,6 +276,15 @@ public class SessionManagerConfig implements Cloneable {
     public final void setUsingDatabase(boolean val) {
         usingDatabase = val;
     }
+    
+    // using JCache
+    public final boolean isUsingJCache() {
+        return usingJCache;
+    }
+
+    public final void setUsingJCache(boolean val) {
+        usingJCache = val;
+    }
 
     // usingMemToMem
     public final boolean isUsingMemtoMem() {
@@ -289,6 +300,8 @@ public class SessionManagerConfig implements Cloneable {
             this.setUsingMemory(true);
         } else if ("DATABASE".equalsIgnoreCase(s)) {
             this.setUsingDatabase(true);
+        } else if ("JCACHE".equalsIgnoreCase(s)) {
+            this.setUsingJCache(true);
         } else {
             this.setUsingMemory(true);
         }
@@ -608,6 +621,17 @@ public class SessionManagerConfig implements Cloneable {
 
     public final void setwriteAllProperties() {
         writeAllProperties = true;
+    }
+
+    /**
+     * @returns true if writeContents is configured to GET_AND_SET_ATTRIBUTES
+     */
+    public final boolean writeGetAndSetAttributes() {
+        return writeGetAndSetAttributes;
+    }
+
+    final void setWriteGetAndSetAttributes() {
+        writeGetAndSetAttributes = true;
     }
 
     // scheduledInvalidation
@@ -1024,6 +1048,7 @@ public class SessionManagerConfig implements Cloneable {
             msg.append("usingWebContainerSM=").append(usingWebContainerSM).append("\n");
             msg.append("usingMemory=").append(usingMemory).append("\n");
             msg.append("usingDatabase=").append(usingDatabase).append("\n");
+            msg.append("usingJCache=").append(usingJCache).append("\n");
             msg.append("usingMemToMem=").append(usingMemToMem).append("\n");
             msg.append("enableSSLTracking=").append(this.useSSLId()).append("\n");
             msg.append("enableUrlRewriting=").append(this.getEnableUrlRewriting()).append("\n");

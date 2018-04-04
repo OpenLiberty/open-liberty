@@ -17,6 +17,7 @@ Bundle-Description: Common code for security FAT projects; version=${bVersion}
 
 Export-Package: \
     com.ibm.ws.security.fat.common, \
+    com.ibm.ws.security.fat.common.apps.*, \
     com.ibm.ws.security.fat.common.expectations
 
 Import-Package: \
@@ -25,6 +26,10 @@ Import-Package: \
     *
 
 Private-Package: \
+
+src: \
+    src,\
+    test-applications/testmarker/src
 
 test.project: true
 publish.wlp.jar.disabled: true
@@ -39,7 +44,9 @@ publish.wlp.jar.disabled: true
     com.ibm.ws.org.apache.commons.codec.1.4;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.componenttest:public.api;version=latest, \
-    com.ibm.websphere.javaee.servlet.3.1;version=latest
+    com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+    org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3, \
+    fattest.simplicity;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

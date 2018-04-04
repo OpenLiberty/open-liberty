@@ -642,6 +642,8 @@ public class MvnUtils {
         Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
         String query = "/project/version";
         String projectVersion = getQueryInXml(pomXml, query, "", null);
+        // Some pom.xml files have no version but inherit it from the
+        // parent
         if (projectVersion != null && projectVersion.trim().length() > 0) {
             return projectVersion.trim();
         } else {
@@ -685,7 +687,6 @@ public class MvnUtils {
         } catch (Throwable t) {
             MvnUtils.log(t.getMessage());
         }
-        System.out.println("Value being returned: " + result);
         return result;
     }
 }

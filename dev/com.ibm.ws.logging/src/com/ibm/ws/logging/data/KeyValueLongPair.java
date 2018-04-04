@@ -39,17 +39,37 @@ public class KeyValueLongPair implements Pair, KeyValuePair {
     }
 
     @Override
+    public boolean isFloat() {
+        return false;
+    }
+
+    @Override
+    public boolean isBoolean() {
+        return false;
+    }
+
+    @Override
     public String getStringValue() {
         throw new UnsupportedOperationException("Cannot call getStringValue method on KeyValueLongPair class");
     }
 
     @Override
-    public Integer getIntValue() {
+    public int getIntValue() {
         throw new UnsupportedOperationException("Cannot call getIntValue method on KeyValueLongPair class");
     }
 
     @Override
-    public Long getLongValue() {
+    public float getFloatValue() {
+        throw new UnsupportedOperationException("Cannot call getFloatValue method on KeyValueLongPair class");
+    }
+
+    @Override
+    public boolean getBooleanValue() {
+        throw new UnsupportedOperationException("Cannot call getBooleanValue method on KeyValueLongPair class");
+    }
+
+    @Override
+    public long getLongValue() {
         return value;
     }
 

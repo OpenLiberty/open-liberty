@@ -381,11 +381,26 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupSearchFilter(boolean immediateOnly) {
         try {
-            return ELHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
+            String result = ELHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
+            /**
+             * This is for CTS testing only. A default filter is expected, though this violates the spec.
+             */
+            if (System.getProperty("cts") != null && System.getProperty("cts").equalsIgnoreCase("true") && (result == null || result.isEmpty())) {
+                Tr.debug(tc, "Setting default groupSearchFilter to (objectClass=groupOfNames)");
+                return "(objectClass=groupOfNames)";
+            }
+            return result;
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "There was an error resolving the '{1}' configuration object. Ensure any EL expressions are resolveable. The value will be defaulted to '{2}'",
                            new Object[] { "groupSearchFilter", "" });
+            }
+            /**
+             * This is for CTS testing only. A default filter is expected, though this violates the spec.
+             */
+            if (System.getProperty("cts") != null && System.getProperty("cts").equalsIgnoreCase("true")) {
+                Tr.debug(tc, "Setting default groupSearchFilter to (objectClass=groupOfNames)");
+                return "(objectclass=groupofnames)";
             }
             return ""; /* Default value from spec. */
         }

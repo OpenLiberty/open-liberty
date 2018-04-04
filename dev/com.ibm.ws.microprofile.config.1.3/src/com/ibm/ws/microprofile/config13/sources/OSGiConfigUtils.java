@@ -213,8 +213,11 @@ public class OSGiConfigUtils {
             String applicationFilter = getApplicationConfigFilter(bundleContext, applicationName);
             ConfigurationAdmin admin = getConfigurationAdmin(bundleContext);
             Configuration[] osgiConfigs = admin.listConfigurations(applicationFilter);
-            for (Configuration cfg : osgiConfigs) {
-                configSet.add(cfg);
+
+            if (osgiConfigs != null) {
+                for (Configuration cfg : osgiConfigs) {
+                    configSet.add(cfg);
+                }
             }
         } catch (IOException | InvalidSyntaxException e) {
             throw new ConfigException(e);

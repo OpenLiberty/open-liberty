@@ -130,5 +130,4 @@ public class GenericData {
     public void setJsonMessage(String jsonMessage) {
         this.jsonMessage = jsonMessage;
     }
-
 }
