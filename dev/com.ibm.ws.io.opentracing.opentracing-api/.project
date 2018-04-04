@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.io.opentracing.opentracing-api.0.30.0</name>
+	<name>com.ibm.ws.io.opentracing.opentracing-api</name>
 	<comment></comment>
 	<projects>
 	</projects>

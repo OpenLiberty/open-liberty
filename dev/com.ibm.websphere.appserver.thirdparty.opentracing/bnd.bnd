@@ -24,4 +24,4 @@ Export-Package: io.opentracing;version=0.30.0, \
 publish.wlp.jar.suffix: dev/api/third-party
 
 -buildpath: \
-	com.ibm.ws.io.opentracing.opentracing-api.0.30.0;version=latest
+	com.ibm.ws.io.opentracing.opentracing-api;version=latest
