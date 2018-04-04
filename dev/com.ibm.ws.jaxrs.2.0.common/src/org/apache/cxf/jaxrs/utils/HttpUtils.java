@@ -118,25 +118,32 @@ public final class HttpUtils {
 
     private static String componentEncode(String reservedChars, String value) {
 
-        StringBuilder buffer = new StringBuilder();
-        StringBuilder bufferToEncode = new StringBuilder();
-
-        for (int i = 0; i < value.length(); i++) {
+        // Liberty Change for CXF Begin
+        StringBuilder buffer = null;
+        int length = value.length();
+        int startingIndex = 0;
+        for (int i = 0; i < length; i++) {
             char currentChar = value.charAt(i);
             if (reservedChars.indexOf(currentChar) != -1) {
-                if (bufferToEncode.length() > 0) {
-                    buffer.append(urlEncode(bufferToEncode.toString()));
-                    bufferToEncode.setLength(0);
+                if (buffer == null) {
+                    buffer = new StringBuilder(length + 8);
+                }
+                // If it is going to be an empty string nothing to encode.
+                if (i != startingIndex) {
+                    buffer.append(urlEncode(value.substring(startingIndex, i)));
                 }
                 buffer.append(currentChar);
-            } else {
-                bufferToEncode.append(currentChar);
+                startingIndex = i + 1;
             }
         }
 
-        if (bufferToEncode.length() > 0) {
-            buffer.append(urlEncode(bufferToEncode.toString()));
+        if (buffer == null) {
+            return urlEncode(value);
         }
+        if (startingIndex < length) {
+            buffer.append(urlEncode(value.substring(startingIndex, length)));
+        }
+        // Liberty Change for CXF Begin
 
         return buffer.toString();
     }

@@ -1024,4 +1024,14 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         }
         return false;
     }
+
+    @Override
+    public boolean isCredentialPresent(HttpServletRequest req) {
+        BridgeBuilderService bridgeBuilderService = bridgeBuilderServiceRef.getService();
+        if (bridgeBuilderService != null) {
+            return bridgeBuilderService.isCredentialPresent(req);
+        }
+        return false;
+    }
+
 }

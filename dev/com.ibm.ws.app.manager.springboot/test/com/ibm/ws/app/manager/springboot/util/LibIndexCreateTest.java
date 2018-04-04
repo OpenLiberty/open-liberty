@@ -16,7 +16,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -26,6 +28,7 @@ import java.util.Stack;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -40,8 +43,8 @@ public class LibIndexCreateTest {
 
     public static class TestThinUtil extends SpringBootThinUtil {
 
-        TestThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache, boolean putLibCacheInDirectory) throws Exception {
-            super(sourceFatJar, targetThinJar, libIndexCache, putLibCacheInDirectory);
+        TestThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache) throws Exception {
+            super(sourceFatJar, targetThinJar, libIndexCache);
         }
 
         public Stack<String> hashValues;
@@ -56,12 +59,12 @@ public class LibIndexCreateTest {
     public final TemporaryFolder workingArea = new TemporaryFolder();
 
     @Test
-    public void writeToOutputZip() throws Exception {
+    public void testWriteToOutputDir() throws Exception {
 
         File thinJar = workingArea.newFile("thinJar.jar");
-        File applicationLibsZip = workingArea.newFile("AppLibs.jar");
+        File applicationLibs = workingArea.newFolder("AppLibs");
 
-        SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibsZip, false);
+        SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibs);
         Stack<String> hashes = new Stack<String>();
         for (String s : Arrays.asList("aa003", "aa002", "aa001")) {
             hashes.push(s);
@@ -102,16 +105,16 @@ public class LibIndexCreateTest {
                 add("aa/003/hibernate-commons-annotations-5.0.1.Final.jar");
             }
         };
-        verifyJarEntryPaths(applicationLibsZip, expectedDepsZipContents);
+        verifyDirEntryPaths(applicationLibs, expectedDepsZipContents);
 
     }
 
     @Test
     public void testMultLibJarsWithSameContents() throws Exception {
         File thinJar = workingArea.newFile("thinJar.jar");
-        File applicationLibsZip = workingArea.newFile("AppLibs.jar");
+        File applicationLibsDir = workingArea.newFolder("AppLibs");
 
-        SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibsZip, false);
+        SpringBootThinUtil util = new TestThinUtil(createSourceFatJar(null, null), thinJar, applicationLibsDir);
         Stack<String> hashes = new Stack<String>();
         for (String s : Arrays.asList("bb001", "aa001", "aa001")) {
             hashes.push(s);
@@ -152,7 +155,7 @@ public class LibIndexCreateTest {
                 add("bb/001/hibernate-commons-annotations-5.0.1.Final.jar");
             }
         };
-        verifyJarEntryPaths(applicationLibsZip, expectedDepsZipContents);
+        verifyDirEntryPaths(applicationLibsDir, expectedDepsZipContents);
 
     }
 
@@ -211,6 +214,27 @@ public class LibIndexCreateTest {
         while (entries.hasMoreElements()) {
             zipEntry = entries.nextElement();
             assertTrue("Unexpected path found in zip: " + zipEntry.toString(), expectedEntries.remove(zipEntry.toString()));
+        }
+        assertTrue("Missing " + expectedEntries.size() + " expected paths from jar.", expectedEntries.isEmpty());
+    }
+
+    public void verifyDirEntryPaths(File directory, Set<String> expectedEntries) throws IOException {
+        int dirPathLen = directory.getAbsolutePath().length();
+        List<String> actualPaths = new ArrayList<String>();
+        Files.walk(directory.toPath()) //
+                        .filter((p) -> p.toFile().getAbsolutePath().length() > dirPathLen) //
+                        .map((p) -> {
+                            File f = p.toFile();
+                            String actualPath = f.getAbsolutePath().substring(dirPathLen + 1);
+                            if (f.isDirectory()) {
+                                actualPath += '/';
+                            }
+                            return actualPath;
+                        }) //
+                        .collect(Collectors.toCollection(() -> actualPaths));
+
+        for (String actualPath : actualPaths) {
+            assertTrue("Unexpected path found in directory: " + actualPath, expectedEntries.remove(actualPath));
         }
         assertTrue("Missing " + expectedEntries.size() + " expected paths from jar.", expectedEntries.isEmpty());
     }

@@ -43,6 +43,7 @@ public class H2PushPromise extends HttpServlet {
             response.setDateHeader("Date", time);
 
             pw.println("Response to push");
+            pw.close();
 
         } else if (test.toLowerCase().equals(new String("preload"))) {
 
@@ -53,6 +54,7 @@ public class H2PushPromise extends HttpServlet {
             response.setDateHeader("Date", time);
             response.addHeader("Link", "</H2TestModule/H2PushPromise>; rel=preload;");
             response.addHeader("Link", "</H2TestModule/H2PushPromise>; rel=preload;");
+            pw.close();
 
         } else if ((test.toLowerCase().equals(new String("pushbuilder")))) {
 
@@ -76,10 +78,8 @@ public class H2PushPromise extends HttpServlet {
                     pw.println("FAIL : pb.push() threw an ISE : " + exc.getMessage());
                 }
             }
+            pw.close();
         } else if ((test.toLowerCase().equals(new String("delay")))) {
-
-            // Wait a little bit for the client
-            pw.println("push_promise delay");
 
             try {
                 Thread.sleep(5000);
@@ -87,9 +87,6 @@ public class H2PushPromise extends HttpServlet {
             }
 
         }
-
-        pw.flush();
-        pw.close();
 
         try {
             Thread.yield();

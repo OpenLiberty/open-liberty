@@ -210,7 +210,6 @@ public class JwtSsoComponent implements JwtSsoConfig {
 
 	@Activate
 	protected void activate(Map<String, Object> properties, ComponentContext cc) {
-		System.out.println("***** JWTSSO activate *****"); // todo: removeme
 		uniqueId = (String) properties.get(KEY_UNIQUE_ID);
 		process(properties);
 		keyStoreServiceRef.activate(cc);

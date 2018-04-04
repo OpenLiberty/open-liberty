@@ -111,7 +111,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
     @AfterClass
     public static void tearDown() throws Exception {
 
-        myServer.stopServer("CWWKS1916W");
+        myServer.stopServer("CWWKS1916W", "CWWKS3400W", "CWWKS3401E", "CWWKS3402E", "CWWKS3405W", "CWWKS3406W");
 
         if (ldapServer != null) {
             try {
@@ -302,7 +302,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("javax.naming.AuthenticationException")
+    @ExpectedFFDC({ "java.lang.IllegalStateException", "javax.naming.AuthenticationException" })
     public void bindDn() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -329,7 +329,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("javax.naming.NoPermissionException")
+    @ExpectedFFDC({ "java.lang.IllegalStateException", "javax.naming.NoPermissionException" })
     public void bindDn_NULL() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -357,7 +357,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("javax.naming.AuthenticationException")
+    @ExpectedFFDC({ "java.lang.IllegalStateException", "javax.naming.AuthenticationException" })
     public void bindDnPassword() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -522,7 +522,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("javax.naming.NameNotFoundException")
+    @ExpectedFFDC({ "java.lang.IllegalStateException", "javax.naming.NameNotFoundException" })
     public void callerSearchBase() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -874,7 +874,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("javax.naming.NameNotFoundException")
+    @ExpectedFFDC({ "java.lang.IllegalStateException", "javax.naming.NameNotFoundException" })
     public void groupSearchBase() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -882,7 +882,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         overrides.put("groupSearchBase", "o=ibm,c=uk");
         updateLdapSettingsBean(overrides);
 
-        verifyAuthorization(SC_OK, SC_FORBIDDEN, SC_OK, SC_FORBIDDEN);
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -1153,7 +1153,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @ExpectedFFDC("javax.naming.CommunicationException")
+    @ExpectedFFDC({ "java.lang.IllegalStateException", "javax.naming.CommunicationException" })
     public void url() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 

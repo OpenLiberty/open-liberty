@@ -27,6 +27,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -50,6 +54,7 @@ public class ExternalDependencyDownloadTest {
         }
     }
 
+    @Mode(TestMode.QUARANTINE)
     @Test
     public void testHTTP2HTTPSRedirect() throws Exception {
         String serverName = "http2httpsRedirectGood";
@@ -138,6 +143,14 @@ public class ExternalDependencyDownloadTest {
 
         prepareSampleJar(dependencyPath, serverName);
         LibertyServer installServer = createEmptyServer(serverName);
+
+        boolean serveravailable = hostingServer.isStarted();
+        boolean fileavailable = hostingServer.fileExistsInLibertyInstallRoot("/usr/servers/" + serverName);
+
+        Log.info(ExternalDependencyDownloadTest.class, "serveravailable", Boolean.toString(serveravailable));
+        Log.info(ExternalDependencyDownloadTest.class, "fileavailable", Boolean.toString(fileavailable));
+        Log.info(ExternalDependencyDownloadTest.class, "getServerFolderFiles", listFiles(hostingServer.getUserDir() + "/servers"));
+        Log.info(ExternalDependencyDownloadTest.class, "getServerFiles", listFiles(hostingServer.getUserDir() + "/servers/" + serverName));
 
         // This method uses the sample jar created above
         installServer.installSampleWithExternalDependencies(serverName);
@@ -334,4 +347,24 @@ public class ExternalDependencyDownloadTest {
         writer.flush();
         out.closeEntry();
     }
+
+    public static String listFiles(String path) {
+        File folder = new File(path);
+        File[] listOfFiles = folder.listFiles();
+        String filenames = "Files: ";
+        String dirnames = "Directories: ";
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                filenames += listOfFiles[i].getName() + " ";
+            } else if (listOfFiles[i].isDirectory()) {
+                dirnames += listOfFiles[i].getName() + " ";
+            }
+        }
+
+        filenames += "\n";
+
+        return (filenames + dirnames);
+
+    }
+
 }

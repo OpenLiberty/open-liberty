@@ -29,11 +29,11 @@ Export-Package: \
 	com.ibm.wsspi.kernel.embeddable
 	
 Private-Package: \
- 	org.apache.commons.compress.archivers, \
- 	org.apache.commons.compress.archivers.zip, \
- 	org.apache.commons.compress.compressors, \
- 	org.apache.commons.compress.compressors.lzw, \
- 	org.apache.commons.compress.utils
+	com.ibm.ws.org.apache.commons.compress.archivers, \
+	com.ibm.ws.org.apache.commons.compress.archivers.zip, \
+	com.ibm.ws.org.apache.commons.compress.compressors, \
+	com.ibm.ws.org.apache.commons.compress.compressors.lzw, \
+	com.ibm.ws.org.apache.commons.compress.utils
 
 instrument.disabled: true
 
@@ -46,4 +46,4 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.kernel.boot.java7;version=latest, \
-	org.apache.commons:commons-compress;version=1.10
+	com.ibm.ws.org.apache.commons:commons-compress;version=1.16.1

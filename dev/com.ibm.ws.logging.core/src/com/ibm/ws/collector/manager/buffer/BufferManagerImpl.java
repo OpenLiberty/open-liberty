@@ -16,280 +16,298 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 public class BufferManagerImpl extends BufferManager {
-    
+
     /* Package name in trace from BufferManagerImpl is changed in order to reduce the trace volume when traceSpecification is set to "com.ibm.ws.*" */
     private static final TraceComponent tc = Tr.register("x.com.ibm.ws.collector.manager.buffer.BufferManagerImpl",BufferManagerImpl.class,(String)null);	
     private Buffer<Object> ringBuffer;
-    private final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     private Set<SynchronousHandler> synchronousHandlerSet = new HashSet<SynchronousHandler>();
 
-    private final int capacity;
+	private final int capacity;
 
-    private final String sourceId;
-    /* Map to keep track of the next event for a handler */
-    private final ConcurrentHashMap<String, HandlerStats> handlerEventMap = new ConcurrentHashMap<String, HandlerStats>();
-    
-    protected Queue<Object> earlyMessageQueue;
-    private static final int EARLY_MESSAGE_QUEUE_SIZE=400;
-    
+	private final String sourceId;
+	/* Map to keep track of the next event for a handler */
+	private final ConcurrentHashMap<String, HandlerStats> handlerEventMap = new ConcurrentHashMap<String, HandlerStats>();
 
-    public BufferManagerImpl(int capacity, String sourceId) {
-        super();
-        RERWLOCK.writeLock().lock();
-        try {
-            BufferManagerEMQHelper.addBufferManagerList(this);
-            ringBuffer=null;
-            this.sourceId = sourceId;
-            this.capacity = capacity;
-            if(!BufferManagerEMQHelper.getEMQRemovedFlag())
-                earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
-        }finally {
-            RERWLOCK.writeLock().unlock();
-        }
-    }
-    
-    public BufferManagerImpl(int capacity, String sourceId, boolean isEMQ) {
-        super();
-        this.sourceId = sourceId;
-        this.capacity = capacity;
-        if (!isEMQ){
-          earlyMessageQueue = null; //don't need earlyMessageQueue
-          ringBuffer = new Buffer<Object>(capacity);
-        }
-    }
+	protected Queue<Object> earlyMessageQueue;
 
-    @Override
-    public void add(Object event) {
-        if (event == null)
-            throw new NullPointerException();
+	private static final int EARLY_MESSAGE_QUEUE_SIZE = 400;
 
-        SynchronousHandler[] arrayCopy = null;
-        RERWLOCK.readLock().lock();
-        try {
-            
-            if(ringBuffer !=  null){
-                ringBuffer.add(event);
-            }
-            
-            if(earlyMessageQueue!=null) {
-                synchronized(earlyMessageQueue) {
-                    earlyMessageQueue.add(event);
-                }
-            }
+	public BufferManagerImpl(int capacity, String sourceId) {
+		super();
 
-        } finally {
-            RERWLOCK.readLock().unlock();
-            for (SynchronousHandler synchronousHandler : synchronousHandlerSet) {
-            		synchronousHandler.synchronousWrite(event);
-            }
-        }
+		BufferManagerEMQHelper.addBufferManagerList(this);
+		ringBuffer = null;
+		this.sourceId = sourceId;
+		this.capacity = capacity;
+		if (!BufferManagerEMQHelper.getEMQRemovedFlag()) {
+			earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+			// Check again just in case
+			if (BufferManagerEMQHelper.getEMQRemovedFlag()) {
+				removeEMQ();
+			}
+		}
+	}
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Adding event to buffer " + event);
-        }
+	public BufferManagerImpl(int capacity, String sourceId, boolean isEMQ) {
+		super();
+		this.sourceId = sourceId;
+		this.capacity = capacity;
+		if (!isEMQ) {
+			earlyMessageQueue = null; // don't need earlyMessageQueue
+			ringBuffer = new Buffer<Object>(capacity);
+		}
+	}
 
-    }
+	@Override
+	public void add(Object event) {
+		if (event == null)
+			throw new NullPointerException();
 
-    @Override
-    public Object getNextEvent(String handlerId) throws InterruptedException {
-        HandlerStats handlerStats = null;
-        if (handlerId != null) {
-            handlerStats = handlerEventMap.get(handlerId);
-        }
-        if (handlerStats == null)
-            throw new IllegalArgumentException("Handler not registered with buffer manager : " + handlerId);
-        // Get the next sequence number for this handler
-        long seqNum = handlerStats.getNextSeqNum();
-        Event<Object> event = ringBuffer.get(seqNum);
-        handlerStats.traceEventLoss(event.getSeqNum());
-        // Calculate the next sequence number based on the sequence number
-        // of the retrieved event.
-        long nextSeqNum = event.getSeqNum() + 1;
-        handlerStats.setNextSeqNum(nextSeqNum);
-        return event.getEvent();
-    }
+		if (earlyMessageQueue != null) { // startup time
+			/*
+			 * earlyMessageQueue was first checked to be not null but this "gap"
+			 * here may have allowed the earlyMessageQueue to be set to null
+			 * from removeEMQ()
+			 */
+			Set<SynchronousHandler> synchronousHandlerSetSnapShot;
 
-    @Override
-    public Object[] getEvents(String handlerId, int noOfEvents) throws InterruptedException {
-        HandlerStats handlerStats = null;
-        if (handlerId != null) {
-            handlerStats = handlerEventMap.get(handlerId);
-        }
-        if (handlerStats == null)
-            throw new IllegalArgumentException("Handler not registered with buffer manager : " + handlerId);
-        // Get the next sequence number for this handler
-        long seqNum = handlerStats.getNextSeqNum();
-        ArrayList<Event<Object>> events = ringBuffer.get(seqNum, noOfEvents);
-        handlerStats.traceEventLoss(events.get(0).getSeqNum());
-        // Calculate the next sequence number based on the sequence numbers
-        // of the retrieved events.
-        long nextSeqNum = events.get(0).getSeqNum() + events.size();
-        handlerStats.setNextSeqNum(nextSeqNum);
-        Object[] e = new Object[events.size()];
-        for (int i = 0; i < events.size(); i++) {
-            e[i] = events.get(i).getEvent();
-        }
-        return e;
-    }
+			synchronized (this) {
+				// Must check again - could have been removed
+				if (earlyMessageQueue != null) {
+					earlyMessageQueue.add(event);
+				}
 
-    public void addHandler(String handlerId) {
-        RERWLOCK.writeLock().lock();
-        try {
-            //If it is first async handler subscribed, then create the main buffer
-            if(ringBuffer == null) {
-                ringBuffer = new Buffer<Object>(capacity);
-            }
-            /*
-             * Every new Asynchronous handler starts off with all events from EMQ.
-             * So we write all EMQ messages directly to RingBuffer
-             */
-            if(earlyMessageQueue != null && earlyMessageQueue.size() != 0) {
-                for(Object message: earlyMessageQueue.toArray()) {
-                    ringBuffer.add(message);
-                }
-            }
-            handlerEventMap.putIfAbsent(handlerId, new HandlerStats(handlerId, sourceId));
-        }finally {
-            RERWLOCK.writeLock().unlock();
-        }
-    }
+				// If async handler added before this synchronized block, need
+				// to add to ring buffer
+				if (ringBuffer != null) {
+					ringBuffer.add(event);
+				}
+				synchronousHandlerSetSnapShot = synchronousHandlerSet;
+			}
 
-    public void addSyncHandler(SynchronousHandler syncHandler) {
-        /*
-         * There can be many Reader locks, but only one writer lock. This
-         * ReaderWriter lock is needed to avoid CMException when the add()
-         * method is forwarding log events to synchronous handlers and an
-         * addSyncHandler or removeSyncHandler is called
-         */
-        RERWLOCK.writeLock().lock();
-        try {
-            //Send messages from EMQ to synchronous handler when it subscribes to receive messages
-            if(earlyMessageQueue != null && earlyMessageQueue.size() != 0 && !synchronousHandlerSet.contains(syncHandler)) {
-                for(Object message: earlyMessageQueue.toArray()) {
-                    syncHandler.synchronousWrite(message);
-                }
-            }
-            Set<SynchronousHandler> synchronousHandlerSetCopy=new HashSet<SynchronousHandler>(synchronousHandlerSet);
-            synchronousHandlerSetCopy.add(syncHandler);
-            synchronousHandlerSet=synchronousHandlerSetCopy;
-        } finally {
-            RERWLOCK.writeLock().unlock();
-        }
-    }
+			/*
+			 * Cannot put in synchronize block due to a deadlock, but under the
+			 * assumption it "could have been" placed in the synchronized block,
+			 * we would have sent to this snapshot of synchronous handlers
+			 */
+			for (SynchronousHandler synchronousHandler : synchronousHandlerSetSnapShot) {
+				synchronousHandler.synchronousWrite(event);
+			}
+		} else { // after startup
+			/*
+			 * Get the latest up to date synchronousHandlerSet until we start
+			 * looping
+			 */
+			for (SynchronousHandler synchronousHandler : synchronousHandlerSet) {
+				synchronousHandler.synchronousWrite(event);
+			}
 
-    public void removeSyncHandler(SynchronousHandler syncHandler) {
-        /*
-         * There can be many Reader locks, but only one writer lock. This
-         * ReaderWriter lock is needed to avoid CMException when the add()
-         * method is forwarding log events to synchronous handlers and an
-         * addSyncHandler or removeSyncHandler is called
-         */
-        RERWLOCK.writeLock().lock();
-        try {
-            Set<SynchronousHandler> synchronousHandlerSetCopy=new HashSet<SynchronousHandler>(synchronousHandlerSet);
-            synchronousHandlerSetCopy.remove(syncHandler);
-            synchronousHandlerSet=synchronousHandlerSetCopy;
-        } finally {
-            RERWLOCK.writeLock().unlock();
-        }
-    }
+			if (ringBuffer != null) {
+				addEventToRingBuffer(event);
+			}
+		}
 
-    public void removeHandler(String handlerId) {
-        RERWLOCK.writeLock().lock();
-        try {
-            handlerEventMap.remove(handlerId);
-            if(handlerEventMap.isEmpty()) {
-                ringBuffer=null;
-            }
-        } finally {
-            RERWLOCK.writeLock().unlock();
-        }
-    }
-    
-    public void removeEMQ() {
-        RERWLOCK.writeLock().lock();
-        try {
-            earlyMessageQueue=null;
-        }finally {
-            RERWLOCK.writeLock().unlock();
-        }
-    }
-   
-    public static class HandlerStats {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "Adding event to buffer " + event);
+		}
+	}
 
-        private final String handlerId;
-        private final String sourceId;
-        private long seqNum;
+	/**
+	 * Method to add events to the ringBufferthat and ignores a possible NPE
+	 * with ringBuffer which is due to the removeHandler method call from this
+	 * same class
+	 * 
+	 * We do not wish synchronize the add for every ringBuffer due to
+	 * performance impacts
+	 * 
+	 * @param event
+	 *            event to add to the buffer
+	 */
+	@FFDCIgnore(NullPointerException.class)
+	private void addEventToRingBuffer(Object event) {
+		// Check again to see if the ringBuffer is null
+		if (ringBuffer != null) {
+			try {
+				ringBuffer.add(event);
+			} catch (NullPointerException npe) {
+				// Nothing to do! Perhaps a Trace?
+			}
+		}
+	}
 
-        // Variables to keep track of lost events
-        private long lostEventsForTrace;
-        private long lostEventsForWarning;
-        private long totalLostEvents;
+	@Override
+	public Object getNextEvent(String handlerId) throws InterruptedException {
+		HandlerStats handlerStats = null;
+		if (handlerId != null) {
+			handlerStats = handlerEventMap.get(handlerId);
+		}
+		if (handlerStats == null)
+			throw new IllegalArgumentException("Handler not registered with buffer manager : " + handlerId);
+		// Get the next sequence number for this handler
+		long seqNum = handlerStats.getNextSeqNum();
+		Event<Object> event = ringBuffer.get(seqNum);
+		handlerStats.traceEventLoss(event.getSeqNum());
+		// Calculate the next sequence number based on the sequence number
+		// of the retrieved event.
+		long nextSeqNum = event.getSeqNum() + 1;
+		handlerStats.setNextSeqNum(nextSeqNum);
+		return event.getEvent();
+	}
 
-        private long lastReportTimeForTrace;
-        private long lastReportTimeForWarning;
-        private final long intervalForTrace = 60 * 1000;
-        private final long intervalForWarning = 60 * 5 * 1000;
+	@Override
+	public Object[] getEvents(String handlerId, int noOfEvents) throws InterruptedException {
+		HandlerStats handlerStats = null;
+		if (handlerId != null) {
+			handlerStats = handlerEventMap.get(handlerId);
+		}
+		if (handlerStats == null)
+			throw new IllegalArgumentException("Handler not registered with buffer manager : " + handlerId);
+		// Get the next sequence number for this handler
+		long seqNum = handlerStats.getNextSeqNum();
+		ArrayList<Event<Object>> events = ringBuffer.get(seqNum, noOfEvents);
+		handlerStats.traceEventLoss(events.get(0).getSeqNum());
+		// Calculate the next sequence number based on the sequence numbers
+		// of the retrieved events.
+		long nextSeqNum = events.get(0).getSeqNum() + events.size();
+		handlerStats.setNextSeqNum(nextSeqNum);
+		Object[] e = new Object[events.size()];
+		for (int i = 0; i < events.size(); i++) {
+			e[i] = events.get(i).getEvent();
+		}
+		return e;
+	}
 
-        public HandlerStats(String handlerId, String sourceId) {
-            this.handlerId = handlerId;
-            this.sourceId = sourceId;
-            seqNum = 1;
-            lostEventsForWarning = lostEventsForTrace = totalLostEvents = 0;
-            lastReportTimeForWarning = 0;
-            lastReportTimeForTrace = System.currentTimeMillis();
-        }
+	public synchronized void addHandler(String handlerId) {
+		// If it is first async handler subscribed, then create the main buffer
+		if (ringBuffer == null) {
+			ringBuffer = new Buffer<Object>(capacity);
+		}
+		/*
+		 * Every new Asynchronous handler starts off with all events from EMQ.
+		 * So we write all EMQ messages directly to RingBuffer
+		 */
 
-        public long getNextSeqNum() {
-            return seqNum;
-        }
+		if (earlyMessageQueue != null && earlyMessageQueue.size() != 0) {
+			for (Object message : earlyMessageQueue.toArray()) {
+				ringBuffer.add(message);
+			}
+		}
 
-        public void setNextSeqNum(long nextSeqNum) {
-            this.seqNum = nextSeqNum;
-        }
+		handlerEventMap.putIfAbsent(handlerId, new HandlerStats(handlerId, sourceId));
+		Tr.event(tc, "Added Asynchronous Handler: " + handlerId);
+	}
 
-        public void traceEventLoss(long retSeqNum) {
-            if (retSeqNum > seqNum) {
-                long eventsLost = retSeqNum - seqNum;
-                lostEventsForWarning += eventsLost;
-                lostEventsForTrace += eventsLost;
-                totalLostEvents += eventsLost;
-            }
-            long currentTime = System.currentTimeMillis();
-            long timeElapsed = currentTime - lastReportTimeForWarning;
-            if (lostEventsForWarning > 0 && timeElapsed >= intervalForWarning) {
-                if (lastReportTimeForWarning == 0) {
-                    // This was the first instance where we started to see loss
-                    // of events.
-                    Tr.warning(tc, "HANDLER_STARTED_TO_LOSE_EVENTS_WARNING", handlerId, lostEventsForWarning, sourceId);
-                } else {
-                    long timeElapsedInMins = TimeUnit.MILLISECONDS.toMinutes(timeElapsed);
-                    Tr.warning(tc, "HANDLER_LOST_EVENTS_WARNING", handlerId, lostEventsForWarning, sourceId,
-                            timeElapsedInMins, totalLostEvents);
-                }
-                lastReportTimeForWarning = currentTime;
-                lostEventsForWarning = 0;
-            }
-            timeElapsed = currentTime - lastReportTimeForTrace;
-            if (timeElapsed >= intervalForTrace) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    long timeElapsedInSecs = TimeUnit.MILLISECONDS.toSeconds(timeElapsed);
-                    Tr.event(tc,
-                            "Handler [{0}] has lost {1} events from source [{2}] in the last {3} second(s), and has lost {4} events from the source since the handler started.",
-                            handlerId, lostEventsForTrace, sourceId, timeElapsedInSecs, totalLostEvents);
-                }
-                lastReportTimeForTrace = currentTime;
-                lostEventsForTrace = 0;
-            }
-        }
+	public synchronized void addSyncHandler(SynchronousHandler syncHandler) {
+		// Send messages from EMQ to synchronous handler when it subscribes to
+		// receive messages
+		if (earlyMessageQueue != null && earlyMessageQueue.size() != 0
+				&& !synchronousHandlerSet.contains(syncHandler)) {
+			for (Object message : earlyMessageQueue.toArray()) {
+				syncHandler.synchronousWrite(message);
+			}
+		}
 
-    }
+		Set<SynchronousHandler> synchronousHandlerSetCopy = new HashSet<SynchronousHandler>(synchronousHandlerSet);
+		synchronousHandlerSetCopy.add(syncHandler);
+		Tr.event(tc, "Added Synchronous Handler: " + syncHandler.getHandlerName());
+		synchronousHandlerSet = synchronousHandlerSetCopy;
+	}
+
+	public synchronized void removeSyncHandler(SynchronousHandler syncHandler) {
+		Set<SynchronousHandler> synchronousHandlerSetCopy = new HashSet<SynchronousHandler>(synchronousHandlerSet);
+		synchronousHandlerSetCopy.remove(syncHandler);
+		Tr.event(tc, "Removed Synchronous Handler: " + syncHandler.getHandlerName());
+		synchronousHandlerSet = synchronousHandlerSetCopy;
+	}
+
+	public synchronized void removeHandler(String handlerId) {
+		handlerEventMap.remove(handlerId);
+		Tr.event(tc, "Removed Asynchronous Handler: " + handlerId);
+		if (handlerEventMap.isEmpty()) {
+			ringBuffer = null;
+			Tr.event(tc, "ringBuffer for this BufferManagerImpl has now been set to null");
+		}
+	}
+
+	public synchronized void removeEMQ() {
+		earlyMessageQueue = null;
+	}
+
+	public static class HandlerStats {
+
+		private final String handlerId;
+		private final String sourceId;
+		private long seqNum;
+
+		// Variables to keep track of lost events
+		private long lostEventsForTrace;
+		private long lostEventsForWarning;
+		private long totalLostEvents;
+
+		private long lastReportTimeForTrace;
+		private long lastReportTimeForWarning;
+		private final long intervalForTrace = 60 * 1000;
+		private final long intervalForWarning = 60 * 5 * 1000;
+
+		public HandlerStats(String handlerId, String sourceId) {
+			this.handlerId = handlerId;
+			this.sourceId = sourceId;
+			seqNum = 1;
+			lostEventsForWarning = lostEventsForTrace = totalLostEvents = 0;
+			lastReportTimeForWarning = 0;
+			lastReportTimeForTrace = System.currentTimeMillis();
+		}
+
+		public long getNextSeqNum() {
+			return seqNum;
+		}
+
+		public void setNextSeqNum(long nextSeqNum) {
+			this.seqNum = nextSeqNum;
+		}
+
+		public void traceEventLoss(long retSeqNum) {
+			if (retSeqNum > seqNum) {
+				long eventsLost = retSeqNum - seqNum;
+				lostEventsForWarning += eventsLost;
+				lostEventsForTrace += eventsLost;
+				totalLostEvents += eventsLost;
+			}
+			long currentTime = System.currentTimeMillis();
+			long timeElapsed = currentTime - lastReportTimeForWarning;
+			if (lostEventsForWarning > 0 && timeElapsed >= intervalForWarning) {
+				if (lastReportTimeForWarning == 0) {
+					// This was the first instance where we started to see loss
+					// of events.
+					Tr.warning(tc, "HANDLER_STARTED_TO_LOSE_EVENTS_WARNING", handlerId, lostEventsForWarning, sourceId);
+				} else {
+					long timeElapsedInMins = TimeUnit.MILLISECONDS.toMinutes(timeElapsed);
+					Tr.warning(tc, "HANDLER_LOST_EVENTS_WARNING", handlerId, lostEventsForWarning, sourceId,
+							timeElapsedInMins, totalLostEvents);
+				}
+				lastReportTimeForWarning = currentTime;
+				lostEventsForWarning = 0;
+			}
+			timeElapsed = currentTime - lastReportTimeForTrace;
+			if (timeElapsed >= intervalForTrace) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+					long timeElapsedInSecs = TimeUnit.MILLISECONDS.toSeconds(timeElapsed);
+					Tr.event(tc,
+							"Handler [{0}] has lost {1} events from source [{2}] in the last {3} second(s), and has lost {4} events from the source since the handler started.",
+							handlerId, lostEventsForTrace, sourceId, timeElapsedInSecs, totalLostEvents);
+				}
+				lastReportTimeForTrace = currentTime;
+				lostEventsForTrace = 0;
+			}
+		}
+
+	}
 }

@@ -11,7 +11,7 @@
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="10m"/>
 
-    <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES">
+    <httpSessionCache libraryRef="HazelcastLib" writeContents="GET_AND_SET_ATTRIBUTES">
         <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
     </httpSessionCache>
 
@@ -41,5 +41,9 @@
     <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
     
     <javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
+
+    <!--  Permissions for application to access mbeans -->
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanPermission" actions="queryNames"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 
 </server>
