@@ -147,6 +147,8 @@ public class CacheHashMap extends BackedHashMap {
                             .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
             if (cacheStoreService.supportsStoreByReference)
                 config = config.setStoreByValue(false);
+            if (cacheStoreService.monitorRef.get() != null)
+                config = config.setManagementEnabled(true).setStatisticsEnabled(true);
             try {
                 if (trace && tc.isDebugEnabled())
                     tcInvoke(cacheStoreService.tcCacheManager, "createCache", metaCacheName, config);
@@ -186,6 +188,8 @@ public class CacheHashMap extends BackedHashMap {
                             .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
             if (cacheStoreService.supportsStoreByReference)
                 config = config.setStoreByValue(false);
+            if (cacheStoreService.monitorRef.get() != null)
+                config = config.setManagementEnabled(true).setStatisticsEnabled(true);
             try {
                 if (trace && tc.isDebugEnabled())
                     tcInvoke(cacheStoreService.tcCacheManager, "createCache", attrCacheName, config);
