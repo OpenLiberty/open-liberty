@@ -14,13 +14,9 @@ import java.util.ArrayList;
 
 public class GenericData {
 
-    //Marker class, genericdatamemeber interface
-
     private final ArrayList<Pair> pairs;
 
     private String sourceType;
-
-    private String loggerName = null;
 
     private String jsonMessage = null;
 
@@ -80,27 +76,6 @@ public class GenericData {
 
     public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
-    }
-
-    public void setLoggerName(String loggerName) {
-        this.loggerName = loggerName;
-    }
-
-    public String getLoggerName() {
-        return loggerName;
-    }
-
-    //Method created to accomodate some tests, must remove down the line
-    public String getMessageID() {
-        for (Pair p : pairs) {
-            if (p instanceof KeyValuePair) {
-                KeyValuePair kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals("ibm_messageId")) {
-                    return kvp.getStringValue();
-                }
-            }
-        }
-        return "";
     }
 
     /** {@inheritDoc} */

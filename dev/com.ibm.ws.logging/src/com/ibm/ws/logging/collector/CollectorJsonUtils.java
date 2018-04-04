@@ -184,7 +184,7 @@ public class CollectorJsonUtils {
         CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey(), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false, false);
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
         CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey(), datetime, false, true, false, false);
-        CollectorJsonHelpers.addToJSON(sb, logData.getLoggerNameKey(), logData.getModule(), false, true, false, false);
+        CollectorJsonHelpers.addToJSON(sb, logData.getModuleKey(), logData.getModule(), false, true, false, false);
         CollectorJsonHelpers.addToJSON(sb, logData.getMessageIdKey(), logData.getMessageId(), false, true, false, false);
         CollectorJsonHelpers.addToJSON(sb, logData.getSeverityKey(), logData.getSeverity(), false, true, false, false);
         CollectorJsonHelpers.addToJSON(sb, logData.getMethodNameKey(), logData.getMethodName(), false, true, false, false);

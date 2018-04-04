@@ -39,28 +39,28 @@ public class LogTraceData extends GenericData {
                                                "objectId"
     };
 
-    public final static String[] NAMES = {
-                                           "datetime",
-                                           "messageId",
-                                           "threadId",
-                                           "loggerName",
-                                           "severity",
-                                           "loglevel",
-                                           "methodName",
-                                           "className",
-                                           "levelValue",
-                                           "threadName",
-                                           "correlationId",
-                                           "org",
-                                           "product",
-                                           "component",
-                                           "sequence",
-                                           "throwable",
-                                           "throwable_localized",
-                                           "message",
-                                           "formattedMsg",
-                                           "extensions",
-                                           "objectId"
+    private final static String[] NAMES = {
+                                            "datetime",
+                                            "messageId",
+                                            "threadId",
+                                            "loggerName",
+                                            "severity",
+                                            "loglevel",
+                                            "methodName",
+                                            "className",
+                                            "levelValue",
+                                            "threadName",
+                                            "correlationId",
+                                            "org",
+                                            "product",
+                                            "component",
+                                            "sequence",
+                                            "throwable",
+                                            "throwable_localized",
+                                            "message",
+                                            "formattedMsg",
+                                            "extensions",
+                                            "objectId"
     };
 
     public LogTraceData() {
@@ -147,7 +147,7 @@ public class LogTraceData extends GenericData {
         setPairs(19, kvps);
     }
 
-    public void setObjectId(Integer i) {
+    public void setObjectId(int i) {
         setPair(20, i);
     }
 
@@ -175,7 +175,7 @@ public class LogTraceData extends GenericData {
         return NAMES[2];
     }
 
-    public String getLoggerNameKey() {
+    public String getModuleKey() {
         return NAMES[3];
     }
 
@@ -259,7 +259,7 @@ public class LogTraceData extends GenericData {
         return NAMES1_1[2];
     }
 
-    public String getLoggerNameKey1_1() {
+    public String getModuleKey1_1() {
         return NAMES1_1[3];
     }
 
@@ -415,22 +415,22 @@ public class LogTraceData extends GenericData {
         return getIntValue(20);
     }
 
-    public String getStringValue(int index) {
+    private String getStringValue(int index) {
         KeyValueStringPair kvp = (KeyValueStringPair) getPairs().get(index);
         return kvp.getStringValue();
     }
 
-    public int getIntValue(int index) {
+    private int getIntValue(int index) {
         KeyValueIntegerPair kvp = (KeyValueIntegerPair) getPairs().get(index);
         return kvp.getIntValue();
     }
 
-    public long getLongValue(int index) {
+    private long getLongValue(int index) {
         KeyValueLongPair kvp = (KeyValueLongPair) getPairs().get(index);
         return kvp.getLongValue();
     }
 
-    public KeyValuePairList getValues(int index) {
+    private KeyValuePairList getValues(int index) {
         return (KeyValuePairList) getPairs().get(index);
     }
 

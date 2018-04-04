@@ -204,7 +204,7 @@ public class LogSource implements Source, WsLogHandler {
         if (routedMessage.getFormattedMsg() != null) {
             logData.setFormattedMsg(routedMessage.getFormattedMsg());
         }
-        logData.setLoggerName(logRecord.getLoggerName());
+        logData.setModule(logRecord.getLoggerName());
         logData.setSourceType(sourceName);
 
         logData.setLevelValue(logRecord.getLevel().intValue());
@@ -232,7 +232,7 @@ public class LogSource implements Source, WsLogHandler {
 
         int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
         logData.setThreadId(threadIdVal);
-        logData.setLoggerName(logRecord.getLoggerName());
+        logData.setModule(logRecord.getLoggerName());
         logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
         logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
         logData.setMethodName(logRecord.getSourceMethodName());
