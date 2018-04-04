@@ -45,10 +45,8 @@ import com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig;
 /**
  *
  */
-@Component(service = { ApplicationStateListener.class, RuntimeUpdateListener.class },
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                immediate = true,
-                property = { "service.vendor=IBM" })
+@Component(service = { ApplicationStateListener.class,
+                       RuntimeUpdateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
 public class GeneratePluginConfigListener implements RuntimeUpdateListener, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(GeneratePluginConfigListener.class);
@@ -85,8 +83,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
             Tr.debug(this, tc, "GPCL: deactivate called.");
     }
 
-    @Reference(service = com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig.class,
-                    cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setGeneratePluginConfig(GeneratePluginConfig mb) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "GPCL: GPC set");
@@ -99,8 +96,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
         gpc = null;
     }
 
-    @Reference(service = java.util.concurrent.ExecutorService.class,
-                    cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = java.util.concurrent.ExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
     /** Required static reference: called before activate */
     protected void setExecutor(ExecutorService executorSrvc) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -112,8 +108,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
         this.executorSrvc = null;
     }
 
-    @Reference(service = SessionManager.class,
-                    cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = SessionManager.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setSessionManager(SessionManager ref) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "Session Manager set");
@@ -123,8 +118,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
     /** Required static reference: will be called after deactivate. Avoid NPE */
     protected void unsetSessionManager(SessionManager ref) {}
 
-    @Reference(service = WsLocationAdmin.class,
-                    cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = WsLocationAdmin.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setLocationService(WsLocationAdmin ref) {
         locationService = ref;
     }
@@ -133,7 +127,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc
-     * 
+     *
      * @see com.ibm.ws.container.service.state.ApplicationStateListener#applicationStarting(com.ibm.ws.container.service.app.deploy.ApplicationInfo)
      */
     @Override
@@ -149,7 +143,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.state.ApplicationStateListener#applicationStarted(com.ibm.ws.container.service.app.deploy.ApplicationInfo)
      */
     @Override
@@ -163,7 +157,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.state.ApplicationStateListener#applicationStopping(com.ibm.ws.container.service.app.deploy.ApplicationInfo)
      */
     @Override
@@ -177,7 +171,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.state.ApplicationStateListener#applicationStopped(com.ibm.ws.container.service.app.deploy.ApplicationInfo)
      */
     @Override
@@ -192,7 +186,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.runtime.update.RuntimeUpdateListener#notificationCreated(com.ibm.ws.runtime.update.RuntimeUpdateManager, com.ibm.ws.runtime.update.RuntimeUpdateNotification)
      */
     @Override
@@ -216,7 +210,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.threading.listeners.CompletionListener#successfulCompletion(java.util.concurrent.Future, java.lang.Object)
          */
         @Override
@@ -226,7 +220,7 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.threading.listeners.CompletionListener#failedCompletion(java.util.concurrent.Future, java.lang.Throwable)
          */
         @Override
@@ -293,9 +287,9 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
         String cookieName = this.cookieNames.get(webApp.getApplicationName());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "application initialized, app : " + webApp.getApplicationName() + ", old cookie name : " + this.cookieNames.get(webApp.getApplicationName())
-                               + ", new cookie name : " + sccfg.getName());
+                               + ", new cookie name : " + sccfg != null ? sccfg.getName() : null);
 
-        if (cookieName != null && !cookieName.equals(sccfg.getName())) {
+        if (cookieName != null && sccfg != null && !cookieName.equals(sccfg.getName())) {
             synchronized (this) {
                 if (isFuturePluginTask()) {
                     submitGeneratePluginTask();

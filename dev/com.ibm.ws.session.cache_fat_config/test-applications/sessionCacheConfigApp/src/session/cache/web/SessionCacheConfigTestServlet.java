@@ -42,6 +42,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.junit.Assert;
+
 import com.ibm.websphere.servlet.session.IBMSession;
 
 import componenttest.app.FATServlet;
@@ -412,6 +414,13 @@ public class SessionCacheConfigTestServlet extends FATServlet {
                    "Bytes expected: " + Arrays.toString(expectedBytes) + EOLN +
                    "Bytes observed: " + Arrays.toString(bytes),
                    found);
+    }
+
+    /**
+     * Verify that sessions are not available, even if requesting a new session
+     */
+    public void testSessionCacheNotAvailable(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Assert.assertNull(request.getSession(true));
     }
 
     /**
