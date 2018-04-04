@@ -179,6 +179,30 @@ public class CacheStoreService implements SessionStoreService {
         }
     }
 
+    /**
+     * Configures management and statistics on the specified cache according to enablement by the monitor config element.
+     * Precondition: invoking code must run within a doPrivileged block.
+     * 
+     * @param cacheName name of the cache
+     */
+    @Trivial // disable autotrace because tracing of the JCache operations will include all of the useful information
+    void configureMonitoring(String cacheName) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        boolean enable = monitorRef.get() != null;
+
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcInvoke(tcCacheManager, "enableManagement", cacheName, enable);
+        cacheManager.enableManagement(cacheName, enable);
+        if (trace && tc.isDebugEnabled()) {
+            CacheHashMap.tcReturn(tcCacheManager, "enableManagement");
+            CacheHashMap.tcInvoke(tcCacheManager, "enableStatistics", cacheName, enable);
+        }
+        cacheManager.enableStatistics(cacheName, enable);
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcReturn(tcCacheManager, "enableStatistics");
+    }
+
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
         IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
@@ -199,10 +223,16 @@ public class CacheStoreService implements SessionStoreService {
         if (trace && tc.isDebugEnabled())
             CacheHashMap.tcInvoke(tcCachingProvider, "close");
 
-        cachingProvider.close();
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            cachingProvider.close();
+            return null;
+        });
 
         if (trace && tc.isDebugEnabled())
             CacheHashMap.tcReturn(tcCachingProvider, "close");
+
+        cachingProvider = null;
+        cacheManager = null;
     }
 
     @Override
@@ -226,21 +256,12 @@ public class CacheStoreService implements SessionStoreService {
 
     protected void setMonitor(ServiceReference<?> ref) {
         monitorRef.set(ref);
-        if (cacheManager != null) {
-            final boolean trace = TraceComponent.isAnyTracingEnabled();
-            for (String cacheName : cacheManager.getCacheNames()) {
-                if (trace && tc.isDebugEnabled())
-                    CacheHashMap.tcInvoke(tcCacheManager, "enableManagement", cacheName, true);
-                cacheManager.enableManagement(cacheName, true);
-                if (trace && tc.isDebugEnabled()) {
-                    CacheHashMap.tcReturn(tcCacheManager, "enableManagement");
-                    CacheHashMap.tcInvoke(tcCacheManager, "enableStatistics", cacheName, true);
-                }
-                cacheManager.enableStatistics(cacheName, true);
-                if (trace && tc.isDebugEnabled())
-                    CacheHashMap.tcReturn(tcCacheManager, "enableStatistics");
-            }
-        }
+        if (cacheManager != null)
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                for (String cacheName : cacheManager.getCacheNames())
+                    configureMonitoring(cacheName);
+                return null;
+            });
     }
 
     protected void setSerializationService(SerializationService serializationService) {
@@ -256,21 +277,12 @@ public class CacheStoreService implements SessionStoreService {
     }
 
     protected void unsetMonitor(ServiceReference<?> ref) {
-        if (monitorRef.compareAndSet(ref, null) && cacheManager != null) {
-            final boolean trace = TraceComponent.isAnyTracingEnabled();
-            for (String cacheName : cacheManager.getCacheNames()) {
-                if (trace && tc.isDebugEnabled())
-                    CacheHashMap.tcInvoke(tcCacheManager, "enableManagement", cacheName, false);
-                cacheManager.enableManagement(cacheName, false);
-                if (trace && tc.isDebugEnabled()) {
-                    CacheHashMap.tcReturn(tcCacheManager, "enableManagement");
-                    CacheHashMap.tcInvoke(tcCacheManager, "enableStatistics", cacheName, false);
-                }
-                cacheManager.enableStatistics(cacheName, false);
-                if (trace && tc.isDebugEnabled())
-                    CacheHashMap.tcReturn(tcCacheManager, "enableStatistics");
-            }
-        }
+        if (monitorRef.compareAndSet(ref, null) && cacheManager != null)
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                for (String cacheName : cacheManager.getCacheNames())
+                    configureMonitoring(cacheName);
+                return null;
+            });
     }
 
     protected void unsetSerializationService(SerializationService serializationService) {
