@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,48 +28,57 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for CheckPointType complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="CheckPointType">
- * &lt;complexContent>
- * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- * &lt;sequence>
- * &lt;element name="repositoryId" type="{http://www.w3.org/2001/XMLSchema}token"/>
- * &lt;element name="repositoryCheckPoint" type="{http://www.w3.org/2001/XMLSchema}token" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/restriction>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * <p> The CheckPointType object defines two properties: <b>repositoryId</b> and <b>repositoryCheckPoint</b>
- * 
+ *
+ * <p>Below is a list of supported properties for {@link CheckPointType}.
+ *
  * <ul>
  * <li><b>repositoryId</b>: defines the unique identifier for a given federated repository.</li>
  * <li><b>repositoryCheckPoint</b>: defines the repository checkpoint identifier.</li>
  * </ul>
- * 
- **/
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CheckPointType", propOrder = {
-                                               "repositoryId",
-                                               "repositoryCheckPoint"
+ */
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = CheckPointType.TYPE_NAME, propOrder = {
+                                                        "repositoryId",
+                                                        "repositoryCheckPoint"
 })
 public class CheckPointType {
 
-    @XmlElement(required = true)
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "CheckPointType";
+
+    /** Property name constant for the <b>repositoryId</b> property. */
+    private static final String PROP_REPOSITORY_ID = "repositoryId";
+
+    /** Property name constant for the <b>repositoryCheckPoint</b> property. */
+    private static final String PROP_REPOSITORY_CHECK_POINT = "repositoryCheckPoint";
+
+    /**
+     * The unique identifier for a given federated repository.
+     */
+    @XmlElement(name = PROP_REPOSITORY_ID, required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "token")
     protected String repositoryId;
+
+    /**
+     * The repository checkpoint identifier.
+     */
+    @XmlElement(name = PROP_REPOSITORY_CHECK_POINT)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlSchemaType(name = "token")
     protected String repositoryCheckPoint;
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
 
     static {
         setDataTypeMap();
@@ -79,10 +88,9 @@ public class CheckPointType {
 
     /**
      * Gets the value of the <b>repositoryId</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
      */
     public String getRepositoryId() {
         return repositoryId;
@@ -90,10 +98,9 @@ public class CheckPointType {
 
     /**
      * Sets the value of the <b>repositoryId</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
      */
     public void setRepositoryId(String value) {
         this.repositoryId = value;
@@ -101,10 +108,9 @@ public class CheckPointType {
 
     /**
      * Returns true if the <b>repositoryId</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
      */
     public boolean isSetRepositoryId() {
         return (this.repositoryId != null);
@@ -112,10 +118,9 @@ public class CheckPointType {
 
     /**
      * Gets the value of the <b>repositoryCheckPoint</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
      */
     public String getRepositoryCheckPoint() {
         return repositoryCheckPoint;
@@ -123,10 +128,9 @@ public class CheckPointType {
 
     /**
      * Sets the value of the <b>repositoryCheckPoint</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
      */
     public void setRepositoryCheckPoint(String value) {
         this.repositoryCheckPoint = value;
@@ -134,10 +138,9 @@ public class CheckPointType {
 
     /**
      * Returns true if the <b>repositoryCheckPoint</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
      */
     public boolean isSetRepositoryCheckPoint() {
         return (this.repositoryCheckPoint != null);
@@ -145,19 +148,18 @@ public class CheckPointType {
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
      */
     public Object get(String propName) {
-        if (propName.equals("repositoryId")) {
+        if (propName.equals(PROP_REPOSITORY_ID)) {
             return getRepositoryId();
         }
-        if (propName.equals("repositoryCheckPoint")) {
+        if (propName.equals(PROP_REPOSITORY_CHECK_POINT)) {
             return getRepositoryCheckPoint();
         }
         return null;
@@ -165,16 +167,17 @@ public class CheckPointType {
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
+     * @param propName
+     *            The name of the property to check if is set.
      * @return
      *         returned object is {@link boolean }
-     * 
      */
     public boolean isSet(String propName) {
-        if (propName.equals("repositoryId")) {
+        if (propName.equals(PROP_REPOSITORY_ID)) {
             return isSetRepositoryId();
         }
-        if (propName.equals("repositoryCheckPoint")) {
+        if (propName.equals(PROP_REPOSITORY_CHECK_POINT)) {
             return isSetRepositoryCheckPoint();
         }
         return false;
@@ -182,103 +185,103 @@ public class CheckPointType {
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
      */
     public void set(String propName, Object value) {
-        if (propName.equals("repositoryId")) {
+        if (propName.equals(PROP_REPOSITORY_ID)) {
             setRepositoryId(((String) value));
         }
-        if (propName.equals("repositoryCheckPoint")) {
+        if (propName.equals(PROP_REPOSITORY_CHECK_POINT)) {
             setRepositoryCheckPoint(((String) value));
         }
     }
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
      */
     public void unset(String propName) {}
 
     /**
      * Gets the name of this model object, <b>CheckPointType</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
     public String getTypeName() {
-        return "CheckPointType";
+        return TYPE_NAME;
     }
 
     /**
-     * Gets a list of all supported properties for this model object, <b>CheckPointType</b>
-     * 
+     * Gets a list of all supported properties for this type.
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
-    public static synchronized List getPropertyNames(String entityTypeName) {
-        if (propertyNames != null) {
-            return propertyNames;
-        } else {
-            {
-                List names = new ArrayList();
-                names.add("repositoryId");
-                names.add("repositoryCheckPoint");
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
+        if (propertyNames == null) {
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_REPOSITORY_ID);
+            names.add(PROP_REPOSITORY_CHECK_POINT);
+            propertyNames = Collections.unmodifiableList(names);
         }
-    }
-
-    private static synchronized void setDataTypeMap() {
-        if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
-        }
-        dataTypeMap.put("repositoryId", "String");
-        dataTypeMap.put("repositoryCheckPoint", "String");
+        return propertyNames;
     }
 
     /**
-     * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     * Create the property name to data type mapping.
+     */
+    private static synchronized void setDataTypeMap() {
+        if (dataTypeMap == null) {
+            dataTypeMap = new HashMap<String, String>();
+        }
+        dataTypeMap.put(PROP_REPOSITORY_ID, "String");
+        dataTypeMap.put(PROP_REPOSITORY_CHECK_POINT, "String");
+    }
+
+    /**
+     * Gets the Java type of the value of the provided property. For example: String
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return null;
         }
     }
 
+    /**
+     * Create the list of super-types for this entity type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
     }
 
     /**
      * Gets a list of any model objects which this model object, <b>CheckPointType</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
@@ -286,11 +289,10 @@ public class CheckPointType {
     }
 
     /**
-     * Returns a true if the provided model object is one that this
-     * model object extends; false, otherwise.
-     * 
+     * Returns a true if the provided type is one that this type extends; false, otherwise.
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -299,34 +301,30 @@ public class CheckPointType {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
     }
 
     /**
-     * Gets a set of any model objects which extend this model object, <b>CheckPointType</b>
-     * 
+     * Gets a set of any types which extend this type.
+     *
      * @return
      *         returned object is {@link HashSet}
      */
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
+        return subTypeSet;
     }
 
-    /**
-     * Returns this model object, <b>CheckPointType</b>, and its contents as a String
-     * 
-     * @return
-     *         returned object is {@link String}
-     */
     @Override
     public String toString() {
-        return WIMTraceHelper.trace(this);
+        return WIMTraceHelper.traceJaxb(this);
     }
-
 }

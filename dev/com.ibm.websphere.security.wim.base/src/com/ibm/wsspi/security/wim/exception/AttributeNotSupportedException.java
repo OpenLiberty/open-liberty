@@ -15,15 +15,17 @@ public class AttributeNotSupportedException extends WIMApplicationException {
     private static final long serialVersionUID = -6031660467113138568L;
 
     /**
-     *
+     * Constructs a AttributeNotSupportedException with no message key, no detail message, and no cause.
      */
     public AttributeNotSupportedException() {
         super();
-
     }
 
     /**
-     * @param message
+     * Constructs a AttributeNotSupportedException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public AttributeNotSupportedException(String key, String message) {
         super(key, message);
@@ -31,15 +33,20 @@ public class AttributeNotSupportedException extends WIMApplicationException {
     }
 
     /**
-     * @param cause
+     * Constructs a AttributeNotSupportedException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public AttributeNotSupportedException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a AttributeNotSupportedException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public AttributeNotSupportedException(String key, String message, Throwable cause) {
         super(key, message, cause);

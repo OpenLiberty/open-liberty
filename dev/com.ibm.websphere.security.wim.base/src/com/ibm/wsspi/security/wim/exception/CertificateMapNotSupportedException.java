@@ -15,29 +15,37 @@ public class CertificateMapNotSupportedException extends WIMApplicationException
     private static final long serialVersionUID = 4234058091551728748L;
 
     /**
-     *
+     * Constructs a CertificateMapNotSupportedException with no message key, no detail message, and no cause.
      */
     public CertificateMapNotSupportedException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a CertificateMapNotSupportedException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public CertificateMapNotSupportedException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a CertificateMapNotSupportedException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public CertificateMapNotSupportedException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a CertificateMapNotSupportedException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public CertificateMapNotSupportedException(String key, String message, Throwable cause) {
         super(key, message, cause);

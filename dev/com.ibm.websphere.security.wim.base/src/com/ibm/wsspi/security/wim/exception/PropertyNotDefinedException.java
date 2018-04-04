@@ -15,29 +15,37 @@ public class PropertyNotDefinedException extends WIMApplicationException {
     private static final long serialVersionUID = -1164308229190880710L;
 
     /**
-     *
+     * Constructs a PropertyNotDefinedException with no message key, no detail message, and no cause.
      */
     public PropertyNotDefinedException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a PropertyNotDefinedException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public PropertyNotDefinedException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a PropertyNotDefinedException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public PropertyNotDefinedException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a PropertyNotDefinedException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public PropertyNotDefinedException(String key, String message, Throwable cause) {
         super(key, message, cause);

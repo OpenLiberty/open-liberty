@@ -15,32 +15,39 @@ public class CertificateMapperException extends WIMApplicationException {
     private static final long serialVersionUID = -6172224119912000517L;
 
     /**
-     *
+     * Constructs a CertificateMapperException with no message key, no detail message, and no cause.
      */
     public CertificateMapperException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a CertificateMapperException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public CertificateMapperException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a CertificateMapperException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public CertificateMapperException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a CertificateMapperException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public CertificateMapperException(String key, String message, Throwable cause) {
         super(key, message, cause);
     }
-
 }

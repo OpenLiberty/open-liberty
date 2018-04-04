@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.websphere.security.wim.util;
 
+import java.io.UnsupportedEncodingException;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -31,10 +33,10 @@ public class PasswordUtil {
      *
      * @param password the string of the password to encode.
      * @return the byte array representation of the text string
+     * @throws WIMSystemException If there was an {@link UnsupportedEncodingException} exception.
      */
     @Sensitive
     public static byte[] getByteArrayPassword(@Sensitive String password) throws WIMSystemException {
-        String METHODNAME = "getByteArrayPassword";
         try {
             if (password != null) {
                 return password.getBytes("UTF-8");

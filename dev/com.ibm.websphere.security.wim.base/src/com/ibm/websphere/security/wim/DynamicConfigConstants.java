@@ -187,7 +187,7 @@ public interface DynamicConfigConstants {
     String DYNA_CONFIG_EVENT_ADD_PROPERTY_EXTENSION_REPOSITORY = "websphere.usermanager.serviceprovider.add.propertyextensionrepository";
     /**
      * Dynamically update the LDAP bind information of the specified LDAP repository at runtime.
-     * 
+     *
      * This constant is used as first input parameter in dynamicUpdateconfig method:
      * public void dynamicUpdateConfig(String updateType, Hashtable configData)
      *
@@ -203,10 +203,11 @@ public interface DynamicConfigConstants {
      * <ul>
      * <li>DYNA_CONFIG_KEY_LDAP_BIND_DN + DYNA_CONFIG_KEY_LDAP_BIND_PASSWORD+ DYNA_CONFIG_KEY_REPOS_ID:
      * The specified LDAP repository will be updated with the new bind DN and password.
-     * 
+     *
      * <li>DYNA_CONFIG_KEY_REPOS_ID:
      * Then bind information (including host names, bind DN, bind password,context pool settings and other settings related to LDAP server)
      * in wimconfig.xml will be read and used for reset the LDAP bind in the specified LDAP repository.
+     * </ul>
      */
     String DYNA_CONFIG_EVENT_UPDATE_LDAP_BIND_INFO = "websphere.usermanager.serviceprovider.update.ldap.bindinfo";
     /**

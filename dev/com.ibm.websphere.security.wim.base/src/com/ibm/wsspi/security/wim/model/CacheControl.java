@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,57 +21,60 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-
 /**
  * <p>Java class for CacheControl complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="CacheControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Control">
- * &lt;sequence>
- * &lt;element name="mode" type="{http://www.w3.org/2001/XMLSchema}string"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * <p> The CacheControl object extends the Control object and defines a single property: <b>mode</b>.
- * 
+ *
+ * <p> The CacheControl object extends the {@link Control} object and defines a single property: <b>mode</b>.
+ *
  * <p> The CacheControl object specifies whether the repository adapter cache should be cleared before an operation is performed
  * and the mode of clearing the cache. The CacheControl object can be passed to the get(), search(), and update() APIs.
  * The LDAP adapter uses the CacheControl to clear its cache; the other out-of-the-box adapters ignore the CacheControl as they
  * not have a cache. If you are using a custom adapter, you can implement its own handling for clearing cache using the CacheControl.
- * 
+ *
  * <p> The <b>mode</b> property specifies the mode of clearing the repository adapter cache before an operation is performed. Valid values
  * are:
  * <ul>
  * <li><b>clearEntity</b>: clears the cache for the specified entity. This value does not have any effect on the search() API</li>
  * <li><b>clearAll</b>: clears all of the cached information in the adapter.</li>
  * </ul>
- * 
+ *
  * <p> The values are not case-sensitive. There is no default value for this property. If you do not specify a value, or specify a
  * value other than clearEntity or clearAll, an error message appears.
- * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CacheControl", propOrder = {
-                                             "mode"
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = CacheControl.TYPE_NAME, propOrder = {
+                                                      "mode"
 })
-public class CacheControl
-                extends Control
-{
+public class CacheControl extends Control {
 
-    @XmlElement(required = true)
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "CacheControl";
+
+    /** Property name constant for the <b>mode</b> property. */
+    private static final String PROP_MODE = "mode";
+
+    /**
+     * The <b>mode</b> property specifies the mode of clearing the repository adapter cache before an operation is performed. Valid values
+     * are:
+     * <ul>
+     * <li><b>clearEntity</b>: clears the cache for the specified entity. This value does not have any effect on the search() API</li>
+     * <li><b>clearAll</b>: clears all of the cached information in the adapter.</li>
+     * </ul>
+     */
+    @XmlElement(name = PROP_MODE, required = true)
     protected String mode;
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
 
     static {
         setDataTypeMap();
@@ -81,10 +84,10 @@ public class CacheControl
 
     /**
      * Gets the value of the <b>mode</b> property.
-     * 
+     *
      * @return
      *         returned object is {@link String }
-     * 
+     *
      */
     public String getMode() {
         return mode;
@@ -92,10 +95,10 @@ public class CacheControl
 
     /**
      * Sets the value of the <b>mode</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setMode(String value) {
         this.mode = value;
@@ -103,206 +106,124 @@ public class CacheControl
 
     /**
      * Returns true if the <b>mode</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetMode() {
         return (this.mode != null);
     }
 
-    /**
-     * Gets the value of the requested property
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * 
-     * @return
-     *         returned object is {@link Object}
-     * 
-     */
     @Override
     public Object get(String propName) {
-        if (propName.equals("mode")) {
+        if (propName.equals(PROP_MODE)) {
             return getMode();
         }
         return super.get(propName);
     }
 
-    /**
-     * Returns true if the requested property is set; false, otherwise.
-     * 
-     * @return
-     *         returned object is {@link boolean }
-     * 
-     */
     @Override
     public boolean isSet(String propName) {
-        if (propName.equals("mode")) {
+        if (propName.equals(PROP_MODE)) {
             return isSetMode();
         }
         return super.isSet(propName);
     }
 
-    /**
-     * Sets the value of the provided property to the provided value.
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * @param value
-     *            allowed object is {@link Object}
-     * 
-     */
     @Override
     public void set(String propName, Object value) {
-        if (propName.equals("mode")) {
+        if (propName.equals(PROP_MODE)) {
             setMode(((String) value));
         }
         super.set(propName, value);
     }
 
-    /**
-     * Sets the value of provided property to null.
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * 
-     */
-    @Override
-    public void unset(String propName) {
-        super.unset(propName);
-    }
-
-    /**
-     * Gets the name of this model object, <b>CacheControl</b>
-     * 
-     * @return
-     *         returned object is {@link String}
-     */
     @Override
     public String getTypeName() {
-        return "CacheControl";
+        return TYPE_NAME;
     }
 
     /**
-     * Gets a list of all supported properties for this model object, <b>CacheControl</b>
-     * 
+     * Gets a list of all supported properties for this type.
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
-
-    public static synchronized List getPropertyNames(String entityTypeName) {
-        if (propertyNames != null) {
-            return propertyNames;
-        } else {
-            {
-                List names = new ArrayList();
-                names.add("mode");
-                names.addAll(Control.getPropertyNames("Control"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
+        if (propertyNames == null) {
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_MODE);
+            names.addAll(Control.getPropertyNames(Control.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
         }
-    }
-
-    private static synchronized void setDataTypeMap() {
-        if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
-        }
-        dataTypeMap.put("mode", "String");
+        return propertyNames;
     }
 
     /**
-     * Gets the Java type of the value of the provided property. For example: String, List
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * 
-     * @return
-     *         returned object is {@link String}
+     * Create the property name to data type mapping.
      */
+    private static synchronized void setDataTypeMap() {
+        if (dataTypeMap == null) {
+            dataTypeMap = new HashMap<String, String>();
+        }
+        dataTypeMap.put(PROP_MODE, "String");
+    }
+
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Set the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("Control");
+        superTypeList.add(Control.TYPE_NAME);
     }
 
-    /**
-     * Gets a list of any model objects which this model object, <b>CacheControl</b>, is
-     * an extension of.
-     * 
-     * @return
-     *         returned object is {@link ArrayList}
-     */
-
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
         return superTypeList;
     }
 
-    /**
-     * Returns a true if the provided model object is one that this
-     * model object extends; false, otherwise.
-     * 
-     * @param superTypeName
-     * 
-     *            allowed object is {@link String}
-     * @return
-     *         returned object is {@link boolean}
-     */
-
     @Override
     public boolean isSubType(String superTypeName) {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Set the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
     }
 
     /**
-     * Gets a set of any model objects which extend this model object, <b>CacheControl</b>
-     * 
+     * Gets a set of any model objects which extend this type.
+     *
      * @return
      *         returned object is {@link HashSet}
      */
-
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
+        return subTypeSet;
     }
-
-    /**
-     * Returns this model object, <b>CacheControl</b>, and its contents as a String
-     * 
-     * @return
-     *         returned object is {@link String}
-     */
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
-    }
-
 }

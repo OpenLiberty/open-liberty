@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,83 +21,118 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for Locality complex type.
  *
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p> The Locality represents a geographic area.
  *
- * <pre>
- * &lt;complexType name="Locality">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}GeographicLocation">
- * &lt;sequence>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}l" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}localityName" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}st" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}stateOrProvinceName" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}street" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}seeAlso" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}description" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- *
- * <p> The Locality object extends the GeographicLocation object and defines several properties: <b>l</b>, <b>localityName</b>, <b>st</b>,
- * <b>stateOrProvinceName</b>, <b>street</b> and <b>description</b>. This object represents a geographic area.
+ * <p>Below is a list of supported properties for {@link Locality}.
  *
  * <ul>
  * <li><b>l</b>: a short form for the <b>localityName</b>.</li>
- *
  * <li><b>localityName</b>: contains the name of a locality, such as a city, county or other geographic region.</li>
- *
  * <li><b>st</b>: a short form for <b>stateOrProvinceName</b>.</li>
- *
  * <li><b>stateOrProvinceName</b>: contains the full name of a state or province (stateOrProvinceName).</li>
- *
  * <li><b>street</b>: contains the physical address of the object to which the entry corresponds, such as an address for package delivery.</li>
- *
+ * <li><b>seeAlso</b>: contains distinguished names of objects that are related to this Locality.</li>
  * <li><b>description</b>: describes this object.</li>
  * </ul>
+ *
+ * <p>In addition to the properties in the list above, all properties from the super-class {@link GeographicLocation} and its
+ * super-classes are supported.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Locality", propOrder = {
-                                          "l",
-                                          "localityName",
-                                          "st",
-                                          "stateOrProvinceName",
-                                          "street",
-                                          "seeAlso",
-                                          "description"
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = Locality.TYPE_NAME, propOrder = {
+                                                  "l",
+                                                  "localityName",
+                                                  "st",
+                                                  "stateOrProvinceName",
+                                                  "street",
+                                                  "seeAlso",
+                                                  "description"
 })
 public class Locality extends GeographicLocation {
+
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "Locality";
+
+    /** Property name constant for the <b>l</b> property. */
     private static final String PROP_L = "l";
+
+    /** Property name constant for the <b>localityName</b> property. */
     private static final String PROP_LOCALITY_NAME = "localityName";
+
+    /** Property name constant for the <b>st</b> property. */
     private static final String PROP_ST = "st";
+
+    /** Property name constant for the <b>stateOrProvinceName</b> property. */
     private static final String PROP_STATE_OR_PROVINCE_NAME = "stateOrProvinceName";
+
+    /** Property name constant for the <b>street</b> property. */
     private static final String PROP_STREET = "street";
+
+    /** Property name constant for the <b>seeAlso</b> property. */
     private static final String PROP_SEE_ALSO = "seeAlso";
+
+    /** Property name constant for the <b>description</b> property. */
     private static final String PROP_DESCRIPTION = "description";
 
+    /**
+     * A short form for the <b>localityName</b>.
+     */
+    @XmlElement(name = PROP_L)
     protected String l;
+
+    /**
+     * The name of a locality, such as a city, county or other geographic region.
+     */
+    @XmlElement(name = PROP_LOCALITY_NAME)
     protected String localityName;
+
+    /**
+     * A short form for <b>stateOrProvinceName</b>.
+     */
+    @XmlElement(name = PROP_ST)
     protected List<String> st;
+
+    /**
+     * The full name of a state or province (stateOrProvinceName).
+     */
+    @XmlElement(name = PROP_STATE_OR_PROVINCE_NAME)
     protected List<String> stateOrProvinceName;
+
+    /**
+     * The physical address of the object to which the entry corresponds, such as an address for package delivery.
+     */
+    @XmlElement(name = PROP_STREET)
     protected List<String> street;
+
+    /** Distinguished names of objects that are related to this Locality. */
+    @XmlElement(name = PROP_SEE_ALSO)
     protected List<String> seeAlso;
+
+    /**
+     * Describes this object.
+     */
+    @XmlElement(name = PROP_DESCRIPTION)
     protected List<String> description;
 
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
 
-    /** The set of multi-valued properties for this entity type. */
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
+
+    /** The set of multi-valued properties for this type. */
     private static final Set<String> MULTI_VALUED_PROPERTIES;
 
     static {
@@ -118,7 +153,6 @@ public class Locality extends GeographicLocation {
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getL() {
         return l;
@@ -129,7 +163,6 @@ public class Locality extends GeographicLocation {
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setL(String value) {
         this.l = value;
@@ -140,19 +173,16 @@ public class Locality extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetL() {
         return (this.l != null);
     }
 
     /**
-     * Gets the value of the <b>localityName<b/> property.
+     * Gets the value of the <b>localityName</b> property.
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getLocalityName() {
         return localityName;
@@ -163,7 +193,6 @@ public class Locality extends GeographicLocation {
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setLocalityName(String value) {
         this.localityName = value;
@@ -174,9 +203,7 @@ public class Locality extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetLocalityName() {
         return (this.localityName != null);
     }
@@ -187,8 +214,8 @@ public class Locality extends GeographicLocation {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the st property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>st</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -197,11 +224,11 @@ public class Locality extends GeographicLocation {
      * getSt().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getSt() {
         if (st == null) {
@@ -215,9 +242,7 @@ public class Locality extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetSt() {
         return ((this.st != null) && (!this.st.isEmpty()));
     }
@@ -225,7 +250,6 @@ public class Locality extends GeographicLocation {
     /**
      * Resets the value of the <b>st</b> property to null
      */
-
     public void unsetSt() {
         this.st = null;
     }
@@ -236,8 +260,8 @@ public class Locality extends GeographicLocation {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stateOrProvinceName property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>stateOrProvinceName</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -246,11 +270,11 @@ public class Locality extends GeographicLocation {
      * getStateOrProvinceName().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getStateOrProvinceName() {
         if (stateOrProvinceName == null) {
@@ -264,9 +288,7 @@ public class Locality extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetStateOrProvinceName() {
         return ((this.stateOrProvinceName != null) && (!this.stateOrProvinceName.isEmpty()));
     }
@@ -274,7 +296,6 @@ public class Locality extends GeographicLocation {
     /**
      * Resets the value of the <b>stateOrProvinceName</b> property to null
      */
-
     public void unsetStateOrProvinceName() {
         this.stateOrProvinceName = null;
     }
@@ -285,8 +306,8 @@ public class Locality extends GeographicLocation {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the street property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>street</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -295,11 +316,11 @@ public class Locality extends GeographicLocation {
      * getStreet().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getStreet() {
         if (street == null) {
@@ -313,9 +334,7 @@ public class Locality extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetStreet() {
         return ((this.street != null) && (!this.street.isEmpty()));
     }
@@ -323,7 +342,6 @@ public class Locality extends GeographicLocation {
     /**
      * Resets the value of the <b>street</b> property to null
      */
-
     public void unsetStreet() {
         this.street = null;
     }
@@ -334,8 +352,8 @@ public class Locality extends GeographicLocation {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the seeAlso property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>seeAlso</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -344,11 +362,11 @@ public class Locality extends GeographicLocation {
      * getSeeAlso().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getSeeAlso() {
         if (seeAlso == null) {
@@ -362,7 +380,6 @@ public class Locality extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
     public boolean isSetSeeAlso() {
         return ((this.seeAlso != null) && (!this.seeAlso.isEmpty()));
@@ -371,7 +388,6 @@ public class Locality extends GeographicLocation {
     /**
      * Resets the value of the <b>seeAlso</b> property to null
      */
-
     public void unsetSeeAlso() {
         this.seeAlso = null;
     }
@@ -382,8 +398,8 @@ public class Locality extends GeographicLocation {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the description property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>description</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -392,11 +408,11 @@ public class Locality extends GeographicLocation {
      * getDescription().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getDescription() {
         if (description == null) {
@@ -410,9 +426,7 @@ public class Locality extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean}
-     *
      */
-
     public boolean isSetDescription() {
         return ((this.description != null) && (!this.description.isEmpty()));
     }
@@ -423,17 +437,6 @@ public class Locality extends GeographicLocation {
     public void unsetDescription() {
         this.description = null;
     }
-
-    /**
-     * Gets the value of the requested property
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     *
-     * @return
-     *         returned object is {@link Object}
-     *
-     */
 
     @Override
     public Object get(String propName) {
@@ -461,13 +464,6 @@ public class Locality extends GeographicLocation {
         return super.get(propName);
     }
 
-    /**
-     * Returns true if the requested property is set; false, otherwise.
-     *
-     * @return
-     *         returned object is {@link boolean }
-     *
-     */
     @Override
     public boolean isSet(String propName) {
         if (propName.equals(PROP_L)) {
@@ -493,16 +489,6 @@ public class Locality extends GeographicLocation {
         }
         return super.isSet(propName);
     }
-
-    /**
-     * Sets the value of the provided property to the provided value.
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     * @param value
-     *            allowed object is {@link Object}
-     *
-     */
 
     @Override
     public void set(String propName, Object value) {
@@ -530,13 +516,6 @@ public class Locality extends GeographicLocation {
         super.set(propName, value);
     }
 
-    /**
-     * Sets the value of provided property to null.
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     *
-     */
     @Override
     public void unset(String propName) {
         if (propName.equals(PROP_ST)) {
@@ -557,20 +536,13 @@ public class Locality extends GeographicLocation {
         super.unset(propName);
     }
 
-    /**
-     * Gets the name of this model object, <b>Locality</b>
-     *
-     * @return
-     *         returned object is {@link String}
-     */
-
     @Override
     public String getTypeName() {
-        return "Locality";
+        return TYPE_NAME;
     }
 
     /**
-     * Gets a list of all supported properties for this model object, <b>Locality</b>
+     * Gets a list of all supported properties for this type.
      *
      * @param entityTypeName
      *            allowed object is {@link String}
@@ -578,30 +550,28 @@ public class Locality extends GeographicLocation {
      * @return
      *         returned object is {@link List}
      */
-
-    public static synchronized List getPropertyNames(String entityTypeName) {
-        if (propertyNames != null) {
-            return propertyNames;
-        } else {
-            {
-                List names = new ArrayList();
-                names.add(PROP_L);
-                names.add(PROP_LOCALITY_NAME);
-                names.add(PROP_ST);
-                names.add(PROP_STATE_OR_PROVINCE_NAME);
-                names.add(PROP_STREET);
-                names.add(PROP_SEE_ALSO);
-                names.add(PROP_DESCRIPTION);
-                names.addAll(GeographicLocation.getPropertyNames("GeographicLocation"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
+        if (propertyNames == null) {
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_L);
+            names.add(PROP_LOCALITY_NAME);
+            names.add(PROP_ST);
+            names.add(PROP_STATE_OR_PROVINCE_NAME);
+            names.add(PROP_STREET);
+            names.add(PROP_SEE_ALSO);
+            names.add(PROP_DESCRIPTION);
+            names.addAll(GeographicLocation.getPropertyNames(GeographicLocation.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
         }
+        return propertyNames;
     }
 
+    /**
+     * Create the property name to data type mapping.
+     */
     private static synchronized void setDataTypeMap() {
         if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            dataTypeMap = new HashMap<String, String>();
         }
         dataTypeMap.put(PROP_L, "String");
         dataTypeMap.put(PROP_LOCALITY_NAME, "String");
@@ -612,94 +582,59 @@ public class Locality extends GeographicLocation {
         dataTypeMap.put(PROP_DESCRIPTION, "String");
     }
 
-    /**
-     * Gets the Java type of the value of the provided property. For example: String, List
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     *
-     * @return
-     *         returned object is {@link String}
-     */
-
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("GeographicLocation");
-        superTypeList.add("Entity");
+        superTypeList.add(GeographicLocation.TYPE_NAME);
+        superTypeList.add(Entity.TYPE_NAME);
     }
 
-    /**
-     * Gets a list of any model objects which this model object, <b>Locality</b>, is
-     * an extension of.
-     *
-     * @return
-     *         returned object is {@link ArrayList}
-     */
-
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
         return superTypeList;
     }
 
-    /**
-     * Returns a true if the provided model object is one that this
-     * model object extends; false, otherwise.
-     *
-     * @param superTypeName
-     *
-     *            allowed object is {@link String}
-     * @return
-     *         returned object is {@link boolean}
-     */
-
     @Override
     public boolean isSubType(String superTypeName) {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
     }
 
     /**
-     * Gets a set of any model objects which extend this model object, <b>Locality</b>
+     * Gets a set of any types which extend this type.
      *
      * @return
      *         returned object is {@link HashSet}
      */
-
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
-    }
-
-    /**
-     * Returns this model object, <b>Locality</b>, and its contents as a String
-     *
-     * @return
-     *         returned object is {@link String}
-     */
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
+        return subTypeSet;
     }
 
     @Override

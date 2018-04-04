@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,59 +19,74 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for Country complex type.
  *
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p> The Country object extends the {@link GeographicLocation} object, and represents information related to a country.
  *
- * <pre>
- * &lt;complexType name="Country">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}GeographicLocation">
- * &lt;sequence>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}c" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}countryName" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}description" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- *
- * <p> The Country object extends the GeographicLocation object, and represents information related to a country.
- * It contains several properties: <b>c</b>, <b>countryName</b> and <b>description</b>.
+ * <p>Below is a list of supported properties for {@link Country}.
  *
  * <ul>
  * <li><b>c</b>: short form for the <b>countryName</b> property.</li>
  * <li><b>countryName</b>: defines the name of the country.</li>
  * <li><b>description</b>: describes this object.</li>
  * </ul>
+ *
+ * <p>In addition to the properties in the list above, all properties from the super-class {@link GeographicLocation} and its
+ * super-classes are supported.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Country", propOrder = {
-                                         "c",
-                                         "countryName",
-                                         "description"
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = Country.TYPE_NAME, propOrder = {
+                                                 "c",
+                                                 "countryName",
+                                                 "description"
 })
 public class Country extends GeographicLocation {
+
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "Country";
+
+    /** Property name constant for the <b>c</b> property. */
     private static final String PROP_C = "c";
+
+    /** Property name constant for the <b>countryName</b> property. */
     private static final String PROP_COUNTRY_NAME = "countryName";
+
+    /** Property name constant for the <b>description</b> property. */
     private static final String PROP_DESCRIPTION = "description";
 
+    /**
+     * Short form for the <b>countryName</b> property.
+     */
+    @XmlElement(name = PROP_C)
     protected String c;
+
+    /**
+     * The name of the country.
+     */
+    @XmlElement(name = PROP_COUNTRY_NAME)
     protected String countryName;
+
+    /** Describes this object. */
+    @XmlElement(name = PROP_DESCRIPTION)
     protected List<String> description;
 
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
 
-    /** The set of multi-valued properties for this entity type. */
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
+
+    /** The set of multi-valued properties for this type. */
     private static final Set<String> MULTI_VALUED_PROPERTIES;
 
     static {
@@ -88,7 +103,6 @@ public class Country extends GeographicLocation {
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getC() {
         return c;
@@ -99,7 +113,6 @@ public class Country extends GeographicLocation {
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setC(String value) {
         this.c = value;
@@ -110,7 +123,6 @@ public class Country extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean }
-     *
      */
     public boolean isSetC() {
         return (this.c != null);
@@ -121,7 +133,6 @@ public class Country extends GeographicLocation {
      *
      * @return
      *         possible object is {@link String }
-     *
      */
     public String getCountryName() {
         return countryName;
@@ -132,7 +143,6 @@ public class Country extends GeographicLocation {
      *
      * @param value
      *            allowed object is {@link String }
-     *
      */
     public void setCountryName(String value) {
         this.countryName = value;
@@ -143,7 +153,6 @@ public class Country extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean }
-     *
      */
     public boolean isSetCountryName() {
         return (this.countryName != null);
@@ -155,7 +164,7 @@ public class Country extends GeographicLocation {
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
+     * returned list will be present inside the object.
      * This is why there is not a <CODE>set</CODE> method for the description property.
      *
      * <p>
@@ -165,11 +174,11 @@ public class Country extends GeographicLocation {
      * getDescription().add(newItem);
      * </pre>
      *
-     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
      *
-     *
+     * @return
+     *         returned object is a {@link List}
      */
     public List<String> getDescription() {
         if (description == null) {
@@ -183,7 +192,6 @@ public class Country extends GeographicLocation {
      *
      * @return
      *         returned object is {@link boolean }
-     *
      */
     public boolean isSetDescription() {
         return ((this.description != null) && (!this.description.isEmpty()));
@@ -191,22 +199,11 @@ public class Country extends GeographicLocation {
 
     /**
      * Resets the <b>description</b> property to null.
-     *
      */
     public void unsetDescription() {
         this.description = null;
     }
 
-    /**
-     * Gets the value of the requested property
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     *
-     * @return
-     *         returned object is {@link Object}
-     *
-     */
     @Override
     public Object get(String propName) {
         if (propName.equals(PROP_C)) {
@@ -221,13 +218,6 @@ public class Country extends GeographicLocation {
         return super.get(propName);
     }
 
-    /**
-     * Returns true if the requested property is set; false, otherwise.
-     *
-     * @return
-     *         returned object is {@link boolean }
-     *
-     */
     @Override
     public boolean isSet(String propName) {
         if (propName.equals(PROP_C)) {
@@ -242,15 +232,6 @@ public class Country extends GeographicLocation {
         return super.isSet(propName);
     }
 
-    /**
-     * Sets the value of the provided property to the provided value.
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     * @param value
-     *            allowed object is {@link Object}
-     *
-     */
     @Override
     public void set(String propName, Object value) {
         if (propName.equals(PROP_C)) {
@@ -265,13 +246,6 @@ public class Country extends GeographicLocation {
         super.set(propName, value);
     }
 
-    /**
-     * Sets the value of provided property to null.
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     *
-     */
     @Override
     public void unset(String propName) {
         if (propName.equals(PROP_DESCRIPTION)) {
@@ -280,19 +254,13 @@ public class Country extends GeographicLocation {
         super.unset(propName);
     }
 
-    /**
-     * Gets the name of this model object, <b>Country</b>
-     *
-     * @return
-     *         returned object is {@link String}
-     */
     @Override
     public String getTypeName() {
-        return "Country";
+        return TYPE_NAME;
     }
 
     /**
-     * Gets a list of all supported properties for this model object, <b>Country</b>
+     * Gets a list of all supported properties for this type.
      *
      * @param entityTypeName
      *            allowed object is {@link String}
@@ -300,109 +268,83 @@ public class Country extends GeographicLocation {
      * @return
      *         returned object is {@link List}
      */
-    public static synchronized List getPropertyNames(String entityTypeName) {
-        if (propertyNames != null) {
-            return propertyNames;
-        } else {
-            {
-                List names = new ArrayList();
-                names.add(PROP_C);
-                names.add(PROP_COUNTRY_NAME);
-                names.add(PROP_DESCRIPTION);
-                names.addAll(GeographicLocation.getPropertyNames("GeographicLocation"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
+        if (propertyNames == null) {
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_C);
+            names.add(PROP_COUNTRY_NAME);
+            names.add(PROP_DESCRIPTION);
+            names.addAll(GeographicLocation.getPropertyNames(GeographicLocation.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
         }
+        return propertyNames;
     }
 
+    /**
+     * Create the property name to data type mapping.
+     */
     private static synchronized void setDataTypeMap() {
         if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            dataTypeMap = new HashMap<String, String>();
         }
         dataTypeMap.put(PROP_C, "String");
         dataTypeMap.put(PROP_COUNTRY_NAME, "String");
         dataTypeMap.put(PROP_DESCRIPTION, "String");
     }
 
-    /**
-     * Gets the Java type of the value of the provided property. For example: String, List
-     *
-     * @param propName
-     *            allowed object is {@link String}
-     *
-     * @return
-     *         returned object is {@link String}
-     */
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("GeographicLocation");
-        superTypeList.add("Entity");
+        superTypeList.add(GeographicLocation.TYPE_NAME);
+        superTypeList.add(Entity.TYPE_NAME);
     }
 
-    /**
-     * Gets a list of any model objects which this model object, <b>Country</b>, is
-     * an extension of.
-     *
-     * @return
-     *         returned object is {@link ArrayList}
-     */
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
         return superTypeList;
     }
 
-    /**
-     * Returns a true if the provided model object is one that this
-     * model object extends; false, otherwise.
-     *
-     * @param superTypeName
-     *
-     *            allowed object is {@link String}
-     * @return
-     *         returned object is {@link boolean}
-     */
     @Override
     public boolean isSubType(String superTypeName) {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the list of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
     }
 
     /**
-     * Gets a set of any model objects which extend this model object, <b>Country</b>
+     * Gets a set of any types which extend this type.
      *
      * @return
      *         returned object is {@link HashSet}
      */
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
-    }
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
+        return subTypeSet;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,56 +22,64 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-
 /**
  * <p>Java class for PartyRole complex type.
  *
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p> The PartyRole object extends the RolePlayer object and defines a role.
  *
- * <pre>
- * &lt;complexType name="PartyRole">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}RolePlayer">
- * &lt;sequence>
- * &lt;element name="primaryRolePlayer" type="{http://www.ibm.com/websphere/wim}RolePlayer"/>
- * &lt;element name="relatedRolePlayer" type="{http://www.ibm.com/websphere/wim}RolePlayer" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- *
- * <p> The PartyRole object extends the RolePlayer object and defines a role. It defines two properties:
+ * <p>Below is a list of supported properties for {@link Locality}.
  *
  * <ul>
  * <li><b>primaryRolePlayer</b>: a containment property which is used to link to the entity who is the primary
  * role player of the PartyRole.</li>
- *
  * <li><b>relatedRolePlayers</b>: a containment property which is used to link to the other role players who
  * are related to the primary role player through this PartyRole.</li>
  * </ul>
  *
+ * <p>In addition to the properties in the list above, all properties from the super-class {@link RolePlayer} and its
+ * super-classes are supported.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PartyRole", propOrder = {
-                                           "primaryRolePlayer",
-                                           "relatedRolePlayer"
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = PartyRole.TYPE_NAME, propOrder = {
+                                                   "primaryRolePlayer",
+                                                   "relatedRolePlayer"
 })
-public class PartyRole extends com.ibm.wsspi.security.wim.model.RolePlayer {
+public class PartyRole extends RolePlayer {
+
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "PartyRole";
+
+    /** Property name constant for the <b>primaryRolePlayer</b> property. */
     private static final String PROP_PRIMARY_ROLE_PLAYER = "primaryRolePlayer";
+
+    /** Property name constant for the <b>relatedRolePlayer</b> property. */
     private static final String PROP_RELATED_ROLE_PLAYER = "relatedRolePlayer";
 
-    @XmlElement(required = true)
-    protected com.ibm.wsspi.security.wim.model.RolePlayer primaryRolePlayer;
-    protected List<com.ibm.wsspi.security.wim.model.RolePlayer> relatedRolePlayer;
+    /**
+     * Used to link to the entity who is the primary role player of the PartyRole.
+     */
+    @XmlElement(name = PROP_PRIMARY_ROLE_PLAYER, required = true)
+    protected RolePlayer primaryRolePlayer;
 
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+    /**
+     * Used to link to the other role players who are related to the primary role player through this PartyRole.
+     */
+    @XmlElement(name = PROP_RELATED_ROLE_PLAYER)
+    protected List<RolePlayer> relatedRolePlayer;
 
-    /** The set of multi-valued properties for this entity type. */
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
+
+    /** The set of multi-valued properties for this type. */
     private static final Set<String> MULTI_VALUED_PROPERTIES;
 
     static {
@@ -84,39 +92,42 @@ public class PartyRole extends com.ibm.wsspi.security.wim.model.RolePlayer {
     }
 
     /**
-     * Gets the value of the primaryRolePlayer property.
+     * Gets the value of the <b>primaryRolePlayer</b> property.
      *
      * @return
-     *         possible object is {@link com.ibm.wsspi.security.wim.model.RolePlayer }
-     *
+     *         possible object is {@link RolePlayer }
      */
-    public com.ibm.wsspi.security.wim.model.RolePlayer getPrimaryRolePlayer() {
+    public RolePlayer getPrimaryRolePlayer() {
         return primaryRolePlayer;
     }
 
     /**
-     * Sets the value of the primaryRolePlayer property.
+     * Sets the value of the <b>primaryRolePlayer</b> property.
      *
      * @param value
-     *            allowed object is {@link com.ibm.wsspi.security.wim.model.RolePlayer }
-     *
+     *            allowed object is {@link RolePlayer }
      */
-    public void setPrimaryRolePlayer(com.ibm.wsspi.security.wim.model.RolePlayer value) {
+    public void setPrimaryRolePlayer(RolePlayer value) {
         this.primaryRolePlayer = value;
     }
 
+    /**
+     * Check if the <b>primaryRolePlayer</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetPrimaryRolePlayer() {
         return (this.primaryRolePlayer != null);
     }
 
     /**
-     * Gets the value of the relatedRolePlayer property.
+     * Gets the value of the <b>relatedRolePlayer</b> property.
      *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the relatedRolePlayer property.
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>relatedRolePlayer</b> property.
      *
      * <p>
      * For example, to add a new item, do as follows:
@@ -125,23 +136,31 @@ public class PartyRole extends com.ibm.wsspi.security.wim.model.RolePlayer {
      * getRelatedRolePlayer().add(newItem);
      * </pre>
      *
-     *
      * <p>
-     * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.RolePlayer }
+     * Objects of the following type(s) are allowed in the list {@link RolePlayer }
      *
-     *
+     * @return
+     *         returned object is {@link List}
      */
-    public List<com.ibm.wsspi.security.wim.model.RolePlayer> getRelatedRolePlayer() {
+    public List<RolePlayer> getRelatedRolePlayer() {
         if (relatedRolePlayer == null) {
-            relatedRolePlayer = new ArrayList<com.ibm.wsspi.security.wim.model.RolePlayer>();
+            relatedRolePlayer = new ArrayList<RolePlayer>();
         }
         return this.relatedRolePlayer;
     }
 
+    /**
+     * Check if the <b>relatedRolePlayer</b> property is set.
+     *
+     * @return True if the property is set, false otherwise.
+     */
     public boolean isSetRelatedRolePlayer() {
         return ((this.relatedRolePlayer != null) && (!this.relatedRolePlayer.isEmpty()));
     }
 
+    /**
+     * Unset the <b>relatedRolePlayer</b> property.
+     */
     public void unsetRelatedRolePlayer() {
         this.relatedRolePlayer = null;
     }
@@ -171,10 +190,10 @@ public class PartyRole extends com.ibm.wsspi.security.wim.model.RolePlayer {
     @Override
     public void set(String propName, Object value) {
         if (propName.equals(PROP_PRIMARY_ROLE_PLAYER)) {
-            setPrimaryRolePlayer(((com.ibm.wsspi.security.wim.model.RolePlayer) value));
+            setPrimaryRolePlayer(((RolePlayer) value));
         }
         if (propName.equals(PROP_RELATED_ROLE_PLAYER)) {
-            getRelatedRolePlayer().add(((com.ibm.wsspi.security.wim.model.RolePlayer) value));
+            getRelatedRolePlayer().add(((RolePlayer) value));
         }
         super.set(propName, value);
     }
@@ -189,51 +208,61 @@ public class PartyRole extends com.ibm.wsspi.security.wim.model.RolePlayer {
 
     @Override
     public String getTypeName() {
-        return "PartyRole";
+        return TYPE_NAME;
     }
 
-    public static synchronized List getPropertyNames(String entityTypeName) {
+    /**
+     * Get the list of property names for this type.
+     *
+     * @param entityTypeName The entity type name.
+     * @return The list of property names.
+     */
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
         if (propertyNames != null) {
             return propertyNames;
         } else {
-            {
-                List names = new ArrayList();
-                names.add(PROP_PRIMARY_ROLE_PLAYER);
-                names.add(PROP_RELATED_ROLE_PLAYER);
-                names.addAll(com.ibm.wsspi.security.wim.model.RolePlayer.getPropertyNames("RolePlayer"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_PRIMARY_ROLE_PLAYER);
+            names.add(PROP_RELATED_ROLE_PLAYER);
+            names.addAll(RolePlayer.getPropertyNames(RolePlayer.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
+            return propertyNames;
         }
     }
 
+    /**
+     * Create the property name to data type mapping.
+     */
     private static synchronized void setDataTypeMap() {
         if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            dataTypeMap = new HashMap<String, String>();
         }
-        dataTypeMap.put(PROP_PRIMARY_ROLE_PLAYER, "RolePlayer");
-        dataTypeMap.put(PROP_RELATED_ROLE_PLAYER, "RolePlayer");
+        dataTypeMap.put(PROP_PRIMARY_ROLE_PLAYER, RolePlayer.TYPE_NAME);
+        dataTypeMap.put(PROP_RELATED_ROLE_PLAYER, RolePlayer.TYPE_NAME);
     }
 
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("RolePlayer");
-        superTypeList.add("Entity");
+        superTypeList.add(RolePlayer.TYPE_NAME);
+        superTypeList.add(Entity.TYPE_NAME);
     }
 
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
@@ -245,22 +274,25 @@ public class PartyRole extends com.ibm.wsspi.security.wim.model.RolePlayer {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
     }
 
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    /**
+     * Get the set of sub-types for this type.
+     *
+     * @return The set of sub-types.
+     */
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
-    }
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
+        return subTypeSet;
     }
 
     @Override

@@ -18,6 +18,8 @@ public class WIMMessageHelper {
 
     /**
      * Create an object array with null parameter to be used as parameters to be passed to a message
+     *
+     * @return The object array containing a single null element.
      */
     public static Object[] generateNullMsgParms() {
         Object parms[] = new Object[1];
@@ -29,6 +31,8 @@ public class WIMMessageHelper {
      * Create an object array to be used as parameters to be passed to a message
      *
      * @param parm1 Value of the first parameter to be substituted into the message text.
+     *
+     * @return The object array containing the specified arguments.
      */
     public static Object[] generateMsgParms(Object parm1) {
         Object parms[] = new Object[1];
@@ -41,6 +45,8 @@ public class WIMMessageHelper {
      *
      * @param parm1 Value of the first parameter to be substituted into the message text.
      * @param parm2 Value of the first parameter to be substituted into the message text.
+     *
+     * @return The object array containing the specified arguments.
      */
     public static Object[] generateMsgParms(Object parm1, Object parm2) {
         Object parms[] = new Object[2];
@@ -55,8 +61,9 @@ public class WIMMessageHelper {
      * @param parm1 Value of the first parameter to be substituted into the message text.
      * @param parm2 Value of the second parameter to be substituted into the message text.
      * @param parm3 Value of the third parameter to be substituted into the message text.
+     *
+     * @return The object array containing the specified arguments.
      */
-
     public static Object[] generateMsgParms(Object parm1, Object parm2, Object parm3) {
         Object parms[] = new Object[3];
         parms[0] = parm1;
@@ -72,6 +79,8 @@ public class WIMMessageHelper {
      * @param parm2 Value of the second parameter to be substituted into the message text.
      * @param parm3 Value of the third parameter to be substituted into the message text.
      * @param parm4 Value of the fourth parameter to be substituted into the message text.
+     *
+     * @return The object array containing the specified arguments.
      */
     public static Object[] generateMsgParms(Object parm1, Object parm2, Object parm3, Object parm4) {
         Object parms[] = new Object[4];
@@ -90,6 +99,8 @@ public class WIMMessageHelper {
      * @param parm3 Value of the third parameter to be substituted into the message text.
      * @param parm4 Value of the fourth parameter to be substituted into the message text.
      * @param parm5 Value of the fifth parameter to be substituted into the message text.
+     *
+     * @return The object array containing the specified arguments.
      */
     public static Object[] generateMsgParms(Object parm1, Object parm2, Object parm3, Object parm4, Object parm5) {
         Object parms[] = new Object[5];
@@ -110,6 +121,8 @@ public class WIMMessageHelper {
      * @param parm4 Value of the fourth parameter to be substituted into the message text.
      * @param parm5 Value of the fifth parameter to be substituted into the message text.
      * @param parm6 Value of the sixth parameter to be substituted into the message text.
+     *
+     * @return The object array containing the specified arguments.
      */
     public static Object[] generateMsgParms(Object parm1, Object parm2, Object parm3, Object parm4, Object parm5,
                                             Object parm6) {
@@ -133,6 +146,8 @@ public class WIMMessageHelper {
      * @param parm5 Value of the fifth parameter to be substituted into the message text.
      * @param parm6 Value of the sixth parameter to be substituted into the message text.
      * @param parm7 Value of the seventh parameter to be substituted into the message text. *
+     *
+     * @return The object array containing the specified arguments.
      */
     public static Object[] generateMsgParms(Object parm1, Object parm2, Object parm3, Object parm4, Object parm5,
                                             Object parm6, Object parm7) {
@@ -157,7 +172,9 @@ public class WIMMessageHelper {
      * @param parm5 Value of the fifth parameter to be substituted into the message text.
      * @param parm6 Value of the sixth parameter to be substituted into the message text.
      * @param parm7 Value of the seventh parameter to be substituted into the message text.
-     * @param parm8 Value of the eighth parameter to be substituted into the message text. *
+     * @param parm8 Value of the eighth parameter to be substituted into the message text.
+     *
+     * @return The object array containing the specified arguments.
      */
     public static Object[] generateMsgParms(Object parm1, Object parm2, Object parm3, Object parm4, Object parm5,
                                             Object parm6, Object parm7, Object parm8) {

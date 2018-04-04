@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,37 +20,24 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-
 /**
  * <p>Java class for GroupMembershipControl complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="GroupMembershipControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}GroupControl">
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * <p> The GroupMembershipControl object extends from the abstract GroupControl object.
- * 
+ *
+ * <p> The GroupMembershipControl object extends from the {@link GroupControl} object.
+ *
  * <p> The GroupControl DataObject contains the following properties that are inherited by
  * GroupMembershipControl: <b>level</b>, <b>properties</b>, <b>searchBases</b>, <b>countLimit</b>,
  * <b>timeLimit</b>, <b>modifyMode</b> and <b>expression</b>.
- * 
- * <p> GroupMembershipControl is used in the input Root object of both the get() API and update() API.
- * 
+ *
+ * <p> GroupMembershipControl is used in the input {@link Root} object of both the get() API and update() API.
+ *
  * <p> In the get() API, GroupMembershipControl is used for requesting the groups to which an entity
- * belongs. If theGroupMembershipControl is added to the input Root object, then the groups the
+ * belongs. If theGroupMembershipControl is added to the input {@link Root} object, then the groups the
  * entity belongs to will be returned.
- * 
+ *
  * <p> GroupMembershipControl can also be used for specifying the properties to be returned for groups
  * as well as the level of nested groups to be returned.
- * 
+ *
  * <ul>
  * <li><b>level</b>
  * <ul>
@@ -60,10 +47,10 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * groups and their immediate groups.</li>
  * </ul>
  * </ul>
- * 
+ *
  * <p> In an update() API call, GroupMembershipControl can be used to specify the assign or un-assign mode
  * through the <b>modifyMode</b> property.
- * 
+ *
  * <ul>
  * <li><b>modifyMode</b>
  * <ul>
@@ -71,30 +58,38 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <li><b>2</b>: the groups contained in the entity object will add the entity as their members and all the existing members will be removed.</li>
  * <li><b>3</b>: the groups contained in the entity object will remove the entity from their members.</li>
  * </ul>
+ * <li>
+ *
+ * <li><b>treeView</b>: used to indicate whether the hierarchy of the nested groups should be
+ * kept in the output {@link Root} object or not. If it is set to true, the hierarchy relationship of the
+ * immediate groups and nested groups of different levels are kept in the {@link Root} object. If it is set to false,
+ * all groups are put in a flat structure by pointing to the same groups property of the entity.</li>
  * </ul>
- * 
- * <p> Since GroupMembershipControl is also extended from SearchControl, you can specify property <b>expression</b>
+ *
+ * <p> Since GroupMembershipControl is also extended from {@link SearchControl}, you can specify property <b>expression</b>
  * and other search properties like <b>countLimit</b>, and <b>timeLimit</b> in GroupMembershipControl to only return those
  * groups which satisfy the search criteria. For example, it is possible to add the property <b>expression</b>
  * with value: @xsi:type='Group' and cn='Admin*' to only return those groups whose cn property starts
  * with Admin.
- * 
- * <li><b>treeView</b>: used to indicate whether the hierarchy of the nested groups should be
- * kept in the output Root object or not. If it is set to true, the hierarchy relationship of the
- * immediate groups and nested groups of different levels are kept in the Root object. If it is set to false,
- * all groups are put in a flat structure by pointing to the same groups property of the entity.</li>
- * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "GroupMembershipControl")
-public class GroupMembershipControl
-                extends GroupControl
-{
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = GroupMembershipControl.TYPE_NAME)
+public class GroupMembershipControl extends GroupControl {
 
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "GroupMembershipControl";
+
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
 
     static {
         setDataTypeMap();
@@ -102,188 +97,95 @@ public class GroupMembershipControl
         setSubTypes();
     }
 
-    /**
-     * Gets the value of the requested property
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * 
-     * @return
-     *         returned object is {@link Object}
-     * 
-     */
-    @Override
-    public Object get(String propName) {
-        return super.get(propName);
-    }
-
-    /**
-     * Returns true if the requested property is set; false, otherwise.
-     * 
-     * @return
-     *         returned object is {@link boolean }
-     * 
-     */
-    @Override
-    public boolean isSet(String propName) {
-        return super.isSet(propName);
-    }
-
-    /**
-     * Sets the value of the provided property to the provided value.
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * @param value
-     *            allowed object is {@link Object}
-     * 
-     */
-    @Override
-    public void set(String propName, Object value) {
-        super.set(propName, value);
-    }
-
-    /**
-     * Sets the value of provided property to null.
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * 
-     */
-    @Override
-    public void unset(String propName) {
-        super.unset(propName);
-    }
-
-    /**
-     * Gets the name of this model object, <b>GroupMembershipControl</b>
-     * 
-     * @return
-     *         returned object is {@link String}
-     */
     @Override
     public String getTypeName() {
-        return "GroupMembershipControl";
+        return TYPE_NAME;
     }
 
     /**
-     * Gets a list of all supported properties for this model object, <b>GroupMembershipControl</b>
-     * 
+     * Gets a list of all supported properties for this type.
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
-    public static synchronized List getPropertyNames(String entityTypeName) {
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
         if (propertyNames != null) {
             return propertyNames;
         } else {
-            {
-                List names = new ArrayList();
-                names.addAll(GroupControl.getPropertyNames("GroupControl"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
-        }
-    }
-
-    private static synchronized void setDataTypeMap() {
-        if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            List<String> names = new ArrayList<String>();
+            names.addAll(GroupControl.getPropertyNames(GroupControl.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
+            return propertyNames;
         }
     }
 
     /**
-     * Gets the Java type of the value of the provided property. For example: String, List
-     * 
-     * @param propName
-     *            allowed object is {@link String}
-     * 
-     * @return
-     *         returned object is {@link String}
+     * Create the property name to data type mapping.
      */
+    private static synchronized void setDataTypeMap() {
+        if (dataTypeMap == null) {
+            dataTypeMap = new HashMap<String, String>();
+        }
+    }
 
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("GroupControl");
-        superTypeList.add("HierarchyControl");
-        superTypeList.add("SearchControl");
-        superTypeList.add("PropertyControl");
-        superTypeList.add("Control");
+        superTypeList.add(GroupControl.TYPE_NAME);
+        superTypeList.add(HierarchyControl.TYPE_NAME);
+        superTypeList.add(SearchControl.TYPE_NAME);
+        superTypeList.add(PropertyControl.TYPE_NAME);
+        superTypeList.add(Control.TYPE_NAME);
     }
 
-    /**
-     * Gets a list of any model objects which this model object, <b>GroupMembershipControl</b>, is
-     * an extension of.
-     * 
-     * @return
-     *         returned object is {@link ArrayList}
-     */
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
         return superTypeList;
     }
 
-    /**
-     * Returns a true if the provided model object is one that this
-     * model object extends; false, otherwise.
-     * 
-     * @param superTypeName
-     * 
-     *            allowed object is {@link String}
-     * @return
-     *         returned object is {@link boolean}
-     */
     @Override
     public boolean isSubType(String superTypeName) {
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
     }
 
     /**
-     * Gets a set of any model objects which extend this model object, <b>GroupMembershipControl</b>
-     * 
+     * Gets a set of any types which extend this type.
+     *
      * @return
      *         returned object is {@link HashSet}
      */
-
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
+        return subTypeSet;
     }
-
-    /**
-     * Returns this model object, <b>GroupMembershipControl</b>, and its contents as a String
-     * 
-     * @return
-     *         returned object is {@link String}
-     */
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
-    }
-
 }

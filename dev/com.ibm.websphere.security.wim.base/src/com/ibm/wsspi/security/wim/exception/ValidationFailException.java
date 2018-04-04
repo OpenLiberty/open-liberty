@@ -11,8 +11,7 @@
 package com.ibm.wsspi.security.wim.exception;
 
 /**
- *
- * vmm application exception to indicate that validation of the
+ * VMM application exception to indicate that validation of the
  * the request failed.
  */
 public class ValidationFailException extends WIMApplicationException {
@@ -20,35 +19,37 @@ public class ValidationFailException extends WIMApplicationException {
     private static final long serialVersionUID = 3080618528019111415L;
 
     /**
-     * Creates the Validation Fail Exception
+     * Constructs a ValidationFailException with no message key, no detail message, and no cause.
      */
     public ValidationFailException() {
         super();
     }
 
     /**
-     * Creates the Validation Fail Exception
+     * Constructs a ValidationFailException with the specified message key and detail message.
      *
-     * @param message The message or message key of the exception.
+     * @param key The message key.
+     * @param message The detail message.
      */
     public ValidationFailException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * Creates the Validation Fail Exception
+     * Constructs a ValidationFailException with the specified message key, detail message, and cause.
      *
-     * @param message The message or message key of the exception.
-     * @param cause The cause of the exception.
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public ValidationFailException(String key, String message, Throwable cause) {
         super(key, message, cause);
     }
 
     /**
-     * Creates the Validation Fail Exception
+     * Constructs a ValidationFailException with the specified cause.
      *
-     * @param cause The cause of the exception.
+     * @param cause The cause.
      */
     public ValidationFailException(Throwable cause) {
         super(cause);

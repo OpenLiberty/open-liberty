@@ -15,29 +15,37 @@ public class MaxResultsExceededException extends WIMApplicationException {
     private static final long serialVersionUID = -246640993723598147L;
 
     /**
-     *
+     * Constructs a MaxResultsExceededException with no message key, no detail message, and no cause.
      */
     public MaxResultsExceededException() {
         super();
     }
 
     /**
-     * @param message
+     * Constructs a MaxResultsExceededException with the specified message key and detail message.
+     *
+     * @param key The message key.
+     * @param message The detail message.
      */
     public MaxResultsExceededException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * @param cause
+     * Constructs a MaxResultsExceededException with the specified cause.
+     *
+     * @param cause The cause.
      */
     public MaxResultsExceededException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * @param message
-     * @param cause
+     * Constructs a MaxResultsExceededException with the specified message key, detail message, and cause.
+     *
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public MaxResultsExceededException(String key, String message, Throwable cause) {
         super(key, message, cause);

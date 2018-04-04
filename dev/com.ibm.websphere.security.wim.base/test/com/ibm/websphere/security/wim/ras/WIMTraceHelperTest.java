@@ -11,53 +11,10 @@
 package com.ibm.websphere.security.wim.ras;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-
 public class WIMTraceHelperTest {
-
-    @Test
-    public void testAllBeans() {
-        Customer cs = new Customer();
-        cs.setFirtName("John");
-        cs.setLastName("Doe");
-        cs.setAddress("123 Broadway");
-        cs.setPinCode(101010);
-
-        PhoneInfo pi = new PhoneInfo();
-        pi.setLandLineNo("1234567890");
-        pi.setMobileNo("0987654321");
-        pi.setStdCode("777");
-
-        Geography geo = new Geography();
-        geo.setCity("Bangalore");
-        geo.setCountry("India");
-        geo.setState("Karnataka");
-
-        cs.setPi(pi);
-        cs.setGeo(geo);
-
-        try {
-            String trace = WIMTraceHelper.trace(cs);
-            assertTrue("address=123 Broadway - not Found", trace.contains("address=123 Broadway"));
-            assertTrue("firtName=John - not Found", trace.contains("firtName=John"));
-            assertTrue("city=Bangalore -  not Found", trace.contains("city=Bangalore"));
-            assertTrue("country=India - not Found", trace.contains("country=India"));
-            assertTrue("state=Karnataka - not Found", trace.contains("state=Karnataka"));
-            assertTrue("lastName=Doe - not Found", trace.contains("lastName=Doe"));
-            assertTrue("landLineNo=1234567890 - not Found", trace.contains("landLineNo=1234567890"));
-            assertTrue("mobileNo=0987654321 - not Found", trace.contains("mobileNo=0987654321"));
-            assertTrue("stdCode=777 - not Found", trace.contains("stdCode=777"));
-            assertTrue("mobileNo=0987654321 - not Found", trace.contains("mobileNo=0987654321"));
-            assertTrue("pinCode=101010 - not Found", trace.contains("pinCode=101010"));
-        } catch (Exception e) {
-            String errorMessage = e.getMessage();
-            assertEquals("Call completed successfully", true, false + " with " + errorMessage);
-        }
-    }
 
     @Test
     public void testPrintPrimitiveObjects() {

@@ -19,7 +19,6 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.wim.Service;
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Root;
@@ -94,7 +93,7 @@ public class ServiceProvider implements Service {
         Root result = null;
         result = new Root();
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
     }
@@ -104,11 +103,11 @@ public class ServiceProvider implements Service {
         final String METHODNAME = "get";
         Root result = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(root));
+            Tr.debug(tc, METHODNAME + " " + root);
         }
         result = getProfileService().get(root);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
     }
@@ -118,11 +117,11 @@ public class ServiceProvider implements Service {
         final String METHODNAME = "search";
         Root result = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(root));
+            Tr.debug(tc, METHODNAME + " " + root);
         }
         result = getProfileService().search(root);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
 
@@ -133,11 +132,11 @@ public class ServiceProvider implements Service {
         final String METHODNAME = "login";
         Root result = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(root));
+            Tr.debug(tc, METHODNAME + " " + root);
         }
         result = getProfileService().login(root);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, METHODNAME + " " + WIMTraceHelper.trace(result));
+            Tr.debug(tc, METHODNAME + " " + result);
         }
         return result;
     }

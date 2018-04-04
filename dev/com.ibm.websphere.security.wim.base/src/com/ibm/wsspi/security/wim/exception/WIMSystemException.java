@@ -20,35 +20,38 @@ public class WIMSystemException extends WIMException {
     private static final long serialVersionUID = -9080586676695903077L;
 
     /**
-     * Creates the virtual member manager system level exception.
+     * Constructs a WIMSystemException with no message key, no detail message, and no cause.
      */
     public WIMSystemException() {
         super();
     }
 
     /**
-     * Creates the WIMSystemException.
+     * Constructs a WIMSystemException with the specified message key and detail message.
      *
-     * @param message The message or message key of the exception.
-     **/
+     * @param key The message key.
+     * @param message The detail message.
+     */
     public WIMSystemException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * Creates the WIMSystemException.
+     * Constructs a WIMSystemException with the specified cause.
      *
      * @param cause The cause of the exception.
-     **/
+     */
     public WIMSystemException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Creates the WIMSystemException.
+     * Constructs a WIMSystemException with the specified message key, detail message, and cause.
      *
+     * @param key The message key
+     * @param message The detail message.
      * @param cause The cause of the exception.
-     **/
+     */
     public WIMSystemException(String key, String message, Throwable cause) {
         super(key, message, cause);
     }

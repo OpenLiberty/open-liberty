@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,82 +19,114 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-
 /**
  * <p>Java class for SearchControl complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="SearchControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}PropertyControl">
- * &lt;sequence>
- * &lt;element name="searchBases" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;attribute name="countLimit" type="{http://www.w3.org/2001/XMLSchema}int" default="0" />
- * &lt;attribute name="searchLimit" type="{http://www.w3.org/2001/XMLSchema}int" default="0" />
- * &lt;attribute name="timeLimit" type="{http://www.w3.org/2001/XMLSchema}int" default="0" />
- * &lt;attribute name="expression" type="{http://www.w3.org/2001/XMLSchema}string" />
- * &lt;attribute name="returnSubType" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" />
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * <p> The SearchControl object extends the PropertyControl object.
- * 
- * <p> It is possible to provide a list of the search bases to narrow down the search by specifying the <b>searchBases</b> property
- * in the SearchControl. For example, 'ou=Mahwah, o=mycompany, c=us' could be specified in 'searchBases' to only search for users
- * in the Mahwah division in the United States.
- * 
+ *
+ * <p> The SearchControl object extends the {@link PropertyControl} object.
+ *
+ * <p>Below is a list of supported properties for {@link SearchControl}.
+ *
  * <ul>
  * <li><b>countLimit</b>: used to specify the number of results to return from the search call. If the actual number of
- * search results is more than the <b>countLimit</b>, the <b>hasMoreResults</b> property in the SearchResponseControl will be set to true.</li>
- * 
+ * search results is more than the <b>countLimit</b>, the <b>hasMoreResults</b> property in the {@link SearchResponseControl}
+ * will be set to true.</li>
  * <li><b>searchLimit</b>: used to specify the maximum number of search results that may be returned by the search operation.</li>
- * 
  * <li><b>timeLimit</b>: specifies the maximum number of milliseconds the search is allowed to take if a repository
  * supports such a parameter.</li>
- * 
  * <li><b>expression</b>: the search expression in XPath format.</li>
- * 
+ * <li><b>searchBases</b>: a list of the search bases to narrow down the search. For example, 'ou=Mahwah, o=mycompany, c=us'
+ * could be specified in 'searchBases' to only search for users in the Mahwah division in the United States.</li>
+ * <li><b>returnSubType</b>: whether to return sub-types of the any entity types specified in 'expression'.</li>
  * </ul>
- * 
- * 
+ *
+ * <p>In addition to the properties in the list above, all properties from the super-class {@link PropertyControl} and its
+ * super-classes are supported.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SearchControl", propOrder = {
-                                              "searchBases"
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = SearchControl.TYPE_NAME, propOrder = {
+                                                       "searchBases"
 })
 @XmlSeeAlso({
-             LoginControl.class,
-             ChangeControl.class,
-             HierarchyControl.class
+              LoginControl.class,
+              ChangeControl.class,
+              HierarchyControl.class
 })
-public class SearchControl
-                extends PropertyControl
-{
+public class SearchControl extends PropertyControl {
 
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "SearchControl";
+
+    /** Property name constant for the <b>searchBases</b> property. */
+    private static final String PROP_SEARCH_BASES = "searchBases";
+
+    /** Property name constant for the <b>countLimit</b> property. */
+    private static final String PROP_COUNT_LIMIT = "countLimit";
+
+    /** Property name constant for the <b>searchLimit</b> property. */
+    private static final String PROP_SEARCH_LIMIT = "searchLimit";
+
+    /** Property name constant for the <b>timeLimit</b> property. */
+    private static final String PROP_TIME_LIMIT = "timeLimit";
+
+    /** Property name constant for the <b>expression</b> property. */
+    private static final String PROP_EXPRESSION = "expression";
+
+    /** Property name constant for the <b>returnSubType</b> property. */
+    private static final String PROP_RETURN_SUB_TYPE = "returnSubType";
+
+    /**
+     * A list of the search bases to narrow down the search. For example, 'ou=Mahwah, o=mycompany, c=us'
+     * could be specified in 'searchBases' to only search for users in the Mahwah division in the United States.
+     */
+    @XmlElement(name = PROP_SEARCH_BASES)
     protected List<String> searchBases;
-    @XmlAttribute(name = "countLimit")
+
+    /**
+     * The number of results to return from the search call. If the actual number of
+     * search results is more than the <b>countLimit</b>, the <b>hasMoreResults</b>
+     * property in the {@link SearchResponseControl} will be set to true.
+     */
+    @XmlAttribute(name = PROP_COUNT_LIMIT)
     protected Integer countLimit;
-    @XmlAttribute(name = "searchLimit")
+
+    /**
+     * The maximum number of search results that may be returned by the search operation.
+     */
+    @XmlAttribute(name = PROP_SEARCH_LIMIT)
     protected Integer searchLimit;
-    @XmlAttribute(name = "timeLimit")
+
+    /**
+     * The maximum number of milliseconds the search is allowed to take if a repository
+     * supports such a parameter.
+     */
+    @XmlAttribute(name = PROP_TIME_LIMIT)
     protected Integer timeLimit;
-    @XmlAttribute(name = "expression")
+
+    /**
+     * The search expression in XPath format.
+     */
+    @XmlAttribute(name = PROP_EXPRESSION)
     protected String expression;
-    @XmlAttribute(name = "returnSubType")
+
+    /** Whether to return sub-types of the any entity types specified in 'expression'. */
+    @XmlAttribute(name = PROP_RETURN_SUB_TYPE)
     protected Boolean returnSubType;
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+
+    /** The list of properties that comprise this entity. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this entity. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this entity. */
+    private static HashSet<String> subTypeSet = null;
 
     static {
         setDataTypeMap();
@@ -103,25 +135,26 @@ public class SearchControl
     }
 
     /**
-     * Gets the value of the searchBases property.
-     * 
+     * Gets the value of the <b>searchBases</b> property.
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the searchBases property.
-     * 
+     * returned list will be present inside the object.
+     * This is why there is not a <CODE>set</CODE> method for the <b>searchBases</b> property.
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getSearchBases().add(newItem);
      * </pre>
-     * 
-     * 
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     * @return
+     *         returned object is {@link List}
      */
     public List<String> getSearchBases() {
         if (searchBases == null) {
@@ -130,20 +163,28 @@ public class SearchControl
         return this.searchBases;
     }
 
+    /**
+     * Returns true if the <b>searchBases</b> property is set; false, otherwise.
+     *
+     * @return
+     *         returned object is {@link boolean }
+     */
     public boolean isSetSearchBases() {
         return ((this.searchBases != null) && (!this.searchBases.isEmpty()));
     }
 
+    /**
+     * Unset the <b>searchBases</b> property.
+     */
     public void unsetSearchBases() {
         this.searchBases = null;
     }
 
     /**
-     * Gets the value of the countLimit property.
-     * 
+     * Gets the value of the <b>countLimit</b> property.
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
      */
     public int getCountLimit() {
         if (countLimit == null) {
@@ -154,30 +195,37 @@ public class SearchControl
     }
 
     /**
-     * Sets the value of the countLimit property.
-     * 
+     * Sets the value of the <b>countLimit</b> property.
+     *
      * @param value
      *            allowed object is {@link Integer }
-     * 
      */
     public void setCountLimit(int value) {
         this.countLimit = value;
     }
 
+    /**
+     * Returns true if the <b>countLimit</b> property is set; false, otherwise.
+     *
+     * @return
+     *         returned object is {@link boolean }
+     */
     public boolean isSetCountLimit() {
         return (this.countLimit != null);
     }
 
+    /**
+     * Unset the <b>countLimit</b> property.
+     */
     public void unsetCountLimit() {
         this.countLimit = null;
     }
 
     /**
-     * Gets the value of the searchLimit property.
-     * 
+     * Gets the value of the <b>searchLimit</b> property.
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
      */
     public int getSearchLimit() {
         if (searchLimit == null) {
@@ -188,30 +236,37 @@ public class SearchControl
     }
 
     /**
-     * Sets the value of the searchLimit property.
-     * 
+     * Sets the value of the <b>searchLimit</b> property.
+     *
      * @param value
      *            allowed object is {@link Integer }
-     * 
      */
     public void setSearchLimit(int value) {
         this.searchLimit = value;
     }
 
+    /**
+     * Returns true if the <b>searchLimit</b> property is set; false, otherwise.
+     *
+     * @return
+     *         returned object is {@link boolean }
+     */
     public boolean isSetSearchLimit() {
         return (this.searchLimit != null);
     }
 
+    /**
+     * Unset the <b>searchLimit</b> property.
+     */
     public void unsetSearchLimit() {
         this.searchLimit = null;
     }
 
     /**
      * Gets the value of the timeLimit property.
-     * 
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
      */
     public int getTimeLimit() {
         if (timeLimit == null) {
@@ -223,55 +278,66 @@ public class SearchControl
 
     /**
      * Sets the value of the timeLimit property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Integer }
-     * 
      */
     public void setTimeLimit(int value) {
         this.timeLimit = value;
     }
 
+    /**
+     * Returns true if the <b>timeLimit</b> property is set; false, otherwise.
+     *
+     * @return
+     *         returned object is {@link boolean }
+     */
     public boolean isSetTimeLimit() {
         return (this.timeLimit != null);
     }
 
+    /**
+     * Unset the <b>timeLimit</b> property.
+     */
     public void unsetTimeLimit() {
         this.timeLimit = null;
     }
 
     /**
-     * Gets the value of the expression property.
-     * 
+     * Gets the value of the <b>expression</b> property.
+     *
      * @return
      *         possible object is {@link String }
-     * 
      */
     public String getExpression() {
         return expression;
     }
 
     /**
-     * Sets the value of the expression property.
-     * 
+     * Sets the value of the <b>expression</b> property.
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
      */
     public void setExpression(String value) {
         this.expression = value;
     }
 
+    /**
+     * Returns true if the <b>expression</b> property is set; false, otherwise.
+     *
+     * @return
+     *         returned object is {@link boolean }
+     */
     public boolean isSetExpression() {
         return (this.expression != null);
     }
 
     /**
-     * Gets the value of the returnSubType property.
-     * 
+     * Gets the value of the <b>returnSubType</b> property.
+     *
      * @return
      *         possible object is {@link Boolean }
-     * 
      */
     public boolean isReturnSubType() {
         if (returnSubType == null) {
@@ -282,39 +348,47 @@ public class SearchControl
     }
 
     /**
-     * Sets the value of the returnSubType property.
-     * 
+     * Sets the value of the <b>returnSubType</b> property.
+     *
      * @param value
      *            allowed object is {@link Boolean }
-     * 
      */
     public void setReturnSubType(boolean value) {
         this.returnSubType = value;
     }
 
+    /**
+     * Returns true if the <b>returnSubType</b> property is set; false, otherwise.
+     *
+     * @return
+     *         returned object is {@link boolean }
+     */
     public boolean isSetReturnSubType() {
         return (this.returnSubType != null);
     }
 
+    /**
+     * Unset the <b>returnSubType</b> property.
+     */
     public void unsetReturnSubType() {
         this.returnSubType = null;
     }
 
     @Override
     public Object get(String propName) {
-        if (propName.equals("searchBases")) {
+        if (propName.equals(PROP_SEARCH_BASES)) {
             return getSearchBases();
         }
-        if (propName.equals("countLimit")) {
+        if (propName.equals(PROP_COUNT_LIMIT)) {
             return getCountLimit();
         }
-        if (propName.equals("searchLimit")) {
+        if (propName.equals(PROP_SEARCH_LIMIT)) {
             return getSearchLimit();
         }
-        if (propName.equals("timeLimit")) {
+        if (propName.equals(PROP_TIME_LIMIT)) {
             return getTimeLimit();
         }
-        if (propName.equals("expression")) {
+        if (propName.equals(PROP_EXPRESSION)) {
             return getExpression();
         }
         return super.get(propName);
@@ -322,22 +396,22 @@ public class SearchControl
 
     @Override
     public boolean isSet(String propName) {
-        if (propName.equals("searchBases")) {
+        if (propName.equals(PROP_SEARCH_BASES)) {
             return isSetSearchBases();
         }
-        if (propName.equals("countLimit")) {
+        if (propName.equals(PROP_COUNT_LIMIT)) {
             return isSetCountLimit();
         }
-        if (propName.equals("searchLimit")) {
+        if (propName.equals(PROP_SEARCH_LIMIT)) {
             return isSetSearchLimit();
         }
-        if (propName.equals("timeLimit")) {
+        if (propName.equals(PROP_TIME_LIMIT)) {
             return isSetTimeLimit();
         }
-        if (propName.equals("expression")) {
+        if (propName.equals(PROP_EXPRESSION)) {
             return isSetExpression();
         }
-        if (propName.equals("returnSubType")) {
+        if (propName.equals(PROP_RETURN_SUB_TYPE)) {
             return isSetReturnSubType();
         }
         return super.isSet(propName);
@@ -345,22 +419,22 @@ public class SearchControl
 
     @Override
     public void set(String propName, Object value) {
-        if (propName.equals("searchBases")) {
+        if (propName.equals(PROP_SEARCH_BASES)) {
             getSearchBases().add(((String) value));
         }
-        if (propName.equals("countLimit")) {
+        if (propName.equals(PROP_COUNT_LIMIT)) {
             setCountLimit(((Integer) value));
         }
-        if (propName.equals("searchLimit")) {
+        if (propName.equals(PROP_SEARCH_LIMIT)) {
             setSearchLimit(((Integer) value));
         }
-        if (propName.equals("timeLimit")) {
+        if (propName.equals(PROP_TIME_LIMIT)) {
             setTimeLimit(((Integer) value));
         }
-        if (propName.equals("expression")) {
+        if (propName.equals(PROP_EXPRESSION)) {
             setExpression(((String) value));
         }
-        if (propName.equals("returnSubType")) {
+        if (propName.equals(PROP_RETURN_SUB_TYPE)) {
             setReturnSubType(((Boolean) value));
         }
         super.set(propName, value);
@@ -368,19 +442,19 @@ public class SearchControl
 
     @Override
     public void unset(String propName) {
-        if (propName.equals("searchBases")) {
+        if (propName.equals(PROP_SEARCH_BASES)) {
             unsetSearchBases();
         }
-        if (propName.equals("countLimit")) {
+        if (propName.equals(PROP_COUNT_LIMIT)) {
             unsetCountLimit();
         }
-        if (propName.equals("searchLimit")) {
+        if (propName.equals(PROP_SEARCH_LIMIT)) {
             unsetSearchLimit();
         }
-        if (propName.equals("timeLimit")) {
+        if (propName.equals(PROP_TIME_LIMIT)) {
             unsetTimeLimit();
         }
-        if (propName.equals("returnSubType")) {
+        if (propName.equals(PROP_RETURN_SUB_TYPE)) {
             unsetReturnSubType();
         }
         super.unset(propName);
@@ -388,59 +462,69 @@ public class SearchControl
 
     @Override
     public String getTypeName() {
-        return "SearchControl";
+        return TYPE_NAME;
     }
 
-    public static synchronized List getPropertyNames(String entityTypeName) {
-        if (propertyNames != null) {
-            return propertyNames;
-        } else {
-            {
-                List names = new ArrayList();
-                names.add("searchBases");
-                names.add("countLimit");
-                names.add("searchLimit");
-                names.add("timeLimit");
-                names.add("expression");
-                names.add("returnSubType");
-                names.addAll(PropertyControl.getPropertyNames("PropertyControl"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+    /**
+     * Gets a list of all supported properties for this type.
+     *
+     * @param entityTypeName
+     *            allowed object is {@link String}
+     * @return
+     *         returned object is {@link List}
+     */
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
+        if (propertyNames == null) {
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_SEARCH_BASES);
+            names.add(PROP_COUNT_LIMIT);
+            names.add(PROP_SEARCH_LIMIT);
+            names.add(PROP_TIME_LIMIT);
+            names.add(PROP_EXPRESSION);
+            names.add(PROP_RETURN_SUB_TYPE);
+            names.addAll(PropertyControl.getPropertyNames(PropertyControl.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
         }
+        return propertyNames;
     }
 
+    /**
+     * Create the property name to data type mapping.
+     */
     private static synchronized void setDataTypeMap() {
         if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            dataTypeMap = new HashMap<String, String>();
         }
-        dataTypeMap.put("searchBases", "String");
-        dataTypeMap.put("countLimit", "Integer");
-        dataTypeMap.put("searchLimit", "Integer");
-        dataTypeMap.put("timeLimit", "Integer");
-        dataTypeMap.put("expression", "String");
-        dataTypeMap.put("returnSubType", "Boolean");
+        dataTypeMap.put(PROP_SEARCH_BASES, "String");
+        dataTypeMap.put(PROP_COUNT_LIMIT, "Integer");
+        dataTypeMap.put(PROP_SEARCH_LIMIT, "Integer");
+        dataTypeMap.put(PROP_TIME_LIMIT, "Integer");
+        dataTypeMap.put(PROP_EXPRESSION, "String");
+        dataTypeMap.put(PROP_RETURN_SUB_TYPE, "Boolean");
     }
 
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("PropertyControl");
-        superTypeList.add("Control");
+        superTypeList.add(PropertyControl.TYPE_NAME);
+        superTypeList.add(Control.TYPE_NAME);
     }
 
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
@@ -452,30 +536,33 @@ public class SearchControl
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
-        subTypeList.add("DescendantControl");
-        subTypeList.add("GroupMemberControl");
-        subTypeList.add("GroupMembershipControl");
-        subTypeList.add("HierarchyControl");
-        subTypeList.add("LoginControl");
-        subTypeList.add("AncestorControl");
-        subTypeList.add("ChangeControl");
-        subTypeList.add("GroupControl");
+        subTypeSet.add(DescendantControl.TYPE_NAME);
+        subTypeSet.add(GroupMemberControl.TYPE_NAME);
+        subTypeSet.add(GroupMembershipControl.TYPE_NAME);
+        subTypeSet.add(HierarchyControl.TYPE_NAME);
+        subTypeSet.add(LoginControl.TYPE_NAME);
+        subTypeSet.add(AncestorControl.TYPE_NAME);
+        subTypeSet.add(ChangeControl.TYPE_NAME);
+        subTypeSet.add(GroupControl.TYPE_NAME);
     }
 
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    /**
+     * Gets a set of any types which extend this type.
+     *
+     * @return
+     *         returned object is {@link HashSet}
+     */
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
+        return subTypeSet;
     }
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
-    }
-
 }

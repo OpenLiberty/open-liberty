@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,48 +22,55 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
-
 /**
  * <p>Java class for SearchResponseControl complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="SearchResponseControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Control">
- * &lt;attribute name="hasMoreResults" type="{http://www.w3.org/2001/XMLSchema}boolean" />
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * <p> The SearchResponseControl object extends the Control object, and contains the <b>hasMoreResults</b>property.
- * 
+ *
+ * <p> The SearchResponseControl object extends the {@link Control} object.
+ *
  * <p> A SearchResponseControl object will only be returned from a search API call if the <b>countLimit</b> property in the
- * SearchControl object is set to a value greater than 0.
- * 
+ * {@link SearchControl} object is set to a value greater than 0.
+ *
+ * <p>Below is a list of supported properties for {@link SearchResponseControl}.
+ *
  * <ul>
  * <li><b>hasMoreResults</b>: will be set to true if the actual number of results from the search is greater
  * than the value of the <b>countLimit</b> property in the SearchControl object.
- * 
+ * </ul>
+ *
+ * <p>In addition to the properties in the list above, all properties from the super-class {@link Control} and its
+ * super-classes are supported.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SearchResponseControl")
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlType(name = SearchResponseControl.TYPE_NAME)
 @XmlSeeAlso({
-             ChangeResponseControl.class
+              ChangeResponseControl.class
 })
-public class SearchResponseControl
-                extends Control
-{
+public class SearchResponseControl extends Control {
 
-    @XmlAttribute(name = "hasMoreResults")
+    /** The type name for this data type. */
+    public static final String TYPE_NAME = "SearchResponseControl";
+
+    /** Property name constant for the <b>hasMoreResults</b> property. */
+    private static final String PROP_HAS_MORE_RESULTS = "hasMoreResults";
+
+    /**
+     * Will be set to true if the actual number of results from the search is greater
+     * than the value of the <b>countLimit</b> property in the SearchControl object.
+     */
+    @XmlAttribute(name = PROP_HAS_MORE_RESULTS)
     protected Boolean hasMoreResults;
-    private static List propertyNames = null;
-    private static HashMap dataTypeMap = null;
-    private static ArrayList superTypeList = null;
-    private static HashSet subTypeList = null;
+
+    /** The list of properties that comprise this type. */
+    private static List<String> propertyNames = null;
+
+    /** A mapping of property names to data types. */
+    private static HashMap<String, String> dataTypeMap = null;
+
+    /** A list of super-types of this type. */
+    private static ArrayList<String> superTypeList = null;
+
+    /** A set of sub-types of this type. */
+    private static HashSet<String> subTypeSet = null;
 
     static {
         setDataTypeMap();
@@ -72,22 +79,20 @@ public class SearchResponseControl
     }
 
     /**
-     * Gets the value of the hasMoreResults property.
-     * 
+     * Gets the value of the <b>hasMoreResults</b> property.
+     *
      * @return
      *         possible object is {@link Boolean }
-     * 
      */
     public boolean isHasMoreResults() {
         return hasMoreResults;
     }
 
     /**
-     * Sets the value of the hasMoreResults property.
-     * 
+     * Sets the value of the <b>hasMoreResults</b> property.
+     *
      * @param value
      *            allowed object is {@link Boolean }
-     * 
      */
     public void setHasMoreResults(boolean value) {
         this.hasMoreResults = value;
@@ -103,12 +108,15 @@ public class SearchResponseControl
 
     @Override
     public Object get(String propName) {
+        if (propName.equals(PROP_HAS_MORE_RESULTS)) {
+            return this.hasMoreResults;
+        }
         return super.get(propName);
     }
 
     @Override
     public boolean isSet(String propName) {
-        if (propName.equals("hasMoreResults")) {
+        if (propName.equals(PROP_HAS_MORE_RESULTS)) {
             return isSetHasMoreResults();
         }
         return super.isSet(propName);
@@ -116,7 +124,7 @@ public class SearchResponseControl
 
     @Override
     public void set(String propName, Object value) {
-        if (propName.equals("hasMoreResults")) {
+        if (propName.equals(PROP_HAS_MORE_RESULTS)) {
             setHasMoreResults(((Boolean) value));
         }
         super.set(propName, value);
@@ -124,7 +132,7 @@ public class SearchResponseControl
 
     @Override
     public void unset(String propName) {
-        if (propName.equals("hasMoreResults")) {
+        if (propName.equals(PROP_HAS_MORE_RESULTS)) {
             unsetHasMoreResults();
         }
         super.unset(propName);
@@ -132,48 +140,58 @@ public class SearchResponseControl
 
     @Override
     public String getTypeName() {
-        return "SearchResponseControl";
+        return TYPE_NAME;
     }
 
-    public static synchronized List getPropertyNames(String entityTypeName) {
-        if (propertyNames != null) {
-            return propertyNames;
-        } else {
-            {
-                List names = new ArrayList();
-                names.add("hasMoreResults");
-                names.addAll(Control.getPropertyNames("Control"));
-                propertyNames = Collections.unmodifiableList(names);
-                return propertyNames;
-            }
+    /**
+     * Gets a list of all supported properties for this Type.
+     *
+     * @param entityTypeName
+     *            allowed object is {@link String}
+     * @return
+     *         returned object is {@link List}
+     */
+    public static synchronized List<String> getPropertyNames(String entityTypeName) {
+        if (propertyNames == null) {
+            List<String> names = new ArrayList<String>();
+            names.add(PROP_HAS_MORE_RESULTS);
+            names.addAll(Control.getPropertyNames(Control.TYPE_NAME));
+            propertyNames = Collections.unmodifiableList(names);
         }
+        return propertyNames;
     }
 
+    /**
+     * Create the property name to data type mapping.
+     */
     private static synchronized void setDataTypeMap() {
         if (dataTypeMap == null) {
-            dataTypeMap = new HashMap();
+            dataTypeMap = new HashMap<String, String>();
         }
-        dataTypeMap.put("hasMoreResults", "Boolean");
+        dataTypeMap.put(PROP_HAS_MORE_RESULTS, "Boolean");
     }
 
     @Override
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
-            return ((String) dataTypeMap.get(propName));
+            return (dataTypeMap.get(propName));
         } else {
             return super.getDataType(propName);
         }
     }
 
+    /**
+     * Create the list of super-types for this type.
+     */
     private static synchronized void setSuperTypes() {
         if (superTypeList == null) {
-            superTypeList = new ArrayList();
+            superTypeList = new ArrayList<String>();
         }
-        superTypeList.add("Control");
+        superTypeList.add(Control.TYPE_NAME);
     }
 
     @Override
-    public ArrayList getSuperTypes() {
+    public ArrayList<String> getSuperTypes() {
         if (superTypeList == null) {
             setSuperTypes();
         }
@@ -185,23 +203,26 @@ public class SearchResponseControl
         return superTypeList.contains(superTypeName);
     }
 
+    /**
+     * Create the set of sub-types for this type.
+     */
     private static synchronized void setSubTypes() {
-        if (subTypeList == null) {
-            subTypeList = new HashSet();
+        if (subTypeSet == null) {
+            subTypeSet = new HashSet<String>();
         }
-        subTypeList.add("ChangeResponseControl");
+        subTypeSet.add(ChangeResponseControl.TYPE_NAME);
     }
 
-    public static HashSet getSubTypes() {
-        if (subTypeList == null) {
+    /**
+     * Gets a set of any types which extend this type.
+     *
+     * @return
+     *         returned object is {@link HashSet}
+     */
+    public static HashSet<String> getSubTypes() {
+        if (subTypeSet == null) {
             setSubTypes();
         }
-        return subTypeList;
+        return subTypeSet;
     }
-
-    @Override
-    public String toString() {
-        return WIMTraceHelper.trace(this);
-    }
-
 }

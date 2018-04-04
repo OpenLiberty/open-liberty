@@ -12,42 +12,44 @@ package com.ibm.wsspi.security.wim.exception;
 
 /**
  *
- * vmm application exception to indicate to the caller that the multiple entries are found when only one entry is expected.
+ * VMM application exception to indicate to the caller that the multiple entries are found when only one entry is expected.
  */
 public class MultipleEntriesFoundException extends WIMApplicationException {
 
     private static final long serialVersionUID = -5745701539262116645L;
 
     /**
-     * Creates the Multiple Entries Found Exception
+     * Constructs a MultipleEntriesFoundException with no message key, no detail message, and no cause.
      */
     public MultipleEntriesFoundException() {
         super();
     }
 
     /**
-     * Creates the Multiple Entries Found Exception
+     * Constructs a MultipleEntriesFoundException with the specified message key and detail message.
      *
-     * @param message The message or message key of the exception.
+     * @param key The message key.
+     * @param message The detail message.
      */
     public MultipleEntriesFoundException(String key, String message) {
         super(key, message);
     }
 
     /**
-     * Creates the Multiple Entries Found Exception
+     * Constructs a MultipleEntriesFoundException with the specified message key, detail message, and cause.
      *
-     * @param message The message or message key of the exception.
-     * @param cause The cause of the exception.
+     * @param key The message key.
+     * @param message The detail message.
+     * @param cause The cause.
      */
     public MultipleEntriesFoundException(String key, String message, Throwable cause) {
         super(key, message, cause);
     }
 
     /**
-     * Creates the Multiple Entries Found Exception
+     * Constructs a MultipleEntriesFoundException with the specified cause.
      *
-     * @param cause The cause of the exception.
+     * @param cause The cause.
      */
     public MultipleEntriesFoundException(Throwable cause) {
         super(cause);
