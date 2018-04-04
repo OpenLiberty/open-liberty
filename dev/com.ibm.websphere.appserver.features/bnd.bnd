@@ -13,6 +13,7 @@
 -nobundles: true
 
 src: visibility/auto, visibility/private, visibility/protected, visibility/public
+testsrc: test/src
 
 instrument.disabled: true
 
