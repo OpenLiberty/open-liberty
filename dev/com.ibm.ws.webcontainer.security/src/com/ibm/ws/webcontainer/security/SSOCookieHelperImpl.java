@@ -110,7 +110,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         if (cookieByteString != null) {
-            addCookies(cookieByteString, req, resp);
+            addJwtCookies(cookieByteString, req, resp);
             isJwtCookie = true;
         }
 
@@ -119,7 +119,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     /*
      * add the cookie or cookies as needed, depending on size of token
      */
-    protected void addCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp) {
+    protected void addJwtCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp) {
         String baseName = getJwtCookieName();
         if (baseName == null) {
             return;
@@ -254,6 +254,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     /*
      * 1) If we have the custom cookie name, then delete just the custom cookie name
      * 2) If we have the custom cookie name but no cookie found, then will delete the default cookie name LTPAToken2
+     * 3) If jwtsso is active, clean up those cookies too.
      */
     @Override
     public void createLogoutCookies(HttpServletRequest req, HttpServletResponse res) {
@@ -267,10 +268,32 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                     addLogoutCookieToList(req, ssoCookieName, logoutCookieList);
                 }
             }
+
+            String jwtCookieName = getJwtCookieName();
+            if (jwtCookieName != null) { // jwtsso is active, expire it's cookies too
+                for (int i = 0; i < cookies.length; i++) {
+                    if (isJwtCookie(jwtCookieName, cookies[i].getName())) {
+                        cookies[i].setValue(null);
+                        addLogoutCookieToList(req, cookies[i].getName(), logoutCookieList);
+                    }
+                }
+            }
+            //TODO: deal with jwtsso's customizable cookie path.
             for (Cookie cookie : logoutCookieList) {
                 res.addCookie(cookie);
             }
         }
+    }
+
+    // jwtsso cookie names can be name, name02, 03, etc thru name99
+    // see if cookiename is a jwtsso cookie based on the name.
+    private boolean isJwtCookie(String baseName, String cookieName) {
+        if (baseName.equalsIgnoreCase(cookieName))
+            return true;
+        if (!(cookieName.startsWith(baseName) && cookieName.length() == baseName.length() + 2))
+            return false;
+        String lastTwoChars = cookieName.substring(baseName.length());
+        return lastTwoChars.matches("\\d\\d");
     }
 
     /**

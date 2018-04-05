@@ -116,7 +116,7 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         authResult = handleJwtSSO(req, res);
-        if (authResult != null && (authResult.equals(AuthResult.SUCCESS) || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie())) {
+        if (authResult != null && (authResult.getStatus().equals(AuthResult.SUCCESS) || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie())) {
             return authResult;
         }
 
