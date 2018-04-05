@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.enterprise.CallerPrincipal;
@@ -50,6 +51,9 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
+import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.security.javaeesec.CDIHelperTestWrapper;
+
 public class IdentityStoreHandlerServiceImplTest {
 
     private final Mockery mockery = new JUnit4Mockery() {
@@ -71,6 +75,9 @@ public class IdentityStoreHandlerServiceImplTest {
     private String realmName;
     private Set<String> groups;
     private CredentialValidationResult validResult;
+    private BeanManager bm;
+    private CDIService cdis;
+    private CDIHelperTestWrapper cdiHelperTestWrapper;
     
 
     @Before
@@ -95,10 +102,16 @@ public class IdentityStoreHandlerServiceImplTest {
         callerPrincipal = new CallerPrincipal(principalName);
         groups = new HashSet<String>();
         validResult = new CredentialValidationResult(callerPrincipal, groups);
+
+        bm = mockery.mock(BeanManager.class, "bm1");
+        cdis = mockery.mock(CDIService.class);
+        cdiHelperTestWrapper = new CDIHelperTestWrapper(mockery, null);
+        cdiHelperTestWrapper.setCDIService(cdis);
     }
 
     @After
     public void tearDown() throws Exception {
+        cdiHelperTestWrapper.unsetCDIService(cdis);
         mockery.assertIsSatisfied();
     }
 
@@ -275,6 +288,8 @@ public class IdentityStoreHandlerServiceImplTest {
                 allowing(storeHandlerInstance).isAmbiguous();
                 will(returnValue(ambiguous));
                 never(storeHandlerInstance).get();
+                one(cdi).getBeanManager();
+                will(returnValue(bm));
             }
         });
         return this;

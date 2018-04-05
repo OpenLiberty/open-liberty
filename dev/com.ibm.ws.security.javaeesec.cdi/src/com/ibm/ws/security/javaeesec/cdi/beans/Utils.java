@@ -217,6 +217,10 @@ public class Utils {
         if (storeHandlerInstance.isUnsatisfied() == false && storeHandlerInstance.isAmbiguous() == false) {
             identityStoreHandler = storeHandlerInstance.get();
         }
+        // If the ham is from the extension, then the identitystorehandler from the application need to be found using the app's bean manager.
+        if (identityStoreHandler == null && cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
+            identityStoreHandler =  (IdentityStoreHandler)CDIHelper.getBeanFromCurrentModule(IdentityStoreHandler.class);
+        }
         return identityStoreHandler;
     }
 
