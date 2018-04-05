@@ -228,7 +228,7 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
     protected boolean verifyLogoutURL(HttpServletRequest req, String exitPage) {
         boolean acceptURL = false;
         boolean allowLogoutPageRedirectToAnyHost = webAppSecurityConfig.getAllowLogoutPageRedirectToAnyHost();
-        if (!exitPage.equals("logon.jsp") && !allowLogoutPageRedirectToAnyHost) {
+        if (exitPage != null && !exitPage.equals("logon.jsp") && !allowLogoutPageRedirectToAnyHost) {
             String logoutURLHost = null;
             try {
                 InetAddress thisHost = InetAddress.getLocalHost();
@@ -243,8 +243,31 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "domain for exitPage url: " + logoutURLHost);
                     if (!logoutURL.isAbsolute()) {
-                        //always accept relative URLs for redirect.
-                        acceptURL = true;
+                        /*
+                         * If exitPage starts with "//" , it is a NetworkPath. We need to valid its target host.
+                         * While the specification for network paths is preceded by exactly 2 slashes("//"), browsers will
+                         * generally redirect network paths with 2 or more preceding slashes. Thus, we need to try to obtain the hostname
+                         * utilizing only 2 preceding slashes.
+                         */
+                        if (exitPage.startsWith("//")) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "URI " + exitPage + " will be processed as a Network-Path." +
+                                             " sendRedirect() defines a Network-Path as starting with // ");
+                            char[] exitPageCharArr = exitPage.toCharArray();
+                            for (int i = 0; i < exitPageCharArr.length; i++) {
+                                if (exitPageCharArr[i] != '/') {
+                                    URI uri = new URI(exitPage.substring(i - 2));
+                                    //Set hostname for further checks.
+                                    logoutURLHost = uri.getHost();
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "SDK indicates " + exitPage + " Network-Path does not contain a valid hostname.");
+                                    break;
+                                }
+                            }
+                        } else {
+                            //accept a relative URIs that are not Network-Path's
+                            acceptURL = true;
+                        }
                     }
                 } catch (URISyntaxException urise) {
                     //The URI is invalid and will not be redirected to.
@@ -267,7 +290,9 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
             if (!acceptURL && logoutURLHost != null)
                 acceptURL = isRequestURLEqualsExitPageHost(req, logoutURLHost);
         } else {
-            acceptURL = true;
+            if (exitPage != null) {
+                acceptURL = true;
+            }
         }
         if (!acceptURL) {
             Tr.error(tc, "SEC_FORM_LOGOUTEXITPAGE_INVALID", new Object[] { req.getRequestURL(), req.getParameter("logoutExitPage") });
