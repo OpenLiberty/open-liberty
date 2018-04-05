@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,6 +32,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
 @ApplicationScoped
@@ -122,6 +124,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
             messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
             if (isJaspicSessionForMechanismsEnabled(httpMessageContext)) {
                 messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
+                setCacheKey(clientSubject);
             }
             rspStatus = HttpServletResponse.SC_OK;
         } else if (status == AuthenticationStatus.NOT_DONE) {
@@ -136,6 +139,14 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
             rsp.setStatus(rspStatus);
         }
         return status;
+    }
+
+    private void setCacheKey(Subject clientSubject) {
+        Hashtable<String, Object> subjectHashtable = utils.getSubjectExistingHashtable(clientSubject);
+        String uniqueId = (String) subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+        if (uniqueId != null && uniqueId.trim().isEmpty() == false) {
+            subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
+        }
     }
 
     protected CDI getCDI() {

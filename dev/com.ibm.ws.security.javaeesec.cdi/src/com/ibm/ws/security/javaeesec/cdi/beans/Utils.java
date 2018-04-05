@@ -11,7 +11,6 @@
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import java.security.AccessController;
-import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -19,9 +18,9 @@ import java.util.Set;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
+import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.Subject;
 import javax.security.auth.message.callback.PasswordValidationCallback;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
@@ -39,7 +38,6 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.javaeesec.CDIHelper;
-import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.wsspi.security.registry.RegistryHelper;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
@@ -50,15 +48,17 @@ public class Utils {
 
     public Utils() {}
 
+    @SuppressWarnings("rawtypes")
     protected AuthenticationStatus validateUserAndPassword(CDI cdi, String realmName, Subject clientSubject, @Sensitive UsernamePasswordCredential credential,
                                                            HttpMessageContext httpMessageContext) throws AuthenticationException {
         return validateCredential(cdi, realmName, clientSubject, credential, httpMessageContext);
     }
 
+    @SuppressWarnings("rawtypes")
     protected AuthenticationStatus validateCredential(CDI cdi, String realmName, Subject clientSubject, @Sensitive Credential credential,
                                                       HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        if(isIdentityStoreAvailable(cdi)) {
+        if (isIdentityStoreAvailable(cdi)) {
             IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler(cdi);
             if (identityStoreHandler != null) {
                 status = validateWithIdentityStore(realmName, clientSubject, credential, identityStoreHandler);
@@ -84,8 +84,9 @@ public class Utils {
         return status;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected AuthenticationStatus handleAuthenticate(CDI cdi, String realmName, @Sensitive Credential credential, Subject clientSubject,
-                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
+                                                      HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         status = validateCredential(cdi, realmName, clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
@@ -140,7 +141,7 @@ public class Utils {
         String uniqueId = callerUniqueId != null ? callerUniqueId : callerPrincipalName;
 
         setCommonAttributes(subjectHashtable, realm, callerPrincipalName);
-        setUniqueIdAndCacheKey(subjectHashtable, realm, uniqueId);
+        setUniqueId(subjectHashtable, realm, uniqueId);
         setGroups(subjectHashtable, result.getCallerGroups());
     }
 
@@ -151,10 +152,9 @@ public class Utils {
         subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, callerPrincipalName);
     }
 
-    private void setUniqueIdAndCacheKey(Hashtable<String, Object> subjectHashtable, String realm, String uniqueId) {
+    private void setUniqueId(Hashtable<String, Object> subjectHashtable, String realm, String uniqueId) {
         String accessId = "user:" + realm + "/" + uniqueId;
         subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, accessId);
-        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, accessId);
     }
 
     private void setGroups(Hashtable<String, Object> subjectHashtable, Set<String> groups) {
@@ -179,7 +179,7 @@ public class Utils {
         return subjectHashtable;
     }
 
-    private Hashtable<String, Object> getSubjectExistingHashtable(final Subject clientSubject) {
+    public Hashtable<String, Object> getSubjectExistingHashtable(final Subject clientSubject) {
         if (clientSubject == null) {
             return null;
         }
@@ -218,7 +218,7 @@ public class Utils {
         return AccessController.doPrivileged(action);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public IdentityStoreHandler getIdentityStoreHandler(CDI cdi) {
         IdentityStoreHandler identityStoreHandler = null;
         Instance<IdentityStoreHandler> storeHandlerInstance = cdi.select(IdentityStoreHandler.class);
@@ -227,12 +227,12 @@ public class Utils {
         }
         // If the ham is from the extension, then the identitystorehandler from the application need to be found using the app's bean manager.
         if (identityStoreHandler == null && cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
-            identityStoreHandler =  (IdentityStoreHandler)CDIHelper.getBeanFromCurrentModule(IdentityStoreHandler.class);
+            identityStoreHandler = (IdentityStoreHandler) CDIHelper.getBeanFromCurrentModule(IdentityStoreHandler.class);
         }
         return identityStoreHandler;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public boolean isIdentityStoreAvailable(CDI cdi) {
         Instance<IdentityStore> identityStoreInstances = cdi.select(IdentityStore.class);
         if (identityStoreInstances != null && !identityStoreInstances.isUnsatisfied() && !identityStoreInstances.isAmbiguous()) {

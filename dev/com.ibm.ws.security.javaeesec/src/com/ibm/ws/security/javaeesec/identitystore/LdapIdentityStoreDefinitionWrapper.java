@@ -13,7 +13,6 @@ package com.ibm.ws.security.javaeesec.identitystore;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -385,7 +384,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupSearchFilter(boolean immediateOnly) {
         try {
-            String result = ELHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
+            final String result = ELHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
             /**
              * This is for CTS testing only. A default filter is expected, though this violates the spec.
              */
@@ -396,7 +395,6 @@ class LdapIdentityStoreDefinitionWrapper {
                 }
             }
             return result;
-
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "There was an error resolving the '{1}' configuration object. Ensure any EL expressions are resolveable. The value will be defaulted to '{2}'",

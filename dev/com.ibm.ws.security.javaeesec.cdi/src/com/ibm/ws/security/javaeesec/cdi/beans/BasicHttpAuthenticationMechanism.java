@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 
@@ -149,6 +150,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                     messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
                     if (isJaspicSessionForMechanismsEnabled(httpMessageContext)) {
                         messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
+                        setCacheKey(clientSubject);
                     }
                     rspStatus = HttpServletResponse.SC_OK;
                 } else if (status == AuthenticationStatus.NOT_DONE) {
@@ -160,6 +162,14 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         }
         httpMessageContext.getResponse().setStatus(rspStatus);
         return status;
+    }
+
+    private void setCacheKey(Subject clientSubject) {
+        Hashtable<String, Object> subjectHashtable = utils.getSubjectExistingHashtable(clientSubject);
+        String uniqueId = (String) subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+        if (uniqueId != null && uniqueId.trim().isEmpty() == false) {
+            subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
+        }
     }
 
     private boolean isJaspicSessionForMechanismsEnabled(HttpMessageContext httpMessageContext) {
@@ -187,6 +197,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return CDI.current();
     }
 
+    @SuppressWarnings("unchecked")
     protected ModulePropertiesProvider getModulePropertiesProvider() {
         Instance<ModulePropertiesProvider> modulePropertiesProivderInstance = getCDI().select(ModulePropertiesProvider.class);
         if (modulePropertiesProivderInstance != null) {

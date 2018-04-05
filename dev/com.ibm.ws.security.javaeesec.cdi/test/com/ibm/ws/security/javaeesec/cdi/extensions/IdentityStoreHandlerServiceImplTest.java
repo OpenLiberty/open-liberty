@@ -12,7 +12,7 @@ package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -358,7 +358,7 @@ public class IdentityStoreHandlerServiceImplTest {
         List<String> subjectGroups = (List<String>) customProperties.get(AttributeNameConstants.WSCREDENTIAL_GROUPS);
         assertTrue("The groups must be set in the subject.", groups.containsAll(subjectGroups) && subjectGroups.containsAll(groups));
         assertEquals("The realm name must be set in the subject.", realmName, customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM));
-        assertNotNull("The cache key must be set in the subject.", customProperties.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY));
+        assertNull("The cache key must not be set in the subject.", customProperties.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY));
     }
 
     private Hashtable<String, ?> getSubjectHashtable(Subject subject) {
