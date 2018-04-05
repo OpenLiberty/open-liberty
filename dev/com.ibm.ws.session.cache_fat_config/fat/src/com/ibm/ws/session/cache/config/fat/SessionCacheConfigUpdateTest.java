@@ -117,6 +117,31 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     }
 
     /**
+     * Enable and disable monitoring for sessions while the server is running.
+     */
+    @Test
+    public void testMonitoring() throws Exception {
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+
+        // add monitor-1.0 feature
+        ServerConfiguration config = server.getServerConfiguration();
+        config.getFeatureManager().getFeatures().add("monitor-1.0");
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansEnabled", new ArrayList<>());
+
+        // remove monitor-1.0 feature
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(savedConfig);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+    }
+
+    /**
      * Update the configured value of the writeContents attribute while the server is running. Confirm the configured behavior.
      */
     @Test
