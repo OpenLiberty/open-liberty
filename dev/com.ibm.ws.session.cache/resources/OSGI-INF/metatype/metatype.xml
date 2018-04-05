@@ -20,7 +20,8 @@
 
  <OCD id="com.ibm.ws.session.cache" ibm:alias="httpSessionCache" name="%httpSessionCache" description="%httpSessionCache.desc" ibmui:localization="OSGI-INF/l10n/metatype">
   <AD id="libraryRef"                     type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" name="%libraryRef" description="%libraryRef.desc"/>
-  <AD id="library.target"                 type="String"  default="(|(service.pid=${libraryRef})(&amp;(zero=${count(libraryRef)})(id=com.ibm.ws.session.cache.defaultprovider.library)))" ibm:final="true" name="internal" description="internal use only"/>  
+  <AD id="library.target"                 type="String"  default="(|(service.pid=${libraryRef})(&amp;(zero=${count(libraryRef)})(id=com.ibm.ws.session.cache.defaultprovider.library)))" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="monitor.target"                 type="String"  default="(|(!(filter>=!))(filter=*Session*))" ibm:final="true" name="internal" description="internal use only"/>
   <AD id="service.ranking"                type="Integer" default="50" ibm:final="true" name="internal" description="internal use only"/> <!-- httpSessionDatabase takes precedence -->
   <AD id="uri" type="String" ibm:type="location" required="false" name="%uri" description="%uri.desc"/>
   <AD id="properties" required="false"    type="String"  cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.session.cache.properties" ibm:flat="true"/>
