@@ -46,35 +46,55 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
 
     private final static TraceComponent tc = Tr.register(LibertyJaxRsInvoker.class);
 
-    private Class cxfBeanValidationProviderClass = null;
+    private final Class cxfBeanValidationProviderClass;
     private final Map<String, Method> cxfBeanValidationProviderMethodsMap = new HashMap<String, Method>();
 
-    private boolean isEnableBeanValidatoin = false;
-    private LibertyJaxRsServerFactoryBean libertyJaxRsServerFactoryBean = null;
+    private final boolean isEnableBeanValidation;
+    private final LibertyJaxRsServerFactoryBean libertyJaxRsServerFactoryBean;
+
+    private final BeanValidationFaultListener beanValidationFaultListener;
 
     /**
      * as there may be no any javax.validation, in case of class unresolved issue, better to reflect call.
      */
     private volatile Object beanValidationProvider = null;
-    private final String cxfBeanValidationProviderClassName = "org.apache.cxf.validation.BeanValidationProvider";//"com.ibm.ws.jaxrs20.beanvalidation.component.BeanValidationProviderLocal";
+    private static final String cxfBeanValidationProviderClassName = "org.apache.cxf.validation.BeanValidationProvider";//"com.ibm.ws.jaxrs20.beanvalidation.component.BeanValidationProviderLocal";
     private boolean validateServiceObject = true;
 
     //private ClassLoader commonBundleClassLoader = null;
 
-    public LibertyJaxRsInvoker(LibertyJaxRsServerFactoryBean libertyJaxRsServerFactoryBean, boolean isEnableBeanValidatoin) {
+    private static class BeanValidationFaultListener implements FaultListener {
+
+        final Class<? extends RuntimeException> cve;
+
+        BeanValidationFaultListener(Class<? extends RuntimeException> cve) {
+            this.cve = cve;
+        }
+
+        @Override
+        public boolean faultOccurred(Exception exception, String description, Message message) {
+            return !cve.isInstance(exception);
+        }
+    }
+
+    @FFDCIgnore({ ClassNotFoundException.class })
+    public LibertyJaxRsInvoker(LibertyJaxRsServerFactoryBean libertyJaxRsServerFactoryBean, boolean isEnableBeanValidation) {
         super();
         this.libertyJaxRsServerFactoryBean = libertyJaxRsServerFactoryBean;
-        this.isEnableBeanValidatoin = isEnableBeanValidatoin;
+        this.isEnableBeanValidation = isEnableBeanValidation;
         //this.commonBundleClassLoader = commonBundleClassLoader;
 
-        if (isEnableBeanValidatoin && null == cxfBeanValidationProviderClass) {
-
+        if (!isEnableBeanValidation) {
+            cxfBeanValidationProviderClass = null;
+            beanValidationFaultListener = null;
+        } else {
             //get BeanValidationProviderClass from jaxrs-2.0 and beanValidation auto feature
             //instead of from common bundle as common bundle can not see the javax.validation.* any more
             //cxfBeanValidationProviderClass = loadCXFBeanValidationProviderClass();
             cxfBeanValidationProviderClass = JaxRsBeanValidation.getBeanValidationProviderClass();
 
             if (cxfBeanValidationProviderClass == null) {
+                beanValidationFaultListener = null;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 
                     Tr.debug(tc, "Bean Validation Provider Class not found");
@@ -86,6 +106,29 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
             cacheValidationMethod("validateBean", new Class[] { Object.class });
             cacheValidationMethod("validateParameters", new Class[] { Object.class, Method.class, Object[].class });
             cacheValidationMethod("validateReturnValue", new Class[] { Object.class, Method.class, Object.class });
+
+            // Since BeanValidation is enabled, if an exception is a ConstraintViolationException
+            // then we will want to put a FaultListener on the message so that
+            // when the exception bubbles up to PhaseInterceptorChain that we do not
+            // use default logging which will log this exception.  BeanValidation is
+            // supposed to block logging these messages.
+            ClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
+                @Override
+                public ClassLoader run() {
+                    return Thread.currentThread().getContextClassLoader();
+                }
+            });
+
+            BeanValidationFaultListener listener = null;
+            try {
+                @SuppressWarnings("unchecked")
+                final Class<? extends RuntimeException> cve = (Class<? extends RuntimeException>) loader.loadClass("javax.validation.ConstraintViolationException");
+                listener = new BeanValidationFaultListener(cve);
+            } catch (ClassNotFoundException e) {
+                // If this exception cannot be loaded then we are not doing bean validation
+            }
+            beanValidationFaultListener = listener;
         }
     }
 
@@ -148,9 +191,8 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
 //        return serviceObject;
 //    }
 
-    @SuppressWarnings("unchecked")
     @Override
-    @FFDCIgnore({ RuntimeException.class, ClassNotFoundException.class })
+    @FFDCIgnore({ RuntimeException.class })
     public Object invoke(Exchange exchange, final Object serviceObject, Method m, List<Object> params) {
 
         //bean customizer....
@@ -198,7 +240,7 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
         Message message = JAXRSUtils.getCurrentMessage();
 
         Object theProvider = null;
-        if (isEnableBeanValidatoin && cxfBeanValidationProviderClass != null) {
+        if (isEnableBeanValidation && cxfBeanValidationProviderClass != null) {
 
             theProvider = getProvider(message);
 
@@ -214,32 +256,12 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
             } catch (RuntimeException e) {
                 // Since BeanValidation is enabled, if this exception is a ConstraintViolationException
                 // then we will want to put a FaultListener on the message so that
-                // when this exception bubles up to PhaseInterceptorChain that we do not
+                // when this exception bubbles up to PhaseInterceptorChain that we do not
                 // use default logging which will log this exception.  BeanValidation is
                 // supposed to block logging these messages.
-                ClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-
-                    @Override
-                    public ClassLoader run() {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                });
-
-                try {
-                    final Class<? extends RuntimeException> cve = (Class<? extends RuntimeException>) loader.loadClass("javax.validation.ConstraintViolationException");
-                    if (cve.isInstance(e)) {
-                        Message m2 = exchange.getInMessage();
-                        m2.put(FaultListener.class.getName(), new FaultListener() {
-
-                            @Override
-                            public boolean faultOccurred(Exception exception, String description, Message message) {
-                                return !cve.isInstance(exception);
-                            }
-                        });
-                    }
-                } catch (ClassNotFoundException e2) {
-                    // If this exception cannot be loaded then we are not doing bean validation
-                    // Just throw original exception.
+                if (beanValidationFaultListener != null && beanValidationFaultListener.cve.isInstance(e)) {
+                    Message m2 = exchange.getInMessage();
+                    m2.put(FaultListener.class.getName(), beanValidationFaultListener);
                 }
                 //re-throw exception.  If the FaultListener is set then a ConstraintViolation will not
                 //be logged in the messages.log.
@@ -250,7 +272,7 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
 
         Object response = super.invoke(exchange, realServiceObject, m, params);
 
-        if (isEnableBeanValidatoin && cxfBeanValidationProviderClass != null && theProvider != null) {
+        if (isEnableBeanValidation && cxfBeanValidationProviderClass != null && theProvider != null) {
 
             if (response instanceof MessageContentsList) {
                 MessageContentsList list = (MessageContentsList) response;

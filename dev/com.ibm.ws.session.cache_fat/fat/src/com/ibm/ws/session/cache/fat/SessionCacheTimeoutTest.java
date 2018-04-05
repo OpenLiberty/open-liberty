@@ -102,6 +102,31 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         appOneListener.sessionGet("testServletPutTimeout-foo2", null, session);
     }
 
+    /**
+     * Tests that after a session times out session attributes are removed from the cache.
+     */
+    @Test
+    @Mode(FULL)
+    public void testCacheInvalidationAfterTimeout() throws Exception {
+        List<String> session = new ArrayList<>();
+        String sessionID = appOneListener.sessionPut("testCacheInvalidationAfterTimeout-foo", "bar", session, true);
+        // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
+        assertNotNull("Expected to find message from a session listener indicating the session expired",
+                      server.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
+        appOneListener.invokeServlet("cacheCheck&key=testCacheInvalidationAfterTimeout-foo", session);
+    }
+
+    /**
+     * Test that the cache is invalidated after reaching invalidation timeout during a servlet call.
+     */
+    @Test
+    @Mode(FULL)
+    public void testCacheInvalidationAfterServletTimeout() throws Exception {
+        List<String> session = new ArrayList<>();
+        appOneListener.sessionPut("testCacheInvalidationAfterServletTimeout-foo", "bar", session, true);
+        appOneListener.invokeServlet("sessionGetTimeoutCacheCheck&key=testCacheInvalidationAfterServletTimeout-foo", session);
+    }
+
     @Test
     public void testRefreshInvalidation() throws Exception {
         int refreshes = TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL ? 15 : 3;

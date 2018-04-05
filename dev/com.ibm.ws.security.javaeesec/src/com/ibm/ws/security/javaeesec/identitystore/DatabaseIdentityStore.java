@@ -71,28 +71,39 @@ public class DatabaseIdentityStore implements IdentityStore {
         /*
          * Get the password hashing implementation.
          */
-        Instance<? extends PasswordHash> p2phi = CDI.current().select(this.idStoreDefinition.getHashAlgorithm());
+        Class<? extends PasswordHash> hashAlgorithm = this.idStoreDefinition.getHashAlgorithm();
+        Instance<? extends PasswordHash> p2phi = CDI.current().select(hashAlgorithm);
         if (p2phi != null) {
             if (p2phi.isUnsatisfied() == false && p2phi.isAmbiguous() == false) {
                 passwordHash = p2phi.get();
             } else {
-                Tr.event(tc, "Try alternate bean lookup. isUnsatisfied() is " + p2phi.isUnsatisfied() + ", isAmbiguous() is " + p2phi.isAmbiguous());
-                Set<? extends PasswordHash> hashes = CDIHelper.getBeansFromCurrentModule(this.idStoreDefinition.getHashAlgorithm());
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, "Try alternate bean lookup. isUnsatisfied() is " + p2phi.isUnsatisfied() + ", isAmbiguous() is " + p2phi.isAmbiguous());
+                }
+                Set<? extends PasswordHash> hashes = CDIHelper.getBeansFromCurrentModule(hashAlgorithm);
                 if (hashes.size() == 1) {
                     passwordHash = hashes.iterator().next();
                 } else if (hashes.size() == 0) {
-                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { this.idStoreDefinition.getHashAlgorithm() });
-                    throw new IllegalArgumentException("Cannot load the password HashAlgorithm from the current module, the CDI bean was not found for: "
-                                                       + this.idStoreDefinition.getHashAlgorithm());
+                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { hashAlgorithm });
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "the CDI bean was not found for: " + hashAlgorithm);
+                    }
+                    throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND",
+                                                                             new Object[] { hashAlgorithm }));
                 } else {
-                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { this.idStoreDefinition.getHashAlgorithm() });
-                    throw new IllegalArgumentException("Cannot load the password HashAlgorithm, " + hashes.size() + " CDI beans were found for: "
-                                                       + this.idStoreDefinition.getHashAlgorithm());
+                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { hashAlgorithm });
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "Too many CDI beans were found for " + hashAlgorithm + ". Found " + hashes.size());
+                    }
+
+                    throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND",
+                                                                             new Object[] { hashAlgorithm }));
                 }
             }
         } else {
-            Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { this.idStoreDefinition.getHashAlgorithm() });
-            throw new IllegalArgumentException("Cannot load the password HashAlgorithm, the CDI bean was not found for: " + this.idStoreDefinition.getHashAlgorithm());
+            Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { hashAlgorithm });
+            throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND",
+                                                                     new Object[] { hashAlgorithm }));
         }
 
         /*
@@ -107,8 +118,9 @@ public class DatabaseIdentityStore implements IdentityStore {
             for (String param : params) {
                 String[] split = param.split("=");
                 if (split.length != 2) {
-                    Tr.error(tc, "JAVAEESEC_ERROR_BAD_HASH_PARAM", new Object[] { this.idStoreDefinition.getHashAlgorithm(), param });
-                    throw new IllegalArgumentException("Hash algorithm parameter is in the incorrect format. Expected: name=value,  received: " + param);
+                    Tr.error(tc, "JAVAEESEC_ERROR_BAD_HASH_PARAM", new Object[] { hashAlgorithm, param });
+                    throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_BAD_HASH_PARAM",
+                                                                             new Object[] { hashAlgorithm, param }));
                 }
                 prepped.put(split[0], split[1]);
             }
@@ -142,21 +154,23 @@ public class DatabaseIdentityStore implements IdentityStore {
         String caller = validationResult.getCallerPrincipal().getName();
         if (caller == null) {
             if (tc.isEventEnabled()) {
-                Tr.event(tc, "A null caller was passed into getCallerGroups. No groups returned.");
+                Tr.event(tc, "A null caller was passed into getCallerGroups. No groups returned. " + validationResult);
             }
             return groups;
         }
         PreparedStatement prep = null;
+        String groupsQuery = "not_resolved";
         try {
+            groupsQuery = idStoreDefinition.getGroupsQuery();
             Connection conn = getConnection(caller);
             try {
-                prep = conn.prepareStatement(idStoreDefinition.getGroupsQuery());
+                prep = conn.prepareStatement(groupsQuery);
                 prep.setString(1, caller);
                 ResultSet result = runQuery(prep, caller);
 
                 if (result == null) {
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "The result query was null looking for groups for caller " + caller + " with query " + idStoreDefinition.getGroupsQuery());
+                        Tr.event(tc, "The result query was null looking for groups for caller " + caller + " with query " + groupsQuery);
                     }
                 } else {
                     while (result.next()) {
@@ -172,14 +186,12 @@ public class DatabaseIdentityStore implements IdentityStore {
             } finally {
                 conn.close();
             }
-        } catch (NamingException | SQLException e) {
-            Tr.warning(tc, "JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS", new Object[] { caller, idStoreDefinition.getGroupsQuery(), groups, e });
+        } catch (NamingException | SQLException | IllegalArgumentException e) {
+            Tr.warning(tc, "JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS", new Object[] { caller, groupsQuery, groups, e });
+            throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS",
+                                                                     new Object[] { caller, groupsQuery, groups, e.toString() }), e);
         }
 
-        /*
-         * Currently, we're allowing partial results to be returned if we somehow fail
-         * while processing the results
-         */
         return groups;
     }
 
@@ -224,13 +236,14 @@ public class DatabaseIdentityStore implements IdentityStore {
 
         ProtectedString dbPassword = null;
         PreparedStatement prep = null;
+        String callerQuery = "not_resolved";
         try {
             Connection conn = getConnection(caller);
             try {
-                String callerQuery = idStoreDefinition.getCallerQuery();
+                callerQuery = idStoreDefinition.getCallerQuery();
                 if (callerQuery == null || callerQuery.isEmpty()) {
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "The 'callerQuery' configuration can not be null or empty.");
+                        Tr.event(tc, "The 'callerQuery' parameter can not be  " + callerQuery == null ? "null." : "empty.");
                     }
                     return CredentialValidationResult.INVALID_RESULT;
                 }
@@ -242,13 +255,13 @@ public class DatabaseIdentityStore implements IdentityStore {
 
                 if (result == null) {
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "The result query was null looking for caller " + caller + " with query " + idStoreDefinition.getGroupsQuery());
+                        Tr.event(tc, "The result query was null looking for caller " + caller + " with query " + callerQuery);
                     }
                     return CredentialValidationResult.INVALID_RESULT;
                 } else {
                     if (!result.next()) { // advance to first result
                         if (tc.isEventEnabled()) {
-                            Tr.event(tc, "The result query was empty looking for caller " + caller + " with query " + idStoreDefinition.getGroupsQuery());
+                            Tr.event(tc, "The result query was empty looking for caller " + caller + " with query " + callerQuery);
                         }
                         return CredentialValidationResult.INVALID_RESULT;
                     }
@@ -256,22 +269,23 @@ public class DatabaseIdentityStore implements IdentityStore {
                     if (!callerOnly) {
                         String dbreturn = result.getString(1);
                         if (dbreturn == null) {
-                            Tr.warning(tc, "JAVAEESEC_WARNING_NO_PWD", new Object[] { caller, idStoreDefinition.getCallerQuery() });
+                            Tr.warning(tc, "JAVAEESEC_WARNING_NO_PWD", new Object[] { caller, callerQuery });
                             return CredentialValidationResult.INVALID_RESULT;
                         }
                         dbPassword = new ProtectedString(dbreturn.toCharArray());
                     }
                     if (result.next()) { // check if there are additional results.
-                        Tr.warning(tc, "JAVAEESEC_WARNING_MULTI_CALLER", new Object[] { caller, idStoreDefinition.getCallerQuery() });
+                        Tr.warning(tc, "JAVAEESEC_WARNING_MULTI_CALLER", new Object[] { caller, callerQuery });
                         return CredentialValidationResult.INVALID_RESULT;
                     }
                 }
             } finally {
                 conn.close();
             }
-        } catch (NamingException | SQLException e) {
-            Tr.error(tc, "JAVAEESEC_ERROR_GEN_DB", new Object[] { caller, idStoreDefinition.getCallerQuery(), e });
-            return CredentialValidationResult.INVALID_RESULT;
+        } catch (NamingException | SQLException | IllegalArgumentException e) {
+            Tr.error(tc, "JAVAEESEC_ERROR_GEN_DB", new Object[] { caller, callerQuery, e });
+            throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_GEN_DB",
+                                                                     new Object[] { caller, callerQuery, e.toString() }), e);
         }
 
         if (callerOnly || passwordHash.verify(password.getChars(), String.valueOf(dbPassword.getChars()))) {

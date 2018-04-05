@@ -32,6 +32,11 @@ dependencies {
     binaries "biz.aQute.bnd:biz.aQute.bnd:3.5.0"
     binaries "biz.aQute.bnd:biz.aQute.bnd.annotation:3.5.0"
     binaries "biz.aQute.bnd:org.osgi.impl.bundle.repoindex.cli:3.5.0"
+    binaries "org.apache.maven:maven-model:3.5.0"
+    binaries "javax.json:javax.json-api:1.1.2"
+    binaries "commons-io:commons-io:2.4"
+    binaries "commons-lang:commons-lang:2.4"
+    binaries "org.apache.ant:ant:1.9.6"
 }
 
 task copyMavenLibs(type: Copy) {
@@ -136,7 +141,10 @@ task createGradleBootstrap {
                 }
             }
         }
-
+        
+        depsList.add('    compile \'' +org+':openliberty-MavenArtifact:' + getVersionFromReleaseRepo("dev", "openliberty-MavenArtifact") + '@zip\'')
+        depsList.add('    compile \''+org+':openliberty-singleJson:' + getVersionFromReleaseRepo("dev", "openliberty-singleJson") + '@json\'')
+		
         File dependenciesFile = new File(project.buildDir, 'dependencies.gradle')
         dependenciesFile.createNewFile()
         dependenciesFile.text = """dependencies {

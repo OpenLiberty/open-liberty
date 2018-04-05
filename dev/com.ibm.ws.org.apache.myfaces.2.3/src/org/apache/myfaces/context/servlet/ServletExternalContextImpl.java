@@ -39,7 +39,6 @@ import java.util.logging.Logger;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
-import javax.faces.application.ViewHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.faces.context.FlashFactory;
@@ -56,6 +55,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.context.flash.FlashImpl;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.util.EnumerationIterator;
@@ -64,9 +64,9 @@ import org.apache.myfaces.util.ExternalSpecifications;
 /**
  * Implements the external context for servlet request. JSF 1.2, 6.1.3
  *
- * @author Manfred Geiler (latest modification by $Author: tandraschko $)
+ * @author Manfred Geiler (latest modification by $Author: paulnicolucci $)
  * @author Anton Koinov
- * @version $Revision: 1820295 $ $Date: 2018-01-05 08:41:34 -0500 (Fri, 05 Jan 2018) $
+ * @version $Revision: 1827505 $ $Date: 2018-03-22 11:08:26 -0400 (Thu, 22 Mar 2018) $
  */
 public final class ServletExternalContextImpl extends ServletExternalContextImplBase
 {
@@ -78,6 +78,12 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
     private static final String PUSHED_RESOURCE_URLS = "oam.PUSHED_RESOURCE_URLS";
     private static final String PUSH_SUPPORTED = "oam.PUSH_SUPPORTED";
+
+    /**
+     * Indicates the port used for websocket connections.
+     */
+    @JSFWebConfigParam(since = "2.3")
+    public static final java.lang.String WEBSOCKET_ENDPOINT_PORT = "javax.faces.WEBSOCKET_ENDPOINT_PORT";
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
@@ -456,7 +462,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         checkNull(url, "url");
         FacesContext facesContext = getCurrentFacesContext();
         Integer port = WebConfigParamUtils.getIntegerInitParameter(
-                getCurrentFacesContext().getExternalContext(), ViewHandler.WEBSOCKET_PORT);
+                getCurrentFacesContext().getExternalContext(), WEBSOCKET_ENDPOINT_PORT);
         port = (port == 0) ? null : port;
         if (port != null && 
             !port.equals(facesContext.getExternalContext().getRequestServerPort()))

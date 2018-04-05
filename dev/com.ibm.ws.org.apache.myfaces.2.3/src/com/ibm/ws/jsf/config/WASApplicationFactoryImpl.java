@@ -61,7 +61,11 @@ public class WASApplicationFactoryImpl extends ApplicationFactory
     {
         synchronized (this) 
         {
-            _applicationFactory.setApplication(application);
+            if (application == null)
+            {
+                throw new NullPointerException("Cannot set a null application in the ApplicationFactory");
+            }
+            _application = application;
         }
     }
     

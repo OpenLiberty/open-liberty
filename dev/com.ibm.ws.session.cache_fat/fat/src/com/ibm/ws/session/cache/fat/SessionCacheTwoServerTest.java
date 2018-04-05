@@ -196,6 +196,14 @@ public class SessionCacheTwoServerTest extends FATServletClient {
     }
 
     /**
+     * Verify that CacheMXBean and CacheStatisticsMXBean are not registered.
+     */
+    @Test
+    public void testMXBeansNotEnabled() throws Exception {
+        appA.invokeServlet("testMXBeansNotEnabled", new ArrayList<>());
+    }
+
+    /**
      * Verify that SessionScoped CDI bean preserves its state across session calls.
      */
     @Test

@@ -314,8 +314,14 @@ public class CollectorJsonUtils1_1 {
                 }
 
                 else if (key.equals(LogFieldConstants.MESSAGE)) {
-
-                    String formattedValue = CollectorJsonHelpers.formatMessage(kvp.getStringValue(), maxFieldLength);
+                    String message = kvp.getStringValue();
+                    String loglevel = CollectorJsonHelpers.getLogLevel(pairs);
+                    if (loglevel != null) {
+                        if (loglevel.equals("ENTRY") || loglevel.equals("EXIT")) {
+                            message = CollectorJsonHelpers.jsonRemoveSpace(message);
+                        }
+                    }
+                    String formattedValue = CollectorJsonHelpers.formatMessage(message, maxFieldLength);
                     CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, false);
 
                 } else if (key.equals(LogFieldConstants.IBM_THREADID)) {

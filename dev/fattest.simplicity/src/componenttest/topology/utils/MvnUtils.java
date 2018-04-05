@@ -629,7 +629,7 @@ public class MvnUtils {
 
     /**
      * Return the project/version String of a directory's pom.xml file
-     * 
+     *
      * @param repo
      * @param subdir
      * @return
@@ -641,7 +641,17 @@ public class MvnUtils {
         File pomXml = new File(dir, "pom.xml");
         Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
         String query = "/project/version";
-        return getQueryInXml(pomXml, query, "", null).trim();
+        String projectVersion = getQueryInXml(pomXml, query, "", null);
+        // Some pom.xml files have no version but inherit it from the
+        // parent
+        if (projectVersion != null && projectVersion.trim().length() > 0) {
+            return projectVersion.trim();
+        } else {
+            query = "/project/parent/version";
+            String parentVersion = getQueryInXml(pomXml, query, "", null);
+            return parentVersion != null ? parentVersion.trim() : parentVersion;
+        }
+
     }
 
     /**

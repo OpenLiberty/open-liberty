@@ -11,6 +11,10 @@
 package com.ibm.ws.logging.collector;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.Pair;
 
 import com.ibm.ws.logging.data.KeyValuePairList;
 
@@ -384,7 +388,39 @@ public class CollectorJsonHelpers {
         sb.append("]");
         return sb.toString();
     }
+    protected static String jsonRemoveSpace(String s) {
+        StringBuilder sb = new StringBuilder();
+        boolean isLine = false;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '\n') {
+                sb.append(c);
+                isLine = true;
+            } else if (c == ' ' && isLine) {
+            } else if (isLine && c != ' ') {
+                isLine = false;
+                sb.append(c);
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
 
+    protected static String getLogLevel(ArrayList<Pair> pairs) {
+        KeyValuePair kvp = null;
+        String loglevel = null;
+        for (Pair p : pairs) {
+            if (p instanceof KeyValuePair) {
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals(LogFieldConstants.LOGLEVEL)) {
+                    loglevel = kvp.getStringValue();
+                    break;
+                }
+            }
+        }
+        return loglevel;
+    }
     public static void handleExtensions(KeyValuePairList extensions, String extKey, String extValue) {
         extKey = LogFieldConstants.EXT_PREFIX + extKey;
         if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {

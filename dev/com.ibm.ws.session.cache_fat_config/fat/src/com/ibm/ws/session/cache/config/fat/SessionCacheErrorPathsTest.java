@@ -114,7 +114,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Start the server with an invalid Hazelcast uri configured on httpSessionCache.
      * Verify that after correcting the uri, session data is persisted.
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
+    @AllowedFFDC(value = { "javax.cache.CacheException", // for invalid uri
+                           "java.net.MalformedURLException" // TODO possible bug
+    })
     @Test
     public void testInvalidURI() throws Exception {
         // Start the server with invalid httpSessionCache uri

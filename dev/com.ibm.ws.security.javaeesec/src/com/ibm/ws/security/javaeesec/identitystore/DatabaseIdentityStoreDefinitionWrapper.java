@@ -103,16 +103,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The callerQuery or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerQuery(boolean immediateOnly) {
-        try {
-            return ELHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerQuery", "" });
-            }
-            return ""; /* Default value from the spec. */
-        }
+        return ELHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
     }
 
     /**
@@ -145,16 +137,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The groupsQuery or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupsQuery(boolean immediateOnly) {
-        try {
-            return ELHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupsQuery", "" });
-            }
-            return ""; /* Default value from the spec. */
-        }
+        return ELHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
     }
 
     /**

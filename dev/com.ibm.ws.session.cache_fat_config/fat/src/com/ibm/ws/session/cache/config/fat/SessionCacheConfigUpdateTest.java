@@ -108,7 +108,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_RECYCLE_LIST);
 
         // Application obtains the CachingProvider for the same configured library and closes the provider
-        // TODO FATSuite.run(server, "jcacheApp/JCacheConfigTestServlet", "testCloseCachingProvider", null);
+        FATSuite.run(server, "jcacheApp/JCacheConfigTestServlet", "testCloseCachingProvider", null);
 
         // Access a session - this will only work if sessionCache feature has used a different CachingProvider instance
         List<String> session = new ArrayList<>();
