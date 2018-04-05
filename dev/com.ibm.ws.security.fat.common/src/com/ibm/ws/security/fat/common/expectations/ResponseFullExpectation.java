@@ -11,6 +11,7 @@
 package com.ibm.ws.security.fat.common.expectations;
 
 import com.ibm.ws.security.fat.common.Constants;
+import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 public class ResponseFullExpectation extends Expectation {
 
@@ -22,7 +23,19 @@ public class ResponseFullExpectation extends Expectation {
 
     @Override
     protected void validate(Object contentToValidate) throws Exception {
-        // TODO
+        try {
+            String responseText = getResponseTextFromContent(contentToValidate);
+            validationUtils.validateStringContent(this, responseText);
+        } catch (Throwable e) {
+            throw new Exception(failureMsg + " Failed to validate response text: " + e.getMessage());
+        }
+    }
+
+    String getResponseTextFromContent(Object contentToValidate) throws Exception {
+        if (contentToValidate instanceof String) {
+            return (String) contentToValidate;
+        }
+        return WebResponseUtils.getResponseText(contentToValidate);
     }
 
 }

@@ -23,6 +23,7 @@ public class JsonObjectExpectation extends Expectation {
     @Override
     protected void validate(Object contentToValidate) throws Exception {
         // TODO
+        throw new Exception("Validation for " + this.getClass().getName() + " has not been implemented yet!");
     }
 
 }

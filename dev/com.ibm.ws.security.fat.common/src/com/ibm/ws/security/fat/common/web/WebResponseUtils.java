@@ -70,16 +70,16 @@ public class WebResponseUtils {
             return ((com.meterware.httpunit.WebResponse) pageOrResponse).getTitle();
         }
         if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.WebResponse) {
-            throw new Exception("get Title not supported with type: " + pageOrResponse.getClass().getName());
+            throw new Exception("Getting title not supported with type: " + pageOrResponse.getClass().getName());
         }
         if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.html.HtmlPage) {
             return ((com.gargoylesoftware.htmlunit.html.HtmlPage) pageOrResponse).getTitleText();
         }
         if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.TextPage) {
-            return "TextPage has no title";
+            return pageOrResponse.getClass().getName() + " has no title";
         }
         if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.xml.XmlPage) {
-            return "XmlPage has no title";
+            return pageOrResponse.getClass().getName() + " has no title";
         }
         throw new Exception("Unknown response type: " + pageOrResponse.getClass().getName());
     }
@@ -101,7 +101,7 @@ public class WebResponseUtils {
             return ((com.meterware.httpunit.WebResponse) pageOrResponse).getURL();
         }
         if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.WebResponse) {
-            throw new Exception("Get URL not supported with type: " + pageOrResponse.getClass().getName());
+            throw new Exception("Getting URL not supported with type: " + pageOrResponse.getClass().getName());
         }
         if (pageOrResponse instanceof com.gargoylesoftware.htmlunit.html.HtmlPage) {
             return ((com.gargoylesoftware.htmlunit.html.HtmlPage) pageOrResponse).getUrl();
