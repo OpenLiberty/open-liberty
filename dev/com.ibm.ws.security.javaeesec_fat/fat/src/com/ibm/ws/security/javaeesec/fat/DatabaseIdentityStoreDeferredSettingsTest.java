@@ -16,6 +16,8 @@ import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getUserPrincipa
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -245,7 +247,28 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         overrides.put(JavaEESecConstants.DS_LOOKUP, "java:comp/InvalidDataSource");
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
+        String msg = "DataSource for "; // will only be in trace.log
+        String msg2 = "returns: java:comp/InvalidDataSource"; // will be in trace.log and messages.log
+
+        String msg3 = "Always evaluate Datasource: true"; //trace
+        List<String> foundResults = myServer.findStringsInLogsAndTrace(msg3);
+        assertEquals("Expected datasource to not be evaluated: " + msg3, 1, foundResults.size());
+
         verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
+
+        foundResults = myServer.findStringsInLogsAndTrace(msg);
+        assertTrue("Should not save the datasource: " + msg, foundResults.isEmpty());
+        foundResults = myServer.findStringsInLogs(msg2);
+        assertFalse("Should have evaluated the datasource: " + msg2, foundResults.isEmpty());
+
+        int priorEval = foundResults.size();
+
+        // login again -- we should evaluate the datasource lookup again.
+        verifyAuthorization(SC_UNAUTHORIZED, SC_UNAUTHORIZED, SC_UNAUTHORIZED);
+        foundResults = myServer.findStringsInLogsAndTrace(msg);
+        assertTrue("Should not save the datasource: " + msg, foundResults.isEmpty());
+        foundResults = myServer.findStringsInLogs(msg2);
+        assertTrue("Should have evaluated the datasource again: " + msg2, foundResults.size() > priorEval);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
