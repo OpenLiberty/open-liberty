@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.TraceConstants;
 import com.ibm.ws.webcontainer.internalRuntimeExport.srt.IPrivateRequestAttributes;
 
@@ -250,6 +251,7 @@ public class WebUtils {
         return validateUriFormat(uri, "https?://" + CommonWebConstants.VALID_URI_PATH_CHARS + "+");
     }
 
+    @FFDCIgnore(java.security.PrivilegedActionException.class)
     public static boolean validateUriFormat(final String uri, String regexToMatch) {
         if (uri == null || uri.isEmpty()) {
             // TODO - NLS message
