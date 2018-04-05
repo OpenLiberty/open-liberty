@@ -31,6 +31,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.HttpSessionCache;
+import com.ibm.websphere.simplicity.config.Monitor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.AllowedFFDC;
@@ -133,7 +134,27 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansEnabled", new ArrayList<>());
 
-        // remove monitor-1.0 feature
+        // add monitor configuration that doesn't include Session
+        Monitor monitor = new Monitor();
+        monitor.setFilter("ThreadPool,WebContainer");
+        config.getMonitors().add(monitor);
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+
+        // switch to monitor configuration that includes Session
+        monitor.setFilter("ThreadPool,WebContainer,Session");
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansEnabled", new ArrayList<>());
+
+        // remove monitor-1.0 feature (and monitor config)
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(savedConfig);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);

@@ -137,6 +137,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "managedThreadFactory")
     private ConfigElementList<ManagedThreadFactory> managedThreadFactories;
 
+    @XmlElement(name = "monitor")
+    private ConfigElementList<Monitor> monitors;
+
     @XmlElement(name = "resourceAdapter")
     private ConfigElementList<ResourceAdapter> resourceAdapters;
 
@@ -508,6 +511,12 @@ public class ServerConfiguration implements Cloneable {
         if (this.managedThreadFactories == null)
             this.managedThreadFactories = new ConfigElementList<ManagedThreadFactory>();
         return this.managedThreadFactories;
+    }
+
+    public ConfigElementList<Monitor> getMonitors() {
+        if (monitors == null)
+            monitors = new ConfigElementList<Monitor>();
+        return monitors;
     }
 
     public ConfigElementList<ResourceAdapter> getResourceAdapters() {
