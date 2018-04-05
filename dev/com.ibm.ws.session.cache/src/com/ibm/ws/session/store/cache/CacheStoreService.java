@@ -17,6 +17,7 @@ import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.cache.CacheManager;
 import javax.cache.Caching;
@@ -25,15 +26,8 @@ import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
 
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -49,7 +43,6 @@ import com.ibm.wsspi.session.IStore;
 /**
  * Constructs CacheStore instances.
  */
-@Component(name = "com.ibm.ws.session.cache", configurationPolicy = ConfigurationPolicy.OPTIONAL, service = { SessionStoreService.class })
 public class CacheStoreService implements SessionStoreService {
     
     private static final TraceComponent tc = Tr.register(CacheStoreService.class);
@@ -64,11 +57,11 @@ public class CacheStoreService implements SessionStoreService {
 
     private volatile boolean completedPassivation = true;
 
-    @Reference(policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
-    protected Library library;
+    private Library library;
 
-    @Reference
-    protected SerializationService serializationService;
+    final AtomicReference<ServiceReference<?>> monitorRef = new AtomicReference<ServiceReference<?>>();
+
+    SerializationService serializationService;
 
     /**
      * Indicates whether or not the caching provider supports store by reference.
@@ -85,8 +78,7 @@ public class CacheStoreService implements SessionStoreService {
      */
     private String tcCachingProvider;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected volatile UserTransaction userTransaction;
+    volatile UserTransaction userTransaction;
 
     /**
      * Declarative Services method to activate this component.
@@ -95,7 +87,6 @@ public class CacheStoreService implements SessionStoreService {
      * @param context for this component instance
      * @param props service properties
      */
-    @Activate
     protected void activate(ComponentContext context, Map<String, Object> props) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -188,6 +179,30 @@ public class CacheStoreService implements SessionStoreService {
         }
     }
 
+    /**
+     * Configures management and statistics on the specified cache according to enablement by the monitor config element.
+     * Precondition: invoking code must run within a doPrivileged block.
+     * 
+     * @param cacheName name of the cache
+     */
+    @Trivial // disable autotrace because tracing of the JCache operations will include all of the useful information
+    void configureMonitoring(String cacheName) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        boolean enable = monitorRef.get() != null;
+
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcInvoke(tcCacheManager, "enableManagement", cacheName, enable);
+        cacheManager.enableManagement(cacheName, enable);
+        if (trace && tc.isDebugEnabled()) {
+            CacheHashMap.tcReturn(tcCacheManager, "enableManagement");
+            CacheHashMap.tcInvoke(tcCacheManager, "enableStatistics", cacheName, enable);
+        }
+        cacheManager.enableStatistics(cacheName, enable);
+        if (trace && tc.isDebugEnabled())
+            CacheHashMap.tcReturn(tcCacheManager, "enableStatistics");
+    }
+
     @Override
     public IStore createStore(SessionManagerConfig smc, String smid, ServletContext sc, MemoryStoreHelper storeHelper, ClassLoader classLoader, boolean applicationSessionStore) {
         IStore store = new CacheStore(smc, smid, sc, storeHelper, applicationSessionStore, this);
@@ -202,17 +217,22 @@ public class CacheStoreService implements SessionStoreService {
      *
      * @param context for this component instance
      */
-    @Deactivate
     protected void deactivate(ComponentContext context) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         if (trace && tc.isDebugEnabled())
             CacheHashMap.tcInvoke(tcCachingProvider, "close");
 
-        cachingProvider.close();
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            cachingProvider.close();
+            return null;
+        });
 
         if (trace && tc.isDebugEnabled())
             CacheHashMap.tcReturn(tcCachingProvider, "close");
+
+        cachingProvider = null;
+        cacheManager = null;
     }
 
     @Override
@@ -228,5 +248,48 @@ public class CacheStoreService implements SessionStoreService {
     @Override
     public void setCompletedPassivation(boolean isInProcessOfStopping) {
         completedPassivation = isInProcessOfStopping;
+    }
+
+    protected void setLibrary(Library library) {
+        this.library = library;
+    }
+
+    protected void setMonitor(ServiceReference<?> ref) {
+        monitorRef.set(ref);
+        if (cacheManager != null)
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                for (String cacheName : cacheManager.getCacheNames())
+                    configureMonitoring(cacheName);
+                return null;
+            });
+    }
+
+    protected void setSerializationService(SerializationService serializationService) {
+        this.serializationService = serializationService;
+    }
+
+    protected void setUserTransaction(UserTransaction userTransaction) {
+        this.userTransaction = userTransaction;
+    }
+
+    protected void unsetLibrary(Library library) {
+        this.library = null;
+    }
+
+    protected void unsetMonitor(ServiceReference<?> ref) {
+        if (monitorRef.compareAndSet(ref, null) && cacheManager != null)
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                for (String cacheName : cacheManager.getCacheNames())
+                    configureMonitoring(cacheName);
+                return null;
+            });
+    }
+
+    protected void unsetSerializationService(SerializationService serializationService) {
+        this.serializationService = null;
+    }
+
+    protected void unsetUserTransaction(UserTransaction userTransaction) {
+        this.userTransaction = null;
     }
 }

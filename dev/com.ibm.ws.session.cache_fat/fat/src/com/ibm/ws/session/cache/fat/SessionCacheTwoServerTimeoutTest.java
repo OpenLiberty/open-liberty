@@ -102,9 +102,9 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     @Mode(FULL)
     public void testInvalidationServletNoLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
-        appA.sessionPut("testInvalidationServletTwoServer-foo", "bar", session, true);
-        appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletTwoServer-foo", session); //expecting null value
-        appB.sessionGet("testInvalidationServletTwoServer-foo", null, session);
+        appA.sessionPut("testInvalidationServletNoLocalCacheTwoServer-foo", "bar", session, true);
+        appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletNoLocalCacheTwoServer-foo", session); //expecting null value
+        appB.sessionGet("testInvalidationServletNoLocalCacheTwoServer-foo", null, session);
     }
 
     /**
@@ -117,10 +117,49 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     @Mode(FULL)
     public void testInvalidationServletLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
-        appA.sessionPut("testInvalidationServletTwoServer-foo", "bar", session, true);
-        appB.sessionGet("testInvalidationServletTwoServer-foo", "bar", session); //Caches the session locally.
-        appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletTwoServer-foo&expectedValue=bar", session); //expecting to receive bar from local cache
-        appB.sessionGet("testInvalidationServletTwoServer-foo", null, session);
+        appA.sessionPut("testInvalidationServletLocalCacheTwoServer-foo", "bar", session, true);
+        appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", "bar", session); //Caches the session locally.
+        appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletLocalCacheTwoServer-foo&expectedValue=bar", session); //expecting to receive bar from local cache
+        appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", null, session);
+    }
+
+    /**
+     * Test that a session which is created on Server A is removed from the Session Cache once timed out on server B
+     */
+    @Test
+    @Mode(FULL)
+    public void testCacheInvalidationServletNoLocalCacheTwoServer() throws Exception {
+        List<String> session = new ArrayList<>();
+        String sessionID = appA.sessionPut("testCacheInvalidationServletNoLocalCacheTwoServer-foo", "bar", session, true);
+        appB.invokeServlet("sessionGetTimeoutCacheCheck&key=testCacheInvalidationServletNoLocalCacheTwoServer-foo", session);
+        appA.invokeServlet("cacheCheck&key=testCacheInvalidationServletNoLocalCacheTwoServer-foo&sid=" + sessionID, session);
+    }
+
+    /**
+     * Test that a session which is created on Server A is removed from the Session Cache once timed out on server B,
+     * even if it has been locally cached.
+     */
+    @Test
+    @Mode(FULL)
+    public void testCacheInvalidationLocalCacheTwoServer() throws Exception {
+        List<String> session = new ArrayList<>();
+        appA.sessionPut("testCacheInvalidationLocalCacheTwoServer-foo", "bar", session, true);
+        appB.sessionGet("testCacheInvalidationLocalCacheTwoServer-foo", "bar", session);
+        appB.invokeServlet("sessionGetTimeoutCacheCheck&key=testCacheInvalidationLocalCacheTwoServer-foo", session);
+    }
+
+    /**
+     * Test that after a session is invalidated it is removed from both caches.
+     */
+    @Test
+    @Mode(FULL)
+    public void testCacheInvalidationTwoServer() throws Exception {
+        List<String> session = new ArrayList<>();
+        String sessionID = appA.sessionPut("testCacheInvalidationTwoServer-foo", "bar", session, true);
+        assertNotNull("Expected to find message from a session listener indicating the session expired",
+                      serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
+        appB.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
+        appA.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
     }
 
 }
