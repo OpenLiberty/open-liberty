@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.common.TraceConstants;
 import com.ibm.ws.webcontainer.internalRuntimeExport.srt.IPrivateRequestAttributes;
 
@@ -318,4 +319,91 @@ public class WebUtils {
         return sr;
     }
 
+    @Trivial
+    public static String stripSecretsFromUrl(String orig, String[] secretStrings) {
+        String retVal = orig;
+
+        if (secretStrings==null || secretStrings.length==0) {
+            return orig;
+        }
+        for (int i=0; i<secretStrings.length; i++) {
+            retVal = stripSecretFromUrl(retVal, secretStrings[i]);
+        }
+
+        return retVal;
+    }
+    //
+    // stripClientSecretFromUrl 
+    // this method is used to transform a URL or parameter string for tracing
+    // replace &client_secret=(whatever) with &client_secret==*****
+    //
+    @Trivial
+    public static String stripSecretFromUrl(String orig, String secretString) {
+      if (secretString==null || secretString.length()==0) {
+          return orig;
+      }
+      String retVal = orig;
+      String SECRETequals=secretString+"=";
+
+      int SECRETequalsLen=SECRETequals.length();
+
+      if (orig != null && orig.length() > SECRETequalsLen) {
+        if (orig.indexOf(SECRETequals) > -1) {
+          java.lang.StringBuffer sb = null;
+          int i = 0;
+          // http://localhost/path?client_secret=pw
+          //                      ^ 
+          if ((i=orig.indexOf("?"))>-1) {
+              sb = new java.lang.StringBuffer(orig.substring(0,i+1));
+              if (orig.length() > i+1) {
+                  orig=orig.substring(i+1);
+              }
+          } else {
+              sb = new java.lang.StringBuffer();
+          }
+
+          // client_secret=pw&abc=123
+          //                 ^  
+          String [] strings = orig.split("&");
+          int numStrings = strings.length;
+
+          String SECRETregex = SECRETequals+".*";
+          String SECRETreplace = SECRETequals+"*****";
+          for (String entry: strings) {
+            --numStrings;
+            if (entry.startsWith(SECRETequals) && entry.length()>SECRETequalsLen) {
+              entry = entry.replaceAll(SECRETregex, SECRETreplace);
+              sb.append(entry);
+            } else {
+              sb.append(entry);
+            }
+            if (numStrings > 0) {
+              sb.append("&");
+            }
+          }
+          retVal = sb.toString();
+        }
+      }
+      return retVal;
+    }
+
+    // getRequestStringForTrace
+    // processes an HTTPServletRequest url and query string to replace sensitive
+    // information and returns a string for tracing
+    @Trivial
+    public static String getRequestStringForTrace(HttpServletRequest request, String[] secretStrings) {
+        if (request == null) {
+            return "[]";
+        }
+        String url = ((request.getRequestURL()==null)?null:request.getRequestURL().toString());
+        String queryString = request.getQueryString();
+
+        return "["+stripSecretsFromUrl(url,secretStrings)+"], queryString["+((queryString==null)?"":stripSecretsFromUrl(queryString,secretStrings))+"]";
+    }
+
+
+    @Trivial
+    public static String getRequestStringForTrace(HttpServletRequest request, String secretString) {
+        return getRequestStringForTrace(request, new String[] {secretString});
+    }
 }
