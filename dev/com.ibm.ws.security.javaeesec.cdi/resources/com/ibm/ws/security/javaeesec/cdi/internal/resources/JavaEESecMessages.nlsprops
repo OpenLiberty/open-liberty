@@ -30,9 +30,9 @@ JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: The supplied credential class {
 JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=The supplied credential class for the authentication is not supported by the user registry. Use either javax.security.enterprise.credential.UsernamePasswordCredential or javax.security.enterprise.credential.BasicAuthenticationCredential for authentication.
 JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Make sure that the supported credential class is used for authentication by using the user registry.
 
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE=CWWKS1930W: The IdentityStore object configured was not found. A user registry will be used if it is configured. Make sure that the IdentityStore object configured by the application is available.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.explanation=The reason that the IdentityStore object was not found varies. The error messages for the IdentityStore object provide information on why the the IdentityStore object was not found.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.useraction=Investigate any error messages from the IdentityStore object and make corrections based on the error messages.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE=CWWKS1930W: The configured IdentityStore object was not found. If a user registry is configured, it will be used instead. Make sure that the IdentityStore object configured by the application is available.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.explanation=The reason that the IdentityStore object was not found varies. The error messages for the IdentityStore object provide information about why the IdentityStore object was not found.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.useraction=Investigate any error messages from the IdentityStore object, and make corrections based on the error messages.
 
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: The application deployment failed because a login-config element was found in the web.xml file for the {0} module in the {1} application. To enable the HttpAuthenticationMechanism bean, remove the login-config element from the web.xml file.
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=The application deployment failed because both the login-config element and the HttpAuthenticationMechanism bean are defined. Only one of these authentication mechanisms can be used in your application.
