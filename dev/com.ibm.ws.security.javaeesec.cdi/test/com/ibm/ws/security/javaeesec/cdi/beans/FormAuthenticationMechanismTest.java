@@ -90,6 +90,7 @@ public class FormAuthenticationMechanismTest {
     private CallerOnlyCredential coCred;
     private BasicAuthenticationCredential baCred;
     private UsernamePasswordCredential upCred, invalidUpCred;
+    private boolean isRegistryAvailable = true;
 
     private final String ISH_ID = "IdentityStore1";
     private final String USER1 = "user1";
@@ -139,7 +140,14 @@ public class FormAuthenticationMechanismTest {
         cdiHelperTestWrapper = new CDIHelperTestWrapper(mockery, null);
         cdiHelperTestWrapper.setCDIService(cdis);
 
-        fam = new FormAuthenticationMechanism() {
+        Utils utils = new Utils() {
+            @Override
+            protected boolean isRegistryAvailable() {
+                return isRegistryAvailable;
+            }
+        };
+
+        fam = new FormAuthenticationMechanism(utils) {
             @SuppressWarnings("rawtypes")
             @Override
             protected CDI getCDI() {
@@ -195,6 +203,20 @@ public class FormAuthenticationMechanismTest {
 
         AuthenticationStatus status = fam.validateRequest(req, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
+    }
+
+    /**
+     *   
+     */
+    @Test
+    public void testValidateRequestAuthReqFalseValidIdAndPWNoIdentityStoreHandlerNoUserRegisgtry() throws Exception {
+        final MyCallbackHandler mch = new MyCallbackHandler();
+        withMessageContext().withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(false).withIDSBeanInstance(null, true, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
+
+        isRegistryAvailable=false;
+        AuthenticationStatus status = fam.validateRequest(req, res, hmc);
+        isRegistryAvailable=true;
+        assertEquals("The result should be NOT_DONE", AuthenticationStatus.NOT_DONE, status);
     }
 
     /**

@@ -38,7 +38,15 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 public class FormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(FormAuthenticationMechanism.class);
-    private Utils utils = new Utils();
+    private final Utils utils;
+
+    public FormAuthenticationMechanism() {
+        utils = new Utils();
+    }
+    // this is for unit test.
+    protected FormAuthenticationMechanism(Utils utils) {
+        this.utils = utils;
+    }
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,

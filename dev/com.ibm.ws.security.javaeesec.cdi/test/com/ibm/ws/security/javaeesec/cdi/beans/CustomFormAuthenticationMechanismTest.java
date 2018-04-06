@@ -92,12 +92,12 @@ public class CustomFormAuthenticationMechanismTest {
     private CallerOnlyCredential coCred;
     private BasicAuthenticationCredential baCred;
     private UsernamePasswordCredential upCred, invalidUpCred;
+    private boolean isRegistryAvailable = true;
     
     private final String ISH_ID = "IdentityStore1";
     private final String USER1 = "user1";
     private final String PASSWORD1 = "s3cur1ty";
     private final String INVALID_PASSWORD = "invalid";
- 
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.*=all");
 
@@ -141,7 +141,13 @@ public class CustomFormAuthenticationMechanismTest {
         cdiHelperTestWrapper = new CDIHelperTestWrapper(mockery, null);
         cdiHelperTestWrapper.setCDIService(cdis);
 
-        cfam = new CustomFormAuthenticationMechanism() {
+        Utils utils = new Utils() {
+            @Override
+            protected boolean isRegistryAvailable() {
+                return isRegistryAvailable;
+            }
+        };
+        cfam = new CustomFormAuthenticationMechanism(utils) {
             @SuppressWarnings("rawtypes")
             @Override
             protected CDI getCDI() {
@@ -197,6 +203,18 @@ public class CustomFormAuthenticationMechanismTest {
 
         AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
+    }
+
+    /**
+     *   
+     */
+    @Test
+    public void testValidateRequestValidIdAndPWNoIdentityStoreHandlerNoUserRegistry() throws Exception {
+        withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withUsernamePassword(USER1, PASSWORD1).withIDSBeanInstance(null, true, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
+        isRegistryAvailable = false;
+        AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
+        isRegistryAvailable = true;
+        assertEquals("The result should be NOT_DONE", AuthenticationStatus.NOT_DONE, status);
     }
 
     /**

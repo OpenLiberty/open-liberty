@@ -98,11 +98,19 @@ public class BasicHttpAuthenticationMechanismTest {
     private CallerOnlyCredential coCred;
     private BasicAuthenticationCredential baCred;
     private UsernamePasswordCredential upCred, invalidUpCred;
+    private boolean isRegistryAvailable = true;
 
     @Before
     public void setUp() {
         cdi = mockery.mock(CDI.class);
-        mechanism = new BasicHttpAuthenticationMechanism() {
+        Utils utils = new Utils() {
+            @Override
+            protected boolean isRegistryAvailable() {
+                return isRegistryAvailable;
+            }
+        };
+
+        mechanism = new BasicHttpAuthenticationMechanism(utils) {
             @SuppressWarnings("rawtypes")
             @Override
             protected CDI getCDI() {
@@ -300,6 +308,13 @@ public class BasicHttpAuthenticationMechanismTest {
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
+    }
+
+    @Test
+    public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedNoUserRegistry() throws Exception {
+        preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, true, false);
+        setModulePropertiesProvider(realmName);
+        assertValidateRequestNOTDONE();
     }
 
     @Test
@@ -729,6 +744,14 @@ public class BasicHttpAuthenticationMechanismTest {
         withResponseStatus(HttpServletResponse.SC_OK);
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SUCCESS.", AuthenticationStatus.SUCCESS, status);
+    }
+
+    private void assertValidateRequestNOTDONE() throws AuthenticationException {
+        withResponseStatus(HttpServletResponse.SC_OK);
+        isRegistryAvailable = false;
+        AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
+        isRegistryAvailable = true;
+        assertEquals("The AuthenticationStatus must be AuthenticationStatus.NOT_DONE.", AuthenticationStatus.NOT_DONE, status);
     }
 
     private void assertValidateRequestFAILUREwoHttpResponse() throws AuthenticationException {

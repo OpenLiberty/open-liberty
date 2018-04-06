@@ -43,7 +43,16 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
     private String realmName = null;
-    private Utils utils = new Utils();
+    private final Utils utils;
+
+    public BasicHttpAuthenticationMechanism() {
+        utils = new Utils();
+    }
+
+    // this is for unit test.
+    protected BasicHttpAuthenticationMechanism(Utils utils) {
+        this.utils = utils;
+    }
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,

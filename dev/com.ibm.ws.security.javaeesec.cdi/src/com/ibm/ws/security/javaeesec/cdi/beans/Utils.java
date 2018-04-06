@@ -254,7 +254,7 @@ public class Utils {
         }
     }
 
-    private boolean isRegistryAvailable() {
+    protected boolean isRegistryAvailable() {
         try {
             return (RegistryHelper.getUserRegistry(null) != null);
         } catch (WSSecurityException e) {
