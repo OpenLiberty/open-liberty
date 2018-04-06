@@ -47,6 +47,11 @@ public class GenericData {
         pairs.add(index, kvps);
     }
 
+    public void addPair(String key, String value) {
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
+        pairs.add(kvp);
+    }
+
     public void addPair(String key, int value) {
         KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
         pairs.add(kvp);
