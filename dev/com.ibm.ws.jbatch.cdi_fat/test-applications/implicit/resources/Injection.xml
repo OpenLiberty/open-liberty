@@ -11,13 +11,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 -->
-<job id="cdi1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<job id="Injection" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/jobXML_1_0.xsd" version="1.0">
 	<listeners> 
-		<listener ref="JobListener"/>
+		<listener ref="InjectionJobListener"/>
 	</listeners> 
 	<step id="step1">
-		<batchlet ref="Batchlet">
+		<batchlet ref="InjectionBatchlet">
 			<properties >
 				<property name="color" value="#{jobParameters['color']}?:blue;"/>
 			</properties>

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package app.util;
+package app.injection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -29,11 +29,11 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import app.beans.AbstractBean;
-import app.beans.AbstractScopedBean;
-import app.beans.AppScopedBean;
-import app.beans.AppScopedLocalEJB;
-import app.beans.DependentBean;
+import app.injection.beans.AbstractBean;
+import app.injection.beans.AbstractScopedBean;
+import app.injection.beans.AppScopedBean;
+import app.injection.beans.AppScopedLocalEJB;
+import app.injection.beans.DependentBean;
 
 /**
  * Groups inner classes consisting of batch artifacts and a non-batch artifact all sharing common injections.
@@ -83,7 +83,7 @@ public class Injectables {
     }
 
     @Dependent
-    @Named("JobListener")
+    @Named("InjectionJobListener")
     public static class JobListener extends AbstractJobListener {
 
         @Inject
@@ -107,7 +107,7 @@ public class Injectables {
     }
 
     @Dependent
-    @Named("Batchlet")
+    @Named("InjectionBatchlet")
     public static class Batchlet extends AbstractBatchlet {
 
         @Inject
