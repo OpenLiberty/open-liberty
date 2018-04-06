@@ -25,37 +25,37 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for SortKeyType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="SortKeyType">
- * &lt;complexContent>
- * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- * &lt;sequence>
- * &lt;element name="propertyName" type="{http://www.w3.org/2001/XMLSchema}string"/>
- * &lt;element name="ascendingOrder" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- * &lt;/sequence>
- * &lt;/restriction>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="SortKeyType"&gt;
+ * &lt;complexContent&gt;
+ * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="propertyName" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ * &lt;element name="ascendingOrder" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/restriction&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The SortKeyType object defines two properties:
- * 
+ *
  * <ul>
  * <li><b>propertyName</b>: defines the key by which to do the sort.</li>
- * 
+ *
  * <li><b>ascendingOrder</b>: is set to true by default and returns the
  * sorted objects in ascendingOrder. To sort by descending order, set the property
  * to false.</li>
  * </ul>
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SortKeyType", propOrder = {
-                                            "propertyName",
-                                            "ascendingOrder"
+                                             "propertyName",
+                                             "ascendingOrder"
 })
 public class SortKeyType {
 
@@ -76,10 +76,10 @@ public class SortKeyType {
 
     /**
      * Gets the value of the propertyName property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getPropertyName() {
         return propertyName;
@@ -87,10 +87,10 @@ public class SortKeyType {
 
     /**
      * Sets the value of the propertyName property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setPropertyName(String value) {
         this.propertyName = value;
@@ -102,7 +102,7 @@ public class SortKeyType {
 
     /**
      * Gets the value of the ascendingOrder property.
-     * 
+     *
      */
     public boolean isAscendingOrder() {
         return ascendingOrder;
@@ -110,7 +110,7 @@ public class SortKeyType {
 
     /**
      * Sets the value of the ascendingOrder property.
-     * 
+     *
      */
     public void setAscendingOrder(boolean value) {
         this.ascendingOrder = value;

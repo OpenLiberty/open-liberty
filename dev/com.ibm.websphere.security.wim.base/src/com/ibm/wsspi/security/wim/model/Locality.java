@@ -31,21 +31,21 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="Locality">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}GeographicLocation">
- * &lt;sequence>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}l" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}localityName" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}st" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}stateOrProvinceName" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}street" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}seeAlso" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}description" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Locality"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}GeographicLocation"&gt;
+ * &lt;sequence&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}l" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}localityName" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}st" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}stateOrProvinceName" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}street" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}seeAlso" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}description" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The Locality object extends the GeographicLocation object and defines several properties: <b>l</b>, <b>localityName</b>, <b>st</b>,
@@ -148,7 +148,7 @@ public class Locality extends GeographicLocation {
     }
 
     /**
-     * Gets the value of the <b>localityName<b/> property.
+     * Gets the value of the <b>localityName</b> property.
      *
      * @return
      *         possible object is {@link String }

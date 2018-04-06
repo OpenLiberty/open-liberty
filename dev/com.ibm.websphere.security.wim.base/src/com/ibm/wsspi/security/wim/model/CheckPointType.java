@@ -28,34 +28,34 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for CheckPointType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="CheckPointType">
- * &lt;complexContent>
- * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- * &lt;sequence>
- * &lt;element name="repositoryId" type="{http://www.w3.org/2001/XMLSchema}token"/>
- * &lt;element name="repositoryCheckPoint" type="{http://www.w3.org/2001/XMLSchema}token" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/restriction>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="CheckPointType"&gt;
+ * &lt;complexContent&gt;
+ * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="repositoryId" type="{http://www.w3.org/2001/XMLSchema}token"/&gt;
+ * &lt;element name="repositoryCheckPoint" type="{http://www.w3.org/2001/XMLSchema}token" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/restriction&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The CheckPointType object defines two properties: <b>repositoryId</b> and <b>repositoryCheckPoint</b>
- * 
+ *
  * <ul>
  * <li><b>repositoryId</b>: defines the unique identifier for a given federated repository.</li>
  * <li><b>repositoryCheckPoint</b>: defines the repository checkpoint identifier.</li>
  * </ul>
- * 
+ *
  **/
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CheckPointType", propOrder = {
-                                               "repositoryId",
-                                               "repositoryCheckPoint"
+                                                "repositoryId",
+                                                "repositoryCheckPoint"
 })
 public class CheckPointType {
 
@@ -79,10 +79,10 @@ public class CheckPointType {
 
     /**
      * Gets the value of the <b>repositoryId</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getRepositoryId() {
         return repositoryId;
@@ -90,10 +90,10 @@ public class CheckPointType {
 
     /**
      * Sets the value of the <b>repositoryId</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setRepositoryId(String value) {
         this.repositoryId = value;
@@ -101,10 +101,10 @@ public class CheckPointType {
 
     /**
      * Returns true if the <b>repositoryId</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetRepositoryId() {
         return (this.repositoryId != null);
@@ -112,10 +112,10 @@ public class CheckPointType {
 
     /**
      * Gets the value of the <b>repositoryCheckPoint</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getRepositoryCheckPoint() {
         return repositoryCheckPoint;
@@ -123,10 +123,10 @@ public class CheckPointType {
 
     /**
      * Sets the value of the <b>repositoryCheckPoint</b> property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setRepositoryCheckPoint(String value) {
         this.repositoryCheckPoint = value;
@@ -134,10 +134,10 @@ public class CheckPointType {
 
     /**
      * Returns true if the <b>repositoryCheckPoint</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetRepositoryCheckPoint() {
         return (this.repositoryCheckPoint != null);
@@ -145,13 +145,13 @@ public class CheckPointType {
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     public Object get(String propName) {
         if (propName.equals("repositoryId")) {
@@ -165,10 +165,10 @@ public class CheckPointType {
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSet(String propName) {
         if (propName.equals("repositoryId")) {
@@ -182,12 +182,12 @@ public class CheckPointType {
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
+     *
      */
     public void set(String propName, Object value) {
         if (propName.equals("repositoryId")) {
@@ -200,16 +200,16 @@ public class CheckPointType {
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      */
     public void unset(String propName) {}
 
     /**
      * Gets the name of this model object, <b>CheckPointType</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -219,10 +219,10 @@ public class CheckPointType {
 
     /**
      * Gets a list of all supported properties for this model object, <b>CheckPointType</b>
-     * 
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -250,10 +250,10 @@ public class CheckPointType {
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -274,7 +274,7 @@ public class CheckPointType {
     /**
      * Gets a list of any model objects which this model object, <b>CheckPointType</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -288,9 +288,9 @@ public class CheckPointType {
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -307,7 +307,7 @@ public class CheckPointType {
 
     /**
      * Gets a set of any model objects which extend this model object, <b>CheckPointType</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -320,7 +320,7 @@ public class CheckPointType {
 
     /**
      * Returns this model object, <b>CheckPointType</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */

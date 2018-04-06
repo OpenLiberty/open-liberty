@@ -30,15 +30,15 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="RolePlayer">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Entity">
- * &lt;sequence>
- * &lt;element name="partyRoles" type="{http://www.ibm.com/websphere/wim}PartyRole" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="RolePlayer"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Entity"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="partyRoles" type="{http://www.ibm.com/websphere/wim}PartyRole" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The RolePlay object extends from the Entity object. It has all of the properties defined by the
@@ -46,7 +46,8 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  *
  * <ul>
  * <li><b>partyroles</b>: a containment property which is used to link the party roles the role player is
- * playing. <b>partyRoles</b> may contain multiple PartyRole objects since a role player can play multiple roles.
+ * playing. <b>partyRoles</b> may contain multiple PartyRole objects since a role player can play multiple roles.</li>
+ * </ul>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RolePlayer", propOrder = {

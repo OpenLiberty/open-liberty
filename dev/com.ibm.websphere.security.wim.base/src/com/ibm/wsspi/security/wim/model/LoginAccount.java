@@ -33,18 +33,18 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="LoginAccount">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Party">
- * &lt;sequence>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}principalName" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}password" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}realm" minOccurs="0"/>
- * &lt;element ref="{http://www.ibm.com/websphere/wim}certificate" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="LoginAccount"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Party"&gt;
+ * &lt;sequence&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}principalName" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}password" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}realm" minOccurs="0"/&gt;
+ * &lt;element ref="{http://www.ibm.com/websphere/wim}certificate" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  *
@@ -145,7 +145,7 @@ public class LoginAccount extends Party {
     }
 
     /**
-     * Gets the value of the ><b>password</b> property.
+     * Gets the value of the <b>password</b> property.
      *
      * @return
      *         possible object is

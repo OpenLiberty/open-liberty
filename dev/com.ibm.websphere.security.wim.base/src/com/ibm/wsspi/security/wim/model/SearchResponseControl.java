@@ -26,37 +26,36 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for SearchResponseControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="SearchResponseControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Control">
- * &lt;attribute name="hasMoreResults" type="{http://www.w3.org/2001/XMLSchema}boolean" />
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="SearchResponseControl"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Control"&gt;
+ * &lt;attribute name="hasMoreResults" type="{http://www.w3.org/2001/XMLSchema}boolean" /&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The SearchResponseControl object extends the Control object, and contains the <b>hasMoreResults</b>property.
- * 
+ *
  * <p> A SearchResponseControl object will only be returned from a search API call if the <b>countLimit</b> property in the
  * SearchControl object is set to a value greater than 0.
- * 
+ *
  * <ul>
  * <li><b>hasMoreResults</b>: will be set to true if the actual number of results from the search is greater
- * than the value of the <b>countLimit</b> property in the SearchControl object.
- * 
+ * than the value of the <b>countLimit</b> property in the SearchControl object.</li>
+ * </ul>
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SearchResponseControl")
 @XmlSeeAlso({
-             ChangeResponseControl.class
+              ChangeResponseControl.class
 })
-public class SearchResponseControl
-                extends Control
-{
+public class SearchResponseControl extends Control {
 
     @XmlAttribute(name = "hasMoreResults")
     protected Boolean hasMoreResults;
@@ -73,10 +72,10 @@ public class SearchResponseControl
 
     /**
      * Gets the value of the hasMoreResults property.
-     * 
+     *
      * @return
      *         possible object is {@link Boolean }
-     * 
+     *
      */
     public boolean isHasMoreResults() {
         return hasMoreResults;
@@ -84,10 +83,10 @@ public class SearchResponseControl
 
     /**
      * Sets the value of the hasMoreResults property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Boolean }
-     * 
+     *
      */
     public void setHasMoreResults(boolean value) {
         this.hasMoreResults = value;

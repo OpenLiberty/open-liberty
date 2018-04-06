@@ -26,59 +26,57 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for SearchControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="SearchControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}PropertyControl">
- * &lt;sequence>
- * &lt;element name="searchBases" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;attribute name="countLimit" type="{http://www.w3.org/2001/XMLSchema}int" default="0" />
- * &lt;attribute name="searchLimit" type="{http://www.w3.org/2001/XMLSchema}int" default="0" />
- * &lt;attribute name="timeLimit" type="{http://www.w3.org/2001/XMLSchema}int" default="0" />
- * &lt;attribute name="expression" type="{http://www.w3.org/2001/XMLSchema}string" />
- * &lt;attribute name="returnSubType" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" />
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="SearchControl"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}PropertyControl"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="searchBases" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;attribute name="countLimit" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+ * &lt;attribute name="searchLimit" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+ * &lt;attribute name="timeLimit" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+ * &lt;attribute name="expression" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ * &lt;attribute name="returnSubType" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" /&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The SearchControl object extends the PropertyControl object.
- * 
+ *
  * <p> It is possible to provide a list of the search bases to narrow down the search by specifying the <b>searchBases</b> property
  * in the SearchControl. For example, 'ou=Mahwah, o=mycompany, c=us' could be specified in 'searchBases' to only search for users
  * in the Mahwah division in the United States.
- * 
+ *
  * <ul>
  * <li><b>countLimit</b>: used to specify the number of results to return from the search call. If the actual number of
  * search results is more than the <b>countLimit</b>, the <b>hasMoreResults</b> property in the SearchResponseControl will be set to true.</li>
- * 
+ *
  * <li><b>searchLimit</b>: used to specify the maximum number of search results that may be returned by the search operation.</li>
- * 
+ *
  * <li><b>timeLimit</b>: specifies the maximum number of milliseconds the search is allowed to take if a repository
  * supports such a parameter.</li>
- * 
+ *
  * <li><b>expression</b>: the search expression in XPath format.</li>
- * 
+ *
  * </ul>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SearchControl", propOrder = {
-                                              "searchBases"
+                                               "searchBases"
 })
 @XmlSeeAlso({
-             LoginControl.class,
-             ChangeControl.class,
-             HierarchyControl.class
+              LoginControl.class,
+              ChangeControl.class,
+              HierarchyControl.class
 })
-public class SearchControl
-                extends PropertyControl
-{
+public class SearchControl extends PropertyControl {
 
     protected List<String> searchBases;
     @XmlAttribute(name = "countLimit")
@@ -104,24 +102,25 @@ public class SearchControl
 
     /**
      * Gets the value of the searchBases property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the searchBases property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
      * getSearchBases().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getSearchBases() {
         if (searchBases == null) {
@@ -140,10 +139,10 @@ public class SearchControl
 
     /**
      * Gets the value of the countLimit property.
-     * 
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
+     *
      */
     public int getCountLimit() {
         if (countLimit == null) {
@@ -155,10 +154,10 @@ public class SearchControl
 
     /**
      * Sets the value of the countLimit property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Integer }
-     * 
+     *
      */
     public void setCountLimit(int value) {
         this.countLimit = value;
@@ -174,10 +173,10 @@ public class SearchControl
 
     /**
      * Gets the value of the searchLimit property.
-     * 
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
+     *
      */
     public int getSearchLimit() {
         if (searchLimit == null) {
@@ -189,10 +188,10 @@ public class SearchControl
 
     /**
      * Sets the value of the searchLimit property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Integer }
-     * 
+     *
      */
     public void setSearchLimit(int value) {
         this.searchLimit = value;
@@ -208,10 +207,10 @@ public class SearchControl
 
     /**
      * Gets the value of the timeLimit property.
-     * 
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
+     *
      */
     public int getTimeLimit() {
         if (timeLimit == null) {
@@ -223,10 +222,10 @@ public class SearchControl
 
     /**
      * Sets the value of the timeLimit property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Integer }
-     * 
+     *
      */
     public void setTimeLimit(int value) {
         this.timeLimit = value;
@@ -242,10 +241,10 @@ public class SearchControl
 
     /**
      * Gets the value of the expression property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getExpression() {
         return expression;
@@ -253,10 +252,10 @@ public class SearchControl
 
     /**
      * Sets the value of the expression property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setExpression(String value) {
         this.expression = value;
@@ -268,10 +267,10 @@ public class SearchControl
 
     /**
      * Gets the value of the returnSubType property.
-     * 
+     *
      * @return
      *         possible object is {@link Boolean }
-     * 
+     *
      */
     public boolean isReturnSubType() {
         if (returnSubType == null) {
@@ -283,10 +282,10 @@ public class SearchControl
 
     /**
      * Sets the value of the returnSubType property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Boolean }
-     * 
+     *
      */
     public void setReturnSubType(boolean value) {
         this.returnSubType = value;

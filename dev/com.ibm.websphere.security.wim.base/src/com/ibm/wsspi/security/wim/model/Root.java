@@ -29,18 +29,18 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="Root">
- * &lt;complexContent>
- * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- * &lt;sequence>
- * &lt;element name="contexts" type="{http://www.ibm.com/websphere/wim}Context" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element name="entities" type="{http://www.ibm.com/websphere/wim}Entity" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;element name="controls" type="{http://www.ibm.com/websphere/wim}Control" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;attribute name="validated" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
- * &lt;/restriction>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Root"&gt;
+ * &lt;complexContent&gt;
+ * &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="contexts" type="{http://www.ibm.com/websphere/wim}Context" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element name="entities" type="{http://www.ibm.com/websphere/wim}Entity" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;element name="controls" type="{http://www.ibm.com/websphere/wim}Control" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;attribute name="validated" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" /&gt;
+ * &lt;/restriction&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> Root is an object and does not have any meaning other than its use as a container. It has

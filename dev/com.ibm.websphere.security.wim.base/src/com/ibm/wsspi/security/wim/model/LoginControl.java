@@ -26,36 +26,34 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for LoginControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="LoginControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}SearchControl">
- * &lt;sequence>
- * &lt;element name="mappedProperties" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
- * &lt;/sequence>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="LoginControl"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}SearchControl"&gt;
+ * &lt;sequence&gt;
+ * &lt;element name="mappedProperties" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ * &lt;/sequence&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The LoginControl object extends the SearchControl object and defines
  * the property <b>mappedProperties</b>.
- * 
+ *
  * <ul>
  * <li><b>mappedProperties</b>: used to specify a list of alternative principal names which are mapped to existing VMM properties.</li>
  * </ul>
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LoginControl", propOrder = {
-                                             "mappedProperties"
+                                              "mappedProperties"
 })
-public class LoginControl
-                extends SearchControl
-{
+public class LoginControl extends SearchControl {
 
     protected List<String> mappedProperties;
     private static List propertyNames = null;
@@ -71,24 +69,25 @@ public class LoginControl
 
     /**
      * Gets the value of the <b>mappedProperties</b> property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the mappedProperties property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
      * getMappedProperties().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getMappedProperties() {
         if (mappedProperties == null) {
@@ -111,13 +110,13 @@ public class LoginControl
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     @Override
     public Object get(String propName) {
@@ -129,10 +128,10 @@ public class LoginControl
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     @Override
     public boolean isSet(String propName) {
@@ -144,12 +143,12 @@ public class LoginControl
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
+     *
      */
     @Override
     public void set(String propName, Object value) {
@@ -161,10 +160,10 @@ public class LoginControl
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      */
 
     @Override
@@ -177,7 +176,7 @@ public class LoginControl
 
     /**
      * Gets the name of this model object, <b>LoginControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -189,10 +188,10 @@ public class LoginControl
 
     /*
      * Gets a list of all supported properties for this model object, <b>LoginControl</b>
-     * 
+     *
      * @param entityTypeName
      * allowed object is {@link String}
-     * 
+     *
      * @return
      * returned object is {@link List}
      */
@@ -220,10 +219,10 @@ public class LoginControl
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -249,7 +248,7 @@ public class LoginControl
     /**
      * Gets a list of any model objects which this model object, <b>LoginControl</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -265,9 +264,9 @@ public class LoginControl
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -285,7 +284,7 @@ public class LoginControl
 
     /**
      * Gets a set of any model objects which extend this model object, <b>LoginControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -299,7 +298,7 @@ public class LoginControl
 
     /**
      * Returns this model object, <b>LoginControl</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */

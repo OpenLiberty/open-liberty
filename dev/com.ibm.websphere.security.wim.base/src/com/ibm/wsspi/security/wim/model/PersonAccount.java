@@ -31,13 +31,13 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="PersonAccount">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}LoginAccount">
- * &lt;group ref="{http://www.ibm.com/websphere/wim}PersonPropertyGroup"/>
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="PersonAccount"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}LoginAccount"&gt;
+ * &lt;group ref="{http://www.ibm.com/websphere/wim}PersonPropertyGroup"/&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  *
  * <p> The PersonAccount object extends the LoginAccount object, and represents an account with

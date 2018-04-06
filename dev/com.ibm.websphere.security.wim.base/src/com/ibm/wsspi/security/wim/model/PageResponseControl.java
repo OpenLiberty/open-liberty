@@ -25,35 +25,33 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for PageResponseControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="PageResponseControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Control">
- * &lt;attribute name="cookie" type="{http://www.w3.org/2001/XMLSchema}hexBinary" />
- * &lt;attribute name="totalSize" type="{http://www.w3.org/2001/XMLSchema}int" default="0" />
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="PageResponseControl"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Control"&gt;
+ * &lt;attribute name="cookie" type="{http://www.w3.org/2001/XMLSchema}hexBinary" /&gt;
+ * &lt;attribute name="totalSize" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The PageResponseControl object extends the Control object, and defines two
  * properties:
- * 
+ *
  * <ul>
  * <li><b>cookie</b>: contains the cookie to be used for the subsequent
  * calls in a paging search.</li>
- * 
+ *
  * <li><b>totalSize</b>: indicates the totalSize of the paging search.</li>
  * </ul>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PageResponseControl")
-public class PageResponseControl
-                extends Control
-{
+public class PageResponseControl extends Control {
 
     @XmlAttribute(name = "totalSize")
     protected Integer totalSize;
@@ -70,10 +68,10 @@ public class PageResponseControl
 
     /**
      * Gets the value of the totalSize property.
-     * 
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
+     *
      */
     public int getTotalSize() {
         if (totalSize == null) {
@@ -85,10 +83,10 @@ public class PageResponseControl
 
     /**
      * Sets the value of the totalSize property.
-     * 
+     *
      * @param value
      *            allowed object is {@link Integer }
-     * 
+     *
      */
     public void setTotalSize(int value) {
         this.totalSize = value;

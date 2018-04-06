@@ -24,30 +24,28 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for ExternalNameControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
- * &lt;complexType name="ExternalNameControl">
- * &lt;complexContent>
- * &lt;extension base="{http://www.ibm.com/websphere/wim}Control">
- * &lt;/extension>
- * &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="ExternalNameControl"&gt;
+ * &lt;complexContent&gt;
+ * &lt;extension base="{http://www.ibm.com/websphere/wim}Control"&gt;
+ * &lt;/extension&gt;
+ * &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
- * 
+ *
  * <p> The ExternalNameControl object extends the Control object.
- * 
+ *
  * <p> By default, VMM requires the caller to identify an entity by either the uniqueId or uniqueName.
  * If ExternalNameControl is specified in the input Root object, the caller can use the externalName
  * to identify the entity.
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExternalNameControl")
-public class ExternalNameControl
-                extends Control
-{
+public class ExternalNameControl extends Control {
 
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -62,13 +60,13 @@ public class ExternalNameControl
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     @Override
     public Object get(String propName) {
@@ -77,10 +75,10 @@ public class ExternalNameControl
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     @Override
     public boolean isSet(String propName) {
@@ -89,12 +87,12 @@ public class ExternalNameControl
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
+     *
      */
     @Override
     public void set(String propName, Object value) {
@@ -103,10 +101,10 @@ public class ExternalNameControl
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      */
     @Override
     public void unset(String propName) {
@@ -115,7 +113,7 @@ public class ExternalNameControl
 
     /**
      * Gets the name of this model object, <b>ExternalNameControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -126,10 +124,10 @@ public class ExternalNameControl
 
     /**
      * Gets a list of all supported properties for this model object, <b>ExternalNameControl</b>
-     * 
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -154,10 +152,10 @@ public class ExternalNameControl
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -180,7 +178,7 @@ public class ExternalNameControl
     /**
      * Gets a list of any model objects which this model object, <b>ExternalNameControl</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -195,9 +193,9 @@ public class ExternalNameControl
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -215,7 +213,7 @@ public class ExternalNameControl
 
     /**
      * Gets a set of any model objects which extend this model object, <b>ExternalNameControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -228,7 +226,7 @@ public class ExternalNameControl
 
     /**
      * Returns this model object, <b>ExternalNameControl</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
