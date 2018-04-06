@@ -129,6 +129,10 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         if (status == AuthenticationStatus.SUCCESS) {
             httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
             rspStatus = HttpServletResponse.SC_OK;
+        } else if (status == AuthenticationStatus.NOT_DONE) {
+            // set SC_OK, since if the target is not protected, it'll be processed.
+            // otherwise, webcontainer will set SC_FORBIDDEN;
+            rspStatus = HttpServletResponse.SC_OK;
         } else {
             // TODO: Audit invalid user or password
         }

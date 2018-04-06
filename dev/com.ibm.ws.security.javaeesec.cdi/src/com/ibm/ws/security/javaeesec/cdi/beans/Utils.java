@@ -37,9 +37,11 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.wsspi.security.registry.RegistryHelper;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 public class Utils {
@@ -72,8 +74,13 @@ public class Utils {
                 Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE");
                 logNoIDWarning = true;
             }
-            // If an identity store is not available, fall back to the original user registry.
-            status = validateWithUserRegistry(clientSubject, credential, httpMessageContext.getHandler());
+            if (isRegistryAvailable()) {
+                // If an identity store is not available, fall back to the original user registry.
+                status = validateWithUserRegistry(clientSubject, credential, httpMessageContext.getHandler());
+            } else {
+                // if there is no UR, return not done for let accesss the target if it is unprotected.
+                status = AuthenticationStatus.NOT_DONE;
+            }
         }
         return status;
     }
@@ -244,6 +251,17 @@ public class Utils {
             return true;
         } else {
             return false;
+        }
+    }
+
+    private boolean isRegistryAvailable() {
+        try {
+            return (RegistryHelper.getUserRegistry(null) != null);
+        } catch (WSSecurityException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Internal error getting the user registry", e);
+            // in order to propagate the error, let the code follow through the authentication with UR.
+            return true;
         }
     }
 }
