@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.TraceConstants;
 import com.ibm.ws.webcontainer.internalRuntimeExport.srt.IPrivateRequestAttributes;
 
