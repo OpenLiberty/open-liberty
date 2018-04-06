@@ -18,6 +18,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 EnvEntryTest.class,
                 JPATest.class,
+                RepeatableEnvEntryTest.class,
+                RepeatableTranTest.class,
                 ResRefTest.class,
                 TranTest.class
 })

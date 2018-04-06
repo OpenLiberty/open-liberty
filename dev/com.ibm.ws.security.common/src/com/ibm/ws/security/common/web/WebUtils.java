@@ -252,6 +252,7 @@ public class WebUtils {
         return validateUriFormat(uri, "https?://" + CommonWebConstants.VALID_URI_PATH_CHARS + "+");
     }
 
+    @FFDCIgnore(java.security.PrivilegedActionException.class)
     public static boolean validateUriFormat(final String uri, String regexToMatch) {
         if (uri == null || uri.isEmpty()) {
             // TODO - NLS message

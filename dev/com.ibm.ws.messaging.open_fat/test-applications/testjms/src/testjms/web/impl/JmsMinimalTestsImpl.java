@@ -1,4 +1,4 @@
-/*******************************************************************************
+/* ============================================================================
  * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,16 +7,17 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * ============================================================================
+ */
 package testjms.web.impl;
 
 import javax.jms.Message;
 
 import org.junit.Assert;
-import testjms.web.JmsTests;
+import testjms.web.JmsMinimalTests;
 
-public class JmsTestsImpl extends JmsTestsBase implements JmsTests {
-    public JmsTestsImpl(ConnectionFactoryType cfType) {
+public class JmsMinimalTestsImpl extends JmsTestsBase implements JmsMinimalTests {
+    public JmsMinimalTestsImpl(ConnectionFactoryType cfType) {
         super(cfType);
     }
 

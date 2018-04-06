@@ -12,10 +12,10 @@ package com.ibm.ws.sib.api.jms.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UTFDataFormatException;
-import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 
 import javax.jms.BytesMessage;
@@ -124,18 +124,14 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
     private int floatEncoding = ApiJmsConstants.ENC_FLOAT_IEEE_NORMAL; // defaults to standard Java encoding
 
     // stream used for read methods
-    transient private ByteArrayInputStream readStream;
+    transient private ByteArrayInputStream _readBytes;
+    transient private DataInputStream readStream;
 
     /**
      * Offset into readStream if message is in readOnly mode.
      * Used during message serialisation.
      */
     private int streamOffset;
-
-    // The markInUse indicates that a position in the input stream has
-    // been marked, to allow the read methods to reset the current
-    // position should they end with an exception.
-    private boolean markInUse = false;
 
     /**
      * This variable holds a cache of the message toString at the Message level.
@@ -337,20 +333,11 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         if (requiresInit)
             lazyInitForReading();
 
-        // Read the boolean from the input stream
-        int byteRead = readStream.read(); // read the byte
-
-        if (byteRead < 0) { // this is how read() signals EOF
-            throw (JMSException) JmsErrorUtils.newThrowable(
-                                                            MessageEOFException.class,
-                                                            "END_BYTESMESSAGE_CWSIA0183",
-                                                            null,
-                                                            tc);
-        }
+        final boolean result = (readByte() != 0);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readBoolean", (byteRead != 0));
-        return (byteRead != 0);
+            SibTr.exit(this, tc, "readBoolean", result);
+        return result;
     }
 
     /**
@@ -369,24 +356,27 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "readByte");
 
-        // Check that we are in read mode
-        checkBodyReadable("readByte");
-        if (requiresInit)
-            lazyInitForReading();
+        try {
+            // Check that we are in read mode
+            checkBodyReadable("readByte");
+            if (requiresInit)
+                lazyInitForReading();
 
-        // Read the byte from the input stream
-        int byteRead = readStream.read(); // read the byte
+            // Read the byte from the input stream
+            byte byteRead = readStream.readByte(); // read the byte
 
-        if (byteRead < 0) // this is how read() signals EOF
-            throw (JMSException) JmsErrorUtils.newThrowable(
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "readByte", byteRead);
+            return byteRead;
+        } catch (IOException e) {
+            JMSException jmse = (JMSException) JmsErrorUtils.newThrowable(
                                                             MessageEOFException.class,
                                                             "END_BYTESMESSAGE_CWSIA0183",
                                                             null,
                                                             tc);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readByte", byteRead);
-        return (byte) byteRead;
+            jmse.initCause(e);
+            throw jmse;
+        }
     }
 
     /**
@@ -450,23 +440,33 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "readBytes", new Object[] { value, length });
 
-        // Check that we are in read mode
-        checkBodyReadable("readBytes");
-        if (requiresInit)
-            lazyInitForReading();
+        try {
+            // Check that we are in read mode
+            checkBodyReadable("readBytes");
+            if (requiresInit)
+                lazyInitForReading();
 
-        // Check that there's enough room in the byte array supplied by the application for the number of
-        // bytes requested
-        if (value.length < length || length < 0)
-            throw new IndexOutOfBoundsException();
+            // Check that there's enough room in the byte array supplied by the application for the number of
+            // bytes requested
+            if (value.length < length || length < 0)
+                throw new IndexOutOfBoundsException();
 
-        // Attempt to read into the application's byte array. If there are insufficient bytes in the message readStream
-        // then this method returns the number actually read. If we've reached the end of data, it returns -1
-        int result = readStream.read(value, 0, length);
+            // Attempt to read into the application's byte array. If there are insufficient bytes in the message readStream
+            // then this method returns the number actually read. If we've reached the end of data, it returns -1
+            int result = readStream.read(value, 0, length);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readBytes", result);
-        return result;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "readBytes", result);
+            return result;
+        } catch (IOException e) {
+            JMSException jmse = (JMSException) JmsErrorUtils.newThrowable(
+                                                            MessageEOFException.class,
+                                                            "END_BYTESMESSAGE_CWSIA0183",
+                                                            null,
+                                                            tc);
+            jmse.initCause(e);
+            throw jmse;
+        }
     }
 
     /**
@@ -485,40 +485,36 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "readChar");
 
-        // Check that we are in read mode
-        checkBodyReadable("readChar");
-        if (requiresInit)
-            lazyInitForReading();
+        try {
+            // Check that we are in read mode
+            checkBodyReadable("readChar");
+            if (requiresInit)
+                lazyInitForReading();
 
-        // Mark the current position, so we can return to it if there's an error
-        // (if our caller hasn't set a mark already)
-        if (markInUse == false)
+            // Mark the current position, so we can return to it if there's an error
             readStream.mark(2);
 
-        // Read the character value from the input stream
-        int byte1 = readStream.read(); // read the first byte
-        int byte2 = readStream.read(); // read the next
-        if (byte2 < 0) { // this is how read() signals EOF
-            readStream.reset(); // return to the marked position
-            throw (JMSException) JmsErrorUtils.newThrowable(
+            char result = readStream.readChar();
+            // Byte swap the character if required
+            if (integerEncoding == ApiJmsConstants.ENC_INTEGER_REVERSED) {
+                result = Character.reverseBytes(result);
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "readChar", result);
+            return result;
+        } catch (IOException e) {
+            try {
+                readStream.reset(); // return to the marked position
+            } catch (IOException e2) {
+            }
+            JMSException jmse = (JMSException) JmsErrorUtils.newThrowable(
                                                             MessageEOFException.class,
                                                             "END_BYTESMESSAGE_CWSIA0183",
                                                             null,
                                                             tc);
+            jmse.initCause(e);
+            throw jmse;
         }
-
-        char result;
-        // Byte swap the character if required
-        if (integerEncoding == ApiJmsConstants.ENC_INTEGER_REVERSED) {
-            result = (char) ((byte2 << 8) + byte1);
-        }
-        else {
-            result = (char) ((byte1 << 8) + byte2);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readChar", result);
-        return result;
     }
 
     /**
@@ -673,43 +669,37 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "readInt");
 
-        // Check that we are in read mode
-        checkBodyReadable("readInt");
-        if (requiresInit)
-            lazyInitForReading();
+        try {
+            // Check that we are in read mode
+            checkBodyReadable("readInt");
+            if (requiresInit)
+                lazyInitForReading();
 
-        // Mark the current position, so we can return to it if there's an error
-        // but avoid re-marking if we're called from readLong
-        if (markInUse == false)
+            // Mark the current position, so we can return to it if there's an error
             readStream.mark(4);
 
-        // Read the integer value from the input stream
-        int byte1 = readStream.read(); // read the first byte
-        int byte2 = readStream.read(); // read the next
-        int byte3 = readStream.read(); // read the next
-        int byte4 = readStream.read(); // read the next
+            int result = readStream.readInt();
+            // Byte swap the integer if required
+            if (integerEncoding == ApiJmsConstants.ENC_INTEGER_REVERSED) {
+                result = Integer.reverseBytes(result);
+            }
 
-        if (byte4 < 0) { // this is how read() signals EOF
-            readStream.reset(); // return to the marked position
-            throw (JMSException) JmsErrorUtils.newThrowable(
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "readInt", result);
+            return result;
+        } catch (IOException e) {
+            try {
+                readStream.reset(); // return to the marked position
+            } catch (IOException e2) {
+            }
+            JMSException jmse = (JMSException) JmsErrorUtils.newThrowable(
                                                             MessageEOFException.class,
                                                             "END_BYTESMESSAGE_CWSIA0183",
                                                             null,
                                                             tc);
+            jmse.initCause(e);
+            throw jmse;
         }
-
-        // Byte swap the integer if required
-        int result;
-        if (integerEncoding == ApiJmsConstants.ENC_INTEGER_REVERSED) {
-            result = (byte4 << 24) + (byte3 << 16) + (byte2 << 8) + byte1;
-        }
-        else {
-            result = (byte1 << 24) + (byte2 << 16) + (byte3 << 8) + byte4;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readInt", result);
-        return result;
     }
 
     /**
@@ -727,36 +717,38 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
     public long readLong() throws JMSException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "readLong");
-        long result;
-
-        // Check that we are in read mode
-        checkBodyReadable("readLong");
-        if (requiresInit)
-            lazyInitForReading();
 
         try {
+            // Check that we are in read mode
+            checkBodyReadable("readLong");
+            if (requiresInit)
+                lazyInitForReading();
+
             // Mark the current position, so we can return to it if there's an error
             readStream.mark(8); // the argument appears to be ignored
-            markInUse = true; // stop readInt from remarking
 
-            // We handle the long as if it were two consecutive ints.
-            long int1 = readInt() & 0xFFFFFFFFL;
-            long int2 = readInt() & 0xFFFFFFFFL;
-
+            long result = readStream.readLong();
             // Byte swap the long if required
             if (integerEncoding == ApiJmsConstants.ENC_INTEGER_REVERSED) {
-                result = (int2 << 32) + int1;
+                result = Long.reverseBytes(result);
             }
-            else {
-                result = (int1 << 32) + int2;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "readLong", result);
+            return result;
+        } catch (IOException e) {
+            try {
+                readStream.reset();
+            } catch (IOException e2) {
             }
-        } finally {
-            markInUse = false; // release the mark
+            throw (JMSException) JmsErrorUtils.newThrowable(
+                                                            JMSException.class,
+                                                            "EXCEPTION_RECEIVED_CWSIA0190",
+                                                            new Object[] { e, "JmsBytesMessageImpl.readLong" },
+                                                            e,
+                                                            "JmsBytesMessageImpl.readLong#1",
+                                                            this,
+                                                            tc);
         }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readLong", result);
-        return result;
     }
 
     /**
@@ -775,40 +767,38 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "readShort");
 
-        // Check that we are in read mode
-        checkBodyReadable("readShort");
-        if (requiresInit)
-            lazyInitForReading();
+        try {
+            // Check that we are in read mode
+            checkBodyReadable("readShort");
+            if (requiresInit)
+                lazyInitForReading();
 
-        // Mark the current position, so we can return to it if there's an error
-        // if our caller hasn't set a mark
-        if (markInUse == false)
+            // Mark the current position, so we can return to it if there's an error
             readStream.mark(2);
 
-        // Read the short value from the input stream
-        int byte1 = readStream.read(); // read the first byte
-        int byte2 = readStream.read(); // read the next 	
-        if (byte2 < 0) {
-            readStream.reset(); // return to the marked position
-            throw (JMSException) JmsErrorUtils.newThrowable(
+            short result = readStream.readShort();
+
+            // Byte swap the short if required
+            if (integerEncoding == ApiJmsConstants.ENC_INTEGER_REVERSED) {
+                result = Short.reverseBytes(result);
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "readShort", result);
+            return result;
+        } catch (IOException e) {
+            try {
+                readStream.reset(); // return to the marked position
+            } catch (IOException e2) {
+            }
+            JMSException jmse = (JMSException) JmsErrorUtils.newThrowable(
                                                             MessageEOFException.class,
                                                             "END_BYTESMESSAGE_CWSIA0183",
                                                             null,
                                                             tc);
+            jmse.initCause(e);
+            throw jmse;
         }
-
-        // Byte swap the short if required
-        short result;
-        if (integerEncoding == ApiJmsConstants.ENC_INTEGER_REVERSED) {
-            result = (short) ((byte2 << 8) + byte1);
-        }
-        else {
-            result = (short) ((byte1 << 8) + byte2);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readShort", result);
-        return result;
     }
 
     /**
@@ -827,24 +817,29 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "readUnsignedByte");
 
-        // Check that we are in read mode
-        checkBodyReadable("readUnsignedByte");
-        if (requiresInit)
-            lazyInitForReading();
+        try {
+            // Check that we are in read mode
+            checkBodyReadable("readUnsignedByte");
+            if (requiresInit)
+                lazyInitForReading();
 
-        // Read the byte from the input stream
-        int byteRead = readStream.read(); // read the byte
-        if (byteRead < 0) {
-            throw (JMSException) JmsErrorUtils.newThrowable(
+            // Read the byte from the input stream
+            byte byteRead = readStream.readByte(); // read the byte
+            // Convert to unsigned value
+            int result = byteRead & 0xff;
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "readUnsignedByte", result);
+            return result;
+        } catch (IOException e) {
+            JMSException jmse = (JMSException) JmsErrorUtils.newThrowable(
                                                             MessageEOFException.class,
                                                             "END_BYTESMESSAGE_CWSIA0183",
                                                             null,
                                                             tc);
+            jmse.initCause(e);
+            throw jmse;
         }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readUnsignedByte", byteRead);
-        return byteRead;
     }
 
     /**
@@ -863,40 +858,39 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "readUnsignedShort");
 
-        // Check that we are in read mode
-        checkBodyReadable("readUnsignedShort");
-        if (requiresInit)
-            lazyInitForReading();
+        try {
+            // Check that we are in read mode
+            checkBodyReadable("readUnsignedShort");
+            if (requiresInit)
+                lazyInitForReading();
 
-        // Mark the current position, so we can return to it if there's an error
-        // if our caller hasn't set a mark already
-        if (markInUse == false)
+            // Mark the current position, so we can return to it if there's an error
             readStream.mark(2);
 
-        // Read the short value from the input stream
-        int byte1 = readStream.read(); // read the first byte
-        int byte2 = readStream.read(); // read the next
-        if (byte2 < 0) {
-            readStream.reset(); // return to the marked position
-            throw (JMSException) JmsErrorUtils.newThrowable(
+            short shortRead = readStream.readShort();
+            // Byte swap the short if required
+            if (integerEncoding == ApiJmsConstants.ENC_INTEGER_REVERSED) {
+                shortRead = Short.reverseBytes(shortRead);
+            }
+            // Convert to unsigned value
+            int result = shortRead & 0xffff;
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "readUnsignedShort", result);
+            return result;
+        } catch (IOException e) {
+            try {
+                readStream.reset(); // return to the marked position
+            } catch (IOException e2) {
+            }
+            JMSException jmse = (JMSException) JmsErrorUtils.newThrowable(
                                                             MessageEOFException.class,
                                                             "END_BYTESMESSAGE_CWSIA0183",
                                                             null,
                                                             tc);
+            jmse.initCause(e);
+            throw jmse;
         }
-
-        // Byte swap the short if required
-        int result;
-        if (integerEncoding == ApiJmsConstants.ENC_INTEGER_REVERSED) {
-            result = (byte2 << 8) + byte1;
-        }
-        else {
-            result = (byte1 << 8) + byte2;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readUnsignedShort", result);
-        return result;
     }
 
     /**
@@ -921,8 +915,6 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
             SibTr.entry(this, tc, "readUTF");
         String result;
 
-        int savedEncoding = integerEncoding; // save this as we might corrupt it
-
         try {
             // Check that we are in read mode
             checkBodyReadable("readUTF");
@@ -931,52 +923,24 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
 
             // Mark the current position, so we can return to it if there's an error
             readStream.mark(8); // the argument appears to be ignored
-            markInUse = true; // stop readUnsignedShort from remarking
 
-            // Read the 2-byte length prefix
-            integerEncoding = ApiJmsConstants.ENC_INTEGER_NORMAL; // it's always hi-byte, lo-byte
-            int length = readUnsignedShort();
-
-            // Read in the bytes that make up the body of the UTF8 string
-            byte[] utfBytes = new byte[length];
-
-            if (readBytes(utfBytes, length) != length) {
-                // If we didn't read the expected number of bytes for some reason
+            result = readStream.readUTF();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, "readUTF", result);
+            return result;
+        } catch (IOException e) {
+            try {
                 readStream.reset(); // return to the marked position
-                throw (JMSException) JmsErrorUtils.newThrowable(
-                                                                MessageEOFException.class,
-                                                                "END_BYTESMESSAGE_CWSIA0183",
-                                                                null,
-                                                                tc);
+            } catch (IOException e2) {
             }
-
-            // Return the bytes as a Java String
-            result = new String(utfBytes, 0, length, "UTF8");
-        }
-
-        // We don't expect any exceptions from the String constructor, but we must catch them anyway
-        catch (UnsupportedEncodingException ex) {
-            // No FFDC code needed
-            // d238447 review. Generate FFDC for this case.
-            throw (JMSException) JmsErrorUtils.newThrowable(
-                                                            MessageFormatException.class,
-                                                            "UTF8_CONV_CWSIA0184",
+            JMSException jmse = (JMSException) JmsErrorUtils.newThrowable(
+                                                            MessageEOFException.class,
+                                                            "END_BYTESMESSAGE_CWSIA0183",
                                                             null,
-                                                            ex,
-                                                            "JmsBytesMessage.readUTF#1",
-                                                            this,
                                                             tc);
-
+            jmse.initCause(e);
+            throw jmse;
         }
-
-        finally {
-            integerEncoding = savedEncoding; // make sure it's put back correctly
-            markInUse = false; // release the mark
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "readUTF", result);
-        return result;
     }
 
     /**
@@ -1033,12 +997,16 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         // Create a Byte array input stream for the readxxx methods to operate on. We have to create a new
         // stream each time (rather than call the stream's read method), as the stream may have a position
         // marked in it that isn't at the start.
-        readStream = new ByteArrayInputStream(dataBuffer);
+        _readBytes = new ByteArrayInputStream(dataBuffer);
+        readStream = new DataInputStream(_readBytes);
 
         // Jump over any header that might be present in the dataBuffer
         // JBK - I don't think we will ever have dataStart!=0 in JS, but I'm
         // leaving the capability here until I understand better.
-        readStream.skip(dataStart);
+        try {
+            readStream.skip(dataStart);
+        } catch (IOException e) {
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "reset");
@@ -1917,10 +1885,10 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(this, tc, "Body is read only - recreating read stream from local reference to payload");
                 // If message is in read mode, recreate input stream and skip to offset
-                readStream = new ByteArrayInputStream(dataBuffer);
+                _readBytes = new ByteArrayInputStream(dataBuffer);
+                readStream = new DataInputStream(_readBytes);
                 readStream.skip(streamOffset);
-            }
-            else {
+            } else {
                 if (!producerWontModifyPayloadAfterSet) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         SibTr.debug(this, tc,
@@ -2004,7 +1972,8 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
         if (dataBuffer == null)
             dataBuffer = new byte[0];
 
-        readStream = new ByteArrayInputStream(dataBuffer);
+        _readBytes = new ByteArrayInputStream(dataBuffer);
+        readStream = new DataInputStream(_readBytes);
         dataStart = 0;
 
         // set the encoding fields
@@ -2088,7 +2057,6 @@ public class JmsBytesMessageImpl extends JmsMessageImpl implements javax.jms.Byt
      *            The numeric encoding parameter selects the manner in which numeric values are encoded in the byte array
      *            It applies only to messages that are populated by the client application itself. If a message is read in and
      *            resent by the client, the resent method has the same encoding as the incoming message.
-     * @param characterSet String The character set encoding (ignored)
      * @exception javax.jms.JMSException if the encoding is not recognized, or if an IOException occurs.
      * 
      *                Used from getMsgReference to flatten to byte[] and put in JS message. JBK

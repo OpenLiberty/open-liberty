@@ -10,6 +10,7 @@
  *******************************************************************************/
 package session.cache.web;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -18,15 +19,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
+import javax.cache.management.CacheMXBean;
+import javax.cache.management.CacheStatisticsMXBean;
+import javax.management.JMX;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -274,6 +283,69 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         // Verify that attribute has been persisted to the cache
         testCacheContains(key, value);
+    }
+
+    /**
+     * Verify that CacheMXBean and CacheStatisticsMXBean provided for each of the caches created by the sessionCache feature
+     * can be obtained and report statistics about the cache.
+     */
+    public void testMXBeansEnabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        // CacheMXBean for session meta info cache
+        CacheMXBean metaInfoCacheMXBean = //
+                        JMX.newMBeanProxy(mbs,
+                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=hazelcast,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"),
+                                          CacheMXBean.class);
+        assertEquals(String.class.getName(), metaInfoCacheMXBean.getKeyType());
+        assertEquals(ArrayList.class.getName(), metaInfoCacheMXBean.getValueType());
+        assertTrue(metaInfoCacheMXBean.isManagementEnabled());
+        assertTrue(metaInfoCacheMXBean.isStatisticsEnabled());
+
+        // CacheMXBean for session attributes cache
+        CacheMXBean attrCacheMXBean = //
+                        JMX.newMBeanProxy(mbs,
+                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=hazelcast,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"),
+                                          CacheMXBean.class);
+        assertEquals(String.class.getName(), attrCacheMXBean.getKeyType());
+        assertEquals("[B", attrCacheMXBean.getValueType()); // byte[]
+        assertTrue(attrCacheMXBean.isManagementEnabled());
+        assertTrue(attrCacheMXBean.isStatisticsEnabled());
+
+        // CacheStatisticsMXBean for session meta info cache
+        CacheStatisticsMXBean metaInfoCacheStatsMXBean = //
+                        JMX.newMBeanProxy(mbs,
+                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=hazelcast,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"),
+                                          CacheStatisticsMXBean.class);
+        metaInfoCacheStatsMXBean.clear();
+        assertEquals(0, metaInfoCacheStatsMXBean.getCacheEvictions());
+
+        // CacheStatisticsMXBean for session attributes cache
+        CacheStatisticsMXBean attrCacheStatsMXBean = //
+                        JMX.newMBeanProxy(mbs,
+                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=hazelcast,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"),
+                                          CacheStatisticsMXBean.class);
+        assertEquals(0, attrCacheStatsMXBean.getCacheRemovals());
+
+        HttpSession session = request.getSession();
+        request.getSession().setAttribute("testMXBeans", 12.3f);
+        ((IBMSession) session).sync();
+
+        request.getSession().removeAttribute("testMXBeans");
+        ((IBMSession) session).sync();
+
+        assertEquals(1, attrCacheStatsMXBean.getCacheRemovals());
+
+        session.invalidate();
+    }
+
+    /**
+     * Verify that CacheMXBean and CacheStatisticsMXBean are not registered.
+     */
+    public void testMXBeansNotEnabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        Set<ObjectName> found = mbs.queryNames(new ObjectName("javax.cache:*"), null);
+        assertEquals(found.toString(), 0, found.size());
     }
 
     /**
