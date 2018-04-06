@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.batch.runtime.BatchStatus;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 
 import com.ibm.jbatch.container.IThreadRootController;
 import com.ibm.jbatch.container.callback.IJobExecutionEndCallbackService;
@@ -31,22 +33,22 @@ import com.ibm.jbatch.container.execution.impl.RuntimeWorkUnitExecution;
 import com.ibm.jbatch.container.services.IBatchKernelService;
 
 /**
- * 
- * BatchWorkUnit is the thread that runs the job.  
- * 
+ *
+ * BatchWorkUnit is the thread that runs the job.
+ *
  * BatchWorkUnits are created by BatchKernelImpl during pre-job setup, then they're
  * submitted to an ExecutorService and run from there.
- * 
+ *
  * The high-level flow is:
- * 
- *  BatchWorkUnit.run
- *      IJobExecutionStartCallbackService.jobStarted
- *      WorkUnitThreadControllerImpl.originateExecutionOnThread
- *          ExecutionTransitioner.doExecutionLoop       // job steps are processed in this loop
- *      BatchWorkUnit.markThreadCompleted
- *          IJobExecutionEndCallbackService.jobEnded
- * 
- * 
+ *
+ * BatchWorkUnit.run
+ * IJobExecutionStartCallbackService.jobStarted
+ * WorkUnitThreadControllerImpl.originateExecutionOnThread
+ * ExecutionTransitioner.doExecutionLoop // job steps are processed in this loop
+ * BatchWorkUnit.markThreadCompleted
+ * IJobExecutionEndCallbackService.jobEnded
+ *
+ *
  * Note: I took out the 'work type' constant since I don't see that we want to use
  * the same thread pool for start requests as we'd use for stop requests.
  * The stop seems like it should be synchronous from the JobOperator's
@@ -54,141 +56,186 @@ import com.ibm.jbatch.container.services.IBatchKernelService;
  */
 public abstract class BatchWorkUnit implements Runnable {
 
-	private String CLASSNAME = BatchWorkUnit.class.getName();
-	private Logger logger = Logger.getLogger(BatchWorkUnit.class.getName());
+    private final String CLASSNAME = BatchWorkUnit.class.getName();
+    private final Logger logger = Logger.getLogger(BatchWorkUnit.class.getName());
 
-	protected RuntimeWorkUnitExecution runtimeWorkUnitExecution = null;
-	protected IBatchKernelService batchKernel = null;
-	protected IThreadRootController controller;
-	protected List<IJobExecutionStartCallbackService> beforeCallbacks;
-	protected List<IJobExecutionEndCallbackService> afterCallbacks;
+    protected RuntimeWorkUnitExecution runtimeWorkUnitExecution = null;
+    protected IBatchKernelService batchKernel = null;
+    protected IThreadRootController controller;
+    protected List<IJobExecutionStartCallbackService> beforeCallbacks;
+    protected List<IJobExecutionEndCallbackService> afterCallbacks;
+    protected TransactionManager tranMgr;
 
-	protected boolean notifyCallbackWhenDone;
+    protected boolean notifyCallbackWhenDone;
 
-	public BatchWorkUnit(IBatchKernelService batchKernel, 
-	                     RuntimeWorkUnitExecution runtimeExecution,
-	                     List<IJobExecutionStartCallbackService> beforeCallbacks, 
-	                     List<IJobExecutionEndCallbackService> afterCallbacks) {
-		this(batchKernel, runtimeExecution, beforeCallbacks, afterCallbacks, true);
-	}
+    public BatchWorkUnit(IBatchKernelService batchKernel,
+                         RuntimeWorkUnitExecution runtimeExecution,
+                         List<IJobExecutionStartCallbackService> beforeCallbacks,
+                         List<IJobExecutionEndCallbackService> afterCallbacks,
+                         TransactionManager tranMgr) {
+        this(batchKernel, runtimeExecution, beforeCallbacks, afterCallbacks, tranMgr, true);
+    }
 
-	public BatchWorkUnit(IBatchKernelService batchKernel, 
-	                     RuntimeWorkUnitExecution runtimeExecution,
-	                     List<IJobExecutionStartCallbackService> beforeCallbacks, 
-	                     List<IJobExecutionEndCallbackService> afterCallbacks,
-	                     boolean notifyCallbackWhenDone) {
-		this.setBatchKernel(batchKernel);
-		this.runtimeWorkUnitExecution = runtimeExecution;
-		this.setNotifyCallbackWhenDone(notifyCallbackWhenDone);
-		this.controller = new WorkUnitThreadControllerImpl(runtimeWorkUnitExecution);
-		this.beforeCallbacks = beforeCallbacks;
-		this.afterCallbacks = afterCallbacks;
-	}
+    public BatchWorkUnit(IBatchKernelService batchKernel,
+                         RuntimeWorkUnitExecution runtimeExecution,
+                         List<IJobExecutionStartCallbackService> beforeCallbacks,
+                         List<IJobExecutionEndCallbackService> afterCallbacks,
+                         TransactionManager tranMgr,
+                         boolean notifyCallbackWhenDone) {
+        this.setBatchKernel(batchKernel);
+        this.runtimeWorkUnitExecution = runtimeExecution;
+        this.setNotifyCallbackWhenDone(notifyCallbackWhenDone);
+        this.controller = new WorkUnitThreadControllerImpl(runtimeWorkUnitExecution);
+        this.beforeCallbacks = beforeCallbacks;
+        this.afterCallbacks = afterCallbacks;
+        this.tranMgr = tranMgr;
+    }
 
-	public IThreadRootController getController() {
-		return this.controller;
-	}
+    public IThreadRootController getController() {
+        return this.controller;
+    }
 
-	@Override
-	public void run() {
-		String method = "run";
-		if (logger.isLoggable(Level.FINER)) {
-			logger.entering(CLASSNAME, method);
-		}
+    @Override
+    public void run() {
+        String method = "run";
+        if (logger.isLoggable(Level.FINER)) {
+            logger.entering(CLASSNAME, method);
+        }
 
-		try {
-			if (beforeCallbacks != null) {
-				for (IJobExecutionStartCallbackService callback : beforeCallbacks) {
-					try {
-						callback.jobStarted(runtimeWorkUnitExecution);
-					} catch (Throwable t) { 
-						// Fail the execution if any of our before-work-unit callbacks failed. This usually means the joblog context setup
-						// was unsuccessful. We may want to make it toggle-able whether or not to fail for that reason in the future.
-						runtimeWorkUnitExecution.logExecutionFailedMessage();
-						throw new BatchContainerRuntimeException("An error occurred during job log initialization.", t);
-					}
-				}
-			}	
+        try {
 
-			runtimeWorkUnitExecution.logExecutionStartingMessage();
+            threadBegin();
 
-			//In case of top-level job, this will not throw an exception if the job fails. 
-			// hence we check and log the appropriate message. 
-			controller.runExecutionOnThread();
-			
-			if(runtimeWorkUnitExecution.getBatchStatus().equals(BatchStatus.COMPLETED)){
-				runtimeWorkUnitExecution.logExecutionCompletedMessage();
-			}
-			else if (runtimeWorkUnitExecution.getBatchStatus().equals(BatchStatus.STOPPED)){
-				runtimeWorkUnitExecution.logExecutionStoppedMessage();
-			}
-			else {
-				runtimeWorkUnitExecution.logExecutionFailedMessage();
-			}
-		} catch (Throwable t) {
+            runtimeWorkUnitExecution.logExecutionStartingMessage();
 
-			runtimeWorkUnitExecution.logExecutionFailedMessage();
+            //In case of top-level job, this will not throw an exception if the job fails.
+            // hence we check and log the appropriate message.
+            controller.runExecutionOnThread();
 
-			throw new BatchContainerRuntimeException("The job failed unexpectedly.", t);
-		}  finally {
-			// Put this in finally to minimize chance of tying up threads.
-			markThreadCompleted();
-		}
+            if (runtimeWorkUnitExecution.getBatchStatus().equals(BatchStatus.COMPLETED)) {
+                runtimeWorkUnitExecution.logExecutionCompletedMessage();
+            } else if (runtimeWorkUnitExecution.getBatchStatus().equals(BatchStatus.STOPPED)) {
+                runtimeWorkUnitExecution.logExecutionStoppedMessage();
+            } else {
+                runtimeWorkUnitExecution.logExecutionFailedMessage();
+            }
+        } catch (Throwable t) {
+            runtimeWorkUnitExecution.logExecutionFailedMessage();
+            throw new BatchContainerRuntimeException("The job failed unexpectedly.", t);
+        } finally {
+            threadEnd();
+        }
 
-		if (logger.isLoggable(Level.FINER)) {
-			logger.exiting(CLASSNAME, method);
-		}
-	}
+        if (logger.isLoggable(Level.FINER)) {
+            logger.exiting(CLASSNAME, method);
+        }
+    }
 
-	protected BatchStatus getBatchStatus() {
-		return runtimeWorkUnitExecution.getWorkUnitJobContext().getBatchStatus();
-	}
+    protected BatchStatus getBatchStatus() {
+        return runtimeWorkUnitExecution.getWorkUnitJobContext().getBatchStatus();
+    }
 
-	protected String getExitStatus() {
-		return runtimeWorkUnitExecution.getWorkUnitJobContext().getExitStatus();
-	}
+    protected String getExitStatus() {
+        return runtimeWorkUnitExecution.getWorkUnitJobContext().getExitStatus();
+    }
 
-	public void setBatchKernel(IBatchKernelService batchKernel) {
-		this.batchKernel = batchKernel;
-	}
+    public void setBatchKernel(IBatchKernelService batchKernel) {
+        this.batchKernel = batchKernel;
+    }
 
-	public IBatchKernelService getBatchKernel() {
-		return batchKernel;
-	}
+    public IBatchKernelService getBatchKernel() {
+        return batchKernel;
+    }
 
-	public void setJobExecutionImpl(RuntimeWorkUnitExecution runtimeWorkUnitExecution) {
-		this.runtimeWorkUnitExecution = runtimeWorkUnitExecution;
-	}
+    public void setJobExecutionImpl(RuntimeWorkUnitExecution runtimeWorkUnitExecution) {
+        this.runtimeWorkUnitExecution = runtimeWorkUnitExecution;
+    }
 
-	public RuntimeWorkUnitExecution getRuntimeWorkUnitExecution() {
-		return runtimeWorkUnitExecution;
-	}
+    public RuntimeWorkUnitExecution getRuntimeWorkUnitExecution() {
+        return runtimeWorkUnitExecution;
+    }
 
+    public void setNotifyCallbackWhenDone(boolean notifyCallbackWhenDone) {
+        this.notifyCallbackWhenDone = notifyCallbackWhenDone;
+    }
 
-	public void setNotifyCallbackWhenDone(boolean notifyCallbackWhenDone) {
-		this.notifyCallbackWhenDone = notifyCallbackWhenDone;
-	}
+    public boolean isNotifyCallbackWhenDone() {
+        return notifyCallbackWhenDone;
+    }
 
-	public boolean isNotifyCallbackWhenDone() {
-		return notifyCallbackWhenDone;
-	}
+    /**
+     * All the beginning of thread processing.
+     *
+     * Note we are going to fail fast out of here and fail the execution upon experiencing any exception.
+     */
+    protected void threadBegin() {
+        //
+        // Note the 'beforeCallbacks' list is not going to have a well-defined order, so it is of limited use.
+        // We probably want to revisit this with some kind of priority/order based on ranking to make
+        // it more useful.
+        //
+        // At the moment we treat the setting of the tran timeout separately, rather than as a IJobExecutionStartCallbackService,
+        // to reflect the fact that this is provided by a required dependency.  If we were to want this to function in SE mode,
+        // say, we might want to factor this too as an "extension" that is provided by another layer, and so incorporate this into a
+        // more generic, extensible "before" processing.
+        try {
+            tranMgr.setTransactionTimeout(0);
+            if (beforeCallbacks != null) {
+                for (IJobExecutionStartCallbackService callback : beforeCallbacks) {
+                    if (logger.isLoggable(Level.FINER)) {
+                        logger.logp(Level.FINER, CLASSNAME, "threadBegin", "Calling before callback", callback);
+                    }
+                    callback.jobStarted(runtimeWorkUnitExecution);
+                }
+            }
+        } catch (Throwable t) {
+            // Fail the execution if any of our before-work-unit callbacks failed. E.g. the joblog context setup
+            // was unsuccessful. We may want to make it an option whether or not to fail here in the future.
+            runtimeWorkUnitExecution.logExecutionFailedMessage();
+            throw new BatchContainerRuntimeException("An error occurred during thread initialization.", t);
+        }
+    }
 
-	protected void markThreadCompleted() {
-		try{
-			getBatchKernel().workUnitCompleted(this);
-		} catch (Exception e) { // FFDC instrumentation
-		}
+    /**
+     * All the end of thread processing.
+     *
+     * Note we are going to try to catch and eat any exceptions thrown within this method.
+     * We really want to give as much chance as possible for each piece of cleanup to complete.
+     */
+    protected void threadEnd() {
+        //
+        // Note the 'afterCallbacks' list is not going to have a well-defined order, so it is of limited use.
+        // We probably want to revisit this with some kind of priority/order based on ranking to make
+        // it more useful.
+        //
+        // At the moment we treat the setting of the tran timeout separately, rather than as a IJobExecutionEndCallbackService,
+        // to reflect the fact that this is provided by a required dependency.  If we were to want this to function in SE mode,
+        // say, we might want to factor this too as an "extension" that is provided by another layer, and so incorporate this into a
+        // more generic, extensible "after" processing.
+        try {
+            getBatchKernel().workUnitCompleted(this);
+        } catch (Exception e) {
+            // FFDC instrumentation
+        }
 
-		if (afterCallbacks != null) {
-			for (IJobExecutionEndCallbackService callback : afterCallbacks) {
-				try {
-					callback.jobEnded(runtimeWorkUnitExecution); 
-				} catch (Throwable t) { // FFDC instrumentation
-				}
-			}
-		}
-	}
+        if (afterCallbacks != null) {
+            for (IJobExecutionEndCallbackService callback : afterCallbacks) {
+                try {
+                    if (logger.isLoggable(Level.FINER)) {
+                        logger.logp(Level.FINER, CLASSNAME, "threadEnd", "Calling after callback", callback);
+                    }
+                    callback.jobEnded(runtimeWorkUnitExecution);
+                } catch (Throwable t) {
+                    // FFDC instrumentation
+                }
+            }
+        }
 
-
+        try {
+            tranMgr.setTransactionTimeout(0);
+        } catch (SystemException e) {
+            // FFDC instrumentation
+        }
+    }
 
 }
