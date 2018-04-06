@@ -424,7 +424,12 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         } catch (UnableToAdaptException e) {
             throw new CDIException(e);
         }
-        Set<String> annotatedClasses = containerAnnotations.getClassesWithSpecifiedInheritedAnnotations(new ArrayList<String>(annotations), application.getUseJandex());
+
+        boolean useJandex = false;
+        if (application != null) {
+            useJandex = application.getUseJandex();
+        }
+        Set<String> annotatedClasses = containerAnnotations.getClassesWithSpecifiedInheritedAnnotations(new ArrayList<String>(annotations), useJandex);
         return annotatedClasses;
     }
 }
