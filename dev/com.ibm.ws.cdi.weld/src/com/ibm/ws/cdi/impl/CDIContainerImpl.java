@@ -111,7 +111,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         this.cdiRuntime = cdiRuntime;
     }
 
-    public void applicationStarting(Application application) throws CDIException {
+    public WebSphereCDIDeployment startInitialization(Application application) throws CDIException {
         try {
             //first create the deployment object which has the full structure of BDAs inside
             WebSphereCDIDeployment webSphereCDIDeployment = createWebSphereCDIDeployment(application, getExtensionArchives());
@@ -126,7 +126,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
             //if the application as a whole is CDI Enabled then we create and add the runtime extension BDAs as well and then bootstrap CDI
             if (webSphereCDIDeployment.isCDIEnabled()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "applicationStarting", "CDI is enabled, starting the CDI Deployment");
+                    Tr.debug(tc, "startInitialization", "CDI is enabled, starting the CDI Deployment");
                 }
                 webSphereCDIDeployment.initializeInjectionServices();
 
@@ -148,19 +148,32 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 webSphereCDIDeployment.validateJEEComponentClasses();
                 weldBootstrap.deployBeans();
                 weldBootstrap.validateBeans();
-                weldBootstrap.endInitialization();
+                return webSphereCDIDeployment;
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "applicationStarting", "CDI is not enabled, shutting down CDI");
+                    Tr.debug(tc, "startInitialization", "CDI is not enabled, shutting down CDI");
                 }
                 webSphereCDIDeployment.shutdown();
                 unsetDeployment(application);
+                return null;
             }
 
         } finally {
             currentDeployment.set(null);
         }
 
+    }
+
+    public void endInitialization(WebSphereCDIDeployment webSphereCDIDeployment) throws CDIException {
+        WeldBootstrap weldBootstrap = webSphereCDIDeployment.getBootstrap();
+        if (weldBootstrap != null) {
+            try {
+                currentDeployment.set(webSphereCDIDeployment);
+                weldBootstrap.endInitialization();
+            } finally {
+                currentDeployment.set(null);
+            }
+        }
     }
 
     public void applicationStopped(Application application) throws CDIException {

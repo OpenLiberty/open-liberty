@@ -8,32 +8,36 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.test.jndi;
+package com.ibm.ws.cdi12.test.jndi.observer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.ibm.ws.cdi12.test.jndi.observer.ObserverBean;
 
-@WebServlet("")
-public class LookupServlet extends HttpServlet {
+@ApplicationScoped
+public class ObserverBean {
 
-    @Inject
-    JNDIStrings jndiStrings;
+    private String result;
 
-    @Inject
-    ObserverBean observerBean;
+    public String getResult() {
+        return result;
+    }
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter pw = response.getWriter();
-        pw.append("From Config: " + jndiStrings.getFromConfig() + "\n");
-        pw.append("From Bind: " + jndiStrings.getFromBind() + "\n");
-        pw.append("From ObserverBean: " + observerBean.getResult() + "\n");
+    public void init(@Observes @Initialized(ApplicationScoped.class)Object event){
+        try {
+            result = (String)new InitialContext().lookup("java:app/env/com.ibm.ws.cdi.jndi.test.result");
+        } catch (NamingException e) {
+            result = "test failed " + e.getMessage();
+        }
     }
 }
