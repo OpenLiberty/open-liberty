@@ -107,41 +107,48 @@ public class TraceSource implements Source, WsTraceHandler {
 
         LogTraceData traceData = new LogTraceData();
         LogRecord logRecord = routedMessage.getLogRecord();
-        String verboseMessage = routedMessage.getFormattedVerboseMsg();
-
-        if (verboseMessage == null) {
-            traceData.setMessage(logRecord.getMessage());
-        } else {
-            traceData.setMessage(verboseMessage);
-        }
 
         long datetimeValue = logRecord.getMillis();
         traceData.setDatetime(datetimeValue);
+        traceData.setMessageId(null);
         traceData.setThreadId(logRecord.getThreadID());
         traceData.setModule(logRecord.getLoggerName());
         traceData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
         traceData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
         traceData.setMethodName(logRecord.getSourceMethodName());
         traceData.setClassName(logRecord.getSourceClassName());
-        String sequenceNum = sequenceNumber.next(datetimeValue);
-        traceData.setSequence(sequenceNum);
         traceData.setLevelValue(logRecord.getLevel().intValue());
 
         String threadName = Thread.currentThread().getName();
         traceData.setThreadName(threadName);
 
-        if (id != null) {
-            int objid = System.identityHashCode(id);
-            traceData.setObjectId(objid);
-        }
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
-
         if (wsLogRecord != null) {
             traceData.setCorrelationId(wsLogRecord.getCorrelationId());
             traceData.setOrg(wsLogRecord.getOrganization());
             traceData.setProduct(wsLogRecord.getProduct());
             traceData.setComponent(wsLogRecord.getComponent());
+        } else {
+            traceData.setCorrelationId(null);
+            traceData.setOrg(null);
+            traceData.setProduct(null);
+            traceData.setComponent(null);
         }
+
+        String sequenceNum = sequenceNumber.next(datetimeValue);
+        traceData.setSequence(sequenceNum);
+
+        traceData.setThrowable(null);
+        traceData.setThrowableLocalized(null);
+
+        String verboseMessage = routedMessage.getFormattedVerboseMsg();
+        if (verboseMessage == null) {
+            traceData.setMessage(logRecord.getMessage());
+        } else {
+            traceData.setMessage(verboseMessage);
+        }
+
+        traceData.setFormattedMsg(null);
 
         if (logRecord instanceof WsLogRecord) {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
@@ -152,10 +159,16 @@ public class TraceSource implements Source, WsTraceHandler {
                 }
                 traceData.setExtensions(extensions);
             }
+        } else {
+            traceData.setExtensions(null);
+        }
+
+        if (id != null) {
+            int objid = System.identityHashCode(id);
+            traceData.setObjectId(objid);
         }
 
         traceData.setSourceType(sourceName);
-        traceData.setLevelValue(logRecord.getLevel().intValue());
 
         return traceData;
     }
