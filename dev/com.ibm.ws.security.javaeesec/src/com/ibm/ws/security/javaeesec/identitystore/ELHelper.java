@@ -179,6 +179,9 @@ class ELHelper {
             if (obj instanceof LdapSearchScope) {
                 result = (LdapSearchScope) obj;
                 immediate = isImmediateExpression(expression);
+            } else if (obj instanceof String) {
+                result = LdapSearchScope.valueOf(((String) obj).toUpperCase());
+                immediate = isImmediateExpression(expression);
             } else {
                 throw new IllegalArgumentException("Expected '" + name + "' to evaluate to an LdapSearchScope type.");
             }
@@ -374,7 +377,7 @@ class ELHelper {
              */
             Object obj = evaluateElExpression(useForExpression);
             if (obj instanceof ValidationType[]) {
-                ValidationType[] types = (ValidationType[])obj;
+                ValidationType[] types = (ValidationType[]) obj;
                 result = EnumSet.copyOf(Arrays.asList(types));
                 immediate = isImmediateExpression(useForExpression);
             } else {
