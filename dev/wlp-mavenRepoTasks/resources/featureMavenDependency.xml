@@ -59,10 +59,10 @@
 					<version>1</version>
 				</dependency>
 				<dependency>
-					<groupId>javax.interceptor</groupId>
-					<artifactId>javax.interceptor-api</artifactId>
-					<version>3.1</version>
-				</dependency>				
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-interceptor_1.1_spec</artifactId>
+					<version>1.0</version>
+				</dependency>
 			</mavendependencies>
 		</feature>
 		
@@ -81,8 +81,8 @@
 				<dependency>
 					<groupId>javax.interceptor</groupId>
 					<artifactId>javax.interceptor-api</artifactId>
-					<version>3.1</version>
-				</dependency>				
+					<version>1.2</version>
+				</dependency>
 			</mavendependencies>
 		</feature>	
 
