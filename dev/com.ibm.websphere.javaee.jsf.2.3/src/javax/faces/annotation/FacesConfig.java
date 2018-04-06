@@ -39,8 +39,6 @@ public @interface FacesConfig
 
     public static enum Version 
     {
-        JSF_2_2,
-        JSF_2_3,
-        CURRENT
+        JSF_2_3
     }
 }

@@ -237,7 +237,7 @@ public class ResolverBuilderBase
                 {
                     return false;
                 }
-                else if (FacesConfig.Version.JSF_2_2.ordinal() < version.ordinal())
+                else if (version.ordinal() >= FacesConfig.Version.JSF_2_3.ordinal())
                 {
                     return true;
                 }
