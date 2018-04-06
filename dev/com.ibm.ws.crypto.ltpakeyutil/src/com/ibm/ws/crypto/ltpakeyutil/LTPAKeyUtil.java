@@ -11,7 +11,13 @@
 package com.ibm.ws.crypto.ltpakeyutil;
 
 
+import java.security.Provider;
+import java.security.Security;
+
 public final class LTPAKeyUtil {
+
+  public static boolean ibmJCEAvailable = false;
+  public static boolean providerChecked = false;
 
   public static byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
     return LTPACrypto.encrypt(data, key, cipher);
@@ -47,6 +53,23 @@ public final class LTPAKeyUtil {
 
   public static byte[] generate3DESKey() {
     return LTPACrypto.generate3DESKey();
+  }
+
+  public static boolean isIBMJCEAvailable() {
+    if (providerChecked) {
+      return ibmJCEAvailable;
+    }
+    else {
+      Provider[] providers = Security.getProviders();
+      for (int i = 0; i < providers.length; i++) {
+        if (providers[i].toString().contains("IBMJCE")) {
+          ibmJCEAvailable = true;
+        }
+      }
+      providerChecked = true;
+      return ibmJCEAvailable;
+    }
+
   }
 
 }
