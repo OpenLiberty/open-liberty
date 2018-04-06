@@ -181,7 +181,10 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
                 exMessage = ex.toString();
             }
 
-            String message = "bla";
+            String message = Tr.formatMessage(tc,
+                                                  "FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E",
+                                                  displayName,
+                                                  exMessage);
             InjectionException ex2 = new InjectionException(message, ex);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
