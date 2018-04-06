@@ -9,14 +9,16 @@
  *     IBM Corporation - initial API and implementation
  * ============================================================================
  */
-package testjms.web.impl;
+package testjms.web;
 
-public enum ConnectionFactoryType {
-    LocalCF("jms/localCF"),
-    RemoteCF("jms/remoteCF");
-
-    public final String jndiName;
-    ConnectionFactoryType(final String jndiName) {
-        this.jndiName = jndiName;
-    }
+public interface JmsBytesMessageTests {
+    void test_writeByte() throws Exception;
+    void test_writeBytes() throws Exception;
+    void test_writeChar() throws Exception;
+    void test_writeDouble() throws Exception;
+    void test_writeFloat() throws Exception;
+    void test_writeInt() throws Exception;
+    void test_writeLong() throws Exception;
+    void test_writeShort() throws Exception;
+    void test_writeUTF() throws Exception;
 }
