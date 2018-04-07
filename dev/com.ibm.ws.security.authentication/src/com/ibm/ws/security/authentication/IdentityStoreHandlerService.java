@@ -45,9 +45,9 @@ public interface IdentityStoreHandlerService {
     public Subject createHashtableInSubject(String username) throws AuthenticationException;
 
     /**
-     * Returns whether an IdentiyStoreHander is available for validation.
+     * Returns whether an IdentiyStore is available for validation.
      *
-     * @return whether an identityStoreHander is available.
+     * @return whether an identityStore is available.
      */
-    public boolean isIdentityStoreHanderAvailable();
+    public boolean isIdentityStoreAvailable();
 }

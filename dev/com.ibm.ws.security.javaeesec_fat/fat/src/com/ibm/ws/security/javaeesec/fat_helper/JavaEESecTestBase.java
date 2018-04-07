@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +57,21 @@ public class JavaEESecTestBase {
 
     protected String getCurrentTestName() {
         return "Test name not set";
+    }
+
+    protected String executeGetRequestBasicAuthCredsPreemptive(DefaultHttpClient httpClient, String url, String userid, String password, int expectedStatusCode) throws Exception {
+        String methodName = "executeGetRequestBasicAuthCredsPreemptive";
+        Log.info(logClass, getCurrentTestName(), "Servlet url: " + url + " userid: " + userid + ", password: " + password + ", expectedStatusCode=" + expectedStatusCode
+                                                 + " , method=" + methodName);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        if (userid != null) {
+            getMethod.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((userid + ":" + password).getBytes("UTF8")));
+        }
+        HttpResponse response = httpClient.execute(getMethod);
+        Log.info(logClass, methodName, "Actual response: " + response.toString());
+        return processResponse(response, expectedStatusCode);
     }
 
     protected String executeGetRequestBasicAuthCreds(DefaultHttpClient httpClient, String url, String userid, String password, int expectedStatusCode) throws Exception {
