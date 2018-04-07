@@ -41,6 +41,8 @@ import org.junit.rules.TemporaryFolder;
  */
 public class LibIndexCreateTest {
 
+    private final static String sep = java.io.File.separator;
+
     public static class TestThinUtil extends SpringBootThinUtil {
 
         TestThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache) throws Exception {
@@ -96,13 +98,13 @@ public class LibIndexCreateTest {
         //verify dependencies jar contents
         HashSet<String> expectedDepsZipContents = new HashSet<String>() {
             {
-                add("aa/");
-                add("aa/001/");
-                add("aa/001/jboss-logging-3.3.2.Final.jar");
-                add("aa/002/");
-                add("aa/002/hibernate-jpa-2.1-api-1.0.0.Final.jar");
-                add("aa/003/");
-                add("aa/003/hibernate-commons-annotations-5.0.1.Final.jar");
+                add("aa" + sep + "");
+                add("aa" + sep + "001" + sep + "");
+                add("aa" + sep + "001" + sep + "jboss-logging-3.3.2.Final.jar");
+                add("aa" + sep + "002" + sep + "");
+                add("aa" + sep + "002" + sep + "hibernate-jpa-2.1-api-1.0.0.Final.jar");
+                add("aa" + sep + "003" + sep + "");
+                add("aa" + sep + "003" + sep + "hibernate-commons-annotations-5.0.1.Final.jar");
             }
         };
         verifyDirEntryPaths(applicationLibs, expectedDepsZipContents);
@@ -146,13 +148,13 @@ public class LibIndexCreateTest {
         //verify dependencies jar contents
         HashSet<String> expectedDepsZipContents = new HashSet<String>() {
             {
-                add("aa/");
-                add("aa/001/");
-                add("aa/001/jboss-logging-3.3.2.Final.jar");
-                add("aa/001/hibernate-jpa-2.1-api-1.0.0.Final.jar");
-                add("bb/");
-                add("bb/001/");
-                add("bb/001/hibernate-commons-annotations-5.0.1.Final.jar");
+                add("aa" + sep + "");
+                add("aa" + sep + "001" + sep + "");
+                add("aa" + sep + "001" + sep + "jboss-logging-3.3.2.Final.jar");
+                add("aa" + sep + "001" + sep + "hibernate-jpa-2.1-api-1.0.0.Final.jar");
+                add("bb" + sep + "");
+                add("bb" + sep + "001" + sep + "");
+                add("bb" + sep + "001" + sep + "hibernate-commons-annotations-5.0.1.Final.jar");
             }
         };
         verifyDirEntryPaths(applicationLibsDir, expectedDepsZipContents);
@@ -197,7 +199,7 @@ public class LibIndexCreateTest {
         for (String filePath : filePaths) {
             ZipEntry ze = new ZipEntry(filePath);
             fatJarStream.putNextEntry(ze);
-            if (!filePath.endsWith("/")) {
+            if (!filePath.endsWith(sep)) {
                 //if this is an actual file entry write some data. The content is irrelevant
                 // to the test. We only care about the structure of the zip file.
                 fatJarStream.write(new byte[] { 'H', 'e', 'l', 'o' }, 0, 4);
@@ -227,7 +229,7 @@ public class LibIndexCreateTest {
                             File f = p.toFile();
                             String actualPath = f.getAbsolutePath().substring(dirPathLen + 1);
                             if (f.isDirectory()) {
-                                actualPath += '/';
+                                actualPath += sep;
                             }
                             return actualPath;
                         }) //
