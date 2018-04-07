@@ -42,9 +42,7 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 
     ```cd open-liberty/dev```
     
-    ```./gradlew cnf:initialize```
-
-    ```./gradlew assemble```
+    ```./gradlew cnf:initialize assemble :com.ibm.websphere.appserver.features:releaseNeeded```
 
 3. Run the unit or FAT tests.
 
@@ -52,7 +50,7 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
    
    ```./gradlew build.example_fat:buildandrun``` to run a [FAT project](https://github.com/OpenLiberty/open-liberty/wiki/FAT-tests)
    
-   **NOTE:** ```./gradlew build``` runs assemble and test targets
+   **NOTE:** ```./gradlew build``` runs the `assemble` and `test` tasks
    
 4. Perform a local release
 
