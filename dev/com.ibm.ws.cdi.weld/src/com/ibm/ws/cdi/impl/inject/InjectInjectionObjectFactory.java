@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 IBM Corporation and others.
+ * Copyright (c) 2010, 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,9 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 import org.jboss.weld.ejb.spi.EjbDescriptor;
+import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldManager;
+import org.jboss.weld.resolution.ResolvableBuilder;
 
 import com.ibm.ejs.util.Util;
 import com.ibm.websphere.ras.Tr;
@@ -67,9 +69,10 @@ public class InjectInjectionObjectFactory {
         }
     };
 
+    @SuppressWarnings("rawtypes")
     public static Object getObjectInstance(InjectInjectionBinding iBinding, Object targetObject, final CreationalContext<Object> cc,
-                                           final CreationalContext<Object> methodInvocactionContext,
-                                           CDIRuntime cdiRuntime) throws Exception {
+            final CreationalContext<Object> methodInvocactionContext,
+            CDIRuntime cdiRuntime) throws Exception {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getObjectInstance", new Object[] { iBinding, Util.identity(targetObject), Util.identity(cc), Util.identity(methodInvocactionContext) });
@@ -158,25 +161,43 @@ public class InjectInjectionObjectFactory {
             Object injectionObject = AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
                 public Object run() {
+                    Object ref = null;
                     if ((injectionPoint.getAnnotated() instanceof AnnotatedParameter<?>)
-                        && (((AnnotatedParameter<?>) injectionPoint.getAnnotated()).isAnnotationPresent(TransientReference.class))) {
-                        return localBeanManager.getInjectableReference(injectionPoint, methodInvocactionContext);
+                            && (((AnnotatedParameter<?>) injectionPoint.getAnnotated()).isAnnotationPresent(TransientReference.class))) {
+                        ref = localBeanManager.getInjectableReference(injectionPoint, methodInvocactionContext);
                     } else {
-                        return localBeanManager.getInjectableReference(injectionPoint, cc);
-
+                        ref = localBeanManager.getInjectableReference(injectionPoint, cc);
                     }
+
+                    return ref;
                 }
             });
 
             if (injectionObject != null) {
                 references.add(injectionObject);
-            }
+            } else {
+                BeanManagerImpl beanManagerImpl = (BeanManagerImpl) localBeanManager;
+                ResolvableBuilder resolvableBuilder = new ResolvableBuilder(injectionPoint, beanManagerImpl);
+                Bean maybeProducerBean = beanManagerImpl.getBean(resolvableBuilder.create());
+                if (maybeProducerBean instanceof org.jboss.weld.bean.ProducerMethod
+                        && javax.enterprise.context.Dependent.class.isAssignableFrom(
+                                maybeProducerBean.getScope())) {
+                    references.add(new InjectableNull());
+                }
 
+            }
+        }
+
+        if (references.size() == 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getObjectInstance null");
+            }
+            return null;
         }
 
         debugInjectionObjects(references.toArray());
         if (references.size() == 1) {
-            Object reference = references.get(0);
+                Object reference = references.get(0);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "getObjectInstance", reference);
             }
@@ -188,11 +209,10 @@ public class InjectInjectionObjectFactory {
             }
             return referencesArray;
         }
-
     }
 
     private static List<InjectionPoint> findUnmanagedInjectionPoints(BeanManager beanManager, WebSphereBeanDeploymentArchive bda, Class<?> targetClass,
-                                                                     Member targetMember) throws CDIException {
+            Member targetMember) throws CDIException {
         List<InjectionPoint> injectionPoints = new ArrayList<InjectionPoint>();
         List<InjectionPoint> allInjectionPoints = null;
         if (bda != null) {
@@ -311,3 +331,4 @@ public class InjectInjectionObjectFactory {
         }
     }
 }
+
