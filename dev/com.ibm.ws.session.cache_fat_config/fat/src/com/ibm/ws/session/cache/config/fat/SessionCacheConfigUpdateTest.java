@@ -13,6 +13,7 @@ package com.ibm.ws.session.cache.config.fat;
 import static org.junit.Assert.assertFalse;
 
 import java.io.File;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -160,6 +162,36 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+    }
+
+    @Test
+    public void testScheduleInvalidation() throws Exception {
+        // Choose hours that are far away from when the test is running so that invalidation doesn't accidentally run during the test.
+        int hour = ZonedDateTime.now().getHour();
+        int hour1 = (hour + 8) % 24;
+        int hour2 = (hour + 16) % 24;
+
+        ServerConfiguration config = server.getServerConfiguration();
+        HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        httpSessionCache.setScheduleInvalidationFirstHour(Integer.toString(hour1));
+        httpSessionCache.setScheduleInvalidationSecondHour(Integer.toString(hour2));
+        httpSessionCache.setWriteFrequency("TIME_BASED_WRITE");
+        httpSessionCache.setWriteInterval("15s");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        ArrayList<String> session = new ArrayList<>();
+        String response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testScheduleInvalidation&value=si1&maxInactiveInterval=1",
+                                       session);
+        int start = response.indexOf("session id: [") + 13;
+        String sessionId = response.substring(start, response.indexOf(']', start));
+
+        // Wait until invalidation would normally have occurred
+        TimeUnit.SECONDS.sleep(31);
+
+        // confirm that invalidated data remains in the cache
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testScheduleInvalidation&value=si1&sessionId=" + sessionId, null);
     }
 
     /**
