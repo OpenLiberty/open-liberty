@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +55,17 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, false, "session.cache.web", "session.cache.web.listener1");
-        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID()));
+
+        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
+
+        if (osName.contains("z/os")) {
+            Log.info(SessionCacheTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+        }
+
+        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
+                                           "-Dhazelcast.config.file=" + hazelcastConfigFile));
         server.startServer();
 
         // Access a session before the main test logic to ensure that delays caused by lazy initialization
