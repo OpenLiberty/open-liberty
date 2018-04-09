@@ -70,9 +70,9 @@ OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Invocation of user supplied 
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=The feature constructs Tracer implementations with a user provided OpentracingTracerFactory. The OpentracingTracerFactory.newInstance method returned null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determine why the user supplied OpentracingTracerFactory newInstance method returned null.
 
-OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing will not track requests because an OpentracingTracerFactory has not been supplied.
-OPENTRACING_NO_TRACERFACTORY.explanation=The OpenTracing features will not function properly because an OpentracingTracerFactory is not provided. JAX-RS requests will execute normally, but they will not be tracked.
-OPENTRACING_NO_TRACERFACTORY.useraction=Consult the documentation on how to enable distributed tracing with the OpenTracing feature.
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing will not track requests because an OpentracingTracerFactory class has not been supplied.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing will not function properly because an OpentracingTracerFactory class was not provided. JAX-RS requests will execute normally, but they will not be tracked.
+OPENTRACING_NO_TRACERFACTORY.useraction=Consult the documentation on how to enable distributed tracing.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
