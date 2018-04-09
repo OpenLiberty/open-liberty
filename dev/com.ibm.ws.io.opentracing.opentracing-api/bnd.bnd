@@ -11,17 +11,22 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-instrument.disabled: true
+Bundle-Name: OpenTracing API
+Bundle-SymbolicName: com.ibm.ws.io.opentracing.opentracing-api
+Bundle-Description: OpenTracing Java API, version 0.30.0
 
-Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.opentracing
-Bundle-Name: io.opentracing Third-Party API
-Bundle-Description: io.opentracing Third-Party API, version ${bVersion}
+-includeresource: \
+  @${repo;io.opentracing:opentracing-api;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*
 
 Export-Package: io.opentracing;version=0.30.0, \
-    io.opentracing.propagation;version=0.30.0, \
-    io.opentracing.tag;version=0.30.0
+  io.opentracing.propagation;version=0.30.0, \
+  io.opentracing.tag;version=0.30.0
 
-publish.wlp.jar.suffix: dev/api/third-party
+# no notice file in source jar
+Include-Resource: \
+  META-INF/LICENSE.txt=resources/META-INF/LICENSE.txt
+
+instrument.disabled: true
 
 -buildpath: \
-	com.ibm.ws.io.opentracing.opentracing-api;version=latest
+  io.opentracing:opentracing-api;version=0.30.0

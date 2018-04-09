@@ -38,7 +38,6 @@ Include-Resource: \
   META-INF=resources/META-INF
 
 -buildpath: \
-	io.opentracing:opentracing-api;version=0.30.0, \
 	com.ibm.ws.opentracing;version=latest, \
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
 	com.ibm.ws.logging;version=latest, \
@@ -52,4 +51,5 @@ Include-Resource: \
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
 	com.ibm.ws.cdi.interfaces;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest, \
-	com.ibm.websphere.javaee.interceptor.1.2;version=latest
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest, \
+	com.ibm.ws.io.opentracing.opentracing-api;version=latest
