@@ -248,9 +248,9 @@ public class TimeoutImpl {
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     if (wasInterrupted) {
-                        Tr.debug(tc, "{0}: Throwing timeout exception", getDescriptor());
-                    } else {
                         Tr.debug(tc, "{0}: Throwing timeout exception and clearing interrupted flag", getDescriptor());
+                    } else {
+                        Tr.debug(tc, "{0}: Throwing timeout exception", getDescriptor());
                     }
                 }
 
