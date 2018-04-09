@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
@@ -36,6 +37,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.File;
 import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -55,6 +57,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
 
     private static ServerConfiguration savedConfig;
+    private static String hazelcastConfigFile = "hazelcast-localhost-only.xml";
 
     @Server("sessionCacheServer")
     public static LibertyServer server;
@@ -77,7 +80,14 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.web");
 
-        String configLocation = new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
+
+        if (osName.contains("z/os")) {
+            Log.info(SessionCacheErrorPathsTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+        }
+
+        String configLocation = new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
                                            "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
@@ -201,7 +211,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             run("testSessionCacheNotAvailable", session);
 
             // Correct the URI
-            String validHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+            String validHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
             config.getHttpSessionCaches().get(0).setUri(validHazelcastURI);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
