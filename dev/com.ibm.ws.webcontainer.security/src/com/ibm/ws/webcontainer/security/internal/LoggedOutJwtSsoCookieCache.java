@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.internal;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,13 +41,20 @@ public class LoggedOutJwtSsoCookieCache {
             md = MessageDigest.getInstance("SHA-1"); // nice short string
         } catch (Exception e) {
         }
+        initialized = true;
     }
+
+    static String lastResult = null;
 
     // store as digests to save space
     static String toDigest(String input) {
-        md.update(input.getBytes());
-        String result = new String(md.digest());
         md.reset();
+        try {
+            md.update(input.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+        }
+        String result = com.ibm.ws.common.internal.encoder.Base64Coder.base64EncodeToString(md.digest());
+        //String result = Base64.getEncoder().encodeToString(md.digest());  // java8 only
         return result;
     }
 
@@ -58,11 +66,13 @@ public class LoggedOutJwtSsoCookieCache {
         String digest = toDigest(tokenString);
         if (atCapacity) {
             cSet.remove(clist.get(lastPosition));
+            clist.set(lastPosition, digest); // overwrite eldest entry
+        } else {
+            clist.add(digest);
         }
         cSet.add(digest);
-
+        lastPosition++;
         // use rotating list so we can remove eldest entries once capacity is reached.
-        clist.add(lastPosition++, digest);
         if (lastPosition >= maxSize) {
             lastPosition = 0;
             atCapacity = true;
@@ -70,7 +80,7 @@ public class LoggedOutJwtSsoCookieCache {
 
     }
 
-    static int getSize() { // unit testing
+    static int getSetSize() { // unit testing
         return cSet.size();
     }
 
