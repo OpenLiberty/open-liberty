@@ -13,13 +13,18 @@ package com.ibm.ws.microprofile.faulttolerance.impl;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.impl.async.QueuedFuture;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
+
+import net.jodah.failsafe.CircuitBreakerOpenException;
 
 public class ExecutionContextImpl implements FTExecutionContext {
 
@@ -32,15 +37,21 @@ public class ExecutionContextImpl implements FTExecutionContext {
 
     private final CircuitBreakerImpl circuitBreaker;
     private final FallbackPolicy fallbackPolicy;
+    private final MetricRecorder metricRecorder;
 
     private volatile int retries = 0;
     private volatile long startTime;
+    private volatile long attemptStartTime;
+    private volatile long queueStartTime;
 
     private final String id;
 
     private volatile boolean closed = false;
 
-    public ExecutionContextImpl(String id, Method method, Object[] params, TimeoutImpl timeout, CircuitBreakerImpl circuitBreaker, FallbackPolicy fallbackPolicy, RetryImpl retry) {
+    private boolean mainExecutionComplete = false;
+
+    public ExecutionContextImpl(String id, Method method, Object[] params, TimeoutImpl timeout, CircuitBreakerImpl circuitBreaker, FallbackPolicy fallbackPolicy, RetryImpl retry,
+                                MetricRecorder metricRecorder) {
         this.id = id;
         this.method = method;
         this.params = new Object[params.length];
@@ -51,6 +62,8 @@ public class ExecutionContextImpl implements FTExecutionContext {
         this.circuitBreaker = circuitBreaker;
         this.fallbackPolicy = fallbackPolicy;
         this.retry = retry;
+        this.metricRecorder = metricRecorder;
+
     }
 
     /** {@inheritDoc} */
@@ -73,6 +86,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
             throw new IllegalStateException();
         }
         this.startTime = System.nanoTime();
+        this.attemptStartTime = this.startTime;
         debugRelativeTime("start");
         if (timeout != null) {
             timeout.start(Thread.currentThread());
@@ -84,6 +98,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
             throw new IllegalStateException();
         }
         this.startTime = System.nanoTime();
+        this.attemptStartTime = this.startTime;
         debugRelativeTime("start");
         if (timeout != null) {
             timeout.start(future);
@@ -95,8 +110,13 @@ public class ExecutionContextImpl implements FTExecutionContext {
     */
     public void end() {
         debugRelativeTime("end");
+
         if (timeout != null) {
-            timeout.stop(true);
+            timeout.stop();
+
+            metricRecorder.recordTimeoutExecutionTime(System.nanoTime() - attemptStartTime);
+
+            timeout.check();
         }
     }
 
@@ -115,11 +135,100 @@ public class ExecutionContextImpl implements FTExecutionContext {
         return remaining;
     }
 
-    public void onRetry() {
-        this.retries++;
-        debugRelativeTime("onRetry: " + this.retries);
-        if (timeout != null) {
-            timeout.restart();
+    public void onRetry(Throwable t) {
+        try {
+            this.retries++;
+            debugRelativeTime("onRetry: " + this.retries);
+            metricRecorder.incrementRetriesCount();
+            if (timeout != null) {
+                timeout.restart();
+                attemptStartTime = System.nanoTime();
+            }
+            onAttemptComplete(t);
+        } catch (RuntimeException e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
+        }
+    }
+
+    /**
+     * Called when all processing except fallback has occurred
+     * <p>
+     * May be called twice (before fallback and after fallback) but will only process the event the first time
+     *
+     * @param t the exception thrown, or {@code null} if no exception thrown
+     */
+    public void onMainExecutionComplete(Throwable t) {
+        try {
+            // May be called twice, don't do anything the second time
+            if (mainExecutionComplete) {
+                return;
+            }
+            mainExecutionComplete = true;
+
+            onAttemptComplete(t);
+
+            if (t instanceof CircuitBreakerOpenException) {
+                // We didn't run anything, execution context needs closing
+                close();
+            }
+
+            if (retry != null) {
+                if (retry.canRetryFor(null, t)) {
+                    // This is a retryable failure
+                    metricRecorder.incrementRetryCallsFailureCount();
+                } else {
+                    // Not a retryable failure
+                    if (retries > 0) {
+                        metricRecorder.incrementRetryCallsSuccessRetriesCount();
+                    } else {
+                        metricRecorder.incrementRetryCallsSuccessImmediateCount();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
+        }
+
+    }
+
+    /**
+     * Called when all processing (including fallback) has occurred
+     */
+    public void onFullExecutionComplete(Throwable t) {
+        metricRecorder.incrementInvocationCount();
+        if (t != null) {
+            metricRecorder.incrementInvocationFailedCount();
+        }
+    }
+
+    /**
+     * Called at the end of each retry attempt
+     */
+    private void onAttemptComplete(Throwable t) {
+        try {
+            if (circuitBreaker != null) {
+                if (t instanceof CircuitBreakerOpenException) {
+                    metricRecorder.incrementCircuitBreakerCallsCircuitOpenCount();
+                } else if (circuitBreaker.isFailure(null, t)) {
+                    metricRecorder.incrementCircuitBreakerCallsFailureCount();
+                } else {
+                    metricRecorder.incrementCircuitBreakerCallsSuccessCount();
+                }
+            }
+
+            if (t instanceof TimeoutException) {
+                metricRecorder.incrementTimeoutTrueCount();
+            } else {
+                metricRecorder.incrementTimeoutFalseCount();
+            }
+        } catch (RuntimeException e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
         }
     }
 
@@ -169,6 +278,32 @@ public class ExecutionContextImpl implements FTExecutionContext {
         return this.timeout;
     }
 
+    /**
+     * Called when an execution task enqueued on the bulkhead
+     */
+    public void onQueued() {
+        try {
+            queueStartTime = System.nanoTime();
+        } catch (RuntimeException e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
+        }
+    }
+
+    /**
+     * Called when a previously queued execution task starts executing
+     */
+    public void onUnqueued() {
+        try {
+            metricRecorder.reportQueueWaitTime(System.nanoTime() - queueStartTime);
+        } catch (RuntimeException e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public void close() {
@@ -178,6 +313,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
         if (this.timeout != null) {
             this.timeout.stop();
         }
+        metricRecorder.recordTimeoutExecutionTime(System.nanoTime() - startTime);
         this.closed = true;
     }
 

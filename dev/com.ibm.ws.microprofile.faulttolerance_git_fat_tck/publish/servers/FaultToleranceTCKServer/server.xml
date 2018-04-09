@@ -18,14 +18,27 @@
         <feature>cdi-1.2</feature>
         <feature>servlet-3.1</feature>
         <feature>componentTest-1.0</feature>
-        <feature>mpConfig-1.1</feature>
+        <feature>mpConfig-1.2</feature>
         <feature>componentTest-1.0</feature>
         <feature>localConnector-1.0</feature>
+        <feature>mpMetrics-1.1</feature>
    </featureManager>
 
    <include location="../fatTestPorts.xml"/>
 
    <!--Java2 security-->
    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+   
+   <!--<logging traceSpecification="METRICS=all=enabled:FAULTTOLERANCE=all=enabled"/>-->
+   
+      <!-- Usually, we recommend customers not to change this, however our Async 
+        tests are quite sensitive to timing. We were filling up the threadpool, 
+        and then the test was complaining that the timeout didn't fire quickly enough.
+        
+        Liberty would notice that the pool was full and quickly add more threads, 
+        but we'd get test failures because the timeout fired a few seconds late. 
+        We could increase the size of the timing window instead, but that would make 
+        the test run take longer, so instead I'm setting a minimum number of threads. -->
+   <executor coreThreads="20"/>
 
 </server>

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.cdi;
 
+import java.lang.reflect.Method;
+
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
@@ -18,6 +20,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider.AsyncType;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 
@@ -26,6 +29,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
  */
 public class AggregatedFTPolicy {
 
+    private Method method = null;
     private boolean asynchronous = false;
     private RetryPolicy retryPolicy = null;
     private CircuitBreakerPolicy circuitBreakerPolicy = null;
@@ -33,6 +37,13 @@ public class AggregatedFTPolicy {
     private TimeoutPolicy timeout;
     private FallbackPolicy fallbackPolicy;
     private Executor<?> executor;
+
+    /**
+     * @return the method this policy will be applied to
+     */
+    public void setMethod(Method method) {
+        this.method = method;
+    }
 
     /**
      * @param asynchronous
@@ -67,6 +78,13 @@ public class AggregatedFTPolicy {
      */
     public void setBulkheadPolicy(BulkheadPolicy bulkheadPolicy) {
         this.bulkheadPolicy = bulkheadPolicy;
+    }
+
+    /**
+     * @return the method this policy is applied to
+     */
+    public Method getMethod() {
+        return method;
     }
 
     /**
@@ -158,6 +176,15 @@ public class AggregatedFTPolicy {
         if (bulkheadPolicy != null) {
             builder.setBulkheadPolicy(bulkheadPolicy);
         }
+
+        builder.setMetricRecorder(MetricComponent.getMetricProvider().getMetricRecorder(method,
+                                                                                        retryPolicy,
+                                                                                        circuitBreakerPolicy,
+                                                                                        timeoutPolicy,
+                                                                                        bulkheadPolicy,
+                                                                                        fallbackPolicy,
+                                                                                        asynchronous ? AsyncType.ASYNC : AsyncType.SYNC));
+
         return builder;
     }
 

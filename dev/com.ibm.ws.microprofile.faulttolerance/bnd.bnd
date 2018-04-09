@@ -22,7 +22,8 @@ Bundle-Description:MicroProfile Fault Tolerance 1.0 impl, version ${bVersion}
 WS-TraceGroup: FAULTTOLERANCE
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.faulttolerance.impl.ProviderResolverImpl
+-dsannotations: com.ibm.ws.microprofile.faulttolerance.impl.ProviderResolverImpl, \
+                com.ibm.ws.microprofile.faulttolerance.metrics.impl.DummyRecorderProvider
 
 Import-Package: *
 
@@ -32,7 +33,8 @@ Private-Package: \
 	com.ibm.ws.microprofile.faulttolerance.resources,\
 	com.ibm.ws.microprofile.faulttolerance.impl.policy, \
 	com.ibm.ws.microprofile.faulttolerance.impl.sync, \
-	com.ibm.ws.microprofile.faulttolerance.impl.async
+	com.ibm.ws.microprofile.faulttolerance.impl.async, \
+	com.ibm.ws.microprofile.faulttolerance.metrics.impl
 
 Include-Resource: \
   META-INF/services=resources/META-INF/services

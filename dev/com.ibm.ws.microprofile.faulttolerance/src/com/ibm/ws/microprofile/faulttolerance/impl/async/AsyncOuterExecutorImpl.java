@@ -39,6 +39,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
@@ -49,6 +50,8 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.FailsafeException;
+import net.jodah.failsafe.SyncFailsafe;
+import net.jodah.failsafe.function.CheckedFunction;
 
 /**
  * An AsyncExecutorImpl builds on SynchronousExecutorImpl but the task which is run actually submits another task to be run asynchronously.
@@ -85,9 +88,10 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
                                   FallbackPolicy fallbackPolicy,
                                   WSContextService contextService,
                                   PolicyExecutorProvider policyExecutorProvider,
-                                  ScheduledExecutorService scheduledExecutorService) {
+                                  ScheduledExecutorService scheduledExecutorService,
+                                  MetricRecorder metricRecorder) {
 
-        super(retryPolicy, circuitBreakerPolicy, timeoutPolicy, bulkheadPolicy, fallbackPolicy, scheduledExecutorService);
+        super(retryPolicy, circuitBreakerPolicy, timeoutPolicy, bulkheadPolicy, fallbackPolicy, scheduledExecutorService, metricRecorder);
 
         this.nestedExecutor = new AsyncInnerExecutorImpl<>();
 
@@ -107,6 +111,8 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
                 int queueSize = bulkheadPolicy.getQueueSize();
                 policyExecutor.maxConcurrency(maxThreads);
                 policyExecutor.maxQueueSize(queueSize);
+                metricRecorder.setBulkheadQueuePopulationSupplier(() -> queueSize - policyExecutor.queueCapacityRemaining());
+                metricRecorder.setBulkheadConcurentExecutionCountSupplier(policyExecutor::getRunningTaskCount);
             }
 
             this.executorService = policyExecutor;
@@ -139,6 +145,12 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
 
         // Check whether the circuit is open
         if (breaker != null && !breaker.allowsExecution()) {
+            // We're not doing anything, but we need to record the execution starting and stopping to update metrics correctly
+            context.start();
+            context.end();
+            context.onMainExecutionComplete(new net.jodah.failsafe.CircuitBreakerOpenException());
+
+            // Now either fallback or just throw the exception
             if (context.getFallbackPolicy() != null) {
                 return callFallback(context);
             } else {
@@ -149,12 +161,46 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
         return super.execute(callable, executionContext);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    protected void configureFailsafe(SyncFailsafe<Future<R>> failsafe, ExecutionContextImpl executionContextImpl) {
+        failsafe.onRetry((t) -> {
+            executionContextImpl.onRetry(t);
+        });
+
+        failsafe.onComplete((r, t) -> {
+            if (t != null) {
+                // Only run mainExecutionComplete if an exception was thrown (implying we did not enqueue the task)
+                executionContextImpl.onMainExecutionComplete(t);
+                executionContextImpl.onFullExecutionComplete(t);
+            }
+        });
+
+        // Note: no circuit breaker on the outer execution
+        // We've already checked whether the circuit is open
+
+        if (executionContextImpl.getFallbackPolicy() != null) {
+            @SuppressWarnings("unchecked")
+            CheckedFunction<Throwable, Future<R>> fallback = (t) -> {
+                executionContextImpl.onMainExecutionComplete(t);
+                return (Future<R>) executionContextImpl.getFallbackPolicy().getFallbackFunction().execute(executionContextImpl);
+            };
+            failsafe = failsafe.withFallback(fallback);
+        }
+    }
+
     @Override
     protected Callable<Future<R>> createTask(Callable<Future<R>> callable, ExecutionContextImpl executionContext) {
         //this is the inner nested task that will be run synchronously
         Callable<Future<R>> innerTask = () -> {
-            Future<R> future = this.nestedExecutor.execute(callable, executionContext);
-            return future;
+            executionContext.onUnqueued();
+            Long startTime = System.nanoTime();
+            try {
+                Future<R> future = this.nestedExecutor.execute(callable, executionContext);
+                return future;
+            } finally {
+                metricRecorder.recordBulkheadExecutionTime(System.nanoTime() - startTime);
+            }
         };
 
         //this is the outer task which will be run synchronously but launch a new thread to to run the inner one
@@ -172,11 +218,15 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
                 try {
                     //begin the queuedFuture execution
                     queuedFuture.start(executorService);
+                    executionContext.onQueued();
+                    metricRecorder.incrementBulkeadAcceptedCount();
                 } catch (RejectedExecutionException e) {
                     //if the execution was rejected then end the execution and throw a BulkheadException
                     //TODO there might not really have been a bulkhead?? but it's pretty unlikely that the execution would
                     //be rejected otherwise!
                     executionContext.close();
+
+                    metricRecorder.incrementBulkheadRejectedCount();
 
                     BulkheadException bulkheadException = new BulkheadException(Tr.formatMessage(tc, "bulkhead.no.threads.CWMFT0001E",
                                                                                                  FTDebug.formatMethod(executionContext.getMethod())), e);
@@ -199,6 +249,7 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
      * @return the fallback result
      * @throws ExecutionException if the fallback method throws an exception
      */
+    @SuppressWarnings("unchecked")
     @FFDCIgnore(Throwable.class)
     private Future<R> callFallback(ExecutionContextImpl context) {
         try {
@@ -230,19 +281,6 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
                 // Do  nothing, all we wanted to do was register a failed execution with the circuit breaker
             }
         }
-    }
-
-    @Override
-    protected boolean enableCircuitBreaker() {
-        // Don't want full circuit breaker as we only want to record failures
-        return false;
-    }
-
-    @Override
-    protected boolean enableFallback() {
-        // Since we're doing our own circuit breaking, we don't want failsafe to fallback for us
-        // as that would prevent us seeing the failure. We'll do our own falling back.
-        return false;
     }
 
     @Override
