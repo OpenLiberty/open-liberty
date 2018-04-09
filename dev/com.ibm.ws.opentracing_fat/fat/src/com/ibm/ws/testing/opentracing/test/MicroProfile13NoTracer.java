@@ -22,31 +22,34 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
- * <p>Test that a JAXRS application works even if the opentracing
- * feature is enabled without a Tracer.</p>
+ * <p>Test the correct log messages if microProfile-1.3
+ * is enabled but no Tracer factory is supplied.
+ * No application is needed, we just start the
+ * server and check the messages.</p>
  * 
  * <p>The test suite:</p>
  *
  * <ul>
- * <li>{@link #testHelloWorld()}</li>
+ * <li>{@link #testHelloWorldMP13()}</li>
+ * <li>{@link #testHelloWorldMP13SecondRequest()}</li>
  * </ul>
  */
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 1.8)
-public class FATOpentracingHelloWorld extends FATTestBase {
+public class MicroProfile13NoTracer extends FATTestBase {
     /**
      * Set to the generated server before any tests are run.
      */
     private static LibertyServer server;
 
     /**
-     * Deploy the application and start the server.
+     * Start the server.
      * 
      * @throws Exception Errors deploying the application.
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("opentracingFATServer2");
+        server = LibertyServerFactory.getLibertyServer("opentracingFATServer4");
         deployHelloWorldApp(server);
         server.startServer();
     }
@@ -67,7 +70,17 @@ public class FATOpentracingHelloWorld extends FATTestBase {
      * @throws Exception Errors executing the service.
      */
     @Test
-    public void testHelloWorld() throws Exception {
+    public void testHelloWorldMP13() throws Exception {
+        testHelloWorld(server);
+    }
+
+    /**
+     * Execute the Hello World JAXRS service and ensure it returns the expected response.
+     * 
+     * @throws Exception Errors executing the service.
+     */
+    @Test
+    public void testHelloWorldMP13SecondRequest() throws Exception {
         testHelloWorld(server);
     }
 }

@@ -28,7 +28,8 @@ import org.junit.runners.Suite.SuiteClasses;
     FATOpentracing.class,
     FATOpentracingHelloWorld.class,
     FATMPOpenTracing.class,
-    OpentracingTCKLauncher.class
+    OpentracingTCKLauncher.class,
+    MicroProfile13NoTracer.class
 })
 public class FATSuite implements FATOpentracingConstants {
     private static final Class<? extends FATSuite> CLASS = FATSuite.class;

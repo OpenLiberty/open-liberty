@@ -73,7 +73,9 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
         Tracer tracer = OpentracingTracerManager.getTracer();
         if (tracer == null) {
-            Tr.error(tc, "OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName + " no tracer");
+            }
             return;
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -156,7 +158,11 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         // If processing wasn't skipped, then we should have an ActiveSpan
         ActiveSpan activeSpan = (ActiveSpan) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
         if (activeSpan == null) {
-            Tr.error(tc, "OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST");
+            // This may occur if there's no Tracer (see other method); otherwise, there's
+            // probably some bug sending the right ActiveSpan (e.g. threading?).
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName + " no ActiveSpan");
+            }
             return;
         }
 
