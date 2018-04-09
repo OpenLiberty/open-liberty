@@ -107,10 +107,10 @@ public class URBridgeXPathHelper {
             }
         } catch (Exception e) {
             throw new WIMApplicationException(WIMMessageKey.MALFORMED_SEARCH_EXPRESSION, Tr.formatMessage(tc, WIMMessageKey.MALFORMED_SEARCH_EXPRESSION,
-                                                                                                          WIMMessageHelper.generateMsgParms(searchExpr)));
+                                                                                                          WIMMessageHelper.generateMsgParms(searchExpr)), e);
         } catch (TokenMgrError e) {
             throw new SearchControlException(WIMMessageKey.INVALID_SEARCH_EXPRESSION, Tr.formatMessage(tc, WIMMessageKey.INVALID_SEARCH_EXPRESSION,
-                                                                                                       WIMMessageHelper.generateMsgParms(searchExpr)));
+                                                                                                       WIMMessageHelper.generateMsgParms(searchExpr)), e);
         }
     }
 
