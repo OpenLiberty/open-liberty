@@ -11,6 +11,7 @@
 
 package com.ibm.ws.security.javaeesec.fat;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -129,6 +130,32 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
                                                    Constants.DB_USER2_PWD,
                                                    HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER2, Constants.getRemoteUserFound + Constants.DB_USER2);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testJaspiAnnotatedDBMultiAccess() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String msg = "DataSource is stored for "; // trace
+        List<String> foundResults = myServer.findStringsInLogsAndTrace(msg);
+        assertEquals("Expected saving the datasource once: " + msg, 1, foundResults.size());
+
+        String msg2 = "Always evaluate Datasource: false"; //trace
+        foundResults = myServer.findStringsInLogsAndTrace(msg2);
+        assertEquals("Expected datasource to be evaluated: " + msg2, 1, foundResults.size());
+
+        for (int i = 0; i < 10; i++) {
+            String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
+                                                              Constants.DB_USER1_PWD,
+                                                              HttpServletResponse.SC_OK);
+            verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER1, Constants.getRemoteUserFound + Constants.DB_USER1);
+        }
+
+        foundResults = myServer.findStringsInLogsAndTrace(msg);
+        assertEquals("Should not have saved the datasource again.", 1, foundResults.size());
+
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
