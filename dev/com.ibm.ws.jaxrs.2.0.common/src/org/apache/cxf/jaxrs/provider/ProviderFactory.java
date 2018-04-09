@@ -103,7 +103,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.JaxRsConstants;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
-import com.ibm.ws.jaxrs20.providers.jsonp.JsonPProvider;
 import com.ibm.ws.jaxrs20.providers.multipart.IBMMultipartProvider;
 
 public abstract class ProviderFactory {
@@ -250,6 +249,7 @@ public abstract class ProviderFactory {
     }
 
     // Liberty Change for CXF Begin
+    @FFDCIgnore(value = { Throwable.class })
     public static Object createJsonpProvider() {
 
         // We can only create the JSON-P provider if the jsonp feature is provisioned. This usually
@@ -257,7 +257,7 @@ public abstract class ProviderFactory {
         // that includes it).  The following classloading code checks to see if this bundle can load
         // (via dynamic import) the JSON-P classes.  If so, then it returns the JSON-P provider.  If not,
         // it returns null.
-        JsonPProvider provider = null;
+        Object provider = null;
         ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
 
             @Override
@@ -267,7 +267,22 @@ public abstract class ProviderFactory {
         });
         Class<?> c = ProviderFactory.loadClass(cl, JSONPCLASS);
         if (c != null) {
-            provider = new JsonPProvider();
+            // Use reflection so that we do not load JSON classes if jsonp feature is not enabled.
+            String className = "com.ibm.ws.jaxrs20.providers.jsonp.JsonPProvider";
+            Class<?> pProviderCls = ProviderFactory.loadClass(cl, className);
+            try {
+                provider = pProviderCls.newInstance();
+            } catch (Throwable ex) {
+                String message = "Problem with creating the Jsonp provider " + className;
+                if (ex.getMessage() != null) {
+                    message += ": " + ex.getMessage();
+                } else {
+                    message += ", exception class : " + ex.getClass().getName();
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, message);
+                }
+            }
         }
 
         return provider;
