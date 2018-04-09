@@ -405,5 +405,4 @@ public class SessionCacheOneServerTest extends FATServletClient {
             app.invalidateSession(session);
         }
     }
-
 }

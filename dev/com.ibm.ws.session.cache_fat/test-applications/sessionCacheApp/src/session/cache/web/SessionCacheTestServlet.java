@@ -555,6 +555,17 @@ public class SessionCacheTestServlet extends FATServlet {
         value.append("Appended");
     }
 
+    public void testTimeoutExtensionA(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession(true);
+        session.setMaxInactiveInterval(500); // seconds
+    }
+
+    public void testTimeoutExtensionB(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession(false);
+        assertNotNull("Unable to recover existing session.  It may have timed out.", session);
+        assertEquals(500, session.getMaxInactiveInterval());
+    }
+
     /**
      * Set the maxInactiveInterval for the given session to 1 second
      */
