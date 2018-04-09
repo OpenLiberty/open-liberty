@@ -20,9 +20,9 @@
                        <property name="serverName">${tck_server}</property>
                        <property name="httpsPort">${bvt.prop.HTTP_default.secure}</property>
                        <property name="allowConnectingToRunningServer">true</property>
+                       <property name="appUndeployTimeout">20</property>
                        <property name="failSafeUndeployment">${tck_failSafeUndeployment}</property>
                        <property name="appDeployTimeout">${tck_appDeployTimeout}</property>
-                       <property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
                </configuration>
        </container>
 </arquillian>

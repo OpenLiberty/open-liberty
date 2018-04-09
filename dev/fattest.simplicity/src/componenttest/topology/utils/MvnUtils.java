@@ -61,7 +61,7 @@ public class MvnUtils {
 
     private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
     private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "30";
-    private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "5";
+    private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "20";
     public static File resultsDir;
     public static String wlp;
     public static File tckRunnerDir;
