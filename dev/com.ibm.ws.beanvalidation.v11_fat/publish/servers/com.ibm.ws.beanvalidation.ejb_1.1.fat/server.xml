@@ -4,6 +4,7 @@
         <feature>ejbLite-3.2</feature>
         <feature>beanValidation-1.1</feature>
         <feature>componenttest-1.0</feature>
+        <feature>jaxb-2.2</feature>
     </featureManager>
     
     <!-- 

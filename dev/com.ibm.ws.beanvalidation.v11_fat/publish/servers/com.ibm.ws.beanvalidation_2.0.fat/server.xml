@@ -7,6 +7,7 @@
         <feature>servlet-4.0</feature>
         <feature>beanValidation-2.0</feature>
         <feature>componenttest-1.0</feature>
+        <feature>jaxb-2.2</feature>
     </featureManager>
     
     <!-- 
