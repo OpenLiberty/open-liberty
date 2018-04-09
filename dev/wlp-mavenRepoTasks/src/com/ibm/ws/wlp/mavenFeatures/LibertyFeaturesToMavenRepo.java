@@ -145,11 +145,13 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			LibertyFeature firstFeature = allFeatures.values().iterator().next();
 			String version = firstFeature.getProductVersion();
 			// Sanity check: ensure all of the feature versions are the same
+			/*
 			for (LibertyFeature feature : allFeatures.values()) {
 				if (!version.equals(feature.getProductVersion())) {
 					throw new MavenRepoGeneratorException("Product versions do not match for features " + firstFeature.getSymbolicName() + ":" + version + " and " + feature.getSymbolicName() + ":" + feature.getProductVersion());
 				}
 			}
+			*/
 			
 			
 			// Copy JSON artifacts and generate POMs
