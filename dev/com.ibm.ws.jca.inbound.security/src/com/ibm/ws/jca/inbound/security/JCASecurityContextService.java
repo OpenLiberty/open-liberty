@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jca.inbound.security;
 
+import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import javax.security.auth.Subject;
@@ -29,15 +30,21 @@ public class JCASecurityContextService implements JCASecurityContext {
     @Override
     public void runInInboundSecurityContext(final Runnable work) {
         Subject doAsSubject = subjectManager.getInvocationSubject();
-        PrivilegedAction<Runnable> privEx = new PrivilegedAction<Runnable>() {
-            @Override
-            public Runnable run() {
-                work.run();
-                return null;
-            }
-        };
         if (doAsSubject != null) {
-            WSSubject.doAs(subjectManager.getInvocationSubject(), privEx);
+            final PrivilegedAction<Runnable> privEx = new PrivilegedAction<Runnable>() {
+                @Override
+                public Runnable run() {
+                    work.run();
+                    return null;
+                }
+            };
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    WSSubject.doAs(subjectManager.getInvocationSubject(), privEx);
+                    return null;
+                }
+            });
         } else {
             work.run();
         }

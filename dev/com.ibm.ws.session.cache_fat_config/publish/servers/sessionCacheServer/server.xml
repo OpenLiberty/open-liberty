@@ -6,7 +6,7 @@
     <feature>servlet-4.0</feature>
     <feature>sessionCache-1.0</feature>
   </featureManager>
-    
+
   <include location="../fatTestPorts.xml"/>
 
   <application location="sessionCacheConfigApp.war">
@@ -63,4 +63,9 @@
   <!-- Allow the application to access OSGi service registry in order to obtain the CacheManager instance that is used by sessionCache feature -->
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+
+  <!--  Permissions for application to access mbeans -->
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="javax.management.MBeanPermission" actions="queryNames,registerMBean" name="*"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+
 </server>

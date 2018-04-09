@@ -29,6 +29,9 @@ public class Constants {
 	public static final String VISIBILITY_VALUE_INSTALL = "INSTALL";
 	public static final String MAVEN_COORDINATES_KEY = "mavenCoordinates";
 	
+	public static final String API_DEPENDENCIES_GROUP_ID = "com.ibm.websphere.appserver.api";
+	public static final String SPI_DEPENDENCIES_GROUP_ID = "com.ibm.websphere.appserver.spi";
+	
 	public static final String WEBSPHERE_LIBERTY_FEATURES_GROUP_ID = "com.ibm.websphere.appserver.features";
 	public static final String OPEN_LIBERTY_FEATURES_GROUP_ID = "io.openliberty.features";
 	public static final String JSON_ARTIFACT_ID = "features";

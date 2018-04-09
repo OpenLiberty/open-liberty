@@ -23,9 +23,12 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -132,8 +135,10 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				System.out.println("This is the feature: "+ feature.getSymbolicName());
 				copyArtifact(inputDir, outputDir, feature, Constants.ArtifactType.ESA);
 
+				List<MavenCoordinates> featureCompileDependencies = getFeatureCompileDependencies(inputDir, feature);
+
 				// generate POM in target dir with list of dependencies
-				generatePom(feature, additionalDependencies, allFeatures, outputDir, Constants.ArtifactType.ESA);
+				generatePom(feature, additionalDependencies, featureCompileDependencies, allFeatures, outputDir, Constants.ArtifactType.ESA);
 			}
 			
 			// Use the first found feature version to determine product version
@@ -199,12 +204,13 @@ public class LibertyFeaturesToMavenRepo extends Task {
 	 * 
 	 * @param feature The Liberty feature to generate POM for.
 	 * @param additionalDependencies Map of each feature's symbolic name to additional dependencies.
+	 * @param featureCompileDependencies List of compile dependencies that the feature should provide.
 	 * @param allFeatures The map of feature symbolic names to LibertyFeature objects.
 	 * @param outputDir The root directory of the target Maven repository.
 	 * @param type The type of artifact.
 	 * @throws MavenRepoGeneratorException If the POM file could not be written.
 	 */
-	private static void generatePom(LibertyFeature feature, Map<String, List<MavenCoordinates>> additionalDependencies, Map<String, LibertyFeature> allFeatures, File outputDir,
+	private static void generatePom(LibertyFeature feature, Map<String, List<MavenCoordinates>> additionalDependencies, List<MavenCoordinates> featureCompileDependencies, Map<String, LibertyFeature> allFeatures, File outputDir,
 			Constants.ArtifactType type) throws MavenRepoGeneratorException {
 		MavenCoordinates coordinates = feature.getMavenCoordinates();
 		Model model = new Model();
@@ -232,6 +238,12 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		if (additionalDependencies != null && additionalDependencies.containsKey(feature.getSymbolicName())) {
 			List<MavenCoordinates> artifacts = additionalDependencies.get(feature.getSymbolicName());
 			for (MavenCoordinates requiredArtifact : artifacts) {
+				addDependency(dependencies, requiredArtifact, null);
+			}
+		}
+		
+		if (featureCompileDependencies != null) {
+			for (MavenCoordinates requiredArtifact : featureCompileDependencies) {
 				addDependency(dependencies, requiredArtifact, null);
 			}
 		}
@@ -297,6 +309,69 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			dependency.setType(type.getType());
 		}
 		dependencies.add(dependency);
+	}
+	
+	/**
+	 * Get list of compile dependencies for each feature by looking in its ESA file.
+	 * 
+	 * @param inputDir Input dir with all ESAs.
+	 * @param feature The feature to get dependencies for.
+	 * @return List of MavenCoordinates for compile dependencies
+	 * @throws MavenRepoGeneratorException If the ESA file could not be read
+	 */
+	private static List<MavenCoordinates> getFeatureCompileDependencies(File inputDir, LibertyFeature feature) throws MavenRepoGeneratorException {
+		List<MavenCoordinates> compileDependencies = new ArrayList<MavenCoordinates>();
+
+		File esa = new File(inputDir, feature.getSymbolicName() + Constants.ArtifactType.ESA.getLibertyFileExtension());
+		if (!esa.exists()) {
+			throw new MavenRepoGeneratorException("ESA " + esa + " does not exist for feature " + feature.getSymbolicName());
+		}
+
+		ZipFile zipFile = null;
+		try {
+			zipFile = new ZipFile(esa);
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry zipEntry = entries.nextElement();
+				MavenCoordinates c = findCompileDependency(zipEntry.getName(), Constants.API_DEPENDENCIES_GROUP_ID);
+				if (c != null) {
+					compileDependencies.add(c);
+					continue;
+				}
+				c = findCompileDependency(zipEntry.getName(), Constants.SPI_DEPENDENCIES_GROUP_ID);
+				if (c != null) {
+					compileDependencies.add(c);
+					continue;
+				}					
+			}
+		} catch (IOException e) {
+			throw new MavenRepoGeneratorException("ESA " + esa + " could not be read as a zip file.");
+		} finally {
+			if (zipFile != null) {
+				try {
+					zipFile.close();
+				} catch (IOException e) {
+					// nothing to do
+				}
+			}
+		}
+		
+		return compileDependencies;
+	}
+	
+	private static MavenCoordinates findCompileDependency(String zipEntryPath, String groupId) {
+		int apiNameIndex = zipEntryPath.indexOf(groupId);
+		int extensionIndex = zipEntryPath.lastIndexOf(".jar");
+		if (apiNameIndex >= 0 && extensionIndex >= 0) {
+			String fileNameWithoutExtension = zipEntryPath.substring(apiNameIndex, extensionIndex);
+
+			String artifactId = fileNameWithoutExtension.substring(0, fileNameWithoutExtension.lastIndexOf("_"));
+			String versionId = fileNameWithoutExtension.substring(fileNameWithoutExtension.lastIndexOf("_")+1, fileNameWithoutExtension.length());
+			MavenCoordinates coordinates = new MavenCoordinates(groupId, artifactId, versionId);
+			System.out.println("Found compile dependency: " + coordinates);
+			return coordinates;
+		}
+		return null;
 	}
 
 	/**

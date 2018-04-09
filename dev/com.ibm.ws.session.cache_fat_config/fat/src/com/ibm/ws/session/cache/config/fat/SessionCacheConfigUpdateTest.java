@@ -13,6 +13,7 @@ package com.ibm.ws.session.cache.config.fat;
 import static org.junit.Assert.assertFalse;
 
 import java.io.File;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -31,6 +33,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.HttpSessionCache;
+import com.ibm.websphere.simplicity.config.Monitor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.AllowedFFDC;
@@ -114,6 +117,81 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "getSessionId", session);
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+    }
+
+    /**
+     * Enable and disable monitoring for sessions while the server is running.
+     */
+    @Test
+    public void testMonitoring() throws Exception {
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+
+        // add monitor-1.0 feature
+        ServerConfiguration config = server.getServerConfiguration();
+        config.getFeatureManager().getFeatures().add("monitor-1.0");
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansEnabled", new ArrayList<>());
+
+        // add monitor configuration that doesn't include Session
+        Monitor monitor = new Monitor();
+        monitor.setFilter("ThreadPool,WebContainer");
+        config.getMonitors().add(monitor);
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+
+        // switch to monitor configuration that includes Session
+        monitor.setFilter("ThreadPool,WebContainer,Session");
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansEnabled", new ArrayList<>());
+
+        // remove monitor-1.0 feature (and monitor config)
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(savedConfig);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+    }
+
+    @Test
+    public void testScheduleInvalidation() throws Exception {
+        // Choose hours that are far away from when the test is running so that invalidation doesn't accidentally run during the test.
+        int hour = ZonedDateTime.now().getHour();
+        int hour1 = (hour + 8) % 24;
+        int hour2 = (hour + 16) % 24;
+
+        ServerConfiguration config = server.getServerConfiguration();
+        HttpSessionCache httpSessionCache = config.getHttpSessionCaches().get(0);
+        httpSessionCache.setScheduleInvalidationFirstHour(Integer.toString(hour1));
+        httpSessionCache.setScheduleInvalidationSecondHour(Integer.toString(hour2));
+        httpSessionCache.setWriteFrequency("TIME_BASED_WRITE");
+        httpSessionCache.setWriteInterval("15s");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        ArrayList<String> session = new ArrayList<>();
+        String response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testScheduleInvalidation&value=si1&maxInactiveInterval=1",
+                                       session);
+        int start = response.indexOf("session id: [") + 13;
+        String sessionId = response.substring(start, response.indexOf(']', start));
+
+        // Wait until invalidation would normally have occurred
+        TimeUnit.SECONDS.sleep(31);
+
+        // confirm that invalidated data remains in the cache
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testScheduleInvalidation&value=si1&sessionId=" + sessionId, null);
     }
 
     /**

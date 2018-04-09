@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.security.enterprise.identitystore.IdentityStore;
+import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.security.enterprise.identitystore.RememberMeIdentityStore;
 
 import org.jmock.Expectations;
@@ -38,7 +40,10 @@ public class CDIHelperTestWrapper {
         currentModuleBeanManager = mockery.mock(BeanManager.class);
 
         final Set<Bean<?>> beans = new HashSet<Bean<?>>();
+        final Set<Bean<?>> beans1 = new HashSet<Bean<?>>();
         final Bean<?> bean = mockery.mock(Bean.class);
+        final Bean<?> bean1 = mockery.mock(Bean.class, "identitystorehandler");
+        beans1.add(bean1);
         final CreationalContext creationalContext = mockery.mock(CreationalContext.class);
 
         mockery.checking(new Expectations() {
@@ -51,6 +56,16 @@ public class CDIHelperTestWrapper {
                 will(returnValue(creationalContext));
                 allowing(currentModuleBeanManager).getReference(bean, RememberMeIdentityStore.class, creationalContext);
                 will(returnValue(rememberMeIdentityStore));
+                allowing(currentModuleBeanManager).getBeans(IdentityStore.class);
+                will(returnValue(beans));
+                allowing(currentModuleBeanManager).getBeans(IdentityStoreHandler.class);
+                will(returnValue(beans1));
+                allowing(currentModuleBeanManager).resolve(beans1);
+                will(returnValue(bean1));
+                allowing(currentModuleBeanManager).createCreationalContext(bean1);
+                will(returnValue(creationalContext));
+                allowing(currentModuleBeanManager).getReference(bean1, IdentityStoreHandler.class, creationalContext);
+                will(returnValue(null));
             }
         });
     }

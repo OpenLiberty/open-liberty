@@ -8,10 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package testjms.web;
+package com.ibm.ws.cdi.test.dependentscopedproducer;
 
-public interface JmsTests {
-    void basicTest() throws Exception;
-    void testBasicJmsLookup() throws Exception;
-    void testClearQueue() throws Exception;
+public class NullBeanFour {
+
 }

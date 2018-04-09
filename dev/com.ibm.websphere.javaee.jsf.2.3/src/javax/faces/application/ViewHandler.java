@@ -98,7 +98,7 @@ public abstract class ViewHandler
 
     @JSFWebConfigParam(since="2.2")
     public static final java.lang.String DISABLE_FACELET_JSF_VIEWHANDLER_PARAM_NAME = 
-        "DISABLE_FACELET_JSF_VIEWHANDLER";
+        "javax.faces.DISABLE_FACELET_JSF_VIEWHANDLER";
     
     /**
      * Define the default buffer size value passed to ExternalContext.setResponseBufferResponse() and in a

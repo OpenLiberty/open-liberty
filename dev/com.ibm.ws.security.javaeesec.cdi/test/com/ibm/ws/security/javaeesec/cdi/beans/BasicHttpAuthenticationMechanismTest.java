@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -37,6 +38,7 @@ import javax.security.enterprise.credential.CallerOnlyCredential;
 import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
+import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,10 +53,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.jaspi.JaspiMessageInfo;
+import com.ibm.ws.security.javaeesec.CDIHelperTestWrapper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
@@ -78,7 +82,12 @@ public class BasicHttpAuthenticationMechanismTest {
     private String authzHeader;
     @SuppressWarnings("rawtypes")
     private CDI cdi;
+    private Instance<IdentityStore> iis;
+    private IdentityStore ids;
+    private BeanManager bm;
     private IdentityStoreHandler identityStoreHandler;
+    private CDIService cdis;
+    private CDIHelperTestWrapper cdiHelperTestWrapper;
     private String principalName;
     private CallerPrincipal callerPrincipal;
     private Set<String> groups;
@@ -89,11 +98,19 @@ public class BasicHttpAuthenticationMechanismTest {
     private CallerOnlyCredential coCred;
     private BasicAuthenticationCredential baCred;
     private UsernamePasswordCredential upCred, invalidUpCred;
+    private boolean isRegistryAvailable = true;
 
     @Before
     public void setUp() {
         cdi = mockery.mock(CDI.class);
-        mechanism = new BasicHttpAuthenticationMechanism() {
+        Utils utils = new Utils() {
+            @Override
+            protected boolean isRegistryAvailable() {
+                return isRegistryAvailable;
+            }
+        };
+
+        mechanism = new BasicHttpAuthenticationMechanism(utils) {
             @SuppressWarnings("rawtypes")
             @Override
             protected CDI getCDI() {
@@ -107,7 +124,9 @@ public class BasicHttpAuthenticationMechanismTest {
         clientSubject = new Subject();
         String authzValue = Base64Coder.base64Encode("user1:user1pwd");
         authzHeader = "Basic " + authzValue;
+        iis = mockery.mock(Instance.class, "iis");
         identityStoreHandler = mockery.mock(IdentityStoreHandler.class);
+        bm = mockery.mock(BeanManager.class, "bm");
         principalName = "user1";
         callerPrincipal = new CallerPrincipal(principalName);
         groups = new HashSet<String>();
@@ -120,10 +139,14 @@ public class BasicHttpAuthenticationMechanismTest {
         upCred = new UsernamePasswordCredential("user1", "user1pwd");
         invalidUpCred = new UsernamePasswordCredential("user1", "invalid");
         baCred = new BasicAuthenticationCredential(authzValue);
+        cdis = mockery.mock(CDIService.class);
+        cdiHelperTestWrapper = new CDIHelperTestWrapper(mockery, null);
+        cdiHelperTestWrapper.setCDIService(cdis);
     }
 
     @After
     public void tearDown() throws Exception {
+        cdiHelperTestWrapper.unsetCDIService(cdis);
         mockery.assertIsSatisfied();
     }
 
@@ -281,15 +304,22 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedFallbackToRegistry() throws Exception {
-        preInvokePathForProtectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
+        preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
+    public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedNoUserRegistry() throws Exception {
+        preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, true, false);
+        setModulePropertiesProvider(realmName);
+        assertValidateRequestNOTDONE();
+    }
+
+    @Test
     public void testValidateRequestWithIdentityStoreHandlerAmbiguousFallbackToRegistry() throws Exception {
-        preInvokePathForProtectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
+        preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
@@ -297,7 +327,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedFallbackToRegistryInvalidUser() throws Exception {
-        preInvokePathForProtectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
+        preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
@@ -305,7 +335,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerAmbiguousFallbackToRegistryInvalidUser() throws Exception {
-        preInvokePathForProtectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
+        preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
@@ -313,7 +343,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedAndUnprotectedResourceFallbackToRegistry() throws Exception {
-        preInvokePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
+        preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
@@ -321,7 +351,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerAmbiguousAndUnprotectedResourceFallbackToRegistry() throws Exception {
-        preInvokePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
+        preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
@@ -329,7 +359,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
-        preInvokePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
+        preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
@@ -337,7 +367,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerAmbiguousAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
-        preInvokePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
+        preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
@@ -345,7 +375,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerUnsatisfiedFallbackToRegistry() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
+        authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
@@ -353,7 +383,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerAmbiguousFallbackToRegistry() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
+        authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
@@ -361,7 +391,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerUnsatisfiedFallbackToRegistryInvalidUser() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
+        authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
@@ -369,7 +399,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerAmbiguousFallbackToRegistryInvalidUser() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
+        authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
@@ -377,7 +407,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerUnsatisfiedAndUnprotectedResourceFallbackToRegistry() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
+        authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
@@ -385,7 +415,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerAmbiguousAndUnprotectedResourceFallbackToRegistry() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
+        authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
@@ -393,7 +423,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerUnsatisfiedAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
+        authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
@@ -401,7 +431,7 @@ public class BasicHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerAmbiguousAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
-        authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
+        authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
@@ -559,8 +589,8 @@ public class BasicHttpAuthenticationMechanismTest {
         return this;
     }
 
-    private void withIdentityStoreHandlerResult(CredentialValidationResult result) {
-        withIdentityStoreHandler(identityStoreHandler).withResult(result);
+    private void withIdentityStoreHandlerResult(CredentialValidationResult result) throws Exception{
+        withIDSBeanInstance(ids, false, false).withIdentityStoreHandler(identityStoreHandler).withResult(result);
     }
 
     private BasicHttpAuthenticationMechanismTest withResult(final CredentialValidationResult result) {
@@ -597,6 +627,25 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     @SuppressWarnings("unchecked")
+    private BasicHttpAuthenticationMechanismTest withIDSBeanInstance(final IdentityStore value, final boolean isUnsatisfied, final boolean isAmbiguous) throws Exception{
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).select(IdentityStore.class);
+                will(returnValue(iis));
+                allowing(iis).isUnsatisfied();
+                will(returnValue(isUnsatisfied));
+                allowing(iis).isAmbiguous();
+                will(returnValue(isAmbiguous));
+                allowing(iis).get();
+                will(returnValue(value));
+                atMost(1).of(cdi).getBeanManager();
+                will(returnValue(bm));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
     private BasicHttpAuthenticationMechanismTest withIdentityStoreHandler(final IdentityStoreHandler identityStoreHandler) {
         final Instance<IdentityStoreHandler> storeHandlerInstance = mockery.mock(Instance.class);
 
@@ -610,24 +659,6 @@ public class BasicHttpAuthenticationMechanismTest {
                 will(returnValue(false));
                 one(storeHandlerInstance).get();
                 will(returnValue(identityStoreHandler));
-            }
-        });
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private BasicHttpAuthenticationMechanismTest withoutIdentityStoreHandler(final boolean unsatisfied, final boolean ambiguous) {
-        final Instance<IdentityStoreHandler> storeHandlerInstance = mockery.mock(Instance.class);
-
-        mockery.checking(new Expectations() {
-            {
-                one(cdi).select(IdentityStoreHandler.class);
-                will(returnValue(storeHandlerInstance));
-                allowing(storeHandlerInstance).isUnsatisfied();
-                will(returnValue(unsatisfied));
-                allowing(storeHandlerInstance).isAmbiguous();
-                will(returnValue(ambiguous));
-                never(storeHandlerInstance).get();
             }
         });
         return this;
@@ -713,6 +744,14 @@ public class BasicHttpAuthenticationMechanismTest {
         withResponseStatus(HttpServletResponse.SC_OK);
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SUCCESS.", AuthenticationStatus.SUCCESS, status);
+    }
+
+    private void assertValidateRequestNOTDONE() throws AuthenticationException {
+        withResponseStatus(HttpServletResponse.SC_OK);
+        isRegistryAvailable = false;
+        AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
+        isRegistryAvailable = true;
+        assertEquals("The AuthenticationStatus must be AuthenticationStatus.NOT_DONE.", AuthenticationStatus.NOT_DONE, status);
     }
 
     private void assertValidateRequestFAILUREwoHttpResponse() throws AuthenticationException {

@@ -15,6 +15,8 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -31,11 +33,21 @@ public class JNDILookupTest extends LoggingTest {
 
     @BuildShrinkWrap
     public static Archive<?> buildShrinkWrap() {
+
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "jndiLookup.jar"); 
+        jar.addClass("com.ibm.ws.cdi12.test.jndi.observer.ObserverBean");
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "jndiLookup.war");
-        war.add(new FileAsset(new File("test-applications/jndiLookup.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
         war.addClass("com.ibm.ws.cdi12.test.jndi.LookupServlet");
         war.addClass("com.ibm.ws.cdi12.test.jndi.JNDIStrings");
-        return war;
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "jndiLookup.ear");
+        ear.addAsLibrary(jar);
+        ear.addAsModule(war);
+        ear.add(new FileAsset(new File("test-applications/jndiLookup.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
+        ear.add(new FileAsset(new File("test-applications/jndiLookup.ear/resources/META-INF/application.xml")), "/META-INF/application.xml");
+
+        return ear;
     }
 
     @Override
@@ -49,4 +61,12 @@ public class JNDILookupTest extends LoggingTest {
 
         SHARED_SERVER.verifyResponse(browser, "/jndiLookup/", new String[] { "From Config: Value from Config", "From Bind: Value from Bind" });
     }
+
+    @Test
+    public void testJNDILookupInObserverJar() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+
+        SHARED_SERVER.verifyResponse(browser, "/jndiLookup/", new String[] { "From ObserverBean: test/passed" });
+    }
+
 }

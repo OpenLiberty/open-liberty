@@ -63,6 +63,7 @@ Import-Package: !org.scannotation.archiveiterator, \
                 com.ibm.ws.cdi.internal.resources, \
                 org.jboss.weld;version="[2.4,4)",\
                 org.jboss.weld.annotated.enhanced;version="[2.4,4)",\
+                org.jboss.weld.bean;version="[2.4,4)",\
                 org.jboss.weld.bootstrap;version="[2.4,4)",\
                 org.jboss.weld.bootstrap.api;version="[2.4,4)",\
                 org.jboss.weld.bootstrap.api.helpers;version="[2.4,4)",\
@@ -77,6 +78,7 @@ Import-Package: !org.scannotation.archiveiterator, \
                 org.jboss.weld.manager;version="[2.4,4)",\
                 org.jboss.weld.manager.api;version="[2.4,4)",\
                 org.jboss.weld.probe;version="[2.4,4)",\
+                org.jboss.weld.resolution;version="[2.4,4)",\
                 org.jboss.weld.resources;version="[2.4,4)",\
                 org.jboss.weld.resources.spi;version="[2.4,4)",\
                 org.jboss.weld.security.spi;version="[2.4,4)",\

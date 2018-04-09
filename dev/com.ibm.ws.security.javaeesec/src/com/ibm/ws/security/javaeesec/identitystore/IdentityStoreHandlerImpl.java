@@ -99,7 +99,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
             }
         } else {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "No IdentityStore bean is registered. Returning NOT_VALIDATED.");
+                Tr.debug(tc, "No IdentityStore bean is registered.");
             }
         }
         if (tc.isDebugEnabled()) {
@@ -195,9 +195,6 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
             }
         }
 
-        if (identityStores.isEmpty()) {
-            Tr.error(tc, "JAVAEESEC_ERROR_NO_IDENTITYSTORES");
-        }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Number of identityStore : " + identityStores.size());
         }

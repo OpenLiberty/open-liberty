@@ -170,14 +170,9 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         try {
             verifyConfiguration();
             if (!identityStoreHandlerRegistered) {
-                if (identityStoreRegistered) {
-                    beansToAdd.add(new IdentityStoreHandlerBean(beanManager));
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "registering the default IdentityStoreHandler.");
-                } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "IdentityStoreHander is not registered because none of the identity store has been registered.");
-                }
+                beansToAdd.add(new IdentityStoreHandlerBean(beanManager));
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "registering the default IdentityStoreHandler.");
             } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "IdentityStoreHandler is not registered because a custom IdentityStoreHandler has been registered,");
