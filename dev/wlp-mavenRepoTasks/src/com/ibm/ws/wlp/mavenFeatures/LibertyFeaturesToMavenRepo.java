@@ -48,6 +48,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.LogLevel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -69,6 +70,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 	private String outputDirPath;
 	private String openLibertyJson;
 	private String websphereLibertyJson;
+	private String releaseVersion;
 	
 	/**
 	 * Generates a Maven repository from a given directory of existing Liberty
@@ -141,17 +143,29 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				generatePom(feature, additionalDependencies, featureCompileDependencies, allFeatures, outputDir, Constants.ArtifactType.ESA);
 			}
 			
-			// Use the first found feature version to determine product version
-			LibertyFeature firstFeature = allFeatures.values().iterator().next();
-			String version = firstFeature.getProductVersion();
-			// Sanity check: ensure all of the feature versions are the same
-			for (LibertyFeature feature : allFeatures.values()) {
-				if (!version.equals(feature.getProductVersion())) {
-					throw new MavenRepoGeneratorException("Product versions do not match for features " + firstFeature.getSymbolicName() + ":" + version + " and " + feature.getSymbolicName() + ":" + feature.getProductVersion());
+			String version;
+			if (releaseVersion == null) {
+				// Use the first found feature version to determine product version
+				LibertyFeature firstFeature = allFeatures.values().iterator().next();
+				version = firstFeature.getProductVersion();
+
+				// Sanity check: ensure all of the feature versions are the same
+				for (LibertyFeature feature : allFeatures.values()) {
+					if (!version.equals(feature.getProductVersion())) {
+						log("Product versions do not match for features " + firstFeature.getSymbolicName() + ":" + version + " and " + feature.getSymbolicName() + ":" + feature.getProductVersion(), LogLevel.WARN.getLevel());
+					}
+				}
+			} else {
+				version = releaseVersion;
+				
+				// Sanity check: ensure all of the feature versions are the same
+				for (LibertyFeature feature : allFeatures.values()) {
+					if (!version.equals(feature.getProductVersion())) {
+						log("Product versions do not match. Expected release version " + version + ", actual feature and version " + feature.getSymbolicName() + ":" + feature.getProductVersion(), LogLevel.WARN.getLevel());
+					}
 				}
 			}
-			
-			
+
 			// Copy JSON artifacts and generate POMs
 			if (openLibertyJson != null) {
 				copyJsonArtifact(modifiedOpenLibertyJsonFile, outputDir, version, false);
@@ -197,6 +211,13 @@ public class LibertyFeaturesToMavenRepo extends Task {
 	 */	
 	public void setWebsphereLibertyJson(String websphereLibertyJson) {
 		this.websphereLibertyJson = websphereLibertyJson;
+	}
+	
+	/**
+	 * Set the expected release version.
+	 */
+	public void setReleaseVersion(String releaseVersion) {
+		this.releaseVersion = releaseVersion;
 	}
 	
 	/**
