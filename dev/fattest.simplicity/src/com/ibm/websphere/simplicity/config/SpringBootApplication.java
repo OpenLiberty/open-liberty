@@ -13,7 +13,7 @@ package com.ibm.websphere.simplicity.config;
 /**
  *
  */
-public class SpringBootApp extends Application {
+public class SpringBootApplication extends Application {
     @Override
     public WebApplication clone() throws CloneNotSupportedException {
         return (WebApplication) super.clone();

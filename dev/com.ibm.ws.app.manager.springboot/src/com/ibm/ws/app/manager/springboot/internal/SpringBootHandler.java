@@ -89,17 +89,17 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
 
     @Override
     public Future<Boolean> install(ApplicationInformation<DeployedAppInfo> applicationInformation) {
-        SpringBootApplicationImpl springBootApp = (SpringBootApplicationImpl) applicationInformation.getHandlerInfo();
-        if (springBootApp == null) {
+        SpringBootApplicationImpl springBootApplication = (SpringBootApplicationImpl) applicationInformation.getHandlerInfo();
+        if (springBootApplication == null) {
             IllegalStateException ise = new IllegalStateException("No SpringBootApplication found.");
             return futureMonitor.createFutureWithResult(Boolean.class, ise);
         }
-        if (springBootApp.getError() != null) {
-            return futureMonitor.createFutureWithResult(Boolean.class, springBootApp.getError());
+        if (springBootApplication.getError() != null) {
+            return futureMonitor.createFutureWithResult(Boolean.class, springBootApplication.getError());
         }
 
         Future<Boolean> result = futureMonitor.createFuture(Boolean.class);
-        if (!springBootApp.deployApp(result)) {
+        if (!springBootApplication.deployApp(result)) {
             futureMonitor.setResult(result, false);
             return result;
         }
@@ -128,20 +128,20 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
             throw new IllegalStateException(e);
         }
 
-        SpringBootApplicationImpl springBootApp = (SpringBootApplicationImpl) applicationInformation.getHandlerInfo();
-        if (springBootApp.getError() != null) {
+        SpringBootApplicationImpl springBootApplication = (SpringBootApplicationImpl) applicationInformation.getHandlerInfo();
+        if (springBootApplication.getError() != null) {
             return null;
         }
 
         // Only monitor the boot lib directory in the container
-        Notification bootInfNotification = new DefaultNotification(applicationInformation.getContainer(), springBootApp.getSpringBootManifest().getSpringBootLib());
+        Notification bootInfNotification = new DefaultNotification(applicationInformation.getContainer(), springBootApplication.getSpringBootManifest().getSpringBootLib());
         Notification metaInfNotification = new DefaultNotification(applicationInformation.getContainer(), "/META-INF");
         Collection<Notification> notifications = new HashSet<Notification>();
         notifications.add(bootInfNotification);
         notifications.add(metaInfNotification);
 
         if (originalContainer != applicationInformation.getContainer()) {
-            Notification oldBoot = new DefaultNotification(originalContainer, springBootApp.getSpringBootManifest().getSpringBootLib());
+            Notification oldBoot = new DefaultNotification(originalContainer, springBootApplication.getSpringBootManifest().getSpringBootLib());
             Notification oldMeta = new DefaultNotification(originalContainer, "/META-INF");
             notifications.add(oldBoot);
             notifications.add(oldMeta);

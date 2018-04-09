@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.SpringBootApp;
+import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
@@ -79,9 +79,9 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
 
         // configure the pre-thinned app jar as a spring boot app
         ServerConfiguration sc = server.getServerConfiguration();
-        List<SpringBootApp> configuredApps = sc.getSpringBootApps();
+        List<SpringBootApplication> configuredApps = sc.getSpringBootApplications();
         configuredApps.clear();
-        SpringBootApp thinnedAppConfig = new SpringBootApp();
+        SpringBootApplication thinnedAppConfig = new SpringBootApplication();
         thinnedAppConfig.setLocation(thinnedApp.getName());
         thinnedAppConfig.setName("testPreThinned");
         configuredApps.add(thinnedAppConfig);
