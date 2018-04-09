@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -388,8 +389,8 @@ public class WebUtilsTest {
 
     @Test
     public void testStripSecretFromUrl2() {
-        String input = "abc&client_secret=password&&client_secret=password";
-        String expected = "abc&client_secret=*****&&client_secret=*****";
+        String input = "abc&client_secret=x&client_secret=password";
+        String expected = "abc&client_secret=*****&client_secret=*****";
         String secret = "client_secret";
         String value = WebUtils.stripSecretFromUrl(input, secret);
         assertEquals(expected, value);
@@ -397,7 +398,7 @@ public class WebUtilsTest {
 
     @Test
     public void testStripSecretFromUrl3() {
-        String input = "abc&client_secret=password&&client_secret=password";
+        String input = "abc&client_secret=x&&client_secret=password";
         String expected = "abc&client_secret=*****&&client_secret=*****";
         String secret = "client_secret";
         String value = WebUtils.stripSecretFromUrl(input, secret);
@@ -694,7 +695,7 @@ public class WebUtilsTest {
             });
         String output = WebUtils.getRequestStringForTrace(request,secret);
         assertNotNull(output);
-        assertTrue(!output.contains("password"));
+        assertFalse(output.contains("password"));
         assertTrue(output.contains(url));
     }
 
@@ -717,7 +718,7 @@ public class WebUtilsTest {
             });
         String output = WebUtils.getRequestStringForTrace(request,secret);
         assertNotNull(output);
-        assertTrue(!output.contains(pass));
+        assertFalse(output.contains(pass));
         assertTrue(output.contains(url));
     }
 
@@ -765,7 +766,7 @@ public class WebUtilsTest {
             });
         String output = WebUtils.getRequestStringForTrace(request,secret);
         assertNotNull(output);
-        assertTrue(!output.contains(pass));
+        assertFalse(output.contains(pass));
         assertTrue(output.contains(url));
         assertTrue(output.contains(q1));
         assertTrue(output.contains(q3));
@@ -793,7 +794,7 @@ public class WebUtilsTest {
             });
         String output = WebUtils.getRequestStringForTrace(request,secret);
         assertNotNull(output);
-        assertTrue(!output.contains(pass));
+        assertFalse(output.contains(pass));
         assertTrue(output.contains(url));
         assertTrue(output.contains(q1));
         assertTrue(output.contains(q3));
@@ -824,8 +825,8 @@ public class WebUtilsTest {
             });
         String output = WebUtils.getRequestStringForTrace(request,new String[]{secret1,secret2});
         assertNotNull(output);
-        assertTrue(!output.contains(pass1));
-        assertTrue(!output.contains(pass2));
+        assertFalse(output.contains(pass1));
+        assertFalse(output.contains(pass2));
         assertTrue(output.contains(url));
         assertTrue(output.contains(q1));
         assertTrue(output.contains(q3));
