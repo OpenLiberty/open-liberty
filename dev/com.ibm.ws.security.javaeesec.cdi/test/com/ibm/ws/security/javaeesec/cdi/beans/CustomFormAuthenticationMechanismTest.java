@@ -357,9 +357,10 @@ public class CustomFormAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestRegistersJaspicSession() throws Exception {
+        IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext(ap).withMessageInfo().withGetResponse();
         withUsernamePassword(USER1, PASSWORD1).withIsNewAuthentication(false);
-        withIDSBeanInstance(ids, false, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
+        withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
         withJaspicSessionEnabled(true);
         withoutJaspicSessionPrincipal();
 
