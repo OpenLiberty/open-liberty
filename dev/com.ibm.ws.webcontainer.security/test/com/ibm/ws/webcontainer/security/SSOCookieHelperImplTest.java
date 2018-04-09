@@ -561,7 +561,33 @@ public class SSOCookieHelperImplTest {
             }
         });
 
-        schi.addCookies(bigStr, req, resp);
+        schi.addJwtCookies(bigStr, req, resp);
         mock.assertIsSatisfied();
+    }
+
+    class SSOATestDouble extends SSOCookieHelperImpl {
+
+        SSOATestDouble(WebAppSecurityConfig config) {
+            super(config);
+        }
+
+        @Override
+        protected String getCookieValue(HttpServletRequest req, String cookieName) {
+            if (cookieName.endsWith("03"))
+                return null;
+            return cookieName + "_value";
+        }
+    }
+
+    @Test
+    // test that cookie contatenation in getJwtSsoTokenFromCookies works.
+    // Use the testDouble class to feed two cookies into the test.
+    public void getJwtSsoTokenFromCookies() {
+
+        SSOATestDouble stb = new SSOATestDouble(config);
+        String result = stb.getJwtSsoTokenFromCookies(req, "jwtToken");
+        String expected = "jwtToken_valuejwtToken02_value";
+        System.out.println("getJwtSsoTokenFromCookies result is: " + result + " expected is: " + expected);
+        assertTrue(result.equals(expected));
     }
 }

@@ -34,6 +34,7 @@ import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.util.ByteArray;
+import com.ibm.ws.webcontainer.security.internal.LoggedOutJwtSsoCookieCache;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.StringUtil;
 import com.ibm.wsspi.security.token.SingleSignonToken;
@@ -53,6 +54,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
     public SSOCookieHelperImpl(WebAppSecurityConfig config) {
         this(config, (String) null);
+
     }
 
     /**
@@ -277,6 +279,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                         addLogoutCookieToList(req, cookies[i].getName(), logoutCookieList);
                     }
                 }
+                if (config.isTrackLoggedOutSSOCookiesEnabled()) {
+                    LoggedOutJwtSsoCookieCache.put(getJwtSsoTokenFromCookies(req, jwtCookieName));
+                }
             }
             //TODO: deal with jwtsso's customizable cookie path.
             for (Cookie cookie : logoutCookieList) {
@@ -470,6 +475,58 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         }
 
         return al.toArray(new String[0]);
+    }
+
+    /**
+     * The token can be split across multiple cookies if it is over 3900 chars.
+     * Look for subsequent cookies and concatenate them in that case.
+     * The counterpart for this method is SSOCookieHelperImpl.addJwtSsoCookiesToResponse.
+     *
+     * @param req
+     * @return the token String or null if nothing found.
+     */
+    @Override
+    public String getJwtSsoTokenFromCookies(HttpServletRequest req, String baseName) {
+
+        StringBuffer tokenStr = new StringBuffer();
+        String cookieName = baseName;
+        for (int i = 1; i <= 99; i++) {
+            if (i > 1) {
+                cookieName = baseName + (i < 10 ? "0" : "") + i; //name02... name99
+            }
+            String cookieValue = getCookieValue(req, cookieName);
+            if (cookieValue == null) {
+                break;
+            }
+            if (cookieValue.length() > 0) {
+                tokenStr.append(cookieValue);
+            }
+        }
+        return tokenStr.length() > 0 ? tokenStr.toString() : null;
+    }
+
+    protected String getCookieValue(HttpServletRequest req, String cookieName) {
+        String[] hdrVals = CookieHelper.getCookieValues(getCookies(req), cookieName);
+        String result = null;
+        if (hdrVals != null) {
+            for (int n = 0; n < hdrVals.length; n++) {
+                String hdrVal = hdrVals[n];
+                if (hdrVal != null && hdrVal.length() > 0) {
+                    result = hdrVal;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param req
+     * @return
+     */
+    private Cookie[] getCookies(HttpServletRequest req) {
+        return (req.getCookies());
+
     }
 
 }
