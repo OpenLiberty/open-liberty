@@ -78,7 +78,7 @@ javac.debug: true
 javac.encoding: UTF-8
 -sources: false
 
--pedantic: true
+-pedantic: ${if;${driver;gradle};true;false}
 -fixupmessages.javac17: "The .JRE container is set to JavaSE-1.8 but bnd is compiling against 1.7";is:=ignore
 -fixupmessages.nosrc: "bnd's src folder 'src' is not in the Eclipse build path";is:=ignore
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=error
@@ -108,7 +108,8 @@ junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 mockito: org.mockito.mockito-core;version="[1.9,2)",\
   org.objenesis;version="[2.1,3)"
 
--pluginpath: ${if;${driver;gradle};${workspace}/cnf/lib/wlp-bndPlugins.jar,${workspace}/cnf/mavenlibs/org.apache.aries.util-1.1.3.jar;}
+build.bnd.plugins.classes: com.ibm.ws.build.bnd.plugins.ExternalPackageProcessor,com.ibm.ws.build.bnd.plugins.BundleManifestValidator
+build.bnd.plugins.path: ${repo;wlp-bndPlugins},${repo;org.apache.aries:org.apache.aries.util;1.1.3}
 
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class

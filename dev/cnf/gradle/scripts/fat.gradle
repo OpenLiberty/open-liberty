@@ -26,7 +26,7 @@ publishing {
 }
 
 task cleanFat(type: Delete) {
- delete autoFvtDir
+  delete autoFvtDir
 }
 
 task cleanBeforeRun(type: Delete) {
@@ -76,7 +76,6 @@ task autoFVT {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
-  
   enabled project.file('fat').exists()
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
