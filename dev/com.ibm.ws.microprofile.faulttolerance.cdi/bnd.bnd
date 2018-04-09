@@ -36,7 +36,8 @@ Include-Resource: \
 WS-TraceGroup: FAULTTOLERANCE
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.faulttolerance.cdi.FaultToleranceCDIExtension
+-dsannotations: com.ibm.ws.microprofile.faulttolerance.cdi.FaultToleranceCDIExtension,\
+                com.ibm.ws.microprofile.faulttolerance.cdi.MetricComponent
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 

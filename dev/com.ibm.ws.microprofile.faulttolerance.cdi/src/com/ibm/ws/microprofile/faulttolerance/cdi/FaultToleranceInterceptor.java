@@ -166,6 +166,9 @@ public class FaultToleranceInterceptor {
         }
 
         AggregatedFTPolicy aggregatedFTPolicy = new AggregatedFTPolicy();
+
+        aggregatedFTPolicy.setMethod(method);
+
         if (asynchronous != null) {
             aggregatedFTPolicy.setAsynchronous(true);
         }
