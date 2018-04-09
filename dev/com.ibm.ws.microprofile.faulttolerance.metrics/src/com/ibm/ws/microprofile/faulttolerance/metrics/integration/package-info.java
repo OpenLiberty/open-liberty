@@ -8,10 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-task clone {
-  mustRunAfter cleanFat
-  doLast{
-    gitClone "microprofile-fault-tolerance"
-  }
-}
-addRequiredLibraries.dependsOn clone
+/**
+ * @version 1.0
+ */
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "FAULTTOLERANCE")
+package com.ibm.ws.microprofile.faulttolerance.metrics.integration;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;
