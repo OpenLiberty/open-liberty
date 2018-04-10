@@ -43,16 +43,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
-
-import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.security.javaeesec.CDIHelperTestWrapper;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
-
-import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.security.javaeesec.CDIHelperTestWrapper;
 
 public class IdentityStoreHandlerServiceImplTest {
 
@@ -61,8 +58,6 @@ public class IdentityStoreHandlerServiceImplTest {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-
-    private static final String IS_MANDATORY_POLICY = "javax.security.auth.message.MessagePolicy.isMandatory";
 
     private IdentityStoreHandlerServiceImpl ishsi;
     private ModulePropertiesUtils mpu;
@@ -78,7 +73,6 @@ public class IdentityStoreHandlerServiceImplTest {
     private BeanManager bm;
     private CDIService cdis;
     private CDIHelperTestWrapper cdiHelperTestWrapper;
-    
 
     @Before
     public void setUp() {
@@ -90,8 +84,10 @@ public class IdentityStoreHandlerServiceImplTest {
             protected CDI getCDI() {
                 return cdi;
             }
-             protected ModulePropertiesUtils getModulePropertiesUtils() {
-                 return mpu;
+
+            @Override
+            protected ModulePropertiesUtils getModulePropertiesUtils() {
+                return mpu;
             }
         };
 
@@ -172,7 +168,6 @@ public class IdentityStoreHandlerServiceImplTest {
         }
     }
 
-
     @Test
     public void testCreateHashtableInSubjectWithUserIdAndPassword_FailureNoHAM() throws Exception {
         withHttpAuthenticationMechanism(false);
@@ -223,7 +218,6 @@ public class IdentityStoreHandlerServiceImplTest {
         }
     }
 
-
     private void withIdentityStoreHandlerResult(CredentialValidationResult result) {
         withIdentityStoreHandler(identityStoreHandler).withResult(result);
     }
@@ -273,7 +267,6 @@ public class IdentityStoreHandlerServiceImplTest {
         });
         return this;
     }
-
 
     @SuppressWarnings("unchecked")
     private IdentityStoreHandlerServiceImplTest withoutIdentityStoreHandler(final boolean unsatisfied, final boolean ambiguous) {

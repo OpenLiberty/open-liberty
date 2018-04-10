@@ -1,4 +1,4 @@
-<%--  Copyright (c) 2017 IBM Corporation and others.                         --%>
+<%--  Copyright (c) 2017, 2018 IBM Corporation and others.                   --%>
 <%--  All rights reserved. This program and the accompanying materials       --%>
 <%--  are made available under the terms of the Eclipse Public License v1.0  --%>
 <%--  which accompanies this distribution, and is available at               --%>
@@ -12,7 +12,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>login page for the form login test</title>
 </head>
 <body>
 <h2>Form Login Page</h2>

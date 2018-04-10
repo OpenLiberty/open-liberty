@@ -64,7 +64,9 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
     static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
     static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
-    
+    static final String CFG_KEY_JASPIC_SESSION_FOR_MECHANISMS_ENABLED = "jaspicSessionForMechanismsEnabled";
+    static final String CFG_KEY_JASPIC_SESSION_COOKIE_NAME = "jaspicSessionCookieName";
+
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;
     private final Boolean singleSignonEnabled;
@@ -93,6 +95,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final String overrideHttpAuthenticationMechanism;
     private final String loginFormContextRoot;
     private final String basicAuthRealmName;
+    private final String jaspicSessionCookieName;
+    private final Boolean jaspicSessionForMechanismsEnabled;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -129,6 +133,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         overrideHttpAuthenticationMechanism = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
+        jaspicSessionCookieName = (String) newProperties.get(CFG_KEY_JASPIC_SESSION_COOKIE_NAME);
+        jaspicSessionForMechanismsEnabled = (Boolean) newProperties.get(CFG_KEY_JASPIC_SESSION_FOR_MECHANISMS_ENABLED);
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
 
@@ -400,6 +406,10 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
                                   this.displayAuthenticationRealm, orig.displayAuthenticationRealm);
         appendToBufferIfDifferent(buf, "httpOnlyCookies",
                                   this.httpOnlyCookies, orig.httpOnlyCookies);
+        appendToBufferIfDifferent(buf, "jaspicSessionCookieName",
+                                  this.jaspicSessionCookieName, orig.jaspicSessionCookieName);
+        appendToBufferIfDifferent(buf, "jaspicSessionForMechanismsEnabled",
+                                  this.jaspicSessionForMechanismsEnabled, orig.jaspicSessionForMechanismsEnabled);
         appendToBufferIfDifferent(buf, "logoutOnHttpSessionExpire",
                                   this.logoutOnHttpSessionExpire, orig.logoutOnHttpSessionExpire);
         appendToBufferIfDifferent(buf, "logoutPageRedirectDomainNames",
@@ -465,6 +475,18 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public WebAuthenticatorProxy createWebAuthenticatorProxy() {
         return new WebAuthenticatorProxy(this, null, securityServiceRef, null);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getJaspicSessionCookieName() {
+        return jaspicSessionCookieName;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isJaspicSessionForMechanismsEnabled() {
+        return jaspicSessionForMechanismsEnabled;
     }
 
 }

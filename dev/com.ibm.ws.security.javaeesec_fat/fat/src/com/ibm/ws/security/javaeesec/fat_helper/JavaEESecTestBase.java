@@ -206,6 +206,73 @@ public class JavaEESecTestBase {
         }
     }
 
+    protected String executeGetRequestFormCreds(DefaultHttpClient httpClient, String resourceUrl, boolean redirect, String loginUrl, String loginTitle, String formUrl,
+                                                String userid,
+                                                String password, int expectedStatusCode) throws Exception {
+        String methodName = "executeGetRequestFormCreds";
+        Log.info(logClass, getCurrentTestName(),
+                 "Servlet url: " + resourceUrl + " userid: " + userid + ", password: " + password + ", expectedStatusCode=" + expectedStatusCode + " , method=" + methodName);
+
+        HttpResponse response = executeGetRequestFormCreds(httpClient, resourceUrl, redirect, loginUrl, loginTitle, formUrl, userid, password);
+        return processResponse(response, expectedStatusCode, resourceUrl);
+    }
+
+    protected HttpResponse executeGetRequestFormCreds(DefaultHttpClient httpClient, String resourceUrl, boolean redirect, String loginUrl, String loginTitle, String formUrl,
+                                                      String userid,
+                                                      String password) throws Exception {
+        String methodName = "executeGetRequestFormCreds";
+        Log.info(logClass, getCurrentTestName(), "Servlet url: " + resourceUrl + " userid: " + userid + ", password: " + password + " , method=" + methodName);
+
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        String content = getFormLoginPage(httpClient, resourceUrl, redirect, loginUrl, loginTitle);
+
+        // Execute Form login and get redirect location.
+        String location = executeFormLogin(httpClient, formUrl, userid, password, true);
+
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        return accessPage(httpClient, location);
+    }
+
+    protected HttpResponse accessPage(HttpClient client, String location) {
+        String methodName = "accessPage";
+        Log.info(logClass, methodName, "accessPageNoChallenge: location =  " + location);
+        HttpResponse response = null;
+
+        try {
+            // Get method on form login page
+            HttpGet getMethod = new HttpGet(location);
+            response = client.execute(getMethod);
+        } catch (IOException e) {
+            fail("Caught unexpected exception: " + e);
+        }
+        return response;
+    }
+
+    protected String processResponse(HttpResponse response, int expectedStatusCode, String message) throws IOException {
+        String methodName = "processResponse";
+
+        Log.info(logClass, methodName, "getMethod status: " + response.getStatusLine());
+        HttpEntity entity = response.getEntity();
+        String content = EntityUtils.toString(entity);
+        Log.info(logClass, methodName, "Servlet full response content: \n" + content);
+        EntityUtils.consume(entity);
+
+        assertEquals("Expected " + expectedStatusCode + " was not returned",
+                     expectedStatusCode, response.getStatusLine().getStatusCode());
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            assertTrue("Response did not contain expected content (" + message + ")",
+                       content.contains(message));
+            return content;
+        } else if (expectedStatusCode == 401) {
+            assertTrue("Response was not the expected error page: "
+                       + Constants.LOGIN_ERROR_PAGE, content.contains(Constants.LOGIN_ERROR_PAGE));
+            return null;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Send HttpClient get request to the given URL, ensure that the user is redirected to the form login page
      * and that the JASPI provider was or was not called, as expected.
@@ -216,7 +283,6 @@ public class JavaEESecTestBase {
      * @param formTitle Name of Login form (defaults to Form Login Page if not specified)
      * @throws Exception
      */
-
     public void getFormLoginPage(HttpClient httpclient, String url, String providerName) throws Exception {
         String formTitle = Constants.FORM_LOGIN_PAGE;
         getFormLoginPage(httpclient, url, providerName, formTitle);
@@ -266,12 +332,13 @@ public class JavaEESecTestBase {
 
     public String getFormLoginPage(DefaultHttpClient httpclient, String url, boolean redirect, String formUrl, String formTitle) throws Exception {
         String methodName = "getFormLoginPage";
-        Log.info(logClass, methodName, "Form login page url: " + url + ", redirect: " + redirect);
+        Log.info(logClass, methodName, "Resource url: " + url + ", redirect: " + redirect);
         String content = null;
         try {
             HttpGet getMethod = new HttpGet(url);
             HttpResponse response = httpclient.execute(getMethod);
             Log.info(logClass, methodName, "Form login page result: " + response.getStatusLine());
+            Log.info(logClass, methodName, "Form login page response: " + response.toString());
             if (redirect) {
                 assertEquals("Expected " + HttpServletResponse.SC_MOVED_TEMPORARILY + " status code for form login page was not returned",
                              HttpServletResponse.SC_MOVED_TEMPORARILY, response.getStatusLine().getStatusCode());
@@ -394,6 +461,7 @@ public class JavaEESecTestBase {
         HttpResponse response = httpclient.execute(postMethod);
 
         Log.info(logClass, methodName, "postMethod.getStatusCode():  " + response.getStatusLine().getStatusCode());
+        Log.info(logClass, methodName, "postMethod response: " + response.toString());
 
         EntityUtils.consume(response.getEntity());
 
