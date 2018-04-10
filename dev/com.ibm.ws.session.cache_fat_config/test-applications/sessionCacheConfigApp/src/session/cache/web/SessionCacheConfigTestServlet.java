@@ -132,7 +132,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     /**
      * Invalidate the active session, if any.
      */
-    public void invalidateSession(HttpServletRequest request, HttpServletResponse response) {
+    public void invalidateSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
         if (session != null) {
             System.out.println("Invalidating session: " + session.getId());
@@ -239,6 +239,20 @@ public class SessionCacheConfigTestServlet extends FATServlet {
                    "Bytes expected: " + Arrays.toString(expectedBytes) + EOLN +
                    "Bytes observed: " + Arrays.toString(bytes),
                    Arrays.equals(expectedBytes, bytes));
+    }
+
+    /**
+     * Set the value of a session attribute.
+     */
+    public void testGetAttribute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String attrName = request.getParameter("attribute");
+
+        String stringValue = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object value = toType(type, stringValue);
+
+        HttpSession session = request.getSession(false);
+        assertEquals(value, session.getAttribute(attrName));
     }
 
     /**
@@ -417,6 +431,28 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         // Verify that attribute does not get persisted to the cache yet
         String key = session.getId() + '.' + attrName;
         testCacheEntryDoesNotMatch(key, value);
+    }
+
+    /**
+     * Set the value of a session attribute and specify a maxInactiveInterval for the session.
+     */
+    public void testSetAttributeWithTimeout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String attrName = request.getParameter("attribute");
+
+        String stringValue = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object value = toType(type, stringValue);
+
+        int maxInactiveInterval = Integer.parseInt(request.getParameter("maxInactiveInterval"));
+
+        HttpSession session = request.getSession(true);
+        String sessionId = session.getId();
+        System.out.println("session id is " + sessionId);
+        response.getWriter().write("session id: [" + sessionId + "]");
+
+        session.setAttribute(attrName, value);
+
+        session.setMaxInactiveInterval(maxInactiveInterval);
     }
 
     /**

@@ -64,6 +64,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
     /** The ValidationTypes this IdentityStore can be used for. Will be null when set by a deferred EL expression. */
     private final Set<ValidationType> useFor;
 
+    private boolean datasourceEvaluated = false;
+
     /**
      * Create a new instance of an {@link DatabaseIdentityStoreDefinitionWrapper} that will provide
      * convenience methods to access configuration from the {@link DatabaseIdentityStoreDefinition}
@@ -87,6 +89,9 @@ public class DatabaseIdentityStoreDefinitionWrapper {
          */
         this.callerQuery = evaluateCallerQuery(true);
         this.dataSourceLookup = evaluateDataSourceLookup(true);
+        if (this.dataSourceLookup != null) {
+            datasourceEvaluated = true;
+        }
         this.groupsQuery = evaluateGroupsQuery(true);
         this.hashAlgorithm = evaluateHashAlgorithm();
         this.hashAlgorithmParameters = evaluateHashAlgorithmParameters();
@@ -356,5 +361,9 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      */
     Set<ValidationType> getUseFor() {
         return (this.useFor != null) ? this.useFor : evaluateUseFor(false);
+    }
+
+    boolean isDataSourceEvaluated() {
+        return datasourceEvaluated;
     }
 }

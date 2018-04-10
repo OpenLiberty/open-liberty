@@ -191,6 +191,7 @@ org.jacoco:org.jacoco.core:0.7.9
 org.jacoco:org.jacoco.report:0.7.9
 org.javassist:javassist:3.17.1-GA
 org.jboss.classfilewriter:jboss-classfilewriter:1.1.2.Final
+org.jboss:jandex:2.0.3.Final
 org.jboss.jdeparser:jdeparser:1.0.0.Final
 org.jboss.logging:jboss-logging:3.3.0.Final
 org.jboss.shrinkwrap:shrinkwrap-api:1.2.3

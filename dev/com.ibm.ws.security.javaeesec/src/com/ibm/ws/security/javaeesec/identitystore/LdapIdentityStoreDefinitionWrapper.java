@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.identitystore;
+
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -385,10 +389,11 @@ class LdapIdentityStoreDefinitionWrapper {
             /**
              * This is for CTS testing only. A default filter is expected, though this violates the spec.
              */
-
-            if (System.getProperty("cts") != null && System.getProperty("cts").equalsIgnoreCase("true") && (result == null || result.isEmpty())) {
-                Tr.debug(tc, "Setting default groupSearchFilter to (objectClass=groupOfNames)");
-                return "(objectClass=groupOfNames)";
+            if (result == null || result.isEmpty()) {
+                if (isCTS()) {
+                    Tr.debug(tc, "Setting default groupSearchFilter to (objectClass=groupOfNames)");
+                    return "(objectClass=groupOfNames)";
+                }
             }
             return result;
 
@@ -735,4 +740,19 @@ class LdapIdentityStoreDefinitionWrapper {
     Set<ValidationType> getUseFor() {
         return (this.useFor != null) ? this.useFor : evaluateUseFor(false);
     }
+
+    private boolean isCTS() {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
+                @Override
+                public Boolean run() throws SecurityException, NullPointerException, IllegalArgumentException {
+                    String result = System.getProperty("cts");
+                    return result != null && result.equalsIgnoreCase("true");
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            return false;
+        }
+    }
+
 }

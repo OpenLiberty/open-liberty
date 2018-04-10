@@ -38,7 +38,15 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 public class FormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(FormAuthenticationMechanism.class);
-    private Utils utils = new Utils();
+    private final Utils utils;
+
+    public FormAuthenticationMechanism() {
+        utils = new Utils();
+    }
+    // this is for unit test.
+    protected FormAuthenticationMechanism(Utils utils) {
+        this.utils = utils;
+    }
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -128,6 +136,10 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         status = utils.validateUserAndPassword(getCDI(), JavaEESecConstants.DEFAULT_REALM, clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
             httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
+            rspStatus = HttpServletResponse.SC_OK;
+        } else if (status == AuthenticationStatus.NOT_DONE) {
+            // set SC_OK, since if the target is not protected, it'll be processed.
+            // otherwise, webcontainer will set SC_FORBIDDEN;
             rspStatus = HttpServletResponse.SC_OK;
         } else {
             // TODO: Audit invalid user or password

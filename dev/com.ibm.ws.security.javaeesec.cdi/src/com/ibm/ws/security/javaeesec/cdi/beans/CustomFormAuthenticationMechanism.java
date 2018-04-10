@@ -36,7 +36,16 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 public class CustomFormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(CustomFormAuthenticationMechanism.class);
-    private Utils utils = new Utils();
+    private final Utils utils;
+
+    public CustomFormAuthenticationMechanism() {
+        utils = new Utils();
+    }
+
+    // this is for unit test.
+    protected CustomFormAuthenticationMechanism(Utils utils) {
+        this.utils = utils;
+    }
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -96,6 +105,10 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         AuthenticationStatus status = utils.handleAuthenticate(getCDI(), JavaEESecConstants.DEFAULT_REALM, credential, clientSubject, httpMessageContext);
         int rspStatus;
         if (status == AuthenticationStatus.SUCCESS) {
+            rspStatus = HttpServletResponse.SC_OK;
+        } else if (status == AuthenticationStatus.NOT_DONE) {
+            // set SC_OK, since if the target is not protected, it'll be processed.
+            // otherwise, webcontainer will set SC_FORBIDDEN;
             rspStatus = HttpServletResponse.SC_OK;
         } else {
             rspStatus = HttpServletResponse.SC_FORBIDDEN;

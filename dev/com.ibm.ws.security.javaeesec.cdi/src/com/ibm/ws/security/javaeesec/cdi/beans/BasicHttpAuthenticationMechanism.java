@@ -43,7 +43,16 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
     private String realmName = null;
-    private Utils utils = new Utils();
+    private final Utils utils;
+
+    public BasicHttpAuthenticationMechanism() {
+        utils = new Utils();
+    }
+
+    // this is for unit test.
+    protected BasicHttpAuthenticationMechanism(Utils utils) {
+        this.utils = utils;
+    }
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -130,6 +139,10 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                 status = utils.validateUserAndPassword(getCDI(), realmName, clientSubject, basicAuthCredential, httpMessageContext);
                 if (status == AuthenticationStatus.SUCCESS) {
                     httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
+                    rspStatus = HttpServletResponse.SC_OK;
+                } else if (status == AuthenticationStatus.NOT_DONE) {
+                    // set SC_OK, since if the target is not protected, it'll be processed.
+                    // otherwise, webcontainer will set SC_FORBIDDEN;
                     rspStatus = HttpServletResponse.SC_OK;
                 }
             }
