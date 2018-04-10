@@ -323,7 +323,7 @@ public class WebUtilsTest {
 
         String input = "";
         String expected = input;
-        String secret = "secret";
+        String secret = "client_secret";
         String value = WebUtils.stripSecretFromUrl(input, secret);
         assertEquals(expected, value);
 
