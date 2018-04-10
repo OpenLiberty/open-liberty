@@ -36,7 +36,6 @@ import com.ibm.websphere.simplicity.config.HttpSessionCache;
 import com.ibm.websphere.simplicity.config.Monitor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -86,7 +85,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("SRVE0297E.*IllegalStateException"); // TODO remove this temporarily allowed error once OSGi dependencies in session manager code are fixed
+        server.stopServer();
     }
 
     /**
@@ -188,10 +187,16 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         String sessionId = response.substring(start, response.indexOf(']', start));
 
         // Wait until invalidation would normally have occurred
-        TimeUnit.SECONDS.sleep(31);
+        TimeUnit.SECONDS.sleep(35);
 
         // confirm that invalidated data remains in the cache
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testScheduleInvalidation&value=si1&sessionId=" + sessionId, null);
+
+        // Add another attribute, but don't wait for it to be written
+        response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testTimeBasedWriteNoSync&value=si2&maxInactiveInterval=60",
+                                session);
+        start = response.indexOf("session id: [") + 13;
+        sessionId = response.substring(start, response.indexOf(']', start));
     }
 
     /**
@@ -257,7 +262,6 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     /**
      * Update the configured value of the writeInterval attribute while the server is running.
      */
-    @AllowedFFDC("java.lang.IllegalStateException") // TODO remove this temporarily allowed error once OSGi dependencies in session manager code are fixed
     @Test
     public void testWriteInterval() throws Exception {
         // Verify default behavior: writeFrequency=END_OF_SERVLET_SERVICE, writeInterval ignored

@@ -17,6 +17,7 @@ import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.cache.CacheManager;
@@ -219,6 +220,15 @@ public class CacheStoreService implements SessionStoreService {
      */
     protected void deactivate(ComponentContext context) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // Block the progress of deactivate so that session manager is able to access the cache until it finishes stopping applications.
+        // The approach of blocking is copied from DatabaseStoreService as a temporary workaround. It would be nice to have a better solution here.
+        final long MAX_WAIT = TimeUnit.SECONDS.toNanos(10);
+        for (long start = System.nanoTime(); !completedPassivation && System.nanoTime() - start < MAX_WAIT; )
+            try {
+                TimeUnit.MILLISECONDS.sleep(100); // sleep 1/10th of a second
+            } catch (InterruptedException e) {
+            }
 
         if (trace && tc.isDebugEnabled())
             CacheHashMap.tcInvoke(tcCachingProvider, "close");
