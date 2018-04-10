@@ -26,4 +26,4 @@ Subsystem-Name: Java XML Bindings 2.2
   bin/jaxb/tools/ws-xjc.jar, \
   bin/jaxb/schemagen.bat
 kind=ga
-edition=base
+edition=core
