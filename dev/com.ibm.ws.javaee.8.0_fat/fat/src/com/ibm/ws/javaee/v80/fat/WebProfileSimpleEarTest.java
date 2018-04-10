@@ -20,6 +20,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 // import testservlet40.web.servlets.SimpleClassesServlet;
 import testservlet40.jar.servlets.SimpleFragmentServlet;
@@ -39,7 +40,7 @@ import testservlet40.jar.servlets.SimpleFragmentServlet;
  * however, the test only configures the fragment servlet.
  */
 @RunWith(FATRunner.class)
-public class WebProfileSimpleEarTest implements FATAppConstants {
+public class WebProfileSimpleEarTest extends FATServletClient implements FATAppConstants {
 
     @Server(JAVA8_WEB_SIMPLE_EAR_SERVER_NAME)
     @TestServlet(servlet = SimpleFragmentServlet.class,

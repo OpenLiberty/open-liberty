@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses( {
     WebProfileSimpleWarTest.class,
+    WebProfileSimpleEarTest.class,
     FullProfileSimpleWarTest.class,
     FullProfileSimpleEarTest.class,
  } )
