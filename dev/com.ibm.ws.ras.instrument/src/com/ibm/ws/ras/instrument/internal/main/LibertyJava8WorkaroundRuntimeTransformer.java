@@ -110,7 +110,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
 
             
             //This is largely replicated from the JavaInfo class. The problem is this class gets packed into the 
-            //ras-instrumentation.jar, so it's easier to replicate this than further change the packaging for now.
+            //wlp-rasInstrumentation.jar, so it's easier to replicate this than further change the packaging for now.
             //Please keep the definitive version of this in JavaInfo.
             
             // Parse MAJOR and MINOR versions

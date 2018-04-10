@@ -77,10 +77,11 @@ public class FeatureVerifier {
 	private int getLevelFromEdition(String edition) {
 		switch(edition.toLowerCase()) {
 		    case "full": return 0;
-		    case "zos": return 1;
-			case "nd": return 2;
-			case "base": return 3;
-			case "core": return 4;
+		    case "unsupported": return 1;
+		    case "zos": return 2;
+			case "nd": return 3;
+			case "base": return 4;
+			case "core": return 5;
 			default: return 99;
 		}
 	}
