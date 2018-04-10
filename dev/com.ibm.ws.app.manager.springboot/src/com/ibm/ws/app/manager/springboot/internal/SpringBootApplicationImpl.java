@@ -77,6 +77,7 @@ import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ConfigElement;
 import com.ibm.ws.app.manager.springboot.container.config.KeyStore;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
+import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instance;
@@ -184,7 +185,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
 
         @Override
-        public <T> void configure(ServerConfiguration config, T helperParam, Class<T> type) {
+        public <T> void configure(ServerConfiguration config, T helperParam, Class<T> type, SpringConfiguration additionalConfig) {
             ContainerInstanceFactory<T> containerInstanceFactory = factory.getContainerInstanceFactory(type);
             if (containerInstanceFactory == null) {
                 throw new IllegalStateException("No configuration helper found for: " + type);
@@ -200,7 +201,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             }
 
             try {
-                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, virtualHostId, helperParam))) {
+                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, virtualHostId, helperParam, additionalConfig))) {
                     throw new IllegalStateException("Config instance already created.");
                 }
             } catch (IOException | UnableToAdaptException | MetaDataException e) {

@@ -34,6 +34,7 @@ instrument.disabled: true
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot20Server.jar; version:Version=2.0
 
 -buildpath: \
+	org.springframework:spring-web;strategy=exact;version=5.0.4.RELEASE, \
 	org.springframework:spring-core;strategy=exact;version=5.0.4.RELEASE, \
 	org.springframework:spring-context;strategy=exact;version=5.0.4.RELEASE, \
 	org.springframework:spring-aop;strategy=exact;version=5.0.4.RELEASE, \

@@ -32,6 +32,7 @@ import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigu
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -46,6 +47,8 @@ import org.springframework.util.SocketUtils;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
+import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
+import com.ibm.ws.app.manager.springboot.container.config.SpringErrorPageData;
 import com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory;
 import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 
@@ -68,6 +71,7 @@ public class LibertyServletContainer implements WebServer {
         SpringBootConfigFactory configFactory = SpringBootConfigFactory.findFactory(token);
         springBootConfig = configFactory.createSpringBootConfig();
         ServerConfiguration serverConfig = getServerConfiguration(factory, configFactory, this);
+        SpringConfiguration additionalConfig = collectAdditionalConfig(factory);
 
         final CountDownLatch initDone = new CountDownLatch(1);
         final AtomicReference<Throwable> exception = new AtomicReference<>();
@@ -85,7 +89,7 @@ public class LibertyServletContainer implements WebServer {
                 initDone.countDown();
             }
             return sc;
-        }), WebInitializer.class);
+        }), WebInitializer.class, additionalConfig);
 
         try {
             initDone.await();
@@ -96,6 +100,24 @@ public class LibertyServletContainer implements WebServer {
         if (exception.get() != null) {
             throw new WebServerException("Error occured initializing the ServletContext.", exception.get());
         }
+    }
+
+    private SpringConfiguration collectAdditionalConfig(LibertyServletContainerFactory factory) {
+        SpringConfiguration configHolder = new SpringConfiguration();
+        Set<org.springframework.boot.web.server.ErrorPage> errorPages = factory.getErrorPages();
+        for (org.springframework.boot.web.server.ErrorPage spring_ep : errorPages) {
+            SpringErrorPageData ibm_spring_errpg = new SpringErrorPageData();
+            ibm_spring_errpg.setLocation(spring_ep.getPath());
+            if (spring_ep.getStatus() != null) {
+                ibm_spring_errpg.setErrorCode(spring_ep.getStatusCode());
+            } else if (spring_ep.getException() != null) {
+                ibm_spring_errpg.setExceptionType(spring_ep.getExceptionName());
+            } else if (spring_ep.isGlobal()) {
+                ibm_spring_errpg.setGlobal(true);
+            }
+            configHolder.addErrorPage(ibm_spring_errpg);
+        }
+        return configHolder;
     }
 
     @Override

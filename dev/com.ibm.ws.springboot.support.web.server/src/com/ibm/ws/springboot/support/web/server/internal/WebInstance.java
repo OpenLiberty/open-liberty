@@ -12,6 +12,7 @@ package com.ibm.ws.springboot.support.web.server.internal;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -29,20 +30,24 @@ import com.ibm.ws.app.manager.module.DeployedModuleInfo;
 import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.app.manager.module.internal.SimpleDeployedAppInfoBase;
+import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
+import com.ibm.ws.app.manager.springboot.container.config.SpringErrorPageData;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instance;
 import com.ibm.ws.app.manager.springboot.support.SpringBootApplication;
+import com.ibm.ws.container.ErrorPage;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.TagLibContainerInfo;
 import com.ibm.ws.container.service.metadata.MetaDataException;
-import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 import com.ibm.ws.threading.listeners.CompletionListener;
+import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.http.VirtualHost;
+import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 /**
  *
@@ -52,7 +57,7 @@ public class WebInstance implements Instance {
 
     final class InstanceDeployedAppInfo extends SimpleDeployedAppInfoBase implements ServletContainerInitializer {
         private final WebInitializer initializer;
-        private final AtomicReference<ServiceRegistration<ServletContainerInitializer>> registration = new AtomicReference<>();
+        private final AtomicReference<ServiceRegistration<ServletContainerInitializer>> sciRegistration = new AtomicReference<>();
         private final AtomicReference<String> appName = new AtomicReference<>();
 
         InstanceDeployedAppInfo(WebInitializer initializer, DeployedAppInfoFactoryBase factory,
@@ -63,7 +68,7 @@ public class WebInstance implements Instance {
         }
 
         DeployedModuleInfo createDeployedModule(Container appContainer, String id,
-                                                SpringBootApplication app) throws UnableToAdaptException, MetaDataException {
+                                                SpringBootApplication app, SpringConfiguration additionalConfig) throws UnableToAdaptException, MetaDataException {
             String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(id);
             WebModuleContainerInfo mci = new WebModuleContainerInfo(//
                             instanceFactory.getModuleHandler(), //
@@ -71,10 +76,34 @@ public class WebInstance implements Instance {
                             instanceFactory.getDeployedAppFactory().getNestedModuleMetaDataFactories().get("web"), //
                             appContainer, null, moduleURI, moduleClassesInfo, initializer.getContextPath());
             moduleContainerInfos.add(mci);
-
-            ModuleMetaData mmd = mci.createModuleMetaData(appInfo, this, (m, c) -> app.getClassLoader());
+            WebModuleMetaData mmd = (WebModuleMetaData) mci.createModuleMetaData(appInfo, this, (m, c) -> app.getClassLoader());
+            addSpringConfigToModuleMetadata(mmd, additionalConfig);
             appName.set(mmd.getJ2EEName().getApplication());
             return getDeployedModule(mci.moduleInfo);
+        }
+
+        private void addSpringConfigToModuleMetadata(WebModuleMetaData mmd, SpringConfiguration additionalConfig) {
+            WebAppConfiguration wac = ((WebAppConfiguration) mmd.getConfiguration());
+            @SuppressWarnings("unchecked")
+            HashMap<Integer, com.ibm.ws.container.ErrorPage> code_errorPage_hm = wac.getCodeErrorPages();
+            @SuppressWarnings("unchecked")
+            HashMap<String, com.ibm.ws.container.ErrorPage> exception_errorPage_hm = wac.getExceptionErrorPages();
+
+            for (SpringErrorPageData spr_ep : additionalConfig.getErrorPages()) {
+                if (spr_ep.isGlobal()) {
+                    wac.setDefaultErrorPage(spr_ep.getLocation());
+                } else {
+                    ErrorPage container_ep = new ErrorPage(spr_ep.getLocation());
+
+                    if (spr_ep.getErrorCode() != null) {
+                        container_ep.setErrorParam(spr_ep.getErrorCode().toString());
+                        code_errorPage_hm.put(spr_ep.getErrorCode().intValue(), container_ep);
+                    } else if (spr_ep.getExceptionType() != null) {
+                        container_ep.setErrorParam(spr_ep.getExceptionType());
+                        exception_errorPage_hm.put(spr_ep.getExceptionType().toString(), container_ep);
+                    }
+                }
+            }
         }
 
         @Override
@@ -89,12 +118,12 @@ public class WebInstance implements Instance {
             }
         }
 
-        public void registerServletContainerListener(BundleContext context) {
-            registration.set(context.registerService(ServletContainerInitializer.class, this, null));
+        public void registerServletContainerListener(BundleContext context, Container appContainer) {
+            sciRegistration.set(context.registerService(ServletContainerInitializer.class, this, null));
         }
 
         public void unregisterServletContainerListener() {
-            registration.getAndUpdate((r) -> {
+            sciRegistration.getAndUpdate((r) -> {
                 if (r != null) {
                     r.unregister();
                 }
@@ -110,14 +139,15 @@ public class WebInstance implements Instance {
 
     public WebInstance(WebInstanceFactory instanceFactory, SpringBootApplication app, String id,
                        String virtualHostId, WebInitializer initializer,
-                       ServiceTracker<VirtualHost, VirtualHost> tracker) throws IOException, UnableToAdaptException, MetaDataException {
+                       ServiceTracker<VirtualHost, VirtualHost> tracker, SpringConfiguration additionalConfig) throws IOException, UnableToAdaptException, MetaDataException {
         this.instanceFactory = instanceFactory;
         this.app = app;
         this.tracker = tracker;
-        installIntoWebContainer(id, virtualHostId, initializer);
+        installIntoWebContainer(id, virtualHostId, initializer, additionalConfig);
     }
 
-    private void installIntoWebContainer(String id, String virtualHostId, WebInitializer initializer) throws IOException, UnableToAdaptException, MetaDataException {
+    private void installIntoWebContainer(String id, String virtualHostId, WebInitializer initializer,
+                                         SpringConfiguration cfg) throws IOException, UnableToAdaptException, MetaDataException {
         String contextPath = initializer.getContextPath();
         if (contextPath == null) {
             contextPath = "/";
@@ -153,10 +183,9 @@ public class WebInstance implements Instance {
 
         ExtendedApplicationInfo appInfo = app.createApplicationInfo(id, appContainer);
         InstanceDeployedAppInfo deployedApp = new InstanceDeployedAppInfo(initializer, instanceFactory.getDeployedAppFactory(), appInfo);
-        DeployedModuleInfo deployedModule = deployedApp.createDeployedModule(appContainer, id, app);
+        deployedApp.registerServletContainerListener(instanceFactory.getContext(), appContainer);
+        DeployedModuleInfo deployedModule = deployedApp.createDeployedModule(appContainer, id, app, cfg);
         deployed.set(deployedModule);
-
-        deployedApp.registerServletContainerListener(instanceFactory.getContext());
         Future<Boolean> appFuture = instanceFactory.getModuleHandler().deployModule(deployedModule, deployedApp);
         instanceFactory.getFutureMonitor().onCompletion(appFuture, new CompletionListener<Boolean>() {
             @Override
