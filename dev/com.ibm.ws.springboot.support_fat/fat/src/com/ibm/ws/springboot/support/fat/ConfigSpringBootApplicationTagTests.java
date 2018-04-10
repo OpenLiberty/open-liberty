@@ -23,7 +23,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-public class ConfigSpringBootAppTagTests extends AbstractSpringTests {
+public class ConfigSpringBootApplicationTagTests extends AbstractSpringTests {
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
@@ -40,7 +40,7 @@ public class ConfigSpringBootAppTagTests extends AbstractSpringTests {
     }
 
     @Test
-    public void testSpringBootAppTag() throws Exception {
+    public void testSpringBootApplicationTag() throws Exception {
         assertNotNull("The application was not installed", server
                         .waitForStringInLog("CWWKZ0001I:.*"));
 

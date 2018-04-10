@@ -77,8 +77,8 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "webApplication")
     private ConfigElementList<WebApplication> webApplications;
 
-    @XmlElement(name = "springBootApp")
-    private ConfigElementList<SpringBootApp> springBootApps;
+    @XmlElement(name = "springBootApplication")
+    private ConfigElementList<SpringBootApplication> springBootApplications;
 
     @XmlElement(name = "cloudant")
     private ConfigElementList<Cloudant> cloudants;
@@ -659,11 +659,11 @@ public class ServerConfiguration implements Cloneable {
     /**
      * @return explicitly installed Spring Boot applications
      */
-    public ConfigElementList<SpringBootApp> getSpringBootApps() {
-        if (this.springBootApps == null) {
-            this.springBootApps = new ConfigElementList<SpringBootApp>();
+    public ConfigElementList<SpringBootApplication> getSpringBootApplications() {
+        if (this.springBootApplications == null) {
+            this.springBootApplications = new ConfigElementList<SpringBootApplication>();
         }
-        return this.springBootApps;
+        return this.springBootApplications;
     }
 
     /**

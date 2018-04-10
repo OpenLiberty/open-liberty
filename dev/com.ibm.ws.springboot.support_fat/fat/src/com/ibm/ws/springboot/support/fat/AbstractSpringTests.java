@@ -30,7 +30,7 @@ import org.junit.Before;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.SpringBootApp;
+import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -113,7 +113,7 @@ public abstract class AbstractSpringTests {
         if (serverStarted.compareAndSet(false, true)) {
             configureBootStrapProperties();
             ServerConfiguration config = server.getServerConfiguration();
-            List<SpringBootApp> applications = config.getSpringBootApps();
+            List<SpringBootApplication> applications = config.getSpringBootApplications();
             applications.clear();
             Set<String> features = config.getFeatureManager().getFeatures();
             features.clear();
@@ -138,7 +138,7 @@ public abstract class AbstractSpringTests {
                     break;
                 }
                 case SPRING_BOOT_APP_TAG: {
-                    SpringBootApp app = new SpringBootApp();
+                    SpringBootApplication app = new SpringBootApplication();
                     app.setLocation(appFile.getName());
                     app.setName("testName");
                     applications.add(app);
