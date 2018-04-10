@@ -12,6 +12,7 @@ public class MyHighPriorityThrowableMapper implements ExceptionMapper<Throwable>
 
     @Override
     public Response toResponse(Throwable ex) {
+        ex.printStackTrace();
         return Response.status(409).entity("MyHighPriorityThrowableMapper").build();
     }
 

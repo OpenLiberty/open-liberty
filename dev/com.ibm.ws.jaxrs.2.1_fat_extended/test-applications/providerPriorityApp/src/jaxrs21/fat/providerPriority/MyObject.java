@@ -22,6 +22,7 @@ public class MyObject {
     private int mbwVersion;
     private int contextResolverVersionFromReader;
     private int contextResolverVersionFromWriter;
+    private int paramConverterVersion;
 
     public String getMyString() {
         return myString;
@@ -71,6 +72,14 @@ public class MyObject {
         this.contextResolverVersionFromWriter = contextResolverVersionFromWriter;
     }
 
+    public int getParamConverterVersion() {
+        return paramConverterVersion;
+    }
+
+    public void setParamConverterVersion(int paramConverterVersion) {
+        this.paramConverterVersion = paramConverterVersion;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -83,6 +92,9 @@ public class MyObject {
                     sb.append("|").append(mbwVersion);
                     if (contextResolverVersionFromWriter > 0) {
                         sb.append("|").append(contextResolverVersionFromWriter);
+                        if (paramConverterVersion > 0) {
+                            sb.append("|").append(paramConverterVersion);
+                        }
                     }
                 }
             }

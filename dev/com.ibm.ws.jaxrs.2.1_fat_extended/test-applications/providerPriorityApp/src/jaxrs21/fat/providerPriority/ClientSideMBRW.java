@@ -79,6 +79,7 @@ public class ClientSideMBRW implements MessageBodyReader<MyObject>, MessageBodyW
         myObject.setContextResolverVersionFromReader(Integer.parseInt(fields[3]));
         myObject.setMbwVersion(Integer.parseInt(fields[4]));
         myObject.setContextResolverVersionFromWriter(Integer.parseInt(fields[5]));
+        myObject.setParamConverterVersion(Integer.parseInt(fields[6]));
 
         return myObject;
     }
