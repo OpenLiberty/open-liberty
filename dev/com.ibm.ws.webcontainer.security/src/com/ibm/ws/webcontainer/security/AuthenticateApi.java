@@ -181,6 +181,7 @@ public class AuthenticateApi {
         ReferrerURLCookieHandler referrerURLHandler = config.createReferrerURLCookieHandler();
         referrerURLHandler.clearReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
         SRTServletRequestUtils.removePrivateAttribute(req, "AUTH_TYPE");
+        postLogout(req, res);
         subjectManager.clearSubjects();
 
     }
@@ -202,6 +203,16 @@ public class AuthenticateApi {
             boolean bLogout = service.logout(req, res, userName);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "logout return " + bLogout + " on service " + service);
+        }
+    }
+
+    void postLogout(HttpServletRequest req, HttpServletResponse res) {
+        Set<String> serviceIds = unprotectedResourceServiceRef.keySet();
+        for (String serviceId : serviceIds) {
+            UnprotectedResourceService service = unprotectedResourceServiceRef.getService(serviceId);
+            boolean bLogout = service.postLogout(req, res);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "postLogout returns " + bLogout + " on service " + service);
         }
     }
 
@@ -443,7 +454,8 @@ public class AuthenticateApi {
      * @param resp
      * @param authResult
      */
-    public void postProgrammaticAuthenticate(HttpServletRequest req, HttpServletResponse resp, AuthenticationResult authResult, boolean alwaysSetCallerSubject, boolean addSSOCookie) {
+    public void postProgrammaticAuthenticate(HttpServletRequest req, HttpServletResponse resp, AuthenticationResult authResult, boolean alwaysSetCallerSubject,
+                                             boolean addSSOCookie) {
         Subject subject = authResult.getSubject();
         if (alwaysSetCallerSubject || new SubjectHelper().isUnauthenticated(subjectManager.getCallerSubject())) {
             subjectManager.setCallerSubject(subject);
