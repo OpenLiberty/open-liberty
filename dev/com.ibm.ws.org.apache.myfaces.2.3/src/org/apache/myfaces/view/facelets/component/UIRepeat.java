@@ -943,6 +943,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                 throw new FacesException("on empty models, end cannot be greater than begin " +
                         "when the step is negative");
             }
+            setStep(step);
         }
         else if (end >= 0)
         {
@@ -980,7 +981,7 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
         if (!_emptyModel && (begin >= 0) && (begin > end))
         {
             throw new FacesException("begin cannot be greater " +
-                    "end");
+                    "than end");
         }
         if (!_emptyModel && (size > -1) && (offset > end))
         {
@@ -1005,7 +1006,6 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
                     "to zero");
         }
 
-        setStep(step);
         _end = end;
         
     }
