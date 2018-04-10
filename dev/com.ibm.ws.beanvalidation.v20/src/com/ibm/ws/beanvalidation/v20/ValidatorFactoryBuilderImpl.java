@@ -44,11 +44,11 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ValidatorFactoryBuilderImpl.class);
 
-    private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
     private static final String REFERENCE_BVAL_MANAGED_OBJECT_BUILDER = "BvalManagedObjectBuilder";
-
-    private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
     private final AtomicServiceReference<BvalManagedObjectBuilder> bvalManagedObjectBuilderSR = new AtomicServiceReference<BvalManagedObjectBuilder>(REFERENCE_BVAL_MANAGED_OBJECT_BUILDER);
+
+    @Reference
+    private ClassLoadingService classLoadingService;
 
     @Override
     public void closeValidatorFactory(ValidatorFactory vf) {
@@ -107,7 +107,6 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
             cl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         }
         if (cl != null) {
-            ClassLoadingService classLoadingService = classLoadingServiceSR.getServiceWithException();
             if (classLoadingService.isThreadContextClassLoader(cl)) {
                 return cl;
             } else if (classLoadingService.isAppClassLoader(cl)) {
@@ -118,35 +117,23 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
     }
 
     private ClassLoader createTCCL(ClassLoader parentCL) {
-        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> classLoadingServiceSR.getServiceWithException().createThreadContextClassLoader(parentCL));
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> classLoadingService.createThreadContextClassLoader(parentCL));
     }
 
     private void releaseLoader(ClassLoader tccl) {
         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            classLoadingServiceSR.getServiceWithException().destroyThreadContextClassLoader(tccl);
+            classLoadingService.destroyThreadContextClassLoader(tccl);
             return null;
         });
     }
 
-    @Reference(name = REFERENCE_CLASSLOADING_SERVICE,
-               service = ClassLoadingService.class)
-    protected void setClassLoadingService(ServiceReference<ClassLoadingService> ref) {
-        classLoadingServiceSR.setReference(ref);
-    }
-
-    protected void unsetClassLoadingService(ServiceReference<ClassLoadingService> ref) {
-        classLoadingServiceSR.unsetReference(ref);
-    }
-
     @Activate
     protected void activate(ComponentContext cc) {
-        classLoadingServiceSR.activate(cc);
         bvalManagedObjectBuilderSR.activate(cc);
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        classLoadingServiceSR.deactivate(cc);
         bvalManagedObjectBuilderSR.deactivate(cc);
     }
 
