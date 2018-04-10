@@ -15,20 +15,6 @@
   //    rootProject.project(it).tasks.getByName 'prereqFeatureResources'
   //  }
   //}
-repositories{
-	mavenCentral()
-}
-dependencies{
-	compile 'org.glassfish:javax.json:1.1.2@jar'
-	compile 'org.codehaus.plexus:plexus-utils:3.1.0@jar'
-}
-
-task copyjar(type: Copy) {
-    from configurations.runtime
-    into project.file('mavenlibs')
-    include "javax.json*.jar"
-    include "plexus-utils*.jar"
-}
 
 def featurePropertiesMap
 def gaFeatures
@@ -40,7 +26,7 @@ def getFeatureMap = {
         Set<String> featuresGa = new TreeSet()
         Set<String> featuresBeta = new TreeSet()
         Set<String> publicFeatures = new TreeSet()
-        project(':com.ibm.websphere.appserver.features').fileTree(dir: '.', include: '**/*.feature').each { featureFile ->
+        project(':com.ibm.websphere.appserver.features').fileTree(dir: '.', include: 'visibility/**/*.feature').each { featureFile ->
             Properties featureProps = new Properties()
             featureFile.withInputStream { featureProps.load(it) }
             map.put(featureProps['symbolicName'], featureProps)
@@ -63,7 +49,7 @@ def getFeatureMap = {
 
 rootProject.ext.featureMap = { getFeatureMap() }
 
-def  getGaFeatures = {
+def getGaFeatures = {
     if (gaFeatures == null) {
         getFeatureMap()
     }
@@ -106,10 +92,58 @@ task copyFeaturePiiFiles {
 
 copyPiiFiles.dependsOn copyFeaturePiiFiles
 
+Set<String> obtain(Map<String, Set<String>> featureToEditions, String edition) {
+  Set<String> features = featureToEditions.get(edition)
+  if (features == null) {
+    features = new TreeSet<String>()
+    if ('core'.equals(edition) || 'nd.controller'.equals(edition)) {
+      features.add('com.ibm.websphere.appserver.adminCenter-1.0')
+    }
+    featureToEditions.put(edition, features)
+  }
+  return features
+}
+
+def generateFeatureForEdition = {
+  Map<String,Set<String>> featureToEditions = new HashMap<String,Set<String>>()
+  Map<String,Properties> map = getFeatureMap()
+  map.keySet().each { featureName ->
+    Properties featureProps = map[featureName]
+    if ('public'.equals(featureProps['visibility'])) {
+      String kind = featureProps['kind']
+      if ('ga'.equals(kind)) {
+        String edition = featureProps['edition']
+        if (edition != null) {
+          Set<String> features = obtain(featureToEditions, edition)
+          features.add(featureProps['symbolicName'])
+        }
+        String selector = featureProps['selector']
+        if (selector != null) {
+          Set<String> features = obtain(featureToEditions, selector);
+          features.add(featureProps['symbolicName'])
+        }
+      } else if ('beta'.equals(kind)) {
+        Set<String> features = obtain(featureToEditions, 'beta');
+        features.add(featureProps['symbolicName'])
+      }
+    }
+  }
+
+  Properties props = new Properties()
+  featureToEditions.each { edition, features ->
+    props.put(edition + '.features', features.join(','))
+  }
+
+  // Store props to file
+  File propsFile = project.file('build/gen.features')
+  propsFile.createNewFile()
+  props.store(propsFile.newWriter(), null)
+}
+
 task publishFeatureResources {
   dependsOn parent.subprojects.assemble
 
-  def featureFiles = fileTree(dir: project.projectDir, include: '**/*.feature')
+  def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
   inputs.files(featureFiles).skipWhenEmpty()
   outputs.dir buildImage.file('wlp/lib/features')
   outputs.dir new File(project.buildDir, 'repo')
@@ -118,38 +152,10 @@ task publishFeatureResources {
     project.mkdir(new File(project.buildDir, 'repo'))
   }
   doLast {
-    ant.taskdef(resource: 'com/ibm/ws/wlp/feature/tasks/default.properties') {
-      classpath {
-        fileset(dir: project(':wlp-featureTasks').buildDir) {
-          include(name: 'wlp-featureTasks.jar')
-        }
-        fileset(dir: cnf.file('lib')) {
-			include(name: "wlp-*.jar")
-		}
-        fileset(dir: cnf.file('mavenlibs')) {
-          include(name: "biz.aQute.bnd-*.jar")
-          include(name: "infra.buildtasks*.jar")
-          include(name: "asm-all-5.2.jar")
-          include(name: "org.apache.aries.util-*.jar")
-          include(name: "osgi.core*.jar")
-          include(name: "jackson*.jar")
-          include(name: "jsoup-*.jar")
-          include (name:"ant-*.jar")
-        }
-      }
-    }
+    featureBndTaskdef(ant)
+    repositoryContentTaskdef(ant)
 
-    ant.taskdef(resource: 'com/ibm/ws/wlp/repository/default.properties') {
-      classpath {
-        fileset(dir:cnf.file('lib')) {
-          include(name: "wlp-generateRepositoryContent.jar")
-        }
-        fileset(dir: cnf.file('mavenlibs')) {
-          include(name: "org.apache.aries.util-*.jar")
-          include(name: "jsoup-*.jar")
-        }
-      }
-    }
+    generateFeatureForEdition()
 
     featureFiles.each { featureFile ->
       File featureFolder = featureFile.getParentFile()
@@ -160,9 +166,9 @@ task publishFeatureResources {
       String symbolicName = props['symbolicName']
       String kind = props['kind']
       if (kind == null) {
-        throw new GradleException("Feature " + symbolicName + " does not contain a kind property")
+        throw new GradleException('Feature ' + symbolicName + ' does not contain a kind property')
       }
-      String version = ("beta".equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
+      String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
 
       String relPath = featureFile.getPath().replace(projectDir.getPath() + '/visibility/', '')
       def pathParts = relPath.split('/')
@@ -220,145 +226,88 @@ task publishFeatureResources {
   }
 }
 
+publishing {
+  publications {
+    Map<String,Properties> map = getFeatureMap()
+    map.keySet().each { featureName ->
+      Properties featureProps = map[featureName]
+      "feature-${featureName}" (MavenPublication) {
+        artifactId featureName
+        version project.version
+        artifact(new File(project.buildDir, 'repo/' + featureName + ".esa")) {
+          extension 'esa'
+          builtBy publishFeatureResources
+        }
+        artifact(new File(project.buildDir, 'repo/' + featureName + ".esa.metadata.zip")) {
+          extension 'esa.metadata.zip'
+          builtBy publishFeatureResources
+        }
+      }
+    }
+  }
+}
+
+def singleOpenLibertyJsonRepo = project.file('build/temp/SingleJson.json')
+
 task generateSingleJsonRepo {
     dependsOn publishFeatureResources
-
+    inputs.dir new File(project.buildDir, 'repo')
+    outputs.file singleOpenLibertyJsonRepo
     doLast {
         project.delete('build/temp')
         project.mkdir('build/temp')
-        
-        ant.taskdef(name:'singleJsonRepo', classname:'com.ibm.ws.repository.generator.SingleJsonRepositoryGenerator') {
-            classpath {
-               fileset(dir: project(':com.ibm.ws.repository.generator').buildDir) {
-                    include(name: 'com.ibm.ws.repository.generator.jar')
-                }
-                fileset(dir: project(':com.ibm.ws.repository').buildDir) {
-                    include(name: 'com.ibm.ws.repository.jar')
-                }
-                fileset(dir: project(':com.ibm.ws.repository.parsers').buildDir) {
-                    include(name: 'com.ibm.ws.repository.parsers.jar')
-                }
-                fileset(dir: project(':com.ibm.ws.logging.core').buildDir) {
-                    include(name: 'com.ibm.ws.logging.core.jar')
-                }
-                fileset(dir: project(':com.ibm.ws.kernel.feature.core').buildDir) {
-                    include(name: 'com.ibm.ws.kernel.feature.core.jar')
-                }
-                fileset(dir: project(':com.ibm.ws.kernel.boot.core').buildDir) {
-                    include(name: 'com.ibm.ws.kernel.boot.core.jar')
-                }
-                fileset(dir:project(':com.ibm.websphere.javaee.jsonp.1.0').buildDir){
-                    include (name:'com.ibm.websphere.javaee.jsonp.1.0.jar')
-                }
-                fileset(dir:project(':com.ibm.ws.org.glassfish.json').buildDir){
-                    include (name:'com.ibm.ws.org.glassfish.json.1.0.jar')
-                }
-                fileset(dir:cnf.file('mavenlibs')) {
-                	include(name: "ant-*.jar")
-                    include(name: "commons-io-*.jar")
-                    include(name: "commons-lang-*.jar")
-                    include(name: "javax.json-*.jar")
-                    include(name: "org.apache.aries.util-*.jar")
-                    include(name: "jsoup-*.jar")
-                    include(name: "osgi.core*.jar")
-                }
-            }
+
+        repositoryGeneratorTaskdef(ant)
+
+        getGaFeatures().each { gaFeature ->
+            ant.singleJsonRepo(assetFile: project.file("build/libs/repo/${gaFeature}.esa"),
+                assetType: 'FEATURE',
+                metadataFile: project.file("build/libs/repo/${gaFeature}.esa.metadata.zip"),
+                jsonFile: singleOpenLibertyJsonRepo)
         }
-
-		getGaFeatures().each { gaFeature ->
-            	ant.singleJsonRepo(assetFile:file("build/libs/repo/${gaFeature}.esa"),
-                assetType:'FEATURE',
-                metadataFile:file("build/libs/repo/${gaFeature}.esa.metadata.zip"),
-                jsonFile:file('build/temp/SingleJson.json'))
-
-		}
     }
-}
-
-task generateMavenArtifact {
-    dependsOn generateSingleJsonRepo
-    dependsOn copyjar
-
-    doLast{
-        ant.taskdef(name:'featuresToMavenRepo', classname:'com.ibm.ws.wlp.mavenFeatures.LibertyFeaturesToMavenRepo') {
-            classpath {
-                fileset(dir: project(':wlp-mavenRepoTasks').buildDir) {
-                    include(name: 'wlp-mavenRepoTasks.jar')
-                }
-                fileset(dir: project(':com.ibm.ws.kernel.feature.core').buildDir) {
-                    include(name: 'com.ibm.ws.kernel.feature.core.jar')
-                }
-                fileset(dir:project.file('mavenlibs')){
-                    include (name:'javax.json-*.jar')
-                    include (name:'plexus-utils-*.jar')
-                }
-                             
-                fileset(dir:cnf.file('mavenlibs')) {
-                    include(name: "ant-*.jar")
-                    include(name: "commons-io-*.jar")
-                    include(name: "commons-lang-*.jar")
-                    include(name: "javax.json-*.jar")
-                    include(name: "maven-model-*.jar")
-                }
-               
-            }
-        }
-
-        project.delete('build/temp/mavenArtifact')
-        project.mkdir('build/temp/mavenArtifact')
-        ant.featuresToMavenRepo(inputDirPath: project.file('build/libs/repo'),
-                   outputDirPath: project.file('build/temp/mavenArtifact'),
-                   openLibertyJson:file('build/temp/SingleJson.json'))
-    }
-}
-
-task zipOpenLibertyMavenRepo(type: Zip){
-	dependsOn parent.subprojects.assemble
-		from "${rootDir}/com.ibm.websphere.appserver.features/build/temp/"
-		include "mavenArtifact/**"
-		archiveName 'openliberty-mavenArtifact.zip'		
-    	destinationDir distsDir
-
-}
-
-publish.dependsOn zipOpenLibertyMavenRepo
-publish.dependsOn generateMavenArtifact
-zipOpenLibertyMavenRepo.mustRunAfter generateMavenArtifact
-
-
-def featuresToPublish() {
-  def features = []
-  fileTree(dir: project.projectDir, include: '**/*.feature').each {
-    Properties props = new Properties()
-    props.load(new FileInputStream(it))
-    features.add(props['symbolicName'])
-  }
-  return features
 }
 
 publishing {
   publications {
-    def counter = 0
-    featuresToPublish().each { feature ->
-      counter++
-      "maven${counter}" (MavenPublication) {
-        artifactId feature
-        version project.version
-        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa"), extension: 'esa'
-        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa.metadata.zip"), extension: 'esa.metadata.zip'
-      }
-    }   
-	newMavenArtifact(MavenPublication) {
-	  artifactId "openliberty-MavenArtifact"
-	  version project.version
-	  artifact zipOpenLibertyMavenRepo					
-	}
-
-	newJsonArtifact(MavenPublication) {
+    newJsonArtifact(MavenPublication) {
       artifactId 'openliberty-singleJson'
       version project.version
-      artifact project.file("build/temp/SingleJson.json")
+      artifact(singleOpenLibertyJsonRepo) {
+        extension 'json'
+        builtBy generateSingleJsonRepo
+      }
     }
-  	
+  }
+}
+
+task generateMavenArtifact {
+    dependsOn generateSingleJsonRepo
+    doLast {
+        mavenRepoTaskdef(ant)
+
+        project.delete('build/temp/mavenArtifact')
+        project.mkdir('build/temp/mavenArtifact')
+        ant.libertyFeaturesToMavenRepo(inputDirPath: project.file('build/libs/repo'),
+                   outputDirPath: project.file('build/temp/mavenArtifact'),
+                   openLibertyJson: singleOpenLibertyJsonRepo)
+    }
+}
+
+task zipOpenLibertyMavenRepo(type: Zip) {
+    dependsOn generateMavenArtifact
+    from project.file('build/temp')
+    include "mavenArtifact/**"
+    archiveName 'openliberty-mavenArtifact.zip'
+    destinationDir distsDir
+}
+
+publishing {
+  publications {
+    newMavenArtifact(MavenPublication) {
+      artifactId 'openliberty-MavenArtifact'
+      version project.version
+      artifact zipOpenLibertyMavenRepo
+    }
   }
 }

@@ -107,7 +107,7 @@ public class CacheStoreService implements SessionStoreService {
         configurationProperties.put("optimizeCacheIdIncrements", true);
         configurationProperties.put("scheduleInvalidation", scheduleInvalidationFirstHour != null || scheduleInvalidationSecondHour != null);
         configurationProperties.put("sessionPersistenceMode", "JCACHE");
-        // TODO decide whether or not to externalize useInvalidatedId
+        configurationProperties.put("useInvalidatedId", false);
         configurationProperties.put("useMultiRowSchema", true);
         
         Properties vendorProperties = new Properties();

@@ -21,7 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 CommonWebServerTests20.class,
                 CommonWebServerTests20Servlet40.class,
                 ConfigDropinRootTests.class,
-                ConfigSpringBootAppTagTests.class,
+                ConfigSpringBootApplicationTagTests.class,
                 PreThinnedSpringBootTests.class,
                 WarmStartTests.class,
                 SSLTests15.class,

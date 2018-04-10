@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,11 @@
  *******************************************************************************/
 
 /**
- * @version 1.0
+ * @version 1.1
  */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "com.ibm.ws.anno", messageBundle = "com.ibm.ws.anno.resources.internal.AnnoMessages")
+@org.osgi.annotation.versioning.Version("1.1")
+@TraceOptions(traceGroup = "com.ibm.ws.anno",
+              messageBundle = "com.ibm.ws.anno.resources.internal.AnnoMessages")
 package com.ibm.ws.anno.targets.internal;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

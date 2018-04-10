@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
+import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.service.AnnotationService_Service;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
@@ -42,8 +43,7 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
 
     private static final TraceComponent tc = Tr.register(ContainerAnnotationsAdapter.class);
 
-    private final AtomicServiceReference<AnnotationService_Service> annoServiceSRRef =
-                    new AtomicServiceReference<AnnotationService_Service>("annoService");
+    private final AtomicServiceReference<AnnotationService_Service> annoServiceSRRef = new AtomicServiceReference<AnnotationService_Service>("annoService");
 
     //
 
@@ -105,10 +105,16 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
             this.annotationService = annotationService;
         }
 
+        @Deprecated
         @Override
         public boolean hasSpecifiedAnnotations(List<String> annotationTypeNames) {
+            return hasSpecifiedAnnotations(annotationTypeNames, false);
+        }
+
+        @Override
+        public boolean hasSpecifiedAnnotations(List<String> annotationTypeNames, boolean useJandex) {
             try {
-                ClassSource_Aggregate useClassSource = getClassSource();
+                ClassSource_Aggregate useClassSource = getClassSource(useJandex);
                 AnnotationTargets_Targets useTargets = getAnnotationTargets();
                 useTargets.scan(useClassSource);
 
@@ -127,11 +133,17 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
             return false;
         }
 
+        @Deprecated
         @Override
         public Set<String> getClassesWithSpecifiedInheritedAnnotations(List<String> annotationTypeNames) {
+            return getClassesWithSpecifiedInheritedAnnotations(annotationTypeNames, false);
+        }
+
+        @Override
+        public Set<String> getClassesWithSpecifiedInheritedAnnotations(List<String> annotationTypeNames, boolean useJandex) {
             Set<String> classesWithAnnotations = new HashSet<String>();
             try {
-                ClassSource_Aggregate useClassSource = getClassSource();
+                ClassSource_Aggregate useClassSource = getClassSource(useJandex);
                 AnnotationTargets_Targets useTargets = getAnnotationTargets();
                 useTargets.scan(useClassSource);
 
@@ -145,14 +157,17 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
             return classesWithAnnotations;
         }
 
-        private ClassSource_Aggregate getClassSource() {
+        private ClassSource_Aggregate getClassSource(boolean useJandex) {
             ClassSource_Aggregate useClassSource = null;
             try {
                 String containerName = rootContainer.getName();
 
                 ClassSource_Factory useClassSourceFactory = annotationService.getClassSourceFactory();
 
-                useClassSource = useClassSourceFactory.createAggregateClassSource(containerName);
+                ClassSource_Options options = useClassSourceFactory.createOptions();
+                options.setUseJandex(useJandex);
+
+                useClassSource = useClassSourceFactory.createAggregateClassSource(containerName, options);
 
                 //Naming convention of "<containerName> + container" is proper, provided it is used consistently.
                 String containerClassSourceName = containerName + " container";
@@ -160,6 +175,7 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
                 //Add the container from the module
                 ClassSource containerClassSource = useClassSourceFactory.createContainerClassSource(useClassSource.getInternMap(),
                                                                                                     containerClassSourceName,
+                                                                                                    options,
                                                                                                     this.adaptableContainer);
                 useClassSource.addClassSource(containerClassSource, ClassSource_Aggregate.ScanPolicy.SEED);
 

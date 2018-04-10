@@ -953,9 +953,9 @@ class ResolveDirector extends AbstractDirector {
                                             InstallException.BAD_FEATURE_DEFINITION);
             }
         } catch (ZipException e) {
-            throw ExceptionUtils.create(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.bad.zip", installInformation), e);
+            throw ExceptionUtils.create(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.bad.zip", installInformation.esaToInstall, e), e);
         } catch (IOException e) {
-            throw ExceptionUtils.create(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.bad.zip", installInformation), e);
+            throw ExceptionUtils.create(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.bad.zip", installInformation.esaToInstall, e), e);
         }
 
         if (installInformation.feature != null) {

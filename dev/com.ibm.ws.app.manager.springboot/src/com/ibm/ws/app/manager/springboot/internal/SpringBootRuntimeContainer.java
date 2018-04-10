@@ -101,10 +101,10 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
             return null;
         });
         try {
-            SpringBootApplicationImpl springBootApp = springBootModuleInfo.getSpringBootApplication();
-            springBootApp.registerSpringConfigFactory();
-            Class<?> springAppClass = springBootModuleInfo.getClassLoader().loadClass(springBootApp.getSpringBootManifest().getSpringStartClass());
-            main = springAppClass.getMethod("main", String[].class);
+            SpringBootApplicationImpl springBootApplication = springBootModuleInfo.getSpringBootApplication();
+            springBootApplication.registerSpringConfigFactory();
+            Class<?> springApplicationClass = springBootModuleInfo.getClassLoader().loadClass(springBootApplication.getSpringBootManifest().getSpringStartClass());
+            main = springApplicationClass.getMethod("main", String[].class);
             // TODO not sure Spring Boot supports non-private main methods
             main.setAccessible(true);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
