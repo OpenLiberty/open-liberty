@@ -107,7 +107,7 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
             String str = null;
 
             // if SAML SLO is in use, it will write the audit record and take care of the logoutExitPage redirection
-            if (req.getAttribute("SpSLOInProgress") != null) {
+            if (req.getAttribute("SpSLOInProgress") == null) {
                 AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, str);
                 authResult.setAuditLogoutSubject(authenticateApi.returnSubjectOnLogout());
                 authResult.setAuditCredType("FORM");
