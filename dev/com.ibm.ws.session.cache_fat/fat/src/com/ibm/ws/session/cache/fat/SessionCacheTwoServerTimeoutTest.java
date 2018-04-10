@@ -13,7 +13,6 @@ package com.ibm.ws.session.cache.fat;
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,12 +64,11 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
             hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         }
 
-        String configLocation = new File(serverB.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         String rand = UUID.randomUUID().toString();
         serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
                                             "-Dhazelcast.config.file=" + hazelcastConfigFile));
         serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-                                            "-Dhazelcast.config=" + configLocation));
+                                            "-Dhazelcast.config.file=" + hazelcastConfigFile));
 
         serverA.startServer();
         serverB.startServer();

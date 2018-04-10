@@ -87,6 +87,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
         String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
+                                           "-Dhazelcast.config.file=" + hazelcastConfigFile,
                                            "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         savedConfig = server.getServerConfiguration().clone();
