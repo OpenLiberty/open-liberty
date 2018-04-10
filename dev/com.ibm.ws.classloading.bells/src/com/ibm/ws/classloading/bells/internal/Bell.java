@@ -362,9 +362,9 @@ public class Bell implements LibraryChangeListener {
             // Not entirely sure what these properties would be used for, but ...
             // they are currently used by the FAT tests to force all bell services to be eagerly created.
             final Hashtable<String, Object> properties = new Hashtable<String, Object>();
+            properties.putAll(serviceInfo.props);
             properties.put("implementation.class", serviceInfo.implClass);
             properties.put("exported.from", library.id());
-            properties.putAll(serviceInfo.props);
 
             final ServiceRegistration<?> reg = context.registerService(interfaceName, createServiceFactory(serviceInfo, library, fileUrl), properties);
             if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled()) {
