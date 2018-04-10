@@ -89,6 +89,7 @@ public class FormLogoutExtensionProcessorTest {
                 one(authApi).returnSubjectOnLogout();
                 // redirectLogoutExitPage()
                 one(req).getAttribute("SpSLOInProgress");
+                will(returnValue(null));
                 one(req).setAttribute(with(any(String.class)), with(any(String.class)));
                 allowing(req).getParameter("logoutExitPage");
                 will(returnValue(logoutPage));
@@ -123,6 +124,7 @@ public class FormLogoutExtensionProcessorTest {
         mock.checking(new Expectations() {
             {
                 one(req).getAttribute("SpSLOInProgress");
+                will(returnValue(null));
                 one(resp).getStatus();
                 one(authApi).returnSubjectOnLogout();
 
