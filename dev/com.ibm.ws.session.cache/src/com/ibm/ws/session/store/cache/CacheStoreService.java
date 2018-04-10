@@ -72,12 +72,12 @@ public class CacheStoreService implements SessionStoreService {
     /**
      * Trace identifier for the cache manager
      */
-    volatile String tcCacheManager = "CacheManager-uninitialized";
+    volatile String tcCacheManager;
 
     /**
      * Trace identifier for the caching provider.
      */
-    private volatile String tcCachingProvider = "CachingProvider-uninitialized";
+    private volatile String tcCachingProvider;
 
     volatile UserTransaction userTransaction;
 

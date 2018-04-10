@@ -142,13 +142,9 @@ public class CacheHashMap extends BackedHashMap {
         a = COLON.matcher(a).replaceAll("%3A");
 
         // Session Meta Information Cache
-
         String metaCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.meta.").append(a).toString();
-
-        if (trace && tc.isDebugEnabled())
-            tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
-
         sessionMetaCache = cacheStoreService.getCacheManager().getCache(metaCacheName, String.class, ArrayList.class);
+        
         boolean create;
         if (create = sessionMetaCache == null) {
             if (trace && tc.isDebugEnabled())
