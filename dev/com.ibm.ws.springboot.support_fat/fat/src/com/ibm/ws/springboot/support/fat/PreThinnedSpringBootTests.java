@@ -57,8 +57,6 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
     @Test
     public void testWithSharedCache() throws Exception {
         // First stop the server which has already thinned the test application
-        assertNotNull("The application was not installed", server
-                        .waitForStringInLog("CWWKZ0001I:.*"));
         server.stopServer(false);
 
         // locate and copy the lib.index.cache to the shared area
@@ -92,9 +90,9 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
 
         assertNotNull("The application was not installed", server
                         .waitForStringInLog("CWWKZ0001I:.*testPreThinned.*"));
+        assertNotNull("The endpoint is not available", server
+                        .waitForStringInLog("CWWKT0016I:.*"));
 
-        // NOTE we set the port to the expected port according to the test application.properties
-        server.setHttpDefaultPort(8081);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
     }
 }

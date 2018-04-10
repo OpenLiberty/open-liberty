@@ -651,13 +651,18 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         });
     }
 
+    @FFDCIgnore(IllegalStateException.class)
     void unregisterSpringConfigFactory() {
-        springBootConfigReg.updateAndGet((r) -> {
-            if (r != null) {
-                r.unregister();
-            }
-            return null;
-        });
+        try {
+            springBootConfigReg.updateAndGet((r) -> {
+                if (r != null) {
+                    r.unregister();
+                }
+                return null;
+            });
+        } catch (IllegalStateException e) {
+            // can happen if our bundle stopped first; just ignore
+        }
     }
 
     @Override

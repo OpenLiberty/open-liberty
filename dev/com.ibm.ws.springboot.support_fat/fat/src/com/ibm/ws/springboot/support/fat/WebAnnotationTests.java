@@ -21,21 +21,21 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-public class JSPTests15 extends AbstractSpringTests {
+public class WebAnnotationTests extends AbstractSpringTests {
 
     @Test
-    public void testJSP() throws Exception {
-        HttpUtils.findStringInUrl(server, "", "resources/text.txt");
+    public void testWebAnnotations() throws Exception {
+        HttpUtils.findStringInUrl(server, "/WebServlet", "@WebFilter-@WebServlet-PASSED");
     }
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "jsp-2.3"));
+        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_WAR;
+        return SPRING_BOOT_15_APP_WEBANNO;
     }
 
 }
