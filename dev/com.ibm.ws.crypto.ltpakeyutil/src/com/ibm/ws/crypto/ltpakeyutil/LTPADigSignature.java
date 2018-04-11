@@ -12,6 +12,7 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 final class LTPADigSignature {
 
@@ -27,15 +28,26 @@ final class LTPADigSignature {
     static private Object lockObj2 = new Object();
     static long created = 0;
     static long cacheHits = 0;
+    private static final String IBMJCE_NAME = "IBMJCE";
 
     static {
         try {
-            md1JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
-            md2JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
-            md1 = MessageDigest.getInstance("SHA");
-            md2 = MessageDigest.getInstance("SHA");
+            if (LTPAKeyUtil.isIBMJCEAvailable()) {
+                md1JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, IBMJCE_NAME);
+                md2JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, IBMJCE_NAME);
+                md1 = MessageDigest.getInstance("SHA", IBMJCE_NAME);
+                md2 = MessageDigest.getInstance("SHA", IBMJCE_NAME);
+            } else {
+                md1JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+                md2JCE = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+                md1 = MessageDigest.getInstance("SHA");
+                md2 = MessageDigest.getInstance("SHA");
+            }
+
         } catch (NoSuchAlgorithmException e) {
             // instrumented ffdc
+        } catch (NoSuchProviderException e) {
+            // instrumented ffdc;
         }
     }
 
