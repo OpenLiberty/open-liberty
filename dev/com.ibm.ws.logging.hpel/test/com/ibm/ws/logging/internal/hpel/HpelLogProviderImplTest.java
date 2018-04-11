@@ -65,7 +65,7 @@ public class HpelLogProviderImplTest {
         bootConfig.put("com.ibm.hpel.text.includeTrace", "true");
 
         // Enable all the messages via bootstrap property
-        bootConfig.put("com.ibm.ws.logging.trace.specification", "*=all");
+        bootConfig.put("com.ibm.ws.logging.trace.specification", "com.*=all:org.*=all");
 
         provider.configure(bootConfig, CommonUtils.LOG_DIR, CommonUtils.TEXT_FACTORY);
 
@@ -78,15 +78,15 @@ public class HpelLogProviderImplTest {
         TraceComponent tc = Tr.register(getClass());
 
         String[] msgs = {
-                         "audit message",
-                         "debug message",
-                         "Dump: dump message",
-                         "Entry ",
-                         "error message",
-                         "event message",
-                         "Exit ",
-                         "fatal message",
-                         "info message"
+                          "audit message",
+                          "debug message",
+                          "Dump: dump message",
+                          "Entry ",
+                          "error message",
+                          "event message",
+                          "Exit ",
+                          "fatal message",
+                          "info message"
         };
         Tr.audit(tc, msgs[0]);
         Tr.debug(tc, msgs[1]);

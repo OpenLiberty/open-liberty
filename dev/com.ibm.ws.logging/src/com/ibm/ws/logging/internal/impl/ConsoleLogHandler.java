@@ -11,12 +11,12 @@
 package com.ibm.ws.logging.internal.impl;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.SystemLogHolder;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
@@ -26,10 +26,18 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
 public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.ConsoleLogHandler";
-    private SystemLogHolder sysLogHolderOriginal;
 
-    private Level consoleLogLevel;
-    private boolean copySystemStreams;
+    private SystemLogHolder sysErrHolder;
+    private SystemLogHolder sysOutHolder;
+    private boolean isTraceStdout = false;
+
+    private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
+    private BaseTraceFormatter formatter = null;
+    private Integer consoleLogLevel = null;
+
+    private boolean copySystemStreams = false;
+
+    private BaseTraceService baseTraceService = null;
 
     public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
@@ -42,90 +50,203 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     @Override
     public void synchronousWrite(Object event) {
-        SystemLogHolder sysLogHolder = sysLogHolderOriginal;
-        if (sysLogHolder == null) {
+        if (sysOutHolder == null) {
             return;
         }
 
-        /*
-         * Given an 'object' we must determine what type of log event it originates from.
-         * Knowing that it is a *Data object, we can figure what type of source it is.
-         */
-        String evensourcetType = getSourceTypeFromDataObject(event);
-        int logLevelValue = Integer.MIN_VALUE;
-        String loggerName = null;
-        String sourceType = null;
+        //The message to be written out. TODO: catch nulls later when formatting and output message
         String messageOutput = null;
-        if (event instanceof GenericData) {
-            GenericData genData = (GenericData) event;
-            loggerName = genData.getLoggerName();
-            sourceType = genData.getSourceType();
-            Level logRecordLevel = genData.getLogRecordLevel();
-            if (logRecordLevel != null) {
-                logLevelValue = logRecordLevel.intValue();
-            }
+        //Identify if console Message is intended for Stderr - each 'new' write sets it to false.
+        boolean isStderr = false;
+
+        /*
+         * Given a message 'object' we must determine what type of log event it originates from
+         * so that we can extract relevant information.
+         *
+         * Information such as "levelValue" is extracted if the original message is a LogTraceData.
+         */
+        GenericData genData = null;
+        Integer levelVal = null;
+        if (event instanceof LogTraceData) {
+            genData = ((LogTraceData) event).getGenData();
+            levelVal = ((LogTraceData) event).getLevelValue();
+        } else if (event instanceof GenericData) {
+            genData = (GenericData) event;
+        }
+
+        String eventSourceType = getSourceTypeFromDataObject(genData);
+
+        /*
+         * To write out to the console must determine if we are JSON or BASIC
+         * 1. JSON OR not a message/log-source event
+         * a) Message
+         * - Check if it is above consoleLogLevel OR if it is from SysOut/SysErr AND copySystemStreams is true
+         * then format as JSON
+         * b) Not Message (i.e. AccessLog, Trace, FFDC)
+         * - format as JSON
+         * 2. BASIC - There can be three message origins for basic messages
+         * a) tracefileName == stdout
+         * - Checks if levelVal was ERROR or FATAl > indicates stderr
+         * - format as Trace
+         * b) Second check if this message originated from echo() and copySystemStreams is true
+         * - Also check if Level is CONFIG and loggerName is SYSOUT or SYSERR
+         * - Format as streamOutput (This does filtering/truncating of stack traces and append [err] as necessary)
+         * c) Lastly this leaves message origin from publishLogRecord()
+         * - We must check if it is above consoleLogLevel to format it
+         */
+        if (format.equals(LoggingConstants.JSON_FORMAT) || !eventSourceType.equals(CollectorConstants.MESSAGES_SOURCE)) {
+            String eventsourceType = getSourceTypeFromDataObject(genData);
+
+            //First retrieve a cached JSON  message if possible, if not, format it and store it.
             if (genData.getJsonMessage() == null) {
-                genData.setJsonMessage((String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
+                genData.setJsonMessage((String) formatEvent(eventsourceType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
             }
             messageOutput = genData.getJsonMessage();
-        }
-        if (messageOutput == null) {
-            messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
-        }
-        synchronized (this) {
-
-            //Write out accessLog or ffdc or trace
-            if (sourceType.equals(CollectorConstants.ACCESS_LOG_SOURCE) ||
-                sourceType.equals(CollectorConstants.TRACE_SOURCE) ||
-                sourceType.equals(CollectorConstants.FFDC_SOURCE)) {
-                sysLogHolder.getOriginalStream().println(messageOutput);
-                return;
-            }
 
             /*
-             * We only allow two types of console messages to go through:
-             *
-             * 1. CopySystemStreams is true AND this message came from BaseTraceService.TrOutputStream which exhibit the following characteristics:
-             * - LogLevel of WsLevel.CONFIG
-             * - LoggerName of LoggingConstants.SYSTEM_OUT (i.e SystemOut) OR loggerNameLoggingConstants.SYSTEM_ERR (i.e. SystemErr)
-             * OR
-             * 2. Either this message is greater than or equal to consoleLogLevel (i.e from publishLogRecord)
-             *
+             * Go through JSON console filters to identify if we want to output this message or not. For example, if a cached message is
+             * retrieved and it is a message, but is not above the console log level nor is is from sysout/syserr (wrt to copySystem Streams) then
+             * we don't want to print this message out. Then check if messageOutput is null. This shouldn't happen, but if it is we need to generate the formatted
+             * output
              */
-
-            if (copySystemStreams &&
-                logLevelValue == WsLevel.CONFIG.intValue() &&
-                (loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_OUT) || loggerName.equalsIgnoreCase(LoggingConstants.SYSTEM_ERR))) {
-                sysLogHolder.getOriginalStream().println(messageOutput);
-                return;
+            if (eventsourceType.equals(CollectorConstants.MESSAGES_SOURCE) && levelVal != null) {
+                if (levelVal >= consoleLogLevel || (copySystemStreams && (levelVal == WsLevel.CONFIG.intValue()))) {
+                    if (messageOutput == null) {
+                        messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
+                    }
+                } else {
+                    return;
+                }
+            } else {
+                if (messageOutput == null) {
+                    messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
+                }
             }
 
-            if (logLevelValue >= consoleLogLevel.intValue()) {
-                sysLogHolder.getOriginalStream().println(messageOutput);
-                return;
-            }
+        } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
+            //if traceFilename=stdout write everything to console.log in trace format
+            String logLevel = ((LogTraceData) event).getLogLevel();
+            if (isTraceStdout) {
+                //check if message need to be written to stderr
+                if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
+                    isStderr = true;
+                }
+                messageOutput = formatter.traceFormatGenData(genData);
+            } // copySystemStream and stderr/stdout (i.e WsLevel.CONFIG)
+            else if (copySystemStreams && (levelVal == WsLevel.CONFIG.intValue())) {
+                if (logLevel != null) {
+                    if (logLevel.equals(LoggingConstants.SYSTEM_ERR)) {
+                        isStderr = true;
+                    }
+                }
+                messageOutput = formatter.formatStreamOutput(genData);
 
+                //Null return values means we are suppressing a stack trace.. and we don't want to write a 'null' so we return.
+                if (messageOutput == null)
+                    return;
+            }
+            //Lastly origin of message is from publishLogRecord and we need to check if it is above consoleLogLevel
+            else if (levelVal >= consoleLogLevel) {
+                //need to use formatmessage filter
+                if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
+                    isStderr = true;
+                }
+                messageOutput = formatter.consoleLogFormat(genData);
+            }
         }
+
+        //Write out to stderr or stdout
+        if (isStderr) {
+            baseTraceService.writeStreamOutput(sysErrHolder, messageOutput, false);
+        } else if (messageOutput != null) {
+            baseTraceService.writeStreamOutput(sysOutHolder, messageOutput, false);
+        }
+
     }
 
     @Override
+    /**
+     * Because consoleLogHolder has 'two' writers, SystemOut and SystemErr
+     * please use the overloaded setWriter(Object, Object) to set both SystemLogHolders
+     * for SystemOut and SystemErr respectfully.
+     *
+     * @param writer SystemLogHolder object for SystemOut
+     */
     public void setWriter(Object writer) {
-        this.sysLogHolderOriginal = (SystemLogHolder) writer;
+        this.sysOutHolder = (SystemLogHolder) writer;
     }
 
-    public Level getConsoleLogLevel() {
-        return consoleLogLevel;
+    /**
+     * Set the writers for SystemOut and SystemErr respectfully
+     *
+     * @param sysLogHolder SystemLogHolder object for SystemOut
+     * @param sysErrHolder SystemLogHolder object for SystemErr
+     */
+    public void setWriter(Object sysLogHolder, Object sysErrHolder) {
+        this.sysOutHolder = (SystemLogHolder) sysLogHolder;
+        this.sysErrHolder = (SystemLogHolder) sysErrHolder;
     }
 
-    public void setConsoleLogLevel(Level consoleLogLevel) {
+    /**
+     * Set copySystemStreams value that was determined from config by BasegTraceService
+     *
+     * @param copySystemStreams value to determine whether to copysystemstreams or not
+     */
+    public void setCopySystemStreams(boolean copySystemStreams) {
+        this.copySystemStreams = copySystemStreams;
+    }
+
+    /**
+     * Set BaseTraceFormatter passed from BaseTraceService
+     *
+     * @param formatter the BaseTraceFormatter to use
+     */
+    public void setFormatter(BaseTraceFormatter formatter) {
+        this.formatter = formatter;
+    }
+
+    /**
+     * Set consoleLogLevel passed from BaseTraceService
+     *
+     * @param consoleLogLevel consoleLogLevel
+     */
+    public void setConsoleLogLevel(Integer consoleLogLevel) {
         this.consoleLogLevel = consoleLogLevel;
     }
 
-    public boolean getCopySystemStreams() {
-        return copySystemStreams;
+    /**
+     * The format to set (i.e. BASIC or JSON)
+     *
+     * @param format the format to set (i.e. BASIC or JSON)
+     */
+    public void setFormat(String format) {
+        this.format = format;
     }
 
-    public void setCopySystemStreams(boolean copySystemStreams) {
-        this.copySystemStreams = copySystemStreams;
+    /**
+     * Set the writer for SystemErr
+     *
+     * @param sysLogHolder SystemLogHolder object for SystemErr
+     */
+    public void setSysErrHolder(SystemLogHolder sysErrHolder) {
+        this.sysErrHolder = sysErrHolder;
+    }
+
+    /**
+     * Set TraceStdOut value, which is a value calculated by BaseTraceService whether user set traceFileName to stdout
+     *
+     * @param isTraceStdout value calculated by BaseTraceService whether user set traceFileName to stdout
+     */
+    public void setTraceStdout(boolean isTraceStdout) {
+        this.isTraceStdout = isTraceStdout;
+    }
+
+    /**
+     * Set reference to BaseTraceService instance
+     *
+     * @param basetraceService reference to BaseTraceService
+     */
+    public void setBaseTraceService(BaseTraceService BTS) {
+        this.baseTraceService = BTS;
     }
 }
