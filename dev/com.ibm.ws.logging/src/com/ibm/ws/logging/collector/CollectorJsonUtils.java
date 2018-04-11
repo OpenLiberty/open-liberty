@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.health.center.data.HCGCData;
+import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairList;
@@ -284,69 +285,45 @@ public class CollectorJsonUtils {
     private static String jsonifyAccess(int maxFieldLength, String wlpUserDir,
                                         String serverName, String hostName, String eventType, Object event, String[] tags) {
 
-        GenericData genData = (GenericData) event;
-        ArrayList<Pair> pairs = genData.getPairs();
-        KeyValuePair kvp = null;
-        String key = null;
+        AccessLogData accessLogData = (AccessLogData) event;
 
         StringBuilder sb = CollectorJsonHelpers.startAccessLogJson(hostName, wlpUserDir, serverName);
 
-        for (Pair p : pairs) {
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.REQUESTSTARTTIME, Long.toString(accessLogData.getRequestStartTime()), false, true, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.URIPATH, accessLogData.getUriPath(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.REQUESTMETHOD, accessLogData.getRequestMethod(), false, true, false, false, false);
 
-            if (p instanceof KeyValuePair) {
-
-                kvp = (KeyValuePair) p;
-                key = kvp.getKey();
-
-                if (key.equals(LogFieldConstants.IBM_REQUESTSTARTTIME)) {
-
-                } else if (key.equals(LogFieldConstants.IBM_QUERYSTRING)) {
-
-                    key = LogFieldConstants.QUERYSTRING;
-                    String jsonQueryString = kvp.getStringValue();
-                    if (jsonQueryString != null) {
-                        try {
-                            jsonQueryString = URLDecoder.decode(jsonQueryString, LogFieldConstants.UTF_8);
-                        } catch (UnsupportedEncodingException e) {
-                            // ignore, use the original value;
-                        }
-                    }
-                    CollectorJsonHelpers.addToJSON(sb, key, jsonQueryString, false, true, false, false, false);
-
-                } else if (key.equals(LogFieldConstants.IBM_USERAGENT)) {
-
-                    key = LogFieldConstants.USERAGENT;
-                    String userAgent = kvp.getStringValue();
-
-                    if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH) {
-                        userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
-                    }
-
-                    CollectorJsonHelpers.addToJSON(sb, key, userAgent, false, false, false, false, false);
-
-                } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
-
-                    key = LogFieldConstants.DATETIME;
-                    String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                    CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, false, false);
-
-                } else {
-
-                    key = CollectorJsonHelpers.removeIBMTag(key);
-
-                    String value = null;
-                    if (kvp.isInteger()) {
-                        value = Integer.toString(kvp.getIntValue());
-                    } else if (kvp.isLong()) {
-                        value = Long.toString(kvp.getLongValue());
-                    } else {
-                        value = kvp.getStringValue();
-                    }
-                    CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
-
-                }
+        String jsonQueryString = accessLogData.getQueryString();
+        if (jsonQueryString != null) {
+            try {
+                jsonQueryString = URLDecoder.decode(jsonQueryString, LogFieldConstants.UTF_8);
+            } catch (UnsupportedEncodingException e) {
+                // ignore, use the original value;
             }
         }
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.QUERYSTRING, jsonQueryString, false, true, false, false, false);
+
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestHostKey(), accessLogData.getRequestHost(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestPortKey(), accessLogData.getRequestPort(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRemoteHostKey(), accessLogData.getRemoteHost(), false, true, false, false, false);
+
+        String userAgent = accessLogData.getQueryString();
+
+        if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH) {
+            userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
+        }
+
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.USERAGENT, userAgent, false, false, false, false, false);
+
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestProtocolKey(), accessLogData.getRequestProtocol(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getBytesReceivedKey(), Long.toString(accessLogData.getBytesReceived()), false, true, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getBytesReceivedKey(), Long.toString(accessLogData.getBytesReceived()), false, true, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getElapsedTimeKey(), Long.toString(accessLogData.getElapsedTime()), false, true, false, false, true);
+
+        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(accessLogData.getDatetime());
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getDatetimeKey(), datetime, false, true, false, false, false);
+
+        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.SEQUENCE, accessLogData.getSequence(), false, true, false, false, true);
 
         if (tags != null) {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
