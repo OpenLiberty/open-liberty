@@ -48,13 +48,15 @@ Service-Component: \
     properties:="version=2.0"
 
 -buildpath: \
-    com.ibm.ws.logging;version=latest,\
-    com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
     com.ibm.ws.beanvalidation;version=latest,\
     com.ibm.ws.beanvalidation.core;version=latest,\
+    com.ibm.ws.classloading;version=latest,\
+    com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.org.hibernate.validator.6.0.7.Final;version=latest
