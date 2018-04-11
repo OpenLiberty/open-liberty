@@ -98,17 +98,24 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
     private void formLogout(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         try {
+            // if we have a valid custom logout page, set an attribute so SAML SLO knows about it.
+            String exitPage = getValidLogoutExitPage(req);
+            if (exitPage != null) {
+                req.setAttribute("FormLogoutExitPage", exitPage);
+            }
             authenticateApi.logout(req, res, webAppSecurityConfig);
             String str = null;
 
-            AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, str);
-            authResult.setAuditLogoutSubject(authenticateApi.returnSubjectOnLogout());
-            authResult.setAuditCredType("FORM");
-            authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
-            authResult.setTargetRealm(authResult.realm);
-            Audit.audit(Audit.EventID.SECURITY_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
-
-            redirectLogoutExitPage(req, res);
+            // if SAML SLO is in use, it will write the audit record and take care of the logoutExitPage redirection
+            if (req.getAttribute("SpSLOInProgress") == null) {
+                AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, str);
+                authResult.setAuditLogoutSubject(authenticateApi.returnSubjectOnLogout());
+                authResult.setAuditCredType("FORM");
+                authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
+                authResult.setTargetRealm(authResult.realm);
+                Audit.audit(Audit.EventID.SECURITY_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
+                redirectLogoutExitPage(req, res);
+            }
         } catch (ServletException se) {
             String str = "ServletException: " + se.getMessage();
 
@@ -135,23 +142,33 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
     }
 
     /**
-     * @param req
-     * @param res
-     * @throws IOException
+     * return a logoutExitPage string suitable for redirection if one is defined and valid.
+     * else return null
      */
-    private void redirectLogoutExitPage(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    private String getValidLogoutExitPage(HttpServletRequest req) {
+
+        boolean valid = false;
         String exitPage = req.getParameter("logoutExitPage");
         if (exitPage != null && exitPage.length() != 0) {
             boolean logoutExitURLaccepted = verifyLogoutURL(req, exitPage);
             if (logoutExitURLaccepted) {
                 exitPage = removeFirstSlash(exitPage);
                 exitPage = compatibilityExitPage(req, exitPage);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "logoutExitPage specified, redirecting to: " + exitPage);
-                res.sendRedirect(res.encodeURL(exitPage));
-            } else {
-                useDefaultLogoutMsg(res);
+                valid = true;
             }
+        }
+        return valid == true ? exitPage : null;
+    }
+
+    /**
+     * @param req
+     * @param res
+     * @throws IOException
+     */
+    private void redirectLogoutExitPage(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        String exitPage = getValidLogoutExitPage(req);
+        if (exitPage != null) {
+            res.sendRedirect(res.encodeURL(exitPage));
         } else {
             useDefaultLogoutMsg(res);
         }
