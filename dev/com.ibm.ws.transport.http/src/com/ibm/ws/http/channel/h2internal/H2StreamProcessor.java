@@ -549,11 +549,19 @@ public class H2StreamProcessor {
                 }
             }
             // check to see if there's a queued data frame that should be written out
-            if (!waitingForWindowUpdate && isDataQueued() &&
-                !this.isWindowLimitExceeded(dataWaitingForWindowUpdate.peek())) {
-                addFrame = ADDITIONAL_FRAME.DATA;
-                frame = dequeueData();
-                direction = Constants.Direction.WRITING_OUT;
+            if (!waitingForWindowUpdate) {
+                if (isDataQueued()) {
+                    if (!this.isWindowLimitExceeded(dataWaitingForWindowUpdate.peek())) {
+                        addFrame = ADDITIONAL_FRAME.DATA;
+                        frame = dequeueData();
+                        direction = Constants.Direction.WRITING_OUT;
+                    } else {
+                        addFrame = ADDITIONAL_FRAME.NO;
+                        waitingForWindowUpdate = true;
+                    }
+                } else {
+                    addFrame = ADDITIONAL_FRAME.NO;
+                }
             } else {
                 addFrame = ADDITIONAL_FRAME.NO;
             }
