@@ -1,10 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaeePlatform-7.0
-IBM-Process-Types: client, \
- server
+IBM-Process-Types: client, server
 -features=com.ibm.websphere.appserver.javaeePlatform-6.0
 -bundles=com.ibm.ws.javaee.platform.defaultresource, \
- com.ibm.ws.javaee.platform.v7, \
- com.ibm.ws.javaee.version
+ com.ibm.ws.javaee.platform.v7
 kind=ga
 edition=core

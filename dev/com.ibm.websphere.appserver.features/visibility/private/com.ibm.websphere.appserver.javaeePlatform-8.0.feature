@@ -1,0 +1,7 @@
+-include= ~${workspace}/cnf/resources/bnd/feature.props
+symbolicName=com.ibm.websphere.appserver.javaeePlatform-8.0
+IBM-Process-Types: client, server
+-features=com.ibm.websphere.appserver.javaeePlatform-7.0
+-bundles=com.ibm.ws.javaee.platform.v8
+kind=beta
+edition=core
