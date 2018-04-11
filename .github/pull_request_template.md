@@ -4,7 +4,7 @@ ATTENTION, READ THIS: Updated 4/11/2018 - Read and understand this completely,
 then delete this entire template. If a reviewer or merger sees this template,
 they should fail the review or merge.
 
-If this code change is fixing a user-visible bug in perviously released code, it MUST
+If this code change is fixing a user-visible bug in previously released code, it MUST
 have an associated issue mentioned in the PR text or description. That Issue also
 MUST be labelled “release bug”
 
