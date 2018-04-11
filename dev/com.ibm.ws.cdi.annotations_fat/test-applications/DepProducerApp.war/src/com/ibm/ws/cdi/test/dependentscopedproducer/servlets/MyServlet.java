@@ -55,7 +55,7 @@ public class MyServlet extends HttpServlet {
 			}
 		}
 		
-		pw.write(System.getProperty("line.separator"));
+		pw.write(System.lineSeparator());
 		
 		if (nullBeanTwo == null) {
 			pw.write("nullBeanTwo was null null");
@@ -75,7 +75,7 @@ public class MyServlet extends HttpServlet {
 			}
 		}
 		
-		pw.write(System.getProperty("line.separator"));
+		pw.write(System.lineSeparator());
 		
 		if (nullBeanThree == null) {
 			pw.write("nullBeanThree was null ");
@@ -95,11 +95,11 @@ public class MyServlet extends HttpServlet {
 			}
 		}
 		
-		pw.write(System.getProperty("line.separator"));
+		pw.write(System.lineSeparator());
 		
 		//pw.write(holder.getMessage());
 		
-		//pw.write(System.getProperty("line.separator"));
+		//pw.write(System.lineSeparator());
 		
 		//passed = passed && holder.passed();
 		
