@@ -67,6 +67,37 @@ public class LogTraceData extends GenericData {
         super(21);
     }
 
+    private void setPair(int index, String s) {
+        setPair(index, NAMES1_1[index], s);
+    }
+
+    private void setPair(int index, int i) {
+        setPair(index, NAMES1_1[index], i);
+    }
+
+    private void setPair(int index, long l) {
+        setPair(index, NAMES1_1[index], l);
+    }
+
+    private String getStringValue(int index) {
+        KeyValueStringPair kvp = (KeyValueStringPair) getPairs().get(index);
+        return kvp.getStringValue();
+    }
+
+    private int getIntValue(int index) {
+        KeyValueIntegerPair kvp = (KeyValueIntegerPair) getPairs().get(index);
+        return kvp.getIntValue();
+    }
+
+    private long getLongValue(int index) {
+        KeyValueLongPair kvp = (KeyValueLongPair) getPairs().get(index);
+        return kvp.getLongValue();
+    }
+
+    private KeyValuePairList getValues(int index) {
+        return (KeyValuePairList) getPairs().get(index);
+    }
+
     public void setDatetime(long l) {
         setPair(0, l);
     }
@@ -149,18 +180,6 @@ public class LogTraceData extends GenericData {
 
     public void setObjectId(int i) {
         setPair(20, i);
-    }
-
-    private void setPair(int index, String s) {
-        setPair(index, NAMES1_1[index], s);
-    }
-
-    private void setPair(int index, int i) {
-        setPair(index, NAMES1_1[index], i);
-    }
-
-    private void setPair(int index, long l) {
-        setPair(index, NAMES1_1[index], l);
     }
 
     public String getDatetimeKey() {
@@ -413,25 +432,6 @@ public class LogTraceData extends GenericData {
 
     public int getObjectId() {
         return getIntValue(20);
-    }
-
-    private String getStringValue(int index) {
-        KeyValueStringPair kvp = (KeyValueStringPair) getPairs().get(index);
-        return kvp.getStringValue();
-    }
-
-    private int getIntValue(int index) {
-        KeyValueIntegerPair kvp = (KeyValueIntegerPair) getPairs().get(index);
-        return kvp.getIntValue();
-    }
-
-    private long getLongValue(int index) {
-        KeyValueLongPair kvp = (KeyValueLongPair) getPairs().get(index);
-        return kvp.getLongValue();
-    }
-
-    private KeyValuePairList getValues(int index) {
-        return (KeyValuePairList) getPairs().get(index);
     }
 
 }

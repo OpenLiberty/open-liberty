@@ -15,8 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.logging.collector.LogFieldConstants;
-import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
@@ -112,32 +111,47 @@ public class AccessLogSource implements Source {
 
             if (request != null) {
 
-                GenericData genData = new GenericData();
+//                GenericData genData = new GenericData();
+                AccessLogData accessLogData = new AccessLogData();
 
                 long requestStartTimeVal = recordData.getStartTime();
-                genData.addPair(LogFieldConstants.IBM_REQUESTSTARTTIME, requestStartTimeVal);
-                genData.addPair(LogFieldConstants.IBM_URIPATH, request.getRequestURI());
-                genData.addPair(LogFieldConstants.IBM_REQUESTMETHOD, request.getMethod());
-                genData.addPair(LogFieldConstants.IBM_QUERYSTRING, request.getQueryString());
-                genData.addPair(LogFieldConstants.IBM_REQUESTHOST, recordData.getLocalIP());
-                genData.addPair(LogFieldConstants.IBM_REQUESTPORT, recordData.getLocalPort());
-                genData.addPair(LogFieldConstants.IBM_REMOTEHOST, recordData.getRemoteAddress());
-                genData.addPair(LogFieldConstants.IBM_USERAGENT, request.getHeader(USER_AGENT_HEADER).asString());
-                genData.addPair(LogFieldConstants.IBM_REQUESTPROTOCOL, request.getVersion());
-                genData.addPair(LogFieldConstants.IBM_BYTESRECEIVED, recordData.getBytesWritten());
-                genData.addPair(LogFieldConstants.IBM_RESPONSECODE, response.getStatusCodeAsInt());
-                genData.addPair(LogFieldConstants.IBM_ELAPSEDTIME, recordData.getElapsedTime());
-                genData.addPair(LogFieldConstants.IBM_DATETIME, recordData.getTimestamp());
+//                genData.addPair(LogFieldConstants.IBM_REQUESTSTARTTIME, requestStartTimeVal);
+                accessLogData.setRequestStart(requestStartTimeVal);
+//                genData.addPair(LogFieldConstants.IBM_URIPATH, request.getRequestURI());
+                accessLogData.setUriPath(request.getRequestURI());
+//                genData.addPair(LogFieldConstants.IBM_REQUESTMETHOD, request.getMethod());
+                accessLogData.setRequestMethod(request.getMethod());
+//                genData.addPair(LogFieldConstants.IBM_QUERYSTRING, request.getQueryString());
+                accessLogData.setQueryString(request.getQueryString());
+//                genData.addPair(LogFieldConstants.IBM_REQUESTHOST, recordData.getLocalIP());
+                accessLogData.setRequestHost(recordData.getLocalIP());
+//                genData.addPair(LogFieldConstants.IBM_REQUESTPORT, recordData.getLocalPort());
+                accessLogData.setRequestPort(recordData.getLocalPort());
+//                genData.addPair(LogFieldConstants.IBM_REMOTEHOST, recordData.getRemoteAddress());
+                accessLogData.setRemoteHost(recordData.getRemoteAddress());
+//                genData.addPair(LogFieldConstants.IBM_USERAGENT, request.getHeader(USER_AGENT_HEADER).asString());
+                accessLogData.setUserAgent(request.getHeader(USER_AGENT_HEADER).asString());
+//                genData.addPair(LogFieldConstants.IBM_REQUESTPROTOCOL, request.getVersion());
+                accessLogData.setRequestProtocol(request.getVersion());
+//                genData.addPair(LogFieldConstants.IBM_BYTESRECEIVED, recordData.getBytesWritten());
+                accessLogData.setBytesRecieved(recordData.getBytesWritten());
+//                genData.addPair(LogFieldConstants.IBM_RESPONSECODE, response.getStatusCodeAsInt());
+                accessLogData.setResponseCode(response.getStatusCodeAsInt());
+//                genData.addPair(LogFieldConstants.IBM_ELAPSEDTIME, recordData.getElapsedTime());
+                accessLogData.setElapsedTime(recordData.getElapsedTime());
+//                genData.addPair(LogFieldConstants.IBM_DATETIME, recordData.getTimestamp());
+                accessLogData.setDatetime(recordData.getTimestamp());
 
                 String sequenceVal = requestStartTimeVal + "_" + String.format("%013X", seq.incrementAndGet());
-                genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceVal);
+//                genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceVal);
+                accessLogData.setSequence(sequenceVal);
 
-                genData.setSourceType(sourceName);
+                accessLogData.setSourceType(sourceName);
 
-                bufferMgr.add(genData);
+                bufferMgr.add(accessLogData);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Added a event to buffer " + genData);
+                    Tr.debug(tc, "Added a event to buffer " + accessLogData);
                 }
             }
         }
