@@ -28,6 +28,7 @@ import org.springframework.boot.context.embedded.Ssl;
 import org.springframework.boot.context.embedded.Ssl.ClientAuth;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.SocketUtils;
 
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
@@ -59,6 +60,10 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
 
     public LibertyServletContainer(LibertyServletContainerFactory factory, ServletContextInitializer[] initializers) {
         port.set(factory.getPort());
+        // The Internet Assigned Numbers Authority (IANA) suggests the range 49152 to 65535 (215+214 to 216−1) for dynamic or private ports
+        if (port.get() == 0) {
+            port.set(SocketUtils.findAvailableTcpPort(49152));
+        }
         SpringBootConfigFactory configFactory = SpringBootConfigFactory.findFactory(token);
         springBootConfig = configFactory.createSpringBootConfig();
         String springBootConfigId = springBootConfig.getId();
@@ -95,7 +100,6 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
 
     @Override
     public int getPort() {
-        // TODO get real port when configured with zero
         return port.get();
     }
 
