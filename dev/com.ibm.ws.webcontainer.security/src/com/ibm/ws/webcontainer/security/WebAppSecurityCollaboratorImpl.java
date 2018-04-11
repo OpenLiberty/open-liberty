@@ -649,11 +649,22 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                                  WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
         performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
         WebReply webReply = unprotectedSpecialURI(webRequest, uriName, webRequest.getHttpServletRequest().getMethod());
+
         if (webReply == null) {
-            AuthenticationResult authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
-            authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
-            if (receivedSubject != null && receivedSubject.getPrincipals() != null) {
-                authResult.setAuditCredValue(receivedSubject.getPrincipals().iterator().next().getName());
+            // check global cert login.
+            String authMech = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
+            AuthenticationResult authResult = null;
+            if (authMech != null && authMech.equals("CLIENT_CERT")) {
+                // process client cert auth first.
+                authResult = authenticateRequest(webRequest);
+            }
+            if (authResult != null && authResult.getStatus() != AuthResult.SUCCESS) {
+                // if client cert is not processed or failed.
+                authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
+                authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
+                if (receivedSubject != null && receivedSubject.getPrincipals() != null) {
+                    authResult.setAuditCredValue(receivedSubject.getPrincipals().iterator().next().getName());
+                }
             }
             if (authResult.getStatus() == AuthResult.RETURN) {
                 //

@@ -114,6 +114,7 @@
             required="false" type="String">
                 <Option label="BASIC" value="BASIC" />
                 <Option label="FORM" value="FORM" />
+                <Option label="CLIENT_CERT" value="CLIENT_CERT" />
         </AD> 
 
         <AD id="contextRootForFormAuthenticationMechanism" name="%contextRootForFormAuthenticationMechanism" description="%contextRootForFormAuthenticationMechanism.desc"
