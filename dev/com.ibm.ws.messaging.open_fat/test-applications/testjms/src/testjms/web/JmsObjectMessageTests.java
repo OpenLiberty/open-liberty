@@ -11,14 +11,6 @@
  */
 package testjms.web;
 
-public interface JmsBytesMessageTests {
-    void testBytesMessage_writeByte() throws Exception;
-    void testBytesMessage_writeBytes() throws Exception;
-    void testBytesMessage_writeChar() throws Exception;
-    void testBytesMessage_writeDouble() throws Exception;
-    void testBytesMessage_writeFloat() throws Exception;
-    void testBytesMessage_writeInt() throws Exception;
-    void testBytesMessage_writeLong() throws Exception;
-    void testBytesMessage_writeShort() throws Exception;
-    void testBytesMessage_writeUTF() throws Exception;
+public interface JmsObjectMessageTests {
+    void testObjectMessage_setObject_String() throws Exception;
 }
