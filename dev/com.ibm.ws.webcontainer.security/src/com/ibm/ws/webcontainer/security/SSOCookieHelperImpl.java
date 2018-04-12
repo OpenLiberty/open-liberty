@@ -296,8 +296,12 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     private boolean isJwtCookie(String baseName, String cookieName) {
         if (baseName.equalsIgnoreCase(cookieName))
             return true;
-        if (!(cookieName.startsWith(baseName) && cookieName.length() == baseName.length() + 2))
+        if (!(cookieName.startsWith(baseName))) {
             return false;
+        }
+        if (cookieName.length() != baseName.length() + 2) {
+            return false;
+        }
         String lastTwoChars = cookieName.substring(baseName.length());
         return lastTwoChars.matches("\\d\\d");
     }
