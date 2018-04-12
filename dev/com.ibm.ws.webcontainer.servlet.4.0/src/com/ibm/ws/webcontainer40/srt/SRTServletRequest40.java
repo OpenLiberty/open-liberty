@@ -124,7 +124,7 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
         String methodName = "getCurrentHttpServletMapping";
 
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-            logger.entering(CLASS_NAME, methodName);
+            logger.entering(CLASS_NAME, methodName + " dispatchContext -> " + dispatchContext);
         }
 
         HttpServletMapping returnMapping = null;

@@ -47,6 +47,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
@@ -373,6 +374,8 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         ClassLoader newCL = null;
         ClassLoader oldCl = null;
 
+        boolean setContext = false;
+
         try {
             Application application = this.runtimeFactory.newApplication(appInfo);
             newCL = getRealAppClassLoader(application);
@@ -380,12 +383,32 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
             if (newCL != null) {
                 oldCl = CDIUtils.getAndSetLoader(newCL);
             }
-            getCDIContainer().applicationStarting(application);
+
+            //Because weld fires observes in all modules when endInitialization() is called
+            //We can only set the jndi context once. This is sufficent for the java:app namespace
+            //but not for the java module namespace. 
+            	
+            //Origonally I tried to setup JNDI so only application metadata was on the thread but
+            //that didn't work so I use give classic utils one of the module archives.  
+
+            if (application.getModuleArchives().size() > 0 && 
+                    application.getApplicationMetaData() != null) {
+                CDIArchive archive = application.getModuleArchives().iterator().next();
+                beginContext(archive);
+                setContext = true;
+            }
+            WebSphereCDIDeployment webSphereCDIDeployment = getCDIContainer().startInitialization(application);
+            if (webSphereCDIDeployment != null) { 
+                getCDIContainer().endInitialization(webSphereCDIDeployment);//This split is just to keep the CDIContainerImpl code conistant across liberty & websphere. 
+            }
         } catch (CDIException e) {
             throw new StateChangeException(e);
         } finally {
             if (oldCl != null) {
                 CDIUtils.getAndSetLoader(oldCl);
+            }
+            if (setContext) {
+                endContext();
             }
         }
     }

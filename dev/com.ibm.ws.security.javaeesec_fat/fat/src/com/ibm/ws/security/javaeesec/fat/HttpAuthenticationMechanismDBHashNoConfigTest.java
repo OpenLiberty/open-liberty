@@ -111,7 +111,7 @@ public class HttpAuthenticationMechanismDBHashNoConfigTest extends JavaEESecTest
      */
     @Mode(TestMode.FULL)
     @Test
-    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    @ExpectedFFDC("com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException")
     public void testUserWithCustomHashNoConfig() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 

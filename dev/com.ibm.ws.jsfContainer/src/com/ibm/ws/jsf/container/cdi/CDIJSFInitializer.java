@@ -35,8 +35,6 @@ public class CDIJSFInitializer {
 
                 application.addELContextListener(new WeldELContextListener());
 
-                application.setViewHandler(new IBMViewHandlerProxy(application.getViewHandler(), appname));
-
                 ELResolver elResolver = beanManager.getELResolver();
                 application.addELResolver(elResolver);
             } else {

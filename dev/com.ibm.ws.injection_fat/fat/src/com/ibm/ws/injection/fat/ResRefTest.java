@@ -53,7 +53,7 @@ public class ResRefTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.injection.fat.ResRefServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.injection.fat.ResRefServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.injection.fat.ResRefServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -139,7 +139,7 @@ public class LibertyServletContainer implements WebServer {
         if (factory.getAddress() != null) {
             endpoint.setHost(factory.getAddress().getHostAddress());
         } else {
-            endpoint.setHost("0.0.0.0");
+            endpoint.setHost("*");
         }
 
         Ssl ssl = factory.getSsl();

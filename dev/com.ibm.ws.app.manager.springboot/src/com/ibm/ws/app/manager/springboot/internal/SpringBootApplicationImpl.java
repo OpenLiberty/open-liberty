@@ -412,7 +412,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private static void thinSpringApp(LibIndexCache libIndexCache, File springAppFile, File thinSpringAppFile, long lastModified) throws IOException, NoSuchAlgorithmException {
         File parent = libIndexCache.getLibIndexParent();
         File workarea = libIndexCache.getLibIndexWorkarea();
-        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent, true);
+        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent);
         springBootThinUtil.execute();
         thinSpringAppFile.setLastModified(lastModified);
     }
@@ -519,7 +519,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             Container libContainer = libEntry.adapt(Container.class);
             if (libContainer != null) {
                 for (Entry entry : libContainer) {
-                    if (entry.getName().toLowerCase().endsWith(".jar") && !entry.getName().contains("tomcat-")) {
+                    if (!SpringBootThinUtil.isEmbeddedContainerImpl(entry.getName())) {
                         String jarEntryName = entry.getName();
                         Container jarContainer = entry.adapt(Container.class);
                         if (jarContainer != null) {

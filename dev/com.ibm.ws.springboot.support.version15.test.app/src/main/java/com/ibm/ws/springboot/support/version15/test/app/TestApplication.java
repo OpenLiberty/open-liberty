@@ -27,5 +27,9 @@ public class TestApplication {
 	public String hello() {
 		return "HELLO SPRING BOOT!!";
 	}
-	
+
+	@RequestMapping(value="/buttonClicked", produces="text/html")
+	public String click() {
+		return "Hello. You clicked a button.";
+	}
 }

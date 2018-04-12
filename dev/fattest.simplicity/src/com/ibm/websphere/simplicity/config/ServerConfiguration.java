@@ -77,8 +77,8 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "webApplication")
     private ConfigElementList<WebApplication> webApplications;
 
-    @XmlElement(name = "springBootApp")
-    private ConfigElementList<SpringBootApp> springBootApps;
+    @XmlElement(name = "springBootApplication")
+    private ConfigElementList<SpringBootApplication> springBootApplications;
 
     @XmlElement(name = "cloudant")
     private ConfigElementList<Cloudant> cloudants;
@@ -136,6 +136,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "managedThreadFactory")
     private ConfigElementList<ManagedThreadFactory> managedThreadFactories;
+
+    @XmlElement(name = "monitor")
+    private ConfigElementList<Monitor> monitors;
 
     @XmlElement(name = "resourceAdapter")
     private ConfigElementList<ResourceAdapter> resourceAdapters;
@@ -510,6 +513,12 @@ public class ServerConfiguration implements Cloneable {
         return this.managedThreadFactories;
     }
 
+    public ConfigElementList<Monitor> getMonitors() {
+        if (monitors == null)
+            monitors = new ConfigElementList<Monitor>();
+        return monitors;
+    }
+
     public ConfigElementList<ResourceAdapter> getResourceAdapters() {
         if (this.resourceAdapters == null)
             this.resourceAdapters = new ConfigElementList<ResourceAdapter>();
@@ -650,11 +659,11 @@ public class ServerConfiguration implements Cloneable {
     /**
      * @return explicitly installed Spring Boot applications
      */
-    public ConfigElementList<SpringBootApp> getSpringBootApps() {
-        if (this.springBootApps == null) {
-            this.springBootApps = new ConfigElementList<SpringBootApp>();
+    public ConfigElementList<SpringBootApplication> getSpringBootApplications() {
+        if (this.springBootApplications == null) {
+            this.springBootApplications = new ConfigElementList<SpringBootApplication>();
         }
-        return this.springBootApps;
+        return this.springBootApplications;
     }
 
     /**

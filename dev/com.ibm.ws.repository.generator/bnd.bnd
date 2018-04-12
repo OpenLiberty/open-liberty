@@ -17,26 +17,10 @@ Bundle-Description: Tool for creating Single JSON Repository from features.
 
 WS-TraceGroup: repo.resource
 
-javac.source: 1.7
-javac.target: 1.7
-
 Export-Package: \
-    com.ibm.ws.repository.generator;version=1.0,\
-    com.ibm.ws.org.glassfish.json;version=1.0.20,\
-	com.ibm.websphere.javaee.jsonp.1.0;version=1.0.20
-    
-Private-Package:\
-	
-	
-    
+    com.ibm.ws.repository.generator;version=1.0
+
 -buildpath: \
-    com.ibm.ws.repository;version=latest, \
-    com.ibm.ws.repository.parsers;version=latest,\
-    com.ibm.ws.kernel.feature.core;version=latest,\
-    com.ibm.ws.kernel.boot.core;version=latest, \
-    com.ibm.ws.product.utility;version=latest, \
-    com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
-   com.ibm.ws.org.apache.aries.util;version=latest, \
-    com.ibm.ws.org.apache.ant;version=latest, \
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    org.eclipse.osgi;version=latest
+	com.ibm.ws.repository;version=latest,\
+	com.ibm.ws.repository.parsers;version=latest,\
+	org.apache.ant:ant;version=1.9.6

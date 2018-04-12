@@ -18,6 +18,7 @@
     <property name="config.bundle.fragment" value="com.ibm.ws.config.ext_1.0.${micro.version}.jar" />
     <property name="config.fat.validator.dir" value="publish/files/validator" />
     <property name="config.validator.dir" value="${basedir}/../build.image/wlp/lib" />
+	<property name="tested.features" value="delayedvariable-1.0, metatype-1.0, "/>
 
     <!-- Disable validation to avoid failures for custom elements. -->
     <target name="validate-server-xmls"/>

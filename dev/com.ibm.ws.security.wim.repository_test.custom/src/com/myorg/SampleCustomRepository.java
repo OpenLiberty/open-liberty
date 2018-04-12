@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 
+import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.wsspi.security.wim.CustomRepository;
 import com.ibm.wsspi.security.wim.SchemaConstants;
 import com.ibm.wsspi.security.wim.exception.CertificateMapFailedException;
@@ -345,7 +346,7 @@ public class SampleCustomRepository implements CustomRepository {
          */
 
         if (searchExpr == null || searchExpr.length() == 0) {
-            throw new SearchControlException("MISSING_SEARCH_EXPRESSION", "The expression property is missing from the SearchControl data object.");
+            throw new SearchControlException(WIMMessageKey.MISSING_SEARCH_EXPRESSION, "The expression property is missing from the SearchControl data object.");
         }
         String inputPattern = getContextProperty(inRoot, SchemaConstants.USE_USER_FILTER_FOR_SEARCH);
 

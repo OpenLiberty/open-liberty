@@ -1,0 +1,16 @@
+<!-- validatorKey property can be found in the output file within the validator results page. 
+     The key is located within { } segment. For example:
+     [error  ] {invalid.nls.key}=> the key "file.config" was not found in the NLS properties file
+     "invalid.nls.key" is the validatorKey you would use to suppress the error -->
+
+<!-- Use ignoreAll to suppress all messages. This should ONLY be used in examples, test projects, and
+     other projects that do not contain shipped code. -->
+<validator-exclude ignoreAll="true"> 
+    <OCD id="example.ocd.id">
+        <AD id="exampleProperty1">
+            <!-- If you are suppressing a warning for an option, specify the value and the key -->
+            <Option value=" " validatorKey="white.space.found"/>
+        </AD>
+        <AD id="exampleProperty2" validatorKey="invalid.nls.key"/>
+    </OCD>
+</validator-exclude>

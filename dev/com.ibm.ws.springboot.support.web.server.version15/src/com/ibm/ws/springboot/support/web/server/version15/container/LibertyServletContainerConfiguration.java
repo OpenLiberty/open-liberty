@@ -11,6 +11,7 @@
 package com.ibm.ws.springboot.support.web.server.version15.container;
 
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
@@ -26,6 +27,7 @@ import org.springframework.core.Ordered;
 @Configuration
 @EnableConfigurationProperties
 @ConditionalOnWebApplication
+@ConditionalOnClass({ EmbeddedServletContainerFactory.class })
 @Import(BeanPostProcessorsRegistrar.class)
 public class LibertyServletContainerConfiguration {
 

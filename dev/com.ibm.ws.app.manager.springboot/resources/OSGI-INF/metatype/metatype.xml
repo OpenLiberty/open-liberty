@@ -12,7 +12,7 @@
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
                    localization="OSGI-INF/l10n/metatype">
 
-    <OCD description="%springapp.desc" name="%springapp.name" id="com.ibm.ws.app.manager.springappcfg" ibm:alias="springBootApp" ibm:extends="com.ibm.ws.app.manager" ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter">
+		   <OCD description="%springapp.desc" name="%springapp.name" id="com.ibm.ws.app.manager.springappcfg" ibm:alias="springBootApplication" ibm:extends="com.ibm.ws.app.manager" ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter">
         <AD id="type" name="internal" description="internal" type="String" default="spr" ibm:final="true"/>
         <AD id="contextRoot" name="%springapp.contextRoot.name" description="%springapp.contextRoot.desc" type="String" required="false" ibm:rename="context-root"/>
       </OCD>  

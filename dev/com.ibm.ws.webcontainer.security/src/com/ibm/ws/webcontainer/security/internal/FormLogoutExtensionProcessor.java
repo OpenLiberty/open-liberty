@@ -98,17 +98,24 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
     private void formLogout(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
         try {
+            // if we have a valid custom logout page, set an attribute so SAML SLO knows about it.
+            String exitPage = getValidLogoutExitPage(req);
+            if (exitPage != null) {
+                req.setAttribute("FormLogoutExitPage", exitPage);
+            }
             authenticateApi.logout(req, res, webAppSecurityConfig);
             String str = null;
 
-            AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, str);
-            authResult.setAuditLogoutSubject(authenticateApi.returnSubjectOnLogout());
-            authResult.setAuditCredType("FORM");
-            authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
-            authResult.setTargetRealm(authResult.realm);
-            Audit.audit(Audit.EventID.SECURITY_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
-
-            redirectLogoutExitPage(req, res);
+            // if SAML SLO is in use, it will write the audit record and take care of the logoutExitPage redirection
+            if (req.getAttribute("SpSLOInProgress") == null) {
+                AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, str);
+                authResult.setAuditLogoutSubject(authenticateApi.returnSubjectOnLogout());
+                authResult.setAuditCredType("FORM");
+                authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
+                authResult.setTargetRealm(authResult.realm);
+                Audit.audit(Audit.EventID.SECURITY_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
+                redirectLogoutExitPage(req, res);
+            }
         } catch (ServletException se) {
             String str = "ServletException: " + se.getMessage();
 
@@ -135,23 +142,33 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
     }
 
     /**
-     * @param req
-     * @param res
-     * @throws IOException
+     * return a logoutExitPage string suitable for redirection if one is defined and valid.
+     * else return null
      */
-    private void redirectLogoutExitPage(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    private String getValidLogoutExitPage(HttpServletRequest req) {
+
+        boolean valid = false;
         String exitPage = req.getParameter("logoutExitPage");
         if (exitPage != null && exitPage.length() != 0) {
             boolean logoutExitURLaccepted = verifyLogoutURL(req, exitPage);
             if (logoutExitURLaccepted) {
                 exitPage = removeFirstSlash(exitPage);
                 exitPage = compatibilityExitPage(req, exitPage);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "logoutExitPage specified, redirecting to: " + exitPage);
-                res.sendRedirect(res.encodeURL(exitPage));
-            } else {
-                useDefaultLogoutMsg(res);
+                valid = true;
             }
+        }
+        return valid == true ? exitPage : null;
+    }
+
+    /**
+     * @param req
+     * @param res
+     * @throws IOException
+     */
+    private void redirectLogoutExitPage(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        String exitPage = getValidLogoutExitPage(req);
+        if (exitPage != null) {
+            res.sendRedirect(res.encodeURL(exitPage));
         } else {
             useDefaultLogoutMsg(res);
         }
@@ -228,7 +245,7 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
     protected boolean verifyLogoutURL(HttpServletRequest req, String exitPage) {
         boolean acceptURL = false;
         boolean allowLogoutPageRedirectToAnyHost = webAppSecurityConfig.getAllowLogoutPageRedirectToAnyHost();
-        if (!exitPage.equals("logon.jsp") && !allowLogoutPageRedirectToAnyHost) {
+        if (exitPage != null && !exitPage.equals("logon.jsp") && !allowLogoutPageRedirectToAnyHost) {
             String logoutURLHost = null;
             try {
                 InetAddress thisHost = InetAddress.getLocalHost();
@@ -243,8 +260,31 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "domain for exitPage url: " + logoutURLHost);
                     if (!logoutURL.isAbsolute()) {
-                        //always accept relative URLs for redirect.
-                        acceptURL = true;
+                        /*
+                         * If exitPage starts with "//" , it is a NetworkPath. We need to valid its target host.
+                         * While the specification for network paths is preceded by exactly 2 slashes("//"), browsers will
+                         * generally redirect network paths with 2 or more preceding slashes. Thus, we need to try to obtain the hostname
+                         * utilizing only 2 preceding slashes.
+                         */
+                        if (exitPage.startsWith("//")) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "URI " + exitPage + " will be processed as a Network-Path." +
+                                             " sendRedirect() defines a Network-Path as starting with // ");
+                            char[] exitPageCharArr = exitPage.toCharArray();
+                            for (int i = 0; i < exitPageCharArr.length; i++) {
+                                if (exitPageCharArr[i] != '/') {
+                                    URI uri = new URI(exitPage.substring(i - 2));
+                                    //Set hostname for further checks.
+                                    logoutURLHost = uri.getHost();
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "SDK indicates " + exitPage + " Network-Path does not contain a valid hostname.");
+                                    break;
+                                }
+                            }
+                        } else {
+                            //accept a relative URIs that are not Network-Path's
+                            acceptURL = true;
+                        }
                     }
                 } catch (URISyntaxException urise) {
                     //The URI is invalid and will not be redirected to.
@@ -267,7 +307,9 @@ public class FormLogoutExtensionProcessor extends WebExtensionProcessor {
             if (!acceptURL && logoutURLHost != null)
                 acceptURL = isRequestURLEqualsExitPageHost(req, logoutURLHost);
         } else {
-            acceptURL = true;
+            if (exitPage != null) {
+                acceptURL = true;
+            }
         }
         if (!acceptURL) {
             Tr.error(tc, "SEC_FORM_LOGOUTEXITPAGE_INVALID", new Object[] { req.getRequestURL(), req.getParameter("logoutExitPage") });
