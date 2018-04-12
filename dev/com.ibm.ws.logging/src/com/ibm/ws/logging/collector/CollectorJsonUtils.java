@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.logging.data.AccessLogData;
+import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairList;
@@ -222,56 +223,22 @@ public class CollectorJsonUtils {
     private static String jsonifyFFDC(int maxFieldLength, String wlpUserDir,
                                       String serverName, String hostName, String eventType, Object event, String[] tags) {
 
-        GenericData genData = (GenericData) event;
-        ArrayList<Pair> pairs = genData.getPairs();
-        KeyValuePair kvp = null;
-        String key = null;
+        FFDCData ffdcData = (FFDCData) event;
 
         StringBuilder sb = CollectorJsonHelpers.startFFDCJson(hostName, wlpUserDir, serverName);
 
-        for (Pair p : pairs) {
+        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getDatetimeKey(), datetime, false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getThreadIdKey(), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true, false, false, false);
 
-            if (p instanceof KeyValuePair) {
-
-                kvp = (KeyValuePair) p;
-                key = kvp.getKey();
-
-                if (!key.equals(LogFieldConstants.LABEL) && !(key.equals(LogFieldConstants.SOURCEID))
-                    && !(key.equals(LogFieldConstants.DATEOFFIRSTOCCURENCE)) && !(key.equals(LogFieldConstants.COUNT))) {
-
-                    if (key.equals(LogFieldConstants.IBM_STACKTRACE)) {
-                        key = LogFieldConstants.STACKTRACE;
-                        String formattedValue = CollectorJsonHelpers.formatMessage(kvp.getStringValue(), maxFieldLength);
-                        CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, false);
-
-                    } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
-                        key = LogFieldConstants.THREADID;
-                        CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString((int) kvp.getLongValue(), 8), false, true, false, false,
-                                                       false);
-
-                    } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
-                        key = LogFieldConstants.DATETIME;
-                        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
-                        CollectorJsonHelpers.addToJSON(sb, key, datetime, false, true, false, false, false);
-
-                    } else {
-                        if (key.contains(LogFieldConstants.IBM_TAG)) {
-                            key = CollectorJsonHelpers.removeIBMTag(key);
-                        }
-                        String value = null;
-                        if (kvp.isInteger()) {
-                            value = Integer.toString(kvp.getIntValue());
-                        } else if (kvp.isLong()) {
-                            value = Long.toString(kvp.getLongValue());
-                        } else {
-                            value = kvp.getStringValue();
-                        }
-                        CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
-
-                    }
-                }
-            }
-        }
+        String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getStacktraceKey(), formattedValue, false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getMessageKey(), ffdcData.getMessage(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getClassNameKey(), ffdcData.getClassName(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getExceptionNameKey(), ffdcData.getExceptionName(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getExceptionNameKey(), ffdcData.getExceptionName(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getObjectDetailsKey(), ffdcData.getObjectDetails(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getSequenceKey(), ffdcData.getSequence(), false, true, false, false, false);
 
         if (tags != null) {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));

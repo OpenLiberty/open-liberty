@@ -93,5 +93,9 @@ public class LogFieldConstants {
     public static final String BYTESRECEIVED = "bytesReceived";
     public static final String RESPONSECODE = "responseCode";
     public static final String ELAPSEDTIME = "elapsedTime";
+    public static final String CLASSNAME = "className";
+    public static final String EXCEPTIONNAME = "exceptionName";
+    public static final String PROBEID = "probeID";
+    public static final String OBJECTDETAILS = "objectDetails";
 
 }
