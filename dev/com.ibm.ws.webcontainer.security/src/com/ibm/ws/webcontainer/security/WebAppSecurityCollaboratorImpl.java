@@ -658,7 +658,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 // process client cert auth first.
                 authResult = authenticateRequest(webRequest);
             }
-            if (authResult != null && authResult.getStatus() != AuthResult.SUCCESS) {
+            if (authResult == null || authResult.getStatus() != AuthResult.SUCCESS) {
                 // if client cert is not processed or failed.
                 authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
                 authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
