@@ -24,8 +24,9 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.config.basic.test.BasicConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
-public class WebSphereConfigTest {
+public class WebSphereConfigTest extends AbstractConfigTest {
 
     public static class TestTypes {
         public Optional<String> optString;

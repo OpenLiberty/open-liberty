@@ -17,19 +17,20 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
-public class ConfigCacheTest {
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
+
+public class ConfigCacheTest extends AbstractConfigTest {
 
     @Test
     public void testConfigCache() {
         Config configA = null;
         Config configB = null;
         try {
-            configA = ConfigProvider.getConfig();
-            configB = ConfigProvider.getConfig();
+            configA = ConfigProviderResolver.instance().getConfig();
+            configB = ConfigProviderResolver.instance().getConfig();
             assertTrue(configA == configB);
         } finally {
             if (configA != null) {
@@ -48,7 +49,7 @@ public class ConfigCacheTest {
         try {
             configA = ConfigProviderResolver.instance().getBuilder().build();
             ConfigProviderResolver.instance().registerConfig(configA, Thread.currentThread().getContextClassLoader());
-            configB = ConfigProvider.getConfig();
+            configB = ConfigProviderResolver.instance().getConfig();
             assertEquals(configA, configB);
         } finally {
             if (configA != null) {
@@ -68,7 +69,7 @@ public class ConfigCacheTest {
             configA = ConfigProviderResolver.instance().getBuilder().build();
             ConfigProviderResolver.instance().registerConfig(configA, Thread.currentThread().getContextClassLoader());
             ConfigProviderResolver.instance().releaseConfig(configA);
-            configB = ConfigProvider.getConfig();
+            configB = ConfigProviderResolver.instance().getConfig();
             assertNotSame(configA, configB);
         } finally {
             if (configA != null) {
@@ -85,7 +86,7 @@ public class ConfigCacheTest {
         Config configA = null;
         Config configB = null;
         try {
-            configA = ConfigProvider.getConfig();
+            configA = ConfigProviderResolver.instance().getConfig();
             configB = ConfigProviderResolver.instance().getBuilder().build();
             ConfigProviderResolver.instance().registerConfig(configB, Thread.currentThread().getContextClassLoader());
             fail("Exception not thrown");
@@ -106,10 +107,10 @@ public class ConfigCacheTest {
         Config configA = null;
         Config configB = null;
         try {
-            configA = ConfigProvider.getConfig();
+            configA = ConfigProviderResolver.instance().getConfig();
 
             ClassLoader cl = new MyClassLoader(Thread.currentThread().getContextClassLoader());
-            configB = ConfigProvider.getConfig(cl);
+            configB = ConfigProviderResolver.instance().getConfig(cl);
 
             assertFalse(configA == configB);
         } finally {

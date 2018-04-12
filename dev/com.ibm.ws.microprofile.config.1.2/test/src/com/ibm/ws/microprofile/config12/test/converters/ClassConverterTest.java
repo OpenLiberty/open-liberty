@@ -12,20 +12,24 @@ package com.ibm.ws.microprofile.config12.test.converters;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
-import com.ibm.ws.microprofile.config12.converters.Config12DefaultConverters;
+import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 /**
  *
  */
-public class ClassConverterTest {
+public class ClassConverterTest extends AbstractConfigTest {
 
     @Test
     public void testClassConverter() {
+
+        WebSphereConfig config = (WebSphereConfig) ConfigProviderResolver.instance().getConfig();
+
         String value = "com.ibm.ws.microprofile.config12.test.converters.MyObject";
         System.out.println("String :" + value);
-        Class<?> converted = (Class<?>) Config12DefaultConverters.getDefaultConverters().getConverter(Class.class).convert(value);
+        Class<?> converted = (Class<?>) config.convertValue(value, Class.class);
         assertEquals(MyObject.class, converted);
     }
 

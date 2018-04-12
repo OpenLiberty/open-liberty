@@ -41,8 +41,7 @@ Import-Package: \
 WS-TraceGroup: APPCONFIG
 
 Include-Resource: \
-  @${repo;com.ibm.ws.microprofile.config}!/!(META-INF/services|OSGI-INF)/*, \
-  META-INF/services=resources/META-INF/services
+  @${repo;com.ibm.ws.microprofile.config}!/!(OSGI-INF)/*
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
