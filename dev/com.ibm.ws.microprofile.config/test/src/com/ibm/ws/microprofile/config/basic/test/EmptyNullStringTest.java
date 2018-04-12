@@ -24,8 +24,9 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.config.TestUtils;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
-public class EmptyNullStringTest {
+public class EmptyNullStringTest extends AbstractConfigTest {
 
     @Test
     public void testEmptyString() {

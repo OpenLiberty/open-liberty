@@ -28,8 +28,9 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.config.dynamic.test.TestDynamicConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
-public class CustomXMLSourceTest {
+public class CustomXMLSourceTest extends AbstractConfigTest {
 
     @Test
     public void testUsersPropertiesSource() throws MalformedURLException {
