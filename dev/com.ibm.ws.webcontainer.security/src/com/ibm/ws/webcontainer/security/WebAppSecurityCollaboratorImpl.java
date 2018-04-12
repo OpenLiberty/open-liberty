@@ -653,10 +653,14 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 //
                 String reason = authResult.getReason();
                 if (reason != null && reason.contains("SEND_FAILURE") && unprotectedResource(webRequest) == PERMIT_REPLY) {
+                    AuthenticationResult permitResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null, AuditEvent.CRED_TYPE_JASPIC, null, AuditEvent.OUTCOME_SUCCESS);
+                    Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, permitResult, uriName, HttpServletResponse.SC_OK);
                     return PERMIT_REPLY;
                 }
 
                 webReply = new ReturnReply(webRequest.getHttpServletResponse().getStatus(), reason);
+                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
+
                 SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(webReply.message, webReply, webSecurityContext));
                 throw secVE;
             } else if (authResult.getStatus() != AuthResult.CONTINUE) {
