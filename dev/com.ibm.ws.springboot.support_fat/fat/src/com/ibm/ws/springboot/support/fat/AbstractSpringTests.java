@@ -60,10 +60,12 @@ public abstract class AbstractSpringTests {
 
     @AfterClass
     public static void stopServer() throws Exception {
-        serverStarted.set(false);
+        boolean isActive = serverStarted.getAndSet(false);
         try {
             // don't archive until after stopping and removing the lib.index.cache
-            server.stopServer(false);
+            if (isActive) {
+                server.stopServer(false);
+            }
         } finally {
             try {
                 server.deleteDirectoryFromLibertyServerRoot(SPRING_WORKAREA_DIR + SPRING_LIB_INDEX_CACHE);
@@ -80,7 +82,9 @@ public abstract class AbstractSpringTests {
                 // ignore
             } finally {
                 dropinFiles.clear();
-                server.postStopServerArchive();
+                if (isActive) {
+                    server.postStopServerArchive();
+                }
             }
         }
     }

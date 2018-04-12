@@ -41,6 +41,7 @@ public class SpringBootThinUtil {
     private final File libIndexCache;
     private final File libIndexCacheParent;
     private final String springBootLibPath;
+    private final String springBootLibProvidedPath;
     private final List<String> libEntries = new ArrayList<>();
     public static final String SPRING_LIB_INDEX_FILE = "META-INF/spring.lib.index";
     private static final String SPRING_BOOT_LOADER_CLASSPATH = "org/springframework/boot/loader/";
@@ -54,11 +55,17 @@ public class SpringBootThinUtil {
         this.targetThinJar = targetThinJar;
         this.libIndexCache = libIndexCache;
         this.libIndexCacheParent = libIndexCacheParent;
-        String springBootLibPath = new SpringBootManifest(this.sourceFatJar.getManifest()).getSpringBootLib();
+        SpringBootManifest sbmf = new SpringBootManifest(this.sourceFatJar.getManifest());
+        String springBootLibPath = sbmf.getSpringBootLib();
         if (!springBootLibPath.endsWith("/")) {
             springBootLibPath += "/";
         }
         this.springBootLibPath = springBootLibPath;
+        String springBootLibProvidedPath = sbmf.getSpringBootLibProvided();
+        if (springBootLibProvidedPath != null && !springBootLibProvidedPath.endsWith("/")) {
+            springBootLibProvidedPath += "/";
+        }
+        this.springBootLibProvidedPath = springBootLibProvidedPath;
     }
 
     public void execute() throws IOException, NoSuchAlgorithmException {
@@ -83,9 +90,11 @@ public class SpringBootThinUtil {
 
     private void storeEntry(JarOutputStream thinJar, JarEntry entry) throws IOException, NoSuchAlgorithmException {
         String path = entry.getName();
+        boolean isLibPath = isFromLibPath(path);
+        boolean isLibProvidedPath = isFromLibProvidedPath(path);
         // check if entry is dependency jar or application class
-        if (entry.getName().startsWith(springBootLibPath) && !entry.getName().equals(springBootLibPath)) {
-            if (!isEmbeddedContainerImpl(entry)) {
+        if (isLibPath || isLibProvidedPath) {
+            if (!isEmbeddedContainerImpl(entry) && (!isLibProvidedPath || includeLibProvidedPaths())) {
                 String hash = hash(sourceFatJar, entry);
                 String hashPrefix = hash.substring(0, 2);
                 String hashSuffix = hash.substring(2, hash.length());
@@ -100,6 +109,23 @@ public class SpringBootThinUtil {
                 writeEntry(is, thinJar, path);
             }
         }
+    }
+
+    private boolean includeLibProvidedPaths() {
+        // Always return false for now.
+        // May add option to include lib provided paths in the future ... but not now
+        return false;
+    }
+
+    boolean isFromLibPath(String entryName) {
+        return entryName.startsWith(springBootLibPath) && !entryName.endsWith("/");
+    }
+
+    boolean isFromLibProvidedPath(String entryName) {
+        if (springBootLibProvidedPath != null) {
+            return entryName.startsWith(springBootLibProvidedPath) && !entryName.endsWith("/");
+        }
+        return false;
     }
 
     private static boolean isEmbeddedContainerImpl(JarEntry entry) {
