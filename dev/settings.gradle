@@ -264,9 +264,6 @@ allBndProjects.remove('')
 
 /* Add cnf project to the graph */
 include bnd_cnf
-workspace.getProject(bnd_cnf).getDependson()*.getName().each {
-  include it
-}
 
 /* Start with the declared build project name */
 def defaultProjectName = bnd_build
@@ -298,6 +295,11 @@ if ((startParameter.currentDir != rootDir) || projectNames.empty) {
 if (projectNames.remove('')) {
   projectNames.addAll(allBndProjects)
 }
+
+/* Add our common build/tool projects */
+projectNames.add('build.image')
+projectNames.add('wlp-bndPlugins')
+projectNames.add('wlp-rasInstrumentation')
 
 /* Add each project and its dependencies to the graph */
 projectNames.each { projectName ->

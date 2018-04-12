@@ -318,7 +318,9 @@ task buildfat {
 
 sourceSets {
   main {
-    java.srcDir globalize.destinationDir
+    if (parseBoolean(bnd('globalize', 'true'))) {
+      java.srcDir globalize.destinationDir
+    }
   }
 }
 
