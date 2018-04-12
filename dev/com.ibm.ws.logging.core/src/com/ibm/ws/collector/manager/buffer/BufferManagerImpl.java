@@ -39,8 +39,36 @@ public class BufferManagerImpl extends BufferManager {
 	protected Queue<Object> earlyMessageQueue;
 
 	private static final int EARLY_MESSAGE_QUEUE_SIZE = 400;
-
+	private final static boolean defaultIsSoftRefEMQ = true;
+	
 	public BufferManagerImpl(int capacity, String sourceId) {
+//		super();
+//
+//		BufferManagerEMQHelper.addBufferManagerList(this);
+//		ringBuffer = null;
+//		this.sourceId = sourceId;
+//		this.capacity = capacity;
+//		if (!BufferManagerEMQHelper.getEMQRemovedFlag()) {
+//			earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+//			// Check again just in case
+//			if (BufferManagerEMQHelper.getEMQRemovedFlag()) {
+//				removeEMQ();
+//			}
+//		}
+		this(capacity,sourceId, defaultIsSoftRefEMQ);
+	}
+
+//	public BufferManagerImpl(int capacity, String sourceId, boolean isEMQ) {
+//		super();
+//		this.sourceId = sourceId;
+//		this.capacity = capacity;
+//		if (!isEMQ) {
+//			earlyMessageQueue = null; // don't need earlyMessageQueue
+//			ringBuffer = new Buffer<Object>(capacity);
+//		}
+//	}
+
+	public BufferManagerImpl(int capacity, String sourceId, boolean isSoftRefEMQ) {
 		super();
 
 		BufferManagerEMQHelper.addBufferManagerList(this);
@@ -48,24 +76,17 @@ public class BufferManagerImpl extends BufferManager {
 		this.sourceId = sourceId;
 		this.capacity = capacity;
 		if (!BufferManagerEMQHelper.getEMQRemovedFlag()) {
-			earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
-			// Check again just in case
-			if (BufferManagerEMQHelper.getEMQRemovedFlag()) {
-				removeEMQ();
+			if (isSoftRefEMQ){
+				earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+				// Check again just in case
+				if (BufferManagerEMQHelper.getEMQRemovedFlag()) {
+					removeEMQ();
+				}
+			} else {
+				earlyMessageQueue = new SimpleRotatingQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
 			}
 		}
 	}
-
-	public BufferManagerImpl(int capacity, String sourceId, boolean isEMQ) {
-		super();
-		this.sourceId = sourceId;
-		this.capacity = capacity;
-		if (!isEMQ) {
-			earlyMessageQueue = null; // don't need earlyMessageQueue
-			ringBuffer = new Buffer<Object>(capacity);
-		}
-	}
-	
 	
 	@Override
 	public void add(Object event) {
