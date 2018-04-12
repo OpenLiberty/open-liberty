@@ -12,6 +12,10 @@ package com.ibm.ws.javaee.ddmodel.app;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
+// import org.osgi.service.component.annotations.Reference;
+// import org.osgi.service.component.annotations.ReferenceCardinality;
+// import org.osgi.service.component.annotations.ReferencePolicy;
+// import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.app.Application;
@@ -27,28 +31,48 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public final class ApplicationAdapter implements ContainerAdapter<Application> {
 
+    public ApplicationAdapter() {
+        super();
+        
+        System.out.println("Class [ " + ApplicationAdapter.class.getSimpleName() + " ]");
+        System.out.println("Platform Version [ " + platformVersion + " ]");
+    }
+
     private ServiceReference<JavaEEVersion> versionRef;
     private volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
 
-    public synchronized void setVersion(ServiceReference<JavaEEVersion> reference) {
-        versionRef = reference;
-        platformVersion = Version.parseVersion((String) reference.getProperty("version"));
+//    @Reference(service = JavaEEVersion.class,
+//               cardinality = ReferenceCardinality.OPTIONAL,
+//               policy = ReferencePolicy.DYNAMIC,
+//               policyOption = ReferencePolicyOption.GREEDY)
+//    public synchronized void setVersion(ServiceReference<JavaEEVersion> referenceRef) {
+//        this.versionRef = referenceRef;
+//        this.platformVersion = Version.parseVersion((String) referenceRef.getProperty("version"));
+//    }
+
+    public synchronized void setVersion(ServiceReference<JavaEEVersion> referenceRef) {
+        this.versionRef = referenceRef;
+
+        String versionText = (String) referenceRef.getProperty("version");
+        (new Throwable("JavaEEVersion [ " + versionText + " ]")).printStackTrace(System.out);
+
+        this.platformVersion = Version.parseVersion((String) referenceRef.getProperty("version"));
     }
 
-    public synchronized void unsetVersion(ServiceReference<JavaEEVersion> reference) {
-        if (reference == this.versionRef) {
-            versionRef = null;
-            platformVersion = JavaEEVersion.DEFAULT_VERSION;
+    public synchronized void unsetVersion(ServiceReference<JavaEEVersion> versionRef) {
+        if (versionRef == this.versionRef) {
+            this.versionRef = null;
+            this.platformVersion = JavaEEVersion.DEFAULT_VERSION;
         }
     }
 
     @FFDCIgnore(ParseException.class)
     @Override
     public Application adapt(
-    	Container root,
-    	OverlayContainer rootOverlay,
-    	ArtifactContainer artifactContainer,
-    	Container containerToAdapt) throws UnableToAdaptException {
+        Container root,
+        OverlayContainer rootOverlay,
+        ArtifactContainer artifactContainer,
+        Container containerToAdapt) throws UnableToAdaptException {
 
         Application appDD = (Application) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), Application.class);
         if (appDD != null) {
@@ -86,6 +110,11 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
 
         @Override
         protected DDParser.ParsableElement createRootParsable() throws ParseException {
+            System.out.println("Public ID [ " + dtdPublicId + " ]");
+            System.out.println("Name space [ " + namespace + " ]");
+            System.out.println("Version [ " + getAttributeValue("", "version")+ " ]");
+            System.out.println("Root element [ " + rootElementLocalName + " ]");
+
             if (!"application".equals(rootElementLocalName)) {
                 throw new ParseException(invalidRootElement());
             }
@@ -112,51 +141,52 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
 
             // A version must always be specified.
             String vers = getAttributeValue("", "version");
+
             if (vers == null) {
                 throw new ParseException(missingDeploymentDescriptorVersion());
             }
 
             if ("1.4".equals(vers)) {
-            	// Always supported. The namespace must be correct for the version.
-            	if ("http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
+                // Always supported. The namespace must be correct for the version.
+                if ("http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
                     version = Application.VERSION_1_4;
                     eePlatformVersion = Application.VERSION_1_4;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
             } else if ("5".equals(vers)) {
-            	// Always supported. The namespace must be correct for the version.
+                // Always supported. The namespace must be correct for the version.
                 if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
                     version = Application.VERSION_5;
                     eePlatformVersion = Application.VERSION_5;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
             } else if ("6".equals(vers)) {
-            	// Always supported. The namespace must be correct for the version.
-                if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {            	
+                // Always supported. The namespace must be correct for the version.
+                if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
                     version = Application.VERSION_6;
                     eePlatformVersion = Application.VERSION_6;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
             } else if ("7".equals(vers)) {
-            	// Supported only when provisioned for java 7 or higher.
-            	// The namespace must still be correctly set.
-            	if (eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) {
-                	if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-            			version = Application.VERSION_7;
-            			eePlatformVersion = Application.VERSION_7;
-            			return new ApplicationType(getDeploymentDescriptorPath());
-            		}
-            	}
+                // Supported only when provisioned for java 7 or higher.
+                // The namespace must still be correctly set.
+                if (eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) {
+                    if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+                        version = Application.VERSION_7;
+                        eePlatformVersion = Application.VERSION_7;
+                        return new ApplicationType(getDeploymentDescriptorPath());
+                    }
+                }
             } else if ("8".equals(vers)) {
-            	// Supported only when provisioned for java 8 or higher.
-            	// The namespace must still be correctly set.
-            	if (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0) { 
-                	if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-            			version = Application.VERSION_8;
-            			eePlatformVersion = Application.VERSION_8;
-            			return new ApplicationType(getDeploymentDescriptorPath());
-            		}
-            	}
+                // Supported only when provisioned for java 8 or higher.
+                // The namespace must still be correctly set.
+                if (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0) {
+                    if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+                        version = Application.VERSION_8;
+                        eePlatformVersion = Application.VERSION_8;
+                        return new ApplicationType(getDeploymentDescriptorPath());
+                    }
+                }
             }
 
             throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
