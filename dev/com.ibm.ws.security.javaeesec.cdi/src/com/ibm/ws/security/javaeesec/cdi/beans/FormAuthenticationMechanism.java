@@ -159,7 +159,6 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
             rspStatus = HttpServletResponse.SC_OK;
         } else if (status == AuthenticationStatus.NOT_DONE) {
             // set SC_OK, since if the target is not protected, it'll be processed.
-            // otherwise, webcontainer will set SC_FORBIDDEN;
             rspStatus = HttpServletResponse.SC_OK;
         } else {
             // TODO: Audit invalid user or password
