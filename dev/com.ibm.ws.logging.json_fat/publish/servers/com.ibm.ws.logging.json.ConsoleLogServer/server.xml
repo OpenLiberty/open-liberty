@@ -10,7 +10,7 @@
  -->
 <server description="Server for testing Liberty logging in a server">
 
- 	<logging traceSpecification="com.ibm.logs.TraceServlet=all" />
+ 	<logging traceSpecification="com.ibm.logs.TraceServlet=all:com.ibm.logs.ExtensionServlet=all" />
 
     <include location="../fatTestPorts.xml"/>
 

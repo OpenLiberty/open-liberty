@@ -40,6 +40,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
@@ -150,7 +151,7 @@ public final class ServerProviderFactory extends ProviderFactory {
         if (wadlGenerator == null) {
             return filters;
         }
-        if (filters.size() == 0) {
+        if (filters.isEmpty()) {
             return Collections.singletonList(wadlGenerator);
         } else if (!syncNeeded) {
             filters.add(0, wadlGenerator);
@@ -192,24 +193,18 @@ public final class ServerProviderFactory extends ProviderFactory {
     @SuppressWarnings("unchecked")
     public <T extends Throwable> ExceptionMapper<T> createExceptionMapper(Class<?> exceptionType,
                                                                           Message m) {
-        List<ProviderInfo<ExceptionMapper<?>>> candidates = new LinkedList<ProviderInfo<ExceptionMapper<?>>>();
-        for (ProviderInfo<ExceptionMapper<?>> em : exceptionMappers) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "ExceptionMapper:  " + em.getProvider());
-            }
-            if (handleMapper(em, exceptionType, m, ExceptionMapper.class, true)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Adding candidate mapper:  " + em.getProvider());
-                }
-                candidates.add(em);
-            }
-        }
-        if (candidates.size() == 0) {
-            return null;
-        }
-        boolean makeDefaultWaeLeastSpecific = MessageUtils.getContextualBoolean(m, MAKE_DEFAULT_WAE_LEAST_SPECIFIC, false);
-        Collections.sort(candidates, new ExceptionProviderInfoComparator(exceptionType, makeDefaultWaeLeastSpecific));
-        return (ExceptionMapper<T>) candidates.get(0).getProvider();
+
+        boolean makeDefaultWaeLeastSpecific =
+            MessageUtils.getContextualBoolean(m, MAKE_DEFAULT_WAE_LEAST_SPECIFIC, false);
+
+        return (ExceptionMapper<T>)exceptionMappers.stream()
+                .filter(em -> handleMapper(em, exceptionType, m, ExceptionMapper.class, Throwable.class, true))
+                .sorted(new ExceptionProviderInfoComparator(exceptionType,
+                                                            makeDefaultWaeLeastSpecific))
+                .map(ProviderInfo::getProvider)
+                .findFirst()
+                .orElse(null);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -219,13 +214,24 @@ public final class ServerProviderFactory extends ProviderFactory {
         for (Object p : providers) {
             if (p instanceof Feature) {
                 FeatureContext featureContext = createServerFeatureContext();
-                ((Feature) p).configure(featureContext);
+                Feature feature = (Feature)p;
+                injectApplicationIntoFeature(feature);
+                feature.configure(featureContext);
                 Configuration cfg = featureContext.getConfiguration();
 
                 for (Object featureProvider : cfg.getInstances()) {
                     Map<Class<?>, Integer> contracts = cfg.getContracts(featureProvider.getClass());
                     if (contracts != null && !contracts.isEmpty()) {
-                        allProviders.add(new FilterProviderInfo<Object>(featureProvider, getBus(), contracts));
+                        Class<?> providerCls = ClassHelper.getRealClass(getBus(), featureProvider);
+
+                        allProviders.add(new FilterProviderInfo<Object>(featureProvider.getClass(),
+                                                                        providerCls,
+                                                                        featureProvider,
+                                                                        getBus(),
+                                                                        getFilterNameBindings(getBus(),
+                                                                                              featureProvider),
+                                                                        false,
+                                                                        contracts));
                     } else {
                         allProviders.add(featureProvider);
                     }
@@ -258,7 +264,7 @@ public final class ServerProviderFactory extends ProviderFactory {
                 dynamicFeatures.add((DynamicFeature) feature);
             }
 
-            if (ExceptionMapper.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, ExceptionMapper.class)) {
                 addProviderToList(exceptionMappers, provider);
             }
 
@@ -274,6 +280,34 @@ public final class ServerProviderFactory extends ProviderFactory {
         injectContextProxies(exceptionMappers,
                              postMatchContainerRequestFilters.values(), preMatchContainerRequestFilters,
                              containerResponseFilters.values());
+    }
+
+    protected void injectApplicationIntoFeature(Feature feature) {
+        if (application != null) {
+            AbstractResourceInfo info = new AbstractResourceInfo(feature.getClass(),
+                                                                 ClassHelper.getRealClass(feature),
+                                                                 true,
+                                                                 true,
+                                                                 getBus()) {
+                @Override
+                public boolean isSingleton() {
+                    return false;
+                }
+            };
+            Method contextMethod = info.getContextMethods().get(Application.class);
+            if (contextMethod != null) {
+                InjectionUtils.injectThroughMethod(feature, contextMethod, application.getProvider());
+                return;
+            }
+            for (Field contextField : info.getContextFields()) {
+                if (Application.class == contextField.getType()) {
+                    InjectionUtils.injectContextField(info, contextField, feature, application.getProvider());
+                    break;
+                }
+            }
+
+        }
+
     }
 
     @Override
@@ -394,7 +428,14 @@ public final class ServerProviderFactory extends ProviderFactory {
                 for (Object provider : cfg.getInstances()) {
                     Map<Class<?>, Integer> contracts = cfg.getContracts(provider.getClass());
                     if (contracts != null && !contracts.isEmpty()) {
-                        registerUserProvider(new FilterProviderInfo<Object>(provider, getBus(), nameBinding, true, contracts));
+                        Class<?> providerCls = ClassHelper.getRealClass(getBus(), provider);
+                        registerUserProvider(new FilterProviderInfo<Object>(provider.getClass(),
+                            providerCls,
+                            provider,
+                            getBus(),
+                            Collections.singleton(nameBinding),
+                            true,
+                            contracts));
                         ori.addNameBindings(Collections.singletonList(nameBinding));
                     }
                 }
@@ -411,8 +452,8 @@ public final class ServerProviderFactory extends ProviderFactory {
     private FeatureContext createServerFeatureContext() {
         final FeatureContextImpl featureContext = new FeatureContextImpl();
         final ServerConfigurableFactory factory = getBus().getExtension(ServerConfigurableFactory.class);
-        final Configurable<FeatureContext> configImpl = (factory == null) 
-            ? new ServerFeatureContextConfigurable(featureContext) 
+        final Configurable<FeatureContext> configImpl = (factory == null)
+            ? new ServerFeatureContextConfigurable(featureContext)
                 : factory.create(featureContext);
         featureContext.setConfigurable(configImpl);
 
@@ -624,8 +665,6 @@ public final class ServerProviderFactory extends ProviderFactory {
                 result = comparePriorityStatus(p1.getOldProvider().getClass(), p2.getOldProvider().getClass());
             }
             return result;
-
         }
     }
-
 }

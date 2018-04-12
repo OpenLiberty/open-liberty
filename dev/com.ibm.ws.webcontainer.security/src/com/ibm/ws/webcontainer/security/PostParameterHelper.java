@@ -167,7 +167,7 @@ public class PostParameterHelper {
 	 */
 	private void saveToSession(HttpServletRequest req, String reqURL, Map params) {
 		HttpSession postparamsession = req.getSession(true);
-		if (postparamsession != null && req.getParameterNames() != null) {
+		if (postparamsession != null && params != null && !params.isEmpty()) {
 			postparamsession.setAttribute(INITIAL_URL, reqURL);
 			postparamsession.setAttribute(PARAM_NAMES, null);
 			postparamsession.setAttribute(PARAM_VALUES, params);

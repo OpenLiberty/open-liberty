@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
@@ -158,10 +159,10 @@ public class LogSource implements Source, WsLogHandler {
 
         if (logRecord instanceof WsLogRecord) {
             if (((WsLogRecord) logRecord).getExtensions() != null) {
-                KeyValuePairList extensions = new KeyValuePairList();
+                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    extensions.addPair(entry.getKey(), entry.getValue());
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
                 genData.addPairs(extensions);
             }
@@ -213,16 +214,17 @@ public class LogSource implements Source, WsLogHandler {
         genData.addPair(LogFieldConstants.IBM_METHODNAME, logRecord.getSourceMethodName());
         genData.addPair(LogFieldConstants.IBM_CLASSNAME, logRecord.getSourceClassName());
 
-        KeyValuePairList extensions = new KeyValuePairList();
-        Map<String, String> extMap = null;
         if (logRecord instanceof WsLogRecord) {
-            extMap = ((WsLogRecord) logRecord).getExtensions();
-            for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                extensions.addPair(entry.getKey(), entry.getValue());
+            if (((WsLogRecord) logRecord).getExtensions() != null) {
+                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
+                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
+                }
+                genData.addPairs(extensions);
             }
         }
 
-        genData.addPairs(extensions);
         genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceNumber.next(dateVal));
         //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
 

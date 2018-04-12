@@ -21,7 +21,6 @@ import org.jboss.weld.Container;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.jboss.weld.context.ConversationContext;
 import org.jboss.weld.context.http.HttpConversationContext;
-import org.jboss.weld.jsf.FacesUrlTransformer;
 
 // TODO: This class is mainly a duplicate of the Weld class org.jboss.weld.jsf.ConversationAwareViewHandler
 // except for one line of code.  Instead of duplicating the class, we should pull the CAVH

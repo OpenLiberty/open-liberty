@@ -26,12 +26,14 @@ public class ProviderPriorityTestApp extends Application {
 
     @Produces(MediaType.TEXT_PLAIN)
     @PUT
-    public MyObject put(MyObject mo1) {
+    @Path("/{param}")
+    public MyObject put(@PathParam("param") MyParam param, MyObject mo1) {
         MyObject mo2 = new MyObject();
         mo2.setMyString(mo1.getMyString());
         mo2.setMyInt(mo1.getMyInt());
         mo2.setContextResolverVersionFromReader(mo1.getContextResolverVersionFromReader());
         mo2.setMbrVersion(mo1.getMbrVersion());
+        mo2.setParamConverterVersion(param.getVersion());
         return mo2;
     }
 

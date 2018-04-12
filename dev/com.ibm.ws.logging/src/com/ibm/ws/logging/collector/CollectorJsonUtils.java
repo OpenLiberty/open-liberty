@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.Pair;
 
 /*
@@ -147,19 +148,19 @@ public class CollectorJsonUtils {
                     }
                     String value = null;
                     if (kvp.isInteger()) {
-                        value = kvp.getIntValue().toString();
+                        value = Integer.toString(kvp.getIntValue());
                     } else if (kvp.isLong()) {
-                        value = kvp.getLongValue().toString();
+                        value = Long.toString(kvp.getLongValue());
                     } else {
                         value = kvp.getStringValue();
                     }
                     CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
                 }
             }
+        }
 
-            if (tags != null) {
-                addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
-            }
+        if (tags != null) {
+            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
         }
 
         sb.append("}");
@@ -175,6 +176,8 @@ public class CollectorJsonUtils {
         ArrayList<Pair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String key = null;
+        ArrayList<KeyValuePair> extensions = null;
+        KeyValuePairList kvpl = null;
 
         if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE))
             sb = CollectorJsonHelpers.startMessageJson(hostName, wlpUserDir, serverName);
@@ -192,8 +195,14 @@ public class CollectorJsonUtils {
                 }
 
                 else if (key.equals(LogFieldConstants.MESSAGE)) {
-
-                    String formattedValue = CollectorJsonHelpers.formatMessage(kvp.getStringValue(), maxFieldLength);
+                    String message = kvp.getStringValue();
+                    String loglevel = CollectorJsonHelpers.getLogLevel(pairs);
+                    if (loglevel != null) {
+                        if (loglevel.equals("ENTRY") || loglevel.equals("EXIT")) {
+                            message = CollectorJsonHelpers.jsonRemoveSpace(message);
+                        }
+                    }
+                    String formattedValue = CollectorJsonHelpers.formatMessage(message, maxFieldLength);
                     CollectorJsonHelpers.addToJSON(sb, key, formattedValue, false, true, false, false, false);
 
                 } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
@@ -215,13 +224,32 @@ public class CollectorJsonUtils {
                     }
                     String value = null;
                     if (kvp.isInteger()) {
-                        value = kvp.getIntValue().toString();
+                        value = Integer.toString(kvp.getIntValue());
                     } else if (kvp.isLong()) {
-                        value = kvp.getLongValue().toString();
+                        value = Long.toString(kvp.getLongValue());
                     } else {
                         value = kvp.getStringValue();
                     }
                     CollectorJsonHelpers.addToJSON(sb, key, value, false, true, false, false, !kvp.isString());
+                }
+            } else if (p instanceof KeyValuePairList) {
+                kvpl = (KeyValuePairList) p;
+                if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
+                    extensions = kvpl.getKeyValuePairs();
+                    for (KeyValuePair k : extensions) {
+                        String extKey = k.getKey();
+                        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
+                        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
+                        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
+                        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
+                        } else {
+                            CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
+                        }
+                    }
                 }
             }
         }
@@ -262,7 +290,7 @@ public class CollectorJsonUtils {
 
                     } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
                         key = LogFieldConstants.THREADID;
-                        CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString(kvp.getLongValue().intValue(), 8), false, true, false, false,
+                        CollectorJsonHelpers.addToJSON(sb, key, DataFormatHelper.padHexString((int) kvp.getLongValue(), 8), false, true, false, false,
                                                        false);
 
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME)) {
@@ -276,9 +304,9 @@ public class CollectorJsonUtils {
                         }
                         String value = null;
                         if (kvp.isInteger()) {
-                            value = kvp.getIntValue().toString();
+                            value = Integer.toString(kvp.getIntValue());
                         } else if (kvp.isLong()) {
-                            value = kvp.getLongValue().toString();
+                            value = Long.toString(kvp.getLongValue());
                         } else {
                             value = kvp.getStringValue();
                         }
@@ -353,9 +381,9 @@ public class CollectorJsonUtils {
 
                     String value = null;
                     if (kvp.isInteger()) {
-                        value = kvp.getIntValue().toString();
+                        value = Integer.toString(kvp.getIntValue());
                     } else if (kvp.isLong()) {
-                        value = kvp.getLongValue().toString();
+                        value = Long.toString(kvp.getLongValue());
                     } else {
                         value = kvp.getStringValue();
                     }

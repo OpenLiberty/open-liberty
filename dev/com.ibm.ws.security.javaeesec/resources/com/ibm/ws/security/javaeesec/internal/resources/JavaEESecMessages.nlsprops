@@ -16,12 +16,8 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1900 - CWWKS1924
+# Message prefix block: CWWKS1900 - CWWKS1924, CWWKS3400 - CWWKS3419
 # 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
-
-JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: The IdentityStore object configured was not found. Make sure that the IdentityStore object configured by the application is available.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=The reason that the IdentityStore object was not found varies. The error messages for the IdentityStore object provide information on why the the IdentityStore object was not found.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Investigate any error messages from the IdentityStore object and make corrections based on the error messages.
 
 JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: No IdentityStore object supports validation of the user. Make sure that at least one IdentityStore object supports user validation.
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=No IdentityStore object was found to validate the user. Therefore, the user cannot be authenticated.
@@ -63,3 +59,31 @@ JAVAEESEC_WARNING_NO_PWD.useraction=If a password was expected, review the calle
 JAVAEESEC_WARNING_MULTI_CALLER=CWWKS1924W: The ''{1}'' query returned multiple results for the {0} caller on the DatabaseIdentityStore.
 JAVAEESEC_WARNING_MULTI_CALLER.explanation=Multiple results were returned for the requested caller. The caller query should only return a single result.
 JAVAEESEC_WARNING_MULTI_CALLER.useraction=Review the caller query and database contents. Change the caller query to return one result.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND=CWWKS3400W: Binding with the {0} caller failed. The following exception occurred: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.explanation=An exception occurred while binding with the provided caller.
+JAVAEESEC_ERROR_EXCEPTION_ON_BIND.useraction=Review the provided exception.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH=CWWKS3401E: Searching for the {0} caller with the {1} filter and the {2} searchBase failed. The following exception occurred: {3}
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.explanation=An exception occurred while searching for the provided caller.
+JAVAEESEC_ERROR_EXCEPTION_ON_SEARCH.useraction=Review the provided exception.
+
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH=CWWKS3402E: Searching for groups of {0} failed. The following exception occurred: {1}
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.explanation=An exception occurred searching for groups of the specified user.
+JAVAEESEC_ERROR_EXCEPTION_ON_GROUP_SEARCH.useraction=Review the provided exception.
+
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP=CWWKS3403W: Multiple results were returned for the {0} caller on the LdapIdentityStore using the {1} filter and the {2} searchBase.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.explanation=Multiple results were returned for the requested caller. The caller search should only return a single result.
+JAVAEESEC_WARNING_MULTI_CALLER_LDAP.useraction=Review the callerSearchFilter, searchBase, and repository contents.
+
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES=CWWKS3404W: Searching for the {1} attribute on the {0} entity failed. The following exception occurred: {2}
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.explanation=An exception occurred searching for attributes on the specified entity.
+JAVAEESEC_WARNING_EXCEPTION_ON_GETATTRIBUTES.useraction=Review the provided exception.
+
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR=CWWKS3405W: The {0} caller is missing the {1} callerNameAttribute.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.explanation=The specified caller does not have the specified attribute as set on the LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_CALLER_ATTR.useraction=Review the callerNameAttribute and repository contents.
+
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR=CWWKS3406W: The {0} group is missing the {1} groupNameAttribute.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.explanation=The specified group does not have the specified attribute as set on the LdapIdentityStore.
+JAVAEESEC_WARNING_MISSING_GROUP_ATTR.useraction=Review the groupNameAttribute and repository contents.

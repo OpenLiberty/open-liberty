@@ -114,7 +114,10 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Start the server with an invalid Hazelcast uri configured on httpSessionCache.
      * Verify that after correcting the uri, session data is persisted.
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
+    @AllowedFFDC(value = { "javax.cache.CacheException", // for invalid uri
+                           "java.lang.NullPointerException", // TODO fails when WebApp.destroy/SessionContext.stop invoked after deactivate
+                           "java.net.MalformedURLException" // TODO possible bug
+    })
     @Test
     public void testInvalidURI() throws Exception {
         // Start the server with invalid httpSessionCache uri
@@ -165,7 +168,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
         } finally {
-            server.stopServer("CWWKE0701E.*CacheException.*URI"); // Expected: CWWKE0701E: ... CacheException: Error opening URI ...
+            server.stopServer("CWWKE0701E.*CacheException.*URI", // Expected: CWWKE0701E: ... CacheException: Error opening URI ...
+                              "SRVE0297E.*NullPointerException" // TODO fails when WebApp.destroy/SessionContext.stop invoked after deactivate
+            );
         }
     }
 

@@ -8,8 +8,8 @@
     
     <include location="../fatTestPorts.xml"/>
     
-     <!-- Use this config for sessionCache -->
-     <featureManager>
+    <!-- Use this config for sessionCache --> 
+    <featureManager>
         <feature>sessionCache-1.0</feature>
     </featureManager>   
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="5s" reaperPollInterval="30"/>
@@ -49,11 +49,6 @@
     <library id="HazelcastLib">
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
     </library>
-
-
-
-    <!-- Used for testing that data source can be stored in a session -->
-
 	
 	<!-- Perms needed because the application uses Hazelcast directly   -->
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>

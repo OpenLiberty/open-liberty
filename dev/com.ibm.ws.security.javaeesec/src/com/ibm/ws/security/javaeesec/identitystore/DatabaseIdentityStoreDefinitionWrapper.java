@@ -64,6 +64,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
     /** The ValidationTypes this IdentityStore can be used for. Will be null when set by a deferred EL expression. */
     private final Set<ValidationType> useFor;
 
+    private boolean datasourceEvaluated = false;
+
     /**
      * Create a new instance of an {@link DatabaseIdentityStoreDefinitionWrapper} that will provide
      * convenience methods to access configuration from the {@link DatabaseIdentityStoreDefinition}
@@ -87,6 +89,9 @@ public class DatabaseIdentityStoreDefinitionWrapper {
          */
         this.callerQuery = evaluateCallerQuery(true);
         this.dataSourceLookup = evaluateDataSourceLookup(true);
+        if (this.dataSourceLookup != null) {
+            datasourceEvaluated = true;
+        }
         this.groupsQuery = evaluateGroupsQuery(true);
         this.hashAlgorithm = evaluateHashAlgorithm();
         this.hashAlgorithmParameters = evaluateHashAlgorithmParameters();
@@ -103,16 +108,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The callerQuery or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerQuery(boolean immediateOnly) {
-        try {
-            return ELHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerQuery", "" });
-            }
-            return ""; /* Default value from the spec. */
-        }
+        return ELHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
     }
 
     /**
@@ -145,16 +142,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The groupsQuery or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupsQuery(boolean immediateOnly) {
-        try {
-            return ELHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupsQuery", "" });
-            }
-            return ""; /* Default value from the spec. */
-        }
+        return ELHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
     }
 
     /**
@@ -372,5 +361,9 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      */
     Set<ValidationType> getUseFor() {
         return (this.useFor != null) ? this.useFor : evaluateUseFor(false);
+    }
+
+    boolean isDataSourceEvaluated() {
+        return datasourceEvaluated;
     }
 }

@@ -20,6 +20,6 @@ IBM-Process-Types: server, \
 -jars=com.ibm.websphere.appserver.spi.application; location:=dev/spi/ibm/, \
  com.ibm.websphere.appserver.api.basics; location:="dev/api/ibm/,lib/"
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.basics_1.3-javadoc.zip, \
- dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.application_1.0-javadoc.zip
+ dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.application_1.1-javadoc.zip
 kind=ga
 edition=core

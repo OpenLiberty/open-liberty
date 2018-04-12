@@ -58,7 +58,7 @@ public class AttachmentDeserializer {
      * The maximum MIME Header Length. The default is 300.
      */
     public static final String ATTACHMENT_MAX_HEADER_SIZE = "attachment-max-header-size";
-    public static final int DEFAULT_MAX_HEADER_SIZE = 
+    public static final int DEFAULT_MAX_HEADER_SIZE =
         SystemPropertyAction.getInteger("org.apache.cxf.attachment-max-header-size", 300);
 
     public static final int THRESHOLD = 1024 * 100; //100K (byte unit)
@@ -120,7 +120,7 @@ public class AttachmentDeserializer {
             throw new IllegalStateException("Content-Type can not be empty!");
         }
 
-        if (getInputStream() == null) {
+        if (getInputStream() == null) { // Liberty change (use getInputStream())
             throw new IllegalStateException("An InputStream must be provided!");
         }
 
@@ -135,7 +135,7 @@ public class AttachmentDeserializer {
             }
             boundary = boundaryString.getBytes("utf-8");
 
-            stream = new PushbackInputStream(getInputStream(),
+            stream = new PushbackInputStream(getInputStream(), //Liberty change
                                              pbAmount);
             if (!readTillFirstBoundary(stream, boundary)) {
                 throw new IOException("Couldn't find MIME boundary: " + boundaryString);
@@ -170,7 +170,7 @@ public class AttachmentDeserializer {
     }
 
     private String findBoundaryFromInputStream() throws IOException {
-        InputStream is = getInputStream();
+        InputStream is = getInputStream(); //Liberty change
         //boundary should definitely be in the first 2K;
         PushbackInputStream in = new PushbackInputStream(is, 4096);
         byte buf[] = new byte[2048];
@@ -437,6 +437,7 @@ public class AttachmentDeserializer {
         v.add(value);
     }
 
+    //Liberty change begin
     private InputStream getInputStream() {
         InputStream is = message.getContent(ByteArrayInputStream.class);
         if (is == null) {
@@ -444,4 +445,5 @@ public class AttachmentDeserializer {
         }
         return is;
     }
+    //Liberty change end
 }

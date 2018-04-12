@@ -60,6 +60,10 @@ public class DatabaseIdentityStore implements IdentityStore {
 
     private InitialContext initialContext = null;
 
+    private DataSource dataSource = null;
+
+    private boolean evaluateAlways = false;
+
     /**
      * Construct a new {@link DatabaseIdentityStore} instance using the specified definitions.
      *
@@ -71,28 +75,39 @@ public class DatabaseIdentityStore implements IdentityStore {
         /*
          * Get the password hashing implementation.
          */
-        Instance<? extends PasswordHash> p2phi = CDI.current().select(this.idStoreDefinition.getHashAlgorithm());
+        Class<? extends PasswordHash> hashAlgorithm = this.idStoreDefinition.getHashAlgorithm();
+        Instance<? extends PasswordHash> p2phi = CDI.current().select(hashAlgorithm);
         if (p2phi != null) {
             if (p2phi.isUnsatisfied() == false && p2phi.isAmbiguous() == false) {
                 passwordHash = p2phi.get();
             } else {
-                Tr.event(tc, "Try alternate bean lookup. isUnsatisfied() is " + p2phi.isUnsatisfied() + ", isAmbiguous() is " + p2phi.isAmbiguous());
-                Set<? extends PasswordHash> hashes = CDIHelper.getBeansFromCurrentModule(this.idStoreDefinition.getHashAlgorithm());
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, "Try alternate bean lookup. isUnsatisfied() is " + p2phi.isUnsatisfied() + ", isAmbiguous() is " + p2phi.isAmbiguous());
+                }
+                Set<? extends PasswordHash> hashes = CDIHelper.getBeansFromCurrentModule(hashAlgorithm);
                 if (hashes.size() == 1) {
                     passwordHash = hashes.iterator().next();
                 } else if (hashes.size() == 0) {
-                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { this.idStoreDefinition.getHashAlgorithm() });
-                    throw new IllegalArgumentException("Cannot load the password HashAlgorithm from the current module, the CDI bean was not found for: "
-                                                       + this.idStoreDefinition.getHashAlgorithm());
+                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { hashAlgorithm });
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "the CDI bean was not found for: " + hashAlgorithm);
+                    }
+                    throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND",
+                                                                             new Object[] { hashAlgorithm }));
                 } else {
-                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { this.idStoreDefinition.getHashAlgorithm() });
-                    throw new IllegalArgumentException("Cannot load the password HashAlgorithm, " + hashes.size() + " CDI beans were found for: "
-                                                       + this.idStoreDefinition.getHashAlgorithm());
+                    Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { hashAlgorithm });
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "Too many CDI beans were found for " + hashAlgorithm + ". Found " + hashes.size());
+                    }
+
+                    throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND",
+                                                                             new Object[] { hashAlgorithm }));
                 }
             }
         } else {
-            Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { this.idStoreDefinition.getHashAlgorithm() });
-            throw new IllegalArgumentException("Cannot load the password HashAlgorithm, the CDI bean was not found for: " + this.idStoreDefinition.getHashAlgorithm());
+            Tr.error(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND", new Object[] { hashAlgorithm });
+            throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_HASH_NOTFOUND",
+                                                                     new Object[] { hashAlgorithm }));
         }
 
         /*
@@ -107,8 +122,9 @@ public class DatabaseIdentityStore implements IdentityStore {
             for (String param : params) {
                 String[] split = param.split("=");
                 if (split.length != 2) {
-                    Tr.error(tc, "JAVAEESEC_ERROR_BAD_HASH_PARAM", new Object[] { this.idStoreDefinition.getHashAlgorithm(), param });
-                    throw new IllegalArgumentException("Hash algorithm parameter is in the incorrect format. Expected: name=value,  received: " + param);
+                    Tr.error(tc, "JAVAEESEC_ERROR_BAD_HASH_PARAM", new Object[] { hashAlgorithm, param });
+                    throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_BAD_HASH_PARAM",
+                                                                             new Object[] { hashAlgorithm, param }));
                 }
                 prepped.put(split[0], split[1]);
             }
@@ -126,6 +142,16 @@ public class DatabaseIdentityStore implements IdentityStore {
                 Tr.event(tc, "Setting up InitializeContext failed, will try later.", e);
             }
         }
+
+        /*
+         * Check if the datasource is either a set string or an immediate EL expression.
+         * If it is, we can store the datasource on first lookup. If it is a deferred EL expression,
+         * we will look it up every time.
+         */
+        evaluateAlways = !this.idStoreDefinition.isDataSourceEvaluated();
+        if (tc.isEventEnabled()) {
+            Tr.event(tc, "Always evaluate Datasource: " + evaluateAlways);
+        }
     }
 
     @Override
@@ -142,21 +168,23 @@ public class DatabaseIdentityStore implements IdentityStore {
         String caller = validationResult.getCallerPrincipal().getName();
         if (caller == null) {
             if (tc.isEventEnabled()) {
-                Tr.event(tc, "A null caller was passed into getCallerGroups. No groups returned.");
+                Tr.event(tc, "A null caller was passed into getCallerGroups. No groups returned. " + validationResult);
             }
             return groups;
         }
         PreparedStatement prep = null;
+        String groupsQuery = "not_resolved";
         try {
-            Connection conn = getConnection(caller);
+            groupsQuery = idStoreDefinition.getGroupsQuery();
+            Connection conn = getConnection();
             try {
-                prep = conn.prepareStatement(idStoreDefinition.getGroupsQuery());
+                prep = conn.prepareStatement(groupsQuery);
                 prep.setString(1, caller);
                 ResultSet result = runQuery(prep, caller);
 
                 if (result == null) {
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "The result query was null looking for groups for caller " + caller + " with query " + idStoreDefinition.getGroupsQuery());
+                        Tr.event(tc, "The result query was null looking for groups for caller " + caller + " with query " + groupsQuery);
                     }
                 } else {
                     while (result.next()) {
@@ -172,14 +200,12 @@ public class DatabaseIdentityStore implements IdentityStore {
             } finally {
                 conn.close();
             }
-        } catch (NamingException | SQLException e) {
-            Tr.warning(tc, "JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS", new Object[] { caller, idStoreDefinition.getGroupsQuery(), groups, e });
+        } catch (NamingException | SQLException | IllegalArgumentException e) {
+            Tr.warning(tc, "JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS", new Object[] { caller, groupsQuery, groups, e });
+            throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS",
+                                                                     new Object[] { caller, groupsQuery, groups, e.toString() }), e);
         }
 
-        /*
-         * Currently, we're allowing partial results to be returned if we somehow fail
-         * while processing the results
-         */
         return groups;
     }
 
@@ -224,31 +250,37 @@ public class DatabaseIdentityStore implements IdentityStore {
 
         ProtectedString dbPassword = null;
         PreparedStatement prep = null;
+        String callerQuery = "not_resolved";
         try {
-            Connection conn = getConnection(caller);
+            Connection conn = getConnection();
             try {
-                String callerQuery = idStoreDefinition.getCallerQuery();
+                callerQuery = idStoreDefinition.getCallerQuery();
                 if (callerQuery == null || callerQuery.isEmpty()) {
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "The 'callerQuery' configuration can not be null or empty.");
+                        Tr.event(tc, "The 'callerQuery' parameter can not be " + callerQuery == null ? "null." : "empty.");
                     }
                     return CredentialValidationResult.INVALID_RESULT;
                 }
 
                 prep = conn.prepareStatement(callerQuery);
                 prep.setString(1, caller);
+                /*
+                 * Only 1 row should be returned. If two rows (users) are returned, we can log an error to help debug the problem.
+                 * If someone sends in a malicious statement (such as select * from), we can cut off the results.
+                 */
+                prep.setMaxRows(2);
 
                 ResultSet result = runQuery(prep, caller);
 
                 if (result == null) {
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "The result query was null looking for caller " + caller + " with query " + idStoreDefinition.getGroupsQuery());
+                        Tr.event(tc, "The result query was null looking for caller " + caller + " with query " + callerQuery);
                     }
                     return CredentialValidationResult.INVALID_RESULT;
                 } else {
                     if (!result.next()) { // advance to first result
                         if (tc.isEventEnabled()) {
-                            Tr.event(tc, "The result query was empty looking for caller " + caller + " with query " + idStoreDefinition.getGroupsQuery());
+                            Tr.event(tc, "The result query was empty looking for caller " + caller + " with query " + callerQuery);
                         }
                         return CredentialValidationResult.INVALID_RESULT;
                     }
@@ -256,22 +288,23 @@ public class DatabaseIdentityStore implements IdentityStore {
                     if (!callerOnly) {
                         String dbreturn = result.getString(1);
                         if (dbreturn == null) {
-                            Tr.warning(tc, "JAVAEESEC_WARNING_NO_PWD", new Object[] { caller, idStoreDefinition.getCallerQuery() });
+                            Tr.warning(tc, "JAVAEESEC_WARNING_NO_PWD", new Object[] { caller, callerQuery });
                             return CredentialValidationResult.INVALID_RESULT;
                         }
                         dbPassword = new ProtectedString(dbreturn.toCharArray());
                     }
                     if (result.next()) { // check if there are additional results.
-                        Tr.warning(tc, "JAVAEESEC_WARNING_MULTI_CALLER", new Object[] { caller, idStoreDefinition.getCallerQuery() });
+                        Tr.warning(tc, "JAVAEESEC_WARNING_MULTI_CALLER", new Object[] { caller, callerQuery });
                         return CredentialValidationResult.INVALID_RESULT;
                     }
                 }
             } finally {
                 conn.close();
             }
-        } catch (NamingException | SQLException e) {
-            Tr.error(tc, "JAVAEESEC_ERROR_GEN_DB", new Object[] { caller, idStoreDefinition.getCallerQuery(), e });
-            return CredentialValidationResult.INVALID_RESULT;
+        } catch (NamingException | SQLException | IllegalArgumentException e) {
+            Tr.error(tc, "JAVAEESEC_ERROR_GEN_DB", new Object[] { caller, callerQuery, e });
+            throw new IdentityStoreRuntimeException(Tr.formatMessage(tc, "JAVAEESEC_ERROR_GEN_DB",
+                                                                     new Object[] { caller, callerQuery, e.toString() }), e);
         }
 
         if (callerOnly || passwordHash.verify(password.getChars(), String.valueOf(dbPassword.getChars()))) {
@@ -310,18 +343,31 @@ public class DatabaseIdentityStore implements IdentityStore {
         return result;
     }
 
-    private Connection getConnection(String caller) throws NamingException, SQLException {
+    private Connection getConnection() throws NamingException, SQLException {
         if (initialContext == null) {
             initialContext = new InitialContext();
         }
-        // datasource could be an expression, look it up fresh every time.
-        String dataSourceLookup = idStoreDefinition.getDataSourceLookup();
-        if (dataSourceLookup == null || dataSourceLookup.isEmpty()) {
-            throw new IllegalArgumentException("The 'dataSourceLookup' configuration cannot be empty or null.");
+
+        DataSource localDataSource;
+        if (evaluateAlways || dataSource == null) {
+            String dataSourceLookup = idStoreDefinition.getDataSourceLookup();
+            if (dataSourceLookup == null || dataSourceLookup.isEmpty()) {
+                throw new IllegalArgumentException("The 'dataSourceLookup' configuration cannot be " + dataSourceLookup == null ? "null." : "empty.");
+            }
+            localDataSource = (DataSource) initialContext.lookup(dataSourceLookup);
+
+            if (!evaluateAlways) { // first lookup of an evaluated dataSourceLookup, save permanently
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "DataSource is stored for " + dataSourceLookup);
+                }
+                dataSource = localDataSource;
+            }
+        } else {
+            localDataSource = dataSource;
         }
 
-        DataSource dataSource = (DataSource) initialContext.lookup(dataSourceLookup);
-
-        return dataSource.getConnection();
+        Connection conn = localDataSource.getConnection();
+        conn.setReadOnly(true);
+        return conn;
     }
 }

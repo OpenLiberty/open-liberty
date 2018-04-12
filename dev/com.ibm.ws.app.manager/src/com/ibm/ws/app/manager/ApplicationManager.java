@@ -27,6 +27,7 @@ import com.ibm.ws.app.manager.internal.AppManagerConstants;
 public class ApplicationManager {
 
     private boolean expandApps;
+    private boolean useJandex;
     private long startTimeout;
     private long stopTimeout;
 
@@ -36,7 +37,7 @@ public class ApplicationManager {
 
     /**
      * DS method to deactivate this component
-     * 
+     *
      * @param compcontext the context of this component
      */
     protected void deactivate(ComponentContext compcontext) {
@@ -45,7 +46,7 @@ public class ApplicationManager {
 
     /**
      * DS method to modify the configuration of this component
-     * 
+     *
      * @param compcontext the context of this component
      * @param properties the updated configuration properties
      */
@@ -53,6 +54,10 @@ public class ApplicationManager {
     protected void modified(ComponentContext compcontext, Map<String, Object> properties) {
         Boolean autoExpandValue = (Boolean) properties.get("autoExpand");
         setExpandApps(autoExpandValue == null ? false : autoExpandValue);
+
+        Boolean useJandexValue = getProperty(properties, "useJandex", false);
+        setUseJandex(useJandexValue == null ? false : useJandexValue);
+        //System.setProperty("com.ibm.ws.jandex.enable", useJandexValue.toString()); // Temporary -- REMOVE THIS LATER ////
 
         long startTimeoutValue = getProperty(properties, "startTimeout", 30L);
         setStartTimeout(startTimeoutValue);
@@ -89,6 +94,20 @@ public class ApplicationManager {
      */
     private void setExpandApps(boolean b) {
         this.expandApps = b;
+    }
+
+    /**
+     * @return
+     */
+    public boolean getUseJandex() {
+        return this.useJandex;
+    }
+
+    /**
+     * @param b
+     */
+    private void setUseJandex(boolean b) {
+        this.useJandex = b;
     }
 
     /**

@@ -11,18 +11,16 @@
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import java.security.AccessController;
-import java.security.Principal;
 import java.security.PrivilegedAction;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
+import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.Subject;
 import javax.security.auth.message.callback.PasswordValidationCallback;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
@@ -31,13 +29,16 @@ import javax.security.enterprise.credential.BasicAuthenticationCredential;
 import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
+import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
-import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.security.javaeesec.CDIHelper;
+import com.ibm.wsspi.security.registry.RegistryHelper;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 public class Utils {
@@ -47,52 +48,45 @@ public class Utils {
 
     public Utils() {}
 
-    protected boolean validateResult(CredentialValidationResult result) throws AuthenticationException {
-        Principal principal = result.getCallerPrincipal();
-        String username = null;
-        if (principal != null) {
-            username = principal.getName();
-        }
-        if (username == null) {
-            Tr.error(tc, "JAVAEESEC_CDI_ERROR_USERNAME_NULL");
-            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_USERNAME_NULL");
-            throw new AuthenticationException(msg);
-        }
-        if (result.getCallerUniqueId() == null) {
-            Tr.error(tc, "JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL");
-            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL");
-            throw new AuthenticationException(msg);
-        }
-        return true;
-    }
-
+    @SuppressWarnings("rawtypes")
     protected AuthenticationStatus validateUserAndPassword(CDI cdi, String realmName, Subject clientSubject, @Sensitive UsernamePasswordCredential credential,
-                                                         HttpMessageContext httpMessageContext) throws AuthenticationException {
+                                                           HttpMessageContext httpMessageContext) throws AuthenticationException {
         return validateCredential(cdi, realmName, clientSubject, credential, httpMessageContext);
     }
 
+    @SuppressWarnings("rawtypes")
     protected AuthenticationStatus validateCredential(CDI cdi, String realmName, Subject clientSubject, @Sensitive Credential credential,
-                                                         HttpMessageContext httpMessageContext) throws AuthenticationException {
+                                                      HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler(cdi);
-        if (identityStoreHandler != null) {
-            status = validateWithIdentityStore(realmName, clientSubject, credential, identityStoreHandler);
-        } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "IdentityStoreHandler bean is not found. Use a User Registry which is defined by server.xml.");
+        if (isIdentityStoreAvailable(cdi)) {
+            IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler(cdi);
+            if (identityStoreHandler != null) {
+                status = validateWithIdentityStore(realmName, clientSubject, credential, identityStoreHandler);
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IdentityStoreHandler bean is not found. ");
+                }
+                throw new AuthenticationException("No IdentityStoreHandler found");
             }
+        } else {
             if (!logNoIDWarning) {
-                Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER");
+                Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE");
                 logNoIDWarning = true;
             }
-            // If an identity store is not available, fall back to the original user registry.
-            status = validateWithUserRegistry(clientSubject, credential, httpMessageContext.getHandler());
+            if (isRegistryAvailable()) {
+                // If an identity store is not available, fall back to the original user registry.
+                status = validateWithUserRegistry(clientSubject, credential, httpMessageContext.getHandler());
+            } else {
+                // if there is no UR, return not done for let accesss the target if it is unprotected.
+                status = AuthenticationStatus.NOT_DONE;
+            }
         }
         return status;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected AuthenticationStatus handleAuthenticate(CDI cdi, String realmName, @Sensitive Credential credential, Subject clientSubject,
-                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
+                                                      HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         status = validateCredential(cdi, realmName, clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
@@ -112,6 +106,7 @@ public class Utils {
         }
         return status;
     }
+
     private AuthenticationStatus validateWithUserRegistry(Subject clientSubject, @Sensitive Credential credential,
                                                           CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
@@ -158,7 +153,8 @@ public class Utils {
     }
 
     private void setUniqueId(Hashtable<String, Object> subjectHashtable, String realm, String uniqueId) {
-        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:" + realm + "/" + uniqueId);
+        String accessId = "user:" + realm + "/" + uniqueId;
+        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, accessId);
     }
 
     private void setGroups(Hashtable<String, Object> subjectHashtable, Set<String> groups) {
@@ -175,7 +171,6 @@ public class Utils {
         }
     }
 
-
     private Hashtable<String, Object> getSubjectHashtable(final Subject clientSubject) {
         Hashtable<String, Object> subjectHashtable = getSubjectExistingHashtable(clientSubject);
         if (subjectHashtable == null) {
@@ -184,7 +179,7 @@ public class Utils {
         return subjectHashtable;
     }
 
-    private Hashtable<String, Object> getSubjectExistingHashtable(final Subject clientSubject) {
+    public Hashtable<String, Object> getSubjectExistingHashtable(final Subject clientSubject) {
         if (clientSubject == null) {
             return null;
         }
@@ -223,14 +218,33 @@ public class Utils {
         return AccessController.doPrivileged(action);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public IdentityStoreHandler getIdentityStoreHandler(CDI cdi) {
         IdentityStoreHandler identityStoreHandler = null;
         Instance<IdentityStoreHandler> storeHandlerInstance = cdi.select(IdentityStoreHandler.class);
         if (storeHandlerInstance.isUnsatisfied() == false && storeHandlerInstance.isAmbiguous() == false) {
             identityStoreHandler = storeHandlerInstance.get();
         }
+        // If the ham is from the extension, then the identitystorehandler from the application need to be found using the app's bean manager.
+        if (identityStoreHandler == null && cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
+            identityStoreHandler = (IdentityStoreHandler) CDIHelper.getBeanFromCurrentModule(IdentityStoreHandler.class);
+        }
         return identityStoreHandler;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public boolean isIdentityStoreAvailable(CDI cdi) {
+        Instance<IdentityStore> identityStoreInstances = cdi.select(IdentityStore.class);
+        if (identityStoreInstances != null && !identityStoreInstances.isUnsatisfied() && !identityStoreInstances.isAmbiguous()) {
+            return true;
+        }
+        // If the mechanism is from the extension, then the identity stores from the application need to be found using the app's bean manager.
+        if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
+            if (!CDIHelper.getBeansFromCurrentModule(IdentityStore.class).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isSupportedCredential(@Sensitive Credential cred) {
@@ -238,6 +252,17 @@ public class Utils {
             return true;
         } else {
             return false;
+        }
+    }
+
+    protected boolean isRegistryAvailable() {
+        try {
+            return (RegistryHelper.getUserRegistry(null) != null);
+        } catch (WSSecurityException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Internal error getting the user registry", e);
+            // in order to propagate the error, let the code follow through the authentication with UR.
+            return true;
         }
     }
 }

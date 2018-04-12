@@ -53,6 +53,7 @@ Import-Package: \
  com.ibm.websphere.jaxrs20.multipart, \
  !sun.reflect.generics.reflectiveObjects, \
  !javax.cache.*, \
+ !javax.json, \
  javax.ws.rs.*, \
  junit.framework.*;resolution:=optional, \
 # com.sun.xml.fastinfoset.*;resolution:=optional, \
