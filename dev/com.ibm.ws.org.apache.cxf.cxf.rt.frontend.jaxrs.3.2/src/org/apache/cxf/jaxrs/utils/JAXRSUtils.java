@@ -249,7 +249,7 @@ public final class JAXRSUtils {
                     }
                 }
             }
-            
+
             produceTypes = getProduceTypes(annotation);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "getProviderProduceTypes - return1",  produceTypes);
@@ -575,7 +575,7 @@ public final class JAXRSUtils {
                                                           final boolean checkDistance) {
         List<MediaType> all = intersectMimeTypes(acceptTypes, producesTypes, true, checkDistance);
         if (all.size() > 1) {
-            Collections.sort(all, new Comparator<MediaType>() {
+            all.sort(new Comparator<MediaType>() {
 
                 @Override
                 public int compare(MediaType mt1, MediaType mt2) {
@@ -1257,14 +1257,13 @@ public final class JAXRSUtils {
                                            boolean decodePlus,
                                            boolean valueIsCollection) {
         if (!StringUtils.isEmpty(query)) {
-            List<String> parts = Arrays.asList(StringUtils.split(query, sep));
-            for (String part : parts) {
+            for (String part : query.split(sep)) { // fastpath expected
                 int index = part.indexOf('=');
                 String name = null;
                 String value = null;
                 if (index == -1) {
                     name = part;
-                    value = "";
+                    value = ""; //Liberty change - this probably shouldn't have been removed from CXF
                 } else {
                     name = part.substring(0, index);
                     value = index < part.length() ? part.substring(index + 1) : "";
@@ -1287,11 +1286,13 @@ public final class JAXRSUtils {
                                                boolean decode,
                                                boolean decodePlus) {
 
-        if (decodePlus && value.contains("+")) {
-            value = value.replace('+', ' ');
-        }
-        if (decode) {
-            value = (";".equals(sep)) ? HttpUtils.pathDecode(value) : HttpUtils.urlDecode(value);
+        if (value != null) {
+            if (decodePlus && value.contains("+")) {
+                value = value.replace('+', ' ');
+            }
+            if (decode) {
+                value = (";".equals(sep)) ? HttpUtils.pathDecode(value) : HttpUtils.urlDecode(value);
+            }
         }
 
         queries.add(HttpUtils.urlDecode(name), value);
@@ -1785,7 +1786,7 @@ public final class JAXRSUtils {
     public static ResponseBuilder fromResponse(Response response) {
         return fromResponse(response, true);
     }
-    
+
     public static ResponseBuilder fromResponse(Response response, boolean copyEntity) {
         ResponseBuilder rb = toResponseBuilder(response.getStatus());
         if (copyEntity) {

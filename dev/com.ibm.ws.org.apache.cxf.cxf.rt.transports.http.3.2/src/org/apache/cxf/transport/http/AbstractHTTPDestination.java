@@ -73,7 +73,6 @@ import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.http.policy.impl.ServerPolicyCalculator;
 import org.apache.cxf.transport.https.CertConstraints;
 import org.apache.cxf.transport.https.CertConstraintsInterceptor;
-//import org.apache.cxf.transport.sse.SseHttpTransportFactory;
 import org.apache.cxf.transports.http.configuration.HTTPServerPolicy;
 import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.addressing.ContextUtils;
@@ -238,7 +237,7 @@ public abstract class AbstractHTTPDestination
         Exchange ex = message.getExchange();
         return ex == null ? false : ex.isOneWay();
     }
-    
+
     @FFDCIgnore({ SuspendedInvocationException.class, Fault.class, RuntimeException.class })
     public void invoke(final ServletConfig config,
                        final ServletContext context,
@@ -254,10 +253,10 @@ public abstract class AbstractHTTPDestination
             ExchangeImpl exchange = new ExchangeImpl();
             exchange.setInMessage(inMessage);
             setupMessage(inMessage,
-                         config,
-                         context,
-                         req,
-                         resp);
+                     config,
+                     context,
+                     req,
+                     resp);
 
             exchange.setSession(new HTTPSession(req));
             ((MessageImpl) inMessage).setDestination(this);
@@ -272,7 +271,6 @@ public abstract class AbstractHTTPDestination
         inMessage.put(HttpServletResponse.class, resp); // Liberty change - reqd for SSE see LibertySseEventSinkImpl
 
         try {
-
             incomingObserver.onMessage(inMessage);
             invokeComplete(context, req, resp, inMessage);
         } catch (SuspendedInvocationException ex) {
@@ -292,7 +290,6 @@ public abstract class AbstractHTTPDestination
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Finished servicing http request on thread: " + Thread.currentThread());
             }
-
         }
     }
 
@@ -424,8 +421,7 @@ public abstract class AbstractHTTPDestination
 
         inMessage.put(CertConstraints.class.getName(), certConstraints);
         inMessage.put(Message.IN_INTERCEPTORS,
-                      Arrays.asList(new Interceptor[] { CertConstraintsInterceptor.INSTANCE }));
-
+                Arrays.asList(new Interceptor[] {CertConstraintsInterceptor.INSTANCE}));
 
     }
 
@@ -557,8 +553,6 @@ public abstract class AbstractHTTPDestination
     private void initConfig() {
 
         cproviderFactory = bus.getExtension(ContinuationProviderFactory.class);
-        
-//        bus.setExtension(new SseHttpTransportFactory(registry), SseHttpTransportFactory.class);
     }
 
     private synchronized HTTPServerPolicy calcServerPolicyInternal(Message m) {
@@ -570,7 +564,7 @@ public abstract class AbstractHTTPDestination
             }
             if (null == sp) {
                 sp = endpointInfo.getTraversedExtensor(
-                                                       new HTTPServerPolicy(), HTTPServerPolicy.class);
+                        new HTTPServerPolicy(), HTTPServerPolicy.class);
             }
             serverPolicy = sp;
             serverPolicyCalced = true;
@@ -588,10 +582,9 @@ public abstract class AbstractHTTPDestination
 
     /**
      * On first write, we need to make sure any attachments and such that are still on the incoming stream
-     * are read in. Otherwise we can get into a deadlock where the client is still trying to send the
-     * request, but the server is trying to send the response. Neither side is reading and both blocked
-     * on full buffers. Not a good situation.
-     *
+     * are read in.  Otherwise we can get into a deadlock where the client is still trying to send the
+     * request, but the server is trying to send the response.   Neither side is reading and both blocked
+     * on full buffers.  Not a good situation.
      * @param outMessage
      */
     private void cacheInput(Message outMessage) {
@@ -704,11 +697,10 @@ public abstract class AbstractHTTPDestination
     /**
      * Determines if the current message has no response content.
      * The message has no response content if either:
-     * - the request is oneway and the current message is no partial
-     * response or an empty partial response.
-     * - the request is not oneway but the current message is an empty partial
-     * response.
-     *
+     *  - the request is oneway and the current message is no partial
+     *    response or an empty partial response.
+     *  - the request is not oneway but the current message is an empty partial
+     *    response.
      * @param message
      * @return
      */
@@ -862,7 +854,7 @@ public abstract class AbstractHTTPDestination
             } catch (IOException ex) {
                 //ignore
             }
-             */
+            */
         }
 
     }

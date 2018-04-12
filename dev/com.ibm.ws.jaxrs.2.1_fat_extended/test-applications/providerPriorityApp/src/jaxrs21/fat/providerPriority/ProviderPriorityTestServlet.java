@@ -48,7 +48,7 @@ public class ProviderPriorityTestServlet extends FATServlet {
         MyObject requestObject = new MyObject();
         requestObject.setMyString("hello");
         requestObject.setMyInt(5);
-        Response response = target(req, "providerPriorityApp/rest/test")
+        Response response = target(req, "providerPriorityApp/rest/test/myParam")
                         .request(MediaType.TEXT_PLAIN)
                         .put(Entity.text(requestObject));
         response.bufferEntity();
@@ -70,6 +70,8 @@ public class ProviderPriorityTestServlet extends FATServlet {
                      responseObject.getMbwVersion());
         assertEquals("The higher priority ContextResolver in the MessageBodyWriter was not selected",
                      2, responseObject.getContextResolverVersionFromWriter());
+        assertEquals("The higher priority ParamConverterProvider was not selected",
+                     2, responseObject.getParamConverterVersion());
 
     }
 

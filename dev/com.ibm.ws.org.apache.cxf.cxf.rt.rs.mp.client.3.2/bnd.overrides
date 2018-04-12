@@ -7,11 +7,11 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Export-Package: \
   org.apache.cxf.microprofile.client.cdi,\
-  org.apache.cxf.microprofile.client;version="3.2.2",\
-  org.apache.cxf.microprofile.client.cdi;version="3.2.2",\
-  org.apache.cxf.microprofile.client.config;version="3.2.2",\
-  org.apache.cxf.microprofile.client.proxy;version="3.2.2",\
-  org.apache.cxf.microprofile.client.spi;thread-context=true;version="3.2.2"
+  org.apache.cxf.microprofile.client;version="3.2.4",\
+  org.apache.cxf.microprofile.client.cdi;version="3.2.4",\
+  org.apache.cxf.microprofile.client.config;version="3.2.4",\
+  org.apache.cxf.microprofile.client.proxy;version="3.2.4",\
+  org.apache.cxf.microprofile.client.spi;thread-context=true;version="3.2.4"
 
 Import-Package: \
  javax.annotation;version="[1.2,2)",\

@@ -158,20 +158,20 @@ public final class ResourceUtils {
         for (Method m : getDeclaredMethods(c)) {
             if (name != null) {
                 if (m.getName().equals(name)) {
-                    return ReflectionUtil.setAccessible(m);
+                    return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
                 }
             } else if (m.getAnnotation(PostConstruct.class) != null) {
-                return ReflectionUtil.setAccessible(m);
+                return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
             }
         }
         Method m = findPostConstructMethod(c.getSuperclass(), name);
         if (m != null) {
-            return ReflectionUtil.setAccessible(m);
+            return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
         }
         for (Class<?> i : c.getInterfaces()) {
             m = findPostConstructMethod(i, name);
             if (m != null) {
-                return ReflectionUtil.setAccessible(m);
+                return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
             }
         }
         return null;
@@ -188,20 +188,20 @@ public final class ResourceUtils {
         for (Method m : getDeclaredMethods(c)) {
             if (name != null) {
                 if (m.getName().equals(name)) {
-                    return ReflectionUtil.setAccessible(m);
+                    return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
                 }
             } else if (m.getAnnotation(PreDestroy.class) != null) {
-                return ReflectionUtil.setAccessible(m);
+                return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
             }
         }
         Method m = findPreDestroyMethod(c.getSuperclass(), name);
         if (m != null) {
-            return ReflectionUtil.setAccessible(m);
+            return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
         }
         for (Class<?> i : c.getInterfaces()) {
             m = findPreDestroyMethod(i, name);
             if (m != null) {
-                return ReflectionUtil.setAccessible(m);
+                return ReflectionUtil.setAccessible(m); //Liberty change - setAccessible
             }
         }
         return null;
@@ -434,7 +434,7 @@ public final class ResourceUtils {
             }
 
         });
-        return cs.size() == 0 ? null : cs.get(0);
+        return cs.isEmpty() ? null : cs.get(0);
     }
 
     // Liberty change start
