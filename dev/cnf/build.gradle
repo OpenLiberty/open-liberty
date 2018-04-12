@@ -46,7 +46,7 @@ task copyMavenLibs(type: Copy) {
 }
 
 task refreshPlugins {
-    dependsOn ':wlp-bndPlugins:jar'
+    dependsOn ':wlp-bndPlugins:refresh'
 }
 
 task refresh {
@@ -85,7 +85,7 @@ def pluginsProject = project(':wlp-bndPlugins')
 /* bnd plugins influence bundle contents, so add plugins project output to jar inputs */
 parent.subprojects {
   if (project != pluginsProject) {
-    jar.inputs.files pluginsProject.sourceSets.main.output
+    jar.inputs.files tasks.getByPath(':wlp-bndPlugins:refresh')
   }
 }
 

@@ -13,9 +13,9 @@ def thisProject = project(':wlp-bndPlugins')
 
 /* After building, we need to refresh the bnd Projects to pickup the bnd plugins built here. */
 task refresh {
-  dependsOn compileJava, processResources
+  dependsOn jar
   onlyIf {
-    compileJava.didWork || processResources.didWork
+    jar.didWork
   }
   doLast {
     logger.info 'Refresh bnd Projects after building bnd plugins in {}', project.name
@@ -28,6 +28,6 @@ task refresh {
   }
 }
 
-classes {
-  dependsOn refresh
+clean {
+  println 'Not removing wlp-bndPlugins.jar during gradle clean task'
 }
