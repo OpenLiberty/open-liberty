@@ -16,7 +16,7 @@ import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import com.ibm.ws.logging.internal.impl.SimpleRotatingQueue;
+import com.ibm.ws.collector.manager.buffer.SimpleRotatingQueue;
 
 /**
  *
