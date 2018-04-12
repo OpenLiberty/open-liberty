@@ -18,8 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDC;
-import com.ibm.ws.logging.collector.LogFieldConstants;
-import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.FFDCData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.logging.Incident;
@@ -117,26 +116,26 @@ public class FFDCSource implements Source {
             //TODO: Need to evaluate the need for the timeStamp (timeStamp == dateOfFirstOccurrence) check is required or not
             if (countVal == 1) {
 
-                GenericData genData = new GenericData();
+                FFDCData ffdcData = new FFDCData();
 
                 long timeStampVal = in.getTimeStamp();
-                genData.addPair(LogFieldConstants.IBM_DATETIME, timeStampVal);
-                genData.addPair(LogFieldConstants.DATEOFFIRSTOCCURENCE, in.getDateOfFirstOccurrence().getTime());
-                genData.addPair(LogFieldConstants.COUNT, countVal);
-                genData.addPair(LogFieldConstants.MESSAGE, th.getMessage());
-                genData.addPair(LogFieldConstants.IBM_CLASSNAME, in.getSourceId());
-                genData.addPair(LogFieldConstants.LABEL, in.getLabel());
-                genData.addPair(LogFieldConstants.IBM_EXCEPTIONNAME, in.getExceptionName());
-                genData.addPair(LogFieldConstants.IBM_PROBEID, in.getProbeId());
-                genData.addPair(LogFieldConstants.SOURCEID, in.getSourceId());
-                genData.addPair(LogFieldConstants.IBM_THREADID, in.getThreadId());
-                genData.addPair(LogFieldConstants.IBM_STACKTRACE, getStackTraceAsString(th));
-                genData.addPair(LogFieldConstants.IBM_OBJECTDETAILS, getCallerDetails(in));
+                ffdcData.setDatetime(timeStampVal);
+                ffdcData.setDateOfFirstOccurence(in.getDateOfFirstOccurrence().getTime());
+                ffdcData.setCount(countVal);
+                ffdcData.setMessage(th.getMessage());
+                ffdcData.setClassName(in.getSourceId());
+                ffdcData.setLabel(in.getLabel());
+                ffdcData.setExceptionName(in.getExceptionName());
+                ffdcData.setProbeID(in.getProbeId());
+                ffdcData.setSourceID(in.getSourceId());
+                ffdcData.setThreadId(in.getThreadId());
+                ffdcData.setStacktrace(getStackTraceAsString(th));
+                ffdcData.setObjectDetails(getCallerDetails(in));
 
                 String sequenceVal = timeStampVal + "_" + String.format("%013X", seq.incrementAndGet());
-                genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceVal);
-                genData.setSourceType(sourceName);
-                bufferMgr.add(genData);
+                ffdcData.setSequence(sequenceVal);
+                ffdcData.setSourceType(sourceName);
+                bufferMgr.add(ffdcData);
 
             }
         }
