@@ -200,7 +200,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISApplCustomNoCred_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        String response = accessWithCustomHeader(httpclient, urlBase + queryString, null, null, HttpServletResponse.SC_UNAUTHORIZED);
+        String response = accessWithCustomHeader(httpclient, urlBase + queryString, null, null, HttpServletResponse.SC_FORBIDDEN);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -244,7 +244,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         myServer.setMarkToEndOfLog();
         String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.USER1 + ":" + LocalLdapServer.INVALIDPASSWORD,
-                                                 HttpServletResponse.SC_UNAUTHORIZED);
+                                                 HttpServletResponse.SC_FORBIDDEN);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }

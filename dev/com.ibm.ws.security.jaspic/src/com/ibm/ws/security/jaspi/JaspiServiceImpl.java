@@ -663,12 +663,13 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
 
         } else if (AuthStatus.SEND_FAILURE == status) {
             pretty = "SEND_FAILURE";
-            String detail = "Returning response from JASPIC Authenticated with status: " + pretty + ", AuthResult.FAILURE";
+            String detail = "Returning response from JASPIC Authenticated with status: " + pretty + ", map to AuthResult.RETURN";
             authResult = new AuthenticationResult(AuthResult.RETURN, detail);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, detail);
         } else {
-            authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authentication failed, unexpected JASPIC AuthStatus: " + status);
+            authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authentication failed, unexpected JASPIC AuthStatus: " + status
+                                                                     + ", map to AuthResult.RETURN");
         }
 
         if (authResult.getStatus().equals(AuthResult.RETURN)) {
