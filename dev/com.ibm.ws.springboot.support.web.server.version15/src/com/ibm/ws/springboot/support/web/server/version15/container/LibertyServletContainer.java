@@ -33,7 +33,6 @@ import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ConfigElementList;
 import com.ibm.ws.app.manager.springboot.container.config.HttpEndpoint;
-import com.ibm.ws.app.manager.springboot.container.config.HttpSession;
 import com.ibm.ws.app.manager.springboot.container.config.KeyEntry;
 import com.ibm.ws.app.manager.springboot.container.config.KeyStore;
 import com.ibm.ws.app.manager.springboot.container.config.SSLConfig;
@@ -171,9 +170,6 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
             endpoint.getHttpOptions().setServerHeaderValue(factory.getServerHeader());
         }
 
-        if (factory.getSessionTimeout() > 0) {
-            configureSession(serverConfig, factory);
-        }
         endpoints.add(endpoint);
     }
 
@@ -306,12 +302,6 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         if (enabledCiphers != null) {
             sslConfig.setEnabledCiphers(enabledCiphers);
         }
-    }
-
-    private static void configureSession(ServerConfiguration serverConfig, LibertyServletContainerFactory factory) {
-        // TODO is this only configurable for all endpoints?
-        HttpSession session = serverConfig.getHttpSession();
-        session.setInvalidationTimeout(factory.getSessionTimeout());
     }
 
     private static void writeFile(InputStream in, File dest) throws FileNotFoundException, IOException {
