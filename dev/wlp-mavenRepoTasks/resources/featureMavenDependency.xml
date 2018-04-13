@@ -260,9 +260,9 @@
 		<feature name="com.ibm.websphere.appserver.mediaServerControl-1.0">		
 			<mavendependencies>
 				<dependency>
-					<groupId>javax.media</groupId>
-					<artifactId>jai_core</artifactId>
-					<version>1.1.3</version>
+					<groupId>com.ibm.ws.java</groupId>
+					<artifactId>com.ibm.ws.java.mediaServerControl.1.0</artifactId>
+					<version>1.0.14</version>
 				</dependency>
 			</mavendependencies>
 		</feature>
@@ -290,10 +290,10 @@
 		<feature name="com.ibm.websphere.appserver.sipServlet-1.1">		
 			<mavendependencies>
 				<dependency>
-					<groupId>javax.servlet</groupId>
-					<artifactId>sip-api</artifactId>
-					<version>1.0</version>
-				</dependency>
+				    <groupId>com.ibm.ws.java</groupId>
+				    <artifactId>com.ibm.ws.java.sipServlet.1.1</artifactId>
+				    <version>1.0.14</version>
+			    </dependency>
 			</mavendependencies>
 		</feature>
 		
@@ -301,8 +301,8 @@
 			<mavendependencies>
 				<dependency>
 					<groupId>javax.jms</groupId>
-					<artifactId>jms</artifactId>
-					<version>1.1</version>
+					<artifactId>javax.jms-api</artifactId>
+					<version>2.0</version>
 				</dependency>
 			</mavendependencies>
 		</feature>
