@@ -20,11 +20,6 @@ import org.junit.Test;
  */
 public class LoggedOutJwtSsoCookieCacheTest {
 
-    public static void main(String[] args) throws Exception {
-        LoggedOutJwtSsoCookieCacheTest test = new LoggedOutJwtSsoCookieCacheTest();
-        test.testCacheWhenMaxSizeReached();
-    }
-
     // submit 1100 entries, first 100 should be flushed, last 1000 should be retrievable.
     @Test
     public void testCacheWhenMaxSizeReached() {
