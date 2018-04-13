@@ -30,11 +30,11 @@ import jcache.web.JCacheTestServlet;
  * Test the basic functionality of JCache, to ensure the jcacheContainer feature works.
  */
 @RunWith(FATRunner.class)
-public class JCacheTest extends FATServletClient {
+public class JCacheBellTest extends FATServletClient {
 
     public static final String APP_NAME = "jcache";
 
-    @Server("jcacheContainerServer")
+    @Server("jcacheContainerServerBell")
     @TestServlet(servlet = JCacheTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
@@ -43,7 +43,6 @@ public class JCacheTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_NAME, "jcache.web");
 
         server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID()));
-
         server.startServer();
     }
 
