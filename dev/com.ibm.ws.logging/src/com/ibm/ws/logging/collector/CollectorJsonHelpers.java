@@ -14,9 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.ibm.ws.logging.data.KeyValuePair;
-import com.ibm.ws.logging.data.Pair;
-
 import com.ibm.ws.logging.data.KeyValuePairList;
+import com.ibm.ws.logging.data.Pair;
 
 /**
  * CollectorJsonHelpers contains methods shared between CollectorjsonUtils and CollectorJsonUtils1_1
@@ -388,6 +387,7 @@ public class CollectorJsonHelpers {
         sb.append("]");
         return sb.toString();
     }
+
     protected static String jsonRemoveSpace(String s) {
         StringBuilder sb = new StringBuilder();
         boolean isLine = false;
@@ -421,28 +421,31 @@ public class CollectorJsonHelpers {
         }
         return loglevel;
     }
+
     public static void handleExtensions(KeyValuePairList extensions, String extKey, String extValue) {
         extKey = LogFieldConstants.EXT_PREFIX + extKey;
-        if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-            try {
-                extensions.addPair(extKey, Integer.parseInt(extValue));
-            } catch (NumberFormatException e) {
-            }
-        } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-            try {
-                extensions.addPair(extKey, Float.parseFloat(extValue));
-            } catch (NumberFormatException e) {
-            }
-        } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-            if (extValue.toLowerCase().trim().equals(TRUE_BOOL)) {
-                extensions.addPair(extKey, true);
-            } else if (extValue.toLowerCase().trim().equals(FALSE_BOOL)) {
-                extensions.addPair(extKey, false);
-            }
-        } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-            try {
-                extensions.addPair(extKey, Long.parseLong(extValue));
-            } catch (NumberFormatException e) {
+        if (extKey.indexOf('_', extKey.length() - 6) != -1) {
+            if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+                try {
+                    extensions.addPair(extKey, Integer.parseInt(extValue));
+                } catch (NumberFormatException e) {
+                }
+            } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+                try {
+                    extensions.addPair(extKey, Float.parseFloat(extValue));
+                } catch (NumberFormatException e) {
+                }
+            } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+                if (extValue.toLowerCase().trim().equals(TRUE_BOOL)) {
+                    extensions.addPair(extKey, true);
+                } else if (extValue.toLowerCase().trim().equals(FALSE_BOOL)) {
+                    extensions.addPair(extKey, false);
+                }
+            } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+                try {
+                    extensions.addPair(extKey, Long.parseLong(extValue));
+                } catch (NumberFormatException e) {
+                }
             }
         } else {
             extensions.addPair(extKey, extValue);
