@@ -142,13 +142,9 @@ public class CacheHashMap extends BackedHashMap {
         a = COLON.matcher(a).replaceAll("%3A");
 
         // Session Meta Information Cache
-
         String metaCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.meta.").append(a).toString();
-
-        if (trace && tc.isDebugEnabled())
-            tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
-
-        sessionMetaCache = cacheStoreService.cacheManager.getCache(metaCacheName, String.class, ArrayList.class);
+        sessionMetaCache = cacheStoreService.getCacheManager().getCache(metaCacheName, String.class, ArrayList.class);
+        
         boolean create;
         if (create = sessionMetaCache == null) {
             if (trace && tc.isDebugEnabled())
@@ -164,14 +160,14 @@ public class CacheHashMap extends BackedHashMap {
                 if (trace && tc.isDebugEnabled())
                     tcInvoke(cacheStoreService.tcCacheManager, "createCache", metaCacheName, config);
 
-                sessionMetaCache = cacheStoreService.cacheManager.createCache(metaCacheName, config);
+                sessionMetaCache = cacheStoreService.getCacheManager().createCache(metaCacheName, config);
             } catch (CacheException x) {
                 create = false;
                 if (trace && tc.isDebugEnabled()) {
                     tcReturn(cacheStoreService.tcCacheManager, "createCache", x);
                     tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
                 }
-                sessionMetaCache = cacheStoreService.cacheManager.getCache(metaCacheName, String.class, ArrayList.class);
+                sessionMetaCache = cacheStoreService.getCacheManager().getCache(metaCacheName, String.class, ArrayList.class);
                 if (sessionMetaCache == null)
                     throw x;
             }
@@ -190,7 +186,7 @@ public class CacheHashMap extends BackedHashMap {
         if (trace && tc.isDebugEnabled())
             tcInvoke(cacheStoreService.tcCacheManager, "getCache", attrCacheName, "String", "byte[]");
 
-        sessionAttributeCache = cacheStoreService.cacheManager.getCache(attrCacheName, String.class, byte[].class);
+        sessionAttributeCache = cacheStoreService.getCacheManager().getCache(attrCacheName, String.class, byte[].class);
 
         if (create = sessionAttributeCache == null) {
             if (trace && tc.isDebugEnabled())
@@ -205,14 +201,14 @@ public class CacheHashMap extends BackedHashMap {
                 if (trace && tc.isDebugEnabled())
                     tcInvoke(cacheStoreService.tcCacheManager, "createCache", attrCacheName, config);
 
-                sessionAttributeCache = cacheStoreService.cacheManager.createCache(attrCacheName, config);
+                sessionAttributeCache = cacheStoreService.getCacheManager().createCache(attrCacheName, config);
             } catch (CacheException x) {
                 create = false;
                 if (trace && tc.isDebugEnabled()) {
                     tcReturn(cacheStoreService.tcCacheManager, "createCache", x);
                     tcInvoke(cacheStoreService.tcCacheManager, "getCache", attrCacheName, "String", "byte[]");
                 }
-                sessionAttributeCache = cacheStoreService.cacheManager.getCache(attrCacheName, String.class, byte[].class);
+                sessionAttributeCache = cacheStoreService.getCacheManager().getCache(attrCacheName, String.class, byte[].class);
                 if (sessionAttributeCache == null)
                     throw x;
             }

@@ -53,8 +53,8 @@ public class CacheStoreService implements SessionStoreService {
     private static final int BASE_PREFIX_LENGTH = BASE_PREFIX.length();
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; //3 is the length of .0.
 
-    CacheManager cacheManager;
-    CachingProvider cachingProvider;
+    private volatile CacheManager cacheManager;
+    private volatile CachingProvider cachingProvider;
 
     private volatile boolean completedPassivation = true;
 
@@ -72,12 +72,12 @@ public class CacheStoreService implements SessionStoreService {
     /**
      * Trace identifier for the cache manager
      */
-    String tcCacheManager;
+    volatile String tcCacheManager;
 
     /**
      * Trace identifier for the caching provider.
      */
-    private String tcCachingProvider;
+    private volatile String tcCachingProvider;
 
     volatile UserTransaction userTransaction;
 
@@ -89,9 +89,20 @@ public class CacheStoreService implements SessionStoreService {
      * @param props service properties
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-
         configurationProperties = new HashMap<String, Object>(props);
+    }
+    
+    CacheManager getCacheManager() {
+        if(cacheManager == null)
+            lazyActivate();
+        return cacheManager;
+    }
+    
+    private synchronized void lazyActivate() {
+        if(cacheManager != null)
+            return;
+        
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
         Object scheduleInvalidationSecondHour = configurationProperties.get("scheduleInvalidationSecondHour");
@@ -113,7 +124,7 @@ public class CacheStoreService implements SessionStoreService {
         
         Properties vendorProperties = new Properties();
         
-        String uriValue = (String) props.get("uri");
+        String uriValue = (String) configurationProperties.get("uri");
         URI uri = null;
         if(uriValue != null)
             try {
@@ -122,7 +133,7 @@ public class CacheStoreService implements SessionStoreService {
                 throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
             }
         
-        for (Map.Entry<String, Object> entry : props.entrySet()) {
+        for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
@@ -219,6 +230,9 @@ public class CacheStoreService implements SessionStoreService {
      * @param context for this component instance
      */
     protected void deactivate(ComponentContext context) {
+        if(cachingProvider == null)
+            return;
+        
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // Block the progress of deactivate so that session manager is able to access the cache until it finishes stopping applications.
