@@ -541,8 +541,6 @@ public class LoggerOffThread implements LogFile {
                 Tr.debug(tc, getFileName() + ": Rotating output log");
             }
 
-            System.out.println("MSP: rotating log with maxBackFiles at " + getMaximumBackupFiles());
-
             bytesWritten = 0;
 
             // safe to close the file now
