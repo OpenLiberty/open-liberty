@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.identitystore;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -117,7 +120,28 @@ public class LdapIdentityStore implements IdentityStore {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "JNDI_CALL bind", new Object[] { bindDn, url });
         }
-        return new InitialLdapContext(env, null);
+        return getDirContext(env);
+    }
+
+    @FFDCIgnore(PrivilegedActionException.class)
+    private DirContext getDirContext(Hashtable<Object, Object> env) throws NamingException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<DirContext>() {
+                @Override
+                public DirContext run() throws NamingException {
+                    return new InitialLdapContext(env, null);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            Exception oe = e.getException();
+            if (oe instanceof NamingException) {
+                throw (NamingException) oe;
+            } else if (oe instanceof RuntimeException) {
+                throw (RuntimeException) oe;
+            } else {
+                throw new RuntimeException(oe);
+            }
+        }
     }
 
     @Override

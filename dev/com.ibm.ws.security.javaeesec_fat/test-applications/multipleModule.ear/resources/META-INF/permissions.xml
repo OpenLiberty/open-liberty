@@ -32,18 +32,13 @@
    </permission>
 
    <permission>
-      <class-name>javax.security.enterprise.identitystore.IdentityStorePermission</class-name>
-      <name>getGroups</name>
-   </permission>
-
-   <permission>
       <class-name>java.lang.RuntimePermission</class-name>
       <name>getClassLoader</name>
    </permission>
 
-   <permission>
+<!-- this is for java.io.PrintWriter.write in FlexibleBaseNoJavaEESecServlet.class -->
       <class-name>java.net.SocketPermission</class-name>
-      <name>*</name>
-      <actions>connect,resolve</actions>
+      <name>127.0.0.1</name>
+      <actions>resolve</actions>
    </permission>
 </permissions>
