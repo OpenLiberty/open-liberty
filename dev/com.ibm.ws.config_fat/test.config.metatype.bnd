@@ -8,16 +8,14 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-Bundle-Name: Test Config Merging
-Bundle-SymbolicName: test.merged.config
-Bundle-Description: Test bundle for config merging, version=${bVersion}
+Bundle-Name: Test Metatype
+Bundle-SymbolicName: com.ibm.ws.config.metatype
+Bundle-Description: Test bundle that provides some metatype, version=${bVersion}
 
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml, \
-	OSGI-INF/wlp/defaultInstances2.xml; requireExisting=true, \
-	OSGI-INF/wlp/defaultInstances3.xml; addIfMissing=true
-	
-Include-Resource: \
-    OSGI-INF=resources/OSGI-INF
+Import-Package: *
+
+Include-Resource:\
+ OSGI-INF/metatype/metatype.xml=test-bundles/metatype/resources/OSGI-INF/metatype/metatype.xml

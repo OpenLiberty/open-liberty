@@ -56,6 +56,7 @@ task addDerby(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
+
 task copyFeatureBundles {
   shouldRunAfter assemble
   enabled project.file('test-bundles').exists()
@@ -158,6 +159,7 @@ task autoFVT {
     // Check for minimum java level for test execution:
     def minJavaLevel = bnd('fat.minimum.java.level', bnd('javac.source'))
     bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
+    bndProps.setProperty('micro.version', bnd('libertyBundleMicroVersion'))
     
     File propsFile = new File(autoFvtDir, 'fat.bnd.properties')
     def writer = new FileWriter(propsFile)
@@ -296,12 +298,13 @@ task runfat(type: Exec) {
   shouldRunAfter cleanBeforeRun
   System.setProperty("fat.test.localrun", "true");
   environment System.getProperties()
+  
   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
     executable "cmd"
     args '/c', 'ant', "-f", new File(autoFvtDir, 'TestBuild.xml')
   } else {
     executable "ant"
-    args "-f", new File(autoFvtDir, 'TestBuild.xml')
+    args "-f", new File(autoFvtDir, 'TestBuild.xml'), "-debug"
   }
   doLast {
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail

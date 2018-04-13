@@ -30,6 +30,7 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import javax.net.ssl.HttpsURLConnection;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,8 +38,10 @@ import org.junit.Test;
 import com.ibm.websphere.config.mbeans.ServerSchemaGenerator;
 import com.ibm.websphere.filetransfer.FileTransferMBean;
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
+
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -102,6 +105,9 @@ public class SchemaGeneratorMBeanTest {
         schemaGenObjName = new ObjectName(ServerSchemaGenerator.OBJECT_NAME);
         fileTranObjectName = new ObjectName(FileTransferMBean.OBJECT_NAME);
 
+        WebArchive dropinsApp = ShrinkHelper.buildDefaultApp("mbeans", "web");
+        ShrinkHelper.exportDropinAppToServer(server, dropinsApp);
+
         Log.exiting(logClass, "setUp");
     }
 
@@ -112,7 +118,8 @@ public class SchemaGeneratorMBeanTest {
 
         if (server != null && server.isStarted()) {
             Log.finer(logClass, methodName, "Server is up, stopping it");
-            jmxConnector.close();
+            if (jmxConnector != null)
+                jmxConnector.close();
             server.stopServer();
         }
         Log.exiting(logClass, methodName);
@@ -120,7 +127,7 @@ public class SchemaGeneratorMBeanTest {
 
     /**
      * Invoke ServerSchemaGenerator.generateInstallSchema method
-     * 
+     *
      * @param params
      * @return response from MBean invoke
      * @throws Exception
@@ -138,7 +145,7 @@ public class SchemaGeneratorMBeanTest {
 
     /**
      * Invoke ServerSchemaGenerator.generateServerSchema method
-     * 
+     *
      * @param params
      * @return response from MBean invoke
      * @throws Exception
@@ -156,7 +163,7 @@ public class SchemaGeneratorMBeanTest {
 
     /**
      * Invoke ServerSchemaGenerator.generate method
-     * 
+     *
      * @param params
      * @return response from MBean invoke
      * @throws Exception
@@ -174,7 +181,7 @@ public class SchemaGeneratorMBeanTest {
 
     /**
      * Invoke FileTransferMBean.downloadFile method
-     * 
+     *
      * @param params
      * @throws Exception
      */
@@ -187,7 +194,7 @@ public class SchemaGeneratorMBeanTest {
 
     /**
      * Invoke FileTransferMBean.deleteFile method
-     * 
+     *
      * @param params
      * @throws Exception
      */
@@ -279,7 +286,7 @@ public class SchemaGeneratorMBeanTest {
         invokeFileTransferMBeanDeleteFile(params);
 
         //Verify the file is deleted
-        assertFalse("Generated schema file should have been deleted. remoteFile=" + remoteFile.getAbsolutePath() + " : size" + remoteFile.length(), remoteFile.exists());
+        assertFalse("Generated schema file should have been deleted. remoteFile=" + remoteFile.getAbsolutePath(), remoteFile.exists());
     }
 
     @Test
@@ -351,7 +358,7 @@ public class SchemaGeneratorMBeanTest {
 
     /**
      * Schema Generator replaces invalid locale with the default locale. So an output should be generated.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -418,7 +425,7 @@ public class SchemaGeneratorMBeanTest {
 
     /**
      * Schema Generator for server throws illegalargument exception for a invalid locale.
-     * 
+     *
      * @throws Exception
      */
     @Test

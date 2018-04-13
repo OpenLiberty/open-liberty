@@ -28,11 +28,12 @@ public class ConfigValidatorTest {
 
     // Since we have tracing enabled give server longer timeout to start up.
     private static final long SERVER_START_TIMEOUT = 30 * 1000;
+    private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.validator");
 
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.config.ConfigValidationException", "java.lang.ClassNotFoundException" })
     public void testValidator() throws Exception {
-        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.validator");
+       
         String jarName = "com.ibm.ws.config.ext_1.0." + server.getMicroVersion() + ".jar";
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
 
@@ -59,7 +60,7 @@ public class ConfigValidatorTest {
             assertTrue(server.isStarted());
 
             // Stop server, don't clean up.
-            server.stopServer(false);
+            server.stopServer(false, "CWWKG0047E", "CWWKG0057W", "CWWKF0009W");
 
             try {
                 server.startServerExpectFailure("badSignature.log", false, false);

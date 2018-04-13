@@ -8,16 +8,12 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-Bundle-Name: Test Schema Generator Config Extensions
-Bundle-SymbolicName: test.config.extensions.schema.generator; singleton:=true
-Bundle-Description: This bundle provides some services to use for testing; version=${bVersion}
+Bundle-Name: Test Config Child Alias C
+Bundle-SymbolicName: test.config.childalias.c
+Bundle-Description: Test bundle C for IBM childAlias extension, version=${bVersion}
 
-Private-Package: test.config.extensions.schema.generator
-
-Service-Component:\
-  test.config.extensions.schema.generator;\
-    implementation:=test.config.extensions.schema.generator.GeneratorTest;\
-    schemaGenerator="com.ibm.websphere.metatype.SchemaGenerator"
+Include-Resource:\
+ OSGI-INF/metatype/metatype-childalias-c.xml=test-bundles/test.config.childalias.c/resources/metatype-childalias-c.xml
