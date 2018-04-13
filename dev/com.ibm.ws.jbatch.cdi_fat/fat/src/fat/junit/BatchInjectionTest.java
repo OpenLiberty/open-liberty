@@ -8,23 +8,27 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package batch.fat;
+package fat.junit;
 
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import app.web.MyServlet;
+import app.injection.BatchInjectionServlet;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -45,17 +49,28 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 1.7)
-public class SimpleBatchTest extends FATServletClient {
+public class BatchInjectionTest extends FATServletClient {
 
-    @Server("CDIBatch")
-    @TestServlet(servlet = MyServlet.class, path = "implicit/MyServlet")
+    // Using the RepeatTests @ClassRule in FATSuite will cause all tests in the FAT to be run twice.
+    // First without any modifications, then again with all features in all server.xml's upgraded to their EE8 equivalents.
+    //
+    // Not sure I really have to restrict this with forServer() but will for now
+    //
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("BatchInjection"));
+
+    @Server("BatchInjection")
+    @TestServlet(servlet = BatchInjectionServlet.class, path = "implicit/BatchInjectionServlet")
     public static LibertyServer server1;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive implicit = ShrinkWrap.create(WebArchive.class, "implicit.war")//
-                        .addPackages(true, "app");
-        addBatchJob(implicit, "cdi.xml");
+        WebArchive implicit = ShrinkWrap.create(WebArchive.class, "implicit.war")
+                        .addPackages(true, "app.injection")
+                        .addPackages(true, "fat.util");
+
+        addBatchJob(implicit, "Injection.xml");
 
         // Write the WebArchive to 'publish/servers/<server>/apps' and print the contents
         ShrinkHelper.exportAppToServer(server1, implicit);
@@ -68,9 +83,15 @@ public class SimpleBatchTest extends FATServletClient {
      * @param jslName Batch Job JSL name
      */
     private static void addBatchJob(WebArchive implicit, String jslName) {
-        Log.info(SimpleBatchTest.class, "addBatchJob", "Adding jslName = " + jslName);
+        Log.info(BatchInjectionTest.class, "addBatchJob", "Adding jslName = " + jslName);
         String resourceDir = "test-applications/implicit/resources/";
         String batchJobsDir = "classes/META-INF/batch-jobs/";
         implicit.addAsWebInfResource(new File(resourceDir + jslName), batchJobsDir + jslName);
     }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server1.stopServer();
+    }
+
 }

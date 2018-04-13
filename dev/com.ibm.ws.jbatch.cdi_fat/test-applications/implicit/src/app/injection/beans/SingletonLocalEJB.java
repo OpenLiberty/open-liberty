@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package app.beans;
+package app.injection.beans;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;

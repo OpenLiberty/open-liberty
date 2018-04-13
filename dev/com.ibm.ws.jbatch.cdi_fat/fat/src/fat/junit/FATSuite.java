@@ -8,25 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package batch.fat;
+package fat.junit;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
-
 @RunWith(Suite.class)
 @SuiteClasses({
-                SimpleBatchTest.class,
+                BatchInjectionTest.class,
+                TranTimeoutCleanupTest.class,
 })
 public class FATSuite {
-    // Using the RepeatTests @ClassRule in FATSuite will cause all tests in the FAT to be run twice.
-    // First without any modifications, then again with all features in all server.xml's upgraded to their EE8 equivalents.
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
 
 }

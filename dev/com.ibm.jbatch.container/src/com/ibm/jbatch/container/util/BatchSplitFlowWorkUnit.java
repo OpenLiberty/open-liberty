@@ -19,6 +19,8 @@ package com.ibm.jbatch.container.util;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
+import javax.transaction.TransactionManager;
+
 import com.ibm.jbatch.container.callback.IJobExecutionEndCallbackService;
 import com.ibm.jbatch.container.callback.IJobExecutionStartCallbackService;
 import com.ibm.jbatch.container.execution.impl.RuntimeSplitFlowExecution;
@@ -26,50 +28,50 @@ import com.ibm.jbatch.container.services.IBatchKernelService;
 
 public class BatchSplitFlowWorkUnit extends BatchWorkUnit {
 
-	public BatchSplitFlowWorkUnit(IBatchKernelService batchKernelService,
-			RuntimeSplitFlowExecution runtimeFlowInSplitExecution,
-			BlockingQueue<BatchSplitFlowWorkUnit> completedThreadQueue,
-			List<IJobExecutionStartCallbackService> beforeCallbacks, 
-			List<IJobExecutionEndCallbackService> afterCallbacks) {
-		super(batchKernelService, runtimeFlowInSplitExecution, beforeCallbacks, afterCallbacks, true);
-		this.completedThreadQueue = completedThreadQueue;
-		this.runtimeFlowInSplitExecution = runtimeFlowInSplitExecution;
-	}
+    public BatchSplitFlowWorkUnit(IBatchKernelService batchKernelService,
+                                  RuntimeSplitFlowExecution runtimeFlowInSplitExecution,
+                                  BlockingQueue<BatchSplitFlowWorkUnit> completedThreadQueue,
+                                  List<IJobExecutionStartCallbackService> beforeCallbacks,
+                                  List<IJobExecutionEndCallbackService> afterCallbacks,
+                                  TransactionManager tranMgr) {
+        super(batchKernelService, runtimeFlowInSplitExecution, beforeCallbacks, afterCallbacks, tranMgr, true);
+        this.completedThreadQueue = completedThreadQueue;
+        this.runtimeFlowInSplitExecution = runtimeFlowInSplitExecution;
+    }
 
-	private final RuntimeSplitFlowExecution runtimeFlowInSplitExecution;
+    private final RuntimeSplitFlowExecution runtimeFlowInSplitExecution;
 
-	private final BlockingQueue<BatchSplitFlowWorkUnit> completedThreadQueue;
+    private final BlockingQueue<BatchSplitFlowWorkUnit> completedThreadQueue;
 
-	public BlockingQueue<BatchSplitFlowWorkUnit> getCompletedThreadQueue() {
-		return completedThreadQueue;
-	}
+    public BlockingQueue<BatchSplitFlowWorkUnit> getCompletedThreadQueue() {
+        return completedThreadQueue;
+    }
 
-	@Override
-	protected void markThreadCompleted() {
-		super.markThreadCompleted();
-		if (this.completedThreadQueue != null) {
-			completedThreadQueue.add(this);
-		}
-	}
+    @Override
+    protected void threadEnd() {
+        super.threadEnd();
+        if (this.completedThreadQueue != null) {
+            completedThreadQueue.add(this);
+        }
+    }
 
-	@Override
-	public RuntimeSplitFlowExecution getRuntimeWorkUnitExecution() {
-		return runtimeFlowInSplitExecution;
-	}
+    @Override
+    public RuntimeSplitFlowExecution getRuntimeWorkUnitExecution() {
+        return runtimeFlowInSplitExecution;
+    }
 
-	@Override 
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("BatchSplitFlowWorkUnit with ");
-		if (runtimeFlowInSplitExecution != null) {
-			sb.append("jobExecutionId =" + runtimeFlowInSplitExecution.getTopLevelExecutionId());
-			sb.append(",splitName =" + runtimeFlowInSplitExecution.getSplitName());
-			sb.append(",flowName =" + runtimeFlowInSplitExecution.getFlowName());
-		} else {
-			sb.append("<Not initialized>");
-		}
-		return sb.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("BatchSplitFlowWorkUnit with ");
+        if (runtimeFlowInSplitExecution != null) {
+            sb.append("jobExecutionId =" + runtimeFlowInSplitExecution.getTopLevelExecutionId());
+            sb.append(",splitName =" + runtimeFlowInSplitExecution.getSplitName());
+            sb.append(",flowName =" + runtimeFlowInSplitExecution.getFlowName());
+        } else {
+            sb.append("<Not initialized>");
+        }
+        return sb.toString();
+    }
 
 }
-

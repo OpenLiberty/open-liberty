@@ -8,14 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package app.beans;
+package app.injection.beans;
 
 import javax.annotation.PostConstruct;
 import javax.batch.api.BatchProperty;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
 
-import app.util.NoActiveBatchJobException;
+import app.injection.NoActiveBatchJobException;
 
 public abstract class AbstractBean {
 

@@ -8,20 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package app.beans;
+package app.injection.beans;
 
-import javax.ejb.LocalBean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
-/**
- * Not sure @ApplicationScoped is all that useful since the injection will be
- * performed just once, the first time this bean is injected, but we include it
- * for completeness.
- */
-@LocalBean
 @ApplicationScoped
-@Named("AppScopedLocalEJB")
-public class AppScopedLocalEJB extends AbstractScopedBean {
+@Named("AppScopedBean")
+public class AppScopedBean extends AbstractScopedBean {
 
 }
