@@ -514,7 +514,7 @@ public class LoggerOffThread implements LogFile {
             File newFile = new File(newname);
             renameFile(getFile(), newFile);
             // now see if we need to delete an existing backup to make room
-            // MSP: if not set to unlimited
+            // if not set to unlimited
             if (getMaximumBackupFiles() > 0) {
                 while (this.backups.size() >= getMaximumBackupFiles()) {
                     File oldest = this.backups.removeLast();
