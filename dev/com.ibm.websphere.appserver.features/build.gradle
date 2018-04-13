@@ -248,23 +248,28 @@ publishing {
 }
 
 def singleOpenLibertyJsonRepo = project.file('build/temp/SingleJson.json')
-
+def modifiedgaFeatureList = project.file('build/temp/gaFeaturesList.txt')
 task generateSingleJsonRepo {
     dependsOn publishFeatureResources
     inputs.dir new File(project.buildDir, 'repo')
     outputs.file singleOpenLibertyJsonRepo
+    outputs.file modifiedgaFeatureList
     doLast {
         project.delete('build/temp')
         project.mkdir('build/temp')
 
         repositoryGeneratorTaskdef(ant)
-
+		
+	String features = ""     
         getGaFeatures().each { gaFeature ->
+        	features += gaFeature + "*.esa\n"
             ant.singleJsonRepo(assetFile: project.file("build/libs/repo/${gaFeature}.esa"),
                 assetType: 'FEATURE',
                 metadataFile: project.file("build/libs/repo/${gaFeature}.esa.metadata.zip"),
                 jsonFile: singleOpenLibertyJsonRepo)
+            
         }
+        modifiedgaFeatureList.text = features
     }
 }
 
@@ -278,6 +283,15 @@ publishing {
         builtBy generateSingleJsonRepo
       }
     }
+    
+   modifiedFeatureList(MavenPublication){
+   	artifactId 'openliberty-modifiedgaFeatureList'
+   	version project.version
+   	artifact(modifiedgaFeatureList){
+   		extension 'txt'
+   		builtBy generateSingleJsonRepo
+   	}
+   }
   }
 }
 
