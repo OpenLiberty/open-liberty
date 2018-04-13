@@ -304,7 +304,7 @@ task runfat(type: Exec) {
     args '/c', 'ant', "-f", new File(autoFvtDir, 'TestBuild.xml')
   } else {
     executable "ant"
-    args "-f", new File(autoFvtDir, 'TestBuild.xml'), "-debug"
+    args "-f", new File(autoFvtDir, 'TestBuild.xml')
   }
   doLast {
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail

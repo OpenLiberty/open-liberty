@@ -46,12 +46,3 @@ addRequiredLibraries {
   dependsOn zipConfigExtJar, addRestConnector, addConfigAPIJars
 }
 
-
-/*  from(zipTree(buildImage.file('wlp/lib/com.ibm.ws.config.ext_*.jar')))*/
-
-/*
- task copyConfigExtJar(type: Copy) {
-	from(fileTree(dir: buildImage.file('wlp/lib'), include: 'com.ibm.ws.config.ext*.jar'))
-	into new File(autoFvtDir, 'temp')
-}
-*/
