@@ -75,28 +75,41 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     }
 
     /**
-     * Add the sessionCache-1.0 feature while the server is running. Access a session before and after,
+     * Remove and add the sessionCache-1.0 feature while the server is running. Access a session before and after,
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before
      * (in absence of sessionCache-1.0 feature) is not.
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
+    @AllowedFFDC("java.net.MalformedURLException")
     @Test
     public void testAddFeature() throws Exception {
-        // Start the server with sessionCache-1.0 disabled
+        // Start the server with sessionCache-1.0 enabled
+        server.startServer();
+
+        // Access a session and add an attribute
+        List<String> session = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testAddFeature0&value=AF0", session);
+
+        // Disable sessionCache-1.0
         ServerConfiguration config = savedConfig.clone();
         config.getFeatureManager().getFeatures().remove("sessionCache-1.0");
+        // After discussing with the classloading team, due to the bundle which contains the jcache spec also being
+        // restarted during the feature change, the library ends up with out-of-date references to the class loader.
+        // To work around this limitation, the library also needs to be recycled.
+        Library hazelcastLib = config.getLibraries().remove(0);
+        server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.startServer();
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
         // Session manager should warn user that sessions will be stored in memory
         assertEquals(1, server.findStringsInLogs("SESN8501I").size());
 
-        List<String> session = new ArrayList<>();
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testAddFeature1&value=AF1", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeOnly&attribute=testAddFeature1&value=AF1", session);
 
         // Add the sessionCache-1.0 feature
+        config.getFeatureManager().getFeatures().add("sessionCache-1.0");
+        config.getLibraries().add(hazelcastLib);
         server.setMarkToEndOfLog();
-        server.updateServerConfiguration(savedConfig);
+        server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testAddFeature2&value=AF2", session);
