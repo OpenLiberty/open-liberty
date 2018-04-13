@@ -525,9 +525,6 @@ public class H2WriteTree implements H2WorkQInterface {
      */
     @Override
     public int getConnectionWriteLimit() {
-        synchronized (connectionWindowLock) {
-            return connectionWindowUpdateWriteLimit;
-        }
+        return connectionWindowUpdateWriteLimit;
     }
-
 }
