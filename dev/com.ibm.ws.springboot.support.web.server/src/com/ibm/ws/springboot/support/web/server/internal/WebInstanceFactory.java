@@ -10,12 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.internal;
 
+import static org.osgi.framework.Constants.OBJECTCLASS;
+
 import java.io.IOException;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
@@ -26,6 +31,7 @@ import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
+import com.ibm.wsspi.http.VirtualHost;
 
 /**
  *
@@ -55,8 +61,18 @@ public class WebInstanceFactory implements ContainerInstanceFactory<WebInitializ
     }
 
     @Override
-    public Instance intialize(SpringBootApplication app, String id, WebInitializer initializer) throws IOException, UnableToAdaptException, MetaDataException {
-        return new WebInstance(this, app, id, initializer);
+    public Instance intialize(SpringBootApplication app, String id,
+                              WebInitializer initializer) throws IOException, UnableToAdaptException, MetaDataException {
+        String filterString = "(&(" + OBJECTCLASS +
+                              "=" + VirtualHost.class.getName() + ")(id=springVirtualHost-" + id + "))";
+        Filter filter = null;
+        try {
+            filter = context.createFilter(filterString);
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+        ServiceTracker<VirtualHost, VirtualHost> tracker = new ServiceTracker<>(context, filter, null);
+        return new WebInstance(this, app, id, initializer, tracker);
     }
 
     ModuleHandler getModuleHandler() {
