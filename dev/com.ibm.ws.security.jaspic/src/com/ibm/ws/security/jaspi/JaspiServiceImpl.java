@@ -670,6 +670,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         } else {
             authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authentication failed, unexpected JASPIC AuthStatus: " + status
                                                                      + ", map to AuthResult.RETURN");
+            pretty = status.toString();
         }
 
         if (authResult.getStatus().equals(AuthResult.RETURN)) {
@@ -677,7 +678,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                                                                              jaspiProviderServiceRef.getService() != null ? jaspiProviderServiceRef.getService().getClass() : null });
         }
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "mapToAuthenticationResult", "AuthenticationResult=" + pretty);
+            Tr.exit(tc, "mapToAuthenticationResult", "Jaspi AuthenticationResult=" + pretty);
         return authResult;
     }
 

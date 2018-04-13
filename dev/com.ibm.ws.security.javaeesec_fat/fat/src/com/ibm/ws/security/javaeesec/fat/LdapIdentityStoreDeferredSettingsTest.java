@@ -1208,7 +1208,6 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-//UTLE
     public void useFor_1() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 

@@ -652,17 +652,25 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 // the response may be committed.
                 //
                 String reason = authResult.getReason();
-                if (reason != null && reason.contains("SEND_FAILURE") && unprotectedResource(webRequest) == PERMIT_REPLY) {
-                    AuthenticationResult permitResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null, AuditEvent.CRED_TYPE_JASPIC, null, AuditEvent.OUTCOME_SUCCESS);
-                    Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, permitResult, uriName, HttpServletResponse.SC_OK);
-                    return PERMIT_REPLY;
+                int statusCode = webRequest.getHttpServletResponse().getStatus();
+                if (reason != null && reason.contains("SEND_FAILURE")) {
+                    if (unprotectedResource(webRequest) == PERMIT_REPLY) {
+                        AuthenticationResult permitResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null, AuditEvent.CRED_TYPE_JASPIC, null, AuditEvent.OUTCOME_SUCCESS);
+                        Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, permitResult, uriName, HttpServletResponse.SC_OK);
+                        return PERMIT_REPLY;
+                    } else if (statusCode == HttpServletResponse.SC_OK) {
+                        // SEND_FAILURE but did not set the response code or set the wrong response code.
+                        // We have to overwrite it to 401
+                        statusCode = HttpServletResponse.SC_UNAUTHORIZED;
+                        webRequest.getHttpServletResponse().setStatus(statusCode);
+                    }
                 }
-
-                webReply = new ReturnReply(webRequest.getHttpServletResponse().getStatus(), reason);
+                webReply = new ReturnReply(statusCode, reason);
                 Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
 
                 SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(webReply.message, webReply, webSecurityContext));
                 throw secVE;
+
             } else if (authResult.getStatus() != AuthResult.CONTINUE) {
                 webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
             }
