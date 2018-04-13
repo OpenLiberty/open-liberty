@@ -18,12 +18,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
-<<<<<<< HEAD
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
-import com.ibm.ws.logging.data.GenericData;
-=======
->>>>>>> 7460574... Issue #2421: make getting fields from GenericData in Handlers more efficient
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;

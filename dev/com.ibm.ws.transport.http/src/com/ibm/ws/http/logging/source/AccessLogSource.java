@@ -116,7 +116,7 @@ public class AccessLogSource implements Source {
 
                 long requestStartTimeVal = recordData.getStartTime();
 //                genData.addPair(LogFieldConstants.IBM_REQUESTSTARTTIME, requestStartTimeVal);
-                accessLogData.setRequestStart(requestStartTimeVal);
+                accessLogData.setRequestStartTime(requestStartTimeVal);
 //                genData.addPair(LogFieldConstants.IBM_URIPATH, request.getRequestURI());
                 accessLogData.setUriPath(request.getRequestURI());
 //                genData.addPair(LogFieldConstants.IBM_REQUESTMETHOD, request.getMethod());
@@ -134,7 +134,7 @@ public class AccessLogSource implements Source {
 //                genData.addPair(LogFieldConstants.IBM_REQUESTPROTOCOL, request.getVersion());
                 accessLogData.setRequestProtocol(request.getVersion());
 //                genData.addPair(LogFieldConstants.IBM_BYTESRECEIVED, recordData.getBytesWritten());
-                accessLogData.setBytesRecieved(recordData.getBytesWritten());
+                accessLogData.setBytesReceived(recordData.getBytesWritten());
 //                genData.addPair(LogFieldConstants.IBM_RESPONSECODE, response.getStatusCodeAsInt());
                 accessLogData.setResponseCode(response.getStatusCodeAsInt());
 //                genData.addPair(LogFieldConstants.IBM_ELAPSEDTIME, recordData.getElapsedTime());
