@@ -26,10 +26,14 @@ import componenttest.custom.junit.runner.Mode;
 @RunWith(FATRunner.class)
 @Mode(FULL)
 public class NoServletRequiredAppTests15 extends AbstractSpringTests {
+    @Override
+    public boolean expectWebApplication() {
+        return false;
+    }
 
     @Test
     public void testNoServletRequiredFor15() throws Exception {
-    	assertNotNull("Output not found", server.waitForStringInLog("Hello World!!"));
+        assertNotNull("Output not found", server.waitForStringInLog("Hello World!!"));
     }
 
     @Override

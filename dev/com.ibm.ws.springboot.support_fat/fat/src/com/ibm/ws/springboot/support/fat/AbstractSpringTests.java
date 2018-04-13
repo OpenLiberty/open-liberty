@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,6 +27,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 
@@ -45,14 +48,22 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_15_APP_BASE = "com.ibm.ws.springboot.support.version15.test.app.jar";
     public static final String SPRING_BOOT_15_APP_WAR = "com.ibm.ws.springboot.support.version15.test.war.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_15_APP_JAVA = "com.ibm.ws.springboot.support.version15.test.java.app.jar";
+    public static final String SPRING_BOOT_15_APP_WEBANNO = "com.ibm.ws.springboot.support.version15.test.webanno.app.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
 
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";
     public static final String SHARED_SPRING_LIB_INDEX_CACHE = "resources/" + SPRING_LIB_INDEX_CACHE;
     public static final String SPRING_THIN_APPS_DIR = "spring.thin.apps";
+    public static final int EXPECTED_HTTP_PORT = 8081;
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.springboot.support.fat.SpringBootTests");
+    static {
+        // NOTE we set the port to the expected ports according to the test application.properties
+        // Tests can change this, but it will be reset by the @After method resetDefaultPorts
+        server.setHttpDefaultPort(EXPECTED_HTTP_PORT);
+        server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
+    }
     public static final AtomicBoolean serverStarted = new AtomicBoolean();
     public static final Collection<RemoteFile> dropinFiles = new ArrayList<>();
     private static final Properties bootStrapProperties = new Properties();
@@ -112,6 +123,14 @@ public abstract class AbstractSpringTests {
         return properties;
     }
 
+    public boolean expectApplicationSuccess() {
+        return true;
+    }
+
+    public boolean expectWebApplication() {
+        return true;
+    }
+
     @Before
     public void configureServer() throws Exception {
         if (serverStarted.compareAndSet(false, true)) {
@@ -153,8 +172,23 @@ public abstract class AbstractSpringTests {
             }
 
             server.updateServerConfiguration(config);
-            server.startServer(true, false);
+            server.startServer(getClass().getSimpleName() + ".log", true, false);
+
+            if (expectApplicationSuccess()) {
+                assertNotNull("The application was not installed", server
+                                .waitForStringInLog("CWWKZ0001I:.*"));
+                if (expectWebApplication()) {
+                    assertNotNull("The endpoint is not available", server
+                                    .waitForStringInLog("CWWKT0016I:.*"));
+                }
+            }
         }
+    }
+
+    @After
+    public void resetDefaultPorts() {
+        server.setHttpDefaultPort(EXPECTED_HTTP_PORT);
+        server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
     }
 
     private void configureBootStrapProperties() throws Exception {

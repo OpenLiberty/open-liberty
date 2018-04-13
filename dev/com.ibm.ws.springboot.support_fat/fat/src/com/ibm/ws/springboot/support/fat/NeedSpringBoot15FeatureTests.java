@@ -26,10 +26,14 @@ import componenttest.custom.junit.runner.Mode;
 @RunWith(FATRunner.class)
 @Mode(FULL)
 public class NeedSpringBoot15FeatureTests extends AbstractSpringTests {
+    @Override
+    public boolean expectApplicationSuccess() {
+        return false;
+    }
 
     @Test
     public void testNeedSpringBootFeature15() throws Exception {
-    	assertNotNull("No error message was found to enable springBoot-1.5 feature", server.waitForStringInLog("CWWKC0252E"));
+        assertNotNull("No error message was found to enable springBoot-1.5 feature", server.waitForStringInLog("CWWKC0252E"));
         server.stopServer("CWWKC0252E", "CWWKZ0002E");
     }
 
