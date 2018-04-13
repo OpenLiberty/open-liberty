@@ -11,7 +11,6 @@
 
 package com.ibm.ws.sib.mfp.jmf.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -25,19 +24,19 @@ import javax.xml.namespace.QName;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.sib.mfp.MfpConstants;
 import com.ibm.ws.sib.mfp.jmf.JMFAddress;
-import com.ibm.ws.sib.mfp.jmf.JMFMessageData;
 import com.ibm.ws.sib.mfp.jmf.JMFMessageCorruptionException;
+import com.ibm.ws.sib.mfp.jmf.JMFMessageData;
 import com.ibm.ws.sib.mfp.jmf.JMFModelNotImplementedException;
 import com.ibm.ws.sib.mfp.jmf.JMFPrimitiveType;
 import com.ibm.ws.sib.mfp.jmf.JMFSchemaViolationException;
 import com.ibm.ws.sib.mfp.jmf.JMFUninitializedAccessException;
 import com.ibm.ws.sib.mfp.jmf.JmfConstants;
 import com.ibm.ws.sib.mfp.jmf.JmfTr;
-import com.ibm.ws.sib.mfp.MfpConstants;
 import com.ibm.ws.sib.mfp.util.ArrayUtil;
 import com.ibm.ws.sib.mfp.util.HexUtil;
-import com.ibm.ws.sib.mfp.util.UTF8Encoder;
+import com.ibm.ws.sib.mfp.util.Utf8Codec;
 
 /**
  * This class holds the encodings and object representations for the primitive types.  It
@@ -91,7 +90,10 @@ public final class JSBaseTypes {
         return 4;
       }
       else {
-        return 4 + UTF8Encoder.getEncodedLength((String)val);                   // SIB0112a.mfp.1
+        if (val instanceof StringBuffer) {
+          val = ((StringBuffer)val).toString();
+        }
+        return 4 + Utf8Codec.getEncodedLength((String)val);
       }
     }
 
@@ -112,7 +114,7 @@ public final class JSBaseTypes {
         if (val instanceof StringBuffer) {
           val = ((StringBuffer)val).toString();
         }
-        int written = UTF8Encoder.encode(frame, offset + 4, (String)val);       // SIB0112a.mfp.1
+        int written = Utf8Codec.encode(frame, offset + 4, (String)val);
         ArrayUtil.writeInt(frame, offset, written);
         return offset + 4 + written;
       }
@@ -124,16 +126,7 @@ public final class JSBaseTypes {
         return null;
       JSListCoder.sanityCheck(len, frame, offset);
       offset += 4;
-      String ans;
-      try {
-        ans = new String(frame, offset, len, "UTF8");
-      } catch (UnsupportedEncodingException e) {
-        FFDCFilter.processException(e, "JSBaseTypes$StringCoder.decode", "168", Integer.valueOf(offset),
-            new Object[] { MfpConstants.DM_BUFFER, frame, Integer.valueOf(0), Integer.valueOf(frame.length) });
-        IllegalArgumentException ex = new IllegalArgumentException();
-        ex.initCause(e);
-        throw ex;
-      }
+      String ans = Utf8Codec.decode(frame, offset, len);
       return ans;
     }
 
