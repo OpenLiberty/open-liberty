@@ -12,13 +12,13 @@
 package testjms.web;
 
 public interface JmsBytesMessageTests {
-    void test_writeByte() throws Exception;
-    void test_writeBytes() throws Exception;
-    void test_writeChar() throws Exception;
-    void test_writeDouble() throws Exception;
-    void test_writeFloat() throws Exception;
-    void test_writeInt() throws Exception;
-    void test_writeLong() throws Exception;
-    void test_writeShort() throws Exception;
-    void test_writeUTF() throws Exception;
+    void testBytesMessage_writeByte() throws Exception;
+    void testBytesMessage_writeBytes() throws Exception;
+    void testBytesMessage_writeChar() throws Exception;
+    void testBytesMessage_writeDouble() throws Exception;
+    void testBytesMessage_writeFloat() throws Exception;
+    void testBytesMessage_writeInt() throws Exception;
+    void testBytesMessage_writeLong() throws Exception;
+    void testBytesMessage_writeShort() throws Exception;
+    void testBytesMessage_writeUTF() throws Exception;
 }

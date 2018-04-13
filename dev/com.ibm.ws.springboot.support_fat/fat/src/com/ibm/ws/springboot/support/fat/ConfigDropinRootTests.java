@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,11 +39,6 @@ public class ConfigDropinRootTests extends AbstractSpringTests {
 
     @Test
     public void testDropinsRoot() throws Exception {
-        assertNotNull("The application was not installed", server
-                        .waitForStringInLog("CWWKZ0001I:.*"));
-
-        // NOTE we set the port to the expected port according to the test application.properties
-        server.setHttpDefaultPort(8081);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
     }
 }

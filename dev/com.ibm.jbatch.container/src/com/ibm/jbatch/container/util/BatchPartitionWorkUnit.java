@@ -19,6 +19,7 @@ package com.ibm.jbatch.container.util;
 import java.util.List;
 
 import javax.batch.runtime.BatchStatus;
+import javax.transaction.TransactionManager;
 
 import com.ibm.jbatch.container.callback.IJobExecutionEndCallbackService;
 import com.ibm.jbatch.container.callback.IJobExecutionStartCallbackService;
@@ -30,93 +31,89 @@ import com.ibm.jbatch.container.ws.PartitionReplyMsg;
 import com.ibm.jbatch.container.ws.PartitionReplyMsg.PartitionReplyMsgType;
 import com.ibm.jbatch.container.ws.PartitionReplyQueue;
 
-/** 
+/**
  * The Runnable work unit for sub-job partition threads.
  */
 public class BatchPartitionWorkUnit extends BatchWorkUnit {
-    
+
     /**
      * Config details for the partition, including exec IDs, partition number, props, etc.
      */
-    private PartitionPlanConfig partitionPlanConfig;
-    
+    private final PartitionPlanConfig partitionPlanConfig;
+
     /**
      * The queue by which the sub-job partition threads sends msgs back to the top-level thread.
      */
-    private PartitionReplyQueue partitionReplyQueue;
+    private final PartitionReplyQueue partitionReplyQueue;
 
     /**
      * CTOR.
      */
-	public BatchPartitionWorkUnit(IBatchKernelService batchKernelService,
-			                      RuntimePartitionExecution runtimePartitionExecution,
-			                      PartitionPlanConfig config,
-			                      List<IJobExecutionStartCallbackService> beforeCallbacks, 
-			                      List<IJobExecutionEndCallbackService> afterCallbacks,
-			                      PartitionReplyQueue partitionReplyQueue) {
-		super(batchKernelService, runtimePartitionExecution, beforeCallbacks, afterCallbacks, true);
-		this.partitionReplyQueue = partitionReplyQueue;
-		this.partitionPlanConfig = config;
-		this.controller = new WorkUnitThreadControllerImpl(runtimePartitionExecution, partitionReplyQueue);
-	}
+    public BatchPartitionWorkUnit(IBatchKernelService batchKernelService,
+                                  RuntimePartitionExecution runtimePartitionExecution,
+                                  PartitionPlanConfig config,
+                                  List<IJobExecutionStartCallbackService> beforeCallbacks,
+                                  List<IJobExecutionEndCallbackService> afterCallbacks,
+                                  PartitionReplyQueue partitionReplyQueue,
+                                  TransactionManager tranMgr) {
+        super(batchKernelService, runtimePartitionExecution, beforeCallbacks, afterCallbacks, tranMgr, true);
+        this.partitionReplyQueue = partitionReplyQueue;
+        this.partitionPlanConfig = config;
+        this.controller = new WorkUnitThreadControllerImpl(runtimePartitionExecution, partitionReplyQueue);
+    }
 
-	/**
-	 * This method is (basically) the last thing the sub-job partition thread does before ending.
-	 * 
-	 * It sends the "partition thread complete" message back to the top-level thread.
-	 * 
-	 * Then it closes the partitionReplyQueue.  
-	 * 
-	 * In the case where the partition thread and top-level thread are running in the same JVM,
-	 * then the partitionReplyQueue is an instance of PartitionReplyQueueLocal, and the close
-	 * does nothing.  
-	 * 
-	 * In the case where the partition thread and top-level thread are running in separate JVMs
-	 * (multi-JVM mode), then it's an instance of PartitionReplyQueueJms, and the close() call
-	 * closes the JMS connection that was used to send msgs back to the top-level thread.
-	 * 
-	 * Note: in the top-level thread, the queue is closed in PartitionedStepControllerImpl.invokeCoreStep.
-	 * 
-	 */
-	@Override
-	protected void markThreadCompleted() {
-		super.markThreadCompleted();
-		boolean finalStatusSent = ((RuntimePartitionExecution) getRuntimeWorkUnitExecution()).isFinalStatusSent();
-		
-		if(!finalStatusSent){
-			try{
-				// We only need to send Failed FINAL_STATUS message here if there was an exception and the message was not sent previously
-				partitionReplyQueue.add( new PartitionReplyMsg( PartitionReplyMsgType.PARTITION_FINAL_STATUS )
-											.setBatchStatus( BatchStatus.FAILED)
-											.setExitStatus(BatchStatus.FAILED.toString())
-											.setPartitionPlanConfig( partitionPlanConfig ) );
+    /**
+     * This method is (basically) the last thing the sub-job partition thread does before ending.
+     *
+     * It sends the "partition thread complete" message back to the top-level thread.
+     *
+     * Then it closes the partitionReplyQueue.
+     *
+     * In the case where the partition thread and top-level thread are running in the same JVM,
+     * then the partitionReplyQueue is an instance of PartitionReplyQueueLocal, and the close
+     * does nothing.
+     *
+     * In the case where the partition thread and top-level thread are running in separate JVMs
+     * (multi-JVM mode), then it's an instance of PartitionReplyQueueJms, and the close() call
+     * closes the JMS connection that was used to send msgs back to the top-level thread.
+     *
+     * Note: in the top-level thread, the queue is closed in PartitionedStepControllerImpl.invokeCoreStep.
+     *
+     */
+    @Override
+    protected void threadEnd() {
+        super.threadEnd();
+        boolean finalStatusSent = ((RuntimePartitionExecution) getRuntimeWorkUnitExecution()).isFinalStatusSent();
 
-			}
-			catch(Exception e){
-				//Just ffdc it. 
-			}
-			finally{
-				partitionReplyQueue.close();
-			}
-		}
-	}
+        if (!finalStatusSent) {
+            try {
+                // We only need to send Failed FINAL_STATUS message here if there was an exception and the message was not sent previously
+                partitionReplyQueue.add(new PartitionReplyMsg(PartitionReplyMsgType.PARTITION_FINAL_STATUS).setBatchStatus(BatchStatus.FAILED).setExitStatus(BatchStatus.FAILED.toString()).setPartitionPlanConfig(partitionPlanConfig));
 
-	/**
-	 * @return stringified partition info
-	 */
-	@Override 
-	public String toString() {
-		
-		if (partitionPlanConfig == null) {
-			return "PartitionWorkUnit <not initialized>";
-		}
+            } catch (Exception e) {
+                //Just ffdc it.
+            } finally {
+                partitionReplyQueue.close();
+            }
+        }
+    }
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("PartitionWorkUnit with ");
-		sb.append("jobExecutionId =" + partitionPlanConfig.getTopLevelExecutionId());
-		sb.append(",stepName =" + partitionPlanConfig.getStepName());
-		sb.append(",partitionNumber =" + partitionPlanConfig.getPartitionNumber());
-		return sb.toString();
-	}
+    /**
+     * @return stringified partition info
+     */
+    @Override
+    public String toString() {
+
+        if (partitionPlanConfig == null) {
+            return "PartitionWorkUnit <not initialized>";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("PartitionWorkUnit with ");
+        sb.append("jobExecutionId =" + partitionPlanConfig.getTopLevelExecutionId());
+        sb.append(",stepName =" + partitionPlanConfig.getStepName());
+        sb.append(",partitionNumber =" + partitionPlanConfig.getPartitionNumber());
+        return sb.toString();
+    }
 
 }
