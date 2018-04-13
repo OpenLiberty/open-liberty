@@ -24,15 +24,6 @@ import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public final class WebAppEntryAdapter implements EntryAdapter<WebApp> {
-    public WebAppEntryAdapter() {
-        super();
-        
-        System.out.println("Class [ " + WebAppEntryAdapter.class.getSimpleName() + " ]");
-        System.out.println("Version [ " + Integer.valueOf(maxVersion)  + " ]");
-    }
-
-    //
-
     private static final int DEFAULT_MAX_VERSION = WebApp.VERSION_3_0;
 
     private ServiceReference<ServletVersion> versionRef;
@@ -42,8 +33,6 @@ public final class WebAppEntryAdapter implements EntryAdapter<WebApp> {
         this.versionRef = versionRef;
 
         Integer maxVersionValue = (Integer) versionRef.getProperty("version");
-        (new Throwable("Version [ " + maxVersionValue + " ]")).printStackTrace(System.out);
-
         maxVersion = maxVersionValue.intValue();
     }
 

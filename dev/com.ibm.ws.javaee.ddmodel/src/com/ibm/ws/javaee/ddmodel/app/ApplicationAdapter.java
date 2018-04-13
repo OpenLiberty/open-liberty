@@ -31,31 +31,13 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public final class ApplicationAdapter implements ContainerAdapter<Application> {
 
-    public ApplicationAdapter() {
-        super();
-        
-        System.out.println("Class [ " + ApplicationAdapter.class.getSimpleName() + " ]");
-        System.out.println("Platform Version [ " + platformVersion + " ]");
-    }
-
     private ServiceReference<JavaEEVersion> versionRef;
     private volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
-
-//    @Reference(service = JavaEEVersion.class,
-//               cardinality = ReferenceCardinality.OPTIONAL,
-//               policy = ReferencePolicy.DYNAMIC,
-//               policyOption = ReferencePolicyOption.GREEDY)
-//    public synchronized void setVersion(ServiceReference<JavaEEVersion> referenceRef) {
-//        this.versionRef = referenceRef;
-//        this.platformVersion = Version.parseVersion((String) referenceRef.getProperty("version"));
-//    }
 
     public synchronized void setVersion(ServiceReference<JavaEEVersion> referenceRef) {
         this.versionRef = referenceRef;
 
         String versionText = (String) referenceRef.getProperty("version");
-        (new Throwable("JavaEEVersion [ " + versionText + " ]")).printStackTrace(System.out);
-
         this.platformVersion = Version.parseVersion((String) referenceRef.getProperty("version"));
     }
 

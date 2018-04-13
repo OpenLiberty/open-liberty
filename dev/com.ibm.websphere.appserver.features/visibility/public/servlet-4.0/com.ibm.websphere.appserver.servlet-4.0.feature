@@ -39,7 +39,7 @@ Subsystem-Category: JavaEE8Application
  com.ibm.websphere.appserver.javaeedd-1.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
- com.ibm.websphere.appserver.javaeePlatform-7.0, \
+ com.ibm.websphere.appserver.javaeePlatform-8.0, \
  com.ibm.websphere.appserver.anno-1.0, \
  com.ibm.websphere.appserver.httptransport-1.0, \
  com.ibm.websphere.appserver.javax.servlet-4.0, \
