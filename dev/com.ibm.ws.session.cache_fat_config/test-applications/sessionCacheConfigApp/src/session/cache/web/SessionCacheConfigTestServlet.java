@@ -434,6 +434,21 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     }
 
     /**
+     * Set the value of a session attribute.
+     * Precondition: in order for the test logic to be valid, the session attribute must not already have the same value.
+     */
+    public void testSetAttributeOnly(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String attrName = request.getParameter("attribute");
+
+        String stringValue = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object value = toType(type, stringValue);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(attrName, value);
+    }
+
+    /**
      * Set the value of a session attribute and specify a maxInactiveInterval for the session.
      */
     public void testSetAttributeWithTimeout(HttpServletRequest request, HttpServletResponse response) throws Exception {
