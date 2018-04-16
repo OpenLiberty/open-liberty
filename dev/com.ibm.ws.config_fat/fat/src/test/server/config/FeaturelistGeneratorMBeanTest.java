@@ -44,6 +44,7 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
 
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -70,6 +71,8 @@ public class FeaturelistGeneratorMBeanTest {
 
         outputDir = server.getServerRoot();
         Log.info(logClass, methodName, "serverRoot=" + outputDir);
+        RemoteFile downloadTarget = LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/download_target");
+        downloadTarget.mkdir();
 
         Log.info(logClass, methodName, "Starting server=" + server.getServerName());
         server.startServer();

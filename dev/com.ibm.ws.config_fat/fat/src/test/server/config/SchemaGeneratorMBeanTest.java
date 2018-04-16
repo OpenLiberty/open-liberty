@@ -43,6 +43,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -74,6 +75,9 @@ public class SchemaGeneratorMBeanTest {
 
         outputDir = server.getServerRoot();
         Log.info(logClass, methodName, "serverRoot=" + outputDir);
+
+        RemoteFile downloadTarget = LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/download_target");
+        downloadTarget.mkdir();
 
         Log.info(logClass, methodName, "Starting server=" + server.getServerName());
         server.startServer();
