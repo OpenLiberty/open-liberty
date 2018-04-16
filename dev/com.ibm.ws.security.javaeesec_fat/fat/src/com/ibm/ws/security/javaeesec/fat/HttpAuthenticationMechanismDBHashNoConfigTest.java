@@ -14,7 +14,10 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -92,7 +95,10 @@ public class HttpAuthenticationMechanismDBHashNoConfigTest extends JavaEESecTest
 
     @Before
     public void setupConnection() {
-        httpclient = new DefaultHttpClient();
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+
+        httpclient = new DefaultHttpClient(httpParams);
     }
 
     @After
