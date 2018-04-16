@@ -11,19 +11,25 @@
 package com.ibm.ws.session.cache.config.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.File;
 import com.ibm.websphere.simplicity.config.Library;
@@ -72,6 +78,54 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
                                            "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         savedConfig = server.getServerConfiguration().clone();
+    }
+
+    /**
+     * Utility method to dump the server and collect the session cache introspector output.
+     *
+     * @return list of lines of the session cache introspector output.
+     */
+    private List<String> sessionCacheIntrospectorDump() throws Exception {
+        ProgramOutput output = server.serverDump();
+        assertEquals(0, output.getReturnCode());
+        assertEquals("", output.getStderr());
+
+        // Parse standard output. Example:
+        // Server sessionCacheServer dump complete in /Users/user/lgit/open-liberty/dev/build.image/wlp/usr/servers/sessionCacheServer/sessionCacheServer.dump-18.04.11_14.30.55.zip.
+
+        String out = output.getStdout();
+        int end = out.lastIndexOf('.');
+        int begin = out.lastIndexOf(' ', end) + 1;
+
+        String dumpFileName = out.substring(begin, end);
+
+        System.out.println("Dump file name: " + dumpFileName);
+
+        // Example of file within the zip:
+        // dump_18.04.11_14.30.55/introspections/SessionCacheIntrospector.txt
+
+        end = dumpFileName.indexOf(".zip");
+        begin = dumpFileName.lastIndexOf("/sessionCacheServer.dump-", end) + 25;
+
+        // TODO SessionCacheIntrospector doesn't exist yet, so temporarily using ThreadingIntrospector to show that finding/reading the zip works.
+        String introspectorFileName = "dump_" + dumpFileName.substring(begin, end) + "/introspections/ThreadingIntrospector.txt";
+
+        System.out.println("Looking for intropspector entry: " + introspectorFileName);
+
+        List<String> lines = new ArrayList<String>();
+        try (ZipFile dumpFile = new ZipFile(dumpFileName)) {
+            ZipEntry entry = dumpFile.getEntry(introspectorFileName);
+            System.out.println("Found: " + entry);
+            try (BufferedInputStream in = new BufferedInputStream(dumpFile.getInputStream(entry))) {
+                for (Scanner scanner = new Scanner(in); scanner.hasNextLine();) {
+                    String line = scanner.nextLine();
+                    System.out.println(line);
+                    lines.add(line);
+                }
+            }
+        }
+
+        return lines;
     }
 
     /**
@@ -268,5 +322,17 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testMissingLibraryRef1&value=null", session);
 
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+    }
+
+    /**
+     * Capture a dump of the server without monitoring enabled. This means the JCache MXBeans will be unavailable
+     * and so cache statistics will not be included in the dump output.
+     */
+    @Test
+    public void testServerDumpWithoutMonitoring() throws Exception {
+        server.startServer();
+
+        List<String> lines = sessionCacheIntrospectorDump();
+        assertTrue(lines.contains("  threadPool")); // TODO replace with tests for session cache introspector once we add it
     }
 }
