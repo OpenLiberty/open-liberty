@@ -14,10 +14,10 @@
 
 	<!-- Enable features -->
 	<featureManager>
-		<feature>servlet-3.0</feature>
+		<feature>servlet-3.1</feature>
 		<feature>osgiconsole-1.0</feature>
-		<feature>httpservice-2.2</feature>
 		<feature>configfatlibertyinternals-1.0</feature>
+		<feature>componentTest-1.0</feature>
 	</featureManager>
 
 

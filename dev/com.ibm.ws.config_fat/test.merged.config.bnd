@@ -8,12 +8,16 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-Bundle-Name: Test Config Extensions B
-Bundle-SymbolicName: test.config.extensions.b; singleton:=true
-Bundle-Description: This bundle provides some services to use for testing; version=${bVersion}
+Bundle-Name: Test Config Merging
+Bundle-SymbolicName: test.merged.config
+Bundle-Description: Test bundle for config merging, version=${bVersion}
 
-Include-Resource:\
- OSGI-INF/metatype/metatype-extensions-two.xml=resources/metatype-extensions-two.xml
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml, \
+	OSGI-INF/wlp/defaultInstances2.xml; requireExisting=true, \
+	OSGI-INF/wlp/defaultInstances3.xml; addIfMissing=true
+	
+Include-Resource: \
+    OSGI-INF=test-bundles/test.merged.config/resources/OSGI-INF

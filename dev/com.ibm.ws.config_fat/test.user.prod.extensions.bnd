@@ -8,25 +8,25 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../cnf/resources/bnd/bundle.props
-bVersion=1.0.0
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
-Bundle-Name: Test Config For Product Extensions
-Bundle-SymbolicName: test.prod.extensions; singleton:=true
+Bundle-Name: Test Config For User Product Extensions
+Bundle-SymbolicName: test.user.prod.extensions; singleton:=true
 Bundle-Description: This bundle provides some services to use for testing; version=${bVersion}
 
 # export the interface packages
 Export-Package: \
-  test.prod.extensions;provide:=true
+  test.user.prod.extensions;provide:=true;version=1.0
 
-Private-Package: test.prod.extensions.internal.*
+Private-Package: test.user.prod.extensions.internal.*
 
-Web-ContextPath: product1-extensions-test
+Web-ContextPath: user.product1-extensions-test
 
 Include-Resource:\
- OSGI-INF/metatype/metatype.xml=resources/metatype.xml
+ OSGI-INF/metatype/metatype.xml=test-bundles/test.user.prod.extensions/resources/metatype.xml
 
 Service-Component:\
-  test.prod.extensions;\
-    provide:='test.prod.extensions.ProductExtension1';\
-    implementation:=test.prod.extensions.internal.ProductExtension1ServiceImpl
+  test.user.prod.extensions;\
+    provide:='test.user.prod.extensions.UserProductExtension1';\
+    implementation:=test.user.prod.extensions.internal.UserProductExtension1ServiceImpl

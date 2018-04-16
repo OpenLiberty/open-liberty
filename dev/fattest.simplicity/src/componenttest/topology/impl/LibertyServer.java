@@ -1879,7 +1879,7 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "validateTimedExitEnabled";
         // 20 second timeout
         final long TIMEOUT = 20 * 1000;
-        final String TIMED_EXIT_ENABLED = "Timed Exit Enabled";
+        final String TIMED_EXIT_ENABLED = "TE9900A";
 
         List<String> message = findStringsInLogs(TIMED_EXIT_ENABLED, messagesLog);
 
