@@ -16,4 +16,7 @@
         <feature>componentTest-1.0</feature>
         <feature>webProfile-7.0</feature>
     </featureManager>
+
+    <!-- webProfile-7.0 includs ssl, which requires a keystore -->
+    <keyStore id="defaultKeyStore" password="yourPassword"/>
 </server>
