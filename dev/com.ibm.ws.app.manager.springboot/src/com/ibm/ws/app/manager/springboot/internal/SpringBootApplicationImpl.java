@@ -406,7 +406,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             // Log error and continue to use the container for the SPR file
             Tr.error(tc, "warning.could.not.thin.application", applicationInformation.getName(), e.getMessage());
         }
-        return null;
+        return rawContainer;
     }
 
     private static void thinSpringApp(LibIndexCache libIndexCache, File springAppFile, File thinSpringAppFile, long lastModified) throws IOException, NoSuchAlgorithmException {
