@@ -141,3 +141,7 @@ SEC_JACC_AUTHZ_FAILED.useraction=Contact your security administrator if this is 
 SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: The URL provided on the custom logoutExitPage of the Form-Logout service can not be displayed, requestURL={0}, logoutExitPage={1}. The logout was successful and the default Form-Logout page was displayed.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=The Form-Logout service failed to successfully redirect to the page specified on the logoutExitPage servlet parameter. The specified URL is either an invalidly formed URL or the hostname is not specified on the com.ibm.websphere.security.logoutExitPageDomainList property.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Correct the URL specified on the logoutExitPage parameter.
+
+JWT_ALREADY_LOGGED_OUT=CWWKS9126E: Login using a JSON Web Token failed because the token was previously logged out.
+JWT_ALREADY_LOGGED_OUT.explanation=A JSON Web Token (JWT) that was previously logged out was resent for login authentication.
+JWT_ALREADY_LOGGED_OUT.useraction=Obtain a new JSON Web Token, or set the trackLoggedOutSSOCookiesEnabled configuration attribute to false, which is less secure.
