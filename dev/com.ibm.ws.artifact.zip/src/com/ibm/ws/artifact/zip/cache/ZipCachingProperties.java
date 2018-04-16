@@ -46,8 +46,11 @@ import com.ibm.ws.artifact.zip.internal.SystemUtils;
  * Three properties are used to configure the zip file cache layer:
  *
  * zip.reaper.max.pending     -1 | 0 | (>0)  [ 255 ]
- * zip.reaper.short.interval  (>0)           [ 100,000,000 ns ] [ 0.1s ]
- * zip.reaper.long.interval   (>0)           [ 200,000,000 ns ] [ 0.2s ]
+ * 
+ * zip.reaper.first.short.interval  (>0)     [  10,000,000 ns ] [ 0.01s ]
+ * zip.reaper.first.long.interval   (>0)     [  20,000,000 ns ] [ 0.02s ]
+ * zip.reaper.hit.short.interval    (>0)     [ 100,000,000 ns ] [ 0.1s ]
+ * zip.reaper.hit.long.interval     (>0)     [ 200,000,000 ns ] [ 0.2s ]
  *
  * Property Details:
  *
@@ -106,11 +109,19 @@ import com.ibm.ws.artifact.zip.internal.SystemUtils;
  * property to 0 disables the zip file caching layer, which will cause
  * all closes to be performed immediately.
  *
- * zip.reaper.short.interval  (>0)           [ 100,000,000 ns ] [ 0.1s ]
- * zip.reaper.long.interval   (>0)           [ 200,000,000 ns ] [ 0.2s ]
+ * zip.reaper.first.short.interval  (>0)     [  10,000,000 ns ] [ 0.01s ]
+ * zip.reaper.first.long.interval   (>0)     [  20,000,000 ns ] [ 0.02s ]
  *
- * The short interval and long interval properties determine how long a
- * close is held before performing the close.
+ * zip.reaper.hit.short.interval    (>0)     [ 100,000,000 ns ] [ 0.1s ]
+ * zip.reaper.hit.long.interval     (>0)     [ 200,000,000 ns ] [ 0.2s ]
+ * 
+ * The interval properties determine how long a close is held before
+ * performing the close.
+ *
+ * Two sets of interval values are used: The "first" property values are
+ * used for the initial open of zip data.  The "hit" property values are
+ * used when zip data is accessed within the hit short interval of the
+ * initial open.
  *
  * The meaning of the two interval values relates to the zip close mechanism:
  * Upon receipt of a close request, and following any processing of a close
@@ -313,18 +324,32 @@ public class ZipCachingProperties {
     public static final int ZIP_CACHE_REAPER_MAX_PENDING;
 
     /** The minimum time to wait before processing a pending close. */
-    public static final String ZIP_CACHE_REAPER_SHORT_INTERVAL_PROPERTY_NAME =
+    public static final String ZIP_CACHE_REAPER_FIRST_SHORT_INTERVAL_PROPERTY_NAME =
         "zip.reaper.short.interval";
-    public static final long ZIP_CACHE_REAPER_SHORT_INTERVAL_DEFAULT_VALUE =
+    public static final long ZIP_CACHE_REAPER_FIRST_SHORT_INTERVAL_DEFAULT_VALUE =
         ZipCachingProperties.ONE_SEC_IN_NANO_SEC / 10;
-    public static final long ZIP_CACHE_REAPER_SHORT_INTERVAL;
+    public static final long ZIP_CACHE_REAPER_FIRST_SHORT_INTERVAL;
 
     /** The maximum time to wait before processing a pending close. */
-    public static final String ZIP_CACHE_REAPER_LONG_INTERVAL_PROPERTY_NAME =
+    public static final String ZIP_CACHE_REAPER_FIRST_LONG_INTERVAL_PROPERTY_NAME =
         "zip.reaper.long.interval";
-    public static final long ZIP_CACHE_REAPER_LONG_INTERVAL_DEFAULT_VALUE =
+    public static final long ZIP_CACHE_REAPER_FIRST_LONG_INTERVAL_DEFAULT_VALUE =
         ZipCachingProperties.ONE_SEC_IN_NANO_SEC / 5;
-    public static final long ZIP_CACHE_REAPER_LONG_INTERVAL;
+    public static final long ZIP_CACHE_REAPER_FIRST_LONG_INTERVAL;
+
+    /** The minimum time to wait before processing a pending close. */
+    public static final String ZIP_CACHE_REAPER_HIT_SHORT_INTERVAL_PROPERTY_NAME =
+        "zip.reaper.short.interval";
+    public static final long ZIP_CACHE_REAPER_HIT_SHORT_INTERVAL_DEFAULT_VALUE =
+        ZipCachingProperties.ONE_SEC_IN_NANO_SEC / 10;
+    public static final long ZIP_CACHE_REAPER_HIT_SHORT_INTERVAL;
+
+    /** The maximum time to wait before processing a pending close. */
+    public static final String ZIP_CACHE_REAPER_HIT_LONG_INTERVAL_PROPERTY_NAME =
+        "zip.reaper.long.interval";
+    public static final long ZIP_CACHE_REAPER_HIT_LONG_INTERVAL_DEFAULT_VALUE =
+        ZipCachingProperties.ONE_SEC_IN_NANO_SEC / 5;
+    public static final long ZIP_CACHE_REAPER_HIT_LONG_INTERVAL;
 
     static {
         String methodName = "<static init>";
@@ -333,13 +358,21 @@ public class ZipCachingProperties {
             ZIP_CACHE_REAPER_MAX_PENDING_PROPERTY_NAME,
             ZIP_CACHE_REAPER_MAX_PENDING_DEFAULT_VALUE);
 
-        ZIP_CACHE_REAPER_SHORT_INTERVAL = getProperty(methodName,
-            ZIP_CACHE_REAPER_SHORT_INTERVAL_PROPERTY_NAME,
-            ZIP_CACHE_REAPER_SHORT_INTERVAL_DEFAULT_VALUE);
+        ZIP_CACHE_REAPER_FIRST_SHORT_INTERVAL = getProperty(methodName,
+            ZIP_CACHE_REAPER_FIRST_SHORT_INTERVAL_PROPERTY_NAME,
+            ZIP_CACHE_REAPER_FIRST_SHORT_INTERVAL_DEFAULT_VALUE);
 
-        ZIP_CACHE_REAPER_LONG_INTERVAL = getProperty(methodName,
-            ZIP_CACHE_REAPER_LONG_INTERVAL_PROPERTY_NAME,
-            ZIP_CACHE_REAPER_LONG_INTERVAL_DEFAULT_VALUE);
+        ZIP_CACHE_REAPER_FIRST_LONG_INTERVAL = getProperty(methodName,
+            ZIP_CACHE_REAPER_FIRST_LONG_INTERVAL_PROPERTY_NAME,
+            ZIP_CACHE_REAPER_FIRST_LONG_INTERVAL_DEFAULT_VALUE);
+        
+        ZIP_CACHE_REAPER_HIT_SHORT_INTERVAL = getProperty(methodName,
+            ZIP_CACHE_REAPER_HIT_SHORT_INTERVAL_PROPERTY_NAME,
+            ZIP_CACHE_REAPER_HIT_SHORT_INTERVAL_DEFAULT_VALUE);
+
+        ZIP_CACHE_REAPER_HIT_LONG_INTERVAL = getProperty(methodName,
+            ZIP_CACHE_REAPER_HIT_LONG_INTERVAL_PROPERTY_NAME,
+            ZIP_CACHE_REAPER_HIT_LONG_INTERVAL_DEFAULT_VALUE);
     }
 
     //

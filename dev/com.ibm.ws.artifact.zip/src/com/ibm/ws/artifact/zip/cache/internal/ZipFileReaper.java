@@ -192,7 +192,7 @@ public class ZipFileReaper {
      * of a zip file.  The time spent in closed before an open represents the
      * overhead which was avoided by allowing the zip file to close.
      */
-    private static class ZipFileData {
+    protected static class ZipFileData {
         /**
          * Main operations: Create, with the initial state as open.
          *
@@ -204,7 +204,7 @@ public class ZipFileReaper {
          * @throws ZipException Thrown if the open fails.
          */
         public ZipFileData(String path, long initialAt, long openAt)
-        	throws IOException, ZipException {
+            throws IOException, ZipException {
             String methodName = "<init>";
 
             if ( tc.isDebugEnabled() ) {
@@ -244,6 +244,7 @@ public class ZipFileReaper {
             initialAt = useInitialAt;
 
             firstOpenAt = openAt;
+            lastLastOpenAt = -1L;
             lastOpenAt = openAt;
 
             openCount = 1;
@@ -285,6 +286,7 @@ public class ZipFileReaper {
         }
 
         private void fromPendingToOpen(long openAt) {
+            lastLastOpenAt = openAt;
             lastOpenAt = openAt;
             openCount++;
 
@@ -310,6 +312,7 @@ public class ZipFileReaper {
         }
 
         private void fromClosedToOpen(long openAt) {
+            lastLastOpenAt = openAt;
             lastOpenAt = openAt;
             openCount++;
 
@@ -482,12 +485,12 @@ public class ZipFileReaper {
 
         @Trivial        
         public long getZipLength() {
-        	return zipLength;
+            return zipLength;
         }
         
         @Trivial
         public long getZipLastModified() {
-        	return zipLastModified;
+            return zipLastModified;
         }
 
         /**
@@ -509,51 +512,51 @@ public class ZipFileReaper {
          */
         @Trivial
         private ZipFile reacquireZipFile() throws IOException, ZipException {
-        	String methodName = "reacquireZipFile";
+            String methodName = "reacquireZipFile";
 
             File rawZipFile = new File(path);
             long newZipLength = FileUtils.fileLength(rawZipFile);
-            long newZipLastModified = FileUtils.fileLastModified(rawZipFile);                
+            long newZipLastModified = FileUtils.fileLastModified(rawZipFile);
 
             boolean changed = false;
 
-            if ( newZipLength != zipLength ) {                	
-            	changed = true;
-            	
-            	if ( activeOpens > 0 ) {
-            		Tr.warning(tc,
-            			methodName +
-            			"Zip [ " + path + " ]:" +
-            			" Changed length from [ " + Long.valueOf(zipLength) + " ]" +
-            			" to [ " + Long.valueOf(newZipLength) + " ]");
-            	} else {
-            		if ( tc.isDebugEnabled() ) {
-            			Tr.debug(tc,
-                    	    methodName +
-                    	    "Zip [ " + path + " ]:" +
-                    	    " Changed length from [ " + Long.valueOf(zipLength) + " ]" +
-                    	    " to [ " + Long.valueOf(newZipLength) + " ]");
-            		}
+            if ( newZipLength != zipLength ) {
+                changed = true;
+                
+                if ( activeOpens > 0 ) {
+                    Tr.warning(tc,
+                        methodName +
+                        "Zip [ " + path + " ]:" +
+                        " Changed length from [ " + Long.valueOf(zipLength) + " ]" +
+                        " to [ " + Long.valueOf(newZipLength) + " ]");
+                } else {
+                    if ( tc.isDebugEnabled() ) {
+                        Tr.debug(tc,
+                            methodName +
+                            "Zip [ " + path + " ]:" +
+                            " Changed length from [ " + Long.valueOf(zipLength) + " ]" +
+                            " to [ " + Long.valueOf(newZipLength) + " ]");
+                    }
                 }
             }
 
             if ( newZipLastModified != zipLastModified ) {
-            	changed = true;
+                changed = true;
 
-            	if ( activeOpens > 0 ) {
-            		Tr.warning(tc,
-            			methodName +
-                    	"Zip [ " + path + " ]:" +
-                    	" Changed last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
-                    	" to [ " + Long.valueOf(newZipLastModified) + " ]");
-            	} else {
-            		if ( tc.isDebugEnabled() ) {
-            			Tr.debug(tc,
-            				methodName +
-            				"Zip [ " + path + " ]:" +
-            				" Changed last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
-            				" to [ " + Long.valueOf(newZipLastModified) + " ]");
-            		}
+                if ( activeOpens > 0 ) {
+                    Tr.warning(tc,
+                        methodName +
+                        "Zip [ " + path + " ]:" +
+                        " Changed last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
+                        " to [ " + Long.valueOf(newZipLastModified) + " ]");
+                } else {
+                    if ( tc.isDebugEnabled() ) {
+                        Tr.debug(tc,
+                            methodName +
+                            "Zip [ " + path + " ]:" +
+                            " Changed last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
+                            " to [ " + Long.valueOf(newZipLastModified) + " ]");
+                    }
                 }
             }
 
@@ -562,12 +565,12 @@ public class ZipFileReaper {
                 zipLength = newZipLength;
                 zipLastModified = newZipLastModified;
             }
-        	
+            
             return zipFile;
         }
 
         private void recordZipFile() {
-        	String methodName = "recordZipFile";
+            String methodName = "recordZipFile";
         
             File rawZipFile = new File(path);
             zipLength = FileUtils.fileLength(rawZipFile);
@@ -575,10 +578,10 @@ public class ZipFileReaper {
             
             if ( tc.isDebugEnabled() ) {
                 Tr.debug(tc,
-                	methodName +
-                	" Path [ " + path + " ]" +
-                	" Length [ " + Long.valueOf(zipLength) + " ]" +
-                	" Last modified [ " + Long.valueOf(zipLastModified) + " ]");
+                    methodName +
+                    " Path [ " + path + " ]" +
+                    " Length [ " + Long.valueOf(zipLength) + " ]" +
+                    " Last modified [ " + Long.valueOf(zipLastModified) + " ]");
             }
         }
 
@@ -634,6 +637,7 @@ public class ZipFileReaper {
         // private long initialBeforeOpenDuration; // Always 'firstOpenAt - initialOpenAt'.
 
         private long firstOpenAt;
+        private long lastLastOpenAt;
         private long lastOpenAt;
 
         private int openCount;
@@ -694,11 +698,21 @@ public class ZipFileReaper {
                     " From Last Close [ " + toAbsSec(finalAt - lastCloseAt) + " ]";
             Tr.info(tc, methodName + marginText);
 
-            String openText =
+            String openText;
+            if ( lastLastOpenAt == -1 ) {
+                openText =
                     "  Open: First [ " + toRelSec(initialAt, firstOpenAt) + " ]" +
                     " Last [ " + toRelSec(initialAt, lastOpenAt) + " ]" +
                     " Count [ " + toCount(openCount) + " ]" +
                     " Duration [ " + toAbsSec(openDuration) + " ]";
+            } else {
+                openText =
+                    "  Open: First [ " + toRelSec(initialAt, firstOpenAt) + " ]" +
+                    " Last [ " + toRelSec(initialAt, lastOpenAt) + " ]" +
+                    " Next Last [ " + toRelSec(initialAt, lastLastOpenAt) + " ]" +
+                    " Count [ " + toCount(openCount) + " ]" +
+                    " Duration [ " + toAbsSec(openDuration) + " ]";
+            }
             Tr.info(tc, methodName + openText);
 
             String pendingText =
@@ -762,7 +776,7 @@ public class ZipFileReaper {
                 boolean isInterrupted = false;
                 while ( !isInterrupted ) {
                     try {
-                        if ( useReaper.haveNoPendingCloses() ) {
+                        if ( useReaper.s_pendingCloses.isEmpty() ) {
                             if ( tc.isDebugEnabled() ) {
                                 Tr.debug(tc, methodName + "Waiting for new pending close");
                             }
@@ -775,11 +789,11 @@ public class ZipFileReaper {
 
                             long reapAt = SystemUtils.getNanoTime();
 
-                            ZipFileData lastPendingClose = useReaper.getLastPendingClose();
+                            ZipFileData lastPendingClose = useReaper.s_pendingCloses.getMostRecent();
                             long lastPendAt = lastPendingClose.lastPendAt;
 
                             long lastWaitDuration = ( reapAt - lastPendAt );
-                            long useDelayUpper = useReaper.getDelayUpper();
+                            long useDelayUpper = useReaper.getFirstDelayUpper();
                             if ( lastWaitDuration < useDelayUpper ) {
                                 long reapDelay = useDelayUpper - lastWaitDuration;
 
@@ -856,42 +870,82 @@ public class ZipFileReaper {
     public ZipFileReaper(String reaperName, long initialAt) {
         this(reaperName,
             ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
-            ZipCachingProperties.ZIP_CACHE_REAPER_SHORT_INTERVAL,
-            ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL);
+            ZipCachingProperties.ZIP_CACHE_REAPER_FIRST_SHORT_INTERVAL,
+            ZipCachingProperties.ZIP_CACHE_REAPER_FIRST_LONG_INTERVAL,
+            ZipCachingProperties.ZIP_CACHE_REAPER_HIT_SHORT_INTERVAL,
+            ZipCachingProperties.ZIP_CACHE_REAPER_HIT_LONG_INTERVAL);
     }
 
     @Trivial
     public ZipFileReaper(
         String reaperName,
-        int maxCache, long delayLower, long delayUpper) {
+        int maxCache,
+        long firstDelayLower, long firstDelayUpper,
+        long hitDelayLower, long hitDelayUpper) {
 
-        this(reaperName, maxCache, delayLower, delayUpper, SystemUtils.getNanoTime() );
+        this(reaperName,
+            maxCache,
+            firstDelayLower, firstDelayUpper,
+            hitDelayLower, hitDelayUpper,
+            SystemUtils.getNanoTime() );
     }
 
-    public ZipFileReaper(
-        String reaperName,
-        int maxCache, long delayLower, long delayUpper, final long initialAt) {
+    private static void validate(
+        int maxCache,
+        long firstDelayLower, long firstDelayUpper,
+        long hitDelayLower, long hitDelayUpper) throws IllegalArgumentException {
 
         if ( maxCache == 0 ) {
             throw new IllegalArgumentException("Max cache cannot be zero.");
         }
 
-        if ( delayLower <= 0 ) {
-            throw new IllegalArgumentException("Lower delay [ " + Long.toString(delayLower) + " ] must be positive");
-        } else if ( delayUpper <= 0 ) {
-            throw new IllegalArgumentException("Upper delay [ " + Long.toString(delayUpper) + " ] must be positive");
-        } else if ( delayLower >= delayUpper ) {
+        if ( firstDelayLower <= 0 ) {
+            throw new IllegalArgumentException("Initial lower delay [ " + Long.toString(firstDelayLower) + " ] must be positive");
+        } else if ( firstDelayUpper <= 0 ) {
+            throw new IllegalArgumentException("Initial upper delay [ " + Long.toString(firstDelayUpper) + " ] must be positive");
+        } else if ( firstDelayLower >= firstDelayUpper ) {
             throw new IllegalArgumentException(
-                "Lower delay [ " + Long.toString(delayLower) + " ]" +
-                " must less than upper delay [ " + Long.toString(delayUpper) + " ]");
+                "Initial lower delay [ " + Long.toString(firstDelayLower) + " ]" +
+                " must be less than initial upper delay [ " + Long.toString(firstDelayUpper) + " ]");
         }
+
+        if ( hitDelayLower <= 0 ) {
+            throw new IllegalArgumentException("Hit lower delay [ " + Long.toString(hitDelayLower) + " ] must be positive");
+        } else if ( hitDelayUpper <= 0 ) {
+            throw new IllegalArgumentException("Hit upper delay [ " + Long.toString(hitDelayUpper) + " ] must be positive");
+        } else if ( hitDelayLower >= hitDelayUpper ) {
+            throw new IllegalArgumentException(
+                "Hit lower delay [ " + Long.toString(hitDelayLower) + " ]" +
+                " must be less than hit pper delay [ " + Long.toString(hitDelayUpper) + " ]");
+        }
+
+        if ( hitDelayLower <= firstDelayUpper ) {
+            throw new IllegalArgumentException(
+                    "Hit lower delay [ " + Long.toString(hitDelayLower) + " ]" +
+                    " must be greater than first upper delay [ " + Long.toString(firstDelayUpper) + " ]");
+        }
+    }
+
+    public ZipFileReaper(
+        String reaperName,
+        int maxCache,
+        long firstDelayLower, long firstDelayUpper,
+        long hitDelayLower, long hitDelayUpper,
+        final long initialAt) {
+
+        validate(maxCache,
+                 firstDelayLower, firstDelayUpper,
+                 hitDelayLower, hitDelayUpper);
 
         this.reaperName = reaperName;
 
         this.maxCache = maxCache;
 
-        this.delayLower = delayLower;
-        this.delayUpper = delayUpper;
+        this.firstDelayLower = firstDelayLower;
+        this.firstDelayUpper = firstDelayUpper;
+
+        this.hitDelayLower = hitDelayLower;
+        this.hitDelayUpper = hitDelayUpper;
 
         this.isActive = true;
 
@@ -900,13 +954,16 @@ public class ZipFileReaper {
 
         this.zipData = new HashMap<String, ZipFileData>();
 
-        this.pendingCloses = new LinkedHashMap<String, ZipFileData>() {
+        this.s_pendingCloses = new ZipFilePendingCloses(this, "short");
+        this.l_pendingCloses = new ZipFilePendingCloses(this, "long");
+
+        this.completedCloses = new LinkedHashMap<String, ZipFileData>() {
             private static final long serialVersionUID = 1L;
 
             @Override
             @Trivial
             protected boolean removeEldestEntry(Map.Entry<String, ZipFileData> eldestEntry) {
-                String methodName = "removeEldestEntry";
+                String methodName = "removeEldestEntry(completedCloses)";
 
                 // Don't remove the eldest entry when on a shutdown reap:
                 // Allow all of the open zip files to pend before doing any of
@@ -922,25 +979,13 @@ public class ZipFileReaper {
                 } else if ( size() < useMaxCache ) {
                     return false;
                 } else {
-                    // Set the eldest: The caller of 'put' needs to check
-                    // for this and close it.
-                    //
-                    // Alternatively, the close could be performed here.
-                    // That is not currently done: The caller of 'put' is responsible
-                    // for doing all zip data state updates.
-
                     if ( tc.isDebugEnabled() ) {
-                        Tr.debug(tc, methodName + "Removed eldest [ " + eldestEntry.getKey() + " ]");
+                        Tr.debug(tc, methodName + "Removed [ " + eldestEntry.getKey() + " ]");
                     }
-                    setEldestPendingClose( eldestEntry.getValue() );
-
                     return true;
                 }
             }
         };
-
-        this.youngestPendingClose = null;
-        this.eldestPendingClose = null;
 
         this.reaperLock = new ReaperLock();
 
@@ -1038,21 +1083,36 @@ public class ZipFileReaper {
     //
 
     /** How the minimum that the close of a zip file is delayed. */
-    private final long delayLower;
+    private final long firstDelayLower;
 
     /** The maximum that the close of a zip file is delayed. */
-    private final long delayUpper;
+    private final long firstDelayUpper;
 
     @Trivial
-    public long getDelayLower() {
-        return delayLower;
+    public long getFirstDelayLower() {
+        return firstDelayLower;
     }
 
     @Trivial
-    public long getDelayUpper() {
-        return delayUpper;
+    public long getFirstDelayUpper() {
+        return firstDelayUpper;
     }
 
+    /** How the minimum that the close of a zip file is delayed. */
+    private final long hitDelayLower;
+
+    /** The maximum that the close of a zip file is delayed. */
+    private final long hitDelayUpper;
+
+    @Trivial
+    public long getHitDelayLower() {
+        return hitDelayLower;
+    }
+
+    @Trivial
+    public long getHitDelayUpper() {
+        return hitDelayUpper;
+    }    
     //
 
     /**
@@ -1131,73 +1191,14 @@ public class ZipFileReaper {
     //
 
     /**
-     * All pending closes.  These are kept in the order in which close
-     * requests were received.  These should always be in ascending
-     * order.
+     * Short and long pending closes.  These are kepd in ascending order.
      */
-    private final LinkedHashMap<String, ZipFileData> pendingCloses;
+    private final ZipFilePendingCloses s_pendingCloses;
+    private final ZipFilePendingCloses l_pendingCloses;
 
-    /**
-     * The last close which was requested.  This is useful when
-     * to transition from an empty collection of pending closes
-     * to just one pending close.
-     */
-    private ZipFileData youngestPendingClose;
+    //
 
-    private ZipFileData eldestPendingClose;
-
-    @Trivial
-    private LinkedHashMap<String, ZipFileData> getPendingCloses() {
-        return pendingCloses;
-    }
-
-    @Trivial
-    private boolean haveNoPendingCloses() {
-        return pendingCloses.isEmpty();
-    }
-
-    @Trivial
-    private boolean haveOnePendingClose() {
-        return ( pendingCloses.size() == 1 );
-    }
-
-    @Trivial
-    private boolean isPendingFull() {
-        // 'maxCache == -1' means never full
-        // 'maxCache == 0' is not allowed
-        return ( pendingCloses.size() == getMaxCache() );
-    }
-
-    @Trivial
-    private ZipFileData putPending(String path, ZipFileData data) {
-        youngestPendingClose = data;
-
-        return pendingCloses.put(path, data);
-    }
-
-    @Trivial
-    private ZipFileData removePending(String path) {
-        return pendingCloses.remove(path);
-    }
-
-    @Trivial
-    private ZipFileData getLastPendingClose() {
-        return youngestPendingClose;
-    }
-
-    @Trivial
-    private void setEldestPendingClose(ZipFileData eldestPendingClose) {
-        this.eldestPendingClose = eldestPendingClose;
-    }
-
-    @Trivial
-    private ZipFileData getEldestPendingClose() {
-         ZipFileData useEldest = eldestPendingClose;
-         if ( useEldest != null ) {
-             eldestPendingClose = null;
-         }
-         return useEldest;
-    }
+    private final LinkedHashMap<String, ZipFileData> completedCloses;
 
     // Reaping ...
 
@@ -1316,21 +1317,26 @@ public class ZipFileReaper {
         long nextReapDelay = REAP_DELAY_INDEFINITE;
 
         Map<String, ZipFileData> useStorage = getZipData();
-        Map<String, ZipFileData> usePendingCloses = getPendingCloses();
+        Map<String, ZipFileData> usePendingStorage = s_pendingCloses.getStorage();
 
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName +
                 "All [ " + Integer.toString(useStorage.size()) + " ]" +
-                " Pending [ " + Integer.toString(usePendingCloses.size()) + " ]");
+                " Pending [ " + Integer.toString(usePendingStorage.size()) + " ]");
         }
 
-        long useDelayLower = getDelayLower();
-        long useDelayUpper = getDelayUpper();
+        long useFirstDelayLower = getFirstDelayLower();
+        long useFirstDelayUpper = getFirstDelayUpper();
 
-        Iterator<ZipFileData> allPendingCloses = usePendingCloses.values().iterator();
+        long useHitDelayLower = getHitDelayLower();
+        long useHitDelayUpper = getHitDelayUpper();
+
+        Iterator<ZipFileData> allPendingCloses = usePendingStorage.values().iterator();
 
         while ( (nextReapDelay == -1) && allPendingCloses.hasNext() ) {
             ZipFileData nextPending = allPendingCloses.next();
+
+            int nextOpenCount = nextPending.openCount;
 
             long nextLastPendAt = nextPending.getLastPendAt();
             long nextPendDuration = reapAt - nextLastPendAt;
@@ -1339,22 +1345,41 @@ public class ZipFileReaper {
             String nextPendSec = toAbsSec(nextPendDuration);
 
             if ( isShutdownReap ) {
-                 // Shutdown closes all pending, regardless of how long they have waited.
+                // Shutdown reap.
+                // Shutdown closes all pending, regardless of how long they have waited.
+
                 if ( tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + "Path [ " + nextPendPath + " ] Waiting [ " + nextPendSec + " ]: Forced");
                 }
                 nextPending.close(reapAt);
                 allPendingCloses.remove();
 
-                // Do not remove the closed data during a shutdown reap.
-                // We want to keep the data around so we can display zip file statistics.
+                // Do not remove data during a shutdown reap.
+                // The data must be kept to display statistics.
 
             } else {
-                // Note that we check using the lower interval ...
-                if ( nextPendDuration > useDelayLower ) {
-                    // Otherwise, close pending which have waited the lower delay amount.
+                // Normal reap.
+
+                // Allow quick closes of zip handles which were only opened once.
+                // Zip handles which were opened more than once are held open longer.
+                long delayLower;
+                long delayUpper;
+                if ( nextOpenCount == 1 ) {
+                    delayLower = useFirstDelayLower;
+                    delayUpper = useFirstDelayUpper;
+                } else {
+                    delayLower = useHitDelayLower;
+                    delayUpper = useHitDelayUpper;
+                }
+
+                // Check using the *lower* interval ...
+                if ( nextPendDuration > delayLower ) {
+                    // ... otherwise, close pending which have waited the lower delay amount.
                     if ( tc.isDebugEnabled() ) {
-                        Tr.debug(tc, methodName + "Path [ " + nextPendPath + " ] Waiting [ " + nextPendSec + " ]: Expired");
+                        Tr.debug(tc, methodName +
+                            "Path [ " + nextPendPath + " ]" +
+                            " Opens [ " + nextOpenCount + " ]" +
+                            " Waiting [ " + nextPendSec + " ]: Expired");
                     }
                     nextPending.close(reapAt);
                     allPendingCloses.remove();
@@ -1364,6 +1389,8 @@ public class ZipFileReaper {
                     if ( !ZipCachingProperties.ZIP_CACHE_DEBUG_STATE ) {
                         zipData.remove(nextPendPath);
                     }
+
+                    completedCloses.put(nextPendPath, nextPending);
 
                 } else {
                     // Keep waiting any pending which has waited less than the lower delay
@@ -1376,7 +1403,7 @@ public class ZipFileReaper {
                         nextPendDuration = 0; // Should never happen;
                     }
                     // ... but we set the delay using the upper interval.
-                    nextReapDelay = useDelayUpper - nextPendDuration;
+                    nextReapDelay = delayUpper - nextPendDuration;
                 }
             }
         }
@@ -1528,8 +1555,8 @@ public class ZipFileReaper {
 
                 zipFile = data.reacquireZipFile(); // throws IOException, ZipException
 
-                removePending(path);
-                
+                s_pendingCloses.remove(path);
+
                 data.unpendClose(openAt);
                 data.addActiveOpen();
 
@@ -1634,13 +1661,13 @@ public class ZipFileReaper {
                         Tr.debug(tc, methodName + "Active opens [ " + path + " ] [ 0 ]: Pend close");
                     }
 
-                    putPending(path, data);
+                    s_pendingCloses.put(path, data);
                     data.pendClose(closeAt);
 
                     // If the eldest was forced out, immediately close it.
                     // 'getEldestPendingClose' is linear: If the eldest
                     // was set, it is cleared.
-                    ZipFileData useEldest = getEldestPendingClose();
+                    ZipFileData useEldest = s_pendingCloses.takeLeastRecent();
                     if ( useEldest != null ) {
                         useEldest.close(closeAt);
                     }
@@ -1649,7 +1676,7 @@ public class ZipFileReaper {
                     // closes are exhausted.  Upon receiving a new first pending
                     // close, wake the reaper.
 
-                    if ( haveOnePendingClose() ) {
+                    if ( s_pendingCloses.hasOne() ) {
                         if ( tc.isDebugEnabled() ) {
                             Tr.debug(tc, methodName + "Awaken reaper");
                         }

@@ -104,8 +104,10 @@ public class ZipFileHandleImpl implements ZipFileHandle {
             zipFileReaper = new ZipFileReaper(
                 "zip cache reaper",
                 ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
-                ZipCachingProperties.ZIP_CACHE_REAPER_SHORT_INTERVAL,
-                ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL);
+                ZipCachingProperties.ZIP_CACHE_REAPER_FIRST_SHORT_INTERVAL,
+                ZipCachingProperties.ZIP_CACHE_REAPER_FIRST_LONG_INTERVAL,
+                ZipCachingProperties.ZIP_CACHE_REAPER_HIT_SHORT_INTERVAL,
+                ZipCachingProperties.ZIP_CACHE_REAPER_HIT_LONG_INTERVAL);
         }
     }
 
