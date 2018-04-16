@@ -11,23 +11,23 @@
 
 def thisProject = project(':wlp-bndPlugins')
 
-/* After building, we need to refresh the bnd Projects to pickup the bnd plugins built here. */
-task refresh {
-  dependsOn jar
-  onlyIf {
-    jar.didWork
-  }
+jar {
+  /* After building, we need to refresh the bnd Projects to pickup the bnd plugins built here. */
   doLast {
-    logger.info 'Refresh bnd Projects after building bnd plugins in {}', project.name
+    println 'Refresh bnd Projects after building bnd plugins in ' + project.name
     bnd.project.refresh()
+    bnd.project.clear()
     parent.subprojects {
       if (project != thisProject) {
         bnd.project.refresh()
+        bnd.project.clear()
       }
     }
   }
 }
 
 clean {
-  println 'Not removing wlp-bndPlugins.jar during gradle clean task'
+  doLast {
+    println 'Not removing wlp-bndPlugins.jar during gradle clean task'
+  }
 }
