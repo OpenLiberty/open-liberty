@@ -12,4 +12,6 @@
  * @version 1.1
  */
 @org.osgi.annotation.versioning.Version("1.1")
+@com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = com.ibm.websphere.security.wim.util.TraceConstants.TRACE_GROUP,
+                                               messageBundle = com.ibm.websphere.security.wim.util.TraceConstants.MESSAGE_BUNDLE)
 package com.ibm.wsspi.security.wim.model;
