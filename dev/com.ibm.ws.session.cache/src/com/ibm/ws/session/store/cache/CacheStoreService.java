@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.session.store.cache;
 
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessController;
@@ -39,12 +40,13 @@ import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
 import com.ibm.ws.session.utils.SessionLoader;
 import com.ibm.wsspi.library.Library;
+import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.session.IStore;
 
 /**
  * Constructs CacheStore instances.
  */
-public class CacheStoreService implements SessionStoreService {
+public class CacheStoreService implements Introspector, SessionStoreService {
     
     private static final TraceComponent tc = Tr.register(CacheStoreService.class);
     
@@ -248,6 +250,67 @@ public class CacheStoreService implements SessionStoreService {
     @Override
     public Map<String, Object> getConfiguration() {
         return configurationProperties;
+    }
+
+    /**
+     * @see com.ibm.wsspi.logging.Introspector#getIntrospectorDescription()
+     */
+    @Override
+    public String getIntrospectorDescription() {
+        return "JCache provider diagnostics for HTTP Sessions";
+    }
+
+    /**
+     * @see com.ibm.wsspi.logging.Introspector#getIntrospectorName()
+     */
+    @Override
+    public String getIntrospectorName() {
+        return "SessionCacheIntrospector";
+    }
+
+    /**
+     * @see com.ibm.wsspi.logging.Introspector#introspect(java.io.PrintWriter)
+     */
+    @Override
+    public void introspect(PrintWriter out) throws Exception {
+        final String INDENT = "  ";
+
+        out.print("CachingProvider implementation: ");
+        out.println(cachingProvider == null ? null : cachingProvider.getClass().getName());
+
+        out.print("Supports store by reference? ");
+        out.println(cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE));
+
+        out.println("Caching provider default properties:");
+        if (cachingProvider != null) {
+            Properties props = cachingProvider.getDefaultProperties();
+            if (props != null)
+                props.entrySet().forEach(prop -> out.println(INDENT + prop.getKey() + ": " + prop.getValue()));
+        }
+
+        out.print("Caching provider default class loader: ");
+        out.println(cachingProvider == null ? null : cachingProvider.getDefaultClassLoader());
+
+        out.print("CacheManager class loader: ");
+        out.println(cacheManager == null ? null : cacheManager.getClassLoader());
+
+        out.print("Cache manager URI: ");
+        out.println(cacheManager == null ? null : cacheManager.getURI());
+
+        out.println("Cache manager properties:");
+        if (cacheManager != null) {
+            Properties props = cacheManager.getProperties();
+            if (props != null)
+                props.entrySet().forEach(prop -> out.println(INDENT + prop.getKey() + ": " + prop.getValue()));
+        }
+
+        out.print("Cache manager: ");
+        out.println(cacheManager);
+
+        out.println("Cache names:");
+        if (cacheManager != null)
+            AccessController.doPrivileged((PrivilegedAction<Iterable<String>>) () -> cacheManager.getCacheNames())
+                            .forEach(cache -> out.println(INDENT + cache));
     }
 
     @Override
