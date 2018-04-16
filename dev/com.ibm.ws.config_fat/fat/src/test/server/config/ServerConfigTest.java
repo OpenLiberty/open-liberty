@@ -24,9 +24,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigMonitorElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
@@ -40,9 +43,17 @@ public class ServerConfigTest {
     // Since we have tracing enabled give server longer timeout to start up.
     private static final long SERVER_START_TIMEOUT = 30 * 1000;
 
+    private static WebArchive restartApp;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        restartApp = ShrinkHelper.buildDefaultApp("restart", "test.server.config.restart");
+    }
+
     @Test
     public void testRestart() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.restart");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("before.log");
@@ -75,6 +86,7 @@ public class ServerConfigTest {
     @Test
     public void testRefresh() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.refresh");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("refresh.log");
@@ -106,6 +118,7 @@ public class ServerConfigTest {
     @Test
     public void testVariableRestart() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.restart.var");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("restart-var-before.log");
@@ -135,11 +148,12 @@ public class ServerConfigTest {
     @Test
     public void testValidate() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.validate");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
         server.copyFileToLibertyInstallRoot("lib/features", "metatype/metatype-1.0.mf");
-        server.copyFileToLibertyInstallRoot("lib", "metatype/com.ibm.ws.config.metatype_1.0.jar");
+        server.copyFileToLibertyInstallRoot("lib", "bundles/com.ibm.ws.config.metatype.jar");
 
         server.startServer();
 
@@ -148,13 +162,14 @@ public class ServerConfigTest {
             assertStringsPresentInLog(server, new String[] { "CWWKG0011W(?=.*ejb)(?=.*threadPool)", "minThreads.*5" });
             assertStringsPresentInLog(server, new String[] { "CWWKG0011W.*quickStartSecurity" });
         } finally {
-            server.stopServer();
+            server.stopServer("CWWKS0900E");
         }
     }
 
     @Test
     public void testValidateUpdateFileTag() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.validateConfig");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer();
@@ -169,6 +184,7 @@ public class ServerConfigTest {
     @Test
     public void testRelativeImports() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("imports.log");
@@ -186,6 +202,7 @@ public class ServerConfigTest {
     @Test
     public void testRefreshError() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.refresh.error");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("refresh-error.log");
@@ -220,7 +237,7 @@ public class ServerConfigTest {
             // run the test two
             test(server, "/restart/restart?testName=after");
         } finally {
-            server.stopServer();
+            server.stopServer("CWWKG0014E");
         }
     }
 
@@ -233,6 +250,7 @@ public class ServerConfigTest {
     @Test
     public void testServerConfigUpdating() throws Exception {
         LibertyServer server = LibertyServerFactory.getStartedLibertyServer("com.ibm.ws.config.update");
+        ShrinkHelper.exportAppToServer(server, restartApp);
 
         try {
             // The server has no update trigger so first set one to polled.  Polled is the default so this change should be picked up
@@ -282,7 +300,7 @@ public class ServerConfigTest {
         try {
             // This server has and update trigger set to mbean so the file should not be monitored, update it and make sure a config update isn't triggered
             ServerConfiguration config = server.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("servlet-3.0");
+            config.getFeatureManager().getFeatures().add("servlet-3.1");
             server.updateServerConfiguration(config);
             //we are waiting for a message not to appear in the log - 10 seconds is probably long enough instead of the default 2 min
             // (note that, for whatever reason, LibertyServer doubles the timeout we pass in)
@@ -377,6 +395,7 @@ public class ServerConfigTest {
     @Test
     public void testBadRequiredIncludeFAIL() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getServerRoot(), "bootstrap.properties",
                                                server.pathToAutoFVTTestFiles + "/import.error/bootstrap-onError-FAIL.properties", false,
@@ -416,7 +435,7 @@ public class ServerConfigTest {
 
         } finally {
             if (server.isStarted()) {
-                server.stopServer();
+                server.stopServer("CWWKG0015E", "CWWKG0090E");
             }
         }
     }
@@ -435,6 +454,7 @@ public class ServerConfigTest {
     @Test
     public void testBadRequiredIncludeWARN() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
@@ -451,7 +471,7 @@ public class ServerConfigTest {
                 server.startServer("malformed-xml.log", true, true);
             } catch (TopologyException ex) {
                 caught = true;
-                server.stopServer();
+                server.stopServer("CWWKG0014E", "CWWKF0009W", "CWWKG0090E");
             }
 
             assertTrue("There should be an exception because timedexit is not enabled", caught);
@@ -487,7 +507,7 @@ public class ServerConfigTest {
 
         } finally {
             if (server.isStarted()) {
-                server.stopServer();
+                server.stopServer("CWWKG0090E");
             }
         }
     }
@@ -495,6 +515,7 @@ public class ServerConfigTest {
     @Test
     public void testBadRequiredIncludeModifyOnError() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
@@ -545,7 +566,7 @@ public class ServerConfigTest {
 
         } finally {
             if (server.isStarted()) {
-                server.stopServer();
+                server.stopServer("CWWKG0090E");
             }
         }
     }
@@ -553,6 +574,7 @@ public class ServerConfigTest {
     @Test
     public void testVariableMissingName() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
@@ -596,7 +618,7 @@ public class ServerConfigTest {
 
         } finally {
             if (server.isStarted()) {
-                server.stopServer();
+                server.stopServer("CWWKG0091E");
             }
         }
     }
@@ -604,6 +626,7 @@ public class ServerConfigTest {
     @Test
     public void testVariableMissingValue() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
+        ShrinkHelper.exportAppToServer(server, restartApp);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
@@ -647,7 +670,7 @@ public class ServerConfigTest {
 
         } finally {
             if (server.isStarted()) {
-                server.stopServer();
+                server.stopServer("CWWKG0092E");
             }
         }
     }

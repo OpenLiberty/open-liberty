@@ -229,7 +229,7 @@ public class H2InboundLink extends HttpInboundLink {
     /**
      * Handle the receipt of the MAGIC string from the client: initialize the control stream 0 and and send out a settings frame to
      * acknowledge the MAGIC string
-     * 
+     *
      * @throws StreamClosedException
      */
     public void processConnectionPrefaceMagic() throws ProtocolException, StreamClosedException {
@@ -727,11 +727,29 @@ public class H2InboundLink extends HttpInboundLink {
         return this.writeQ;
     }
 
+    /**
+     * Increment the connection window limit but the given amount
+     *
+     * @param int amount to increment connection window
+     * @throws FlowControlException
+     */
     public void incrementConnectionWindowUpdateLimit(int x) throws FlowControlException {
         writeQ.incrementConnectionWindowUpdateLimit(x);
+        H2StreamProcessor stream;
+        for (Integer i : streamTable.keySet()) {
+            stream = streamTable.get(i);
+            stream.connectionWindowSizeUpdated();
+        }
     }
 
-    public synchronized void changeInitialWindowSizeAllStreams(int newSize) {
+    /**
+     * Update the initial window size for all open streams. Additionally, call updateInitialWindowsUpdateSize()
+     * on each stream to notify it of the increase (and possible write out queued data)
+     * 
+     * @param int newSize
+     * @throws FlowControlException
+     */
+    public synchronized void changeInitialWindowSizeAllStreams(int newSize) throws FlowControlException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "changeInitialWindowSizeAllStreams entry: newSize: " + newSize);
         }

@@ -8,25 +8,12 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-Bundle-Name: Test Config For User Product Extensions
-Bundle-SymbolicName: test.user.prod.extensions; singleton:=true
+Bundle-Name: Test Config Extensions B
+Bundle-SymbolicName: test.config.extensions.b; singleton:=true
 Bundle-Description: This bundle provides some services to use for testing; version=${bVersion}
 
-# export the interface packages
-Export-Package: \
-  test.user.prod.extensions;provide:=true
-
-Private-Package: test.user.prod.extensions.internal.*
-
-Web-ContextPath: user.product1-extensions-test
-
 Include-Resource:\
- OSGI-INF/metatype/metatype.xml=resources/metatype.xml
-
-Service-Component:\
-  test.user.prod.extensions;\
-    provide:='test.user.prod.extensions.UserProductExtension1';\
-    implementation:=test.user.prod.extensions.internal.UserProductExtension1ServiceImpl
+ OSGI-INF/metatype/metatype-extensions-two.xml=test-bundles/test.config.extensions.b/resources/metatype-extensions-two.xml

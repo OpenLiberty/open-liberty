@@ -8,7 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
 Bundle-Name: Test Config Child Alias B
@@ -16,4 +16,4 @@ Bundle-SymbolicName: test.config.childalias.b
 Bundle-Description: Test bundle B for IBM childAlias extension, version=${bVersion}
 
 Include-Resource:\
- OSGI-INF/metatype/metatype-childalias-b.xml=resources/metatype-childalias-b.xml
+ OSGI-INF/metatype/metatype-childalias-b.xml=test-bundles/test.config.childalias.b/resources/metatype-childalias-b.xml

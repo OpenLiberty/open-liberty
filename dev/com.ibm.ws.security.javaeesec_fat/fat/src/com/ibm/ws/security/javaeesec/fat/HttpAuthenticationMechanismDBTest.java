@@ -19,7 +19,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -85,7 +88,10 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
 
     @Before
     public void setupConnection() {
-        httpclient = new DefaultHttpClient();
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+
+        httpclient = new DefaultHttpClient(httpParams);
     }
 
     @After
@@ -125,10 +131,18 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER1, Constants.getRemoteUserFound + Constants.DB_USER1);
 
-        // check based on group
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER2,
-                                                   Constants.DB_USER2_PWD,
-                                                   HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testJaspiAnnotatedDBBasicAuthValidUserInGroupRole_AllowedAccess() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        // check based on user
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER2,
+                                                          Constants.DB_USER2_PWD,
+                                                          HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER2, Constants.getRemoteUserFound + Constants.DB_USER2);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }

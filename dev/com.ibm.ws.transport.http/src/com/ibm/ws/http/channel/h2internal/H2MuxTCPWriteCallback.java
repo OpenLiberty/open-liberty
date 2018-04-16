@@ -72,11 +72,6 @@ public class H2MuxTCPWriteCallback implements TCPWriteCompletedCallback {
             try {
                 if (complete) {
 
-                    if (h2WorkQ != null) {
-                        if (qEntry.getFrameType() == FrameTypes.DATA) {
-                            h2WorkQ.decreaseConnectionWindowUpdateWriteLimit(qEntry.getPayloadLength());
-                        }
-                    }
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "invoke complete callback vc: " + eVC + " TWC: " + eTWC);

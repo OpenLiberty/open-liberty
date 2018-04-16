@@ -88,6 +88,7 @@ public class JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "Servlet url: " + url + " userid: " + userid + ", password: " + password + " , method=" + methodName);
         HttpGet getMethod = new HttpGet(url);
         if (userid != null) {
+            httpClient.getCredentialsProvider().clear();
             httpClient.getCredentialsProvider().setCredentials(new AuthScope("localhost", AuthScope.ANY_PORT, AuthScope.ANY_REALM),
                                                                new UsernamePasswordCredentials(userid, password));
         }

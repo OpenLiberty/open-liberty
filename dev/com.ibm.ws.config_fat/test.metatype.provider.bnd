@@ -8,12 +8,17 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
-Bundle-Name: Test Config Child Alias C
-Bundle-SymbolicName: test.config.childalias.c
-Bundle-Description: Test bundle C for IBM childAlias extension, version=${bVersion}
+Bundle-Name: Test MetatypeProvider
+Bundle-SymbolicName: test.metatype.provider
+Bundle-Description: Test bundle for MetatypeProvider, version=${bVersion}
 
-Include-Resource:\
- OSGI-INF/metatype/metatype-childalias-c.xml=resources/metatype-childalias-c.xml
+-dsannotations: com.ibm.ws.config.metatype.provider.Plant,\
+ com.ibm.ws.config.metatype.provider.Animal,\
+ com.ibm.ws.config.metatype.provider.AnimalToo
+
+Private-Package: com.ibm.ws.config.metatype.provider.*
+
+Import-Package: *

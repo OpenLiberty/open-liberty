@@ -8,8 +8,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../../../cnf/resources/bnd/bundle.props
-bVersion=1.0.0
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
 Bundle-Name: Test Config Extensions
 Bundle-SymbolicName: test.config.extensions; singleton:=true
@@ -19,7 +19,7 @@ Web-ContextPath: config-extensions-test
 
 # export the interface packages
 Export-Package: \
-  test.config.extensions;provide:=true
+  test.config.extensions;provide:=true;version=1.0
 
 Service-Component:\
   test.config.extensions.super.component;\
@@ -32,4 +32,4 @@ Service-Component:\
     properties:="service.pid=test.config.extensions.internal.super,service.vendor=IBM"
 
 Include-Resource:\
- OSGI-INF/metatype/metatype-extensions.xml=resources/metatype-extensions.xml
+ OSGI-INF/metatype/metatype-extensions.xml=test-bundles/test.config.extensions/resources/metatype-extensions.xml
