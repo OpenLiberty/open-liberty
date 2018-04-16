@@ -29,7 +29,8 @@ Subsystem-Content: org.eclipse.osgi; version="[3.10,4)"; type="boot.jar",
 WebSphere-SystemBundleProvider: true
 IBM-API-Package: com.ibm.websphere.config.mbeans; type="ibm-api",
  com.ibm.websphere.logging; type="ibm-api",
- com.ibm.websphere.logging.hpel; type="ibm-api"
+ com.ibm.websphere.logging.hpel; type="ibm-api",
+ com.ibm.websphere.kernel.server; type="ibm-api"
 IBM-SPI-Package: com.ibm.websphere.crypto,
  com.ibm.wsspi.config,
  com.ibm.wsspi.kernel.filemonitor,
