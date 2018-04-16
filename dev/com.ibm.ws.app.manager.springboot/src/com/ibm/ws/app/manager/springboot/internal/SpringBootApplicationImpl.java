@@ -368,7 +368,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
                                                SpringBootManifest springBootManifest,
                                                SpringBootApplicationFactory factory) {
         String location = applicationInformation.getLocation();
-        if (location.toLowerCase().endsWith("*.xml")) {
+        if (location.toLowerCase().endsWith(".xml")) {
             // don't do this for loose applications
             return rawContainer;
         }
@@ -381,6 +381,12 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
 
         File springAppFile = new File(location);
+        if (springAppFile.isDirectory()) {
+            // for extracted applications; use it as-is
+            // assume deployer knows what they are doing; don't interfere
+            return rawContainer;
+        }
+
         // Make sure the spring thin apps directory is available
         WsResource thinAppsDir = factory.getLocationAdmin().resolveResource(SPRING_THIN_APPS_DIR);
         thinAppsDir.create();
