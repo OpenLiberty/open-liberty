@@ -71,6 +71,10 @@ public abstract class AbstractSpringTests {
 
     @AfterClass
     public static void stopServer() throws Exception {
+        stopServer(true);
+    }
+
+    public static void stopServer(boolean deleteSharedCache) throws Exception {
         boolean isActive = serverStarted.getAndSet(false);
         try {
             // don't archive until after stopping and removing the lib.index.cache
@@ -83,7 +87,9 @@ public abstract class AbstractSpringTests {
                 for (RemoteFile remoteFile : dropinFiles) {
                     remoteFile.delete();
                 }
-                server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
+                if (deleteSharedCache) {
+                    server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
+                }
                 //clear bootstrap.properties
                 bootStrapProperties.clear();
                 try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
@@ -96,6 +102,7 @@ public abstract class AbstractSpringTests {
                 if (isActive) {
                     server.postStopServerArchive();
                 }
+                server.deleteDirectoryFromLibertyServerRoot("logs/");
             }
         }
     }
