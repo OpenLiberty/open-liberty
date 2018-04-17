@@ -590,6 +590,120 @@ public class TestValidationUtilsTest extends CommonTestClass {
 
     /**
      * Tests:
+     * - Expectation check type: Null
+     * - Content to validate: Not null
+     * Expects:
+     * - AssertionError should be thrown saying the value was expected to be null but was not
+     */
+    @Test
+    public void test_validateStringContent_stringNull_fails() {
+        try {
+            Expectation expectation = new ResponseTitleExpectation(action, Constants.STRING_NULL, searchFor, failureMsg);
+            String contentToValidate = "some content";
+
+            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_NOT_NULL, contentToValidate);
+            runNegativeValidateStringContentTest(expectation, contentToValidate, expectedFailureMsg);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Expectation check type: Null
+     * - Content to validate: Null
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringContent_stringNull_succeeds() {
+        try {
+            Expectation expectation = new ResponseFullExpectation(action, Constants.STRING_NULL, searchFor, failureMsg);
+            String contentToValidate = null;
+            utils.validateStringContent(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Expectation check type: Not null
+     * - Content to validate: Null
+     * Expects:
+     * - AssertionError should be thrown saying the value was expected not to be null but was
+     */
+    @Test
+    public void test_validateStringContent_stringNotNull_fails() {
+        try {
+            Expectation expectation = new ResponseTitleExpectation(action, Constants.STRING_NOT_NULL, searchFor, failureMsg);
+            String contentToValidate = null;
+
+            String expectedFailureMsg = Pattern.quote(failureMsg) + UnitTestUtils.ERR_STRING_NULL;
+            runNegativeValidateStringContentTest(expectation, contentToValidate, expectedFailureMsg);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Expectation check type: Not null
+     * - Content to validate: Not null
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringContent_stringNotNull_succeeds() {
+        try {
+            Expectation expectation = new ResponseFullExpectation(action, Constants.STRING_NOT_NULL, searchFor, failureMsg);
+            String contentToValidate = "some content";
+            utils.validateStringContent(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Expectation check type: Equals
+     * - Content to validate: Does not equal search value
+     * Expects:
+     * - AssertionError should be thrown saying the value did not equal the expected value
+     */
+    @Test
+    public void test_validateStringContent_stringEquals_fails() {
+        try {
+            Expectation expectation = new ResponseTitleExpectation(action, Constants.STRING_EQUALS, searchFor, failureMsg);
+            String contentToValidate = "some " + searchFor + " content";
+
+            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_DOES_NOT_EQUAL, searchFor, contentToValidate);
+            runNegativeValidateStringContentTest(expectation, contentToValidate, expectedFailureMsg);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Expectation check type: Equals
+     * - Content to validate: Equals search value
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringContent_stringEquals_succeeds() {
+        try {
+            Expectation expectation = new ResponseFullExpectation(action, Constants.STRING_EQUALS, searchFor, failureMsg);
+            String contentToValidate = searchFor;
+            utils.validateStringContent(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
      * - Expectation check type: Contains
      * - Content to validate: Does not contain expected string
      * Expects:
@@ -735,6 +849,345 @@ public class TestValidationUtilsTest extends CommonTestClass {
             Expectation expectation = new ResponseMessageExpectation(action, Constants.STRING_DOES_NOT_MATCH, searchFor, failureMsg);
             String contentToValidate = "some content";
             utils.validateStringContent(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** validateStringNull **************************************/
+
+    /**
+     * Tests:
+     * - String to search for: null
+     * - Content to validate: null
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringNull_nullSearchString_nullContentToValidate() {
+        try {
+            Expectation expectation = new ResponseStatusExpectation(action, checkType, null, failureMsg);
+            String contentToValidate = null;
+            utils.validateStringNull(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: null
+     * - Content to validate: Not null
+     * Expects:
+     * - AssertionError should be thrown saying the content to validate is not null
+     */
+    @Test
+    public void test_validateStringNull_nullSearchString_nonEmptyContentToValidate() {
+        try {
+            Expectation expectation = new ResponseTitleExpectation(action, checkType, null, failureMsg);
+            String contentToValidate = "some content";
+            try {
+                utils.validateStringNull(expectation, contentToValidate);
+                fail("Should have thrown an assertion error but did not.");
+            } catch (AssertionError e) {
+                verifyPattern(e.getMessage(), Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_NOT_NULL, contentToValidate));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Non-empty
+     * - Content to validate: null
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringNull_nonEmptySearchString_nullContentToValidate() {
+        try {
+            Expectation expectation = getBasicExpectation();
+            String contentToValidate = null;
+            utils.validateStringNull(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Non-empty
+     * - Content to validate: Empty string
+     * Expects:
+     * - AssertionError should be thrown saying the content to validate is not null
+     */
+    @Test
+    public void test_validateStringNull_nonEmptySearchString_emptyContentToValidate() {
+        try {
+            Expectation expectation = getBasicExpectation();
+            String contentToValidate = "";
+            try {
+                utils.validateStringNull(expectation, contentToValidate);
+                fail("Should have thrown an assertion error but did not.");
+            } catch (AssertionError e) {
+                verifyPattern(e.getMessage(), Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_NOT_NULL, contentToValidate));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** validateStringNotNull **************************************/
+
+    /**
+     * Tests:
+     * - String to search for: null
+     * - Content to validate: null
+     * Expects:
+     * - AssertionError should be thrown saying the content to validate is null but shouldn't be
+     */
+    @Test
+    public void test_validateStringNotNull_nullSearchString_nullContentToValidate() {
+        try {
+            Expectation expectation = new ResponseUrlExpectation(action, checkType, null, failureMsg);
+            String contentToValidate = null;
+            try {
+                utils.validateStringNotNull(expectation, contentToValidate);
+                fail("Should have thrown an assertion error but did not.");
+            } catch (AssertionError e) {
+                verifyPattern(e.getMessage(), Pattern.quote(failureMsg) + UnitTestUtils.ERR_STRING_NULL);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: null
+     * - Content to validate: Not null
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringNotNull_nullSearchString_nonEmptyContentToValidate() {
+        try {
+            Expectation expectation = new ResponseFullExpectation(action, checkType, null, failureMsg);
+            String contentToValidate = "some content";
+            utils.validateStringNotNull(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Non-empty
+     * - Content to validate: null
+     * Expects:
+     * - AssertionError should be thrown saying the content to validate is null but shouldn't be
+     */
+    @Test
+    public void test_validateStringNotNull_nonEmptySearchString_nullContentToValidate() {
+        try {
+            Expectation expectation = getBasicExpectation();
+            String contentToValidate = null;
+            try {
+                utils.validateStringNotNull(expectation, contentToValidate);
+                fail("Should have thrown an assertion error but did not.");
+            } catch (AssertionError e) {
+                verifyPattern(e.getMessage(), Pattern.quote(failureMsg) + UnitTestUtils.ERR_STRING_NULL);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Non-empty
+     * - Content to validate: Empty string
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringNotNull_nonEmptySearchString_emptyContentToValidate() {
+        try {
+            Expectation expectation = getBasicExpectation();
+            String contentToValidate = "";
+            utils.validateStringNotNull(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** validateStringEquals **************************************/
+
+    /**
+     * Tests:
+     * - String to search for: null
+     * - Content to validate: null
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringEquals_nullSearchString_nullContentToValidate() {
+        try {
+            Expectation expectation = new ResponseHeaderExpectation(action, checkType, null, failureMsg);
+            String contentToValidate = null;
+            utils.validateStringEquals(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: null
+     * - Content to validate: Non-empty
+     * Expects:
+     * - AssertionError should be thrown saying the content to validate was not null
+     */
+    @Test
+    public void test_validateStringEquals_nullSearchString_nonEmptyContentToValidate() {
+        try {
+            Expectation expectation = new ResponseMessageExpectation(action, checkType, null, failureMsg);
+            String contentToValidate = "some content";
+            try {
+                utils.validateStringEquals(expectation, contentToValidate);
+                fail("Should have thrown an assertion error but did not.");
+            } catch (AssertionError e) {
+                verifyPattern(e.getMessage(), Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_NOT_NULL, contentToValidate));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Empty string
+     * - Content to validate: null
+     * Expects:
+     * - AssertionError should be thrown saying the content to validate was null
+     */
+    @Test
+    public void test_validateStringEquals_emptySearchString_nullContentToValidate() {
+        try {
+            Expectation expectation = new ResponseStatusExpectation(action, checkType, "", failureMsg);
+            String contentToValidate = null;
+            try {
+                utils.validateStringEquals(expectation, contentToValidate);
+                fail("Should have thrown an assertion error but did not.");
+            } catch (AssertionError e) {
+                verifyPattern(e.getMessage(), UnitTestUtils.CONTENT_TO_VALIDATE_NULL);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Empty string
+     * - Content to validate: Empty string
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringEquals_emptySearchString_emptyContentToValidate() {
+        try {
+            Expectation expectation = new ResponseTitleExpectation(action, checkType, "", failureMsg);
+            String contentToValidate = "";
+            utils.validateStringEquals(expectation, contentToValidate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Empty string
+     * - Content to validate: Non-empty
+     * Expects:
+     * - AssertionError should be thrown saying the content to validate does not equal the search value
+     */
+    @Test
+    public void test_validateStringEquals_emptySearchString_nonEmptyContentToValidate() {
+        try {
+            Expectation expectation = new ResponseUrlExpectation(action, checkType, "", failureMsg);
+            String contentToValidate = "some content";
+            try {
+                utils.validateStringEquals(expectation, contentToValidate);
+                fail("Should have thrown an assertion error but did not.");
+            } catch (AssertionError e) {
+                verifyPattern(e.getMessage(), Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_DOES_NOT_EQUAL, expectation.getValidationValue(), contentToValidate));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Non-empty
+     * - Content to validate: Empty string
+     * Expects:
+     * - AssertionError should be thrown saying the content to validate does not equal the search value
+     */
+    @Test
+    public void test_validateStringEquals_nonEmptySearchString_emptyContentToValidate() {
+        try {
+            Expectation expectation = getBasicExpectation();
+            String contentToValidate = "";
+            try {
+                utils.validateStringEquals(expectation, contentToValidate);
+                fail("Should have thrown an assertion error but did not.");
+            } catch (AssertionError e) {
+                verifyPattern(e.getMessage(), Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_DOES_NOT_EQUAL, expectation.getValidationValue(), contentToValidate));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Non-empty
+     * - Content to validate: Non-empty, includes string to search for
+     * Expects:
+     * - AssertionError should be thrown saying the content to validate does not equal the search value
+     */
+    @Test
+    public void test_validateStringEquals_nonEmptySearchString_contentIncludesString() {
+        try {
+            Expectation expectation = getBasicExpectation();
+            String contentToValidate = expectation.getValidationValue() + " and more";
+            try {
+                utils.validateStringEquals(expectation, contentToValidate);
+                fail("Should have thrown an assertion error but did not.");
+            } catch (AssertionError e) {
+                verifyPattern(e.getMessage(), Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_DOES_NOT_EQUAL, expectation.getValidationValue(), contentToValidate));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - String to search for: Non-empty
+     * - Content to validate: Non-empty, equal to string to search for
+     * Expects:
+     * - Assertion should succeed
+     */
+    @Test
+    public void test_validateStringEquals_nonEmptySearchString_contentEqualsSearchString() {
+        try {
+            Expectation expectation = getBasicExpectation();
+            String contentToValidate = expectation.getValidationValue();
+            utils.validateStringEquals(expectation, contentToValidate);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

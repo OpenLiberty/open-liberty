@@ -119,7 +119,7 @@ public abstract class Expectation {
 
     public static Expectation createResponseStatusExpectation(String testAction, int expectedStatusCode) {
         final String defaultMsg = "Did not receive status code [" + expectedStatusCode + "] during test action [" + testAction + "].";
-        return new ResponseStatusExpectation(testAction, Constants.STRING_CONTAINS, Integer.toString(expectedStatusCode), defaultMsg);
+        return new ResponseStatusExpectation(testAction, Constants.STRING_EQUALS, Integer.toString(expectedStatusCode), defaultMsg);
     }
 
     public static Expectation createJsonExpectation(String testAction, String key, String value, String failureMsg) {
