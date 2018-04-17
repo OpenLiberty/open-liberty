@@ -656,6 +656,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             AuthenticationResult authResult = null;
             if (authMech != null && authMech.equals("CLIENT_CERT")) {
                 // process client cert auth first.
+                webRequest.setDisableClientCertFailOver(true);
                 authResult = authenticateRequest(webRequest);
             }
             if (authResult == null || (authResult.getStatus() != AuthResult.SUCCESS && webAppSecConfig.allowFailOver())) {

@@ -72,7 +72,7 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
             authResult = authenticator.authenticate(webRequest);
             if (authenticator instanceof CertificateLoginAuthenticator &&
                 authResult != null && authResult.getStatus() != AuthResult.SUCCESS &&
-                webAppSecurityConfig.allowFailOver()) {
+                webAppSecurityConfig.allowFailOver() && !webRequest.isDisableClientCertFailOver()) {
                 extraAuditData.put(AuditConstants.ORIGINAL_AUTH_TYPE, authType);
                 authType = getFailOverToAuthType(webRequest);
                 extraAuditData.put(AuditConstants.FAILOVER_AUTH_TYPE, authType);
