@@ -18,21 +18,21 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
 public class FFDCData extends GenericData {
 
     public FFDCData() {
-        super(19);
+        super(13);
     }
 
     public static final String[] NAMES = {
-//                                           LogFieldConstants.DATETIME,
-//                                           LogFieldConstants.DATEOFFIRSTOCCURENCE,
-//                                           LogFieldConstants.COUNT,
+                                           LogFieldConstants.DATETIME,
+                                           LogFieldConstants.DATEOFFIRSTOCCURENCE,
+                                           LogFieldConstants.COUNT,
                                            LogFieldConstants.MESSAGE,
                                            LogFieldConstants.CLASSNAME,
-//                                           LogFieldConstants.LABEL,
+                                           LogFieldConstants.LABEL,
                                            LogFieldConstants.EXCEPTIONNAME,
                                            LogFieldConstants.PROBEID,
-//                                           LogFieldConstants.SOURCEID,
-//                                           LogFieldConstants.THREADID,
-//                                           LogFieldConstants.STACKTRACE,
+                                           LogFieldConstants.SOURCEID,
+                                           LogFieldConstants.THREADID,
+                                           LogFieldConstants.STACKTRACE,
                                            LogFieldConstants.OBJECTDETAILS,
                                            LogFieldConstants.SEQUENCE
     };

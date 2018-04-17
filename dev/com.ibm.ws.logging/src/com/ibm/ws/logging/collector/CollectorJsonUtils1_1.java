@@ -169,14 +169,16 @@ public class CollectorJsonUtils1_1 {
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
         CollectorJsonHelpers.addToJSON(sb, ffdcData.getDatetimeKey1_1(), datetime, false, true, false, false, false);
+
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getMessageKey1_1(), ffdcData.getMessage(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getClassNameKey1_1(), ffdcData.getClassName(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getExceptionNameKey1_1(), ffdcData.getExceptionName(), false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, ffdcData.getProbeIDKey1_1(), ffdcData.getProbeID(), false, true, false, false, false);
         CollectorJsonHelpers.addToJSON(sb, ffdcData.getThreadIdKey1_1(), DataFormatHelper.padHexString((int) ffdcData.getThreadId(), 8), false, true, false, false, false);
 
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
         CollectorJsonHelpers.addToJSON(sb, ffdcData.getStacktraceKey1_1(), formattedValue, false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getMessageKey1_1(), ffdcData.getMessage(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getClassNameKey1_1(), ffdcData.getClassName(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getExceptionNameKey1_1(), ffdcData.getExceptionName(), false, true, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, ffdcData.getExceptionNameKey1_1(), ffdcData.getExceptionName(), false, true, false, false, false);
+
         CollectorJsonHelpers.addToJSON(sb, ffdcData.getObjectDetailsKey1_1(), ffdcData.getObjectDetails(), false, true, false, false, false);
         CollectorJsonHelpers.addToJSON(sb, ffdcData.getSequenceKey1_1(), ffdcData.getSequence(), false, true, false, false, false);
 
@@ -196,7 +198,6 @@ public class CollectorJsonUtils1_1 {
 
         StringBuilder sb = CollectorJsonHelpers.startAccessLogJson1_1(hostName, wlpUserDir, serverName);
 
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestStartTimeKey1_1(), Long.toString(accessLogData.getRequestStartTime()), false, true, false, false, true);
         CollectorJsonHelpers.addToJSON(sb, accessLogData.getUriPathKey1_1(), accessLogData.getUriPath(), false, true, false, false, false);
         CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestMethodKey1_1(), accessLogData.getRequestMethod(), false, true, false, false, false);
 
@@ -208,29 +209,29 @@ public class CollectorJsonUtils1_1 {
                 // ignore, use the original value;
             }
         }
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.QUERYSTRING, jsonQueryString, false, true, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getQueryStringKey1_1(), jsonQueryString, false, true, false, false, false);
 
         CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestHostKey1_1(), accessLogData.getRequestHost(), false, true, false, false, false);
         CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestPortKey1_1(), accessLogData.getRequestPort(), false, true, false, false, false);
         CollectorJsonHelpers.addToJSON(sb, accessLogData.getRemoteHostKey1_1(), accessLogData.getRemoteHost(), false, true, false, false, false);
 
-        String userAgent = accessLogData.getQueryString();
+        String userAgent = accessLogData.getUserAgent();
 
         if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH) {
             userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
         }
 
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.USERAGENT, userAgent, false, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getUserAgentKey1_1(), userAgent, false, false, false, false, false);
 
         CollectorJsonHelpers.addToJSON(sb, accessLogData.getRequestProtocolKey1_1(), accessLogData.getRequestProtocol(), false, true, false, false, false);
         CollectorJsonHelpers.addToJSON(sb, accessLogData.getBytesReceivedKey1_1(), Long.toString(accessLogData.getBytesReceived()), false, true, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getBytesReceivedKey1_1(), Long.toString(accessLogData.getBytesReceived()), false, true, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getResponseCodeKey1_1(), Integer.toString(accessLogData.getResponseCode()), false, true, false, false, true);
         CollectorJsonHelpers.addToJSON(sb, accessLogData.getElapsedTimeKey1_1(), Long.toString(accessLogData.getElapsedTime()), false, true, false, false, true);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(accessLogData.getDatetime());
         CollectorJsonHelpers.addToJSON(sb, accessLogData.getDatetimeKey1_1(), datetime, false, true, false, false, false);
 
-        CollectorJsonHelpers.addToJSON(sb, accessLogData.getSequenceKey1_1(), accessLogData.getSequence(), false, true, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, accessLogData.getSequenceKey1_1(), accessLogData.getSequence(), false, true, false, false, false);
 
         if (tags != null) {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
@@ -273,20 +274,22 @@ public class CollectorJsonUtils1_1 {
         CollectorJsonHelpers.addToJSON(sb, logData.getClassNameKey1_1(), logData.getClassName(), false, true, false, false);
         CollectorJsonHelpers.addToJSON(sb, logData.getSequenceKey1_1(), logData.getSequence(), false, true, false, false);
         kvpl = logData.getExtensions();
-        if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
-            extensions = kvpl.getKeyValuePairs();
-            for (KeyValuePair k : extensions) {
-                String extKey = k.getKey();
-                if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
-                    CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
-                } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
-                    CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
-                } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
-                    CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
-                } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
-                    CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
-                } else {
-                    CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
+        if (kvpl != null) {
+            if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
+                extensions = kvpl.getKeyValuePairs();
+                for (KeyValuePair k : extensions) {
+                    String extKey = k.getKey();
+                    if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+                        CollectorJsonHelpers.addToJSON(sb, extKey, Integer.toString(k.getIntValue()), false, true, false, false, true);
+                    } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+                        CollectorJsonHelpers.addToJSON(sb, extKey, Float.toString(k.getFloatValue()), false, true, false, false, true);
+                    } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+                        CollectorJsonHelpers.addToJSON(sb, extKey, Long.toString(k.getLongValue()), false, true, false, false, true);
+                    } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+                        CollectorJsonHelpers.addToJSON(sb, extKey, Boolean.toString(k.getBooleanValue()), false, true, false, false, true);
+                    } else {
+                        CollectorJsonHelpers.addToJSON(sb, extKey, k.getStringValue(), false, true, false, false, false);
+                    }
                 }
             }
         }

@@ -51,7 +51,7 @@ public class AccessLogData extends GenericData {
     };
 
     public AccessLogData() {
-        super(19);
+        super(14);
     }
 
     private void setPair(int index, String s) {
