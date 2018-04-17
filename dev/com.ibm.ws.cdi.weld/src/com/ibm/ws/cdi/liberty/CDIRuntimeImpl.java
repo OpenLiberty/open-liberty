@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.enterprise.inject.spi.CDIProvider;
+import javax.enterprise.inject.spi.DefinitionException;
+import javax.enterprise.inject.spi.DeploymentException;
 
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.security.spi.SecurityServices;
@@ -386,23 +388,27 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
             //Because weld fires observes in all modules when endInitialization() is called
             //We can only set the jndi context once. This is sufficent for the java:app namespace
-            //but not for the java module namespace. 
-            	
-            //Origonally I tried to setup JNDI so only application metadata was on the thread but
-            //that didn't work so I use give classic utils one of the module archives.  
+            //but not for the java module namespace.
 
-            if (application.getModuleArchives().size() > 0 && 
-                    application.getApplicationMetaData() != null) {
+            //Origonally I tried to setup JNDI so only application metadata was on the thread but
+            //that didn't work so I use give classic utils one of the module archives.
+
+            if (application.getModuleArchives().size() > 0 &&
+                application.getApplicationMetaData() != null) {
                 CDIArchive archive = application.getModuleArchives().iterator().next();
                 beginContext(archive);
                 setContext = true;
             }
             WebSphereCDIDeployment webSphereCDIDeployment = getCDIContainer().startInitialization(application);
-            if (webSphereCDIDeployment != null) { 
-                getCDIContainer().endInitialization(webSphereCDIDeployment);//This split is just to keep the CDIContainerImpl code conistant across liberty & websphere. 
+            if (webSphereCDIDeployment != null) {
+                getCDIContainer().endInitialization(webSphereCDIDeployment);//This split is just to keep the CDIContainerImpl code conistant across liberty & websphere.
             }
         } catch (CDIException e) {
             throw new StateChangeException(e);
+        } catch (RuntimeException e) {
+            // Check whether this runtime failure was caused by an exception defined in the CDI spec
+            // If so, expose the spec exception at the top of the exception stack to ensure it appears in the server log
+            throw wrapWithCdiSpecCause(e);
         } finally {
             if (oldCl != null) {
                 CDIUtils.getAndSetLoader(oldCl);
@@ -510,6 +516,51 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         } catch (CDIException e) {
             return null;
         }
+    }
+
+    /**
+     * Expose any CDI spec exceptions in the cause chain
+     *
+     * If the cause chain of {@code t} contains any exceptions defined in the CDI spec, return a new instance of the same CDI exception type wrapping t.
+     * <p>
+     * This turns this:
+     * <code>
+     *
+     * <pre>
+     * MyException
+     * caused by WeldException
+     * caused by CDI Exception
+     * </pre>
+     *
+     * </code>
+     * into this:
+     * <code>
+     *
+     * <pre>
+     * CDI Exception
+     * caused by MyException
+     * caused by WeldException
+     * caused by CDI Exception
+     * </pre>
+     *
+     * </code>
+     * <p>
+     * This ensures that any exceptions required by the CDI spec are exposed as the failure in the server log.
+     *
+     * @param t the throwable whose cause chain is to be searched
+     * @return a CDI spec exception wrapping t, or {@code t} if none was found in the cause chain
+     */
+    private RuntimeException wrapWithCdiSpecCause(RuntimeException t) {
+        Throwable cause = t;
+        while (cause != null) {
+            if (cause instanceof DeploymentException) {
+                return new DeploymentException(t);
+            } else if (cause instanceof DefinitionException) {
+                return new DefinitionException(t);
+            }
+            cause = cause.getCause();
+        }
+        return t;
     }
 
 }
