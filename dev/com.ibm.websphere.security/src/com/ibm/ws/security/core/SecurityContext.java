@@ -68,13 +68,7 @@ public class SecurityContext {
      */
     public static String getUser() {
         String accessid = null;
-        WSCredential credential = AccessController.doPrivileged(new PrivilegedAction<WSCredential>() {
-
-            @Override
-            public WSCredential run() {
-                return getCallerWSCredential();
-            }
-        });
+        WSCredential credential = getCallerWSCredential();
 
         try {
             if (credential != null && !credential.isUnauthenticated())
