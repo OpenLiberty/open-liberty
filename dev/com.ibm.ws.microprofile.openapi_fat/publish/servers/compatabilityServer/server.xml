@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>mpOpenAPI-1.0</feature>
+        <feature>jaxrs-2.1</feature>
+        <feature>mpConfig-1.2</feature>
+        <feature>servlet-4.0</feature>
+    </featureManager>
+
+
+ <include location="../fatTestPorts.xml"/>
+</server>
