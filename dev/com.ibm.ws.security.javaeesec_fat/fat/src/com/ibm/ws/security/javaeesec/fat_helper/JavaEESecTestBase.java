@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
@@ -49,6 +50,7 @@ public class JavaEESecTestBase {
     // Values to be set by the child class
     protected LibertyServer server;
     protected static Class<?> logClass;
+    protected static String serverConfigurationFile = "server.xml";
 
     protected JavaEESecTestBase(LibertyServer server, Class<?> logClass) {
         this.server = server;
@@ -563,6 +565,21 @@ public class JavaEESecTestBase {
         }
     }
 
+    /**
+     *
+     * @param client
+     * @param location
+     * @param expectedStatusCode
+     * @return
+     */
+    protected void accessPageExpectException(HttpClient client, String location) throws IOException, SSLPeerUnverifiedException {
+        String methodName = "accessPageExpectException";
+        Log.info(logClass, methodName, "accessPageExpectException: location =  " + location);
+        HttpGet getMethod = new HttpGet(location);
+        HttpResponse response = client.execute(getMethod);
+        Log.info(logClass, methodName, "getMethod status:  " + response.getStatusLine());
+    }
+
     public void mustContain(String response, String target) {
         assertTrue("Expected result " + target + " not found in response: " + response, response.contains(target));
     }
@@ -730,7 +747,8 @@ public class JavaEESecTestBase {
     /**
      * verify the group names. Note that this is a simple string comparison.
      **/
-    public void verifyGroups(String response, String groups) {
+    public void 
+    verifyGroups(String response, String groups) {
         Log.info(logClass, "verifyGroups", "Verify group contains: " + groups);
         mustContain(response, "groupIds=[" + groups + "]");
     }
@@ -762,4 +780,19 @@ public class JavaEESecTestBase {
         mustContain(response, isCallerInRoleString);
     }
 
+    /**
+     * This is an internal method used to set the server.xml
+     */
+    public void setServerConfiguration(String serverXML) throws Exception {
+        if (!serverConfigurationFile.equals(serverXML)) {
+            // Update server.xml
+            Log.info(logClass, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
+            server.setMarkToEndOfLog();
+            server.setServerConfigurationFile("/" + serverXML);
+            Log.info(logClass, "setServerConfiguration",
+                     "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
+            server.waitForStringInLogUsingMark("CWWKG0017I");
+            serverConfigurationFile = serverXML;
+        }
+    }
 }
