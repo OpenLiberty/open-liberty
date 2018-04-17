@@ -159,6 +159,7 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
             this.director.installFeature(esaLocation, toExtension, acceptLicense);
             this.director.install(existsAction, false, false);
             installed = this.director.getInstalledFeatureNames();
+            this.director.reapplyFixIfNeeded();
         } catch (InstallException e) {
             throw e;
         } finally {
