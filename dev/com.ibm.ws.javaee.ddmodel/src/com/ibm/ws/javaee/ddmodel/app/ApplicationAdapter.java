@@ -12,10 +12,6 @@ package com.ibm.ws.javaee.ddmodel.app;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
-// import org.osgi.service.component.annotations.Reference;
-// import org.osgi.service.component.annotations.ReferenceCardinality;
-// import org.osgi.service.component.annotations.ReferencePolicy;
-// import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.app.Application;
@@ -92,11 +88,6 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
 
         @Override
         protected DDParser.ParsableElement createRootParsable() throws ParseException {
-            System.out.println("Public ID [ " + dtdPublicId + " ]");
-            System.out.println("Name space [ " + namespace + " ]");
-            System.out.println("Version [ " + getAttributeValue("", "version")+ " ]");
-            System.out.println("Root element [ " + rootElementLocalName + " ]");
-
             if (!"application".equals(rootElementLocalName)) {
                 throw new ParseException(invalidRootElement());
             }
