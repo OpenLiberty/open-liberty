@@ -94,11 +94,11 @@ public class TraceRouterConfigurator {
      * This method is called from the ServiceListener.
      */
     protected void setWsTraceHandler(ServiceReference<WsTraceHandler> ref) {
-		/*
-		 * If Liberty Server spawned with BaseTraceService, then JsonTrService
-		 * is set to true and we do not need to set the WsTraceHandler (i.e.
-		 * source ) into the traceRouter
-		 */
+    	/*
+    	* If Liberty Server spawned with BaseTraceService, then JsonTrService
+    	* is set to true and we do not need to set the WsTraceHandler (i.e.
+    	* source ) into the traceRouter
+    	*/
     	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService() && (bundleContext.getService(ref) instanceof TraceSource)) {
     		return;
     	} else {
