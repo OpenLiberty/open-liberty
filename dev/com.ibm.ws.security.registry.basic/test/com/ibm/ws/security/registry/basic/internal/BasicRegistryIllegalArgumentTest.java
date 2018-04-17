@@ -59,6 +59,11 @@ public class BasicRegistryIllegalArgumentTest extends UserRegistryIllegalArgumen
             public String certificateMapperId() {
                 return null;
             }
+
+            @Override
+            public String CertificateMapper_target() {
+                return null;
+            }
         });
         return basicRegistry;
     }

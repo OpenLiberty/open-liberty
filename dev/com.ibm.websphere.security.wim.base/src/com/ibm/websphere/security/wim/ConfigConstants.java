@@ -472,8 +472,10 @@ public interface ConfigConstants {
     String CONFIG_VALUE_EXTACT_DN_MODE = "EXACT_DN";
     String CONFIG_VALUE_FILTER_DESCRIPTOR_MODE = "CERTIFICATE_FILTER";
     String CONFIG_VALUE_CUSTOM_MODE = "CUSTOM";
+    String CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE = "NOT_SUPPORTED";
     String[] CONFIG_PROP_CERTIFICATE_MAP_MODE_VALUES = {
-                                                         CONFIG_VALUE_EXTACT_DN_MODE, CONFIG_VALUE_FILTER_DESCRIPTOR_MODE, CONFIG_VALUE_CUSTOM_MODE
+                                                         CONFIG_VALUE_EXTACT_DN_MODE, CONFIG_VALUE_FILTER_DESCRIPTOR_MODE, CONFIG_VALUE_CUSTOM_MODE,
+                                                         CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE
     };
     String CONFIG_PROP_CERTIFICATE_FILTER = "certificateFilter";
     String CONFIG_PROP_CERTIFICATE_MAPPER_ID = "certificateMapperId";

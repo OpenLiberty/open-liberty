@@ -1594,4 +1594,29 @@ public interface WIMMessageKey {
      * The extended property cannot override a property on the entity.
      */
     String DUPLICATE_PROPERTY_ENTITY = "DUPLICATE_PROPERTY_ENTITY";
+
+    /**
+     * The LDAP registry will ignore the certificate authentication request since 'certificateMapeMode' is set to IGNORE.
+     */
+    String LDAP_REGISTRY_CERT_IGNORED = "LDAP_REGISTRY_CERT_IGNORED";
+
+    /**
+     * No custom X.509 certificate mapper implementation has been registered with the LDAP registry.
+     */
+    String LDAP_REGISTRY_MAPPER_NOT_BOUND = "LDAP_REGISTRY_MAPPER_NOT_BOUND";
+
+    /**
+     * The custom X.509 certificate mapper implementation has thrown a CertificateMapNotSupportedException.
+     */
+    String LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED = "LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED";
+
+    /**
+     * The custom X.509 certificate mapper implementation has thrown a CertificateMapFailedException.
+     */
+    String LDAP_REGISTRY_CUSTOM_MAPPER_FAILED = "LDAP_REGISTRY_CUSTOM_MAPPER_FAILED";
+
+    /**
+     * The custom X.509 certificate mapper implementation returned an invalid mapping value.
+     */
+    String LDAP_REGISTRY_INVALID_MAPPING = "LDAP_REGISTRY_INVALID_MAPPING";
 }

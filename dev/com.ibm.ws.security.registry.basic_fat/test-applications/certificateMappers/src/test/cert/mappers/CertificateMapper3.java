@@ -14,21 +14,15 @@ package test.cert.mappers;
 import java.security.cert.X509Certificate;
 
 import com.ibm.websphere.security.CertificateMapFailedException;
-import com.ibm.websphere.security.CertificateMapNotSupportedException;
-import com.ibm.websphere.security.CertificateMapper;
+import com.ibm.websphere.security.X509CertificateMapper;
 
 /**
  * CertificateMapper that throws a CertificateMapFailedException.
  */
-public class CertificateMapper3 implements CertificateMapper {
+public class CertificateMapper3 implements X509CertificateMapper {
 
     @Override
-    public String getId() {
-        return "mapper3";
-    }
-
-    @Override
-    public String mapCertificate(X509Certificate certificate) throws CertificateMapNotSupportedException, CertificateMapFailedException {
+    public String mapCertificate(X509Certificate[] certificates) throws CertificateMapFailedException {
         throw new CertificateMapFailedException();
     }
 }
