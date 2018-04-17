@@ -10,23 +10,6 @@
  -->
 <server>
 
-    <featureManager>
-        <feature>jsp-2.3</feature>        
-        <feature>componenttest-1.0</feature>
-        <feature>jwtSso-1.0</feature>
-    </featureManager>
-     <authentication cacheEnabled="false"/>
-    <jwtSso  jwtBuilderRef="builder02" setCookieSecureFlag="false"/>
-     <jwtBuilder id="builder02" issuer="https://flintstone:19443/jwt/defaultJWT"/>
-    <include location="../fatTestPorts.xml"/>
-     
-
-    <keyStore id="defaultKeyStore" password="Liberty" />
-
-    <basicRegistry realm="BasicRealm">
-        <user name="testuser" password="testuserpwd"/>
-    </basicRegistry>
-
     <application type="war" id="formlogin" name="formlogin" location="${server.config.dir}/apps/formlogin.war" >
         <application-bnd>
             <security-role name="Employee">
