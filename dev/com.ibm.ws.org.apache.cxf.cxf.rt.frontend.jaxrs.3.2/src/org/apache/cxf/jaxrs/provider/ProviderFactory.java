@@ -322,7 +322,9 @@ public abstract class ProviderFactory {
                         if (argCls != null && argCls.isAssignableFrom(contextCls)) {
                             List<MediaType> mTypes = JAXRSUtils.getProduceTypes(
                                                                                 cr.getProvider().getClass().getAnnotation(Produces.class));
-                            if (JAXRSUtils.intersectMimeTypes(mTypes, type).size() > 0) {
+                            //Liberty code change begin
+                            if (JAXRSUtils.doMimeTypesIntersect(mTypes, type)) {
+                            //Liberty code change end
                                 injectContextValues(cr, m);
                                 candidates.add((ContextResolver<T>) cr.getProvider());
                             }
@@ -937,10 +939,9 @@ public abstract class ProviderFactory {
         MessageBodyReader<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderConsumeTypes(ep);
 
-        List<MediaType> availableMimeTypes =
-            JAXRSUtils.intersectMimeTypes(Collections.singletonList(mediaType), supportedMediaTypes, false);
-
-        return availableMimeTypes.size() != 0;
+        //Liberty code change begin
+        return JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
+        //Liberty code change end
     }
 
     private boolean isReadable(ProviderInfo<MessageBodyReader<?>> pi,
@@ -983,16 +984,13 @@ public abstract class ProviderFactory {
         }
         MessageBodyWriter<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderProduceTypes(ep);
-
-        List<MediaType> availableMimeTypes =
-            JAXRSUtils.intersectMimeTypes(Collections.singletonList(mediaType),
-                                                                           supportedMediaTypes, false);
-
-        boolean b = availableMimeTypes.size() != 0;
+        //Liberty code change begin
+        boolean b = JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "matchesWriterMediaTypes return " + b);
         }
         return b;
+        //Liberty code change end
     }
 
     private boolean isWriteable(ProviderInfo<MessageBodyWriter<?>> pi,

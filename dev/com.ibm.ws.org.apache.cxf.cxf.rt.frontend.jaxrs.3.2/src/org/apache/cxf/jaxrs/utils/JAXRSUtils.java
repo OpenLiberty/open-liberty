@@ -1435,21 +1435,27 @@ public final class JAXRSUtils {
     public static boolean matchConsumeTypes(MediaType requestContentType,
                                             OperationResourceInfo ori) {
 
-        return !intersectMimeTypes(ori.getConsumeTypes(), requestContentType).isEmpty();
+        // Liberty change begin
+        return doMimeTypesIntersect(ori.getConsumeTypes(), requestContentType);
+        // Liberty change end
     }
 
     public static boolean matchProduceTypes(MediaType acceptContentType,
                                             OperationResourceInfo ori) {
 
-        return !intersectMimeTypes(ori.getProduceTypes(), acceptContentType).isEmpty();
+        // Liberty change begin
+        return doMimeTypesIntersect(ori.getProduceTypes(), acceptContentType);
+        // Liberty change end
     }
 
     public static boolean matchMimeTypes(MediaType requestContentType,
                                          MediaType acceptContentType,
                                          OperationResourceInfo ori) {
 
-        return intersectMimeTypes(ori.getConsumeTypes(), requestContentType).size() != 0
-               && intersectMimeTypes(ori.getProduceTypes(), acceptContentType).size() != 0;
+        // Liberty change begin
+        return doMimeTypesIntersect(ori.getConsumeTypes(), requestContentType) &&
+               doMimeTypesIntersect(ori.getProduceTypes(), acceptContentType);
+        // Liberty change end
     }
 
     public static List<MediaType> parseMediaTypes(String types) {
@@ -1486,6 +1492,42 @@ public final class JAXRSUtils {
                                                      boolean addRequiredParamsIfPossible) {
         return intersectMimeTypes(requiredMediaTypes, userMediaTypes, addRequiredParamsIfPossible, false);
     }
+
+    // Liberty change begin
+    public static boolean doMimeTypesIntersect(List<MediaType> requiredMediaTypes,
+                                               List<MediaType> userMediaTypes) {
+        for (MediaType requiredType : requiredMediaTypes) {
+            for (MediaType userType : userMediaTypes) {
+                boolean isCompatible = isMediaTypeCompatible(requiredType, userType);
+                if (isCompatible) {
+                    boolean parametersMatched = true;
+                    for (Map.Entry<String, String> entry : userType.getParameters().entrySet()) {
+                        String value = requiredType.getParameters().get(entry.getKey());
+                        if (value != null && entry.getValue() != null
+                            && !(stripDoubleQuotesIfNeeded(value).equals(stripDoubleQuotesIfNeeded(entry.getValue())))) {
+                            if (HTTP_CHARSET_PARAM.equals(entry.getKey())
+                                && value.equalsIgnoreCase(entry.getValue())) {
+                                continue;
+                            }
+                            parametersMatched = false;
+                            break;
+                        }
+                    }
+                    if (!parametersMatched) {
+                        continue;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    public static boolean doMimeTypesIntersect(List<MediaType> mimeTypesA, MediaType mimeTypeB) {
+        return doMimeTypesIntersect(mimeTypesA, Collections.singletonList(mimeTypeB));
+    }
+    // Liberty change end
 
     public static List<MediaType> intersectMimeTypes(List<MediaType> requiredMediaTypes,
                                                      List<MediaType> userMediaTypes,
