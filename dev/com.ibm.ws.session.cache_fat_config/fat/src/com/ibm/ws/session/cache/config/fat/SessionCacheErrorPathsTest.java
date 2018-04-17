@@ -11,6 +11,7 @@
 package com.ibm.ws.session.cache.config.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedInputStream;
@@ -334,9 +335,13 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         server.startServer();
 
         // access a session to exercise codepath before capturing dump
-        List<String> session = new ArrayList<>();
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testServerDumpWithoutMonitoring&value=val1", session);
+        List<String> session1 = new ArrayList<>();
+        List<String> session2 = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testServerDumpWithoutMonitoring1&value=val1&maxInactiveInterval=1900", session1);
         try {
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testServerDumpWithoutMonitoring2&value=val2&maxInactiveInterval=2000",
+                         session2);
+
             List<String> lines = sessionCacheIntrospectorDump();
             String dumpInfo = lines.toString();
             int i = 0;
@@ -344,6 +349,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
             assertTrue(dumpInfo, lines.contains("CachingProvider implementation: com.hazelcast.cache.HazelcastCachingProvider"));
             assertTrue(dumpInfo, lines.contains("Cache manager URI: hazelcast"));
+            assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
+            assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
+
             assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
 
             Set<String> expectedCaches = new HashSet<String>();
@@ -353,8 +361,24 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
                 caches.add(lines.get(c).trim());
             assertEquals(dumpInfo, expectedCaches, caches);
+
+            assertTrue(dumpInfo, lines.contains("  closed? false"));
+            assertFalse(dumpInfo, lines.contains("  closed? true"));
+
+            assertTrue(dumpInfo, lines.contains("  is management enabled? false"));
+            assertFalse(dumpInfo, lines.contains("  is management enabled? true"));
+
+            assertTrue(dumpInfo, lines.contains("  is statistics enabled? false"));
+            assertFalse(dumpInfo, lines.contains("  is statistics enabled? true"));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
         } finally {
-            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session1);
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session2);
         }
     }
 }
