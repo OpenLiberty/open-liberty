@@ -19,4 +19,9 @@
 
     <!-- javaee-7.0 includs ssl, which requires a keystore -->
     <keyStore id="defaultKeyStore" password="yourPassword"/>
+
+    <!-- javaee-7.0 enables remote EJBs, which require an ORB,
+         which requires a user registry.  The QSS element
+         creates a simple one element user registry. -->
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
 </server>
