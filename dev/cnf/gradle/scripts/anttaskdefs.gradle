@@ -52,6 +52,7 @@ rootProject.ext.featureBndTaskdef = { ant ->
         featureTasks project(':wlp-featureTasks')
         featureTasks project(':com.ibm.ws.kernel.boot.core')
         featureTasks project(':com.ibm.ws.logging.core')
+        featureTasks "biz.aQute.bnd:biz.aQute.bnd:3.5.0"
         featureTasks "org.apache.ant:ant:1.9.6"
         featureTasks "com.ibm.ws.componenttest:infra.buildtasks-core:4.0.0"
         featureTasks "org.jsoup:jsoup:1.7.2"
