@@ -443,7 +443,8 @@ public class AuthenticateApi {
      * @param resp
      * @param authResult
      */
-    public void postProgrammaticAuthenticate(HttpServletRequest req, HttpServletResponse resp, AuthenticationResult authResult, boolean alwaysSetCallerSubject, boolean addSSOCookie) {
+    public void postProgrammaticAuthenticate(HttpServletRequest req, HttpServletResponse resp, AuthenticationResult authResult, boolean alwaysSetCallerSubject,
+                                             boolean addSSOCookie) {
         Subject subject = authResult.getSubject();
         if (alwaysSetCallerSubject || new SubjectHelper().isUnauthenticated(subjectManager.getCallerSubject())) {
             subjectManager.setCallerSubject(subject);
@@ -545,9 +546,6 @@ public class AuthenticateApi {
         WebReply reply = null;
         switch (authResult.getStatus()) {
             case FAILURE:
-                String reason = authResult.getReason();
-                if (reason != null && reason.contains("JASPIC"))
-                    return new ChallengeReply(realm, reason);
                 return DENY_AUTHN_FAILED;
 
             case SEND_401:

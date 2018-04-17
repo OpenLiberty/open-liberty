@@ -202,7 +202,7 @@ public class FormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext();
         withUsernamePassword(USER1, "invalid").withAuthenticationRequest(false);
-        withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
         withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
@@ -239,7 +239,7 @@ public class FormAuthenticationMechanismTest {
         final MyCallbackHandler mch = new MyCallbackHandler();
         withMessageContext().withHandler(mch);
         withUsernamePassword(USER1, "invalid").withAuthenticationRequest(false);
-        withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
         withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
@@ -263,7 +263,7 @@ public class FormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext();
         withUsernamePassword(USER1, "invalid").withAuthenticationRequest(true);
-        withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
         withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
@@ -287,7 +287,7 @@ public class FormAuthenticationMechanismTest {
         final MyCallbackHandler mch = new MyCallbackHandler();
         withMessageContext().withHandler(mch);
         withUsernamePassword(USER1, "invalid").withAuthenticationRequest(true);
-        withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
         withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
@@ -317,7 +317,7 @@ public class FormAuthenticationMechanismTest {
     public void testValidateRequestAuthReqTrueValidIdAndPWNoIdentityStoreHandlerNoCallbackHandler() throws Exception {
         withMessageContext().withHandler(null);
         withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true);
-        withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
         withJaspicSessionEnabled(false);
 
         fam.validateRequest(request, res, hmc);

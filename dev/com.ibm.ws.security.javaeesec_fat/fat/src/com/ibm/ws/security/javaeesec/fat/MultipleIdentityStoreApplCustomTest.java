@@ -192,7 +192,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
      * </OL>
      * <P> Expected Results:
      * <OL>
-     * <LI> Return code 403 (This this is not the basic auth, it returns 403 instead of 401).
+     * <LI> Return code 401
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
@@ -244,7 +244,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         myServer.setMarkToEndOfLog();
         String response = accessWithCustomHeader(httpclient, urlBase + queryString, HEADER_NAME, LocalLdapServer.USER1 + ":" + LocalLdapServer.INVALIDPASSWORD,
-                                                 HttpServletResponse.SC_UNAUTHORIZED);
+                                                 HttpServletResponse.SC_FORBIDDEN);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
