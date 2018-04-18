@@ -40,7 +40,6 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
@@ -62,8 +61,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private static final int BASE_PREFIX_LENGTH = BASE_PREFIX.length();
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; //3 is the length of .0.
 
-    CacheManager cacheManager;
-    CachingProvider cachingProvider;
+    volatile CacheManager cacheManager; // requires lazy activation
+    volatile CachingProvider cachingProvider; // requires lazy activation
 
     private volatile boolean completedPassivation = true;
 
@@ -81,12 +80,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     /**
      * Trace identifier for the cache manager
      */
-    String tcCacheManager;
+    volatile String tcCacheManager; // requires lazy activation
 
     /**
      * Trace identifier for the caching provider.
      */
-    private String tcCachingProvider;
+    private volatile String tcCachingProvider; // requires lazy activation
 
     volatile UserTransaction userTransaction;
 
@@ -98,9 +97,17 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @param props service properties
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-
         configurationProperties = new HashMap<String, Object>(props);
+    }
+
+    /**
+     * Performs deferred activation/initialization.
+     */
+    synchronized void activateLazily() {
+        if (cacheManager != null)
+            return; // lazy initialization has already completed
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
         Object scheduleInvalidationSecondHour = configurationProperties.get("scheduleInvalidationSecondHour");
@@ -122,7 +129,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         
         Properties vendorProperties = new Properties();
         
-        String uriValue = (String) props.get("uri");
+        String uriValue = (String) configurationProperties.get("uri");
         URI uri = null;
         if(uriValue != null)
             try {
@@ -131,7 +138,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
             }
         
-        for (Map.Entry<String, Object> entry : props.entrySet()) {
+        for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
@@ -239,19 +246,21 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             } catch (InterruptedException e) {
             }
 
-        if (trace && tc.isDebugEnabled())
-            CacheHashMap.tcInvoke(tcCachingProvider, "close");
+        if (cachingProvider != null) {
+            if (trace && tc.isDebugEnabled())
+                CacheHashMap.tcInvoke(tcCachingProvider, "close");
 
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            cachingProvider.close();
-            return null;
-        });
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                cachingProvider.close();
+                return null;
+            });
 
-        if (trace && tc.isDebugEnabled())
-            CacheHashMap.tcReturn(tcCachingProvider, "close");
+            if (trace && tc.isDebugEnabled())
+                CacheHashMap.tcReturn(tcCachingProvider, "close");
 
-        cachingProvider = null;
-        cacheManager = null;
+            cachingProvider = null;
+            cacheManager = null;
+        }
     }
 
     @Override

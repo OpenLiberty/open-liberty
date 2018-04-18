@@ -415,6 +415,17 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that sessions are not available, even if requesting a new session
+     */
+    public void testSessionCacheNotAvailable(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            request.getSession(true);
+        } catch (NullPointerException x) {
+            // expected due to misconfigured http session cache
+        }
+    }
+
+    /**
      * Set the value of a session attribute.
      * Precondition: in order for the test logic to be valid, the session attribute must not already have the same value.
      */

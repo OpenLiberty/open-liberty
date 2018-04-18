@@ -134,6 +134,10 @@ public class CacheHashMap extends BackedHashMap {
     private void cacheInit() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
+        // Attempt lazy initialization if necessary
+        if (cacheStoreService.cacheManager == null)
+            cacheStoreService.activateLazily();
+
         // Build a unique per-application cache name by starting with the application context root and percent encoding
         // the / and : characters (JCache spec does not allow these in cache names)
         // and also the % character (which is necessary because of percent encoding)

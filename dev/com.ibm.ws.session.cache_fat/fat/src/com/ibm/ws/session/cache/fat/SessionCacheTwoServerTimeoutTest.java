@@ -62,6 +62,17 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
 
         serverA.startServer();
         serverB.startServer();
+
+        // Use HTTP sessions on each of the servers before running any tests, so that the time it takes to initialize
+        // the JCache provider does not interfere with timing of tests.
+
+        List<String> sessionA = new ArrayList<>();
+        appA.sessionPut("init-app-A", "A", sessionA, true);
+        appA.invalidateSession(sessionA);
+
+        List<String> sessionB = new ArrayList<>();
+        appB.sessionPut("init-app-B", "B", sessionB, true);
+        appB.invalidateSession(sessionB);
     }
 
     @AfterClass
