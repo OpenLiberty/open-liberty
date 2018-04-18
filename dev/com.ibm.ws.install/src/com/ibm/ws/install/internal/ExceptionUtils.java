@@ -13,6 +13,8 @@ package com.ibm.ws.install.internal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -557,5 +559,18 @@ public class ExceptionUtils {
     private static InstallException create(String msg, Exception e, int rc) {
         InstallException ie = new InstallException(msg, e, rc);
         return ie;
+    }
+
+    /**
+     * Extracts StackTrace from exception and translates it to a string
+     *
+     * @param e
+     * @return stackTrace
+     */
+    static String stacktraceToString(Exception e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        String stackTrace = sw.toString();
+        return stackTrace;
     }
 }
