@@ -341,8 +341,8 @@
 			<mavendependencies>
 				<dependency>
 					<groupId>javax.jms</groupId>
-					<artifactId>jms</artifactId>
-					<version>1.1</version>
+					<artifactId>javax.jms-api</artifactId>
+					<version>2.0</version>
 				</dependency>
 			</mavendependencies>
 		</feature>
