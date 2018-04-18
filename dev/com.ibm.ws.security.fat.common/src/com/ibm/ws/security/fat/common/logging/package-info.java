@@ -8,26 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-def thisProject = project(':wlp-bndPlugins')
-
-jar {
-  /* After building, we need to refresh the bnd Projects to pickup the bnd plugins built here. */
-  doLast {
-    println 'Refresh bnd Projects after building bnd plugins in ' + project.name
-    bnd.project.refresh()
-    bnd.project.clear()
-    parent.subprojects {
-      if (project != thisProject) {
-        bnd.project.refresh()
-        bnd.project.clear()
-      }
-    }
-  }
-}
-
-clean {
-  doLast {
-    println 'Not removing wlp-bndPlugins.jar during gradle clean task'
-  }
-}
+/**
+ * @version 1.0.0
+ */
+@org.osgi.annotation.versioning.Version("1.0.20")
+package com.ibm.ws.security.fat.common.logging;
