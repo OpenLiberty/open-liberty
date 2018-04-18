@@ -21,4 +21,4 @@ Service-Component: \
   com.ibm.ws.javaee.platform.v7; \
     implementation:=com.ibm.ws.javaee.version.JavaEEVersion; \
     provide:=com.ibm.ws.javaee.version.JavaEEVersion; \
-    properties:="version=7.0"
+    properties:="version=7.0,service.ranking:Integer=7"
