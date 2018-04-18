@@ -171,6 +171,14 @@ public class DataFrameTests extends H2FATDriverServlet {
         h2Client.addExpectedFrame(errorFrame);
         h2Client.waitFor(headers);
         h2Client.sendFrame(frameHeadersToSend);
+
+        // delay to try to make sure all activity is done before sending the frame, so we can see
+        // the GOAWAY coming back before the connection close
+        try {
+            Thread.sleep(1000);
+        } catch (Exception x) {
+        }
+
         h2Client.sendFrame(dataFrame);
 
         blockUntilConnectionIsDone.await();
