@@ -46,4 +46,5 @@ public final class SpringConstants {
                                                         "virtualHostName=\"";
     public static final String XMI_VIRTUAL_HOST_END = "\">\n" +
                                                       "</webappbnd:WebAppBinding>";
+    public static final String APP_ARGS = "applicationArgument";
 }

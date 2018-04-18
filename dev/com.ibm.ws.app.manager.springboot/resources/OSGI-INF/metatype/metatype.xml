@@ -28,6 +28,7 @@
                          com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd,
                          com.ibm.ws.jca.embeddedResourceAdapter">
         <AD id="type" name="internal" description="internal" type="String" default="spr" ibm:final="true"/>
+        <AD id="applicationArgument" name="%applicationArgument.name" description="%applicationArgument.desc" required="false" type="String" cardinality="2147483647"/>
     </OCD>
     <Designate factoryPid="com.ibm.ws.app.manager.springappcfg">
         <Object ocdref="com.ibm.ws.app.manager.springappcfg"/>

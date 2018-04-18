@@ -15,7 +15,9 @@ import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
@@ -24,6 +26,10 @@ public class TestApplication {
 	public static final String TEST_ATTR = "test.weblistener.attr";
 	@Autowired
 	ServletContext context; 
+
+	@Autowired
+	private Environment env;
+
 	public static void main(String[] args) {
 		SpringApplication.run(TestApplication.class, args);
 	}
@@ -36,6 +42,11 @@ public class TestApplication {
 	@RequestMapping(value="/buttonClicked", produces="text/html")
 	public String click() {
 		return "Hello. You clicked a button.";
+	}
+
+	@RequestMapping(value="/getAppProp")
+	public String getAppProperty(@RequestParam("key") String key) {
+		return env.getProperty(key);
 	}
 
 	@RequestMapping("/testWebListenerAttr")

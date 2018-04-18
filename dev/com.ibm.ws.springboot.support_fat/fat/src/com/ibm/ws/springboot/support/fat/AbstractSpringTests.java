@@ -145,7 +145,9 @@ public abstract class AbstractSpringTests {
         return true;
     }
 
-    public void modifyAppConfiguration(SpringBootApplication appConfig) {}
+    public void modifyAppConfiguration(SpringBootApplication appConfig) {
+        // do nothing by default
+    }
 
     @Before
     public void configureServer() throws Exception {
