@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,6 @@
  */
 package com.ibm.ws.security.core;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -81,26 +79,21 @@ public class SecurityContext {
     }
 
     private static WSCredential getCallerWSCredential() {
-        return AccessController.doPrivileged(new PrivilegedAction<WSCredential>() {
-
-            @Override
-            public WSCredential run() {
-                WSCredential wsCredential = null;
-                try {
-                    Subject subject = WSSubject.getCallerSubject();
-                    if (subject != null) {
-                        Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
-                        Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
-                        if (wsCredentialsIterator.hasNext()) {
-                            wsCredential = wsCredentialsIterator.next();
-                        }
-                    }
-                } catch (WSSecurityException e) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, "Internal error: " + e);
+        WSCredential wsCredential = null;
+        try {
+            Subject subject = WSSubject.getCallerSubject();
+            if (subject != null) {
+                Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+                Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+                if (wsCredentialsIterator.hasNext()) {
+                    wsCredential = wsCredentialsIterator.next();
                 }
-                return wsCredential;
             }
-        });
+        } catch (WSSecurityException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Internal error: " + e);
+        }
+        return wsCredential;
     }
+
 }
