@@ -27,7 +27,6 @@ import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
-import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
@@ -137,21 +136,18 @@ public class LogSource implements Source, WsLogHandler {
 
         LogTraceData logData = new LogTraceData();
         LogRecord logRecord = routedMessage.getLogRecord();
-        String messageVal = extractMessage(routedMessage, logRecord);
 
         long dateVal = logRecord.getMillis();
         logData.setDatetime(dateVal);
 
         String messageIdVal = null;
-
+        String messageVal = extractMessage(routedMessage, logRecord);
         if (messageVal != null) {
             messageIdVal = parseMessageId(messageVal);
-            logData.setMessageId(messageIdVal);
-        } else {
-            logData.setMessageId(null);
         }
+        logData.setMessageId(messageIdVal);
 
-        int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
+        int threadIdVal = (int) Thread.currentThread().getId();
         logData.setThreadId(threadIdVal);
         logData.setModule(logRecord.getLoggerName());
         logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
@@ -163,7 +159,6 @@ public class LogSource implements Source, WsLogHandler {
         logData.setThreadName(threadName);
 
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
-
         if (wsLogRecord != null) {
             logData.setCorrelationId(wsLogRecord.getCorrelationId());
             logData.setOrg(wsLogRecord.getOrganization());
@@ -181,11 +176,8 @@ public class LogSource implements Source, WsLogHandler {
         Throwable thrown = logRecord.getThrown();
         if (thrown != null) {
             String stackTrace = DataFormatHelper.throwableToString(thrown);
-            if (stackTrace != null) {
-                logData.setThrowable(stackTrace);
-            } else {
-                logData.setThrowable(stackTrace);
-            }
+            logData.setThrowable(stackTrace);
+
             String s = thrown.getLocalizedMessage();
             if (s == null) {
                 s = thrown.toString();
@@ -217,6 +209,8 @@ public class LogSource implements Source, WsLogHandler {
             logData.setExtensions(null);
         }
 
+        // cannot pass null to traceData.setObjectId(int i)
+
         logData.setSourceType(sourceName);
 
         return logData;
@@ -224,45 +218,62 @@ public class LogSource implements Source, WsLogHandler {
     }
 
     /* Overloaded method for test, should be removed down the line */
-    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
+    public LogTraceData parse(RoutedMessage routedMessage, LogRecord logRecord) {
 
-        GenericData genData = new GenericData();
-        String messageVal = extractMessage(routedMessage, logRecord);
+        LogTraceData logData = new LogTraceData();
 
         long dateVal = logRecord.getMillis();
-        genData.addPair(LogFieldConstants.IBM_DATETIME, dateVal);
+        logData.setDatetime(dateVal);
 
         String messageIdVal = null;
-
+        String messageVal = extractMessage(routedMessage, logRecord);
         if (messageVal != null) {
             messageIdVal = parseMessageId(messageVal);
         }
+        logData.setMessageId(messageIdVal);
 
-        genData.addPair(LogFieldConstants.IBM_MESSAGEID, messageIdVal);
+        int threadIdVal = (int) Thread.currentThread().getId();
+        logData.setThreadId(threadIdVal);
+        logData.setModule(logRecord.getLoggerName());
+        logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
+        logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
+        logData.setMethodName(logRecord.getSourceMethodName());
+        logData.setClassName(logRecord.getSourceClassName());
 
-        int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
-        genData.addPair(LogFieldConstants.IBM_THREADID, threadIdVal);
-        genData.addPair(LogFieldConstants.MODULE, logRecord.getLoggerName());
-        genData.addPair(LogFieldConstants.SEVERITY, LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair(LogFieldConstants.LOGLEVEL, LogFormatUtils.mapLevelToRawType(logRecord));
-        genData.addPair(LogFieldConstants.IBM_METHODNAME, logRecord.getSourceMethodName());
-        genData.addPair(LogFieldConstants.IBM_CLASSNAME, logRecord.getSourceClassName());
+        logData.setLevelValue(logRecord.getLevel().intValue());
+        String threadName = Thread.currentThread().getName();
+        logData.setThreadName(threadName);
 
-        if (logRecord instanceof WsLogRecord) {
-            if (((WsLogRecord) logRecord).getExtensions() != null) {
-                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
-                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
-                for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
-                }
-                genData.addPairs(extensions);
-            }
+        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+        if (wsLogRecord != null) {
+            logData.setCorrelationId(wsLogRecord.getCorrelationId());
+            logData.setOrg(wsLogRecord.getOrganization());
+            logData.setProduct(wsLogRecord.getProduct());
+            logData.setComponent(wsLogRecord.getComponent());
+        } else {
+            logData.setCorrelationId(null);
+            logData.setOrg(null);
+            logData.setProduct(null);
+            logData.setComponent(null);
         }
 
-        genData.addPair(LogFieldConstants.IBM_SEQUENCE, sequenceNumber.next(dateVal));
-        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
+        logData.setSequence(sequenceNumber.next(dateVal));
 
         Throwable thrown = logRecord.getThrown();
+        if (thrown != null) {
+            String stackTrace = DataFormatHelper.throwableToString(thrown);
+            logData.setThrowable(stackTrace);
+
+            String s = thrown.getLocalizedMessage();
+            if (s == null) {
+                s = thrown.toString();
+            }
+            logData.setThrowableLocalized(s);
+        } else {
+            logData.setThrowable(null);
+            logData.setThrowableLocalized(null);
+        }
+
         StringBuilder msgBldr = new StringBuilder();
         msgBldr.append(messageVal);
         if (thrown != null) {
@@ -271,10 +282,32 @@ public class LogSource implements Source, WsLogHandler {
                 msgBldr.append(LINE_SEPARATOR).append(stackTrace);
             }
         }
-        genData.addPair(LogFieldConstants.MESSAGE, msgBldr.toString());
-        genData.setSourceType(sourceName);
+        logData.setMessage(msgBldr.toString());
 
-        return genData;
+        if (routedMessage.getFormattedMsg() != null) {
+            logData.setFormattedMsg(routedMessage.getFormattedMsg());
+        } else {
+            logData.setFormattedMsg(null);
+        }
+
+        if (logRecord instanceof WsLogRecord) {
+            if (((WsLogRecord) logRecord).getExtensions() != null) {
+                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
+                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
+                }
+                logData.setExtensions(extensions);
+            }
+        } else {
+            logData.setExtensions(null);
+        }
+
+        // cannot pass null to traceData.setObjectId(int i)
+
+        logData.setSourceType(sourceName);
+
+        return logData;
     }
 
     /**

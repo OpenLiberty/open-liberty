@@ -169,6 +169,8 @@ public class TraceSource implements Source, WsTraceHandler {
         if (id != null) {
             int objid = System.identityHashCode(id);
             traceData.setObjectId(objid);
+        } else {
+            // cannot pass null to traceData.setObjectId(int i)
         }
 
         traceData.setSourceType(sourceName);
