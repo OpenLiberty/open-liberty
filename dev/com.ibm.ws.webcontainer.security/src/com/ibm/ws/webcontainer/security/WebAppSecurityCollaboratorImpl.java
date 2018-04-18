@@ -656,8 +656,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             AuthenticationResult authResult = null;
             if (authMech != null && authMech.equals("CLIENT_CERT")) {
                 // process client cert auth first.
+                // disable failover in order to avoid failover to non-jaspi code path.
                 webRequest.setDisableClientCertFailOver(true);
+                // client cert.
                 authResult = authenticateRequest(webRequest);
+                // reset the value.
+                webRequest.setDisableClientCertFailOver(false);
             }
             if (authResult == null || (authResult.getStatus() != AuthResult.SUCCESS && webAppSecConfig.allowFailOver())) {
                 // if client cert is not processed or failed and allowFailOver is configured.
