@@ -24,6 +24,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 CommonWebServerTests20Servlet40.class,
                 ConfigDropinRootTests.class,
                 ConfigSpringBootApplicationTagTests.class,
+                ConfigSpringBootApplicationClassloaderTests.class,
                 PreThinnedSpringBootTests.class,
                 WarmStartTests.class,
                 SSLTests15.class,

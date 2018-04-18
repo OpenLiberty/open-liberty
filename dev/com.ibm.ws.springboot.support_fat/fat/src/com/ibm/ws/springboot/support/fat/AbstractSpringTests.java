@@ -30,6 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -39,6 +41,10 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 public abstract class AbstractSpringTests {
+
+    @Rule
+    public TestName testName = new TestName();
+
     static enum AppConfigType {
         DROPINS_SPR,
         DROPINS_ROOT,
@@ -138,8 +144,11 @@ public abstract class AbstractSpringTests {
         return true;
     }
 
+    public void modifyAppConfiguration(SpringBootApplication appConfig) {}
+
     @Before
     public void configureServer() throws Exception {
+        System.out.println("Configuring server for " + testName.getMethodName());
         if (serverStarted.compareAndSet(false, true)) {
             configureBootStrapProperties();
             ServerConfiguration config = server.getServerConfiguration();
@@ -171,6 +180,7 @@ public abstract class AbstractSpringTests {
                     SpringBootApplication app = new SpringBootApplication();
                     app.setLocation(appFile.getName());
                     app.setName("testName");
+                    modifyAppConfiguration(app);
                     applications.add(app);
                     break;
                 }
