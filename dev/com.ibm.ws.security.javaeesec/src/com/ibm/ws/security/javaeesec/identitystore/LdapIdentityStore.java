@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.identitystore;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -139,7 +140,7 @@ public class LdapIdentityStore implements IdentityStore {
             } else if (oe instanceof RuntimeException) {
                 throw (RuntimeException) oe;
             } else {
-                throw new RuntimeException(oe);
+                throw new UndeclaredThrowableException(oe);
             }
         }
     }
