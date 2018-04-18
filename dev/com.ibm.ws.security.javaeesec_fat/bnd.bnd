@@ -22,6 +22,7 @@ src: \
 	test-applications/DatabaseAnnotatedBasicAuthServlet.war/src,\
 	test-applications/DatabaseAnnotatedDSServlet.war/src,\
 	test-applications/dbfat.war/src,\
+	test-applications/dbfat2.war/src,\
 	test-applications/dbfatCustomHash.war/src,\
 	test-applications/dbfatAuthAlias.war/src,\
 	test-applications/DatabaseAuthAliasBasicAuthServlet.war/src,\

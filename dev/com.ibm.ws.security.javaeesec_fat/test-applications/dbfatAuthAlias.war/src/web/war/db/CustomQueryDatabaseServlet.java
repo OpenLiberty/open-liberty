@@ -30,7 +30,7 @@ public class CustomQueryDatabaseServlet extends FATDatabaseServlet {
     @SuppressWarnings("restriction")
     @Override
     public void init() throws ServletException {
-        System.out.println("CustomQueryDatabaseServlet: Creating database for DatabaseIdentityStore: derby1fat");
+        System.out.println("CustomQueryDatabaseServlet: Creating database for DatabaseIdentityStore: derby2fat");
         try {
             DataSource ds = (DataSource) new InitialContext().lookup("jdbc/derby1fat");
 
