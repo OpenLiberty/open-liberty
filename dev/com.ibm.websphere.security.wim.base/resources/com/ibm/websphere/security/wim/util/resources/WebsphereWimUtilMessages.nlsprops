@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -17,6 +17,14 @@
 # -------------------------------------------------------------------------------------------------
 
 # Message prefix block: Profile Manager: 1000-1999
+
+DUPLICATE_PROPERTY_EXTENDED=CWIML1996W: The extended property ''{0}'' is ignored because it was already defined for the ''{1}'' entity.
+DUPLICATE_PROPERTY_EXTENDED.explanation=The extended property is already defined, and the duplicate definition is ignored, because two properties cannot have the same name.
+DUPLICATE_PROPERTY_EXTENDED.useraction=Check for multiple definitions for the extended property in the server configuration. Delete or rename duplicates.
+
+DUPLICATE_PROPERTY_ENTITY=CWIML1997W: The extended property ''{0}'' is ignored because it cannot override the property of the same name for the ''{1}'' entity.
+DUPLICATE_PROPERTY_ENTITY.explanation=Because the property is already defined in the entity's schema, it is ignored since it cannot be redefined as an extended property.
+DUPLICATE_PROPERTY_ENTITY.useraction=Check the entity's schema to determine if the property can be used. Either rename or delete the conflicting extended property from the server configuration.
 
 GENERIC=CWIML1999E: The user registry operation could not be completed. A runtime error occurred during processing: {0}
 GENERIC.explanation=The program encountered the specified error during the operation.
