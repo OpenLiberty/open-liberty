@@ -20,6 +20,7 @@ import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
 import com.ibm.ws.session.store.common.internal.LoggingUtil;
 import com.ibm.ws.session.store.memory.MemoryStore;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.session.ILoader;
 import com.ibm.wsspi.session.ISession;
 import com.ibm.wsspi.session.IStoreCallback;
@@ -125,7 +126,13 @@ public abstract class BackedStore extends MemoryStore {
      */
     public void runInvalidation() {
         ((BackedHashMap) _sessions).cleanUpCache(System.currentTimeMillis());
-        ((BackedHashMap) _sessions).performInvalidation();
+        if(!FrameworkState.isStopping()) {
+            ((BackedHashMap) _sessions).performInvalidation();
+        } else {
+            if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
+                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "runInvalidation", "Skipping background session invalidation because server is shutting down.");
+            }
+        }
         /*
          * if (_isApplicationSessionStore) {
          * ((BackedHashMap)_sessions).performAppSessionInvalidation();
