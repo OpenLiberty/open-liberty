@@ -26,8 +26,4 @@
       <actions>read</actions>
    </permission>
 
-   <permission>
-      <class-name>java.security.SecurityPermission</class-name>
-      <name>getProperty.authconfigprovider.factory</name>
-   </permission>
 </permissions>
