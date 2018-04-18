@@ -16,7 +16,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
  *
  */
 public final class SpringConstants {
-    public static final String SPRING_APP_TYPE = "spr";
+    public static final String SPRING_APP_TYPE = "spring";
     public static final String SPRING_LIB_CACHE_NAME = "lib.index.cache";
     public static final String SPRING_BOOT_SUPPORT_CAPABILITY = "spring.boot.support";
     public static final String SPRING_BOOT_SUPPORT_CAPABILITY_JARS = "jars";

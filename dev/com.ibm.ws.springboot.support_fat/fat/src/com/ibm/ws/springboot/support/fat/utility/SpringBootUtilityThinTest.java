@@ -39,8 +39,8 @@ import componenttest.custom.junit.runner.Mode;
 @Mode(FULL)
 public class SpringBootUtilityThinTest extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
-    private static String SPRING_BOOT_15_BASE_THIN = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + "spr";
-    private static String SPRING_BOOT_15_WAR_THIN = SPRING_BOOT_15_APP_WAR.substring(0, SPRING_BOOT_15_APP_WAR.length() - 3) + "spr";
+    private static String SPRING_BOOT_15_BASE_THIN = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + SPRING_APP_TYPE;
+    private static String SPRING_BOOT_15_WAR_THIN = SPRING_BOOT_15_APP_WAR.substring(0, SPRING_BOOT_15_APP_WAR.length() - 3) + SPRING_APP_TYPE;
     private static String installDir = null;
     private String application = SPRING_BOOT_15_APP_BASE;
     private RemoteFile sharedResourcesDir;
@@ -110,8 +110,8 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         cmd.add("--sourceAppPath=" + getApplicationFile().getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
 
-        Assert.assertTrue("Successfully thinned the application",
-                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\.spr"));
+        Assert.assertTrue("Failed to thin the application",
+                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\." + SPRING_APP_TYPE));
 
         // Move over the lib index from the default location it got stored
         RemoteFile libCache = server.getFileFromLibertyServerRoot("apps/" + SPRING_LIB_INDEX_CACHE);
@@ -124,7 +124,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Test
     public void testSetTargets() throws Exception {
-        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot("/"), "thinnedApp.spr");
+        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot("/"), "thinnedApp." + SPRING_APP_TYPE);
 
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
@@ -133,8 +133,8 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
 
-        Assert.assertTrue("Successfully thinned the application",
-                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*thinnedApp\\.spr"));
+        Assert.assertTrue("Failed to thin the application",
+                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*thinnedApp\\." + SPRING_APP_TYPE));
 
         // Move over the thin app to the apps/ folder from the destination.
         Assert.assertTrue("Expected thin app does not exist: " + thinApp.getAbsolutePath(), thinApp.isFile());
@@ -155,7 +155,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
 
         Assert.assertTrue("Thin application message not found",
-                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\.spr"));
+                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\." + SPRING_APP_TYPE));
 
         // run command again using the primed parent cache
         cmd = new ArrayList<>();
@@ -170,7 +170,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         Assert.assertEquals("Lib Cache should be empty.", 0, libCache.list(false).length);
 
         Assert.assertTrue("Thin application message not found",
-                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\.spr"));
+                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\." + SPRING_APP_TYPE));
     }
 
     @Test
@@ -182,7 +182,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
 
         Assert.assertTrue("Thin application message not found",
-                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\.spr"));
+                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\." + SPRING_APP_TYPE));
 
         RemoteFile warThin = server.getFileFromLibertyServerRoot("apps/" + SPRING_BOOT_15_WAR_THIN);
         Assert.assertTrue("Thin WAR app does not exist: " + warThin.getAbsolutePath(), warThin.isFile());

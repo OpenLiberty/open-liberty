@@ -46,7 +46,7 @@ public abstract class AbstractSpringTests {
     public TestName testName = new TestName();
 
     static enum AppConfigType {
-        DROPINS_SPR,
+        DROPINS_SPRING,
         DROPINS_ROOT,
         SPRING_BOOT_APP_TAG
     }
@@ -62,6 +62,7 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";
     public static final String SHARED_SPRING_LIB_INDEX_CACHE = "resources/" + SPRING_LIB_INDEX_CACHE;
     public static final String SPRING_THIN_APPS_DIR = "spring.thin.apps";
+    public static final String SPRING_APP_TYPE = "spring";
     public static final int EXPECTED_HTTP_PORT = 8081;
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.springboot.support.fat.SpringBootTests");
@@ -123,7 +124,7 @@ public abstract class AbstractSpringTests {
     }
 
     public AppConfigType getApplicationConfigType() {
-        return AppConfigType.DROPINS_SPR;
+        return AppConfigType.DROPINS_SPRING;
     }
 
     public Map<String, String> getBootStrapProperties() {
@@ -162,18 +163,18 @@ public abstract class AbstractSpringTests {
             features.addAll(getFeatures());
             RemoteFile appFile = getApplicationFile();
             switch (getApplicationConfigType()) {
-                case DROPINS_SPR: {
-                    new File(new File(server.getServerRoot()), "dropins/spr/").mkdirs();
-                    appFile.copyToDest(server.getFileFromLibertyServerRoot("dropins/spr/"));
-                    RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot("dropins/spr/"), appFile.getName());
-                    appFile.copyToDest(dest);
+                case DROPINS_SPRING: {
+                    String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
+                    new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
+                    appFile.copyToDest(server.getFileFromLibertyServerRoot(dropinsSpring));
+                    RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), appFile.getName());
                     dropinFiles.add(dest);
                     break;
                 }
                 case DROPINS_ROOT: {
                     new File(new File(server.getServerRoot()), "dropins/").mkdirs();
                     String appName = appFile.getName();
-                    appName = appName.substring(0, appName.length() - 3) + "spr";
+                    appName = appName.substring(0, appName.length() - 3) + SPRING_APP_TYPE;
                     RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot("dropins/"), appName);
                     appFile.copyToDest(dest);
                     dropinFiles.add(dest);

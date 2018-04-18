@@ -418,7 +418,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             applicationInformation.setContainer(container);
             return artifactContainer;
         } catch (NoSuchAlgorithmException | IOException e) {
-            // Log error and continue to use the container for the SPR file
+            // Log error and continue to use the container for the SPRING file
             Tr.error(tc, "warning.could.not.thin.application", applicationInformation.getName(), e.getMessage());
         }
         return rawContainer;
@@ -608,7 +608,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             ClassLoadingService cls = classLoadingService;
             List<Container> containers = new ArrayList<Container>();
             Iterator<ContainerInfo> infos = moduleClassesContainers.iterator();
-            // We want the first item to be at the end of the class path for a spr
+            // We want the first item to be at the end of the class path for a spring application
             if (infos.hasNext()) {
                 infos.next();
                 while (infos.hasNext()) {
