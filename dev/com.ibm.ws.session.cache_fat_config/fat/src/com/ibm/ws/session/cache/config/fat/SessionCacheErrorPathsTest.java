@@ -48,7 +48,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
     private static final String APP_NAME = "sessionCacheConfigApp";
     private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
-    private static final String[] APP_RECYCLE_LIST = new String[] { "CWWKZ0009I.*" + APP_NAME, "CWWKZ000[13]I.*" + APP_NAME };
     private static final String[] EMPTY_RECYCLE_LIST = new String[0];
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
 
@@ -138,7 +137,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     @Test
     public void testAddFeature() throws Exception {
         // Start the server with sessionCache-1.0 enabled
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
 
         // Access a session and add an attribute
         List<String> session = new ArrayList<>();
@@ -193,7 +192,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         ServerConfiguration config = savedConfig.clone();
         config.getHttpSessionCaches().get(0).setUri(invalidHazelcastURI);
         server.updateServerConfiguration(config);
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
 
         try {
             List<String> session = new ArrayList<>();
@@ -252,7 +251,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         config.getLibraries().add(libraryWithoutJCacheProvider);
         config.getHttpSessionCaches().get(0).setLibraryRef("libraryWithoutJCacheProvider");
         server.updateServerConfiguration(config);
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
         try {
             List<String> session = new ArrayList<>();
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSessionCacheNotAvailable", session);
@@ -286,7 +285,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         ServerConfiguration config = savedConfig.clone();
         config.getHttpSessionCaches().get(0).setLibraryRef(null);
         server.updateServerConfiguration(config);
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
 
         // Session manager should warn user that sessions will be stored in memory
         assertEquals(1, server.findStringsInLogs("SESN8501I").size());
@@ -308,6 +307,38 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testMissingLibraryRef1&value=null", session);
 
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+    }
+
+    @AllowedFFDC(value = { "java.lang.NullPointerException", // from starting web app with invalid session cache config
+                           "java.net.MalformedURLException" // TODO possible bug
+    })
+    @Test
+    public void testModifyFileset() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        com.ibm.websphere.simplicity.config.File hazelcastFile = config.getLibraries().getById("HazelcastLib").getNestedFile();
+        String originalName = hazelcastFile.getName();
+        server.startServer(testName.getMethodName() + ".log");
+
+        // Use sessionCache with original (good) config
+        List<String> session = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testModifyFileset&value=0", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testModifyFileset&value=0", session);
+
+        // Change the fileset to reference a bogus file
+        hazelcastFile.setName("${shared.resource.dir}/hazelcast/bogus.jar");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+
+        // Restore the original config and expect the new cache to be usable
+        hazelcastFile.setName(originalName);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testModifyFileset&value=1", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testModifyFileset&value=1", session);
+
+        server.stopServer("CWWKL0012W.*bogus", "SRVE8059E", "CWWKE0701E.*CacheException");
     }
 
     /**
