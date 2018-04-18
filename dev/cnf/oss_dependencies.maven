@@ -279,5 +279,7 @@ org.springframework:spring-beans:5.0.4.RELEASE
 org.springframework:spring-web:5.0.4.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.0.0.RELEASE
 org.springframework.boot:spring-boot:2.0.0.RELEASE
+org.springframework:spring-websocket:4.3.13.RELEASE
+org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
 xalan:xalan:2.7.1
 xerces:xercesImpl:2.11.0
