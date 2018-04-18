@@ -666,7 +666,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                     }
                 }
                 webReply = new ReturnReply(statusCode, reason);
-                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
+                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
 
                 SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(webReply.message, webReply, webSecurityContext));
                 throw secVE;
