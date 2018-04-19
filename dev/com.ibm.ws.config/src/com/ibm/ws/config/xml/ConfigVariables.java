@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  *
  */
-public interface Variables {
+public interface ConfigVariables {
 
     public Map<String, String> getUserDefinedVariables();
 }

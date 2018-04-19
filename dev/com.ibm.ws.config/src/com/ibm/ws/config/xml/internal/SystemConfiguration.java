@@ -26,6 +26,7 @@ import com.ibm.websphere.config.WSConfigurationHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.config.admin.SystemConfigSupport;
+import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
@@ -82,6 +83,7 @@ class SystemConfiguration {
         VariableRegistry variableRegistryService = variableRegistryTracker.getService();
 
         ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, bc.getDataFile("variableCache"));
+        registerService(bc, ConfigVariables.class.getName(), variableRegistry);
 
         MetaTypeRegistry metatypeRegistry = metatypeRegistryTracker.getService();
 
@@ -97,8 +99,7 @@ class SystemConfiguration {
 
         this.configUpdater = new ConfigUpdater(ce, caSupport, variableRegistry, metatypeRegistry, extendedMetatypeManager);
 
-        this.changeHandler = new ChangeHandler(caSupport, variableRegistry, extendedMetatypeManager,
-                        configRetriever, validator, configUpdater, metatypeRegistry);
+        this.changeHandler = new ChangeHandler(caSupport, variableRegistry, extendedMetatypeManager, configRetriever, validator, configUpdater, metatypeRegistry);
 
         this.variableRegistry = variableRegistry;
         this.defaultConfiguration = new DefaultConfiguration(parser);
@@ -111,7 +112,7 @@ class SystemConfiguration {
 
         extendedMetatypeManager.init();
 
-        // Create and register WSConfigurationHelper      
+        // Create and register WSConfigurationHelper
         WSConfigurationHelper wsConfigHelper = new WSConfigurationHelperImpl(metatypeRegistry, ce, bundleProcessor);
         registerService(bc, WSConfigurationHelper.class.getName(), wsConfigHelper);
 
@@ -179,7 +180,7 @@ class SystemConfiguration {
 
     /**
      * Add configuration to the default configuration add runtime
-     * 
+     *
      * @param pid
      * @param props
      * @return
@@ -190,7 +191,7 @@ class SystemConfiguration {
 
     /**
      * Add configuration to the default configuration at runtime using a url
-     * 
+     *
      * @param pid
      * @param props
      * @return

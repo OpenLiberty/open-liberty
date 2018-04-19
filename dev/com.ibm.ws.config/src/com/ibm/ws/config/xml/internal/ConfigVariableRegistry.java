@@ -22,13 +22,13 @@ import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.config.xml.Variables;
+import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 
-class ConfigVariableRegistry implements VariableRegistry, Variables {
+class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
 
     private static final TraceComponent tc = Tr.register(ConfigVariableRegistry.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
