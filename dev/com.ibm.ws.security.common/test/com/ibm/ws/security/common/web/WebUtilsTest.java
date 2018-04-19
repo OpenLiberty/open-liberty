@@ -1146,7 +1146,8 @@ public class WebUtilsTest {
         assertTrue(output.contains(notSecretValue2));
     }
 
-    //add a non-secret parameter with a name that is a super-set of one of the secrets
+    //add a non-secret parameter with a name that is a 
+    //super-set of one of the secrets
     @Test
     public void testStripSecretsFromParameters7() {
         final String secret1 = "client_secret";
@@ -1178,9 +1179,42 @@ public class WebUtilsTest {
         assertTrue(output.contains(notSecretValue2));
     }
 
-    //a parameter has more than one value
+    //add a non-secret parameter with a name that is a different 
+    //case than of one of the secrets
     @Test
     public void testStripSecretsFromParameters8() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String notSecret = "notSecretParameter";
+        final String notSecret2 = "abcParam";
+        final String notSecret3 = secret1.toUpperCase();
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        final String notSecretValue = "notSecretValue";
+        final String notSecretValue2 = "!@#$%^&*()";
+        final String notSecretValue3 = "thisisvalue3";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+            put(secret2, new String[]{pwdStr});
+            put(notSecret, new String[]{notSecretValue});
+            put(notSecret2, new String[]{notSecretValue2});
+            put(notSecret3, new String[]{notSecretValue3});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse(output.contains(pwdStr));
+        assertTrue(output.contains(secret1));
+        assertTrue(output.contains(secret2));
+        assertTrue(output.contains(notSecret));
+        assertTrue(output.contains(notSecretValue));
+        assertTrue(output.contains(notSecret2));
+        assertTrue(output.contains(notSecretValue2));
+    }
+
+    //a parameter has more than one value
+    @Test
+    public void testStripSecretsFromParameters9() {
         final String secret1 = "client_secret";
         final String secret2 = "secret2";
         final String notSecret = "notSecretParameter";
@@ -1217,7 +1251,7 @@ public class WebUtilsTest {
 
     //no secretes in parameters
     @Test
-    public void testStripSecretsFromParameters9() {
+    public void testStripSecretsFromParameters10() {
         final String secret1 = "client_secret";
         final String secret2 = "secret2";
         final String notSecret = "notSecretParameter";
