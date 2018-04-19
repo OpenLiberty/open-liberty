@@ -20,10 +20,10 @@ import org.junit.Test;
  */
 public class LoggedOutJwtSsoCookieCacheTest {
 
-    // submit 1100 entries, first 100 should be flushed, last 1000 should be retrievable.
+    // submit 10100 entries, first 100 should be flushed, last 1000 should be retrievable.
     @Test
     public void testCacheWhenMaxSizeReached() {
-        for (int i = 1; i <= 1100; i++) {
+        for (int i = 1; i <= 10100; i++) {
             String entry = "String000000" + i;
             LoggedOutJwtSsoCookieCache.put(entry);
             System.out.println(entry);
@@ -34,7 +34,7 @@ public class LoggedOutJwtSsoCookieCacheTest {
                         LoggedOutJwtSsoCookieCache.contains(entry));
         }
 
-        for (int i = 101; i <= 1000; i++) {
+        for (int i = 101; i <= 10100; i++) {
             String entry = "String000000" + i;
             assertTrue("entry " + entry + " should have been in  cache, but was not", LoggedOutJwtSsoCookieCache.contains(entry));
         }
@@ -43,12 +43,12 @@ public class LoggedOutJwtSsoCookieCacheTest {
     // check that map isn't growing uncontrollably
     @Test
     public void testMapSize() {
-        for (int i = 1; i < 5000; i++) {
+        for (int i = 1; i < 50000; i++) {
             String entry = "String000000" + i;
             LoggedOutJwtSsoCookieCache.put(entry);
         }
         int setSize = LoggedOutJwtSsoCookieCache.getSetSize();
-        assertTrue("Set  should not be growing above max size but is " + setSize, setSize <= 1000);
+        assertTrue("Set  should not be growing above max size but is " + setSize, setSize <= 10000);
 
     }
 
