@@ -325,6 +325,21 @@ public class AppliesToProcessorTest {
         assertEquals("filter info.editions should have the correct unkonwn edition", "AN_UNKNOWN", atfi.getEditions().get(0));
     }
 
+    @Test
+    public void testOpenEdition() {
+        String appliesToHeader = "com.ibm.cheese-ston; productVersion=8.5.5.4; productEditions=\"OPEN\"";
+        List<AppliesToFilterInfo> atfis = AppliesToProcessor.parseAppliesToHeader(appliesToHeader);
+        assertEquals("Expected one filter info to be returned", 1, atfis.size());
+        AppliesToFilterInfo atfi = atfis.get(0);
+        assertNotNull("filter info should have edition info", atfi.getEditions());
+        assertEquals("filter info should have one edition", 5, atfi.getEditions().size());
+        assertTrue("filter info should contain all editions", atfi.getEditions().contains("Base"));
+        assertTrue("filter info should contain all editions", atfi.getEditions().contains("Express"));
+        assertTrue("filter info should contain all editions", atfi.getEditions().contains("Developers"));
+        assertTrue("filter info should contain all editions", atfi.getEditions().contains("ND"));
+        assertTrue("filter info should contain all editions", atfi.getEditions().contains("z/OS"));
+    }
+
     @Test(expected = RepositoryResourceCreationException.class)
     public void testValidateUnknownEdition() throws RepositoryResourceCreationException {
         String appliesToHeader = "com.ibm.cheese-ston; productVersion=8.5.5.4; productEditions=\"AN_UNKNOWN\"";
