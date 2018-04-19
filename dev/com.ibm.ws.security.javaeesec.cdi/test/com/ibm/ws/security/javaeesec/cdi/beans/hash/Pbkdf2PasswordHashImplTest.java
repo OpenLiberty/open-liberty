@@ -119,7 +119,7 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + INVALID_ALGORITHM + ".*" + PARAM_ALGORITHM + ".*"));
+            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_ALGORITHM + ".*" + INVALID_ALGORITHM + ".*"));
             assertTrue("CWWKS1933E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1933E:"));
         }
     }
@@ -135,7 +135,7 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + INVALID_ITERATIONS + ".*" + PARAM_ITERATIONS + ".*"));
+            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_ITERATIONS + ".*" + INVALID_ITERATIONS + ".*"));
             assertTrue("CWWKS1933E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1933E:"));
         }
     }
@@ -151,7 +151,7 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + INVALID_SALTSIZE + ".*" + PARAM_SALTSIZE + ".*"));
+            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_SALTSIZE + ".*" + INVALID_SALTSIZE + ".*"));
             assertTrue("CWWKS1933E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1933E:"));
         }
     }
@@ -167,7 +167,7 @@ public class Pbkdf2PasswordHashImplTest {
             pphi.initialize(params);
             fail("A IllegalArgumentException should throw.");
         } catch (IllegalArgumentException re) {
-            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + INVALID_KEYSIZE + ".*" + PARAM_KEYSIZE + ".*"));
+            assertTrue("CWWKS1933E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1933E:.*" + PARAM_KEYSIZE + ".*" + INVALID_KEYSIZE + ".*"));
             assertTrue("CWWKS1933E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1933E:"));
         }
     }
