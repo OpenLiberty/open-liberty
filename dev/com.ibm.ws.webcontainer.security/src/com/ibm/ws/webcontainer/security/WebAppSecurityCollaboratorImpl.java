@@ -656,7 +656,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 if (reason != null && reason.contains("SEND_FAILURE")) {
                     if (unprotectedResource(webRequest) == PERMIT_REPLY) {
                         AuthenticationResult permitResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null, AuditEvent.CRED_TYPE_JASPIC, null, AuditEvent.OUTCOME_SUCCESS);
-                        Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, permitResult, uriName, HttpServletResponse.SC_OK);
+                        Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, permitResult, uriName, Integer.valueOf(HttpServletResponse.SC_OK));
                         return PERMIT_REPLY;
                     } else if (statusCode == HttpServletResponse.SC_OK) {
                         // SEND_FAILURE but did not set the response code or set the wrong response code.
@@ -666,7 +666,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                     }
                 }
                 webReply = new ReturnReply(statusCode, reason);
-                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
+                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
 
                 SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(webReply.message, webReply, webSecurityContext));
                 throw secVE;
