@@ -48,4 +48,26 @@ public class TestApplication {
 			return "FAILED";
 		}
 	}
+	
+	static final String 
+			IbmApiClazzName = "com.ibm.websphere.application.ApplicationMBean",
+			TpClazzName 	= "javax.mail.Message";
+
+	@RequestMapping("/loadIbmApiClass")
+	public String loadApiClass() { return loadClazz(IbmApiClazzName); }
+
+	@RequestMapping("/loadTpClass")
+	public String loadTpClass() { return loadClazz(TpClazzName); }
+
+	String loadClazz(String clazzName) {
+		Class clazz = null;
+		try {
+			clazz = this.getClass().getClassLoader().loadClass(clazzName);
+		} catch (Exception e) {
+			e.printStackTrace(System.out);
+		} finally {
+			return "SPRING BOOT, YOU GOT" + ((null==clazz) ? " NO " : " ") + "CLAZZ: " + clazzName;
+		}
+	}
+
 }
