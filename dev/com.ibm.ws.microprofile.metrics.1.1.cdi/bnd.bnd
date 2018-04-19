@@ -53,7 +53,7 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.microprofile.metrics.1.1;version=latest,\
 	com.ibm.ws.microprofile.metrics.cdi;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.metrics.1.1;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.metrics.1.1.1;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
