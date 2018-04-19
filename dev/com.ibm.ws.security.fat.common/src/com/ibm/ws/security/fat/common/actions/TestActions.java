@@ -18,6 +18,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.ws.security.fat.common.exceptions.TestActionException;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.web.WebFormUtils;
@@ -46,6 +47,21 @@ public class TestActions {
         try {
             WebRequest request = createGetRequest(url);
             return submitRequest(currentTest, wc, request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+    }
+
+    /**
+     * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
+     */
+    public Page invokeUrlWithCookie(String currentTest, String url, Cookie cookie) throws Exception {
+        String thisMethod = "invokeUrlWithCookie";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createGetRequest(url);
+            request.setAdditionalHeader("Cookie", cookie.getName() + "=" + cookie.getValue());
+            return submitRequest(currentTest, new WebClient(), request);
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
         }

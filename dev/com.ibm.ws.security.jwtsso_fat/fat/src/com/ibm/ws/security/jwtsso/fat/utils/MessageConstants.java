@@ -19,6 +19,7 @@ public class MessageConstants extends Constants {
     public static final String CWWKS5521E_MANY_JWT_CONSUMER_CONFIGS = "CWWKS5521E";
 
     public static final String CWWKS6201W_JWT_SSO_TOKEN_SERVICE_ERROR = "CWWKS6201W";
+    public static final String CWWKS6022E_JWT_ISSUER_NOT_TRUSTED = "CWWKS6022E";
 
     public static final String CWWKS9127W_JWT_COOKIE_SECURITY_MISMATCH = "CWWKS9127W";
 
