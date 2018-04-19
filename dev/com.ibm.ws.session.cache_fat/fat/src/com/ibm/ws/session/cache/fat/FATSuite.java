@@ -29,7 +29,8 @@ import componenttest.topology.utils.HttpUtils;
                 SessionCacheOneServerTest.class,
                 SessionCacheTwoServerTest.class,
                 SessionCacheTimeoutTest.class,
-                SessionCacheTwoServerTimeoutTest.class
+                SessionCacheTwoServerTimeoutTest.class,
+                HazelcastClientTest.class
 })
 
 public class FATSuite {

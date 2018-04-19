@@ -11,12 +11,14 @@
 package com.ibm.ws.session.cache.config.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -107,8 +109,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         end = dumpFileName.indexOf(".zip");
         begin = dumpFileName.lastIndexOf("/sessionCacheServer.dump-", end) + 25;
 
-        // TODO SessionCacheIntrospector doesn't exist yet, so temporarily using ThreadingIntrospector to show that finding/reading the zip works.
-        String introspectorFileName = "dump_" + dumpFileName.substring(begin, end) + "/introspections/ThreadingIntrospector.txt";
+        String introspectorFileName = "dump_" + dumpFileName.substring(begin, end) + "/introspections/SessionCacheIntrospector.txt";
 
         System.out.println("Looking for intropspector entry: " + introspectorFileName);
 
@@ -328,11 +329,56 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Capture a dump of the server without monitoring enabled. This means the JCache MXBeans will be unavailable
      * and so cache statistics will not be included in the dump output.
      */
+    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
     public void testServerDumpWithoutMonitoring() throws Exception {
         server.startServer();
 
-        List<String> lines = sessionCacheIntrospectorDump();
-        assertTrue(lines.contains("  threadPool")); // TODO replace with tests for session cache introspector once we add it
+        // access a session to exercise codepath before capturing dump
+        List<String> session1 = new ArrayList<>();
+        List<String> session2 = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testServerDumpWithoutMonitoring1&value=val1&maxInactiveInterval=1900", session1);
+        try {
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testServerDumpWithoutMonitoring2&value=val2&maxInactiveInterval=2000",
+                         session2);
+
+            List<String> lines = sessionCacheIntrospectorDump();
+            String dumpInfo = lines.toString();
+            int i = 0;
+
+            assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
+            assertTrue(dumpInfo, lines.contains("CachingProvider implementation: com.hazelcast.cache.HazelcastCachingProvider"));
+            assertTrue(dumpInfo, lines.contains("Cache manager URI: hazelcast"));
+            assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
+            assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
+
+            assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
+
+            Set<String> expectedCaches = new HashSet<String>();
+            expectedCaches.add("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp");
+            Set<String> caches = new HashSet<String>();
+            for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
+                caches.add(lines.get(c).trim());
+            assertEquals(dumpInfo, expectedCaches, caches);
+
+            assertTrue(dumpInfo, lines.contains("  closed? false"));
+            assertFalse(dumpInfo, lines.contains("  closed? true"));
+
+            assertTrue(dumpInfo, lines.contains("  is management enabled? false"));
+            assertFalse(dumpInfo, lines.contains("  is management enabled? true"));
+
+            assertTrue(dumpInfo, lines.contains("  is statistics enabled? false"));
+            assertFalse(dumpInfo, lines.contains("  is statistics enabled? true"));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
+        } finally {
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session1);
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session2);
+        }
     }
 }

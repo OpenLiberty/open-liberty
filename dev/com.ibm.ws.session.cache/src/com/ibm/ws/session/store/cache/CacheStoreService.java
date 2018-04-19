@@ -10,18 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.session.store.cache;
 
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.cache.Cache;
+import javax.cache.Cache.Entry;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
+import javax.cache.configuration.CompleteConfiguration;
 import javax.cache.configuration.OptionalFeature;
 import javax.cache.spi.CachingProvider;
 import javax.servlet.ServletContext;
@@ -33,18 +40,20 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
 import com.ibm.ws.session.utils.SessionLoader;
 import com.ibm.wsspi.library.Library;
+import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.session.IStore;
 
 /**
  * Constructs CacheStore instances.
  */
-public class CacheStoreService implements SessionStoreService {
+public class CacheStoreService implements Introspector, SessionStoreService {
     
     private static final TraceComponent tc = Tr.register(CacheStoreService.class);
     
@@ -248,6 +257,121 @@ public class CacheStoreService implements SessionStoreService {
     @Override
     public Map<String, Object> getConfiguration() {
         return configurationProperties;
+    }
+
+    /**
+     * @see com.ibm.wsspi.logging.Introspector#getIntrospectorDescription()
+     */
+    @Override
+    public String getIntrospectorDescription() {
+        return "JCache provider diagnostics for HTTP Sessions";
+    }
+
+    /**
+     * @see com.ibm.wsspi.logging.Introspector#getIntrospectorName()
+     */
+    @Override
+    public String getIntrospectorName() {
+        return "SessionCacheIntrospector";
+    }
+
+    /**
+     * @see com.ibm.wsspi.logging.Introspector#introspect(java.io.PrintWriter)
+     */
+    @Override
+    public void introspect(PrintWriter out) throws Exception {
+        final String INDENT = "  ";
+
+        out.print("CachingProvider implementation: ");
+        out.println(cachingProvider == null ? null : cachingProvider.getClass().getName());
+
+        out.print("Supports store by reference? ");
+        out.println(cachingProvider == null ? null : cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE));
+
+        out.println("Caching provider default properties:");
+        if (cachingProvider != null) {
+            Properties props = cachingProvider.getDefaultProperties();
+            if (props != null)
+                props.entrySet().forEach(prop -> out.println(INDENT + prop.getKey() + ": " + prop.getValue()));
+        }
+
+        out.print("Caching provider default class loader: ");
+        out.println(cachingProvider == null ? null : cachingProvider.getDefaultClassLoader());
+
+        out.println();
+        out.print("CacheManager class loader: ");
+        out.println(cacheManager == null ? null : cacheManager.getClassLoader());
+
+        out.print("Cache manager URI: ");
+        out.println(cacheManager == null ? null : cacheManager.getURI());
+
+        out.print("Cache manager is closed? ");
+        out.println(cacheManager == null ? null : cacheManager.isClosed());
+
+        out.println("Cache manager properties:");
+        if (cacheManager != null) {
+            Properties props = cacheManager.getProperties();
+            if (props != null)
+                props.entrySet().forEach(prop -> out.println(INDENT + prop.getKey() + ": " + prop.getValue()));
+        }
+
+        out.print("Cache manager: ");
+        out.println(cacheManager);
+
+        out.println();
+        out.println("Cache names:");
+        if (cacheManager != null)
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                TreeSet<String> cacheNames = new TreeSet<String>();
+                cacheManager.getCacheNames().forEach(cacheNames::add);
+
+                for (String cacheName : cacheNames)
+                     out.println(INDENT + cacheName);
+
+                // detailed information per cache
+                for (String cacheName : cacheNames) {
+                    out.println();
+                    boolean isMetaCache = cacheName.startsWith("com.ibm.ws.session.meta.");
+                    boolean isAttrCache = cacheName.startsWith("com.ibm.ws.session.attr.");
+                    out.println("Cache " + cacheName + ":");
+                    Cache<?, ?> cache = isMetaCache ? cacheManager.getCache(cacheName, String.class, ArrayList.class)
+                                      : isAttrCache ? cacheManager.getCache(cacheName, String.class, byte[].class)
+                                      : cacheManager.getCache(cacheName);
+                    if (cache != null) {
+                        boolean closed = cache.isClosed();
+                        out.println(INDENT + "closed? " + closed);
+                        if (!closed) {
+                            try {
+                                @SuppressWarnings("unchecked")
+                                CompleteConfiguration<?, ?> config = cache.getConfiguration(CompleteConfiguration.class);
+                                out.println(INDENT + "configuration " + config);
+                                if (config != null) {
+                                    out.println(INDENT + "expiry policy factory: " + config.getExpiryPolicyFactory());
+                                    out.println(INDENT + "is management enabled? " + config.isManagementEnabled());
+                                    out.println(INDENT + "is statistics enabled? " + config.isStatisticsEnabled());
+                                    out.println(INDENT + "is store by value? " + config.isStoreByValue());
+                                    out.println(INDENT + "is read through? " + config.isReadThrough());
+                                    out.println(INDENT + "is write through? " + config.isWriteThrough());
+                                }
+                            } catch (IllegalArgumentException x) {
+                                // Ignore - type not supported by JCache provider
+                            }
+                            if (isMetaCache) {
+                                out.println(INDENT + "First 50 entries:");
+                                int i = 0;
+                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); ) {
+                                    Entry<?, ?> entry = (Entry<?, ?>) it.next();
+                                    if (entry != null) {
+                                        out.println(INDENT + INDENT + "session " + entry.getKey() + ": " + new SessionInfo((ArrayList<?>) entry.getValue()));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return null;
+            });
     }
 
     @Override

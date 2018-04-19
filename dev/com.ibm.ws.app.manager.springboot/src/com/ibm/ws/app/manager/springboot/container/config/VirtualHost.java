@@ -42,9 +42,13 @@ public class VirtualHost extends ConfigElement {
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("VirtualHost{");
+        buf.append("id=\"" + this.getId() + "\" ");
         if (this.hostAliases != null)
             for (String hostAlias : hostAliases)
                 buf.append("hostAlias=\"" + hostAlias + "\" ");
+        if (this.allowFromEndpoint != null) {
+            buf.append("allowFromEndpoint=\"" + this.allowFromEndpoint + "\" ");
+        }
         buf.append("}");
 
         return buf.toString();

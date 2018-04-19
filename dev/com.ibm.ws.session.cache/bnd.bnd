@@ -32,7 +32,7 @@ Include-Resource: \
 
 Service-Component=com.ibm.ws.session.cache;\
   implementation:="com.ibm.ws.session.store.cache.CacheStoreService";\
-  provide:="com.ibm.ws.session.SessionStoreService";\
+  provide:="com.ibm.ws.session.SessionStoreService,com.ibm.wsspi.logging.Introspector";\
   configuration-policy:=optional;\
   library=com.ibm.wsspi.library.Library;\
   monitor=com.ibm.ws.monitor.internal.MonitoringFrameworkExtender;\

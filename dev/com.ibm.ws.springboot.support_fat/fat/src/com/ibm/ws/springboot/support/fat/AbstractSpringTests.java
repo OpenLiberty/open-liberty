@@ -49,6 +49,7 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_15_APP_WAR = "com.ibm.ws.springboot.support.version15.test.war.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_15_APP_JAVA = "com.ibm.ws.springboot.support.version15.test.java.app.jar";
     public static final String SPRING_BOOT_15_APP_WEBANNO = "com.ibm.ws.springboot.support.version15.test.webanno.app.jar";
+    public static final String SPRING_BOOT_15_APP_WEBSOCKET = "com.ibm.ws.springboot.support.version15.test.websocket.app.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
 
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
@@ -71,6 +72,10 @@ public abstract class AbstractSpringTests {
 
     @AfterClass
     public static void stopServer() throws Exception {
+        stopServer(true);
+    }
+
+    public static void stopServer(boolean deleteSharedCache) throws Exception {
         boolean isActive = serverStarted.getAndSet(false);
         try {
             // don't archive until after stopping and removing the lib.index.cache
@@ -83,7 +88,9 @@ public abstract class AbstractSpringTests {
                 for (RemoteFile remoteFile : dropinFiles) {
                     remoteFile.delete();
                 }
-                server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
+                if (deleteSharedCache) {
+                    server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
+                }
                 //clear bootstrap.properties
                 bootStrapProperties.clear();
                 try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
@@ -96,6 +103,7 @@ public abstract class AbstractSpringTests {
                 if (isActive) {
                     server.postStopServerArchive();
                 }
+                server.deleteDirectoryFromLibertyServerRoot("logs/");
             }
         }
     }

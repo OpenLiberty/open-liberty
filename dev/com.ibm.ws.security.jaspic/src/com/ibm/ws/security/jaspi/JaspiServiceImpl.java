@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -479,7 +479,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
      */
     private AuthConfigProvider getAuthConfigProvider(String appContext) {
         AuthConfigProvider provider = null;
-        AuthConfigFactory providerFactory = AuthConfigFactoryWrapper.getFactory();
+        AuthConfigFactory providerFactory = getAuthConfigFactory();
         if (providerFactory != null) {
             if (providerConfigModified &&
                 providerFactory instanceof ProviderRegistry) {
@@ -749,11 +749,19 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                 });
                 loginSubject = clone;
             }
-            HttpServletRequest req = jaspiRequest.getHttpServletRequest();
-            HttpServletResponse res = (HttpServletResponse) jaspiRequest.getMessageInfo().getResponseMessage();
+            final HttpServletRequest req = jaspiRequest.getHttpServletRequest();
+            final HttpServletResponse res = (HttpServletResponse) jaspiRequest.getMessageInfo().getResponseMessage();
+            final Subject finalLoginSubject = loginSubject;
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "JASPI login with HashTable: " + hashTable);
-            AuthenticationResult result = getWebProviderAuthenticatorHelper().loginWithHashtable(req, res, loginSubject);
+            AuthenticationResult result = AccessController.doPrivileged(new PrivilegedAction<AuthenticationResult>() {
+
+                @Override
+                public AuthenticationResult run() {
+                    return getWebProviderAuthenticatorHelper().loginWithHashtable(req, res, finalLoginSubject);
+                }
+            });
+
             authenticatedSubject = result.getSubject();
             // Remove the custom credential hashtable from the session subject
             if (sessionSubject != null) {
@@ -1000,7 +1008,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         // we will assume that some provider is registered so we will call jaspi to
         // process the request.
         boolean result = true;
-        AuthConfigFactory providerFactory = AuthConfigFactoryWrapper.getFactory();
+        AuthConfigFactory providerFactory = getAuthConfigFactory();
         BridgeBuilderService bridgeBuilderService = bridgeBuilderServiceRef.getService();
         if (bridgeBuilderService != null) {
             JaspiRequest jaspiRequest = new JaspiRequest(webRequest, null); //TODO: Some paths have a WebAppConfig that should be taken into accounnt when getting the appContext
@@ -1017,6 +1025,16 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             result = ((ProviderRegistry) providerFactory).isAnyProviderRegistered();
         }
         return result;
+    }
+
+    private AuthConfigFactory getAuthConfigFactory() {
+        return AccessController.doPrivileged(new PrivilegedAction<AuthConfigFactory>() {
+
+            @Override
+            public AuthConfigFactory run() {
+                return AuthConfigFactoryWrapper.getFactory();
+            }
+        });
     }
 
     @Override
