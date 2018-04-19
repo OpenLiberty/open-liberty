@@ -330,6 +330,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
 
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSessionCacheNotAvailable", session);
+
         // Restore the original config and expect the new cache to be usable
         hazelcastFile.setName(originalName);
         server.setMarkToEndOfLog();
