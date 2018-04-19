@@ -81,4 +81,20 @@ public class LogFieldConstants {
     public static final String THROWABLE = "throwable";
     public static final String THROWABLE_LOCALIZED = "throwable_localized";
     public static final String FORMATTEDMSG = "formattedMsg";
+
+    public static final String REQUESTSTARTTIME = "requestStartTime";
+    public static final String URIPATH = "uriPath";
+    public static final String REQUESTMETHOD = "requestMethod";
+    public static final String REQUESTHOST = "requestHost";
+    public static final String REQUESTPORT = "requestPort";
+    public static final String REMOTEHOST = "remoteHost";
+    public static final String REQUESTPROTOCOL = "requestProtocol";
+    public static final String BYTESRECEIVED = "bytesReceived";
+    public static final String RESPONSECODE = "responseCode";
+    public static final String ELAPSEDTIME = "elapsedTime";
+    public static final String CLASSNAME = "className";
+    public static final String EXCEPTIONNAME = "exceptionName";
+    public static final String PROBEID = "probeID";
+    public static final String OBJECTDETAILS = "objectDetails";
+
 }
