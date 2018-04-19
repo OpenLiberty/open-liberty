@@ -82,18 +82,12 @@
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
-            <version>${arquillian.version}</version>
+            <version>1.1.14.Final</version> 
         </dependency>
         <dependency>
-<!--
             <groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-wlp-managed-8.5</artifactId>
-            <version>1.0.0.Final-SNAPSHOT</version> -->
-
-<groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
-<artifactId>arquillian-liberty-managed</artifactId>
-<version>999.0.20180329212918</version>
-
+            <artifactId>arquillian-liberty-managed</artifactId>
+            <version>999.0.20180329212918</version> 
             <scope>test</scope>
         </dependency>
     </dependencies>
