@@ -31,15 +31,11 @@
       <actions>read</actions>
    </permission>
 
-   <permission>
-      <class-name>javax.security.enterprise.identitystore.IdentityStorePermission</class-name>
-      <name>getGroups</name>
-   </permission>
-
+<!-- this is for java.io.PrintWriter.write in FlexibleBaseNoJavaEESecServlet.class -->
    <permission>
       <class-name>java.net.SocketPermission</class-name>
-      <name>*</name>
-      <actions>connect,resolve</actions>
+      <name>127.0.0.1</name>
+      <actions>resolve</actions>
    </permission>
 
 </permissions>

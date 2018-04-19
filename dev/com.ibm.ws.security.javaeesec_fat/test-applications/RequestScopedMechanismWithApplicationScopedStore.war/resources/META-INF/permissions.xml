@@ -27,12 +27,6 @@
    </permission>
 
    <permission>
-      <class-name>java.net.SocketPermission</class-name>
-      <name>*</name>
-      <actions>connect,resolve</actions>
-   </permission>
-
-   <permission>
       <class-name>java.util.PropertyPermission</class-name>
       <name>org.glassfish.web.rfc2109_cookie_names_enforced</name>
       <actions>read</actions>

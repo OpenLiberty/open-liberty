@@ -20,4 +20,17 @@
       <name>wssecurity.getRunAsSubject</name>
    </permission>
 
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>* * "*"</name>
+      <actions>read</actions>
+   </permission>
+
+   <!-- this is for web.war.database.deferred.DatabaseSettingsBean.refreshConfiguration -->
+   <permission>
+      <class-name>java.io.FilePermission</class-name>
+      <name>DatabaseSettingsBean.props</name>
+      <actions>read</actions>
+   </permission>
+
 </permissions>
