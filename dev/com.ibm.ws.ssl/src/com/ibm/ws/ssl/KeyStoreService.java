@@ -155,4 +155,11 @@ public interface KeyStoreService {
      */
     X509Certificate getClientKeyCert(Properties sslProps) throws KeyStoreException, CertificateException;
 
+    /**
+     * Returns all keyStore Aliases known to the server.
+     *
+     * @return
+     */
+    String[] getAllKeyStoreAliases();
+
 }
