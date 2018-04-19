@@ -163,6 +163,10 @@ public class AuthenticateApi {
     public void logout(HttpServletRequest req, HttpServletResponse res, WebAppSecurityConfig config) throws ServletException {
         // logout when the unprotectedResourceService(s) do
         logoutUnprotectedResourceServiceRef(req, res);
+        if (isSLOInProgress(req)) {
+            simpleLogout(req, res);
+            return;
+        }
         createSubjectAndPushItOnThreadAsNeeded(req, res);
 
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subjectManager.getCallerSubject());
@@ -184,6 +188,17 @@ public class AuthenticateApi {
         postLogout(req, res);
         subjectManager.clearSubjects();
 
+    }
+
+    private boolean isSLOInProgress(HttpServletRequest request) {
+        return requestHasAttribute(request, "SLOInProgress");
+    }
+
+    private boolean requestHasAttribute(HttpServletRequest request, String attrib) {
+        if (request.getAttribute(attrib) != null) {
+            return (Boolean) request.getAttribute(attrib);
+        }
+        return false;
     }
 
     /**
