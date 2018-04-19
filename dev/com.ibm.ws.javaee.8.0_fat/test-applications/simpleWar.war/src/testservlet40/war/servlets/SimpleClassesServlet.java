@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package testservlet40.jar.servlets;
+package testservlet40.war.servlets;
 
 import java.io.IOException;
 
@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
+
 import componenttest.app.FATServlet;
 
 /**
