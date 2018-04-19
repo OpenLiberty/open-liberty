@@ -252,15 +252,17 @@ public class DatabaseIdentityStore implements IdentityStore {
         PreparedStatement prep = null;
         String callerQuery = "not_resolved";
         try {
-            Connection conn = getConnection();
-            try {
-                callerQuery = idStoreDefinition.getCallerQuery();
-                if (callerQuery == null || callerQuery.isEmpty()) {
-                    if (tc.isEventEnabled()) {
-                        Tr.event(tc, "The 'callerQuery' parameter can not be " + callerQuery == null ? "null." : "empty.");
-                    }
-                    return CredentialValidationResult.INVALID_RESULT;
+            callerQuery = idStoreDefinition.getCallerQuery();
+            if (callerQuery == null || callerQuery.isEmpty()) {
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, "The 'callerQuery' parameter can not be " + callerQuery == null ? "null." : "empty.");
                 }
+                return CredentialValidationResult.INVALID_RESULT;
+            }
+
+            Connection conn = getConnection();
+
+            try {
 
                 prep = conn.prepareStatement(callerQuery);
                 prep.setString(1, caller);
