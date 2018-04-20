@@ -1030,17 +1030,33 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     private boolean isGlobalLoginEnabled() {
-        String value = getWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
-        if (value != null && (value.equals("FORM") || value.equals("BASIC"))) {
-            return true;
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
+        String value = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
+        if (value != null) {
+            if ((value.equals(LoginConfiguration.FORM) || value.equals(LoginConfiguration.BASIC))) {
+                return true;
+            } else if (value.equals(LoginConfiguration.CLIENT_CERT)) {
+                // if CLIENT_CERT is set, check failover setting.
+                if (webAppSecConfig.getAllowFailOverToFormLogin() || webAppSecConfig.getAllowFailOverToBasicAuth()) {
+                    return true;
+                }
+            }
         }
         return false;
     }
 
     private boolean isGlobalLoginFormEnabled() {
-        String value = getWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
-        if (value != null && value.equals("FORM")) {
-            return true;
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
+        String value = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
+        if (value != null) {
+            if (value.equals(LoginConfiguration.FORM)) {
+                return true;
+            } else if (value.equals(LoginConfiguration.CLIENT_CERT)) {
+                // if CLIENT_CERT is set, check failover setting.
+                if (webAppSecConfig.getAllowFailOverToFormLogin()) {
+                    return true;
+                }
+            }
         }
         return false;
     }
