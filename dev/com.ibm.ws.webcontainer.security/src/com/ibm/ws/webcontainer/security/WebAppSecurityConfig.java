@@ -93,6 +93,13 @@ public interface WebAppSecurityConfig {
     boolean getAllowFailOverToFormLogin();
 
     /**
+     * Is failover to the application defined (either login config or JSR375 HAM) from CLIENT_CERT allowed?
+     *
+     * @return {@code true} if failover to applicatioin defined is allowed
+     */
+    boolean getAllowFailOverToAppDefined();
+
+    /**
      * Is any failover from CLIENT_CERT allowed?
      *
      * @return {@code true} if any failover is allowed

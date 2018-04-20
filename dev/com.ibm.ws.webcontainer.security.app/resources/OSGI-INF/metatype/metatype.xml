@@ -102,6 +102,7 @@
             required="false" type="String" > 
  				<Option label="%allowAuthenticationFailOverToAuthMethod.BASIC" value="BASIC" />
             	<Option label="%allowAuthenticationFailOverToAuthMethod.FORM" value="FORM" />
+            	<Option label="%allowAuthenticationFailOverToAuthMethod.APP_DEFINED" value="APP_DEFINED" />
         </AD> 
 		<AD id="includePathInWASReqURL" name="%includePathInWASReqURL" description="%includePathInWASReqURL.desc"
             required="false" type="Boolean"

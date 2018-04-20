@@ -157,7 +157,13 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
      */
     private String getFailOverToAuthType(WebRequest webRequest) {
         String authType = null;
-        if (webAppSecurityConfig.getAllowFailOverToBasicAuth() && webAppSecurityConfig.getAllowFailOverToFormLogin()) {
+        if (webAppSecurityConfig.getAllowFailOverToAppDefined()) {
+            SecurityMetadata securityMetadata = webRequest.getSecurityMetadata();
+            LoginConfiguration loginConfig = securityMetadata.getLoginConfiguration();
+            if (loginConfig != null) {
+                authType = loginConfig.getAuthenticationMethod();
+            }
+        } else if (webAppSecurityConfig.getAllowFailOverToBasicAuth() && webAppSecurityConfig.getAllowFailOverToFormLogin()) {
             if (appHasWebXMLFormLogin(webRequest) || globalWebAppSecurityConfigHasFormLogin()) {
                 authType = LoginConfiguration.FORM;
             } else {

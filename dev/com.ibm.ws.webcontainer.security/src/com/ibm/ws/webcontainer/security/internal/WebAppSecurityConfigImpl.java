@@ -257,8 +257,17 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
+    public boolean getAllowFailOverToAppDefined() {
+        if (allowFailOverToAuthMethod != null && allowFailOverToAuthMethod.equalsIgnoreCase(LoginConfiguration.APP_DEFINED))
+            return true;
+        else
+            return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean allowFailOver() {
-        return (getAllowFailOverToBasicAuth() || getAllowFailOverToFormLogin());
+        return (getAllowFailOverToBasicAuth() || getAllowFailOverToFormLogin() || getAllowFailOverToAppDefined());
     }
 
     /** {@inheritDoc} */
