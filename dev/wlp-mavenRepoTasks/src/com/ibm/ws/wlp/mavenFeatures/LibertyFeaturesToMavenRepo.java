@@ -102,7 +102,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				throw new MavenRepoGeneratorException("Output dir " + outputDir + " could not be created or is not a directory.");
 			}
 			
-			// parse OL features JSON
+			// parse Open Liberty features JSON
 			Map<String, LibertyFeature> allFeatures = new HashMap<String, LibertyFeature>();
 			if (openLibertyJson != null) {
 				File openLibertyJsonFile = new File(openLibertyJson);
@@ -114,7 +114,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				allFeatures.putAll(parseFeaturesAndCreateModifiedJson(openLibertyJsonFile, modifiedOpenLibertyJsonFile, false));
 				  		
 			}
-			// parse CL features JSON
+			// parse WebSphere Liberty features JSON
 			if (websphereLibertyJson != null) {
 				File websphereLibertyJsonFile = new File(websphereLibertyJson);
 				try {
@@ -132,6 +132,10 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			
 			// for each LibertyFeature
 			for (LibertyFeature feature : allFeatures.values()) {
+				if (websphereLibertyJson != null && !feature.isWebsphereLiberty()) {
+					// if WebSphere Liberty build, only output WebSphere Liberty artifacts
+					continue;
+				}
 				
 				// copy ESA to target dirs
 				System.out.println("This is the feature: "+ feature.getSymbolicName());
@@ -166,12 +170,11 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				}
 			}
 
-			// Copy JSON artifacts and generate POMs
-			if (openLibertyJson != null) {
+			// Copy JSON artifacts and generate POMs for either Open or WebSphere Liberty
+			if (websphereLibertyJson == null) {
 				copyJsonArtifact(modifiedOpenLibertyJsonFile, outputDir, version, false);
 				generateJsonPom(outputDir, version, false);
-			}
-			if (websphereLibertyJson != null) {
+			} else {
 				copyJsonArtifact(modifiedWebsphereLibertyJsonFile, outputDir, version, true);
 				generateJsonPom(outputDir, version, true);
 			}
