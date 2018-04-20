@@ -1144,6 +1144,8 @@ public class WebUtilsTest {
         assertTrue(output.contains(notSecretValue));
         assertTrue(output.contains(notSecret2));
         assertTrue(output.contains(notSecretValue2));
+        assertTrue(output.contains(notSecret3));
+        assertTrue(output.contains(notSecretValue3));
     }
 
     //add a non-secret parameter with a name that is a 
@@ -1177,6 +1179,8 @@ public class WebUtilsTest {
         assertTrue(output.contains(notSecretValue));
         assertTrue(output.contains(notSecret2));
         assertTrue(output.contains(notSecretValue2));
+        assertTrue(output.contains(notSecret3));
+        assertTrue(output.contains(notSecretValue3));
     }
 
     //add a non-secret parameter with a name that is a different 
@@ -1210,6 +1214,8 @@ public class WebUtilsTest {
         assertTrue(output.contains(notSecretValue));
         assertTrue(output.contains(notSecret2));
         assertTrue(output.contains(notSecretValue2));
+        assertTrue(output.contains(notSecret3));
+        assertTrue(output.contains(notSecretValue3));
     }
 
     //a parameter has more than one value
