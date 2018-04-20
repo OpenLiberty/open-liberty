@@ -61,10 +61,10 @@ public class WebInstanceFactory implements ContainerInstanceFactory<WebInitializ
     }
 
     @Override
-    public Instance intialize(SpringBootApplication app, String id,
+    public Instance intialize(SpringBootApplication app, String id, String virtualHostID,
                               WebInitializer initializer) throws IOException, UnableToAdaptException, MetaDataException {
         String filterString = "(&(" + OBJECTCLASS +
-                              "=" + VirtualHost.class.getName() + ")(id=springVirtualHost-" + id + "))";
+                              "=" + VirtualHost.class.getName() + ")(id=" + virtualHostID + "))";
         Filter filter = null;
         try {
             filter = context.createFilter(filterString);
@@ -72,7 +72,7 @@ public class WebInstanceFactory implements ContainerInstanceFactory<WebInitializ
             throw new IllegalArgumentException(e);
         }
         ServiceTracker<VirtualHost, VirtualHost> tracker = new ServiceTracker<>(context, filter, null);
-        return new WebInstance(this, app, id, initializer, tracker);
+        return new WebInstance(this, app, id, virtualHostID, initializer, tracker);
     }
 
     ModuleHandler getModuleHandler() {

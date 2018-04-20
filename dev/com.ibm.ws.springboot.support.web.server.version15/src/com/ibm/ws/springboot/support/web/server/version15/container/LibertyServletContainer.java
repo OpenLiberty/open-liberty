@@ -10,14 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.version15.container;
 
-import java.io.File;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.ADDRESS;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.PORT;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SERVER_HEADER;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_CIPHERS;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_CLIENT_AUTH;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_ENABLED;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_KEY_ALIAS;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_KEY_PASSWORD;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_KEY_STORE;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_KEY_STORE_PASSWORD;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_KEY_STORE_PROVIDER;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_KEY_STORE_TYPE;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_PROTOCOL;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_TRUST_STORE;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_TRUST_STORE_PASSWORD;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_TRUST_STORE_PROVIDER;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_TRUST_STORE_TYPE;
+
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -25,20 +38,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerException;
 import org.springframework.boot.context.embedded.Ssl;
-import org.springframework.boot.context.embedded.Ssl.ClientAuth;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.SocketUtils;
 
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
-import com.ibm.ws.app.manager.springboot.container.config.ConfigElementList;
-import com.ibm.ws.app.manager.springboot.container.config.HttpEndpoint;
-import com.ibm.ws.app.manager.springboot.container.config.KeyEntry;
-import com.ibm.ws.app.manager.springboot.container.config.KeyStore;
-import com.ibm.ws.app.manager.springboot.container.config.SSLConfig;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
-import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
+import com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory;
 import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 
 /**
@@ -48,14 +55,6 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
     private static final Object token = new Object() {};
     private final SpringBootConfig springBootConfig;
     private final AtomicInteger port = new AtomicInteger();
-    private static final String SECURITY_DIR = "resources/security/";
-    private static final String SPRING_VIRTUALHOST = "springVirtualHost-";
-    private static final String SPRING_HTTPENDPOINT = "springHttpEndpoint-";
-    private static final String SPRING_SSLCONFIG = "springSslConfig-";
-    private static final String SPRING_KEYSTORE = "springKeyStore-";
-    private static final String SPRING_TRUSTSTORE = "springTrustStore-";
-    private static final String SPRING_KEYENTRY = "springKeyEntry-";
-    private static final String SPRING_CONFIG = "springConfig-";
 
     public LibertyServletContainer(LibertyServletContainerFactory factory, ServletContextInitializer[] initializers) {
         port.set(factory.getPort());
@@ -65,8 +64,7 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         }
         SpringBootConfigFactory configFactory = SpringBootConfigFactory.findFactory(token);
         springBootConfig = configFactory.createSpringBootConfig();
-        String springBootConfigId = springBootConfig.getId();
-        ServerConfiguration serverConfig = getServerConfiguration(factory, configFactory, springBootConfigId);
+        ServerConfiguration serverConfig = getServerConfiguration(factory, configFactory);
 
         final CountDownLatch initDone = new CountDownLatch(1);
         final AtomicReference<Throwable> exception = new AtomicReference<>();
@@ -112,210 +110,45 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         springBootConfig.stop();
     }
 
-    private static ServerConfiguration getServerConfiguration(LibertyServletContainerFactory factory, SpringBootConfigFactory configFactory, String springBootConfigId) {
-        ServerConfiguration serverConfig = new ServerConfiguration();
-        configureEndpoint(serverConfig, factory, configFactory, springBootConfigId);
-        configureVirtualHost(serverConfig, factory, springBootConfigId);
-        serverConfig.setDescription(SPRING_CONFIG + springBootConfigId);
-        return serverConfig;
+    private static ServerConfiguration getServerConfiguration(LibertyServletContainerFactory factory, SpringBootConfigFactory configFactory) {
+        Map<String, Object> serverProperties = getServerProperties(factory);
+        return ServerConfigurationFactory.createServerConfiguration(serverProperties, configFactory, (s) -> {
+            try {
+                return ResourceUtils.getURL(s);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException("Could not find the key store \"" + s + "\"", e);
+            }
+        });
     }
 
-    private static void configureVirtualHost(ServerConfiguration serverConfig, LibertyServletContainerFactory factory, String springBootConfigId) {
-        List<VirtualHost> virtualHosts = serverConfig.getVirtualHosts();
-        virtualHosts.clear();
-        VirtualHost virtualHost = new VirtualHost();
-        virtualHost.setId(SPRING_VIRTUALHOST + springBootConfigId);
-        HttpEndpoint httpEndpoint = serverConfig.getHttpEndpoints().iterator().next();
-        virtualHost.setAllowFromEndpointRef(httpEndpoint.getId());
-        Set<String> aliases = virtualHost.getHostAliases();
-        aliases.clear();
-        // TODO would be better to use *:* for wildcarding the port
-        aliases.add("*:" + factory.getPort());
-        virtualHosts.add(virtualHost);
-    }
+    private static Map<String, Object> getServerProperties(LibertyServletContainerFactory factory) {
+        Map<String, Object> serverProperties = new HashMap<>();
 
-    private static void configureEndpoint(ServerConfiguration serverConfig, LibertyServletContainerFactory factory, SpringBootConfigFactory configFactory,
-                                          String springBootConfigId) {
-        List<HttpEndpoint> endpoints = serverConfig.getHttpEndpoints();
-        endpoints.clear();
-        HttpEndpoint endpoint = new HttpEndpoint();
-        endpoint.setId(SPRING_HTTPENDPOINT + springBootConfigId);
+        serverProperties.put(PORT, factory.getPort());
+
         if (factory.getAddress() != null) {
-            endpoint.setHost(factory.getAddress().getHostAddress());
-        } else {
-            endpoint.setHost("*");
+            serverProperties.put(ADDRESS, factory.getAddress().getHostAddress());
         }
+
+        serverProperties.put(SERVER_HEADER, factory.getServerHeader());
 
         Ssl ssl = factory.getSsl();
-        // For ssl authentication a key store is always required for the server
-        // to provide its digital certificate along with its private key.
-        // If the key store is not provided then the server is not authenticated
-        // to have a secure connection.
-        if (ssl != null && ssl.getKeyStore() != null) {
-            endpoint.setHttpPort(-1);
-            endpoint.setHttpsPort(factory.getPort());
-            endpoint.getSslOptions().setSslRef(SPRING_SSLCONFIG + springBootConfigId);
-            configureSsl(serverConfig, ssl, springBootConfigId);
-
-            ConfigElementList<KeyStore> keyStores = serverConfig.getKeyStores();
-            keyStores.clear();
-
-            configureKeyStore(keyStores, ssl, configFactory, springBootConfigId);
-
-            if (ssl.getTrustStore() != null) {
-                configureTrustStore(keyStores, ssl, configFactory, springBootConfigId);
-            }
-        } else {
-            endpoint.setHttpPort(factory.getPort());
-            endpoint.setHttpsPort(-1);
+        if (ssl != null) {
+            serverProperties.put(SSL_CIPHERS, ssl.getCiphers());
+            serverProperties.put(SSL_CLIENT_AUTH, ssl.getClientAuth());
+            serverProperties.put(SSL_ENABLED, ssl.isEnabled());
+            serverProperties.put(SSL_KEY_ALIAS, ssl.getKeyAlias());
+            serverProperties.put(SSL_KEY_PASSWORD, ssl.getKeyPassword());
+            serverProperties.put(SSL_KEY_STORE, ssl.getKeyStore());
+            serverProperties.put(SSL_KEY_STORE_PASSWORD, ssl.getKeyStorePassword());
+            serverProperties.put(SSL_KEY_STORE_PROVIDER, ssl.getKeyStoreProvider());
+            serverProperties.put(SSL_KEY_STORE_TYPE, ssl.getKeyStoreType());
+            serverProperties.put(SSL_PROTOCOL, ssl.getProtocol());
+            serverProperties.put(SSL_TRUST_STORE, ssl.getTrustStore());
+            serverProperties.put(SSL_TRUST_STORE_PASSWORD, ssl.getTrustStorePassword());
+            serverProperties.put(SSL_TRUST_STORE_PROVIDER, ssl.getTrustStoreProvider());
+            serverProperties.put(SSL_TRUST_STORE_TYPE, ssl.getTrustStoreType());
         }
-
-        if (factory.getServerHeader() != null) {
-            endpoint.getHttpOptions().setServerHeaderValue(factory.getServerHeader());
-        }
-
-        endpoints.add(endpoint);
-    }
-
-    private static void configureSsl(ServerConfiguration serverConfig, Ssl ssl, String springBootConfigId) {
-        ConfigElementList<SSLConfig> ssls = serverConfig.getSsls();
-        ssls.clear();
-        SSLConfig sslConfig = new SSLConfig();
-        sslConfig.setId(SPRING_SSLCONFIG + springBootConfigId);
-        sslConfig.setKeyStoreRef(SPRING_KEYSTORE + springBootConfigId);
-
-        if (ssl.getTrustStore() != null) {
-            sslConfig.setTrustStoreRef(SPRING_TRUSTSTORE + springBootConfigId);
-        }
-        if (ssl.getProtocol() != null) {
-            sslConfig.setSslProtocol(ssl.getProtocol());
-        }
-        if (ssl.getClientAuth() != null) {
-            configureClientAuthentication(sslConfig, ssl);
-        }
-        if (ssl.getCiphers() != null) {
-            configureEnabledCiphers(sslConfig, ssl);
-        }
-        ssls.add(sslConfig);
-    }
-
-    private static void configureKeyStore(ConfigElementList<KeyStore> keyStores, Ssl ssl, SpringBootConfigFactory configFactory, String springBootConfigId) {
-        URL keyStoreURL;
-        KeyStore keyStore = new KeyStore();
-        keyStore.setId(SPRING_KEYSTORE + springBootConfigId);
-
-        try {
-            keyStoreURL = ResourceUtils.getURL(ssl.getKeyStore());
-        } catch (IOException e) {
-            throw new EmbeddedServletContainerException("Could not find the key store \"" + ssl.getKeyStore() + "\"", e);
-        }
-        String keyStoreURLString = keyStoreURL.toString();
-        String keyStoreName = keyStoreURLString.substring(keyStoreURLString.lastIndexOf("/") + 1);
-        int dot = keyStoreName.lastIndexOf(".");
-        keyStoreName = keyStoreName.substring(0, dot) + "-" + springBootConfigId + keyStoreName.substring(dot);
-
-        File securityDir = new File(configFactory.getServerDir(), SECURITY_DIR);
-
-        File keyStoreFile = new File(securityDir, keyStoreName);
-
-        try (InputStream in = keyStoreURL.openStream()) {
-            writeFile(in, keyStoreFile);
-        } catch (IOException e) {
-            throw new EmbeddedServletContainerException("Unable to copy keystore to server home/resources/security directory.", e);
-        }
-        keyStore.setLocation(keyStoreName);
-        if (ssl.getKeyStorePassword() != null) {
-            keyStore.setPassword(ssl.getKeyStorePassword());
-        }
-        if (ssl.getKeyStoreType() != null) {
-            keyStore.setType(ssl.getKeyStoreType());
-        }
-        if (ssl.getKeyAlias() != null || ssl.getKeyPassword() != null) {
-            configureKeyEntry(keyStore, ssl, springBootConfigId);
-        }
-        keyStores.add(keyStore);
-    }
-
-    private static void configureKeyEntry(KeyStore keystore, Ssl ssl, String springBootConfigId) {
-        ConfigElementList<KeyEntry> keyEntries = keystore.getKeyEntries();
-        keyEntries.clear();
-        KeyEntry keyEntry = new KeyEntry();
-        keyEntry.setId(SPRING_KEYENTRY + springBootConfigId);
-        if (ssl.getKeyAlias() != null) {
-            keyEntry.setName(ssl.getKeyAlias());
-        } else {
-            keyEntry.setName("keyEntry");
-        }
-        if (ssl.getKeyPassword() != null) {
-            keyEntry.setKeyPassword(ssl.getKeyPassword());
-        }
-        keyEntries.add(keyEntry);
-    }
-
-    private static void configureTrustStore(ConfigElementList<KeyStore> keyStores, Ssl ssl, SpringBootConfigFactory configFactory, String springBootConfigId) {
-        KeyStore keyStore = new KeyStore();
-        URL trustStoreURL;
-        try {
-            trustStoreURL = ResourceUtils.getURL(ssl.getTrustStore());
-        } catch (IOException e) {
-            throw new EmbeddedServletContainerException("Could not find the trust store \"" + ssl.getTrustStore() + "\"", e);
-        }
-        String trustStoreURLString = trustStoreURL.toString();
-        String trustStoreName = trustStoreURLString.substring(trustStoreURLString.lastIndexOf("/") + 1);
-        int dot = trustStoreName.lastIndexOf(".");
-        trustStoreName = trustStoreName.substring(0, dot) + "-" + springBootConfigId + trustStoreName.substring(dot);
-
-        File trustStoreDir = new File(configFactory.getServerDir(), SECURITY_DIR);
-        File trustStoreFile = new File(trustStoreDir, trustStoreName);
-
-        try (InputStream in = trustStoreURL.openStream()) {
-            writeFile(in, trustStoreFile);
-        } catch (IOException e) {
-            throw new EmbeddedServletContainerException("Unable to copy truststore to server home/resources/security directory.", e);
-        }
-
-        keyStore.setId(SPRING_TRUSTSTORE + springBootConfigId);
-        keyStore.setLocation(trustStoreName);
-        if (ssl.getTrustStorePassword() != null) {
-            keyStore.setPassword(ssl.getTrustStorePassword());
-        }
-        if (ssl.getTrustStoreType() != null) {
-            keyStore.setType(ssl.getTrustStoreType());
-        }
-        keyStores.add(keyStore);
-    }
-
-    private static void configureClientAuthentication(SSLConfig sslConfig, Ssl ssl) {
-        if (ssl.getClientAuth() == ClientAuth.NEED) {
-            sslConfig.setClientAuthentication(Boolean.TRUE);
-        } else if (ssl.getClientAuth() == ClientAuth.WANT) {
-            sslConfig.setClientAuthenticationSupported(Boolean.TRUE);
-        }
-    }
-
-    private static void configureEnabledCiphers(SSLConfig sslConfig, Ssl ssl) {
-        String[] ciphers = ssl.getCiphers();
-        String enabledCiphers = null;
-        if (ciphers.length > 0) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (String cipher : ciphers) {
-                stringBuilder.append(cipher).append(" ");
-            }
-            enabledCiphers = stringBuilder.toString();
-        }
-        if (enabledCiphers != null) {
-            sslConfig.setEnabledCiphers(enabledCiphers);
-        }
-    }
-
-    private static void writeFile(InputStream in, File dest) throws FileNotFoundException, IOException {
-        dest.getParentFile().mkdirs();
-        try (FileOutputStream fos = new FileOutputStream(dest)) {
-            byte buffer[] = new byte[4096];
-            int count;
-            while ((count = in.read(buffer, 0, buffer.length)) > 0) {
-                fos.write(buffer, 0, count);
-            }
-        }
+        return serverProperties;
     }
 }

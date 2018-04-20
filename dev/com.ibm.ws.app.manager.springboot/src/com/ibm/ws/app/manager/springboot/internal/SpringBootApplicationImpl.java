@@ -181,8 +181,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (!serverConfig.compareAndSet(null, config)) {
                 throw new IllegalStateException("Server configuration already set.");
             }
+            String virtualHostId = config.getVirtualHosts().iterator().next().getId();
             try {
-                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, helperParam))) {
+                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, virtualHostId, helperParam))) {
                     throw new IllegalStateException("Config instance already created.");
                 }
             } catch (IOException | UnableToAdaptException | MetaDataException e) {
@@ -508,9 +509,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
     }
 
-    private String getVirtualHostConfig(String start, String id, String end) {
+    private String getVirtualHostConfig(String start, String virtualHostId, String end) {
         StringBuilder builder = new StringBuilder(start);
-        builder.append("springVirtualHost-" + id);
+        builder.append(virtualHostId);
         builder.append(end);
         return builder.toString();
     }
