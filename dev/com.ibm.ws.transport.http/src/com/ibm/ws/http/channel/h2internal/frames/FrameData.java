@@ -21,7 +21,6 @@ import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
-
 public class FrameData extends Frame {
 
     /*
@@ -93,7 +92,7 @@ public class FrameData extends Frame {
         this.END_STREAM_FLAG = endStream;
         frameType = FrameTypes.DATA;
         if (data != null) {
-            writeFrameLength += data.limit();
+            writeFrameLength += data.remaining();
         }
         setInitialized(); // we should have everything we need to write out, now
     }

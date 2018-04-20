@@ -1761,7 +1761,7 @@ public class H2StreamProcessor {
                 } else {
                     // this frame is not a data frame, and so it's not subject to flow control and we can write immediately
                     writeFrameBuffer = currentFrame.buildFrameForWrite();
-                    muxLink.writeSync(writeFrameBuffer, null, writeFrameBuffer.limit(), TCPRequestContext.NO_TIMEOUT,
+                    muxLink.writeSync(writeFrameBuffer, null, currentFrame.getWriteFrameLength(), TCPRequestContext.NO_TIMEOUT,
                                       currentFrame.getFrameType(), currentFrame.getPayloadLength(), myID);
                 }
             } catch (IOException e) {

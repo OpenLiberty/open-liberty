@@ -208,9 +208,9 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 continue;
             }
 
-            lengthWritten += b.limit();
+            lengthWritten += b.remaining();
 
-            if (b.limit() != 0) {
+            if (b.remaining() != 0) {
                 if (lengthWritten >= length) {
                     // the current buffer meets the expected total write length,
                     // so we'll mark this as the last data frame on the stream
@@ -218,7 +218,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                     endStream = lastData && isFinalWrite ? true : false;
                 }
 
-                dataFrame = new FrameData(streamID, b, b.limit(), endStream);
+                dataFrame = new FrameData(streamID, b, b.remaining(), endStream);
                 dataFrames.add(dataFrame);
 
                 if (lastData) {
