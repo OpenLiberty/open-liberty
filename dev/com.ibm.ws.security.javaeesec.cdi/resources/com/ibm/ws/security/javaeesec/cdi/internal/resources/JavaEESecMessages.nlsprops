@@ -35,14 +35,14 @@ JAVAEESEC_CDI_INFO_NO_IDENTITY_STORE.useraction=Investigate any error messages f
 
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: The {1} application  failed deployment because both a login-config element in the web.xml file and the HttpAuthenticationsMechanism element were specified for the {0} module. Make sure that only one authentication  mechanism is configured.
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=The application deployment failed because both the login-config element and the HttpAuthenticationMechanism element are defined. Only one of these authentication mechanisms can be used in your application.
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Make sure that only one of  the authentication mechanisms is configured.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Make sure that only one of the authentication mechanisms is configured.
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: The password hash for the DatabaseIdentityStore attribute is not valid because the {1} configuration parameter has a value of {0} that is not valid.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=The password hash for the DatabaseIdentityStore attribute is not valid because the value of the configuration parameter is not valid. <=== Explain what values are not valid, or given an example of what is not valid, or tell them what are common values that occur that are not valid, or tell them what is valid, etc.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=The password hash for the DatabaseIdentityStore attribute is not valid because the value of the configuration parameter is not valid. Please refer to the javadoc of javax.security.enterprise.identitystore.Pbkdf2PasswordHash interface for the valid value.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Make sure that the configuration parameter is set correctly.
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: The password hash for the DatabaseIdentityStore attribute is not valid because the {0} value of the {1} configuration parameter is less than the minimum value of {2}.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=The value of the configuration parameter must be greater than or equal to the minimum value for the password hash of the DatabaseIdentityStore attribute to be valid.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=For the password hash of the DatabaseIdentityStore attribute to be valid, the value of the configuration parameter must be greater than or equal to the minimum value.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Make sure that the configuration parameter value is equal to or greater than the minimum value.
 
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: The password hash from the database is not valid. {0}
@@ -50,7 +50,7 @@ JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=The password hash from
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Make sure that the password hash in the database has the correct format required by the Pbkdf2PasswordHash implementation.
 
 JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: The user could not log in. The FormLoginHttpAuthenticationMechanism attribute could not be used for the log in because the {0} attribute is not set in the webAppSecurity element.
-JAVAEESEC_CDI_ERROR_NO_URL.explanation=The user could receive a 401 or 403 error on attempting to log in. The FormLoginHttpAuthenticationMechanism could not be used for the log in because either the loginFormURL attribute or the loginErrorURL attribute is not set in the webAppSecurity element.
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=The user could receive a 401 or 403 error when attempting to log in. The FormLoginHttpAuthenticationMechanism could not be used for the log in because either the loginFormURL attribute or the loginErrorURL attribute is not set in the webAppSecurity element.
 JAVAEESEC_CDI_ERROR_NO_URL.useraction=Make sure that both the loginFormURL attribute and the loginErrorURL attribute are set.
 
 JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: A mismatch exists between the {0} contextRootForFormAuthenticationMechanism attribute  and the {1} URL of {2}.
