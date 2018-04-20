@@ -38,6 +38,7 @@ import com.ibm.ws.http2.test.exceptions.UnableToSendFrameException;
 import com.ibm.ws.http2.test.frames.FrameSettingsClient;
 import com.ibm.ws.http2.test.helpers.HTTPUtils;
 import com.ibm.ws.http2.test.listeners.FramesListener;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 /**
  *
@@ -163,6 +164,14 @@ public class Http2Client {
 
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes", "Sending bytes (size: " + bytes.length + " bytes written)= " + bytesWritten);
+        }
+    }
+
+    public void sendBytes(WsByteBuffer bytes) {
+        long bytesWritten = h2Connection.sendBytes(bytes);
+
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes", "Sending bytes (size: " + bytes.limit() + " bytes written)= " + bytesWritten);
         }
     }
 

@@ -146,6 +146,30 @@ public class H2Connection {
 
     }
 
+    public long sendBytes(WsByteBuffer toSend) {
+        writeConn.setBuffer(toSend);
+
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes(WsByteBuffer)", "Sending " + toSend.limit() + " bytes synchronously through connection " + this + ".");
+        }
+
+        long bytesWritten = 0L;
+        try {
+            bytesWritten = writeConn.write(TCPWriteRequestContext.WRITE_ALL_DATA, utils.IO_DEFAULT_TIMEOUT);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.logp(Level.SEVERE, CLASS_NAME, "sendBytes(WsByteBuffer)", "Unable to send bytes: ", e);
+            }
+            reportedExceptions.add(e);
+        }
+
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes(WsByteBuffer)", bytesWritten + " bytes sent synchronously.");
+        }
+        writeConn.clearBuffers();
+        return bytesWritten;
+    }
+
     public long sendBytes(byte[] toSend) {
         WsByteBuffer writeBuffer = bufferMgr.allocate(toSend.length);
         writeBuffer.put(toSend);
@@ -206,7 +230,7 @@ public class H2Connection {
                 LOGGER.logp(Level.INFO, CLASS_NAME, "sendFrame", "Writing frame synchronously.");
             }
 
-            addToPendingByteBuffer(frameBytesToWsByteBuffer(writableFrame.buildFrameForWrite()), 1);
+            addToPendingByteBuffer(writableFrame.buildFrameForWrite(), 1);
 
             syncWrite();
 
@@ -340,6 +364,24 @@ public class H2Connection {
             growPendingArray(newsize);
         }
         System.arraycopy(list, 0, this.myPendingBuffers, this.pendingBufferStop, length);
+        this.pendingBufferStop += length;
+    }
+
+    /**
+     * Add a single outgoing buffer
+     *
+     * @param WsByteBuffer
+     * @param length
+     */
+    private void addToPendingByteBuffer(WsByteBuffer buf, int length) {
+        int newsize = this.pendingBufferStop + length;
+        if (newsize >= this.myPendingBuffers.length) {
+            if (length < PENDING_BUFFER_MIN_GROWTH_SIZE) {
+                newsize = this.myPendingBuffers.length + PENDING_BUFFER_MIN_GROWTH_SIZE;
+            }
+            growPendingArray(newsize);
+        }
+        myPendingBuffers[pendingBufferStop] = buf;
         this.pendingBufferStop += length;
     }
 

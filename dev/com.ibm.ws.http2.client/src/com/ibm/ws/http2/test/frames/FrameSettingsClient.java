@@ -12,13 +12,15 @@ package com.ibm.ws.http2.test.frames;
 
 import java.util.Base64;
 
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+
 /**
  *
  */
 public class FrameSettingsClient extends com.ibm.ws.http.channel.h2internal.frames.FrameSettings {
 
     private Base64.Encoder urlEncoder;
-    private final byte[] frameBuilt;
+    private final WsByteBuffer frameBuilt;
 
     /**
      *
@@ -45,7 +47,7 @@ public class FrameSettingsClient extends com.ibm.ws.http.channel.h2internal.fram
     }
 
     private byte[] payload() {
-        byte[] settingsPayload = new byte[frameBuilt.length - 9];
+        byte[] settingsPayload = new byte[frameBuilt.limit() - 9];
         System.arraycopy(frameBuilt, 9, settingsPayload, 0, getPayloadLength());
         return settingsPayload;
     }
