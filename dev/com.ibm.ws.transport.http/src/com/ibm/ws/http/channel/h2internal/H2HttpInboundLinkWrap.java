@@ -30,6 +30,7 @@ import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 
@@ -92,6 +93,13 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         vc = null;
     }
 
+    /**
+     * Create Header frames corresponding to a byte array of http headers
+     *
+     * @param byte[] marshalledHeaders
+     * @param boolean complete
+     * @return ArrayList<Frame> of FrameHeader objects containing the headers
+     */
     public ArrayList<Frame> prepareHeaders(byte[] marshalledHeaders, boolean complete) {
 
         //Create the HeaderFrame
@@ -161,49 +169,56 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         return frameList;
     }
 
-    public ArrayList<Frame> prepareBody(byte[] body, boolean isFinalWrite) {
+    /**
+     * Create Data frames to contain the http body payload
+     * The buffers passed in must not exceed the http2 max frame size
+     *
+     * @param WsByteBuffer[]
+     * @param int length
+     * @param boolean isFinalWrite
+     * @return ArrayList<Frame> of FrameData objects containing the buffered payload data
+     */
+    public ArrayList<Frame> prepareBody(WsByteBuffer[] wsbb, int length, boolean isFinalWrite) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "prepareBody entry : final write: " + isFinalWrite);
+
         }
         ArrayList<Frame> dataFrames = new ArrayList<Frame>();
-
-        boolean endStream = isFinalWrite;
-        int maxFrameSize = muxLink.getConnectionSettings().maxFrameSize;
         FrameData dataFrame;
 
-        if (body == null) {
-            body = new byte[0];
-        }
-
-        /**
-         * If this stream's data block is larger than the maximum frame size, we need to break it up into multiple data frames
-         */
-        if (body.length > maxFrameSize) {
-            endStream = false;
-            int remaining = body.length;
-            int frameSize = maxFrameSize;
-            int position = 0;
-
-            byte[] dataBytes = Arrays.copyOfRange(body, position, frameSize);
-            dataFrame = new FrameData(streamID, dataBytes, endStream);
+        if (wsbb == null || length == 0) {
+            // this empty data frame will have an end of stream flag set, signalling stream closure
+            dataFrame = new FrameData(streamID, null, 0, isFinalWrite);
             dataFrames.add(dataFrame);
-            remaining = remaining - frameSize;
+            return dataFrames;
+        }
+        boolean endStream = isFinalWrite;
+        boolean lastData = false;
+        int lengthWritten = 0;
 
-            while (remaining > 0) {
-                position = position + frameSize;
-                if (remaining >= maxFrameSize) {
-                    frameSize = maxFrameSize;
-                } else {
-                    frameSize = remaining;
+        // if there's more than one buffer passed in we can't assume it will end the stream
+        if (wsbb.length > 1) {
+            endStream = false;
+        }
+        // create a data frame for every buffer in the array
+        for (int i = 0; i < wsbb.length; i++) {
+            WsByteBuffer b = wsbb[i];
+
+            if (b == null) {
+                continue;
+            }
+
+            lengthWritten += b.limit();
+
+            if (b.limit() != 0) {
+                if (lengthWritten >= length) {
+                    // the current buffer meets the expected total write length,
+                    // so we'll mark this as the last data frame on the stream
+                    lastData = true;
+                    endStream = lastData && isFinalWrite ? true : false;
                 }
-                remaining = remaining - frameSize;
 
-                dataBytes = Arrays.copyOfRange(body, position, position + frameSize);
-
-                boolean lastData = remaining == 0 ? true : false;
-                endStream = lastData && isFinalWrite ? true : false;
-
-                dataFrame = new FrameData(streamID, dataBytes, endStream);
+                dataFrame = new FrameData(streamID, b, b.limit(), endStream);
                 dataFrames.add(dataFrame);
 
                 if (lastData) {
@@ -213,11 +228,6 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                     return dataFrames;
                 }
             }
-        }
-        dataFrame = new FrameData(streamID, body, isFinalWrite);
-        dataFrames.add(dataFrame);;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "prepareBody exit : " + dataFrames);
         }
         return dataFrames;
     }
@@ -311,6 +321,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     }
 
     public void writeFramesSync(CopyOnWriteArrayList<Frame> frames) {
+
         if (frames == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "writeFramesSync entry: # of frames: 0 - returning");
@@ -352,6 +363,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "writeFramesSync, Exception occurred while writing the data : " + e);
                 }
+                e.printStackTrace(System.out);
             }
         }
 

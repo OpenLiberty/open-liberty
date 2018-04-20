@@ -135,6 +135,13 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
         this.amountToBuffer = size;
         this.bbSize = (49152 < size) ? 32768 : 8192;
+
+        // make sure we never create larger frames than the max http2 frame size
+        Integer h2size = (Integer) this.getVc().getStateMap().get("h2_frame_size");
+        if (h2size != null && h2size < bbSize) {
+            this.bbSize = h2size;
+        }
+
         int numBuffers = (size / this.bbSize);
         if (0 == size || 0 != (size % this.bbSize)) {
             numBuffers++;
