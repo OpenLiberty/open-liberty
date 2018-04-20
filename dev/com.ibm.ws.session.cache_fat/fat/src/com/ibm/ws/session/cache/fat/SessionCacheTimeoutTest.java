@@ -56,6 +56,12 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         app = new SessionCacheApp(server, false, "session.cache.web", "session.cache.web.listener1");
         server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID()));
         server.startServer();
+
+        // Access a session before the main test logic to ensure that delays caused by lazy initialization
+        // of the JCache provider do not interfere with the test's timing.
+        List<String> session = new ArrayList<>();
+        app.sessionPut("setup-session", "initval", session, true);
+        app.invalidateSession(session);
     }
 
     @AfterClass
