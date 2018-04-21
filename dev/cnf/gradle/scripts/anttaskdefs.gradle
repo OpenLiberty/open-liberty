@@ -9,111 +9,40 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-configurations {
-    rasInstrumentation
-    nlsTasks
-    portSelector
-}
-
-dependencies {
-    rasInstrumentation project(':wlp-rasInstrumentation')
-
-    nlsTasks "commons-io:commons-io:2.4"
-    nlsTasks "commons-lang:commons-lang:2.4"
-    nlsTasks "org.apache.commons:commons-math:2.2"
-    nlsTasks "com.ibm.ws.componenttest:mantis-collections:2.5.0"
-    nlsTasks "com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0"
-
-    portSelector "com.ibm.ws.componenttest:infra.buildtasks-core:4.0.0"
-}
-
 rootProject.ext.rasInstrumentationInputFiles = { tasks.getByPath(':wlp-rasInstrumentation:jar') }
 rootProject.ext.rasInstrumentationTaskdef = { ant ->
     ant.taskdef(name: 'instrumentForTrace', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentForTrace',
-                classpath: configurations.rasInstrumentation.asPath)
+                classpath: bnd('repo.rasInstrumentation.path'))
     ant.taskdef(name: 'instrumentWithFFDC', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentWithFFDC',
-                classpath: configurations.rasInstrumentation.asPath)
+                classpath: bnd('repo.rasInstrumentation.path'))
 }
 
 rootProject.ext.nlsTaskdef = { ant ->
-    ant.taskdef(resource: 'com/ibm/mantis/nls/antlib.xml', classpath: configurations.nlsTasks.asPath)
+    ant.taskdef(resource: 'com/ibm/mantis/nls/antlib.xml',
+                classpath: bnd('repo.nlsTasks.path'))
 }
 
 rootProject.ext.portSelectorTaskdef = { ant ->
     ant.taskdef(name: 'portSelector', classname: 'com.ibm.aries.buildtasks.PortSelector',
-                classpath: configurations.portSelector.asPath)
+                classpath: bnd('repo.portSelector.path'))
 }
 
 rootProject.ext.featureBndTaskdef = { ant ->
-    configurations {
-        featureTasks
-    }
-    dependencies {
-        featureTasks project(':wlp-featureTasks')
-        featureTasks project(':com.ibm.ws.kernel.boot.core')
-        featureTasks project(':com.ibm.ws.logging.core')
-        featureTasks "biz.aQute.bnd:biz.aQute.bnd:3.5.0"
-        featureTasks "org.apache.ant:ant:1.9.6"
-        featureTasks "com.ibm.ws.componenttest:infra.buildtasks-core:4.0.0"
-        featureTasks "org.jsoup:jsoup:1.7.2"
-        featureTasks "org.apache.aries:org.apache.aries.util:1.1.3"
-        featureTasks "org.osgi:org.osgi.core:6.0.0"
-    }
-    ant.taskdef(resource: 'com/ibm/ws/wlp/feature/tasks/default.properties', classpath: configurations.featureTasks.asPath)
+    ant.taskdef(resource: 'com/ibm/ws/wlp/feature/tasks/default.properties',
+                classpath: bnd('repo.featureTasks.path'))
 }
 
 rootProject.ext.repositoryContentTaskdef = { ant ->
-    configurations {
-        generateRepositoryContent
-    }
-    dependencies {
-        generateRepositoryContent project(':wlp-generateRepositoryContent')
-        generateRepositoryContent project(':com.ibm.json4j')
-        generateRepositoryContent project(':com.ibm.ws.kernel.boot.core')
-        generateRepositoryContent project(':com.ibm.ws.kernel.feature.core')
-        generateRepositoryContent project(':com.ibm.ws.logging.core')
-        generateRepositoryContent project(':wlp-generateChecksums')
-        generateRepositoryContent "org.apache.ant:ant:1.9.6"
-        generateRepositoryContent "org.jsoup:jsoup:1.7.2"
-        generateRepositoryContent "org.apache.aries:org.apache.aries.util:1.1.3"
-        generateRepositoryContent "org.osgi:org.osgi.core:6.0.0"
-    }
-    ant.taskdef(resource: 'com/ibm/ws/wlp/repository/default.properties', classpath: configurations.generateRepositoryContent.asPath)
+    ant.taskdef(resource: 'com/ibm/ws/wlp/repository/default.properties',
+                classpath: bnd('repo.generateRepositoryContent.path'))
 }
 
 rootProject.ext.repositoryGeneratorTaskdef = { ant ->
-    configurations {
-        repositoryGenerator
-    }
-    dependencies {
-        repositoryGenerator project(':com.ibm.ws.repository.generator')
-        repositoryGenerator project(':com.ibm.ws.repository')
-        repositoryGenerator project(':com.ibm.ws.repository.parsers')
-        repositoryGenerator project(':com.ibm.ws.kernel.boot.core')
-        repositoryGenerator project(':com.ibm.ws.kernel.feature.core')
-        repositoryGenerator project(':com.ibm.ws.logging.core')
-        repositoryGenerator "org.apache.ant:ant:1.9.6"
-        repositoryGenerator "javax.json:javax.json-api:1.1.2"
-        repositoryGenerator "org.glassfish:javax.json:1.1.2"
-        repositoryGenerator "org.jsoup:jsoup:1.7.2"
-        repositoryGenerator "org.apache.aries:org.apache.aries.util:1.1.3"
-        repositoryGenerator "org.osgi:org.osgi.core:6.0.0"
-    }
-    ant.taskdef(resource: 'com/ibm/ws/repository/generator/default.properties', classpath: configurations.repositoryGenerator.asPath)
+    ant.taskdef(resource: 'com/ibm/ws/repository/generator/default.properties',
+                classpath: bnd('repo.repositoryGenerator.path'))
 }
+
 rootProject.ext.mavenRepoTaskdef = { ant ->
-    configurations {
-        mavenRepoTasks
-    }
-    dependencies {
-        mavenRepoTasks project(':wlp-mavenRepoTasks')
-        mavenRepoTasks "org.apache.ant:ant:1.9.6"
-        mavenRepoTasks "commons-io:commons-io:2.4"
-        mavenRepoTasks "commons-lang:commons-lang:2.4"
-        mavenRepoTasks "javax.json:javax.json-api:1.1.2"
-        mavenRepoTasks "org.glassfish:javax.json:1.1.2"
-        mavenRepoTasks "org.apache.maven:maven-model:3.5.0"
-        mavenRepoTasks "org.codehaus.plexus:plexus-utils:3.0.24"
-    }
-    ant.taskdef(resource: 'com/ibm/ws/wlp/mavenFeatures/default.properties', classpath: configurations.mavenRepoTasks.asPath)
+    ant.taskdef(resource: 'com/ibm/ws/wlp/mavenFeatures/default.properties',
+                classpath: bnd('repo.mavenRepoTasks.path'))
 }
