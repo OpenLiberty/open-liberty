@@ -289,6 +289,17 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
+    public boolean getAllowFailOverToAppDefined() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getAllowFailOverToAppDefined();
+        else
+            return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean allowFailOver() {
         WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
         if (globalConfig != null)
