@@ -50,7 +50,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     private String cookieName = null;
     protected boolean isJwtCookie = false;
 
-    private final WebAppSecurityConfig config;
+    protected final WebAppSecurityConfig config;
 
     public SSOCookieHelperImpl(WebAppSecurityConfig config) {
         this(config, (String) null);
@@ -75,6 +75,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         if (!allowToAddCookieToResponse(req))
             return;
+
         addJwtSsoCookiesToResponse(subject, req, resp);
 
         if (!JwtSSOTokenHelper.shouldAlsoIncludeLtpaCookie()) {
@@ -134,7 +135,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                 com.ibm.ws.ffdc.FFDCFilter.processException(new Exception(eMsg), this.getClass().getName(), "132");
                 break;
             }
-            Cookie ssoCookie = createJwtCookie(req, cookieName, chunks[i]); //name
+            Cookie ssoCookie = createCookie(req, cookieName, chunks[i]); //name
             resp.addCookie(ssoCookie);
             cookieName = baseName + (i + 2 < 10 ? "0" : "") + (i + 2); //name02... name99
         }
@@ -144,7 +145,21 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         return JwtSSOTokenHelper.getJwtCookieName();
     }
 
-    public Cookie createJwtCookie(HttpServletRequest req, String cookieName, String cookieValue) {
+    /**
+     * Creates the SSO cookie with max age of <code>-1</code>, path set to <code>/</code>,
+     * and an optional domain name. The cookie's <code>secure</code> flag depends on the
+     * <code>ssoRequiresSSL</code> configuration.
+     *
+     * @param req the HTTP servlet request.
+     * @param cookieValue the value used to create the cookie from.
+     * @return ssoCookie the SSO cookie.
+     */
+
+    public Cookie createCookie(HttpServletRequest req, String cookieValue) {
+        return createCookie(req, getSSOCookiename(), cookieValue);
+    }
+
+    public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue) {
         Cookie ssoCookie = new Cookie(cookieName, cookieValue);
         ssoCookie.setMaxAge(-1);
         //The path has to be "/" so we will not have multiple cookies in the same domain
@@ -157,30 +172,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             ssoCookie.setDomain(domainName);
         }
 
-        return ssoCookie;
-    }
-
-    /**
-     * Creates the SSO cookie with max age of <code>-1</code>, path set to <code>/</code>,
-     * and an optional domain name. The cookie's <code>secure</code> flag depends on the
-     * <code>ssoRequiresSSL</code> configuration.
-     *
-     * @param req the HTTP servlet request.
-     * @param cookieValue the value used to create the cookie from.
-     * @return ssoCookie the SSO cookie.
-     */
-    public Cookie createCookie(HttpServletRequest req, String cookieValue) {
-        Cookie ssoCookie = new Cookie(getSSOCookiename(), cookieValue);
-        ssoCookie.setMaxAge(-1);
-        //The path has to be "/" so we will not have multiple cookies in the same domain
-        ssoCookie.setPath("/");
-        ssoCookie.setSecure(config.getSSORequiresSSL());
-        ssoCookie.setHttpOnly(config.getHttpOnlyCookies());
-
-        String domainName = getSSODomainName(req, config.getSSODomainList(), config.getSSOUseDomainFromURL());
-        if (domainName != null) {
-            ssoCookie.setDomain(domainName);
-        }
         return ssoCookie;
     }
 
@@ -271,19 +262,8 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                 }
             }
 
-            String jwtCookieName = getJwtCookieName();
-            if (jwtCookieName != null) { // jwtsso is active, expire it's cookies too
-                if (config.isTrackLoggedOutSSOCookiesEnabled()) {
-                    LoggedOutJwtSsoCookieCache.put(getJwtSsoTokenFromCookies(req, jwtCookieName));
-                }
-                for (int i = 0; i < cookies.length; i++) {
-                    if (isJwtCookie(jwtCookieName, cookies[i].getName())) {
-                        cookies[i].setValue(null);
-                        addLogoutCookieToList(req, cookies[i].getName(), logoutCookieList);
-                    }
-                }
+            logoutJwtCookies(req, cookies, logoutCookieList);
 
-            }
             //TODO: deal with jwtsso's customizable cookie path.
             for (Cookie cookie : logoutCookieList) {
                 res.addCookie(cookie);
@@ -291,9 +271,30 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         }
     }
 
+    /**
+     * @param req
+     * @param cookies
+     * @param logoutCookieList
+     */
+    protected void logoutJwtCookies(HttpServletRequest req, Cookie[] cookies, java.util.ArrayList<Cookie> logoutCookieList) {
+        String jwtCookieName = getJwtCookieName();
+        if (jwtCookieName != null) { // jwtsso is active, expire it's cookies too
+            if (config.isTrackLoggedOutSSOCookiesEnabled()) {
+                LoggedOutJwtSsoCookieCache.put(getJwtSsoTokenFromCookies(req, jwtCookieName));
+            }
+            for (int i = 0; i < cookies.length; i++) {
+                if (isJwtCookie(jwtCookieName, cookies[i].getName())) {
+                    cookies[i].setValue(null);
+                    addLogoutCookieToList(req, cookies[i].getName(), logoutCookieList);
+                }
+            }
+
+        }
+    }
+
     // jwtsso cookie names can be name, name02, 03, etc thru name99
     // see if cookiename is a jwtsso cookie based on the name.
-    private boolean isJwtCookie(String baseName, String cookieName) {
+    protected boolean isJwtCookie(String baseName, String cookieName) {
         if (baseName.equalsIgnoreCase(cookieName))
             return true;
         if (!(cookieName.startsWith(baseName))) {

@@ -136,7 +136,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         String securityName = AccessIdUtil.getUniqueId(accessId);
         setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
         setCredentials(temporarySubject, securityName, null);
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
+        setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
     }
 
     /**
@@ -157,7 +157,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         securityName = getSecurityName(securityName, securityName); // Special handling for LDAP under here.
         setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN);
         setCredentials(temporarySubject, securityName, null);
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
+        setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_TOKEN, null);
     }
 
     private void setUpTemporaryUserSubjectForJsonWebToken(String jwtToken) throws Exception {
@@ -170,7 +170,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
         setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
         setCredentials(temporarySubject, securityName, securityName);
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
+        setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
     }
 
     /** {@inheritDoc} */

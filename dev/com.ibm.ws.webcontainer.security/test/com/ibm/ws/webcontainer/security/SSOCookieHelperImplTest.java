@@ -534,7 +534,7 @@ public class SSOCookieHelperImplTest {
         }
 
         @Override
-        public Cookie createJwtCookie(HttpServletRequest req, String cookieName, String cookieValue) {
+        public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue) {
             return new Cookie(cookieName, cookieValue); //skip hard-to-mock ssodomain stuff.
         }
 
@@ -558,6 +558,11 @@ public class SSOCookieHelperImplTest {
             {
                 one(resp).addCookie(with(any(Cookie.class)));
                 one(resp).addCookie(with(any(Cookie.class)));
+//                allowing(config).getSSORequiresSSL();
+//                allowing(config).getHttpOnlyCookies();
+//                allowing(config).getSSODomainList();
+//                allowing(config).getSSOUseDomainFromURL();
+//                allowing(req).getRequestURI();
             }
         });
 
