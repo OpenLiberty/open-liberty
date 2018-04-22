@@ -31,6 +31,7 @@ import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -306,6 +307,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private final int id;
     private final Set<Runnable> shutdownHooks = new CopyOnWriteArraySet<>();
     private final AtomicBoolean uninstalled = new AtomicBoolean();
+    private final List<String> appArgs;
 
     public SpringBootApplicationImpl(ApplicationInformation<DeployedAppInfo> applicationInformation, SpringBootApplicationFactory factory, int id) throws UnableToAdaptException {
         super(applicationInformation, factory);
@@ -332,6 +334,13 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         this.rawContainer = newContainer;
         this.springContainerModuleInfo = mci;
         this.initError = error;
+        Object appArgsProp = applicationInformation.getConfigProperty(SpringConstants.APP_ARGS);
+        if (appArgsProp instanceof String[]) {
+            // make a copy of the args
+            appArgs = Collections.unmodifiableList(new ArrayList<>(Arrays.asList((String[]) appArgsProp)));
+        } else {
+            appArgs = Collections.emptyList();
+        }
     }
 
     private static SpringBootManifest getSpringBootManifest(Container container) throws UnableToAdaptException {
@@ -409,7 +418,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             applicationInformation.setContainer(container);
             return artifactContainer;
         } catch (NoSuchAlgorithmException | IOException e) {
-            // Log error and continue to use the container for the SPR file
+            // Log error and continue to use the container for the SPRING file
             Tr.error(tc, "warning.could.not.thin.application", applicationInformation.getName(), e.getMessage());
         }
         return rawContainer;
@@ -440,6 +449,10 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
     SpringBootManifest getSpringBootManifest() {
         return springBootManifest;
+    }
+
+    List<String> getAppArgs() {
+        return appArgs;
     }
 
     @Override
@@ -595,7 +608,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             ClassLoadingService cls = classLoadingService;
             List<Container> containers = new ArrayList<Container>();
             Iterator<ContainerInfo> infos = moduleClassesContainers.iterator();
-            // We want the first item to be at the end of the class path for a spr
+            // We want the first item to be at the end of the class path for a spring application
             if (infos.hasNext()) {
                 infos.next();
                 while (infos.hasNext()) {

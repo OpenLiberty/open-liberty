@@ -61,7 +61,7 @@ public class ThinAppTaskTest {
     public final TemporaryFolder workingArea = new TemporaryFolder();
 
     private static final String MYAPP_JAR = "myapp.jar";
-    private static final String MYAPP_SPR = "myapp.spr";
+    private static final String MYAPP_SPRING = "myapp." + SpringConstants.SPRING_APP_TYPE;
 
     private File FAT_APP_JAR;
     private File EXPECTED_DEFAULT_TARGET_THIN_APP_FILE;
@@ -192,11 +192,11 @@ public class ThinAppTaskTest {
 
         EXPECTED_DEFAULT_TARGET_LIB_INDEX_CACHE_DIR = new File(FAT_APP_JAR.getParentFile(), SpringConstants.SPRING_LIB_CACHE_NAME);
         EXPECTED_DEFAULT_TARGET_LIB_INDEX_CACHE_DIR.mkdirs();
-        EXPECTED_DEFAULT_TARGET_THIN_APP_FILE = new File(FAT_APP_JAR.getParentFile(), MYAPP_SPR);
+        EXPECTED_DEFAULT_TARGET_THIN_APP_FILE = new File(FAT_APP_JAR.getParentFile(), MYAPP_SPRING);
 
         EXPECTED_SET_TARGET_LIB_INDEX_CACHE_DIR = new File(destination, "test.cache");
         EXPECTED_SET_TARGET_LIB_INDEX_CACHE_DIR.mkdirs();
-        EXPECTED_SET_TARGET_THIN_APP_FILE = new File(destination, "testThinApp.spr");
+        EXPECTED_SET_TARGET_THIN_APP_FILE = new File(destination, "testThinApp.jar");
 
     }
 
