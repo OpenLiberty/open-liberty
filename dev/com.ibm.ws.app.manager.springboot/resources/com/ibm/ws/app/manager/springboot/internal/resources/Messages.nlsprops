@@ -36,13 +36,17 @@ warning.could.not.thin.application.explanation=The application could not be conv
 warning.could.not.thin.application.useraction=Attempt to resolve the issue in the exception message and either restart the server or update the application. 
 
 error.need.springboot.version.15=CWWKC0252E: Could not run the application because the wrong version of the Spring Boot feature is configured in server.xml. The application requires the feature springBoot-1.5 to be configured.
-error.need.springboot.version.15.explanation= The application requires Spring Boot version 1.5 but a wrong version of the Spring Boot feature is configured in the server.xml.  
-error.need.springboot.version.15.useraction= The springBoot-1.5 feature needs to be configured in the server.xml.
+error.need.springboot.version.15.explanation=The application requires Spring Boot version 1.5 but a wrong version of the Spring Boot feature is configured in the server.xml.  
+error.need.springboot.version.15.useraction=The springBoot-1.5 feature needs to be configured in the server.xml.
 
 error.need.springboot.version.20=CWWKC0253E: Could not run the application because the wrong version of the Spring Boot feature is configured in server.xml. The application requires the feature springBoot-2.0 to be configured.
-error.need.springboot.version.20.explanation= The application requires Spring Boot version 2.0 but a wrong version of the Spring Boot feature is configured in the server.xml.  
-error.need.springboot.version.20.useraction= The springBoot-2.0 feature needs to be configured in the server.xml.
+error.need.springboot.version.20.explanation=The application requires Spring Boot version 2.0 but a wrong version of the Spring Boot feature is configured in the server.xml.  
+error.need.springboot.version.20.useraction=The springBoot-2.0 feature needs to be configured in the server.xml.
 
-error.missing.servlet=CWWKC0254E: Could not run the application because it requires a Servlet feature to be configured in the server.xml. Either the servlet-3.1 or servlet-4.0 need be configured.
-error.missing.servlet.explanation= The application is a web application and it requires a Servlet feature to be configured in the server.xml.
-error.missing.servlet.useraction= Either the  servlet-3.1 or servlet-4.0 need be configured in the server.xml.
+error.missing.servlet=CWWKC0254E: Could not run the application because it requires a Servlet feature to be configured in the server.xml. For example, the servlet-4.0 feature can be configured.
+error.missing.servlet.explanation=The application is a web application and it requires a Servlet feature to be configured in the server.xml.
+error.missing.servlet.useraction=A Servlet feature needs to be configured in the server.xml. For example, the servlet-4.0 feature can be configured.
+
+error.multiple.applications.not.allowed=CWWKC0255E: Spring Boot application {0} cannot be started because application {1} is already active. Multiple Spring Boot applications cannot be configured in the same server configuration.
+error.multiple.applications.not.allowed.explanation=Configuring multiple Spring Boot applications in the same server configuration is not supported.
+error.multiple.applications.not.allowed.useraction=Configure only one Spring Boot application per server configuration.

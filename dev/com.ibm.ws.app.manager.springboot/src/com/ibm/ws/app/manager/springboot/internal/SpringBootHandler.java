@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -30,9 +31,12 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.ws.threading.FutureMonitor;
+import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.DefaultNotification;
 import com.ibm.wsspi.adaptable.module.Notifier.Notification;
@@ -44,11 +48,15 @@ import com.ibm.wsspi.application.handler.DefaultApplicationMonitoringInformation
 
 @Component(property = { "service.vendor=IBM", "type=" + SPRING_APP_TYPE })
 public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
+    private static final TraceComponent tc = Tr.register(SpringBootHandler.class);
+
     @Reference(target = "(type=" + SPRING_APP_TYPE + ")")
     private DeployedAppInfoFactory deployedAppFactory;
 
     @Reference
     private FutureMonitor futureMonitor;
+
+    private final AtomicReference<String> applicationActivated = new AtomicReference<String>();
 
     @Activate
     protected void activate(BundleContext context) {
@@ -88,7 +96,7 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
     }
 
     @Override
-    public Future<Boolean> install(ApplicationInformation<DeployedAppInfo> applicationInformation) {
+    public Future<Boolean> install(final ApplicationInformation<DeployedAppInfo> applicationInformation) {
         SpringBootApplicationImpl springBootApplication = (SpringBootApplicationImpl) applicationInformation.getHandlerInfo();
         if (springBootApplication == null) {
             IllegalStateException ise = new IllegalStateException("No SpringBootApplication found.");
@@ -97,14 +105,38 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
         if (springBootApplication.getError() != null) {
             return futureMonitor.createFutureWithResult(Boolean.class, springBootApplication.getError());
         }
-
         Future<Boolean> result = futureMonitor.createFuture(Boolean.class);
+        String current = applicationActivated.getAndUpdate((s) -> {
+            if (s == null) {
+                return applicationInformation.getName();
+            }
+            return s;
+        });
+        if (current != null) {
+            IllegalStateException error = new IllegalStateException(Tr.formatMessage(tc, "error.multiple.applications.not.allowed", applicationInformation.getName(), current));
+            return futureMonitor.createFutureWithResult(Boolean.class, error);
+        }
+        springBootApplication.setApplicationActivated(applicationActivated);
+        futureMonitor.onCompletion(result, new CompletionListener<Boolean>() {
+
+            @Override
+            public void successfulCompletion(Future<Boolean> future, Boolean result) {
+                if (!result) {
+                    applicationActivated.set(null);
+                }
+            }
+
+            @Override
+            public void failedCompletion(Future<Boolean> future, Throwable t) {
+                applicationActivated.set(null);
+            }
+        });
+
         if (!springBootApplication.deployApp(result)) {
             futureMonitor.setResult(result, false);
-            return result;
         }
-
         return result;
+
     }
 
     @Override
