@@ -11,6 +11,7 @@
 package com.ibm.ws.session.store.cache;
 
 import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessController;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,7 +32,13 @@ import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.CompleteConfiguration;
 import javax.cache.configuration.OptionalFeature;
+import javax.cache.management.CacheMXBean;
+import javax.cache.management.CacheStatisticsMXBean;
 import javax.cache.spi.CachingProvider;
+import javax.management.JMX;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
 
@@ -153,12 +161,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
         final ClassLoader cl = library.getClassLoader();
 
-        ClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Trivial
-            public ClassLoader run() {
-                return new CachingProviderClassLoader(cl);
-            }
-        });
+        ClassLoader loader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new CachingProviderClassLoader(cl));
 
         if (trace && tc.isDebugEnabled())
             CacheHashMap.tcInvoke("Caching", "getCachingProvider", loader);
@@ -354,16 +357,39 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                                 @SuppressWarnings("unchecked")
                                 CompleteConfiguration<?, ?> config = cache.getConfiguration(CompleteConfiguration.class);
                                 out.println(INDENT + "configuration " + config);
-                                if (config != null) {
-                                    out.println(INDENT + "expiry policy factory: " + config.getExpiryPolicyFactory());
-                                    out.println(INDENT + "is management enabled? " + config.isManagementEnabled());
-                                    out.println(INDENT + "is statistics enabled? " + config.isStatisticsEnabled());
-                                    out.println(INDENT + "is store by value? " + config.isStoreByValue());
-                                    out.println(INDENT + "is read through? " + config.isReadThrough());
-                                    out.println(INDENT + "is write through? " + config.isWriteThrough());
+
+                                MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+                                ObjectName objectName = new ObjectName("javax.cache:type=CacheConfiguration,Cache=" + cacheName + ",*");
+                                Set<ObjectName> objectNames = mbs.queryNames(objectName, null); 
+                                if (!objectNames.isEmpty()) {
+                                    CacheMXBean cacheMXBean = JMX.newMBeanProxy(mbs, objectNames.iterator().next(), CacheMXBean.class);
+                                    out.println(INDENT + "is management enabled? " + cacheMXBean.isManagementEnabled());
+                                    out.println(INDENT + "is statistics enabled? " + cacheMXBean.isStatisticsEnabled());
+                                    out.println(INDENT + "is store by value? " + cacheMXBean.isStoreByValue());
+                                    out.println(INDENT + "is read through? " + cacheMXBean.isReadThrough());
+                                    out.println(INDENT + "is write through? " + cacheMXBean.isWriteThrough());
+                                }
+
+                                objectName = new ObjectName("javax.cache:type=CacheStatistics,Cache=" + cacheName + ",*");
+                                objectNames = mbs.queryNames(objectName, null); 
+                                if (!objectNames.isEmpty()) {
+                                    CacheStatisticsMXBean statsMXBean = JMX.newMBeanProxy(mbs, objectNames.iterator().next(), CacheStatisticsMXBean.class);
+                                    out.println(INDENT + "average get time:    " + (statsMXBean.getAverageGetTime() / 1000.0) + "ms");
+                                    out.println(INDENT + "average put time:    " + (statsMXBean.getAveragePutTime() / 1000.0) + "ms");
+                                    out.println(INDENT + "average remove time: " + (statsMXBean.getAverageRemoveTime() / 1000.0) + "ms");
+                                    out.println(INDENT + "cache evictions: " + statsMXBean.getCacheEvictions());
+                                    out.println(INDENT + "cache gets:      " + statsMXBean.getCacheGets());
+                                    out.println(INDENT + "cache puts:      " + statsMXBean.getCachePuts());
+                                    out.println(INDENT + "cache removals:  " + statsMXBean.getCacheRemovals());
+                                    out.println(INDENT + "cache hits:      " + statsMXBean.getCacheHits());
+                                    out.println(INDENT + "cache misses:    " + statsMXBean.getCacheMisses());
+                                    out.println(INDENT + "cache hit percentage:  " + statsMXBean.getCacheHitPercentage() + '%');
+                                    out.println(INDENT + "cache miss percentage: " + statsMXBean.getCacheMissPercentage() + '%');
                                 }
                             } catch (IllegalArgumentException x) {
                                 // Ignore - type not supported by JCache provider
+                            } catch (MalformedObjectNameException x) {
+                                // Internal error on diagnostics path, allow to continue after auto-logging FFDC
                             }
                             if (isMetaCache) {
                                 out.println(INDENT + "First 50 entries:");

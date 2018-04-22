@@ -349,8 +349,81 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      */
     @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
+    public void testServerDumpWithMonitoring() throws Exception {
+        ServerConfiguration config = savedConfig.clone();
+        config.getFeatureManager().getFeatures().add("monitor-1.0");
+        server.updateServerConfiguration(config);
+
+        server.startServer(testName.getMethodName() + ".log");
+
+        // access a session to exercise codepath before capturing dump
+        List<String> session1 = new ArrayList<>();
+        List<String> session2 = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testServerDumpWithMonitoring1&value=val1&maxInactiveInterval=2100", session1);
+        try {
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testServerDumpWithMonitoring2&value=val2&maxInactiveInterval=2200",
+                         session2);
+
+            List<String> lines = sessionCacheIntrospectorDump();
+            String dumpInfo = lines.toString();
+            int i = 0;
+
+            assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
+            assertTrue(dumpInfo, lines.contains("CachingProvider implementation: com.hazelcast.cache.HazelcastCachingProvider"));
+            assertTrue(dumpInfo, lines.contains("Cache manager URI: hazelcast"));
+            assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
+            assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
+
+            assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
+
+            Set<String> expectedCaches = new HashSet<String>();
+            expectedCaches.add("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp");
+            Set<String> caches = new HashSet<String>();
+            for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
+                caches.add(lines.get(c).trim());
+            assertEquals(dumpInfo, expectedCaches, caches);
+
+            assertTrue(dumpInfo, lines.contains("  closed? false"));
+            assertFalse(dumpInfo, lines.contains("  closed? true"));
+
+            assertTrue(dumpInfo, lines.contains("  is management enabled? true"));
+            assertFalse(dumpInfo, lines.contains("  is management enabled? false"));
+
+            assertTrue(dumpInfo, lines.contains("  is statistics enabled? true"));
+            assertFalse(dumpInfo, lines.contains("  is statistics enabled? false"));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  average put time:    \\d+\\.\\d+ms")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  cache gets:      \\d+")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  cache hit percentage:  \\d+\\.\\d+%")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  cache miss percentage: \\d+\\.\\d+%")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
+        } finally {
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session1);
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session2);
+        }
+    }
+
+    /**
+     * Capture a dump of the server with monitoring enabled. This means the JCache MXBeans will be available
+     * and should have cache statistics included in the dump output.
+     */
+    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
+    @Test
     public void testServerDumpWithoutMonitoring() throws Exception {
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
 
         // access a session to exercise codepath before capturing dump
         List<String> session1 = new ArrayList<>();
@@ -383,11 +456,12 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, lines.contains("  closed? false"));
             assertFalse(dumpInfo, lines.contains("  closed? true"));
 
-            assertTrue(dumpInfo, lines.contains("  is management enabled? false"));
             assertFalse(dumpInfo, lines.contains("  is management enabled? true"));
 
-            assertTrue(dumpInfo, lines.contains("  is statistics enabled? false"));
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? true"));
+
+            assertFalse(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  average put time:.*")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                             .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
