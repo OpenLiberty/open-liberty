@@ -22,6 +22,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.security.fat.common.Constants;
+
 import test.common.SharedOutputManager;
 
 public class ExpectationsTest extends CommonExpectationTestClass {
@@ -137,7 +139,7 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     public void test_addExpectation_addOne() {
         try {
             String testAction = ACTION1;
-            Expectation e = new Expectation(testAction, null, null, null, null);
+            Expectation e = new ResponseFullExpectation(testAction, null, null, null);
             expectations.addExpectation(e);
 
             List<Expectation> expList = expectations.getExpectations();
@@ -154,7 +156,7 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     public void test_addExpectation_addDuplicate() {
         try {
             String testAction = ACTION1;
-            Expectation e = new Expectation(testAction, null, null, null, null);
+            Expectation e = new ResponseHeaderExpectation(testAction, null, null, null);
             expectations.addExpectation(e);
             expectations.addExpectation(e);
             expectations.addExpectation(e);
@@ -176,10 +178,10 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     @Test
     public void test_addExpectation_addMultiple() {
         try {
-            Expectation e1 = new Expectation(ACTION1, null, null, null, null);
-            Expectation e2 = new Expectation(ACTION2, null, null, null, null);
+            Expectation e1 = new ResponseHeaderExpectation(ACTION1, null, null, null);
+            Expectation e2 = new ResponseUrlExpectation(ACTION2, null, null, null);
             Expectation e3 = null;
-            Expectation e4 = new Expectation(ACTION3, null, null, null, null);
+            Expectation e4 = new ResponseFullExpectation(ACTION3, null, null, null);
             expectations.addExpectation(e1);
             expectations.addExpectation(e2);
             expectations.addExpectation(e3);
@@ -235,7 +237,7 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     public void test_addExpectations_noKnownExpectations_addSingleNewExpectation() {
         try {
             Expectations exps = new Expectations();
-            Expectation e1 = new Expectation(ACTION1, null, null, null, null);
+            Expectation e1 = new ResponseTitleExpectation(ACTION1, null, null, null);
             exps.addExpectation(e1);
 
             expectations.addExpectations(exps);
@@ -254,10 +256,10 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     public void test_addExpectations_noKnownExpectations_addMultipleNewExpectations() {
         try {
             Expectations exps = new Expectations();
-            Expectation e1 = new Expectation(ACTION1, null, null, null, null);
-            Expectation e2 = new Expectation(ACTION2, null, null, null, null);
+            Expectation e1 = new ResponseTitleExpectation(ACTION1, null, null, null);
+            Expectation e2 = new ResponseFullExpectation(ACTION2, null, null, null);
             Expectation e3 = null;
-            Expectation e4 = new Expectation(ACTION3, null, null, null, null);
+            Expectation e4 = new ResponseFullExpectation(ACTION3, null, null, null);
             exps.addExpectation(e1);
             exps.addExpectation(e2);
             exps.addExpectation(e3);
@@ -283,7 +285,7 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     public void test_addExpectations_oneKnownExpectation_nullArg() {
         try {
             // Add one known expectation
-            Expectation e1 = new Expectation(ACTION1, null, null, null, null);
+            Expectation e1 = new ResponseFullExpectation(ACTION1, null, null, null);
             expectations.addExpectation(e1);
 
             Expectations exps = null;
@@ -303,7 +305,7 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     public void test_addExpectations_oneKnownExpectation_addEmptyNewExpectations() {
         try {
             // Add one known expectation
-            Expectation e1 = new Expectation(ACTION1, null, null, null, null);
+            Expectation e1 = new ResponseStatusExpectation(ACTION1, null, null, null);
             expectations.addExpectation(e1);
 
             Expectations exps = new Expectations();
@@ -323,12 +325,12 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     public void test_addExpectations_oneKnownExpectation_addOneNewExpectations() {
         try {
             // Add one known expectation
-            expectations.addExpectation(new Expectation(ACTION1, null, null, null, null));
+            expectations.addExpectation(new ResponseMessageExpectation(ACTION1, null, null, null));
 
             // Action for the new expectation shouldn't matter - it should be added as a new expectation
             String testAction = ACTION2;
             Expectations exps = new Expectations();
-            exps.addExpectation(new Expectation(testAction, "searchLocation", "checkType", "searchFor", "failureMsg"));
+            exps.addExpectation(new ResponseFullExpectation(testAction, "checkType", "searchFor", "failureMsg"));
 
             expectations.addExpectations(exps);
 
@@ -337,11 +339,11 @@ public class ExpectationsTest extends CommonExpectationTestClass {
             // First expectation should match the original known expectation
             Expectation compareE = expList.get(0);
             assertEquals("First expectation action did not match expected value. Expectation was: " + compareE, ACTION1, compareE.getAction());
-            assertEquals("First expectation search location did not match expected value. Expectation was: " + compareE, null, compareE.getSearchLocation());
+            assertEquals("First expectation search location did not match expected value. Expectation was: " + compareE, Constants.RESPONSE_MESSAGE, compareE.getSearchLocation());
             // Second expectation should match the new expectation that was added
             compareE = expList.get(1);
             assertEquals("Second expectation action did not match expected value. Expectation was: " + compareE, testAction, compareE.getAction());
-            assertEquals("Second expectation search location did not match expected value. Expectation was: " + compareE, "searchLocation", compareE.getSearchLocation());
+            assertEquals("Second expectation search location did not match expected value. Expectation was: " + compareE, Constants.RESPONSE_FULL, compareE.getSearchLocation());
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -352,14 +354,14 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     public void test_addExpectations_multipleKnownExpectation_addMultipleNewExpectations() {
         try {
             // Add some known expectations
-            expectations.addExpectation(new Expectation(ACTION1, "e1-searchLocation", "e1-checkType", "e1-searchFor", "e1-failureMsg"));
-            expectations.addExpectation(new Expectation(ACTION2, "e2-searchLocation", "e2-checkType", "e2-searchFor", "e2-failureMsg"));
-            expectations.addExpectation(new Expectation(ACTION2, "e2-searchLocation", "e2-checkType", "e2-searchFor-2", "e2-failureMsg-2"));
+            expectations.addExpectation(new ResponseTitleExpectation(ACTION1, "e1-checkType", "e1-searchFor", "e1-failureMsg"));
+            expectations.addExpectation(new ResponseFullExpectation(ACTION2, "e2-checkType", "e2-searchFor", "e2-failureMsg"));
+            expectations.addExpectation(new ResponseFullExpectation(ACTION2, "e2-checkType", "e2-searchFor-2", "e2-failureMsg-2"));
 
             // Create some new expectations
             Expectations exps = new Expectations();
-            exps.addExpectation(new Expectation(ACTION1, "ne1-searchLocation", "ne1-checkType", "ne1-searchFor", "ne1-failureMsg"));
-            exps.addExpectation(new Expectation(ACTION3, "ne3-searchLocation", "ne3-checkType", "ne3-searchFor", "ne3-failureMsg"));
+            exps.addExpectation(new ResponseFullExpectation(ACTION1, "ne1-checkType", "ne1-searchFor", "ne1-failureMsg"));
+            exps.addExpectation(new ResponseStatusExpectation(ACTION3, "ne3-checkType", "ne3-searchFor", "ne3-failureMsg"));
 
             expectations.addExpectations(exps);
 
@@ -368,22 +370,22 @@ public class ExpectationsTest extends CommonExpectationTestClass {
             // First expectations should match the original known expectations
             Expectation compareE = expList.get(0);
             assertEquals("First known expectation action did not match expected value. Expectation was: " + compareE, ACTION1, compareE.getAction());
-            assertEquals("First known expectation search location did not match expected value. Expectation was: " + compareE, "e1-searchLocation", compareE.getSearchLocation());
+            assertEquals("First known expectation search location did not match expected value. Expectation was: " + compareE, Constants.RESPONSE_TITLE, compareE.getSearchLocation());
             compareE = expList.get(1);
             assertEquals("Second known expectation action did not match expected value. Expectation was: " + compareE, ACTION2, compareE.getAction());
-            assertEquals("Second known expectation search location did not match expected value. Expectation was: " + compareE, "e2-searchLocation", compareE.getSearchLocation());
+            assertEquals("Second known expectation search location did not match expected value. Expectation was: " + compareE, Constants.RESPONSE_FULL, compareE.getSearchLocation());
             assertEquals("Second known expectation search location did not match expected value. Expectation was: " + compareE, "e2-searchFor", compareE.getValidationValue());
             compareE = expList.get(2);
             assertEquals("Third known expectation action did not match expected value. Expectation was: " + compareE, ACTION2, compareE.getAction());
-            assertEquals("Third known expectation search location did not match expected value. Expectation was: " + compareE, "e2-searchLocation", compareE.getSearchLocation());
+            assertEquals("Third known expectation search location did not match expected value. Expectation was: " + compareE, Constants.RESPONSE_FULL, compareE.getSearchLocation());
             assertEquals("Third known expectation search location did not match expected value. Expectation was: " + compareE, "e2-searchFor-2", compareE.getValidationValue());
             // Other expectations should match the new expectations that were added
             compareE = expList.get(3);
             assertEquals("First new expectation action did not match expected value. Expectation was: " + compareE, ACTION1, compareE.getAction());
-            assertEquals("First new expectation search location did not match expected value. Expectation was: " + compareE, "ne1-searchLocation", compareE.getSearchLocation());
+            assertEquals("First new expectation search location did not match expected value. Expectation was: " + compareE, Constants.RESPONSE_FULL, compareE.getSearchLocation());
             compareE = expList.get(4);
             assertEquals("Second new expectation action did not match expected value. Expectation was: " + compareE, ACTION3, compareE.getAction());
-            assertEquals("Second new expectation search location did not match expected value. Expectation was: " + compareE, "ne3-searchLocation", compareE.getSearchLocation());
+            assertEquals("Second new expectation search location did not match expected value. Expectation was: " + compareE, Constants.RESPONSE_STATUS, compareE.getSearchLocation());
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

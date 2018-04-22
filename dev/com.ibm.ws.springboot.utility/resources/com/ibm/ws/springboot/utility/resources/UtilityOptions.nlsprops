@@ -64,10 +64,10 @@ thin.required-desc.sourceapp=\
 
 thin.optional-key.targetthinapp=\
 \ \ \ \ --targetThinAppPath=file
-#Note to translator the word ".spr" should not be translated
+#Note to translator the word ".spring" should not be translated
 thin.optional-desc.targetthinapp=\
 \tThe path used to save the thin application file.\n\
-\tIf this option is not specified, a new file will be created with the .spr\n\
+\tIf this option is not specified, a new file will be created with the .spring\n\
 \textension in the parent directory of the source application. 
 
 thin.optional-key.targetlibcache=\

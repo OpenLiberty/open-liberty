@@ -11,6 +11,7 @@
 package com.ibm.ws.session.store.cache;
 
 import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessController;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,7 +32,13 @@ import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.CompleteConfiguration;
 import javax.cache.configuration.OptionalFeature;
+import javax.cache.management.CacheMXBean;
+import javax.cache.management.CacheStatisticsMXBean;
 import javax.cache.spi.CachingProvider;
+import javax.management.JMX;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
 
@@ -40,7 +48,6 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.ws.session.MemoryStoreHelper;
 import com.ibm.ws.session.SessionManagerConfig;
@@ -62,8 +69,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private static final int BASE_PREFIX_LENGTH = BASE_PREFIX.length();
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; //3 is the length of .0.
 
-    CacheManager cacheManager;
-    CachingProvider cachingProvider;
+    volatile CacheManager cacheManager; // requires lazy activation
+    volatile CachingProvider cachingProvider; // requires lazy activation
 
     private volatile boolean completedPassivation = true;
 
@@ -81,12 +88,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     /**
      * Trace identifier for the cache manager
      */
-    String tcCacheManager;
+    volatile String tcCacheManager; // requires lazy activation
 
     /**
      * Trace identifier for the caching provider.
      */
-    private String tcCachingProvider;
+    private volatile String tcCachingProvider; // requires lazy activation
 
     volatile UserTransaction userTransaction;
 
@@ -98,9 +105,17 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @param props service properties
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-
         configurationProperties = new HashMap<String, Object>(props);
+    }
+
+    /**
+     * Performs deferred activation/initialization.
+     */
+    synchronized void activateLazily() {
+        if (cacheManager != null)
+            return; // lazy initialization has already completed
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
         Object scheduleInvalidationSecondHour = configurationProperties.get("scheduleInvalidationSecondHour");
@@ -122,7 +137,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         
         Properties vendorProperties = new Properties();
         
-        String uriValue = (String) props.get("uri");
+        String uriValue = (String) configurationProperties.get("uri");
         URI uri = null;
         if(uriValue != null)
             try {
@@ -131,7 +146,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
             }
         
-        for (Map.Entry<String, Object> entry : props.entrySet()) {
+        for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
 
@@ -146,12 +161,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
         final ClassLoader cl = library.getClassLoader();
 
-        ClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Trivial
-            public ClassLoader run() {
-                return new CachingProviderClassLoader(cl);
-            }
-        });
+        ClassLoader loader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new CachingProviderClassLoader(cl));
 
         if (trace && tc.isDebugEnabled())
             CacheHashMap.tcInvoke("Caching", "getCachingProvider", loader);
@@ -239,19 +249,21 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             } catch (InterruptedException e) {
             }
 
-        if (trace && tc.isDebugEnabled())
-            CacheHashMap.tcInvoke(tcCachingProvider, "close");
+        if (cachingProvider != null) {
+            if (trace && tc.isDebugEnabled())
+                CacheHashMap.tcInvoke(tcCachingProvider, "close");
 
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            cachingProvider.close();
-            return null;
-        });
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                cachingProvider.close();
+                return null;
+            });
 
-        if (trace && tc.isDebugEnabled())
-            CacheHashMap.tcReturn(tcCachingProvider, "close");
+            if (trace && tc.isDebugEnabled())
+                CacheHashMap.tcReturn(tcCachingProvider, "close");
 
-        cachingProvider = null;
-        cacheManager = null;
+            cachingProvider = null;
+            cacheManager = null;
+        }
     }
 
     @Override
@@ -345,16 +357,39 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                                 @SuppressWarnings("unchecked")
                                 CompleteConfiguration<?, ?> config = cache.getConfiguration(CompleteConfiguration.class);
                                 out.println(INDENT + "configuration " + config);
-                                if (config != null) {
-                                    out.println(INDENT + "expiry policy factory: " + config.getExpiryPolicyFactory());
-                                    out.println(INDENT + "is management enabled? " + config.isManagementEnabled());
-                                    out.println(INDENT + "is statistics enabled? " + config.isStatisticsEnabled());
-                                    out.println(INDENT + "is store by value? " + config.isStoreByValue());
-                                    out.println(INDENT + "is read through? " + config.isReadThrough());
-                                    out.println(INDENT + "is write through? " + config.isWriteThrough());
+
+                                MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+                                ObjectName objectName = new ObjectName("javax.cache:type=CacheConfiguration,Cache=" + cacheName + ",*");
+                                Set<ObjectName> objectNames = mbs.queryNames(objectName, null); 
+                                if (!objectNames.isEmpty()) {
+                                    CacheMXBean cacheMXBean = JMX.newMBeanProxy(mbs, objectNames.iterator().next(), CacheMXBean.class);
+                                    out.println(INDENT + "is management enabled? " + cacheMXBean.isManagementEnabled());
+                                    out.println(INDENT + "is statistics enabled? " + cacheMXBean.isStatisticsEnabled());
+                                    out.println(INDENT + "is store by value? " + cacheMXBean.isStoreByValue());
+                                    out.println(INDENT + "is read through? " + cacheMXBean.isReadThrough());
+                                    out.println(INDENT + "is write through? " + cacheMXBean.isWriteThrough());
+                                }
+
+                                objectName = new ObjectName("javax.cache:type=CacheStatistics,Cache=" + cacheName + ",*");
+                                objectNames = mbs.queryNames(objectName, null); 
+                                if (!objectNames.isEmpty()) {
+                                    CacheStatisticsMXBean statsMXBean = JMX.newMBeanProxy(mbs, objectNames.iterator().next(), CacheStatisticsMXBean.class);
+                                    out.println(INDENT + "average get time:    " + (statsMXBean.getAverageGetTime() / 1000.0) + "ms");
+                                    out.println(INDENT + "average put time:    " + (statsMXBean.getAveragePutTime() / 1000.0) + "ms");
+                                    out.println(INDENT + "average remove time: " + (statsMXBean.getAverageRemoveTime() / 1000.0) + "ms");
+                                    out.println(INDENT + "cache evictions: " + statsMXBean.getCacheEvictions());
+                                    out.println(INDENT + "cache gets:      " + statsMXBean.getCacheGets());
+                                    out.println(INDENT + "cache puts:      " + statsMXBean.getCachePuts());
+                                    out.println(INDENT + "cache removals:  " + statsMXBean.getCacheRemovals());
+                                    out.println(INDENT + "cache hits:      " + statsMXBean.getCacheHits());
+                                    out.println(INDENT + "cache misses:    " + statsMXBean.getCacheMisses());
+                                    out.println(INDENT + "cache hit percentage:  " + statsMXBean.getCacheHitPercentage() + '%');
+                                    out.println(INDENT + "cache miss percentage: " + statsMXBean.getCacheMissPercentage() + '%');
                                 }
                             } catch (IllegalArgumentException x) {
                                 // Ignore - type not supported by JCache provider
+                            } catch (MalformedObjectNameException x) {
+                                // Internal error on diagnostics path, allow to continue after auto-logging FFDC
                             }
                             if (isMetaCache) {
                                 out.println(INDENT + "First 50 entries:");

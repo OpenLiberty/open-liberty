@@ -25,6 +25,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ConfigDropinRootTests.class,
                 ConfigSpringBootApplicationTagTests.class,
                 ConfigSpringBootApplicationClassloaderTests.class,
+                ConfigSpringBootApplicationWithArgsTests.class,
                 PreThinnedSpringBootTests.class,
                 WarmStartTests.class,
                 SSLTests15.class,

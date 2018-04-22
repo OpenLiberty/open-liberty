@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.websphere.simplicity.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  *
  */
@@ -17,5 +22,20 @@ public class SpringBootApplication extends Application {
     @Override
     public WebApplication clone() throws CloneNotSupportedException {
         return (WebApplication) super.clone();
+    }
+
+    @XmlElement(name = "applicationArgument")
+    private List<String> applicationArguments;
+
+    /**
+     * Retrieves the list of application arguments in this configuration.
+     *
+     * @return the list of application arguments in this configuration
+     */
+    public List<String> getApplicationArguments() {
+        if (this.applicationArguments == null) {
+            this.applicationArguments = new ArrayList<>();
+        }
+        return this.applicationArguments;
     }
 }

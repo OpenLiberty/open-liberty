@@ -49,82 +49,6 @@ public class ExpectationTest extends CommonExpectationTestClass {
         outputMgr.restoreStreams();
     }
 
-    /************************************** Constructors/getters **************************************/
-
-    @Test
-    public void test_constructor_noKey_nullArgs() {
-        try {
-            String testAction = null;
-            String searchLocation = null;
-            String checkType = null;
-            String searchForVal = null;
-            String failureMsg = null;
-
-            Expectation exp = new Expectation(testAction, searchLocation, checkType, searchForVal, failureMsg);
-
-            verifyExpectationValues(exp, testAction, searchLocation, checkType, null, searchForVal, failureMsg);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_constructor_noKey() {
-        try {
-            String testAction = "testAction";
-            String searchLocation = "searchLocation";
-            String checkType = "checkType";
-            String searchForVal = "searchForVal";
-            String failureMsg = "failureMsg";
-
-            Expectation exp = new Expectation(testAction, searchLocation, checkType, searchForVal, failureMsg);
-
-            verifyExpectationValues(exp, testAction, searchLocation, checkType, null, searchForVal, failureMsg);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_constructor_nullArgs() {
-        try {
-            String testAction = null;
-            String searchLocation = null;
-            String checkType = null;
-            String searchForKey = null;
-            String searchForVal = null;
-            String failureMsg = null;
-
-            Expectation exp = new Expectation(testAction, searchLocation, checkType, searchForKey, searchForVal, failureMsg);
-
-            verifyExpectationValues(exp, testAction, searchLocation, checkType, searchForKey, searchForVal, failureMsg);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_constructor() {
-        try {
-            String testAction = "testAction";
-            String searchLocation = "searchLocation";
-            String checkType = "checkType";
-            String searchForKey = "searchForKey";
-            String searchForVal = "searchForVal";
-            String failureMsg = "failureMsg";
-
-            Expectation exp = new Expectation(testAction, searchLocation, checkType, searchForKey, searchForVal, failureMsg);
-
-            verifyExpectationValues(exp, testAction, searchLocation, checkType, searchForKey, searchForVal, failureMsg);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
     /************************************** createResponseExpectation **************************************/
 
     @Test
@@ -279,14 +203,11 @@ public class ExpectationTest extends CommonExpectationTestClass {
     @Test
     public void test_createJsonExpectation() {
         try {
-            String testAction = "Some test action";
             String searchForKey = "searchForKey";
-            String searchForVal = "searchForVal";
-            String failureMsg = "This is a failure message.";
 
-            Expectation exp = Expectation.createJsonExpectation(testAction, searchForKey, searchForVal, failureMsg);
+            Expectation exp = Expectation.createJsonExpectation(TEST_ACTION, searchForKey, SEARCH_FOR_VAL, FAILURE_MESSAGE);
 
-            verifyExpectationValues(exp, testAction, Constants.JSON_OBJECT, null, searchForKey, searchForVal, failureMsg);
+            verifyExpectationValues(exp, TEST_ACTION, Constants.JSON_OBJECT, null, searchForKey, SEARCH_FOR_VAL, FAILURE_MESSAGE);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

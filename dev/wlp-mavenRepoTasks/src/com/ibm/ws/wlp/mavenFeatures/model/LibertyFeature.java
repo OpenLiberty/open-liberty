@@ -26,6 +26,7 @@ public class LibertyFeature {
 	private final Map<String, Collection<String>> requiredFeaturesWithTolerates;
 	private final String productVersion;
 	private final MavenCoordinates mavenCoordinates;
+	private final boolean isWebsphereLiberty;
 
 	/**
 	 * Construct LibertyFeature
@@ -54,6 +55,7 @@ public class LibertyFeature {
 					isWebsphereLiberty ? Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID : Constants.OPEN_LIBERTY_FEATURES_GROUP_ID,
 					artifactId, productVersion);
 		}
+		this.isWebsphereLiberty = isWebsphereLiberty;
 	}
 
 	public String getSymbolicName() {
@@ -73,6 +75,9 @@ public class LibertyFeature {
 	}
 	public MavenCoordinates getMavenCoordinates() {
 		return mavenCoordinates;
+	}
+	public boolean isWebsphereLiberty() {
+		return isWebsphereLiberty;
 	}
 	
 	/**

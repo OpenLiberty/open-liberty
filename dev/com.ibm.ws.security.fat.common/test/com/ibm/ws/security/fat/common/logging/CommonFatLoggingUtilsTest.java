@@ -43,6 +43,9 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseTitleExpectation;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
@@ -1541,7 +1544,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
         try {
             Expectations expectations = new Expectations();
             String[] actions = new String[] { ACTION1 };
-            Expectation expectation = new Expectation(ACTION2, "search here", "check type", "search for this key", "search for this value", "Failed to find value!");
+            Expectation expectation = new ResponseStatusExpectation(ACTION2, "check type", "search for this value", "Failed to find value!");
             expectations.addExpectation(expectation);
 
             utils.printExpectations(expectations, actions);
@@ -1595,7 +1598,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
         try {
             Expectations expectations = new Expectations();
             String[] actions = new String[] { ACTION1 };
-            Expectation expectation1 = new Expectation(ACTION1, "search here", "check type", "search for this key", "search for this value", "Failed to find value!");
+            Expectation expectation1 = new ResponseFullExpectation(ACTION1, "check type", "search for this value", "Failed to find value!");
             expectations.addExpectation(expectation1);
             Expectation expectation2 = Expectation.createResponseStatusExpectation(ACTION1, HttpServletResponse.SC_UNAUTHORIZED);
             expectations.addExpectation(expectation2);
@@ -1659,7 +1662,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
         try {
             Expectations expectations = new Expectations();
             String[] actions = new String[] { ACTION1, ACTION2, ACTION3 };
-            Expectation expectation1 = new Expectation(ACTION1, "search here", "check type", "search for this key", "search for this value", "Failed to find value!");
+            Expectation expectation1 = new ResponseTitleExpectation(ACTION1, "check type", "search for this value", "Failed to find value!");
             expectations.addExpectation(expectation1);
             Expectation expectation2 = Expectation.createResponseStatusExpectation(ACTION2, HttpServletResponse.SC_UNAUTHORIZED);
             expectations.addExpectation(expectation2);

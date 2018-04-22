@@ -45,9 +45,9 @@ import componenttest.custom.junit.runner.Mode;
 public class ExtractedAppTests extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
 
-    private final static String SPRING_BOOT_15_APP_BASE_THIN = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + "spr";
+    private final static String SPRING_BOOT_15_APP_BASE_THIN = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + SPRING_APP_TYPE;
     private final static String SPRING_BOOT_15_APP_BASE_EXTRACTED = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + "dir";
-    private final static String SPRING_BOOT_15_APP_BASE_THIN_EXTRACTED = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + "spr.dir";
+    private final static String SPRING_BOOT_15_APP_BASE_THIN_EXTRACTED = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + SPRING_APP_TYPE + ".dir";
     private final static String SPRING_BOOT_15_APP_BASE_LOOSE = SPRING_BOOT_15_APP_BASE.substring(0, SPRING_BOOT_15_APP_BASE.length() - 3) + "xml";
 
     private static String installDir = null;
@@ -100,8 +100,8 @@ public class ExtractedAppTests extends CommonWebServerTests {
         cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
 
-        Assert.assertTrue("Successfully thinned the application",
-                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\.spr"));
+        Assert.assertTrue("Failed to thin the application",
+                          SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\." + SPRING_APP_TYPE));
 
         RemoteFile baseExtracted = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_15_APP_BASE_EXTRACTED);
         extract(sourceApp, baseExtracted);

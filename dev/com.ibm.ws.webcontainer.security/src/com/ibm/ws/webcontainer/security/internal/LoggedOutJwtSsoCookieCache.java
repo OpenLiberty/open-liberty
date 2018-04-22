@@ -26,7 +26,7 @@ import java.util.Set;
 public class LoggedOutJwtSsoCookieCache {
     private static ArrayList<String> clist = null;
     private static Set<String> cSet = null;
-    private static int maxSize = 1000;
+    private static int maxSize = 10000;
     private static int lastPosition = 0;
     private static boolean atCapacity = false;
     private static boolean initialized = false;

@@ -48,7 +48,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
     private static final String APP_NAME = "sessionCacheConfigApp";
     private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
-    private static final String[] APP_RECYCLE_LIST = new String[] { "CWWKZ0009I.*" + APP_NAME, "CWWKZ000[13]I.*" + APP_NAME };
     private static final String[] EMPTY_RECYCLE_LIST = new String[0];
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
 
@@ -138,7 +137,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     @Test
     public void testAddFeature() throws Exception {
         // Start the server with sessionCache-1.0 enabled
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
 
         // Access a session and add an attribute
         List<String> session = new ArrayList<>();
@@ -183,7 +182,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Verify that after correcting the uri, session data is persisted.
      */
     @AllowedFFDC(value = { "javax.cache.CacheException", // for invalid uri
-                           "java.lang.NullPointerException", // TODO fails when WebApp.destroy/SessionContext.stop invoked after deactivate
+                           "java.lang.NullPointerException", // from starting web app with invalid session cache config
                            "java.net.MalformedURLException" // TODO possible bug
     })
     @Test
@@ -193,16 +192,11 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         ServerConfiguration config = savedConfig.clone();
         config.getHttpSessionCaches().get(0).setUri(invalidHazelcastURI);
         server.updateServerConfiguration(config);
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
 
         try {
-            // Expected: CWWKE0701E: ... CacheException: Error opening URI ...
-            assertEquals(1, server.findStringsInLogs("CWWKE0701E.*CacheException.*URI").size());
-            // Session manager should warn user that sessions will be stored in memory
-            assertEquals(1, server.findStringsInLogs("SESN8501I").size());
-
             List<String> session = new ArrayList<>();
-            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testInvalidURI1&value=IU1", session);
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSessionCacheNotAvailable", session);
 
             // Correct the URI
             String validHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
@@ -211,13 +205,11 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
+            session = new ArrayList<>();
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testInvalidURI2&value=IU2", session);
 
-            // second value should be written to the cache
+            // value should be found
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&useURI=true&attribute=testInvalidURI2&value=IU2", session);
-
-            // first value should not be written to the cache
-            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&useURI=true&attribute=testInvalidURI1&value=null", session);
 
             // Remove the URI and let it default to the system property
             server.setMarkToEndOfLog();
@@ -226,17 +218,14 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testInvalidURI3&value=IU3", session);
 
-            // third value should be written to the cache
+            // second value should be written to the cache
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&useURI=false&attribute=testInvalidURI3&value=IU3", session);
 
-            // whether or not the second value is written depends on JCache provider's behavior when same URI specified a different way
-
-            // first value should not be written to the cache
-            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&useURI=false&attribute=testInvalidURI1&value=null", session);
+            // whether or not the first value is written depends on JCache provider's behavior when same URI specified a different way
 
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
         } finally {
-            server.stopServer("CWWKE0701E.*CacheException.*URI", // Expected: CWWKE0701E: ... CacheException: Error opening URI ...
+            server.stopServer("SRVE8059E", // An unexpected exception occurred when trying to retrieve the session context. Caused by: java.lang.IllegalArgumentException: Not available Hazelcast instance...
                               "SRVE0297E.*NullPointerException" // TODO fails when WebApp.destroy/SessionContext.stop invoked after deactivate
             );
         }
@@ -246,7 +235,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Configure httpSessionCache pointing at a library that lacks a valid JCache provider. Access a session before and after,
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before is not.
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
+    @AllowedFFDC(value = { "java.lang.NullPointerException", // from starting web app with invalid session cache config
+                           "java.net.MalformedURLException" // TODO possible bug
+    })
     @Test
     public void testLibraryWithoutJCacheProvider() throws Exception {
         // Start the server with libraryRef missing
@@ -260,32 +251,25 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         config.getLibraries().add(libraryWithoutJCacheProvider);
         config.getHttpSessionCaches().get(0).setLibraryRef("libraryWithoutJCacheProvider");
         server.updateServerConfiguration(config);
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
         try {
-            // Expecting javax.cache.CacheException: No CachingProviders have been configured
-            assertEquals(1, server.findStringsInLogs("CWWKE0701E.*CacheException").size());
-            // Session manager should warn user that sessions will be stored in memory
-            assertEquals(1, server.findStringsInLogs("SESN8501I").size());
-
             List<String> session = new ArrayList<>();
-            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testLibraryWithoutJCacheProvider1&value=LWJCP1", session);
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSessionCacheNotAvailable", session);
 
             // Correct the libraryRef to point at Hazelcast JCache provider
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(savedConfig);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
+            session = new ArrayList<>();
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testLibraryWithoutJCacheProvider2&value=LWJCP2", session);
 
-            // second value should be written to the cache
+            // value should be written to the cache
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testLibraryWithoutJCacheProvider2&value=LWJCP2", session);
-
-            // first value should not be written to the cache
-            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testLibraryWithoutJCacheProvider1&value=null", session);
 
             FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
         } finally {
-            server.stopServer("CWWKE0701E.*CacheException"); // Expecting javax.cache.CacheException: No CachingProviders have been configured
+            server.stopServer("SRVE8059E"); // An unexpected exception occurred when trying to retrieve the session context. javax.cache.CacheException: No CachingProviders have been configured
         }
     }
 
@@ -301,7 +285,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         ServerConfiguration config = savedConfig.clone();
         config.getHttpSessionCaches().get(0).setLibraryRef(null);
         server.updateServerConfiguration(config);
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
 
         // Session manager should warn user that sessions will be stored in memory
         assertEquals(1, server.findStringsInLogs("SESN8501I").size());
@@ -325,14 +309,121 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
     }
 
+    @AllowedFFDC(value = { "java.lang.NullPointerException", // from starting web app with invalid session cache config
+                           "java.net.MalformedURLException" // TODO possible bug
+    })
+    @Test
+    public void testModifyFileset() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        com.ibm.websphere.simplicity.config.File hazelcastFile = config.getLibraries().getById("HazelcastLib").getNestedFile();
+        String originalName = hazelcastFile.getName();
+        server.startServer(testName.getMethodName() + ".log");
+
+        // Use sessionCache with original (good) config
+        List<String> session = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testModifyFileset&value=0", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testModifyFileset&value=0", session);
+
+        // Change the fileset to reference a bogus file
+        hazelcastFile.setName("${shared.resource.dir}/hazelcast/bogus.jar");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSessionCacheNotAvailable", session);
+
+        // Restore the original config and expect the new cache to be usable
+        hazelcastFile.setName(originalName);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testModifyFileset&value=1", session);
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testModifyFileset&value=1", session);
+
+        server.stopServer("CWWKL0012W.*bogus", "SRVE8059E", "CWWKE0701E.*CacheException");
+    }
+
     /**
      * Capture a dump of the server without monitoring enabled. This means the JCache MXBeans will be unavailable
      * and so cache statistics will not be included in the dump output.
      */
     @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
+    public void testServerDumpWithMonitoring() throws Exception {
+        ServerConfiguration config = savedConfig.clone();
+        config.getFeatureManager().getFeatures().add("monitor-1.0");
+        server.updateServerConfiguration(config);
+
+        server.startServer(testName.getMethodName() + ".log");
+
+        // access a session to exercise codepath before capturing dump
+        List<String> session1 = new ArrayList<>();
+        List<String> session2 = new ArrayList<>();
+        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testServerDumpWithMonitoring1&value=val1&maxInactiveInterval=2100", session1);
+        try {
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testServerDumpWithMonitoring2&value=val2&maxInactiveInterval=2200",
+                         session2);
+
+            List<String> lines = sessionCacheIntrospectorDump();
+            String dumpInfo = lines.toString();
+            int i = 0;
+
+            assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
+            assertTrue(dumpInfo, lines.contains("CachingProvider implementation: com.hazelcast.cache.HazelcastCachingProvider"));
+            assertTrue(dumpInfo, lines.contains("Cache manager URI: hazelcast"));
+            assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
+            assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
+
+            assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
+
+            Set<String> expectedCaches = new HashSet<String>();
+            expectedCaches.add("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
+            expectedCaches.add("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp");
+            Set<String> caches = new HashSet<String>();
+            for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
+                caches.add(lines.get(c).trim());
+            assertEquals(dumpInfo, expectedCaches, caches);
+
+            assertTrue(dumpInfo, lines.contains("  closed? false"));
+            assertFalse(dumpInfo, lines.contains("  closed? true"));
+
+            assertTrue(dumpInfo, lines.contains("  is management enabled? true"));
+            assertFalse(dumpInfo, lines.contains("  is management enabled? false"));
+
+            assertTrue(dumpInfo, lines.contains("  is statistics enabled? true"));
+            assertFalse(dumpInfo, lines.contains("  is statistics enabled? false"));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  average put time:    \\d+\\.\\d+ms")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  cache gets:      \\d+")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  cache hit percentage:  \\d+\\.\\d+%")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  cache miss percentage: \\d+\\.\\d+%")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
+
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
+        } finally {
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session1);
+            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session2);
+        }
+    }
+
+    /**
+     * Capture a dump of the server with monitoring enabled. This means the JCache MXBeans will be available
+     * and should have cache statistics included in the dump output.
+     */
+    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
+    @Test
     public void testServerDumpWithoutMonitoring() throws Exception {
-        server.startServer();
+        server.startServer(testName.getMethodName() + ".log");
 
         // access a session to exercise codepath before capturing dump
         List<String> session1 = new ArrayList<>();
@@ -365,11 +456,12 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, lines.contains("  closed? false"));
             assertFalse(dumpInfo, lines.contains("  closed? true"));
 
-            assertTrue(dumpInfo, lines.contains("  is management enabled? false"));
             assertFalse(dumpInfo, lines.contains("  is management enabled? true"));
 
-            assertTrue(dumpInfo, lines.contains("  is statistics enabled? false"));
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? true"));
+
+            assertFalse(dumpInfo, lines.parallelStream().anyMatch(s -> s
+                            .matches("  average put time:.*")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
                             .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));

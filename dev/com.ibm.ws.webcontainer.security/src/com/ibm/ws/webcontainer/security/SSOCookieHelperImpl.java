@@ -264,6 +264,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
             logoutJwtCookies(req, cookies, logoutCookieList);
 
+
             //TODO: deal with jwtsso's customizable cookie path.
             for (Cookie cookie : logoutCookieList) {
                 res.addCookie(cookie);
