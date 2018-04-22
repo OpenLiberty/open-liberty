@@ -59,8 +59,10 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     protected static String MODULE2_ROOT = "multipleModule2";
     protected static String MODULE2CUSTOM_NAME = "JavaEESecMultipleISCustomForm";
     protected static String WAR2CUSTOM_NAME = MODULE2CUSTOM_NAME + ".war";
+    // this is used in order to force to restart the applications after changing the configuration.
     protected static String XML_CLIENT_CERT_FAILOVER_TO_BA_NAME = "globalClientCertFailOverToBA.xml";
     protected static String XML_CLIENT_CERT_FAILOVER_TO_FORM_NAME = "globalClientCertFailOverToForm.xml";
+    protected static String XML_CLIENT_CERT_FAILOVER_TO_APP_DEFINED_NAME = "globalClientCertFailOverToAppDefined.xml";
     protected static String APP_NAME = "multipleModule";
     protected static String EAR_NAME = APP_NAME + ".ear";
     protected static String APP1_SERVLET = "/" + MODULE1_ROOT + "/FormServlet";
@@ -68,6 +70,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
 
     protected static String MODULE1_LOGIN = "/" + MODULE1_ROOT + "/login.jsp";
     protected static String MODULE1_LOGINFORM = "/" + MODULE1_ROOT + "/j_security_check";
+    protected static String MODULE2_LOGINFORM = "/" + MODULE2_ROOT + "/j_security_check";
     protected static String MODULE2_CUSTOMLOGIN = "/" + MODULE2_ROOT + "/customLogin.xhtml";
     protected static String MODULE1_TITLE_LOGIN_PAGE = "login page for the form login test";
     protected static String MODULE2_TITLE_CUSTOMLOGIN_PAGE = "Custom Login Sample by using JSF";
@@ -86,6 +89,12 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     protected final static String KEYSTORE_PASSWORD = "s3cur1ty";
     protected final static String LDAP_UR_REALM_NAME = "MyLdapRealm";
     protected final static String LDAP_UR_GROUPS = "group:MyLdapRealm/cn=certgroup1,ou=groups,o=ibm,c=us";
+
+    protected static String GLOBAL_LOGIN_WAR = "globalLogin.war";
+    protected static String GLOBAL_LOGIN_ROOT = "globalLogin";
+    protected static String GLOBAL_LOGIN_PAGE = "/" + GLOBAL_LOGIN_ROOT + "/globalLogin.jsp";
+    protected static String GLOBAL_LOGIN = "Global Form Login Page";
+    protected static String GLOBAL_TITLE_LOGIN_PAGE = "Global Form Login Page";
 
     protected DefaultHttpClient httpclient;
 
@@ -114,6 +123,9 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
+
+        // create global form war.
+        WCApplicationHelper.addWarToServerApps(myServer, GLOBAL_LOGIN_WAR, true, null, false);
 
         startServer(XML_CLIENT_CERT_FAILOVER_TO_BA_NAME, APP_NAME);
     }
@@ -209,25 +221,17 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_BA_NAME);
         // ------------- accessing module1 ---------------
-        // since the certificate won't be sent, fallback to original  Form login and get redirect location for LdapIdentityStoreDefinision on this module.
-        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        // since the certificate won't be sent, fallback to the specified BasicAuth.
         setupClient(CERTUSER4_KEYFILE);
-        String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);
-        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
-        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP1_SERVLET, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
         verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
         httpclient.getConnectionManager().shutdown();
         // ------------- accessing module2 ---------------
 
         setupConnection();
         setupClient(CERTUSER4_KEYFILE);
-        // since the certificate won't be sent, custom form login and get redirect location with a user which exists in ldapidentitystore definision in this module.
-        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + MODULE2_CUSTOMLOGIN, MODULE2_TITLE_CUSTOMLOGIN_PAGE);
-        location = executeCustomFormLogin(httpclient, urlBase + MODULE2_CUSTOMLOGIN, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, getViewState(response));
-        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        // since the certificate won't be sent, fallback to the specified BasicAuth.
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP2_SERVLET, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, HttpServletResponse.SC_OK);
         verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -275,7 +279,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
      * and one FormHttpAuthenticationMechanismDefinision which points to different form.
      * <LI> The container overrides the authentication to client cert.
      * <LI> The client does not send a valid certificate.
-     * <LI> Fail over to original login.
+     * <LI> Fail over to form login.
      * </OL>
      * <P> Expected Results:
      * <OL>
@@ -289,6 +293,84 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
         setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_FORM_NAME);
         // ------------- accessing module1 ---------------
         // since the certificate won't be sent, fallback to original  Form login and get redirect location for LdapIdentityStoreDefinision on this module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        setupClient(CERTUSER4_KEYFILE);
+        String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, false, urlBase + GLOBAL_LOGIN_PAGE, GLOBAL_TITLE_LOGIN_PAGE);
+        String location = executeFormLogin(httpclient, urlBase + MODULE1_LOGINFORM, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+        verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        // ------------- accessing module2 ---------------
+
+        setupConnection();
+        setupClient(CERTUSER4_KEYFILE);
+        // since the certificate won't be sent, custom form login and get redirect location with a user which exists in ldapidentitystore definision in this module.
+        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
+        response = getFormLoginPage(httpclient, urlBase + APP2_SERVLET, false, urlBase + GLOBAL_LOGIN_PAGE, GLOBAL_TITLE_LOGIN_PAGE);
+        location = executeFormLogin(httpclient, urlBase + MODULE2_LOGINFORM, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, LocalLdapServer.ANOTHERUSER1, IS2_REALM_NAME, IS1_GROUP_REALM_NAME, IS2_GROUPS);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
+     * and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * <LI> The container overrides the authentication to client cert.
+     * <LI> The client sends a valid certificate.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Verify that the client certificate login is carried out.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testMultipleModuleWarsOverrideClientCertWithFailOverToAppDefinedSuccess() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_APP_DEFINED_NAME);
+        // ------------- accessing module1 ---------------
+        // No matter how to configure the app, it is overridden by the client cert authentication.
+        setupClient(CERTUSER1_KEYFILE);
+        String response = accessPageNoChallenge(httpclient, urlBase + APP1_SERVLET, HttpServletResponse.SC_OK, urlBase + APP1_SERVLET);
+
+        verifyResponse(response, LocalLdapServer.CERTUSER1, LDAP_UR_REALM_NAME, null, LDAP_UR_GROUPS);
+        httpclient.getConnectionManager().shutdown();
+        // ------------- accessing module2 ---------------
+
+        setupConnection();
+        setupClient(CERTUSER1_KEYFILE);
+        // No matter how to configure the app, it is overridden by the client cert authentication.
+        response = accessPageNoChallenge(httpclient, urlBase + APP2_SERVLET, HttpServletResponse.SC_OK, urlBase + APP2_SERVLET);
+        verifyResponse(response, LocalLdapServer.CERTUSER1, LDAP_UR_REALM_NAME, null, LDAP_UR_GROUPS);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file which contains two war files. Each war files contains one LdapIdentityStoreDefinision, one custom identity store.
+     * and one FormHttpAuthenticationMechanismDefinision which points to different form.
+     * <LI> The container overrides the authentication to client cert.
+     * <LI> The client does not send a valid certificate.
+     * <LI> Fail over to original login.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Verify that the login is successful with original login method.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testMultipleModuleWarsOverrideClientCertWithFailOverToAppDefinedFailOverSuccess() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_APP_DEFINED_NAME);
+        // ------------- accessing module1 ---------------
+        // since the certificate won't be sent, fallback to original Form login and get redirect location for LdapIdentityStoreDefinision on this module.
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         setupClient(CERTUSER4_KEYFILE);
         String response = getFormLoginPage(httpclient, urlBase + APP1_SERVLET, true, urlBase + MODULE1_LOGIN, MODULE1_TITLE_LOGIN_PAGE);

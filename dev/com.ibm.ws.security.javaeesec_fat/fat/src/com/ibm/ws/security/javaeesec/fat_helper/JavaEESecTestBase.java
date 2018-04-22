@@ -782,16 +782,15 @@ public class JavaEESecTestBase {
 
     /**
      * This is an internal method used to set the server.xml
+     * if the file in changed, restart the server.
      */
     public void setServerConfiguration(String serverXML) throws Exception {
         if (!serverConfigurationFile.equals(serverXML)) {
             // Update server.xml
             Log.info(logClass, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
-            server.setMarkToEndOfLog();
+            server.stopServer();
             server.setServerConfigurationFile("/" + serverXML);
-            Log.info(logClass, "setServerConfiguration",
-                     "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            server.waitForStringInLogUsingMark("CWWKG0017I");
+            server.startServer(true);
             serverConfigurationFile = serverXML;
         }
     }
