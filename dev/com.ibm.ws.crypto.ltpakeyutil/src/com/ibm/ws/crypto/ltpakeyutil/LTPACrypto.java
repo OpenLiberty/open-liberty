@@ -26,6 +26,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,6 +44,7 @@ final class LTPACrypto {
     private static final String SIGNATURE_ALGORITHM = "SHA1withRSA";
     private static final String CRYPTO_ALGORITHM = "RSA";
     private static final String ENCRYPT_ALGORITHM = "DESede";
+    private static final String IBMJCE_NAME = "IBMJCE";
 
     private static int MAX_CACHE = 500;
 
@@ -225,7 +227,12 @@ final class LTPACrypto {
         BigInteger q = new BigInteger(key[4]);
         BigInteger d = e.modInverse((p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)));
         KeyFactory kFact = null;
-        kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
+        if (LTPAKeyUtil.isIBMJCEAvailable()) {
+            kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
+        } else {
+            kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
+        }
+
 
         BigInteger pep = new BigInteger(key[5]);
         BigInteger peq = new BigInteger(key[6]);
@@ -233,7 +240,12 @@ final class LTPACrypto {
         RSAPrivateCrtKeySpec privCrtKeySpec = new RSAPrivateCrtKeySpec(n, e, d, p, q, pep, peq, crtC);
         PrivateKey privKey = kFact.generatePrivate(privCrtKeySpec);
 
-        Signature rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
+        Signature rsaSig = null;
+        if (LTPAKeyUtil.isIBMJCEAvailable()) {
+            rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, IBMJCE_NAME);
+        } else {
+            rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
+        }
         rsaSig.initSign(privKey);
         rsaSig.update(data, off, len);
         byte[] sig = rsaSig.sign();
@@ -486,10 +498,22 @@ final class LTPACrypto {
 
         BigInteger n = new BigInteger(key[0]);
         BigInteger e = new BigInteger(key[1]);
-        KeyFactory kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
+
+        KeyFactory kFact = null;
+        Signature rsaSig = null;
+
+        if (LTPAKeyUtil.isIBMJCEAvailable()) {
+            kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
+        } else {
+            kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
+        }
         RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(n, e);
         PublicKey pubKey = kFact.generatePublic(pubKeySpec);
-        Signature rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
+        if (LTPAKeyUtil.isIBMJCEAvailable()) {
+            rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, IBMJCE_NAME);
+        } else {
+            rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
+        }
         rsaSig.initVerify(pubKey);
         rsaSig.update(data, off, len);
         verified = rsaSig.verify(sig);
@@ -553,14 +577,19 @@ final class LTPACrypto {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    private static SecretKey constructSecretKey(byte[] key, String cipher) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException {
+    private static SecretKey constructSecretKey(byte[] key, String cipher) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         SecretKey sKey = null;
         if (cipher.indexOf("AES") != -1) {
             // 16 bytes = 128 bit key
             sKey = new SecretKeySpec(key, 0, 16, "AES");
         } else {
             DESedeKeySpec kSpec = new DESedeKeySpec(key);
-            SecretKeyFactory kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
+            SecretKeyFactory kFact = null;
+            if (LTPAKeyUtil.isIBMJCEAvailable()) {
+                kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM, IBMJCE_NAME);
+            } else {
+                kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
+            }
             sKey = kFact.generateSecret(kSpec);
         }
         return sKey;
@@ -576,8 +605,15 @@ final class LTPACrypto {
      * @throws InvalidKeyException
      * @throws InvalidAlgorithmParameterException
      */
-    private static Cipher createCipher(int cipherMode, byte[] key, String cipher, SecretKey sKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
-        Cipher ci = Cipher.getInstance(cipher);
+    private static Cipher createCipher(int cipherMode, byte[] key, String cipher, SecretKey sKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchProviderException {
+
+        Cipher ci = null;
+
+        if (LTPAKeyUtil.isIBMJCEAvailable()) {
+            ci = Cipher.getInstance(cipher, IBMJCE_NAME);
+        } else {
+            ci = Cipher.getInstance(cipher);
+        }
         if (cipher.indexOf("ECB") == -1) {
             if (cipher.indexOf("AES") != -1) {
                 if (ivs16 == null) {
@@ -995,8 +1031,13 @@ final class LTPACrypto {
                 KeyPairGenerator keyGen = null;
                 SecureRandom random = null;
 
-                keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, "IBMJCE");
-                random = SecureRandom.getInstance("IBMSecureRandom");
+                if (LTPAKeyUtil.isIBMJCEAvailable()) {
+                    keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
+                    random = SecureRandom.getInstance("IBMSecureRandom");
+                } else {
+                    keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
+                    random = SecureRandom.getInstance("SHA1PRNG");
+                }
 
                 keyGen.initialize(len * 8, random);
                 pair = keyGen.generateKeyPair();

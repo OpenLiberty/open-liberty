@@ -175,7 +175,6 @@ task publishLibNative(type: Copy) {
 }
 
 assemble {
-  dependsOn ':cnf:copyMavenLibs'
   dependsOn publishWLPJars
   dependsOn publishJavadoc
   dependsOn publishToolJars
@@ -189,16 +188,13 @@ assemble {
 
 compileJava {
   if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
-    def instrument = fileTree( dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes') )
+    inputs.files { rasInstrumentationInputFiles() }
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes'))
     doLast {
       if (instrument.isEmpty())
         return
-      ant.taskdef(name: 'instrumentForTrace', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentForTrace') {
-        classpath {
-            fileset(dir: cnf.file('lib'), includes: "ras-instrumentation.jar")
-        }
-      }
-      ant.instrumentForTrace( ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection') ) {
+      rasInstrumentationTaskdef(ant)
+      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
           fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
       }
     }
@@ -206,9 +202,8 @@ compileJava {
 }
 
 task globalize {
-    dependsOn ':cnf:copyMavenLibs'
-    enabled parseBoolean(bnd('globalize', 'true'))
-    ext.destinationDir = new File(buildDir, "src/${name}/java")
+  ext.destinationDir = new File(buildDir, "src/${name}/java")
+  if (parseBoolean(bnd('globalize', 'true'))) {
     inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
     outputs.dir destinationDir
     doFirst {
@@ -220,12 +215,7 @@ task globalize {
         into destinationDir
         include '**/package-info.java'
       }
-      ant.taskdef(resource: 'com/ibm/mantis/nls/antlib.xml') {
-        classpath {
-            fileset(dir: cnf.file('mavenlibs'), includes: "commons-*.jar")
-            fileset(dir: cnf.file('mavenlibs'), includes: "mantis-*.jar")
-        }
-      }
+      nlsTaskdef(ant)
       ant.validate() {
         fileset(dir: project.file('resources'), includes: "**/*.nlsprops", excludes: "**/*_*.nlsprops")
         completenessvalidator(messagesonly: "false")
@@ -308,6 +298,7 @@ task globalize {
         tmstransformer(dest: rootProject.file("build.pii.package/nlsxml/${project.name}"))
       }
     }
+  }
 }
 
 task copyPiiFiles(type: Copy) {
@@ -327,12 +318,16 @@ task buildfat {
 
 sourceSets {
   main {
-    java.srcDir globalize.destinationDir
+    if (parseBoolean(bnd('globalize', 'true'))) {
+      java.srcDir globalize.destinationDir
+    }
   }
 }
 
 compileJava {
-  dependsOn globalize
+  if (parseBoolean(bnd('globalize', 'true'))) {
+    dependsOn globalize
+  }
   options.warnings = false
   options.fork = true
 }
@@ -351,12 +346,8 @@ test {
   doFirst {
     if (testports.isEmpty())
       return
-    ant.taskdef(name: 'portSelector', classname: 'com.ibm.aries.buildtasks.PortSelector') {
-      classpath {
-        fileset(dir: cnf.file('mavenlibs'), includes: "infra.buildtasks*.jar")
-      }
-    }
     def propertiesFile = new File(compileTestJava.destinationDir, 'unittestports.properties')
+    portSelectorTaskdef(ant)
     ant.portSelector(engineName: "${bnd.buildEngineName}", location: propertiesFile, jvmarg: 'jvmargPorts')
     jvmArgs ant.jvmargPorts.tokenize()
   }
@@ -425,6 +416,69 @@ jacocoTestCoverageVerification {
   }
 }
 
-private boolean parseBoolean(String value) {
-  return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)
+/*
+ * This task is meant to perform a simple verification of all of the bundle jars that have been
+ * created for the liberty image. It runs as part of the Package Verification build. The check
+ * it performs is to simply inspect each bundle jar, and verify that if there is at least one
+ * file with translatable messages in it, there is a file for every language.
+*/
+task verifyBundleNLS {
+    doLast {
+        // This is the top level reference to each of the jar files in the build image
+        FileTree bundleJars= fileTree(dir: "${rootDir}/../../../messageVerificationImage/wlp/lib/");
+        bundleJars.include "**/*.jar"
+
+        /* This is the String that contains all of the projects that it is safe to IGNORE message
+         * verification failures for. It is loaded from the properties file messageVerifyIgnores.
+         */
+        String ignoresList = new File("${rootDir}/../../../ant_build/resources/configuration/messageVerifyIgnores").text
+
+        // This string holds all the projects with errors
+        String badProjectsProps = "";
+        String badProjectsNLS = "";
+
+        // With the list of bundle jars, loop over each one to perform the check
+        bundleJars.each { File jarFile ->
+            FileTree jarTree = zipTree( jarFile )
+
+            // Find all the NLS metatype.properties files based on a regex
+            FileTree metatypeFiles = jarTree.matching {
+                include 'OSGI-INF/l10n/**/*'
+            }
+
+            // Store the name of the jar file being examined, and strip off the version string and file type
+            String jarName = jarFile.getName()
+            jarName = jarName.replaceFirst( "_[0-9].[0-9]+.[0-9]+", "" )
+            jarName = jarName.replaceFirst( ".jar", "")
+            jarName += "\n"
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( metatypeFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsProps.isAllWhitespace() )
+                    badProjectsProps += jarFile.getName()
+                else
+                    badProjectsProps += ", " + jarFile.getName()
+            }
+
+            // Find all the NLS .nlsprops files based on a regex
+            // Note that the .nlsprops files have been compiled, so they will be .class files in the jar
+            FileTree nlspropsFiles = jarTree.matching {
+                include '**/resources/[^/]*.class'
+            }
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( nlspropsFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsNLS.isAllWhitespace() )
+                    badProjectsNLS += jarFile.getName()
+                else
+                    badProjectsNLS += ", " + jarFile.getName()
+            }
+        }
+
+        // If either of the checks have failures in them, fail the task
+        if( !badProjectsProps.isAllWhitespace() )
+            throw new GradleException("Missing metatype.properties files: " + badProjectsProps )
+        if( !badProjectsNLS.isAllWhitespace() )
+            throw new GradleException("Missing nlsprops files: " + badProjectsNLS )
+    }
 }

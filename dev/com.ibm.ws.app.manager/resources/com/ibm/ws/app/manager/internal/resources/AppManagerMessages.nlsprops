@@ -203,8 +203,8 @@ APPLICATION_UPDATED=CWWKZ0062I: The {0} application has been updated, but not re
 APPLICATION_UPDATED.explanation=A minor change has occurred in the specified application, and the change has been deemed minor enough that there is no need to restart the application.
 APPLICATION_UPDATED.useraction=No action is required.
 
-APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Jandex use is enabled for all applications.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=For all applications, and when Jandex indexes are available, class and annotation data is obtained from Jandex indexes.
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Default setting for use of Jandex has been modified to true for all applications.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=For all applications, and when Jandex indexes are available, class and annotation data is obtained from Jandex indexes, unless Jandex usage is disabled specifically for the application.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=No action is required.
 
 #{0} is application name

@@ -59,6 +59,9 @@ import componenttest.topology.impl.LibertyServer;
  */
 public class MvnUtils {
 
+    private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
+    private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "30";
+    private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "20";
     public static File resultsDir;
     public static String wlp;
     public static File tckRunnerDir;
@@ -113,6 +116,9 @@ public class MvnUtils {
             mvn = mvn + ".cmd";
         }
         mvnCliRaw = new String[] { mvn, "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
+                                   "-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT,
+                                   "-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT,
+                                   "-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT,
                                    "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/tck" };
 
         mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliEnvVars(server, jarsFromWlp));

@@ -31,6 +31,7 @@ import java.lang.reflect.WildcardType;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -144,7 +145,7 @@ public abstract class ProviderFactory {
     //Liberty code change start
     //defect 178126
     //A cache for getGenericInterfaces
-    private static final ConcurrentHashMap<ClassWeakReference, Map<ClassWeakReference, Type[]>> genericInterfacesCache = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<ClassesKey, Type[]> genericInterfacesCache = new ConcurrentHashMap<>();
     private static final Type[] emptyType = new Type[] {};
 
     //Liberty code change end
@@ -239,7 +240,7 @@ public abstract class ProviderFactory {
                 }
                 return null;
             }});
-        
+
         return new JsonPProvider(jsonProvider);
     }
     // Liberty Change for CXF End
@@ -259,7 +260,7 @@ public abstract class ProviderFactory {
 
         return c;
     }
-    
+
     public static Object createJsonBindingProvider() {
         JsonbProvider jsonbProvider = AccessController.doPrivileged(new PrivilegedAction<JsonbProvider>(){
 
@@ -273,7 +274,7 @@ public abstract class ProviderFactory {
                 }
                 return null;
             }});
-        
+
         return new JsonBProvider(jsonbProvider);
     }
 
@@ -321,7 +322,9 @@ public abstract class ProviderFactory {
                         if (argCls != null && argCls.isAssignableFrom(contextCls)) {
                             List<MediaType> mTypes = JAXRSUtils.getProduceTypes(
                                                                                 cr.getProvider().getClass().getAnnotation(Produces.class));
-                            if (JAXRSUtils.intersectMimeTypes(mTypes, type).size() > 0) {
+                            //Liberty code change begin
+                            if (JAXRSUtils.doMimeTypesIntersect(mTypes, type)) {
+                            //Liberty code change end
                                 injectContextValues(cr, m);
                                 candidates.add((ContextResolver<T>) cr.getProvider());
                             }
@@ -330,7 +333,7 @@ public abstract class ProviderFactory {
                 }
             }
         }
-        if (candidates.size() == 0) {
+        if (candidates.isEmpty()) {
             return null;
         } else if (candidates.size() == 1) {
             return candidates.get(0);
@@ -446,9 +449,17 @@ public abstract class ProviderFactory {
                                        Message m,
                                        Class<?> providerClass,
                                        boolean injectContext) {
+        return handleMapper(em, expectedType, m, providerClass, null, injectContext);
+    }
 
+    protected <T> boolean handleMapper(ProviderInfo<T> em,
+                                       Class<?> expectedType,
+                                       Message m,
+                                       Class<?> providerClass,
+                                       Class<?> commonBaseClass,
+                                       boolean injectContext) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "handleMapper", new Object[]{em, expectedType, m, providerClass, injectContext});
+            Tr.debug(tc, "handleMapper", new Object[]{em, expectedType, m, providerClass, commonBaseClass, injectContext});
         }
         // Liberty Change for CXF Begin
         Class<?> mapperClass = ClassHelper.getRealClass(bus, em.getOldProvider());
@@ -457,7 +468,7 @@ public abstract class ProviderFactory {
         if (m != null && MessageUtils.getContextualBoolean(m, IGNORE_TYPE_VARIABLES)) {
             types = new Type[] { mapperClass };
         } else {
-            types = getGenericInterfaces(mapperClass, expectedType);
+            types = getGenericInterfaces(mapperClass, expectedType, commonBaseClass);
         }
         for (Type t : types) {
             if (t instanceof ParameterizedType) {
@@ -647,7 +658,7 @@ public abstract class ProviderFactory {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "createMessageBodyWriter ",  new Object[]{type, genericType, annotations, mediaType, m});
         }
-        
+
         // Step1: check the cache.
         if (providerCache != null) {
             for (ProviderInfo<MessageBodyWriter<?>> ep : providerCache.getWriters(type, mediaType)) {
@@ -729,15 +740,15 @@ public abstract class ProviderFactory {
         for (ProviderInfo<? extends Object> provider : theProviders) {
             Class<?> providerCls = ClassHelper.getRealClass(bus, provider.getProvider());
 
-            if (MessageBodyReader.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, MessageBodyReader.class)) {
                 addProviderToList(messageReaders, provider);
             }
 
-            if (MessageBodyWriter.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, MessageBodyWriter.class)) {
                 addProviderToList(messageWriters, provider);
             }
 
-            if (ContextResolver.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, ContextResolver.class)) {
                 addProviderToList(contextResolvers, provider);
             }
 
@@ -753,13 +764,14 @@ public abstract class ProviderFactory {
                 writeInts.add((ProviderInfo<WriterInterceptor>) provider);
             }
 
-            if (ParamConverterProvider.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, ParamConverterProvider.class)) {
                 paramConverters.add((ProviderInfo<ParamConverterProvider>) provider);
             }
         }
         sortReaders();
         sortWriters();
         sortContextResolvers();
+        sortParamConverters();
 
         mapInterceptorFilters(readerInterceptors, readInts, ReaderInterceptor.class, true);
         mapInterceptorFilters(writerInterceptors, writeInts, WriterInterceptor.class, true);
@@ -827,7 +839,7 @@ public abstract class ProviderFactory {
      */
     private void sortReaders() {
         if (!customComparatorAvailable(MessageBodyReader.class)) {
-            Collections.sort(messageReaders, new MessageBodyReaderComparator(readerMediaTypesMap));
+            messageReaders.sort(new MessageBodyReaderComparator(readerMediaTypesMap));
         } else {
             doCustomSort(messageReaders);
         }
@@ -835,7 +847,7 @@ public abstract class ProviderFactory {
 
     private <T> void sortWriters() {
         if (!customComparatorAvailable(MessageBodyWriter.class)) {
-            Collections.sort(messageWriters, new MessageBodyWriterComparator(writerMediaTypesMap));
+            messageWriters.sort(new MessageBodyWriterComparator(writerMediaTypesMap));
         } else {
             doCustomSort(messageWriters);
         }
@@ -843,6 +855,21 @@ public abstract class ProviderFactory {
             StringBuilder msg = new StringBuilder("sortWriters - sorted list:");
             for (int i = 0; i < messageWriters.size(); i++) {
                 msg.append(" (" + i + ") " + messageWriters.get(i).getProvider());
+            }
+            Tr.debug(tc, msg.toString());
+        }
+    }
+
+    private <T> void sortParamConverters() {
+        if (!customComparatorAvailable(ParamConverter.class)) {
+            paramConverters.sort(new ParamConverterProviderComparator());
+        } else {
+            doCustomSort(paramConverters);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            StringBuilder msg = new StringBuilder("sortParamConverters - sorted list:");
+            for (int i = 0; i < paramConverters.size(); i++) {
+                msg.append(" (" + i + ") " + paramConverters.get(i).getProvider());
             }
             Tr.debug(tc, msg.toString());
         }
@@ -881,11 +908,11 @@ public abstract class ProviderFactory {
         }
         List<T> theProviders = (List<T>) listOfProviders;
         Comparator<? super T> theComparator = (Comparator<? super T>) theProviderComparator;
-        Collections.sort(theProviders, theComparator);
+        theProviders.sort(theComparator);
     }
 
     private void sortContextResolvers() {
-        Collections.sort(contextResolvers, new ContextResolverComparator());
+        contextResolvers.sort(new ContextResolverComparator());
     }
 
     private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = new HashMap<>();
@@ -912,10 +939,9 @@ public abstract class ProviderFactory {
         MessageBodyReader<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderConsumeTypes(ep);
 
-        List<MediaType> availableMimeTypes =
-            JAXRSUtils.intersectMimeTypes(Collections.singletonList(mediaType), supportedMediaTypes, false);
-
-        return availableMimeTypes.size() != 0;
+        //Liberty code change begin
+        return JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
+        //Liberty code change end
     }
 
     private boolean isReadable(ProviderInfo<MessageBodyReader<?>> pi,
@@ -958,16 +984,13 @@ public abstract class ProviderFactory {
         }
         MessageBodyWriter<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderProduceTypes(ep);
-
-        List<MediaType> availableMimeTypes =
-            JAXRSUtils.intersectMimeTypes(Collections.singletonList(mediaType),
-                                                                           supportedMediaTypes, false);
-
-        boolean b = availableMimeTypes.size() != 0;
+        //Liberty code change begin
+        boolean b = JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "matchesWriterMediaTypes return " + b);
         }
         return b;
+        //Liberty code change end
     }
 
     private boolean isWriteable(ProviderInfo<MessageBodyWriter<?>> pi,
@@ -1080,6 +1103,24 @@ public abstract class ProviderFactory {
         }
     }
 
+    private static class ParamConverterProviderComparator implements Comparator<ProviderInfo<ParamConverterProvider>> {
+
+
+        @Override
+        public int compare(ProviderInfo<ParamConverterProvider> p1,
+                           ProviderInfo<ParamConverterProvider> p2) {
+            ParamConverterProvider e1 = p1.getOldProvider();
+            ParamConverterProvider e2 = p2.getOldProvider();
+
+            int result = compareClasses(e1, e2);
+            if (result != 0) {
+                return result;
+            }
+
+            return comparePriorityStatus(p1.getProvider().getClass(), p2.getProvider().getClass());
+        }
+    }
+
     public static int compareCustomStatus(ProviderInfo<?> p1, ProviderInfo<?> p2) {
         Boolean custom1 = p1.isCustom();
         Boolean custom2 = p2.isCustom();
@@ -1186,7 +1227,7 @@ public abstract class ProviderFactory {
             } else {
                 if (provider instanceof FilterProviderInfo) {
                     FilterProviderInfo<?> fpi = (FilterProviderInfo<?>) provider;
-                    if (fpi.isDynamic() && !names.containsAll(fpi.getNameBinding())) {
+                    if (fpi.isDynamic() && !names.containsAll(fpi.getNameBindings())) {
                         continue;
                     }
                 }
@@ -1319,14 +1360,19 @@ public abstract class ProviderFactory {
         return 0;
     }
 
+
+    private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass) {
+        return getGenericInterfaces(cls, expectedClass, Object.class);
+    }
     //Liberty code change start
     //defect 178126
     //Add the result to cache before return
-    private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass) {
+    private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass,
+                                       Class<?> commonBaseCls) {
         if (Object.class == cls) {
             return emptyType;
         }
-        Type[] cachedTypes = getTypes(cls, expectedClass);
+        Type[] cachedTypes = getTypes(cls, expectedClass, commonBaseCls);
         if (cachedTypes != null)
             return cachedTypes;
         if (expectedClass != null) {
@@ -1335,21 +1381,24 @@ public abstract class ProviderFactory {
                 Class<?> actualType = InjectionUtils.getActualType(genericSuperType);
                 if (actualType != null && actualType.isAssignableFrom(expectedClass)) {
                     Type[] tempTypes = new Type[] { genericSuperType };
-                    putTypes(cls, expectedClass, tempTypes);
+                    putTypes(cls, expectedClass, commonBaseCls, tempTypes);
                     return tempTypes;
-                } else if (expectedClass.isAssignableFrom(actualType)) {
-                    putTypes(cls, expectedClass, emptyType);
+                } else if (commonBaseCls != null && commonBaseCls != Object.class
+                           && commonBaseCls.isAssignableFrom(expectedClass)
+                           && commonBaseCls.isAssignableFrom(actualType)
+                           || expectedClass.isAssignableFrom(actualType)) {
+                    putTypes(cls, expectedClass, commonBaseCls, emptyType);
                     return emptyType;
                 }
             }
         }
         Type[] types = cls.getGenericInterfaces();
         if (types.length > 0) {
-            putTypes(cls, expectedClass, types);
+            putTypes(cls, expectedClass, commonBaseCls, types);
             return types;
         }
-        Type[] superGenericTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass);
-        putTypes(cls, expectedClass, superGenericTypes);
+        Type[] superGenericTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass, commonBaseCls);
+        putTypes(cls, expectedClass, commonBaseCls, superGenericTypes);
         return superGenericTypes;
     }
 
@@ -1516,14 +1565,15 @@ public abstract class ProviderFactory {
     }
 
     protected static Set<String> getFilterNameBindings(ProviderInfo<?> p) {
-        Set<String> names = null;
         if (p instanceof FilterProviderInfo) {
-            names = ((FilterProviderInfo<?>) p).getNameBinding();
+            return ((FilterProviderInfo<?>)p).getNameBindings();
+        } else {
+            return getFilterNameBindings(p.getBus(), p.getProvider());
         }
-        if (names == null) {
-            Class<?> pClass = ClassHelper.getRealClass(p.getBus(), p.getProvider());
-            names = AnnotationUtils.getNameBindings(pClass.getAnnotations());
-        }
+    }
+    protected static Set<String> getFilterNameBindings(Bus bus, Object provider) {
+        Class<?> pClass = ClassHelper.getRealClass(bus, provider);
+        Set<String> names = AnnotationUtils.getNameBindings(pClass.getAnnotations());
         if (names.isEmpty()) {
             names = Collections.singleton(DEFAULT_FILTER_NAME_BINDING);
         }
@@ -1623,7 +1673,7 @@ public abstract class ProviderFactory {
             }
 
             if (beanCustomizer != null && DynamicFeature.class.isAssignableFrom(pi.getProvider().getClass())) {
-                Object newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), beanCustomizerContexts.get(CustomizerUtils.createCustomizerKey(beanCustomizer)),
+                Object newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())),
                                                                                     null);
                 if (newProviderInstance != null) {
                     pi.setProvider(newProviderInstance);
@@ -1656,41 +1706,23 @@ public abstract class ProviderFactory {
         this.providerComparator = providerComparator;
         sortReaders();
         sortWriters();
+        sortParamConverters();
     }
 
     //Liberty code change start
     //defect 178126
-    private static final ClassWeakReference NULL_REFERENCE = new ClassWeakReference(ClassWeakReference.class);
     private static final ReferenceQueue<Class<?>> referenceQueue = new ReferenceQueue<>();
 
     private static void poll() {
         ClassWeakReference key;
         while ((key = (ClassWeakReference) referenceQueue.poll()) != null) {
-            Map<ClassWeakReference, ?> map = key.getOwningMap();
-            if (map != null) {
-                if (map instanceof ConcurrentHashMap) {
-                    map.remove(key);
-                } else {
-                    Collection<Map<ClassWeakReference, Type[]>> values = genericInterfacesCache.values();
-                    for (Iterator<Map<ClassWeakReference, Type[]>> it = values.iterator(); it.hasNext();) {
-                        Map<ClassWeakReference, Type[]> value = it.next();
-                        if (value == map) {
-                            it.remove();
-                            break;
-                        }
-                    }
-                }
-            }
+            genericInterfacesCache.remove(key.getOwningKey());
         }
     }
 
-    private static Type[] getTypes(Class<?> cls, Class<?> expectedCls) {
+    private static Type[] getTypes(Class<?> cls, Class<?> expectedCls, Class<?> commonBaseCls) {
         poll();
-        Map<ClassWeakReference, Type[]> interfacesMap = genericInterfacesCache.get(new ClassWeakReference(cls));
-        if (interfacesMap != null) {
-            return interfacesMap.get(expectedCls == null ? NULL_REFERENCE : new ClassWeakReference(expectedCls));
-        }
-        return null;
+        return genericInterfacesCache.get(new ClassesKey(cls, expectedCls, commonBaseCls));
     }
 
     /**
@@ -1702,70 +1734,80 @@ public abstract class ProviderFactory {
      * @param expectedCls
      * @param types
      */
-    private static void putTypes(Class<?> cls, Class<?> expectedCls, Type[] types) {
+    private static void putTypes(Class<?> cls, Class<?> expectedCls, Class<?> commonBaseCls, Type[] types) {
         poll();
-        Map<ClassWeakReference, Type[]> interfacesMap = genericInterfacesCache.get(new ClassWeakReference(cls));
-        if (interfacesMap != null) {
-            if (interfacesMap instanceof ConcurrentHashMap) {
-                ClassWeakReference expectedClassRef = expectedCls == null ? NULL_REFERENCE :
-                    new ClassWeakReference(expectedCls, interfacesMap, referenceQueue);
-                interfacesMap.put(expectedClassRef, types);
-            } else {
-                // If it already got added, then we can skip making the ConcurrentHashMap.
-                if (interfacesMap.get(expectedCls == null ? NULL_REFERENCE : new ClassWeakReference(expectedCls)) == null) {
-                    // Take the old entry from the Collections.singletonMap and put it in a new ConcurrentHashMap.
-                    Map<ClassWeakReference, Type[]> oldMap = interfacesMap;
-                    interfacesMap = new ConcurrentHashMap<>();
-                    Iterator<Map.Entry<ClassWeakReference, Type[]>> it = oldMap.entrySet().iterator();
-                    if (it.hasNext()) {
-                        Map.Entry<ClassWeakReference, Type[]> entry = it.next();
-                        ClassWeakReference oldKey = entry.getKey();
-                        // Need to change the owning map to the new ConcurrentHashMap.
-                        oldKey.setOwningMap(interfacesMap);
-                        interfacesMap.put(oldKey, entry.getValue());
-                    }
+        genericInterfacesCache.put(new ClassesKey(referenceQueue, cls, expectedCls, commonBaseCls), types);
+    }
 
-                    ClassWeakReference expectedClassRef = expectedCls == null ? NULL_REFERENCE : new ClassWeakReference(expectedCls, interfacesMap, referenceQueue);
-                    interfacesMap.put(expectedClassRef, types);
-                    genericInterfacesCache.put(new ClassWeakReference(cls, genericInterfacesCache, referenceQueue),
-                                               interfacesMap);
+    private static class ClassesKey {
+        private final ClassWeakReference[] classes;
+        private final int hash;
+
+        ClassesKey(Class<?>... cl) {
+            int length = cl.length;
+            classes = new ClassWeakReference[length];
+            int hashCode = 0;
+            for (int i = 0; i < length; ++i) {
+                if (cl[i] != null) {
+                    classes[i] = new ClassWeakReference(cl[i], this);
+                    hashCode += cl[i].hashCode();
                 }
             }
-        } else {
-            if (expectedCls == null) {
-                interfacesMap = Collections.singletonMap(NULL_REFERENCE, types);
-            } else {
-                ClassWeakReference expectedClassRef = new ClassWeakReference(expectedCls, null, referenceQueue);
-                interfacesMap = Collections.singletonMap(expectedClassRef, types);
-                expectedClassRef.setOwningMap(interfacesMap);
+            hash = hashCode;
+        }
+
+        ClassesKey(ReferenceQueue<Class<?>> referenceQueue, Class<?>... cl) {
+            int length = cl.length;
+            classes = new ClassWeakReference[length];
+            int hashCode = 0;
+            for (int i = 0; i < length; ++i) {
+                if (cl[i] != null) {
+                    classes[i] = new ClassWeakReference(cl[i], this, referenceQueue);
+                    hashCode += cl[i].hashCode();
+                }
             }
-            genericInterfacesCache.put(new ClassWeakReference(cls, genericInterfacesCache, referenceQueue), interfacesMap);
+            hash = hashCode;
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ClassesKey other = (ClassesKey) obj;
+            if (!Arrays.equals(classes, other.classes))
+                return false;
+            return true;
         }
     }
 
     private static class ClassWeakReference extends WeakReference<Class<?>> {
         private final int hash;
-        private volatile Map<ClassWeakReference, ?> owningMap;
+        private final ClassesKey owningKey;
 
-        ClassWeakReference(Class<?> referent) {
+        ClassWeakReference(Class<?> referent, ClassesKey owningKey) {
             super(referent);
-            owningMap = null;
+            this.owningKey = owningKey;
             hash = referent.hashCode();
         }
 
-        ClassWeakReference(Class<?> referent, Map<ClassWeakReference, ?> owningMap,
+        ClassWeakReference(Class<?> referent, ClassesKey owningKey,
                            ReferenceQueue<Class<?>> referenceQueue) {
             super(referent, referenceQueue);
-            this.owningMap = owningMap;
+            this.owningKey = owningKey;
             hash = referent.hashCode();
         }
 
-        Map<ClassWeakReference, ?> getOwningMap() {
-            return owningMap;
-        }
-
-        void setOwningMap(Map<ClassWeakReference, ?> owningMap) {
-            this.owningMap = owningMap;
+        ClassesKey getOwningKey() {
+            return owningKey;
         }
 
         @Override

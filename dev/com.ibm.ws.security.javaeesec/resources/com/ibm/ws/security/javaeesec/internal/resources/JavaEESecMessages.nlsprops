@@ -19,10 +19,6 @@
 # Message prefix block: CWWKS1900 - CWWKS1924, CWWKS3400 - CWWKS3419
 # 1900 to 1909 will be used for some informational message such as JSR375 is enabled or something like that...
 
-JAVAEESEC_ERROR_NO_IDENTITYSTORES=CWWKS1910E: The IdentityStore object configured was not found. Make sure that the IdentityStore object configured by the application is available.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.explanation=The reason that the IdentityStore object was not found varies. The error messages for the IdentityStore object provide information on why the the IdentityStore object was not found.
-JAVAEESEC_ERROR_NO_IDENTITYSTORES.useraction=Investigate any error messages from the IdentityStore object and make corrections based on the error messages.
-
 JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: No IdentityStore object supports validation of the user. Make sure that at least one IdentityStore object supports user validation.
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=No IdentityStore object was found to validate the user. Therefore, the user cannot be authenticated.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Make sure that at least one IdentityStore object supports validation of the user.

@@ -60,6 +60,10 @@ public class DatabaseIdentityStore implements IdentityStore {
 
     private InitialContext initialContext = null;
 
+    private DataSource dataSource = null;
+
+    private boolean evaluateAlways = false;
+
     /**
      * Construct a new {@link DatabaseIdentityStore} instance using the specified definitions.
      *
@@ -138,6 +142,16 @@ public class DatabaseIdentityStore implements IdentityStore {
                 Tr.event(tc, "Setting up InitializeContext failed, will try later.", e);
             }
         }
+
+        /*
+         * Check if the datasource is either a set string or an immediate EL expression.
+         * If it is, we can store the datasource on first lookup. If it is a deferred EL expression,
+         * we will look it up every time.
+         */
+        evaluateAlways = !this.idStoreDefinition.isDataSourceEvaluated();
+        if (tc.isEventEnabled()) {
+            Tr.event(tc, "Always evaluate Datasource: " + evaluateAlways);
+        }
     }
 
     @Override
@@ -162,7 +176,7 @@ public class DatabaseIdentityStore implements IdentityStore {
         String groupsQuery = "not_resolved";
         try {
             groupsQuery = idStoreDefinition.getGroupsQuery();
-            Connection conn = getConnection(caller);
+            Connection conn = getConnection();
             try {
                 prep = conn.prepareStatement(groupsQuery);
                 prep.setString(1, caller);
@@ -238,18 +252,25 @@ public class DatabaseIdentityStore implements IdentityStore {
         PreparedStatement prep = null;
         String callerQuery = "not_resolved";
         try {
-            Connection conn = getConnection(caller);
-            try {
-                callerQuery = idStoreDefinition.getCallerQuery();
-                if (callerQuery == null || callerQuery.isEmpty()) {
-                    if (tc.isEventEnabled()) {
-                        Tr.event(tc, "The 'callerQuery' parameter can not be  " + callerQuery == null ? "null." : "empty.");
-                    }
-                    return CredentialValidationResult.INVALID_RESULT;
+            callerQuery = idStoreDefinition.getCallerQuery();
+            if (callerQuery == null || callerQuery.isEmpty()) {
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, "The 'callerQuery' parameter can not be " + callerQuery == null ? "null." : "empty.");
                 }
+                return CredentialValidationResult.INVALID_RESULT;
+            }
+
+            Connection conn = getConnection();
+
+            try {
 
                 prep = conn.prepareStatement(callerQuery);
                 prep.setString(1, caller);
+                /*
+                 * Only 1 row should be returned. If two rows (users) are returned, we can log an error to help debug the problem.
+                 * If someone sends in a malicious statement (such as select * from), we can cut off the results.
+                 */
+                prep.setMaxRows(2);
 
                 ResultSet result = runQuery(prep, caller);
 
@@ -324,18 +345,31 @@ public class DatabaseIdentityStore implements IdentityStore {
         return result;
     }
 
-    private Connection getConnection(String caller) throws NamingException, SQLException {
+    private Connection getConnection() throws NamingException, SQLException {
         if (initialContext == null) {
             initialContext = new InitialContext();
         }
-        // datasource could be an expression, look it up fresh every time.
-        String dataSourceLookup = idStoreDefinition.getDataSourceLookup();
-        if (dataSourceLookup == null || dataSourceLookup.isEmpty()) {
-            throw new IllegalArgumentException("The 'dataSourceLookup' configuration cannot be empty or null.");
+
+        DataSource localDataSource;
+        if (evaluateAlways || dataSource == null) {
+            String dataSourceLookup = idStoreDefinition.getDataSourceLookup();
+            if (dataSourceLookup == null || dataSourceLookup.isEmpty()) {
+                throw new IllegalArgumentException("The 'dataSourceLookup' configuration cannot be " + dataSourceLookup == null ? "null." : "empty.");
+            }
+            localDataSource = (DataSource) initialContext.lookup(dataSourceLookup);
+
+            if (!evaluateAlways) { // first lookup of an evaluated dataSourceLookup, save permanently
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "DataSource is stored for " + dataSourceLookup);
+                }
+                dataSource = localDataSource;
+            }
+        } else {
+            localDataSource = dataSource;
         }
 
-        DataSource dataSource = (DataSource) initialContext.lookup(dataSourceLookup);
-
-        return dataSource.getConnection();
+        Connection conn = localDataSource.getConnection();
+        conn.setReadOnly(true);
+        return conn;
     }
 }

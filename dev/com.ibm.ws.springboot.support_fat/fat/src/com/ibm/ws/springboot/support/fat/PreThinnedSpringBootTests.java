@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.SpringBootApp;
+import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
@@ -57,8 +57,6 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
     @Test
     public void testWithSharedCache() throws Exception {
         // First stop the server which has already thinned the test application
-        assertNotNull("The application was not installed", server
-                        .waitForStringInLog("CWWKZ0001I:.*"));
         server.stopServer(false);
 
         // locate and copy the lib.index.cache to the shared area
@@ -79,9 +77,9 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
 
         // configure the pre-thinned app jar as a spring boot app
         ServerConfiguration sc = server.getServerConfiguration();
-        List<SpringBootApp> configuredApps = sc.getSpringBootApps();
+        List<SpringBootApplication> configuredApps = sc.getSpringBootApplications();
         configuredApps.clear();
-        SpringBootApp thinnedAppConfig = new SpringBootApp();
+        SpringBootApplication thinnedAppConfig = new SpringBootApplication();
         thinnedAppConfig.setLocation(thinnedApp.getName());
         thinnedAppConfig.setName("testPreThinned");
         configuredApps.add(thinnedAppConfig);
@@ -92,9 +90,9 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
 
         assertNotNull("The application was not installed", server
                         .waitForStringInLog("CWWKZ0001I:.*testPreThinned.*"));
+        assertNotNull("The endpoint is not available", server
+                        .waitForStringInLog("CWWKT0016I:.*"));
 
-        // NOTE we set the port to the expected port according to the test application.properties
-        server.setHttpDefaultPort(8081);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,10 @@ public class DatabaseIdentityStoreDefinitionWrapper {
     /** The ValidationTypes this IdentityStore can be used for. Will be null when set by a deferred EL expression. */
     private final Set<ValidationType> useFor;
 
+    private boolean datasourceEvaluated = false;
+
+    private final ELHelper elHelper;
+
     /**
      * Create a new instance of an {@link DatabaseIdentityStoreDefinitionWrapper} that will provide
      * convenience methods to access configuration from the {@link DatabaseIdentityStoreDefinition}
@@ -80,6 +84,8 @@ public class DatabaseIdentityStoreDefinitionWrapper {
         }
         this.idStoreDefinition = idStoreDefinition;
 
+        this.elHelper = new ELHelper();
+
         /*
          * Evaluate the configuration. The values will be non-null if the setting is NOT
          * a deferred EL expression. If it is a deferred EL expression, we will dynamically
@@ -87,6 +93,9 @@ public class DatabaseIdentityStoreDefinitionWrapper {
          */
         this.callerQuery = evaluateCallerQuery(true);
         this.dataSourceLookup = evaluateDataSourceLookup(true);
+        if (this.dataSourceLookup != null) {
+            datasourceEvaluated = true;
+        }
         this.groupsQuery = evaluateGroupsQuery(true);
         this.hashAlgorithm = evaluateHashAlgorithm();
         this.hashAlgorithmParameters = evaluateHashAlgorithmParameters();
@@ -104,7 +113,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      *         from a deferred EL expression.
      */
     private String evaluateCallerQuery(boolean immediateOnly) {
-        return ELHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
+        return elHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
     }
 
     /**
@@ -119,7 +128,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateDataSourceLookup(boolean immediateOnly) {
         try {
-            return ELHelper.processString("dataSourceLookup", idStoreDefinition.dataSourceLookup(), immediateOnly);
+            return elHelper.processString("dataSourceLookup", idStoreDefinition.dataSourceLookup(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "dataSourceLookup", "java:comp/DefaultDataSource" });
@@ -138,7 +147,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      *         from a deferred EL expression.
      */
     private String evaluateGroupsQuery(boolean immediateOnly) {
-        return ELHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
+        return elHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
     }
 
     /**
@@ -173,7 +182,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
              * Process as String.
              */
             try {
-                String value = ELHelper.processString("hashAlgorithmParameters[0]", rawArray[0], false);
+                String value = elHelper.processString("hashAlgorithmParameters[0]", rawArray[0], false);
                 if (value != null && !value.isEmpty()) {
                     parameters.add(value);
                 }
@@ -186,7 +195,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
              * Process as String[].
              */
             try {
-                String[] array = ELHelper.processStringArray("hashAlgorithmParameters[0]", rawArray[0], false, false);
+                String[] array = elHelper.processStringArray("hashAlgorithmParameters[0]", rawArray[0], false, false);
                 if (array != null && array.length == 0) {
                     for (String value : array) {
                         if (value != null && !value.isEmpty()) {
@@ -203,7 +212,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
              * Process as Stream<String>.
              */
             try {
-                Stream<String> stream = ELHelper.processStringStream("hashAlgorithmParameters[0]", rawArray[0], false, false);
+                Stream<String> stream = elHelper.processStringStream("hashAlgorithmParameters[0]", rawArray[0], false, false);
                 Iterator<String> iterator = stream.iterator();
                 while (iterator.hasNext()) {
                     String value = iterator.next();
@@ -222,7 +231,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
         } else {
             if (rawArray != null && rawArray.length > 0) {
                 for (int idx = 0; idx < rawArray.length; idx++) {
-                    String value = ELHelper.processString("hashAlgorithmParameters[" + idx + "]", rawArray[idx], false);
+                    String value = elHelper.processString("hashAlgorithmParameters[" + idx + "]", rawArray[idx], false);
                     if (value != null && !value.isEmpty()) {
                         parameters.add(value);
                     }
@@ -245,7 +254,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private Integer evaluatePriority(boolean immediateOnly) {
         try {
-            return ELHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
+            return elHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "priority/priorityExpression", 70 });
@@ -266,7 +275,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private Set<ValidationType> evaluateUseFor(boolean immediateOnly) {
         try {
-            return ELHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
+            return elHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
         } catch (IllegalArgumentException e) {
             Set<ValidationType> values = new HashSet<ValidationType>();
             values.add(ValidationType.PROVIDE_GROUPS); /* Default value from the spec. */
@@ -356,5 +365,9 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      */
     Set<ValidationType> getUseFor() {
         return (this.useFor != null) ? this.useFor : evaluateUseFor(false);
+    }
+
+    boolean isDataSourceEvaluated() {
+        return datasourceEvaluated;
     }
 }

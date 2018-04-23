@@ -651,18 +651,28 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 // Do not invoke the target servlet. Do not set anything in the response as
                 // the response may be committed.
                 //
-
-                webReply = new ReturnReply(webRequest.getHttpServletResponse().getStatus(), authResult.getReason());
+                String reason = authResult.getReason();
+                int statusCode = webRequest.getHttpServletResponse().getStatus();
+                if (reason != null && reason.contains("SEND_FAILURE")) {
+                    if (unprotectedResource(webRequest) == PERMIT_REPLY) {
+                        AuthenticationResult permitResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null, AuditEvent.CRED_TYPE_JASPIC, null, AuditEvent.OUTCOME_SUCCESS);
+                        Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(statusCode));
+                        Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, permitResult, uriName, Integer.valueOf(HttpServletResponse.SC_OK));
+                        return PERMIT_REPLY;
+                    } else if (statusCode == HttpServletResponse.SC_OK) {
+                        // SEND_FAILURE but did not set the response code or set the wrong response code.
+                        // We have to overwrite it to 401
+                        statusCode = HttpServletResponse.SC_UNAUTHORIZED;
+                        webRequest.getHttpServletResponse().setStatus(statusCode);
+                    }
+                }
+                webReply = new ReturnReply(statusCode, reason);
+                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
                 SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(webReply.message, webReply, webSecurityContext));
                 throw secVE;
+
             } else if (authResult.getStatus() != AuthResult.CONTINUE) {
-                // if AuthResult.FAILURE, then check whether the target uri is protected, if it's not protected, 
-                // return PERMIT_REPLY.
-                if (authResult.getStatus() == AuthResult.FAILURE && unprotectedResource(webRequest) == PERMIT_REPLY) {
-                    webReply = PERMIT_REPLY;
-                } else {
-                    webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
-                }
+                webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
             }
         }
         return webReply;
@@ -1559,7 +1569,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     private void setModuleMetaDataToThreadLocal(Object key) {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData)cmd.getModuleMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "set WebModuleMetaData : " + wmmd);
         }

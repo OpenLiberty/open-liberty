@@ -11,11 +11,13 @@
 
 configurations {
   hazelcastJCache
+  hazelcastClient
 }
 
 // Define G:A:V coordinates of each dependency
 dependencies {
   hazelcastJCache 'com.hazelcast:hazelcast:3.9.2'
+  hazelcastClient 'com.hazelcast:hazelcast-client:3.9.2'
 }
 
 task addHazelcastJCacheProviderToSharedDir(type: Copy) {
@@ -24,7 +26,14 @@ task addHazelcastJCacheProviderToSharedDir(type: Copy) {
   rename 'hazelcast-.*.jar', 'hazelcast.jar'
 }
 
+task addHazelcastClientToSharedDir(type: Copy) {
+  from configurations.hazelcastClient
+  into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
+  rename 'hazelcast-client-*.jar', 'hazelcast-client.jar'
+}
+
 addRequiredLibraries {
   dependsOn addDerby
   dependsOn addHazelcastJCacheProviderToSharedDir
+  dependsOn addHazelcastClientToSharedDir
 }

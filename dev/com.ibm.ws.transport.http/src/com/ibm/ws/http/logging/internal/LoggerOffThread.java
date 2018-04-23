@@ -36,7 +36,7 @@ import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
  * This takes the input data and queues it up for writing to a file on
  * another thread, thus freeing up the caller to continue on while the IO occurs
  * in the background.
- * 
+ *
  * This logger can be stopped and started repeatedly; however, it cannot be
  * restarted once the destroy method has been used.
  */
@@ -88,7 +88,7 @@ public class LoggerOffThread implements LogFile {
     /**
      * Constructor that opens a reference to the input file name. Note that
      * the start() method must be used before logging will actually begin.
-     * 
+     *
      * @param name
      * @throws FileNotFoundException
      */
@@ -131,7 +131,7 @@ public class LoggerOffThread implements LogFile {
 
     /**
      * Provide access to the output channel object.
-     * 
+     *
      * @return FileChannel
      */
     protected FileChannel getChannel() {
@@ -140,7 +140,7 @@ public class LoggerOffThread implements LogFile {
 
     /**
      * Set the output channel object to the input value.
-     * 
+     *
      * @param channel
      */
     protected void setChannel(FileChannel channel) {
@@ -149,7 +149,7 @@ public class LoggerOffThread implements LogFile {
 
     /**
      * Get access to the File associated with this logger.
-     * 
+     *
      * @return File
      */
     protected File getFile() {
@@ -159,7 +159,7 @@ public class LoggerOffThread implements LogFile {
     /**
      * Query what the name of the file is for this logger. This will return
      * null if no file is currently configured.
-     * 
+     *
      * @return String
      */
     public String getFilePathName() {
@@ -169,7 +169,7 @@ public class LoggerOffThread implements LogFile {
     /**
      * Query the name of the file for this logger. This is just the file name
      * without any path information.
-     * 
+     *
      * @return String
      */
     @Override
@@ -181,7 +181,7 @@ public class LoggerOffThread implements LogFile {
      * Log the given data to the log file. If this returns false, then the input
      * buffer has also been released, the same as if it was successfully written
      * to the logfile.
-     * 
+     *
      * @param data
      * @return boolean (true means it succeeded)
      */
@@ -335,7 +335,7 @@ public class LoggerOffThread implements LogFile {
 
     /**
      * Print this object as a string.
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -355,18 +355,16 @@ public class LoggerOffThread implements LogFile {
      * Worker thread class that handles pulling data off of the outgoing queue
      * and writing each buffer to the file. Each time this wakes up it will
      * purge the entire queue to the file.
-     * 
+     *
      */
     private class WorkerThread extends Thread {
 
         /** State of worker thread */
         private WorkerState workerState = WorkerState.RUNNING;
         /** Lock object for the stop process */
-        private final Object stopLock = new Object()
-        {};
+        private final Object stopLock = new Object() {};
         /** Lock object for interacting with the work queue */
-        private final Object lock = new Object()
-        {};
+        private final Object lock = new Object() {};
         /** Work queue storing data */
         private LinkedList<WsByteBuffer> queue = null;
         /** List of backup files stored */
@@ -390,11 +388,11 @@ public class LoggerOffThread implements LogFile {
 
         /**
          * Start this worker thread accepting and handling new data.
-         * 
+         *
          */
         @Override
         public void start() {
-            if (0 < getMaximumBackupFiles()) {
+            if (0 <= getMaximumBackupFiles()) {
                 this.myFormat = new SimpleDateFormat("_yy.MM.dd_HH.mm.ss", Locale.US);
                 int index = getFileName().lastIndexOf(".");
                 if (-1 != index) {
@@ -427,7 +425,7 @@ public class LoggerOffThread implements LogFile {
 
         /**
          * Add a message to the outgoing queue.
-         * 
+         *
          * @param buff
          * @return boolean (true means success)
          */
@@ -447,7 +445,7 @@ public class LoggerOffThread implements LogFile {
          * Notify this worker thread that a shutdown is in progress and to not
          * accept new requests and to stop once the last data is flushed. This
          * method will return when the worker thread has stopped.
-         * 
+         *
          */
         protected void triggerStop() {
             if (WorkerState.RUNNING != this.workerState) {
@@ -486,7 +484,7 @@ public class LoggerOffThread implements LogFile {
         /**
          * Rename the source file into the target file, deleting the target if
          * necessary.
-         * 
+         *
          * @param source
          * @param target
          */
@@ -516,15 +514,19 @@ public class LoggerOffThread implements LogFile {
             File newFile = new File(newname);
             renameFile(getFile(), newFile);
             // now see if we need to delete an existing backup to make room
-            while (this.backups.size() >= getMaximumBackupFiles()) {
-                File oldest = this.backups.removeLast();
-                if (null != oldest && oldest.exists()) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, getFileName() + ": Purging oldest backup-> " + oldest.getName());
+            // if not set to unlimited
+            if (getMaximumBackupFiles() > 0) {
+                while (this.backups.size() >= getMaximumBackupFiles()) {
+                    File oldest = this.backups.removeLast();
+                    if (null != oldest && oldest.exists()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, getFileName() + ": Purging oldest backup-> " + oldest.getName());
+                        }
+                        oldest.delete();
                     }
-                    oldest.delete();
                 }
             }
+
             this.backups.addFirst(newFile);
         }
 
@@ -532,7 +534,7 @@ public class LoggerOffThread implements LogFile {
          * When the output file has reached it's maximum size, this code will
          * rotate the current log to a backup and get ready to start logging
          * with a new file.
-         * 
+         *
          */
         private void rotate() {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -551,7 +553,7 @@ public class LoggerOffThread implements LogFile {
                 }
             }
             try {
-                if (0 < getMaximumBackupFiles()) {
+                if (0 <= getMaximumBackupFiles()) {
                     // add the new backup file to the stored list
                     addBackup();
                 }
@@ -571,7 +573,7 @@ public class LoggerOffThread implements LogFile {
         /**
          * Query whether the input amount will push the log file over the maximum
          * allowed size.
-         * 
+         *
          * @param addition
          * @return boolean
          */
@@ -597,7 +599,7 @@ public class LoggerOffThread implements LogFile {
 
         /**
          * Method that actually handles writing data to the file.
-         * 
+         *
          * @param data
          */
         private void logData(WsByteBuffer data) {

@@ -20,12 +20,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -61,9 +64,12 @@ public class ChildAliasTest {
         testServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
 
         //copy the extensions tests bundles into the server lib location
-        testServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.childalias_1.0.0.jar");
-        testServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.childalias.b_1.0.0.jar");
-        testServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.childalias.c_1.0.0.jar");
+        testServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.childalias.jar");
+        testServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.childalias.b.jar");
+        testServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.childalias.c.jar");
+
+        WebArchive childAliasApp = ShrinkHelper.buildDefaultApp("childalias", "test.server.config.childalias");
+        ShrinkHelper.exportAppToServer(testServer, childAliasApp);
 
         testServer.startServer();
         //make sure the URL is available
@@ -73,13 +79,13 @@ public class ChildAliasTest {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        testServer.stopServer();
+        testServer.stopServer("CWWKG0101W");
         testServer.deleteFileFromLibertyInstallRoot("lib/features/childAliasTest-1.0.mf");
         testServer.deleteFileFromLibertyInstallRoot("lib/features/childAliasTestB-1.0.mf");
         testServer.deleteFileFromLibertyInstallRoot("lib/features/childAliasTestC-1.0.mf");
-        testServer.deleteFileFromLibertyInstallRoot("lib/test.config.childalias_1.0.0.jar");
-        testServer.deleteFileFromLibertyInstallRoot("lib/test.config.childalias.b_1.0.0.jar");
-        testServer.deleteFileFromLibertyInstallRoot("lib/test.config.childalias.c_1.0.0.jar");
+        testServer.deleteFileFromLibertyInstallRoot("lib/test.config.childalias.jar");
+        testServer.deleteFileFromLibertyInstallRoot("lib/test.config.childalias.b.jar");
+        testServer.deleteFileFromLibertyInstallRoot("lib/test.config.childalias.c.jar");
 
         testServer.deleteFileFromLibertyInstallRoot("lib/features/configfatlibertyinternals-1.0.mf");
     }
@@ -106,7 +112,7 @@ public class ChildAliasTest {
 
     @Test
     public void testBundleOrdering1() throws Exception {
-        // Because this test ensures bundle ordering with config elements defined 
+        // Because this test ensures bundle ordering with config elements defined
         // in different bundles, a fresh start of the server with the config is needed
         // so that this test can run in any order while simulating bundle start ordering.
         testServer.stopServer();
@@ -121,10 +127,10 @@ public class ChildAliasTest {
 
     @Test
     public void testBundleOrdering2() throws Exception {
-        // Because this test ensures bundle ordering with config elements defined 
+        // Because this test ensures bundle ordering with config elements defined
         // in different bundles, a fresh start of the server with the config is needed
         // so that this test can run in any order while simulating bundle start ordering.
-        testServer.stopServer();
+        testServer.stopServer("CWWKG0101W");
         testServer.setServerConfigurationFile("childalias/serverB.xml");
         testServer.startServer();
 
@@ -136,10 +142,10 @@ public class ChildAliasTest {
 
     @Test
     public void testBundleOrderingAliasConflict() throws Exception {
-        // Because this test ensures bundle ordering with config elements defined 
+        // Because this test ensures bundle ordering with config elements defined
         // in different bundles, a fresh start of the server with the config is needed
         // so that this test can run in any order while simulating bundle start ordering.
-        testServer.stopServer();
+        testServer.stopServer("CWWKG0101W");
         testServer.setServerConfigurationFile("childalias/serverB.xml");
         testServer.startServer();
 

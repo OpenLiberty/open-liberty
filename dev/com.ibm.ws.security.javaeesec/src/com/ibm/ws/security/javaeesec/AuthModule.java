@@ -79,7 +79,6 @@ public class AuthModule implements ServerAuthModule {
     @Override
     public AuthStatus validateRequest(MessageInfo messageInfo, Subject clientSubject, Subject serviceSubject) throws AuthException {
         AuthStatus status = AuthStatus.SEND_FAILURE;
-
         try {
             HttpAuthenticationMechanism authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
             HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, clientSubject);
@@ -95,6 +94,7 @@ public class AuthModule implements ServerAuthModule {
             authException.initCause(e);
             throw authException;
         }
+
         return status;
     }
 

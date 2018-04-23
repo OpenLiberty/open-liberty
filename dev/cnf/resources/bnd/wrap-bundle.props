@@ -2,4 +2,5 @@
 -removeheaders = Include-Resource, Ignore-Package, TODAY, DSTAMP, TSTAMP, Bnd-LastModified
 Bundle-Distributor: IBM
 #tell bnd to use our de-signing plugin
--plugin: ${if;${driver;gradle};com.ibm.ws.build.bnd.plugins.DeSigningProcessor;}
+build.bnd.plugins.wrap: com.ibm.ws.build.bnd.plugins.DeSigningProcessor;path:="${build.bnd.plugins.path}"
+-plugin.build.bnd.plugins: ${def;${if;${driver;gradle};build.bnd.plugins.wrap;EMPTY}}

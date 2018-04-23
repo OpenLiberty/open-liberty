@@ -12,7 +12,7 @@ package com.ibm.ws.security.fat.common.expectations;
 
 import com.ibm.ws.security.fat.common.Constants;
 
-public class Expectation {
+public abstract class Expectation {
 
     protected String testAction;
     protected String searchLocation;
@@ -68,8 +68,38 @@ public class Expectation {
         this.isExpectationHandled = isExpectationHandled;
     }
 
+    /**
+     * Performs all of the steps necessary to verify that this particular expectation is met. If the current test action does not
+     * match the action for this expectation, validation is skipped.
+     * 
+     * @param currentTestAction
+     * @param contentToValidate
+     *            Some kind of object to validate against (typically some kind of HtmlUnit entity like a WebResponse)
+     */
+    public void validate(String currentTestAction, Object contentToValidate) throws Exception {
+        if (!isExpectationForAction(currentTestAction)) {
+            return;
+        }
+        validate(contentToValidate);
+    }
+
+    /**
+     * Performs all of the steps necessary to verify that this particular expectation is met.
+     * 
+     * @param contentToValidate
+     *            Some kind of object to validate against (typically some kind of HtmlUnit entity like a WebResponse)
+     */
+    abstract protected void validate(Object contentToValidate) throws Exception;
+
+    public boolean isExpectationForAction(String testAction) {
+        if (testAction == null || !testAction.equals(this.testAction)) {
+            return false;
+        }
+        return true;
+    }
+
     public static Expectation createResponseExpectation(String testAction, String searchForValue, String failureMsg) {
-        return new Expectation(testAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, searchForValue, failureMsg);
+        return new ResponseFullExpectation(testAction, Constants.STRING_CONTAINS, searchForValue, failureMsg);
     }
 
     public static Expectation createResponseMissingValueExpectation(String action, String value) {
@@ -77,21 +107,21 @@ public class Expectation {
     }
 
     public static Expectation createResponseMissingValueExpectation(String action, String value, String failureMsg) {
-        return new Expectation(action, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, value, failureMsg);
+        return new ResponseFullExpectation(action, Constants.STRING_DOES_NOT_CONTAIN, value, failureMsg);
     }
 
     public static Expectation createResponseStatusExpectation(String testAction, int expectedStatusCode) {
         final String defaultMsg = "Did not receive status code [" + expectedStatusCode + "] during test action [" + testAction + "].";
-        return new Expectation(testAction, Constants.RESPONSE_STATUS, Constants.STRING_CONTAINS, Integer.toString(expectedStatusCode), defaultMsg);
+        return new ResponseStatusExpectation(testAction, Constants.STRING_CONTAINS, Integer.toString(expectedStatusCode), defaultMsg);
     }
 
     public static Expectation createJsonExpectation(String testAction, String key, String value, String failureMsg) {
-        return new Expectation(testAction, Constants.JSON_OBJECT, null, key, value, failureMsg);
+        return new JsonObjectExpectation(testAction, key, value, failureMsg);
     }
 
     @Override
     public String toString() {
-        return String.format("Expectation: [ Action: %s | Search In: %s | Check Type: %s | Search For: %s | Failure message: %s ]",
-                testAction, searchLocation, checkType, validationValue, failureMsg);
+        return String.format("Expectation: [ Action: %s | Search In: %s | Check Type: %s | Search Key: %s | Search For: %s | Failure message: %s ]",
+                testAction, searchLocation, checkType, validationKey, validationValue, failureMsg);
     }
 }

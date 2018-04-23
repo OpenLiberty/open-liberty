@@ -62,18 +62,18 @@
             <artifactId>microprofile-rest-client-api</artifactId>
             <version>${microprofile.rest.client.version}</version>
             <scope>system</scope>
-            <systemPath>${wlp}/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0_1.0.20.jar</systemPath>
+            <systemPath>${wlp}/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0_1.0.21.jar</systemPath>
             <!-- <systemPath>${com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0_}</systemPath> -->
-            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0_1.0.20.jar</systemPath> -->
+            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0_1.0.21.jar</systemPath> -->
         </dependency>
 
         <dependency>
             <groupId>com.ibm.ws.org.apache.cxf</groupId>
             <artifactId>cxf.rt.rs.mp.client</artifactId>
-            <version>3.2.1</version>
+            <version>3.2.4</version>
             <scope>system</scope>
             <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_}</systemPath> -->
-            <systemPath>${wlp}/lib/com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_1.0.20.jar</systemPath>
+            <systemPath>${wlp}/lib/com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_1.0.21.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -82,7 +82,7 @@
             <version>1.0</version>
             <scope>system</scope>
             <!-- <systemPath>${com.ibm.ws.jaxrs.2.0.common_}</systemPath> -->
-            <systemPath>${wlp}/lib/com.ibm.ws.jaxrs.2.0.common_1.0.20.jar</systemPath>
+            <systemPath>${wlp}/lib/com.ibm.ws.jaxrs.2.0.common_1.0.21.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -91,7 +91,7 @@
             <version>1.0</version>
             <scope>system</scope>
             <!-- <systemPath>${com.ibm.ws.jaxrs.2.0.client_}</systemPath> -->
-            <systemPath>${wlp}/lib/com.ibm.ws.jaxrs.2.0.client_1.0.20.jar</systemPath>
+            <systemPath>${wlp}/lib/com.ibm.ws.jaxrs.2.0.client_1.0.21.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -100,7 +100,7 @@
             <version>1.0</version>
             <scope>system</scope>
             <!-- <systemPath>${com.ibm.ws.jaxrs.2.0.cdi_}</systemPath>  -->
-            <systemPath>${wlp}/lib/com.ibm.ws.jaxrs.2.0.cdi_1.0.20.jar</systemPath>
+            <systemPath>${wlp}/lib/com.ibm.ws.jaxrs.2.0.cdi_1.0.21.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -109,7 +109,7 @@
             <version>1.0</version>
             <scope>system</scope>
             <!-- <systemPath>${com.ibm.ws.logging_}</systemPath> -->
-            <systemPath>${wlp}/lib/com.ibm.ws.logging_1.0.20.jar</systemPath>
+            <systemPath>${wlp}/lib/com.ibm.ws.logging_1.0.21.jar</systemPath>
         </dependency>
 
         <dependency>

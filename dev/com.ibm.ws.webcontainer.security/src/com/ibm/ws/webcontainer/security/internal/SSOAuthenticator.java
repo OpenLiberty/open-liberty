@@ -116,7 +116,7 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         authResult = handleJwtSSO(req, res);
-        if (authResult != null && (authResult.equals(AuthResult.SUCCESS) || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie())) {
+        if (authResult != null && (authResult.getStatus().equals(AuthResult.SUCCESS) || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie())) {
             return authResult;
         }
 
@@ -166,67 +166,23 @@ public class SSOAuthenticator implements WebAuthenticator {
         if (jwtCookieName == null) { // jwtsso feature not active
             return null;
         }
-        String encodedjwtssotoken = getJwtSsoTokenFromCookies(req, jwtCookieName);
+
+        String encodedjwtssotoken = ssoCookieHelper.getJwtSsoTokenFromCookies(req, jwtCookieName);
 
         if (encodedjwtssotoken == null) { //jwt sso cookie is missing, look at the auth header
             encodedjwtssotoken = getJwtBearerToken(req);
         }
-        if (encodedjwtssotoken == null)
+        if (encodedjwtssotoken == null) {
             return null;
-        else
-            return authenticateWithJwt(req, res, encodedjwtssotoken);
-
-    }
-
-    /**
-     * The token can be split across multiple cookies if it is over 3900 chars.
-     * Look for subsequent cookies and concatenate them in that case.
-     * The counterpart for this method is in SSOCookieHelperImpl.
-     *
-     * @param req
-     * @return the token String or null if nothing found.
-     */
-    protected String getJwtSsoTokenFromCookies(HttpServletRequest req, String baseName) {
-
-        StringBuffer tokenStr = new StringBuffer();
-        String cookieName = baseName;
-        for (int i = 1; i <= 99; i++) {
-            if (i > 1) {
-                cookieName = baseName + (i < 10 ? "0" : "") + i; //name02... name99
-            }
-            String cookieValue = getCookieValue(req, cookieName);
-            if (cookieValue == null) {
-                break;
-            }
-            if (cookieValue.length() > 0) {
-                tokenStr.append(cookieValue);
-            }
-        }
-        return tokenStr.length() > 0 ? tokenStr.toString() : null;
-    }
-
-    protected String getCookieValue(HttpServletRequest req, String cookieName) {
-        String[] hdrVals = CookieHelper.getCookieValues(getCookies(req), cookieName);
-        String result = null;
-        if (hdrVals != null) {
-            for (int n = 0; n < hdrVals.length; n++) {
-                String hdrVal = hdrVals[n];
-                if (hdrVal != null && hdrVal.length() > 0) {
-                    result = hdrVal;
-                    break;
+        } else {
+            //check logged out cookie cache here. Must check full token, not just first cookie.
+            if (webAppSecurityConfig.isTrackLoggedOutSSOCookiesEnabled()) {
+                if (LoggedOutJwtSsoCookieCache.contains(encodedjwtssotoken)) {
+                    return new AuthenticationResult(AuthResult.FAILURE, Tr.formatMessage(tc, "JWT_ALREADY_LOGGED_OUT"));
                 }
             }
+            return authenticateWithJwt(req, res, encodedjwtssotoken);
         }
-        return result;
-    }
-
-    /**
-     * @param req
-     * @return
-     */
-    private Cookie[] getCookies(HttpServletRequest req) {
-        return (req.getCookies());
-
     }
 
     /**

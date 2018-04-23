@@ -42,23 +42,6 @@
 			</security-role>
 		</application-bnd>
 	</application>
-
-	<application type="war" id="JavaEESecAnnotatedBasicAuthServlet" name="JavaEESecAnnotatedBasicAuthServlet" location="JavaEESecAnnotatedBasicAuthServlet.war">
- 		<application-bnd>
-			<security-role name="javaeesec_basic">
-				<user name="jaspiuser1" />
-				<user name="jaspildapuser1" access-id="user:localhost:10389/uid=jaspildapuser1,o=ibm,c=us" />
-				<group name="group1" />
-			</security-role>	
-			<security-role name="javaeesec_form">
-				<user name="jaspiuser3" />
-				<group name="group2" />
-			</security-role>
-			<security-role name="AllAuthenticated">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-		</application-bnd>
-	</application>
 	
 	<include location="../fatTestPorts.xml" />
 </server>

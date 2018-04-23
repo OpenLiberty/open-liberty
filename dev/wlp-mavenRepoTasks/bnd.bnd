@@ -16,7 +16,9 @@ Bundle-SymbolicName: wlp-mavenRepoTasks
 Export-Package: com.ibm.ws.wlp.mavenFeatures.*;version="1.0"
 
 -includeresource: featureMavenDependency.xml=resources/featureMavenDependency.xml
- 
+
+globalize: false
+
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true
@@ -29,5 +31,5 @@ generate.replacement: false
 	commons-io:commons-io;version=2.4, \
 	commons-lang:commons-lang;version=2.4, \
 	org.apache.ant:ant;version=1.9.6, \
-	../cnf/mavenlibs/maven-model-3.5.0.jar;version=file, \
+	org.apache.maven:maven-model;version=3.5.0, \
 	javax.json:javax.json-api;version=1.1.2

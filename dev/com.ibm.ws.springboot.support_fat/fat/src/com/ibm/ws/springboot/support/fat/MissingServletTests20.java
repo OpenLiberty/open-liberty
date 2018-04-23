@@ -26,11 +26,15 @@ import componenttest.custom.junit.runner.Mode;
 @RunWith(FATRunner.class)
 @Mode(FULL)
 public class MissingServletTests20 extends AbstractSpringTests {
+    @Override
+    public boolean expectApplicationSuccess() {
+        return false;
+    }
 
     @Test
     public void testMissingServletFor20() throws Exception {
-    	assertNotNull("No error message was found for missing servlet feature ", server.waitForStringInLog("CWWKC0254E"));
-        server.stopServer("CWWKC0254E","CWWKZ0002E");
+        assertNotNull("No error message was found for missing servlet feature ", server.waitForStringInLog("CWWKC0254E"));
+        server.stopServer("CWWKC0254E", "CWWKZ0002E");
     }
 
     @Override

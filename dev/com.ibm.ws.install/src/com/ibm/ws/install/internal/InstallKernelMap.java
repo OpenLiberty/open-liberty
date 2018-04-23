@@ -36,6 +36,7 @@ import com.ibm.ws.install.RepositoryConfigUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.feature.internal.generator.ManifestFileProcessor;
+import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
@@ -47,7 +48,7 @@ import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.connections.SingleFileRepositoryConnection;
 import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
 import com.ibm.ws.repository.exceptions.RepositoryException;
-//import com.ibm.ws.repository.resolver.ManifestFileProcessor;
+import com.ibm.ws.repository.resolver.RepositoryResolutionException;
 import com.ibm.ws.repository.resolver.RepositoryResolver;
 import com.ibm.ws.repository.resources.RepositoryResource;
 
@@ -242,6 +243,8 @@ public class InstallKernelMap implements Map {
                         installKernel.setRepositoryProperties(repoProperties);
                     }
                 } catch (InstallException e) {
+                    data.put(ACTION_RESULT, ERROR);
+                    data.put(ACTION_ERROR_MESSAGE, e.getMessage());
                     throw new RuntimeException(e);
                 }
             } else {
@@ -458,6 +461,7 @@ public class InstallKernelMap implements Map {
         Collection<String> featuresResolved = new ArrayList<String>();
 
         try {
+
             for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
                 productDefinitions.add(new ProductInfoProductDefinition(productInfo));
             }
@@ -469,8 +473,24 @@ public class InstallKernelMap implements Map {
             }
 
             ManifestFileProcessor m_ManifestFileProcessor = new ManifestFileProcessor();
-            resolver = new RepositoryResolver(productDefinitions, m_ManifestFileProcessor.getFeatureDefinitions().values(), Collections.<IFixInfo> emptySet(), repoList);
+            Collection<ProvisioningFeatureDefinition> installedFeatures = m_ManifestFileProcessor.getFeatureDefinitions().values();
+
+            int alreadyInstalled = 0;
+            Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
+            Collection<String> featuresAlreadyPresent = new ArrayList<String>();
+            for (ProvisioningFeatureDefinition feature : installedFeatures) {
+                if (featureToInstall.contains(feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
+                    alreadyInstalled += 1;
+                    featuresAlreadyPresent.add(feature.getIbmShortName());
+                }
+            }
+            if (alreadyInstalled == featureToInstall.size()) {
+                throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
+            }
+
+            resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {
                     featuresResolved.add(repoResrc.getMavenCoordinates());
@@ -488,7 +508,16 @@ public class InstallKernelMap implements Map {
         } catch (ProductInfoReplaceException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+        } catch (RepositoryResolutionException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, ExceptionUtils.create(e, (Collection<String>) data.get(FEATURES_TO_RESOLVE), (File) data.get(RUNTIME_INSTALL_DIR), false).toString());
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
         } catch (RepositoryException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+        } catch (Exception e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
         }

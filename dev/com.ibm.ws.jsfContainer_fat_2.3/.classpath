@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/ViewHandlerTest/src"/>
+	<classpathentry kind="src" path="test-applications/ConverterValidatorBehaviorInjectionTarget/src"/>
+	<classpathentry kind="src" path="test-applications/ELImplicitObjectsViaCDI/src"/>
+	<classpathentry kind="src" path="test-applications/CDIManagedProperty/src"/>
+	<classpathentry kind="src" path="test-applications/PostRenderViewEvent/src"/>
+	<classpathentry kind="src" path="test-applications/WebSocket/src"/>
+	<classpathentry kind="src" path="test-applications/jsfApp/src"/>
+	<classpathentry kind="src" path="test-applications/BeanValidationTests/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22FacesFlows/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22CDIFacesFlows/src"/>
+	<classpathentry kind="src" path="test-applications/JSF22StatelessView/src"/>
+	<classpathentry kind="src" path="test-applications/noJsfApp/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

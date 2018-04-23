@@ -37,6 +37,7 @@ import javax.batch.operations.JobStartException;
 import javax.batch.operations.NoSuchJobExecutionException;
 import javax.batch.operations.NoSuchJobInstanceException;
 import javax.batch.runtime.BatchStatus;
+import javax.transaction.TransactionManager;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -101,6 +102,8 @@ public class BatchKernelImpl implements IBatchKernelService, ServerQuiesceListen
 
     private MetaDataIdentifierService metaDataIdentifierService = null;
 
+    private TransactionManager tranMgr;
+
     private final List<IJobExecutionStartCallbackService> jobExecutionStartCallbacks = new ArrayList<IJobExecutionStartCallbackService>();
 
     private final List<IJobExecutionEndCallbackService> jobExecutionEndCallbacks = new ArrayList<IJobExecutionEndCallbackService>();
@@ -152,12 +155,38 @@ public class BatchKernelImpl implements IBatchKernelService, ServerQuiesceListen
     }
 
     /**
+     * DS injection
+     */
+    @Reference
+    protected void setTransactionManager(TransactionManager ref) {
+        tranMgr = ref;
+    }
+
+    /**
+     * Declarative Services method for unsetting the transaction manager
+     *
+     * @param ref reference to the service
+     */
+    protected void unsetTransactionManager(TransactionManager ref) {
+        if (this.tranMgr == ref) {
+            tranMgr = null;
+        }
+    }
+
+    /**
      * @return the persistence service
      */
     public IPersistenceManagerService getPersistenceManagerService() {
         return persistenceService;
     }
 
+    /**
+     * Note the list is not going to have a well-defined order, so it is of limited use.
+     * We probably want to revisit this with some kind of priority/order based on ranking to make
+     * it more useful.
+     *
+     * @param reference
+     */
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     protected void setJobExecutionStartCallbackService(IJobExecutionStartCallbackService reference) {
         jobExecutionStartCallbacks.add(reference);
@@ -167,6 +196,13 @@ public class BatchKernelImpl implements IBatchKernelService, ServerQuiesceListen
         jobExecutionStartCallbacks.remove(reference);
     }
 
+    /**
+     * Note the list is not going to have a well-defined order, so it is of limited use.
+     * We probably want to revisit this with some kind of priority/order based on ranking to make
+     * it more useful.
+     *
+     * @param reference
+     */
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     protected void setJobExecutionEndCallbackService(IJobExecutionEndCallbackService reference) {
         jobExecutionEndCallbacks.add(reference);
@@ -294,7 +330,7 @@ public class BatchKernelImpl implements IBatchKernelService, ServerQuiesceListen
 
         RuntimeJobExecution jobExecution = jobExecutionHelper.createJobStartExecution(jobInstance, jobXML, jobParameters, executionId);
 
-        BatchJobWorkUnit batchWork = new BatchJobWorkUnit(this, jobExecution, jobExecutionStartCallbacks, jobExecutionEndCallbacks);
+        BatchJobWorkUnit batchWork = new BatchJobWorkUnit(this, jobExecution, jobExecutionStartCallbacks, jobExecutionEndCallbacks, tranMgr);
         registerExecutingJob(jobExecution.getTopLevelExecutionId(), batchWork);
 
         Future<?> futureWork = null;
@@ -329,7 +365,7 @@ public class BatchKernelImpl implements IBatchKernelService, ServerQuiesceListen
 
         RuntimeJobExecution jobExecution = jobExecutionHelper.createJobRestartExecution(instanceId, jobXML, jobOverrideProps, executionId);
 
-        BatchJobWorkUnit batchWork = new BatchJobWorkUnit(this, jobExecution, jobExecutionStartCallbacks, jobExecutionEndCallbacks);
+        BatchJobWorkUnit batchWork = new BatchJobWorkUnit(this, jobExecution, jobExecutionStartCallbacks, jobExecutionEndCallbacks, tranMgr);
 
         registerExecutingJob(jobExecution.getTopLevelExecutionId(), batchWork);
 
@@ -375,7 +411,7 @@ public class BatchKernelImpl implements IBatchKernelService, ServerQuiesceListen
 
         RuntimePartitionExecution partitionExecution = jobExecutionHelper.createPartitionExecution(config, partitionJobModel, isRemoteDispatch);
 
-        BatchPartitionWorkUnit batchWorkUnit = new BatchPartitionWorkUnit(this, partitionExecution, config, jobExecutionStartCallbacks, jobExecutionEndCallbacks, partitionReplyQueue);
+        BatchPartitionWorkUnit batchWorkUnit = new BatchPartitionWorkUnit(this, partitionExecution, config, jobExecutionStartCallbacks, jobExecutionEndCallbacks, partitionReplyQueue, tranMgr);
 
         registerExecutingSubWorkUnit(partitionExecution.getTopLevelExecutionId(), batchWorkUnit);
 
@@ -387,7 +423,7 @@ public class BatchKernelImpl implements IBatchKernelService, ServerQuiesceListen
 
         RuntimeSplitFlowExecution execution = jobExecutionHelper.createSplitFlowExecution(splitFlowConfig, splitFlowJobModel);
 
-        BatchSplitFlowWorkUnit batchWork = new BatchSplitFlowWorkUnit(this, execution, completedWorkQueue, jobExecutionStartCallbacks, jobExecutionEndCallbacks);
+        BatchSplitFlowWorkUnit batchWork = new BatchSplitFlowWorkUnit(this, execution, completedWorkQueue, jobExecutionStartCallbacks, jobExecutionEndCallbacks, tranMgr);
         registerExecutingSubWorkUnit(execution.getTopLevelExecutionId(), batchWork);
 
         return batchWork;

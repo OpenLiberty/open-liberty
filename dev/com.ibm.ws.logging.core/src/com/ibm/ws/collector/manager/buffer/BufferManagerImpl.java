@@ -65,7 +65,8 @@ public class BufferManagerImpl extends BufferManager {
 			ringBuffer = new Buffer<Object>(capacity);
 		}
 	}
-
+	
+	
 	@Override
 	public void add(Object event) {
 		if (event == null)
@@ -185,6 +186,12 @@ public class BufferManagerImpl extends BufferManager {
 		return e;
 	}
 
+	/**
+	 * Add an asynchronous handler that will consume events from this 
+	 * BufferManagerImpl/Conduit's buffer
+	 * 
+	 * @param handlerId handlerID to add to this BufferManager
+	 */
 	public synchronized void addHandler(String handlerId) {
 		// If it is first async handler subscribed, then create the main buffer
 		if (ringBuffer == null) {
@@ -205,6 +212,11 @@ public class BufferManagerImpl extends BufferManager {
 		Tr.event(tc, "Added Asynchronous Handler: " + handlerId);
 	}
 
+	/**
+	 * Add a synchronousHandler that will receive log events directly
+	 * 
+	 * @param syncHandler synchronousHandler that will receive log events directly
+	 */
 	public synchronized void addSyncHandler(SynchronousHandler syncHandler) {
 		// Send messages from EMQ to synchronous handler when it subscribes to
 		// receive messages
@@ -221,6 +233,11 @@ public class BufferManagerImpl extends BufferManager {
 		synchronousHandlerSet = synchronousHandlerSetCopy;
 	}
 
+	/**
+	 * Remove a synchronousHandler from receiving log events directly
+	 * 
+	 * @param syncHandler syncHandler to remove
+	 */
 	public synchronized void removeSyncHandler(SynchronousHandler syncHandler) {
 		Set<SynchronousHandler> synchronousHandlerSetCopy = new HashSet<SynchronousHandler>(synchronousHandlerSet);
 		synchronousHandlerSetCopy.remove(syncHandler);
@@ -228,6 +245,11 @@ public class BufferManagerImpl extends BufferManager {
 		synchronousHandlerSet = synchronousHandlerSetCopy;
 	}
 
+	/**
+	 * Remove the given handlerId from this BufferManager
+	 * 
+	 * @param handlerId handlerId to remove
+	 */
 	public synchronized void removeHandler(String handlerId) {
 		handlerEventMap.remove(handlerId);
 		Tr.event(tc, "Removed Asynchronous Handler: " + handlerId);

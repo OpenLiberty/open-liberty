@@ -23,6 +23,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
@@ -70,6 +73,8 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
                                        "seeAlso"
 })
 public class Group extends Party {
+    private static final TraceComponent tc = Tr.register(Group.class);
+
     private static final String PROP_CN = "cn";
     private static final String PROP_MEMBERS = "members";
     private static final String PROP_DISPLAY_NAME = "displayName";
@@ -805,6 +810,16 @@ public class Group extends Party {
         if (dataType == null || "null".equalsIgnoreCase(dataType))
             return;
 
+        if (extendedPropertiesDataType.containsKey(propName)) {
+            Tr.warning(tc, WIMMessageKey.DUPLICATE_PROPERTY_EXTENDED, new Object[] { propName, "Group" });
+            return;
+        }
+
+        if (getPropertyNames("Group").contains(propName)) {
+            Tr.warning(tc, WIMMessageKey.DUPLICATE_PROPERTY_ENTITY, new Object[] { propName, "Group" });
+            return;
+        }
+
         extendedPropertiesDataType.put(propName, dataType);
         if (defaultValue != null)
             extendedPropertiesDefaultValue.put(propName, defaultValue);
@@ -819,6 +834,7 @@ public class Group extends Party {
         extendedPropertiesDataType.clear();
         extendedPropertiesDefaultValue.clear();
         extendedMultiValuedProperties.clear();
+        reInitializePropertyNames();
     }
 
     /**

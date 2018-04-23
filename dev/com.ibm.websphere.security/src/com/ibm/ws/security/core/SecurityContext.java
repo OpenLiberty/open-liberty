@@ -11,7 +11,7 @@
 /*
  * Created on Dec 18, 2003
  *
- * To change this generated comment go to 
+ * To change this generated comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 package com.ibm.ws.security.core;
@@ -28,19 +28,18 @@ import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.cred.WSCredential;
 
 /*
- * NOTE: This is a minimal implementation to provide compatibility with 
- * the tWas version of this class. 
+ * NOTE: This is a minimal implementation to provide compatibility with
+ * the tWas version of this class.
  */
 public class SecurityContext {
 
-    private static final TraceComponent tc =
-                    Tr.register(SecurityContext.class, null, null);
+    private static final TraceComponent tc = Tr.register(SecurityContext.class, null, null);
 
     public static final String REALM_SEPARATOR = "/";
 
     /**
      * Return the security name of the current subject on the thread
-     * 
+     *
      * @return the security name id, or null if there is no subject or no WSCredential
      */
     public static String getName() {
@@ -62,12 +61,13 @@ public class SecurityContext {
 
     /**
      * Return the accessid of the current subject on the thread
-     * 
+     *
      * @return the access id, or null if there is no subject or no WSCredential
      */
     public static String getUser() {
         String accessid = null;
         WSCredential credential = getCallerWSCredential();
+
         try {
             if (credential != null && !credential.isUnauthenticated())
                 accessid = credential.getAccessId();
@@ -80,9 +80,8 @@ public class SecurityContext {
 
     private static WSCredential getCallerWSCredential() {
         WSCredential wsCredential = null;
-        Subject subject;
         try {
-            subject = WSSubject.getCallerSubject();
+            Subject subject = WSSubject.getCallerSubject();
             if (subject != null) {
                 Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
                 Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
@@ -96,4 +95,5 @@ public class SecurityContext {
         }
         return wsCredential;
     }
+
 }

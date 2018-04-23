@@ -12,7 +12,6 @@
 
 -nobundles: true
 
-src: visibility/auto, visibility/private, visibility/protected, visibility/public
 testsrc: test/src
 
 instrument.disabled: true
@@ -20,6 +19,15 @@ instrument.disabled: true
 feature.project: true
 
 copy.pii: false
+
+-dependson: \
+	com.ibm.ws.repository.generator;version=latest, \
+	wlp-bndPlugins;version=latest, \
+	wlp-featureTasks;version=latest, \
+	wlp-generateChecksums;version=latest, \
+	wlp-generateRepositoryContent;version=latest, \
+	wlp-mavenRepoTasks;version=latest, \
+	wlp-metatypeValidator;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

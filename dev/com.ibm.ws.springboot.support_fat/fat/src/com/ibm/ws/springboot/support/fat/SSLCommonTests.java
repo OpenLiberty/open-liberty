@@ -63,11 +63,6 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
         final String tsPath = getTrustStorePath();
         final String tsPassword = getTrustStorePassword();
 
-        assertNotNull("The application was not installed", server
-                        .waitForStringInLog("CWWKZ0001I:.*"));
-
-        // NOTE we set the port to the expected port according to the test application.properties
-        server.setHttpDefaultSecurePort(8081);
         String result = sendHttpsGet("/", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
         assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
