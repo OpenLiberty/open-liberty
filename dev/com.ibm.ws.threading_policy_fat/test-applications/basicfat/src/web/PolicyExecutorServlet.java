@@ -2817,6 +2817,28 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(0, canceledFromQueue.size());
     }
 
+    // Use timed invokeAll to submit a group of tasks. Verify that none of them run on the submitter thread.
+    // This test case is added to help guard against regression to code which relies on the behavior of
+    // timed invokeAll never running tasks on the submitter thread.
+    @Test
+    public void testInvokeAllTimedSubmitterThreadDoesNotRunTasks() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAllTimedSubmitterThreadDoesNotRunTasks")
+                        .maxConcurrency(2)
+                        .maxQueueSize(4);
+
+        long submitterThreadId = Thread.currentThread().getId();
+
+        List<Future<Long>> futures = executor.invokeAll(Arrays.asList(new ThreadIdTask(), new ThreadIdTask(), new ThreadIdTask(), new ThreadIdTask()),
+                                                        Long.MAX_VALUE,
+                                                        TimeUnit.MILLISECONDS);
+
+        for (Future<Long> future : futures)
+            assertFalse(Long.valueOf(submitterThreadId).equals(future.get()));
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
     // Using timed invokeAll submit a group of tasks where some block, such that invokeAll times out before
     // all of the tasks complete. Verify that the blocking tasks are canceled such that invokeAll can return
     // in a timely manner, and that any non-blocking tasks completed, either successfully or exceptionally.
