@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamConstants;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -598,6 +599,48 @@ public class SessionCacheConfigTestServlet extends FATServlet {
      */
     private static final byte[] toBytes(Object o) throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        if (o instanceof Character) {
+            byte[] bytes = new byte[] { 0, 6, 0, 0 };
+            char value = (char) o;
+            for (int i = 2 + 1; i >= 2; --i) {
+                bytes[i] = (byte) value;
+                value = (char) ((value) >> 8);
+            }
+            return bytes;
+        } else if (o instanceof Integer) {
+            byte[] bytes = new byte[] { 0, 1, 0, 0, 0, 0, 0 };
+            int pos = 2;
+            int numWritten = 0;
+            int v = ((Integer) o).intValue();
+
+            if ((v & ~0x7F) == 0) {
+                bytes[pos++] = ((byte) v);
+                numWritten = 3;
+            } else {
+                while (true) {
+                    if ((v & ~0x7F) == 0) {
+                        bytes[pos++] = ((byte) v);
+                        numWritten = pos;
+                        break;
+                    } else {
+                        bytes[pos++] = (byte) ((v & 0x7F) | 0x80);
+                        v >>>= 7;
+                    }
+                }
+            }
+            if (numWritten < 7) {
+                byte[] smallArray = new byte[numWritten];
+                System.arraycopy(bytes, 0, smallArray, 0, numWritten);
+                return smallArray;
+            }
+            return bytes;
+        } else if (o instanceof Byte) {
+            return new byte[] { 0, 3, ((Byte) o).byteValue() };
+        } else if (o instanceof Boolean) {
+            final byte[] TRUE_BYTES = { 0, 7, 1 };
+            final byte[] FALSE_BYTES = { 0, 7, 0 };
+            return ((Boolean) o).booleanValue() ? TRUE_BYTES : FALSE_BYTES;
+        }
         try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
             oos.writeObject(o);
             return bos.toByteArray();
@@ -610,12 +653,76 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     private static final Object toObject(byte[] b) {
         if (b == null)
             return null;
-        ByteArrayInputStream bin = new ByteArrayInputStream(b);
-        try (ObjectInputStream oin = new ObjectInputStream(bin)) {
-            return oin.readObject();
-        } catch (Throwable x) {
-            return "[unable to deserialze due to " + x + "]";
+
+        final byte[] OBJECT_OUTPUT_STREAM_HEADER = new byte[] {
+                                                                (byte) (ObjectStreamConstants.STREAM_MAGIC >>> 8),
+                                                                (byte) (ObjectStreamConstants.STREAM_MAGIC >>> 0)
+        };
+
+        if (b.length >= 4
+            && b[0] == OBJECT_OUTPUT_STREAM_HEADER[0]
+            && b[1] == OBJECT_OUTPUT_STREAM_HEADER[1]) {
+            //This was serialized using the standard method, deserialize with readObject
+            ByteArrayInputStream bin = new ByteArrayInputStream(b);
+            try (ObjectInputStream oin = new ObjectInputStream(bin)) {
+                return oin.readObject();
+            } catch (Throwable x) {
+                return "[unable to deserialze due to " + x + "]";
+            }
+        } else if (b[0] == 0) {
+            //This was written directly to bytes, so read directly from bytes
+            if (b[1] == 1) {
+                //integer
+                int offset = 2;
+                byte tmp = b[offset++];
+                if (tmp >= 0) {
+                    return Integer.valueOf(tmp);
+                }
+                int result = tmp & 0x7f;
+                if ((tmp = b[offset++]) >= 0) {
+                    result |= tmp << 7;
+                } else {
+                    result |= (tmp & 0x7f) << 7;
+                    if ((tmp = b[offset++]) >= 0) {
+                        result |= tmp << 14;
+                    } else {
+                        result |= (tmp & 0x7f) << 14;
+                        if ((tmp = b[offset++]) >= 0) {
+                            result |= tmp << 21;
+                        } else {
+                            result |= (tmp & 0x7f) << 21;
+                            result |= (tmp = b[offset++]) << 28;
+                            if (tmp < 0) {
+                                // Discard upper 32 bits.
+                                for (int i = 0; i < 5; i++) {
+                                    if (b[offset++] >= 0) {
+                                        return Integer.valueOf(result);
+                                    }
+                                }
+                                return "[unable to deserialze due to Varint representation is invalid or exceeds 32-bit value]";
+                            }
+                        }
+                    }
+                }
+            } else if (b[1] == 6) {
+                //character
+                char result = 0x0;
+                for (int i = 2; i < 2 + 2; ++i) {
+                    result = (char) ((result) << 8);
+                    result |= (b[i] & 0x00FF);
+                }
+                return Character.valueOf(result);
+            } else if (b[1] == 3) {
+                //byte
+                return Byte.valueOf(b[2]);
+            } else if (b[1] == 7) {
+                return b[2] == 0 ? Boolean.FALSE : Boolean.TRUE;
+            } else {
+                return "[unable to deserialze due to unexpected primitive type " + b[1] + ".  Need to add support for reading bytes of this type in the test toObject method]";
+            }
+
         }
+        return "[unable to deserialze due to invalid stream header]";
     }
 
     /**
