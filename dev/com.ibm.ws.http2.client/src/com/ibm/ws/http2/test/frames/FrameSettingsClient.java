@@ -47,9 +47,7 @@ public class FrameSettingsClient extends com.ibm.ws.http.channel.h2internal.fram
     }
 
     private byte[] payload() {
-        byte[] settingsPayload = new byte[frameBuilt.limit() - 9];
-        System.arraycopy(frameBuilt, 9, settingsPayload, 0, getPayloadLength());
-        return settingsPayload;
+        return frameBuilt.array();
     }
 
 }

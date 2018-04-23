@@ -55,6 +55,9 @@ public class FrameData extends Frame {
     public FrameData(int streamId, byte[] data, int paddingLength, boolean endStream, boolean padded, boolean reserveBit) {
         super(streamId, data.length, (byte) 0x00, reserveBit, FrameDirection.WRITE);
         this.data = data;
+        if (data != null) {
+            this.dataBuffer = getBuffer(data.length).put(data).flip();
+        }
         this.paddingLength = paddingLength;
         this.PADDED_FLAG = padded;
         this.END_STREAM_FLAG = endStream;
@@ -73,6 +76,9 @@ public class FrameData extends Frame {
     public FrameData(int streamId, byte[] data, boolean endStream) {
         super(streamId, data.length, (byte) 0x00, false, FrameDirection.WRITE);
         this.data = data;
+        if (data != null) {
+            this.dataBuffer = getBuffer(data.length).put(data).flip();
+        }
         this.PADDED_FLAG = false;
         this.END_STREAM_FLAG = endStream;
         frameType = FrameTypes.DATA;
@@ -137,6 +143,33 @@ public class FrameData extends Frame {
         }
     }
 
+    /**
+     * The test code expects a single buffer instead of an array of buffers, as returned by buildFrameArrayForWrite
+     */
+    @Override
+    public WsByteBuffer buildFrameForWrite() {
+
+        WsByteBuffer[] output = buildFrameArrayForWrite();
+        int size = 0;
+        for (WsByteBuffer b : output) {
+            if (b != null) {
+                size += b.remaining();
+            }
+        }
+        WsByteBuffer singleBuffer = this.getBuffer(size);
+        singleBuffer.put(output);
+        singleBuffer.flip();
+        return singleBuffer;
+    }
+
+    /**
+     * Builds an array of buffers representing this http2 data frame
+     * output[0] = http2 frame header data
+     * output[1] = payload data
+     * output[2] ?= padding
+     *
+     * @return WsByteBuffer[]
+     */
     public WsByteBuffer[] buildFrameArrayForWrite() {
         WsByteBuffer[] output;
 

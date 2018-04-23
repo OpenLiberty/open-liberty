@@ -259,9 +259,15 @@ public class Http2Client {
     public long sendFrame(Frame writableFrame, boolean forced) throws UnableToSendFrameException {
         if (!forced)
             return sendFrame(writableFrame, defaultTimeOutToSendFrame, false);
-        else
-            return h2Connection.sendBytes(writableFrame.buildFrameForWrite());
+        else {
+            if (writableFrame instanceof FrameData) {
+                WsByteBuffer[] bufferArray = ((FrameData) writableFrame).buildFrameArrayForWrite();
+                return h2Connection.sendBytes(bufferArray);
+            } else {
 
+            }
+            return h2Connection.sendBytes(writableFrame.buildFrameForWrite());
+        }
     }
 
     /**
