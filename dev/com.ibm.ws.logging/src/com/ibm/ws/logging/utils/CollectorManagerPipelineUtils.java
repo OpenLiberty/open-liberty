@@ -112,9 +112,8 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
 
     /**
      * Used by the collectorManagerPipelineConfigurator to identify if pipeline was spawned as part
-     * of JsonTrService, If it is then the LogSource and Trace Source set into the WsMessageRouter or WsTraceRouter
-     * will NOT want 'early' messages/traces, the opposite is true if it is not created as part of JsonTraceService
-     * (i.e. HPEL or JSR47)
+     * of BaseTraceService, If it is then the LogSource and Trace Source will not be set into WsMessageRouter or WsTraceRouter.
+     * Otherwise it will be set into the Routers (e.g. through an HPEL BaseTraceService)
      *
      * @param value
      */

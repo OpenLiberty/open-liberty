@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,18 +26,18 @@ import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class WebAppTestBase extends DDTestBase {
-    protected boolean isWarModule = false;
 
-    protected WebApp parse(final String xml) throws Exception {
-        return parseWebApp(xml, WebApp.VERSION_3_0);
+	protected WebApp parse(String xml) throws Exception {
+        return parse(xml, WebApp.VERSION_3_0);
     }
 
-    WebApp parseWebApp(final String xml, final int maxVersion) throws Exception {
+    WebApp parse(final String xml, final int maxVersion) throws Exception {
         WebAppEntryAdapter adapter = new WebAppEntryAdapter();
         final Container root = mockery.mock(Container.class, "root" + mockId++);
         final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
         final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
+        @SuppressWarnings("unchecked")
         final ServiceReference<ServletVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         mockery.checking(new Expectations() {
@@ -71,7 +71,7 @@ public class WebAppTestBase extends DDTestBase {
         }
     }
 
-    protected static final String webApp24() {
+    protected static String webApp24() {
         return "<web-app" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -81,7 +81,7 @@ public class WebAppTestBase extends DDTestBase {
                ">";
     }
 
-    protected static final String webApp30() {
+    protected static String webApp30() {
         return "<web-app" +
                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -91,7 +91,7 @@ public class WebAppTestBase extends DDTestBase {
                ">";
     }
 
-    protected static final String webApp31() {
+    protected static String webApp31() {
         return "<web-app" +
                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -101,4 +101,17 @@ public class WebAppTestBase extends DDTestBase {
                ">";
     }
 
+    protected static String webApp40() {
+        return "<web-app" +
+               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd\"" +
+               " version=\"4.0\"" +
+               " id=\"WebApp_ID\"" +
+               ">";
+    }
+
+    protected static String webAppTail() {
+        return "</web-app>";
+    }
 }

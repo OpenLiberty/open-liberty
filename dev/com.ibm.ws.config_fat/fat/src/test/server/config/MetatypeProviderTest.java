@@ -12,9 +12,12 @@ package test.server.config;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -45,9 +48,13 @@ public class MetatypeProviderTest extends ServletRunner {
         testServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
 
         //copy the bundle into the server lib location
-        testServer.copyFileToLibertyInstallRoot("lib", "bundles/test.metatype.provider_1.0.0.jar");
+        testServer.copyFileToLibertyInstallRoot("lib", "bundles/test.metatype.provider.jar");
+
+        WebArchive metatypeProviderApp = ShrinkHelper.buildDefaultApp("metatypeprovider", "test.metatype.provider");
+        ShrinkHelper.exportAppToServer(testServer, metatypeProviderApp);
 
         testServer.startServer();
+
         //make sure the URL is available
         assertNotNull(testServer.waitForStringInLog("CWWKT0016I.*" + CONTEXT_ROOT));
         assertNotNull(testServer.waitForStringInLog("CWWKF0011I"));
@@ -55,7 +62,7 @@ public class MetatypeProviderTest extends ServletRunner {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        testServer.stopServer();
+        testServer.stopServer("CWWKE0701E");
         testServer.deleteFileFromLibertyInstallRoot("lib/features/metatypeProviderTest-1.0.mf");
         testServer.deleteFileFromLibertyInstallRoot("lib/test.metatype.provider_1.0.0.jar");
         testServer.deleteFileFromLibertyInstallRoot("lib/features/configfatlibertyinternals-1.0.mf");

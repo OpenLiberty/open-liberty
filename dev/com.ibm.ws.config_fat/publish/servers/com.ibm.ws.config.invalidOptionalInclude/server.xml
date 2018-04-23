@@ -28,7 +28,7 @@
     	databaseName="${shared.config.dir}/data/derbydb" -->
         <properties.derby.embedded
         databaseName="memory:abc"
-        createDatabase="true"
+        createDatabase="create"
         user="dbuser1"
         password="{xor}Oz0vKDtu"
         />  <!-- password="dbpwd1" -->

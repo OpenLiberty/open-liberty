@@ -38,7 +38,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
     static final TraceComponent tc = Tr.register(ZipFileContainerFactory.class);
 
     private boolean hasZipExtension(String name) {
-        return name.matches("(?i:(.*)\\.(ZIP|[SEJRW]AR|E[BS]A|SPR))");
+        return name.matches("(?i:(.*)\\.(ZIP|[SEJRW]AR|E[BS]A|SPRING))");
     }
 
     /**
@@ -117,7 +117,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
                         path = e.getPhysicalPath();
                     } else {
                         if (e.getRoot().getPhysicalPath() != null) {
-                            //entry didnt have a path, but it's root did.. 
+                            //entry didnt have a path, but it's root did..
                             path = e.getRoot().getPhysicalPath() + "!" + path;
                         } else {
                             //entry and it's root had no physical path..
@@ -132,7 +132,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
                                 }
                                 parent = parent.getRoot().getEntryInEnclosingContainer();
                             }
-                            //path is now either prefixed by a physical path, or is as 
+                            //path is now either prefixed by a physical path, or is as
                             //good as we can get.. (eg, if this is a zip in loose.. )
                         }
                     }
@@ -181,7 +181,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
     private GlobalClassloadingConfiguration classLoadingConfiguration;
 
     protected synchronized void activate(ComponentContext ctx) {
-        //need to get this into containers for the notifier.. 
+        //need to get this into containers for the notifier..
         this.ctx = ctx.getBundleContext();
     }
 
@@ -233,7 +233,7 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.artifact.zip.internal.ContainerFactoryHolder#useJarUrls()
      */
     @Override

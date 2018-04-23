@@ -250,8 +250,8 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
         else if (retObj instanceof Object[]) {
             Object[] retObjArray = (Object[]) retObj;
             for (int i = 0; i < retObjArray.length; i++) {
-                if (retObjArray[0] instanceof InjectableNull) {
-                    retObjArray[0] = null;
+                if (retObjArray[i] instanceof InjectableNull) {
+                    retObjArray[i] = null;
                 }
             }
             retObj = retObjArray;

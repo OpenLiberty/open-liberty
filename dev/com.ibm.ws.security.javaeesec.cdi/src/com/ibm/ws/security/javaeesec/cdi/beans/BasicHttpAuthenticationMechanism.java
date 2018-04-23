@@ -46,6 +46,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
     private String realmName = null;
+
     private final Utils utils;
 
     public BasicHttpAuthenticationMechanism() {
@@ -137,7 +138,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private AuthenticationStatus handleAuthorizationHeader(@Sensitive String authorizationHeader, Subject clientSubject,
                                                            HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        int rspStatus = HttpServletResponse.SC_FORBIDDEN;
+        int rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
         if (authorizationHeader.startsWith("Basic ")) {
             String encodedHeader = authorizationHeader.substring(6);
             String basicAuthHeader = decodeCookieString(encodedHeader);
@@ -155,7 +156,6 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                     rspStatus = HttpServletResponse.SC_OK;
                 } else if (status == AuthenticationStatus.NOT_DONE) {
                     // set SC_OK, since if the target is not protected, it'll be processed.
-                    // otherwise, webcontainer will set SC_FORBIDDEN;
                     rspStatus = HttpServletResponse.SC_OK;
                 }
             }

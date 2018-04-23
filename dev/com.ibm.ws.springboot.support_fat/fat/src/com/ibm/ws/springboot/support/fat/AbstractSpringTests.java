@@ -30,6 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -39,8 +41,12 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 public abstract class AbstractSpringTests {
+
+    @Rule
+    public TestName testName = new TestName();
+
     static enum AppConfigType {
-        DROPINS_SPR,
+        DROPINS_SPRING,
         DROPINS_ROOT,
         SPRING_BOOT_APP_TAG
     }
@@ -49,12 +55,14 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_15_APP_WAR = "com.ibm.ws.springboot.support.version15.test.war.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_15_APP_JAVA = "com.ibm.ws.springboot.support.version15.test.java.app.jar";
     public static final String SPRING_BOOT_15_APP_WEBANNO = "com.ibm.ws.springboot.support.version15.test.webanno.app.jar";
+    public static final String SPRING_BOOT_15_APP_WEBSOCKET = "com.ibm.ws.springboot.support.version15.test.websocket.app.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
 
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";
     public static final String SHARED_SPRING_LIB_INDEX_CACHE = "resources/" + SPRING_LIB_INDEX_CACHE;
     public static final String SPRING_THIN_APPS_DIR = "spring.thin.apps";
+    public static final String SPRING_APP_TYPE = "spring";
     public static final int EXPECTED_HTTP_PORT = 8081;
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.springboot.support.fat.SpringBootTests");
@@ -71,6 +79,10 @@ public abstract class AbstractSpringTests {
 
     @AfterClass
     public static void stopServer() throws Exception {
+        stopServer(true);
+    }
+
+    public static void stopServer(boolean deleteSharedCache) throws Exception {
         boolean isActive = serverStarted.getAndSet(false);
         try {
             // don't archive until after stopping and removing the lib.index.cache
@@ -83,7 +95,9 @@ public abstract class AbstractSpringTests {
                 for (RemoteFile remoteFile : dropinFiles) {
                     remoteFile.delete();
                 }
-                server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
+                if (deleteSharedCache) {
+                    server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
+                }
                 //clear bootstrap.properties
                 bootStrapProperties.clear();
                 try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
@@ -96,6 +110,7 @@ public abstract class AbstractSpringTests {
                 if (isActive) {
                     server.postStopServerArchive();
                 }
+                server.deleteDirectoryFromLibertyServerRoot("logs/");
             }
         }
     }
@@ -109,7 +124,7 @@ public abstract class AbstractSpringTests {
     }
 
     public AppConfigType getApplicationConfigType() {
-        return AppConfigType.DROPINS_SPR;
+        return AppConfigType.DROPINS_SPRING;
     }
 
     public Map<String, String> getBootStrapProperties() {
@@ -131,8 +146,13 @@ public abstract class AbstractSpringTests {
         return true;
     }
 
+    public void modifyAppConfiguration(SpringBootApplication appConfig) {
+        // do nothing by default
+    }
+
     @Before
     public void configureServer() throws Exception {
+        System.out.println("Configuring server for " + testName.getMethodName());
         if (serverStarted.compareAndSet(false, true)) {
             configureBootStrapProperties();
             ServerConfiguration config = server.getServerConfiguration();
@@ -143,18 +163,18 @@ public abstract class AbstractSpringTests {
             features.addAll(getFeatures());
             RemoteFile appFile = getApplicationFile();
             switch (getApplicationConfigType()) {
-                case DROPINS_SPR: {
-                    new File(new File(server.getServerRoot()), "dropins/spr/").mkdirs();
-                    appFile.copyToDest(server.getFileFromLibertyServerRoot("dropins/spr/"));
-                    RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot("dropins/spr/"), appFile.getName());
-                    appFile.copyToDest(dest);
+                case DROPINS_SPRING: {
+                    String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
+                    new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
+                    appFile.copyToDest(server.getFileFromLibertyServerRoot(dropinsSpring));
+                    RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), appFile.getName());
                     dropinFiles.add(dest);
                     break;
                 }
                 case DROPINS_ROOT: {
                     new File(new File(server.getServerRoot()), "dropins/").mkdirs();
                     String appName = appFile.getName();
-                    appName = appName.substring(0, appName.length() - 3) + "spr";
+                    appName = appName.substring(0, appName.length() - 3) + SPRING_APP_TYPE;
                     RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot("dropins/"), appName);
                     appFile.copyToDest(dest);
                     dropinFiles.add(dest);
@@ -164,6 +184,7 @@ public abstract class AbstractSpringTests {
                     SpringBootApplication app = new SpringBootApplication();
                     app.setLocation(appFile.getName());
                     app.setName("testName");
+                    modifyAppConfiguration(app);
                     applications.add(app);
                     break;
                 }

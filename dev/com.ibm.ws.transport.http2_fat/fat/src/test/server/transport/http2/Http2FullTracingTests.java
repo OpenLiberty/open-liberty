@@ -43,6 +43,8 @@ public class Http2FullTracingTests extends FATServletClient {
 
     String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
 
+    String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
+
     @Rule
     public TestName testName = new TestName();
 
@@ -82,4 +84,11 @@ public class Http2FullTracingTests extends FATServletClient {
     public void testHeaderAndDataPost() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
+
+    // moved for debug - build break 253522
+    @Test
+    public void testDataFrameExceedingMaxFrameSize() throws Exception {
+        runTest(dataServletPath, testName.getMethodName());
+    }
+
 }

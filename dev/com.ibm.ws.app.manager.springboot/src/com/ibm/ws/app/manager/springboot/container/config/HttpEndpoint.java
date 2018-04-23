@@ -115,6 +115,10 @@ public class HttpEndpoint extends ConfigElement {
             buf.append("httpsPort=\"" + this.httpsPort + "\" ");
         if (this.tcpOptions != null)
             buf.append(tcpOptions.toString());
+        if (this.sslOptions != null)
+            buf.append(sslOptions.toString());
+        if (this.httpOptions != null)
+            buf.append(httpOptions.toString());
 
         buf.append("}");
         return buf.toString();

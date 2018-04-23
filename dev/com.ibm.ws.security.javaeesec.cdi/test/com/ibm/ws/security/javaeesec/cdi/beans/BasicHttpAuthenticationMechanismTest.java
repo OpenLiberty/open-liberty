@@ -698,6 +698,7 @@ public class BasicHttpAuthenticationMechanismTest {
                 will(returnValue(value));
                 atMost(1).of(cdi).getBeanManager();
                 will(returnValue(bm));
+//                allowing(response).setStatus(401);
             }
         });
         return this;
@@ -841,7 +842,7 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     private void assertValidateRequestFAILURE() throws AuthenticationException {
-        withResponseStatus(HttpServletResponse.SC_FORBIDDEN);
+        withResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SEND_FAILURE.", AuthenticationStatus.SEND_FAILURE, status);
