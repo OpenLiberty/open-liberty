@@ -40,6 +40,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 HttpAuthenticationMechanismDBTest.class,
                 HttpAuthenticationMechanismDBNoUserTest.class,
                 HttpAuthenticationMechanismDBAuthAliasTest.class,
+                HttpAuthenticationMechanismDBAuthDataTest.class,
                 HttpAuthenticationMechanismDBShortNameTest.class,
                 HttpAuthenticationMechanismDBHashTest.class,
                 HttpAuthenticationMechanismDBHashBeanTest.class,

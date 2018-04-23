@@ -125,7 +125,7 @@ public class LibertyServletContainer implements WebServer {
         VirtualHost virtualHost = new VirtualHost();
         virtualHost.setId(SPRING_VIRTUALHOST + springBootConfigId);
         HttpEndpoint httpEndpoint = serverConfig.getHttpEndpoints().iterator().next();
-        virtualHost.setAllowFromEndpoint(httpEndpoint.getId());
+        virtualHost.setAllowFromEndpointRef(httpEndpoint.getId());
         Set<String> aliases = virtualHost.getHostAliases();
         aliases.clear();
         // TODO would be better to use *:* for wildcarding the port

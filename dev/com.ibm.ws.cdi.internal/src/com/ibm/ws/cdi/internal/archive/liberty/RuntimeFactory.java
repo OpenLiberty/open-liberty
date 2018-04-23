@@ -107,7 +107,8 @@ public class RuntimeFactory {
                                                          Set<String> extraClasses,
                                                          Set<String> extraAnnotations,
                                                          boolean applicationBDAsVisible,
-                                                         boolean extClassesOnly) throws CDIException {
+                                                         boolean extClassesOnly,
+                                                         Application application) throws CDIException {
 
         ExtensionArchive extensionArchive = null;
         extensionArchive = extensionArchives.get(bundle);
@@ -121,7 +122,7 @@ public class RuntimeFactory {
                                                                                                      + "_"
                                                                                                      + CDIUtils.getOSGIVersionForBndName(bundle.getVersion()), extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly);
 
-                extensionArchive = new ExtensionArchiveImpl(containerInfo, this);
+                extensionArchive = new ExtensionArchiveImpl(containerInfo, this, (ApplicationImpl)application);
                 ExtensionArchive oldExtensionArchive = extensionArchives.putIfAbsent(bundle, extensionArchive);
                 if (oldExtensionArchive != null) {
                     extensionArchive = oldExtensionArchive;
@@ -129,6 +130,21 @@ public class RuntimeFactory {
             }
         }
         return extensionArchive;
+    }
+
+    @Deprecated
+    public ExtensionArchive getExtensionArchiveForBundle(Bundle bundle,
+                                                         Set<String> extraClasses,
+                                                         Set<String> extraAnnotations,
+                                                         boolean applicationBDAsVisible,
+                                                         boolean extClassesOnly) throws CDIException {
+        return getExtensionArchiveForBundle(bundle,
+                                            extraClasses,
+                                            extraAnnotations,
+                                            applicationBDAsVisible,
+                                            extClassesOnly,
+                                            null);
+
     }
 
     /**

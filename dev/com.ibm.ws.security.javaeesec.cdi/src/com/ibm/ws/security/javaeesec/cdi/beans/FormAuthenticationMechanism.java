@@ -146,7 +146,7 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
     private AuthenticationStatus handleFormLogin(String username, @Sensitive String password, HttpServletResponse rsp, Subject clientSubject,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        int rspStatus = HttpServletResponse.SC_FORBIDDEN;
+        int rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
         UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
         status = utils.validateUserAndPassword(getCDI(), JavaEESecConstants.DEFAULT_REALM, clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
@@ -159,7 +159,6 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
             rspStatus = HttpServletResponse.SC_OK;
         } else if (status == AuthenticationStatus.NOT_DONE) {
             // set SC_OK, since if the target is not protected, it'll be processed.
-            // otherwise, webcontainer will set SC_FORBIDDEN;
             rspStatus = HttpServletResponse.SC_OK;
         } else {
             // TODO: Audit invalid user or password

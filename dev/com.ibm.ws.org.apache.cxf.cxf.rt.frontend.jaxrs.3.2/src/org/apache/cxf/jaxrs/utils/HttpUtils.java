@@ -195,15 +195,23 @@ public final class HttpUtils {
             return encoded;
         }
         Matcher m = ENCODE_PATTERN.matcher(encoded);
-        StringBuilder sb = new StringBuilder();
+
+        // Liberty Change for CXF Begin
+        if (!m.find()) {
+            return query ? HttpUtils.queryEncode(encoded) : HttpUtils.pathEncode(encoded);
+        }
+
+        int length = encoded.length();
+        StringBuilder sb = new StringBuilder(length + 8);
         int i = 0;
-        while (m.find()) {
+        do {
             String before = encoded.substring(i, m.start());
             sb.append(query ? HttpUtils.queryEncode(before) : HttpUtils.pathEncode(before));
             sb.append(m.group());
             i = m.end();
-        }
-        String tail = encoded.substring(i, encoded.length());
+        } while (m.find());
+        String tail = encoded.substring(i, length);
+        // Liberty Change for CXF End
         sb.append(query ? HttpUtils.queryEncode(tail) : HttpUtils.pathEncode(tail));
         return sb.toString();
     }

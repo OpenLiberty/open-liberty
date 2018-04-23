@@ -25,6 +25,7 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -45,7 +46,7 @@ public class ProductExtensionsTest {
     public static final String PRODUCT_EXT_NAME = "testproduct";
     public static final String PRODUCT_FEATURE_PROPERTIES_FILE = "productExtensions/propertiesFiles/testproduct.properties";
     public static final String PRODUCT_FEATURE_PRODTEST_MF = "productExtensions/features/prodtest1-1.0.mf";
-    public static final String PRODUCT_FEATURE_PRODTEST_JAR = "bundles/test.prod.extensions_1.0.0.jar";
+    public static final String PRODUCT_FEATURE_PRODTEST_JAR = "bundles/test.prod.extensions.jar";
     public static final String PROD_EXT_CONTEXT_ROOT = "/product1-extensions-test";
     public static final String PRODUCT_CONFIG_ALIAS = "prodtest1Config";
     public static final String PRODUCT_SERVER_XML_INVALID = "productExtensions/config/prod.ext.invalid.server.xml";
@@ -56,7 +57,7 @@ public class ProductExtensionsTest {
     public static final String USER_FEATURE_PATH = "usr/extension/lib/features/";
     public static final String USER_BUNDLE_PATH = "usr/extension/lib/";
     public static final String USER_FEATURE_PRODTEST_MF = "productExtensions/features/userProdtest1-1.0.mf";
-    public static final String USER_BUNDLE_JAR = "bundles/test.user.prod.extensions_1.0.0.jar";
+    public static final String USER_BUNDLE_JAR = "bundles/test.user.prod.extensions.jar";
     public static final String USER_CONFIG_ALIAS = "userProdtest1Config";
     public static final String USER_PRODUCT_SERVER_XML_INVALID = "productExtensions/config/user.prod.ext.invalid.server.xml";
     public static final String USER_PRODUCT_SERVER_XML_VALID = "productExtensions/config/user.prod.ext.valid.server.xml";
@@ -70,9 +71,9 @@ public class ProductExtensionsTest {
 
     /**
      * Setup the environment.
-     * 
+     *
      * @param svr The server instance.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -96,7 +97,7 @@ public class ProductExtensionsTest {
 
     /**
      * Cleans up the installation from any files that may have been left around.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -113,7 +114,7 @@ public class ProductExtensionsTest {
      * Tests that the ws-schema.jar tool accounts for product extensions.
      * The test is expected successfully complete and the product names must be tagged appropriately in the
      * serverType section of the generated schema.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -162,7 +163,7 @@ public class ProductExtensionsTest {
     /**
      * Test a product extension installation with metatype configuration.
      * The test is expected to successfully complete.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -184,7 +185,7 @@ public class ProductExtensionsTest {
 
     /**
      * Test a product extension installation with the an invalid OCD alias configuration.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -207,7 +208,7 @@ public class ProductExtensionsTest {
     /**
      * Test a user product extension installation with metatype configuration.
      * The test is expected to successfully complete.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -229,7 +230,7 @@ public class ProductExtensionsTest {
 
     /**
      * Test a product extension installation with the an invalid OCD alias configuration.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -252,7 +253,7 @@ public class ProductExtensionsTest {
     /**
      * Test a product extension installation with metatype configuration using the factory pid
      * The test is expected to successfully complete.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -275,7 +276,7 @@ public class ProductExtensionsTest {
     /**
      * Test a user product extension installation with metatype configuration using the factory pid.
      * The test is expected to successfully complete.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -297,7 +298,7 @@ public class ProductExtensionsTest {
 
     /**
      * Prints an extended debug output.
-     * 
+     *
      * @param po The programOutput
      * @param fileName
      * @throws Exception
@@ -323,7 +324,7 @@ public class ProductExtensionsTest {
 
     /**
      * Installs a specific product extension.
-     * 
+     *
      * @throws Exception
      */
     public static void installProductExtension() throws Exception {
@@ -336,7 +337,7 @@ public class ProductExtensionsTest {
 
         server.copyFileToLibertyInstallRoot(PRODUCT_BUNDLE_PATH, PRODUCT_FEATURE_PRODTEST_JAR);
         assertTrue("Product bundle: " + PRODUCT_FEATURE_PRODTEST_JAR + " should have been copied to: " + PRODUCT_BUNDLE_PATH,
-                   server.fileExistsInLibertyInstallRoot(PRODUCT_BUNDLE_PATH + "test.prod.extensions_1.0.0.jar"));
+                   server.fileExistsInLibertyInstallRoot(PRODUCT_BUNDLE_PATH + "test.prod.extensions.jar"));
 
         server.copyFileToLibertyInstallRoot(PRODUCT_EXTENSIONS_PATH, PRODUCT_FEATURE_PROPERTIES_FILE);
         assertTrue("Product extension props file: " + PRODUCT_FEATURE_PROPERTIES_FILE + " should have been copied to: " + PRODUCT_EXTENSIONS_PATH,
@@ -348,7 +349,7 @@ public class ProductExtensionsTest {
 
     /**
      * Installs a specific product extension if the default USR location.
-     * 
+     *
      * @throws Exception
      */
     public static void installUserProductExtension() throws Exception {
@@ -361,14 +362,14 @@ public class ProductExtensionsTest {
 
         server.copyFileToLibertyInstallRoot(USER_BUNDLE_PATH, USER_BUNDLE_JAR);
         assertTrue("User product bundle: " + USER_BUNDLE_JAR + " should have been copied to: " + USER_BUNDLE_PATH,
-                   server.fileExistsInLibertyInstallRoot(USER_BUNDLE_PATH + "test.user.prod.extensions_1.0.0.jar"));
+                   server.fileExistsInLibertyInstallRoot(USER_BUNDLE_PATH + "test.user.prod.extensions.jar"));
 
         Log.exiting(c, method, "User product extension using feature: " + USER_FEATURE_PRODTEST_MF + " has been installed.");
     }
 
     /**
      * Cleans up the installation from any dirs/files that this test may have created.
-     * 
+     *
      * @throws Exception
      */
     public static void tidyup() throws Exception {

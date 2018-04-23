@@ -65,7 +65,7 @@ public class SSLMutualAuthTests20 extends SSLCommonTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-4.0", "ssl-1.0"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-4.0", "transportSecurity-1.0"));
     }
 
     @Override

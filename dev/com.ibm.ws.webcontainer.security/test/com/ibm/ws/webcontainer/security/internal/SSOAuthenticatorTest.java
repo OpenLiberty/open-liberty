@@ -13,7 +13,6 @@ package com.ibm.ws.webcontainer.security.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import javax.security.auth.Subject;
 import javax.servlet.http.Cookie;
@@ -326,31 +325,4 @@ public class SSOAuthenticatorTest {
         assertNull("Should return null when authentication fails", authResult);
     }
 
-    class SSOATestDouble extends SSOAuthenticator {
-
-        SSOATestDouble(AuthenticationService authenticationService,
-                       SecurityMetadata securityMetadata,
-                       WebAppSecurityConfig webAppSecurityConfig,
-                       SSOCookieHelper ssoCookieHelper) {
-            super(authService, smd, webAppSecConfig, ssoCookieHelper);
-        }
-
-        @Override
-        protected String getCookieValue(HttpServletRequest req, String cookieName) {
-            if (cookieName.endsWith("03"))
-                return null;
-            return cookieName + "_value";
-        }
-    }
-
-    @Test
-    // test that cookie contatenation in getJwtSsoTokenFromCookies works.
-    // Use the testDouble class to feed two cookies into the test.
-    public void getJwtSsoTokenFromCookies() {
-        SSOATestDouble stb = new SSOATestDouble(authService, smd, webAppSecConfig, ssoCookieHelper);
-        String result = stb.getJwtSsoTokenFromCookies(req, "jwtToken");
-        String expected = "jwtToken_valuejwtToken02_value";
-        System.out.println("getJwtSsoTokenFromCookies result is: " + result + " expected is: " + expected);
-        assertTrue(result.equals(expected));
-    }
 }

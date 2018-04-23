@@ -456,11 +456,34 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                                                          Set<String> extraClasses,
                                                          Set<String> extraAnnotations,
                                                          boolean applicationBDAsVisible,
-                                                         boolean extClassesOnly) throws CDIException {
+                                                         boolean extClassesOnly,
+                                                         Application application) throws CDIException {
 
-        ExtensionArchive extensionArchive = runtimeFactory.getExtensionArchiveForBundle(bundle, extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly);
+        ExtensionArchive extensionArchive = runtimeFactory.getExtensionArchiveForBundle(bundle,
+                                                                                        extraClasses,
+                                                                                        extraAnnotations,
+                                                                                        applicationBDAsVisible,
+                                                                                        extClassesOnly,
+                                                                                        application);
 
         return extensionArchive;
+    }
+
+    /** {@inheritDoc} */
+    @Deprecated
+    @Override
+    public ExtensionArchive getExtensionArchiveForBundle(Bundle bundle,
+                                                         Set<String> extraClasses,
+                                                         Set<String> extraAnnotations,
+                                                         boolean applicationBDAsVisible,
+                                                         boolean extClassesOnly) throws CDIException {
+
+        return getExtensionArchiveForBundle(bundle,
+                                            extraClasses,
+                                            extraAnnotations,
+                                            applicationBDAsVisible,
+                                            extClassesOnly,
+                                            null);
     }
 
     /** {@inheritDoc} */

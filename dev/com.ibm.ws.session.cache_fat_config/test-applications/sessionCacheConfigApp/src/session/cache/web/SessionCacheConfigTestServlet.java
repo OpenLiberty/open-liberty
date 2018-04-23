@@ -13,6 +13,7 @@ package session.cache.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -348,7 +349,8 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         request.getSession().removeAttribute("testMXBeans");
         ((IBMSession) session).sync();
 
-        assertEquals(1, attrCacheStatsMXBean.getCacheRemovals());
+        // cannot check the value because the JCache provider might not immediately update the statistics
+        attrCacheStatsMXBean.getCacheRemovals();
 
         session.invalidate();
     }
@@ -415,6 +417,18 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that sessions are not available, even if requesting a new session
+     */
+    public void testSessionCacheNotAvailable(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            HttpSession session = request.getSession(true);
+            fail("Should not be able to obtain session: " + session);
+        } catch (NullPointerException x) {
+            // expected due to misconfigured http session cache
+        }
+    }
+
+    /**
      * Set the value of a session attribute.
      * Precondition: in order for the test logic to be valid, the session attribute must not already have the same value.
      */
@@ -431,6 +445,21 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         // Verify that attribute does not get persisted to the cache yet
         String key = session.getId() + '.' + attrName;
         testCacheEntryDoesNotMatch(key, value);
+    }
+
+    /**
+     * Set the value of a session attribute.
+     * Precondition: in order for the test logic to be valid, the session attribute must not already have the same value.
+     */
+    public void testSetAttributeOnly(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String attrName = request.getParameter("attribute");
+
+        String stringValue = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object value = toType(type, stringValue);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(attrName, value);
     }
 
     /**

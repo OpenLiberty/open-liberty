@@ -11,7 +11,6 @@
 package com.ibm.ws.sib.api.jms.impl;
 
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +29,7 @@ import com.ibm.ws.sib.api.jms.JmsDestInternals;
 import com.ibm.ws.sib.api.jms.JmsInternalConstants;
 import com.ibm.ws.sib.api.jms.MessageDestEncodingUtils;
 import com.ibm.ws.sib.jms.util.ArrayUtil;
+import com.ibm.ws.sib.jms.util.Utf8Codec;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
 import com.ibm.websphere.ras.TraceComponent;
@@ -1022,7 +1022,7 @@ public class MsgDestEncodingUtilsImpl implements MessageDestEncodingUtils
     private String readString(int length) throws JMSException {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "readString", length);
       try {
-        String str = new String(bytes, offset, length, "UTF8");
+        String str = Utf8Codec.decode(bytes, offset, length);
         offset += length;
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "readString", str);
         return str;
@@ -1037,18 +1037,6 @@ public class MsgDestEncodingUtilsImpl implements MessageDestEncodingUtils
                                                       ,e
                                                       ,null   // Not much point FFDCing it again as we have already done so
                                                       ,null
-                                                      ,null);
-      }
-      catch (UnsupportedEncodingException e) {
-        // No FFDC code needed
-        // ... because the JMS component does it's own processing
-        // I don't believe it as we're using UTF8, but we had better prettify it
-        throw (JMSException)JmsErrorUtils.newThrowable(JMSException.class
-                                                      ,"UNSUPPORTED_ENCODING_CWSIA0360"
-                                                      ,new Object[] {"UTF8"}
-                                                      ,e
-                                                      ,"PropertyInputStream.readString#2"
-                                                      ,this
                                                       ,null);
       }
     }

@@ -51,9 +51,10 @@ public class BuiltinAccessDecisionService implements AccessDecisionService {
         }
     }
 
-    private boolean isEEVersion7()
+    private boolean isEEVersionAtLeast7()
     {
-        if (eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) {
+        if ((eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) ||
+            (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0)) {
             return true;
         }
         return false;
@@ -77,7 +78,7 @@ public class BuiltinAccessDecisionService implements AccessDecisionService {
          * "**". We need to convert "_starstar_" back to "**" before the check
          * against assignedRoles.
          */
-        if (subject != null && requiredRoles.contains(ALL_AUTHENTICATED_ROLE) && isEEVersion7())
+        if (subject != null && requiredRoles.contains(ALL_AUTHENTICATED_ROLE) && isEEVersionAtLeast7())
             return true;
 
         if (assignedRoles != null) {

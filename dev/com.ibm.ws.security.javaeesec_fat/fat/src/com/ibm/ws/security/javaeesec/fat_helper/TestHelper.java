@@ -52,8 +52,6 @@ public class TestHelper {
     public static void commonTeardown() throws Exception {
         if (!OnlyRunInJava7Rule.IS_JAVA_7_OR_HIGHER)
             return; // skip the test teardown
-        myServer.stopServer();
-
         if (ldapServer != null) {
             try {
                 ldapServer.stopService();
@@ -61,6 +59,8 @@ public class TestHelper {
                 Log.error(logClass, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
             }
         }
+        myServer.stopServer();
+
 
     }
 

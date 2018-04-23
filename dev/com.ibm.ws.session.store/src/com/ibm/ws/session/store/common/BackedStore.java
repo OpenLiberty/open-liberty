@@ -20,6 +20,7 @@ import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.session.SessionStoreService;
 import com.ibm.ws.session.store.common.internal.LoggingUtil;
 import com.ibm.ws.session.store.memory.MemoryStore;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.session.ILoader;
 import com.ibm.wsspi.session.ISession;
 import com.ibm.wsspi.session.IStoreCallback;
@@ -125,7 +126,13 @@ public abstract class BackedStore extends MemoryStore {
      */
     public void runInvalidation() {
         ((BackedHashMap) _sessions).cleanUpCache(System.currentTimeMillis());
-        ((BackedHashMap) _sessions).performInvalidation();
+        if(!FrameworkState.isStopping()) {
+            ((BackedHashMap) _sessions).performInvalidation();
+        } else {
+            if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
+                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "runInvalidation", "Skipping background session invalidation because server is shutting down.");
+            }
+        }
         /*
          * if (_isApplicationSessionStore) {
          * ((BackedHashMap)_sessions).performAppSessionInvalidation();
@@ -295,18 +302,33 @@ public abstract class BackedStore extends MemoryStore {
     public abstract BackedSession createSessionObject(String sessionId);
 
     public void updateSessionId(String oldId, ISession newSession) {
-        super.updateSessionId(oldId, newSession);
 
         final boolean isTraceOn = com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, "updateSessionId", oldId);
-            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "updateSessionId", "New session information: creation time = "
-            + newSession.getCreationTime() + " last access time = " + newSession.getLastAccessedTime() +" maxInactiveInterval = "
-            		+ newSession.getMaxInactiveInterval() + " user name = " + newSession.getUserName());
         }
+        
         removeSession(oldId);
-        createSessionObject(newSession.getId());
-        if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER))
-            LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, "updateSessionId", newSession.getId());
-    }
+        
+        if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "updateSessionId", "Create BackedSession = " + newSession.toString());
+        }        
+        
+        long nowTime = System.currentTimeMillis();
+        BackedSession session = (BackedSession)newSession;
+        session.setInsert(); // flag session for insertion into store
+        session.setIsNew(true); // superPut into live cache
+        session.updateLastAccessTime(nowTime); // Insert access time    
+        _sessions.put(newSession.getId(), session);        
+
+        if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "updateSessionId", "New BackedSession = " + session.toString());
+        }       
+
+        int rowCount = ((BackedHashMap)_sessions).updateLastAccessTime(session, nowTime); 
+
+        if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, "updateSessionId", "Update row count = " + rowCount);
+        }
+    } 
 }

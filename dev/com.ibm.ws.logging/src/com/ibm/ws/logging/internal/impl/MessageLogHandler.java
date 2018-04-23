@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,17 +15,18 @@ import java.util.List;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
-/**
- *
- */
 public class MessageLogHandler extends JsonLogHandler implements SynchronousHandler, Formatter {
 
     private TraceWriter traceWriterOriginal;
 
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
+
+    private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
+    private BaseTraceFormatter formatter = null;
 
     public MessageLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
         super(serverName, wlpUserDir, sourcesList);
@@ -34,10 +35,6 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
     @Override
     public String getHandlerName() {
         return COMPONENT_NAME;
-    }
-
-    public void setFileLogHolder(TraceWriter trw) {
-        traceWriterOriginal = trw;
     }
 
     @Override
@@ -50,27 +47,58 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
         TraceWriter traceWriter = traceWriterOriginal;
         if (traceWriter == null)
             return;
-
+        String currFormat = format;
         /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
-        String evensourcetType = getSourceTypeFromDataObject(event);
+        GenericData genData = null;
+
+        //check if event is a LogTraceData, if it is then we must extract the genericData.
+        if (event instanceof LogTraceData) {
+            genData = ((LogTraceData) event).getGenData();
+        } else if (event instanceof GenericData) {
+            genData = (GenericData) event;
+        }
+
+        String eventSourceType = getSourceTypeFromDataObject(genData);
         String messageOutput = null;
-        if (event instanceof GenericData) {
-            GenericData genData = (GenericData) event;
+        if (currFormat.equals(LoggingConstants.JSON_FORMAT) || !eventSourceType.equals(CollectorConstants.MESSAGES_SOURCE)) {
             if (genData.getJsonMessage() == null) {
-                genData.setJsonMessage((String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
+                genData.setJsonMessage((String) formatEvent(eventSourceType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
             }
             messageOutput = genData.getJsonMessage();
 
+            if (messageOutput == null) {
+                messageOutput = (String) formatEvent(eventSourceType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+            }
+
+        } else if (currFormat.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) && formatter != null) {
+            messageOutput = formatter.messageLogFormat(genData);
+
         }
-        if (messageOutput == null) {
-            messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
-        }
-        if (messageOutput != null) {
+        if (messageOutput != null && traceWriter != null) {
             traceWriter.writeRecord(messageOutput);
         }
+
+    }
+
+    /**
+     * Set BaseTraceFormatter passed from BaseTraceService
+     *
+     * @param formatter the BaseTraceFormatter to use
+     */
+    public void setFormatter(BaseTraceFormatter formatter) {
+        this.formatter = formatter;
+    }
+
+    /**
+     * The format to set (i.e. BASIC or JSON)
+     *
+     * @param format the format to set (i.e. BASIC or JSON)
+     */
+    public void setFormat(String format) {
+        this.format = format;
     }
 
 }

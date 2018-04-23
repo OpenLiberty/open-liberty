@@ -29,7 +29,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.QUARANTINE)
+@Mode(TestMode.FULL)
 public class Http2FullTracingTests extends FATServletClient {
 
     private static final String CLASS_NAME = Http2FullTracingTests.class.getName();
@@ -42,6 +42,8 @@ public class Http2FullTracingTests extends FATServletClient {
     private final static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.transport.http2.fat.tracing");
 
     String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
+
+    String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
 
     @Rule
     public TestName testName = new TestName();
@@ -82,4 +84,11 @@ public class Http2FullTracingTests extends FATServletClient {
     public void testHeaderAndDataPost() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
+
+    // moved for debug - build break 253522
+    @Test
+    public void testDataFrameExceedingMaxFrameSize() throws Exception {
+        runTest(dataServletPath, testName.getMethodName());
+    }
+
 }

@@ -22,7 +22,6 @@ import static com.ibm.wsspi.classloading.ApiType.STABLE;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,13 +29,9 @@ import java.util.Dictionary;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -241,61 +236,6 @@ public class ClassLoaderConfigHelper {
         return isDelegateLast;
     }
 
-    public void processCommonLibraries(ClassLoadingService classLoadingService, ClassLoaderConfiguration config, String[] libraryPIDs) {
-        if (libraryPIDs != null) {
-            BundleContext bundleContext = FrameworkUtil.getBundle(ClassLoaderConfigHelper.class).getBundleContext();
-            for (String pid : libraryPIDs) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "processCommonLibraries, pid: " + pid);
-                }
-                String libraryFilter = FilterUtils.createPropertyFilter(Constants.SERVICE_PID, pid);
-                Collection<ServiceReference<Library>> libraryRefs = null;
-                try {
-                    libraryRefs = bundleContext.getServiceReferences(Library.class, libraryFilter);
-                } catch (InvalidSyntaxException e) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processCommonLibraries, invalidSyntaxException");
-                    }
-                }
-                if (libraryRefs != null) {
-                    for (ServiceReference<Library> libraryRef : libraryRefs) {
-                        Library library = bundleContext.getService(libraryRef);
-                        if (library != null) {
-                            if (tc.isDebugEnabled()) {
-                                Tr.debug(tc, "processCommonLibraries, library is not null");
-                            }
-                            if (library.getFilesets() != null) {
-                                for (Fileset fileset : library.getFilesets()) {
-                                    for (File file : fileset.getFileset()) {
-                                        String path = file.getPath();
-                                        path = path.replace("\\", "/");
-                                        if (tc.isDebugEnabled()) {
-                                            Tr.debug(tc, "processCommonLibraries, path: " + path);
-                                        }
-
-                                        String matchingDomainKey = ((ClassLoadingServiceImpl) classLoadingService).getProtectionDomainMapKey(path);
-                                        if (tc.isDebugEnabled()) {
-                                            Tr.debug(tc, "processCommonLibraries, matchingDomainKey: " + matchingDomainKey);
-                                        }
-                                        if (matchingDomainKey != null) {
-                                            if (tc.isDebugEnabled()) {
-                                                Tr.debug(tc, "Setting the protection domain");
-                                            }
-
-                                            Map<String, ProtectionDomain> protectionDomainMap = ((ClassLoadingServiceImpl) classLoadingService).getProtectionDomainMap();
-                                            config.setProtectionDomain(protectionDomainMap.get(matchingDomainKey));
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public ClassLoader createTopLevelClassLoader(List<Container> classPath,
                                                  GatewayConfiguration gwConfig,
                                                  ClassLoaderConfiguration config,
@@ -317,7 +257,6 @@ public class ClassLoaderConfigHelper {
             config.addSharedLibraries(sharedLibraries);
             config.setCommonLibraries(commonLibraries);
             config.setClassProviders(classProviders);
-            processCommonLibraries(classLoadingService, config, this.commonLibrariesPids);
             config.setDelegateToParentAfterCheckingLocalClasspath(isDelegateLast);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Creating class loader with parent gateway because <classloader> element config found for: " + config.getId());

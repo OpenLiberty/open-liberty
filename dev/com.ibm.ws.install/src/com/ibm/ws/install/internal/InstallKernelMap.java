@@ -36,6 +36,7 @@ import com.ibm.ws.install.RepositoryConfigUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.feature.internal.generator.ManifestFileProcessor;
+import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
@@ -47,7 +48,7 @@ import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.connections.SingleFileRepositoryConnection;
 import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
 import com.ibm.ws.repository.exceptions.RepositoryException;
-//import com.ibm.ws.repository.resolver.ManifestFileProcessor;
+import com.ibm.ws.repository.resolver.RepositoryResolutionException;
 import com.ibm.ws.repository.resolver.RepositoryResolver;
 import com.ibm.ws.repository.resources.RepositoryResource;
 
@@ -80,6 +81,7 @@ public class InstallKernelMap implements Map {
     private static final String ACTION_UNINSTALL = "action.uninstall";
     private static final String ACTION_RESULT = "action.result";
     private static final String ACTION_ERROR_MESSAGE = "action.error.message";
+    private static final String ACTION_EXCEPTION_STACKTRACE = "action.exception.stacktrace";
     private static final String FEATURES_TO_RESOLVE = "features.to.resolve";
     private static final String SINGLE_JSON_FILE = "single.json.file";
     private static final String MESSAGE_LOCALE = "message.locale";
@@ -242,6 +244,9 @@ public class InstallKernelMap implements Map {
                         installKernel.setRepositoryProperties(repoProperties);
                     }
                 } catch (InstallException e) {
+                    data.put(ACTION_RESULT, ERROR);
+                    data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                    data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
                     throw new RuntimeException(e);
                 }
             } else {
@@ -411,6 +416,8 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_RESULT, OK);
         data.put(ACTION_INSTALL_RESULT, null);
         data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
         actionType = ActionType.resolve;
         if (installObject instanceof List) {
             List<String> assets = (List<String>) installObject;
@@ -422,6 +429,7 @@ public class InstallKernelMap implements Map {
             } catch (InstallException e) {
                 data.put(ACTION_RESULT, ERROR);
                 data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             }
         } else if (installObject instanceof File) {
             File esaFile = (File) installObject;
@@ -436,6 +444,7 @@ public class InstallKernelMap implements Map {
                 } catch (InstallException e) {
                     data.put(ACTION_RESULT, ERROR);
                     data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                    data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
                 }
             } else {
                 data.put(ACTION_RESULT, ERROR);
@@ -452,12 +461,15 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_RESULT, OK);
         data.put(ACTION_INSTALL_RESULT, null);
         data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
         Collection<ProductDefinition> productDefinitions = new HashSet<ProductDefinition>();
         Collection<List<RepositoryResource>> resolveResult = null;
         RepositoryResolver resolver = null;
         Collection<String> featuresResolved = new ArrayList<String>();
 
         try {
+
             for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
                 productDefinitions.add(new ProductInfoProductDefinition(productInfo));
             }
@@ -469,8 +481,28 @@ public class InstallKernelMap implements Map {
             }
 
             ManifestFileProcessor m_ManifestFileProcessor = new ManifestFileProcessor();
-            resolver = new RepositoryResolver(productDefinitions, m_ManifestFileProcessor.getFeatureDefinitions().values(), Collections.<IFixInfo> emptySet(), repoList);
+            Collection<ProvisioningFeatureDefinition> installedFeatures = m_ManifestFileProcessor.getFeatureDefinitions().values();
+
+            int alreadyInstalled = 0;
+            Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
+            Collection<String> featuresAlreadyPresent = new ArrayList<String>();
+            for (ProvisioningFeatureDefinition feature : installedFeatures) {
+                if (featureToInstall.contains(feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
+                    alreadyInstalled += 1;
+                    if (feature.getIbmShortName() == null) {
+                        featuresAlreadyPresent.add(feature.getFeatureName());
+                    } else {
+                        featuresAlreadyPresent.add(feature.getIbmShortName());
+                    }
+                }
+            }
+            if (alreadyInstalled == featureToInstall.size()) {
+                throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
+            }
+
+            resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {
                     featuresResolved.add(repoResrc.getMavenCoordinates());
@@ -482,15 +514,32 @@ public class InstallKernelMap implements Map {
         } catch (ProductInfoParseException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         } catch (DuplicateProductInfoException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         } catch (ProductInfoReplaceException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (RepositoryResolutionException e) {
+            data.put(ACTION_RESULT, ERROR);
+            InstallException ie = ExceptionUtils.create(e, (Collection<String>) data.get(FEATURES_TO_RESOLVE), (File) data.get(RUNTIME_INSTALL_DIR), false);
+            data.put(ACTION_ERROR_MESSAGE, ie.toString());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         } catch (RepositoryException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (Exception e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         }
         actionType = ActionType.install;
         return featuresResolved;
@@ -534,6 +583,7 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_RESULT, OK);
         data.put(ACTION_INSTALL_RESULT, null);
         data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
         try {
             installKernel.checkResources();
             Boolean agreedToDownloadDependencies = (Boolean) data.get(DOWLOAD_EXTERNAL_DEPS);
@@ -544,10 +594,12 @@ public class InstallKernelMap implements Map {
         } catch (CancelException e) {
             data.put(ACTION_RESULT, CANCELLED);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             return CANCELLED;
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             return ERROR;
         }
         return OK;
@@ -558,6 +610,7 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_RESULT, OK);
         data.put(ACTION_INSTALL_RESULT, null);
         data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
 
         try {
             InstallKernelImpl installKernel = (InstallKernelImpl) this.installKernel;
@@ -568,6 +621,7 @@ public class InstallKernelMap implements Map {
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             return ERROR;
         }
         return OK;
@@ -602,6 +656,7 @@ public class InstallKernelMap implements Map {
             }
         } catch (InstallException e) {
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             return ERROR;
         }
         return OK;

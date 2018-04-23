@@ -39,4 +39,5 @@ public interface SSOCookieHelper {
 
     String getSSODomainName(HttpServletRequest req, List<String> ssoDomainList, boolean useURLDomain);
 
+    String getJwtSsoTokenFromCookies(HttpServletRequest req, String jwtCookieName);
 }

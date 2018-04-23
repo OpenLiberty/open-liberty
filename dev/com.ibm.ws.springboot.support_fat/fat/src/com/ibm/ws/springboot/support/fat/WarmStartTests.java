@@ -53,7 +53,7 @@ public class WarmStartTests extends AbstractSpringTests {
         server.stopServer(false);
 
         // remove any dropins
-        RemoteFile dropinsSpr = server.getFileFromLibertyServerRoot("dropins/spr");
+        RemoteFile dropinsSpr = server.getFileFromLibertyServerRoot("dropins/" + SPRING_APP_TYPE);
         RemoteFile[] dropinApps = dropinsSpr.list(true);
         for (RemoteFile dropinApp : dropinApps) {
             if (dropinApp.isFile()) {

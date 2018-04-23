@@ -159,9 +159,8 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
     @Mode(TestMode.LITE)
     @Test
     public void testBasicAuthValidUserInRole_DeniedAccess() throws Exception {
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlHttp + queryString, Constants.jaspi_invalidUser, Constants.jaspi_invalidPwd,
-                                                          HttpServletResponse.SC_UNAUTHORIZED);
-        verifyResponseAuthenticationFailed(response);
+        executeGetRequestBasicAuthCreds(httpclient, urlHttp + queryString, Constants.jaspi_invalidUser, Constants.jaspi_invalidPwd,
+                                        HttpServletResponse.SC_FORBIDDEN);
     }
 
     /**
@@ -180,9 +179,8 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
     @Mode(TestMode.LITE)
     @Test
     public void testBasicAuthValidUserInRole_DeniedAccess_WrongPassword() throws Exception {
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlHttp + queryString, Constants.javaeesec_basicRoleUser, Constants.jaspi_invalidPwd,
-                                                          HttpServletResponse.SC_UNAUTHORIZED);
-        verifyResponseAuthenticationFailed(response);
+        executeGetRequestBasicAuthCreds(httpclient, urlHttp + queryString, Constants.javaeesec_basicRoleUser, Constants.jaspi_invalidPwd,
+                                        HttpServletResponse.SC_FORBIDDEN);
     }
 
     @Mode(TestMode.LITE)

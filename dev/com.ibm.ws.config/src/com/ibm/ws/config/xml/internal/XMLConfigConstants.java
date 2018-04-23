@@ -65,7 +65,9 @@ public interface XMLConfigConstants {
 
     String VAR_OPEN = "${";
     String VAR_CLOSE = "}";
+
     Pattern VAR_PATTERN = Pattern.compile("\\Q" + VAR_OPEN + "\\E(.+?)\\Q" + VAR_CLOSE + "\\E");
+    Pattern VAR_LIST_PATTERN = Pattern.compile("\\Q" + VAR_OPEN + "\\Elist\\((.+?)\\)\\Q" + VAR_CLOSE + "\\E");
     Pattern COMMA_PATTERN = Pattern.compile("\\s*,\\s*");
     Pattern PARENTHESIS_PATTERN = Pattern.compile("\\s*;\\s*");
     Pattern EQUALS_PATTERN = Pattern.compile("\\s=\\s*");
@@ -92,4 +94,5 @@ public interface XMLConfigConstants {
 
     /** Display ID attribute */
     String CFG_CONFIG_INSTANCE_DISPLAY_ID = "config.displayId";
+
 }

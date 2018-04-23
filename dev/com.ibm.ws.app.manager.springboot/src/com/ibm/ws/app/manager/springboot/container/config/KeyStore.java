@@ -22,10 +22,9 @@ public class KeyStore extends ConfigElement {
     private String password;
     private String location;
     private String type;
-    
+
     @XmlElement(name = "keyEntry")
     private ConfigElementList<KeyEntry> keyEntries;
-
 
     /**
      * @return the password
@@ -71,7 +70,7 @@ public class KeyStore extends ConfigElement {
     public void setType(String type) {
         this.type = type;
     }
-    
+
     /**
      * @return the keyEntries
      */
@@ -82,12 +81,12 @@ public class KeyStore extends ConfigElement {
         return this.keyEntries;
     }
 
-
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("KeyStore{");
+        buf.append("id=\"" + this.getId() + "\" ");
         if (password != null)
-            buf.append("password=\"" + password + "\" ");
+            buf.append("password=\"***\" ");
         if (location != null)
             buf.append("location=\"" + location + "\" ");
         if (type != null)

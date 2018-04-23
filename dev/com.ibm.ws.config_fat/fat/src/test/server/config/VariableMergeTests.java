@@ -12,9 +12,12 @@ package test.server.config;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -82,6 +85,9 @@ public class VariableMergeTests extends ServletRunner {
     public static void setUpForMergedConfigTests() throws Exception {
         //copy the config feature into the server features location
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
+
+        WebArchive varmergeApp = ShrinkHelper.buildDefaultApp("varmerge", "test.config.merged");
+        ShrinkHelper.exportAppToServer(server, varmergeApp);
 
         server.startServer("varmerge.log");
         //make sure the URL is available
