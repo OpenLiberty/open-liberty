@@ -141,9 +141,7 @@ public abstract class ParserBase {
         ND("ND"),
         zOS("zOS"),
         BASE_ILAN("BASE_ILAN"),
-        EARLY_ACCESS("EARLY_ACCESS"),
-        OPEN("OPEN"),
-        OPEN_WEB("OPEN_WEB");
+        EARLY_ACCESS("EARLY_ACCESS");
 
         private String _productEdition;
 

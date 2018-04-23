@@ -12,7 +12,6 @@ package com.ibm.ws.repository.resources.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,32 +33,10 @@ import com.ibm.ws.repository.transport.model.FilterVersion;
  */
 public class AppliesToProcessor {
 
-    // Human readable edition names for display.
-    private static final String BASE = "Base";
-    private static final String EXPRESS = "Express";
-    private static final String DEVELOPERS = "Developers";
-    private static final String ND = "ND";
-    private static final String ZOS = "z/OS";
-    private static final String CORE = "Liberty Core";
-    private static final String BETA = "Beta";
+    private final static List<String> allEditions = Arrays.asList("Liberty Core", "Base", "Express", "Developers", "ND", "z/OS");
+    private final static List<String> betaEditions = Arrays.asList("Beta");
 
-    /**
-     * Open liberty features with an edition of OPEN in the appliesTo can be
-     * installed on everything except CORE.
-     */
-    private final static List<String> nonCoreEditions = Arrays.asList(BASE, EXPRESS, DEVELOPERS, ND, ZOS);
-    private final static List<String> allEditions;
-    static {
-        ArrayList<String> temp = new ArrayList<String>();
-        // The editions are added in this order to
-        // a) This is the order we'd like things to appear when displayed to a human
-        // a) preserve the order they were in originally when there was only one list of all editions
-        temp.add(CORE);
-        temp.addAll(nonCoreEditions);
-        allEditions = Collections.unmodifiableList(temp);
-    }
-
-    private final static Map<String, List<String>> editionsMap = new HashMap<String, List<String>>();
+    private final static Map<String, String> editionsMap = new HashMap<String, String>();
     public final static String VERSION_ATTRIB_NAME = "productVersion";
     public final static String EDITION_ATTRIB_NAME = "productEdition";
     public final static String INSTALL_TYPE_ATTRIB_NAME = "productInstallType";
@@ -75,21 +52,20 @@ public class AppliesToProcessor {
     private final static String EDITION_UNKNOWN = "EDITION_UNKNOWN";
 
     static {
-        editionsMap.put("Core", Arrays.asList(CORE));
-        editionsMap.put("CORE", Arrays.asList(CORE));
-        editionsMap.put("LIBERTY_CORE", Arrays.asList(CORE));
-        editionsMap.put("BASE", Arrays.asList(BASE));
-        editionsMap.put("DEVELOPERS", Arrays.asList(DEVELOPERS));
-        editionsMap.put("EXPRESS", Arrays.asList(EXPRESS));
-        editionsMap.put("EARLY_ACCESS", Arrays.asList(BETA));
-        editionsMap.put("zOS", Arrays.asList(ZOS));
-        editionsMap.put("ND", Arrays.asList(ND));
-        editionsMap.put("BASE_ILAN", Arrays.asList(EDITION_UNMAPPED));
-        editionsMap.put("OPEN", nonCoreEditions);
+        editionsMap.put("Core", "Liberty Core");
+        editionsMap.put("CORE", "Liberty Core");
+        editionsMap.put("LIBERTY_CORE", "Liberty Core");
+        editionsMap.put("BASE", "Base");
+        editionsMap.put("DEVELOPERS", "Developers");
+        editionsMap.put("EXPRESS", "Express");
+        editionsMap.put("EARLY_ACCESS", "Beta");
+        editionsMap.put("zOS", "z/OS");
+        editionsMap.put("ND", "ND");
+        editionsMap.put("BASE_ILAN", EDITION_UNMAPPED);
     }
     public final static String BETA_REGEX = "[2-9][0-9][0-9][0-9][.].*";
 
-    private static String getValue(String substring) {
+    public static String getValue(String substring) {
         int index = substring.indexOf('=');
         substring = substring.substring(index + 1).trim();
         if (substring.charAt(0) == '"') {
@@ -99,7 +75,7 @@ public class AppliesToProcessor {
         }
     }
 
-    private static void add(AppliesToFilterInfo atfi, String substring) {
+    private static void add(AppliesToFilterInfo atfi, String substring, Map<String, String> helperMap) {
         substring = substring.trim();
         if (atfi.getProductId() == null) {
             atfi.setProductId(substring);
@@ -163,10 +139,10 @@ public class AppliesToProcessor {
                 rawEditions.add(edition);
 
                 // Map entries to happier names.
-                List<String> mappedEdition = mapRawEditionToHumanReadable(edition);
-                if (mappedEdition.size() == 1 && mappedEdition.get(0).equals(EDITION_UNMAPPED)) {
+                String mappedEdition = mapRawEditionToHumanReadable(edition, helperMap);
+                if (EDITION_UNMAPPED.equals(mappedEdition)) {
                     // In this case, we don't map the edition to anything
-                } else if (mappedEdition.size() == 1 && mappedEdition.get(0).equals(EDITION_UNKNOWN)) {
+                } else if (EDITION_UNKNOWN.equals(mappedEdition)) {
                     // In this case, we don't know about the edition, so map
                     // it to itself in order to retain the same behaviour as
                     // the previous version of the code
@@ -174,7 +150,7 @@ public class AppliesToProcessor {
                 } else {
                     // Any other possibility means that this edition maps to something
                     // good so use that
-                    editions.addAll(mappedEdition);
+                    editions.add(mappedEdition);
                 }
 
                 if (endIndex == -1) {
@@ -190,19 +166,38 @@ public class AppliesToProcessor {
 
     public static List<AppliesToFilterInfo> parseAppliesToHeader(String appliesTo) {
         List<AppliesToFilterInfo> result = new ArrayList<AppliesToFilterInfo>();
-        List<List<String>> parsedProducts = doParse(appliesTo);
-        for (List<String> parsedProduct : parsedProducts) {
-            AppliesToFilterInfo atfi = new AppliesToFilterInfo();
-            for (String productChunk : parsedProduct) {
-                add(atfi, productChunk);
+
+        Map<String, String> editionNameMap = editionsMap;
+
+        boolean quoted = false;
+        int index = 0;
+        AppliesToFilterInfo match = new AppliesToFilterInfo();
+        for (int i = 0; i < appliesTo.length(); i++) {
+            char c = appliesTo.charAt(i);
+            if (c == '"') {
+                quoted = !quoted;
             }
-            addEditions(atfi);
-            result.add(atfi);
+            if (!quoted) {
+                if (c == ',') {
+                    add(match, appliesTo.substring(index, i), editionNameMap);
+                    index = i + 1;
+                    addEditions(match);
+                    result.add(match);
+                    match = new AppliesToFilterInfo();
+                } else if (c == ';') {
+                    add(match, appliesTo.substring(index, i), editionNameMap);
+                    index = i + 1;
+                }
+            }
         }
+        add(match, appliesTo.substring(index), editionNameMap);
+        addEditions(match);
+        result.add(match);
+
         return result;
     }
 
-    private static void addEditions(AppliesToFilterInfo match) {
+    public static void addEditions(AppliesToFilterInfo match) {
         List<String> editionsList = allEditions;
 
         // No editions in the appliesTo? That means *all* editions. Note that we need to
@@ -214,7 +209,7 @@ public class AppliesToProcessor {
 
             if ((match.getMinVersion() != null) && (match.getMinVersion().getCompatibilityLabel() != null) &&
                 (match.getMinVersion().getCompatibilityLabel().equals(EARLY_ACCESS_LABEL))) {
-                editions.add(BETA);
+                editions.addAll(betaEditions);
             } else {
                 editions.addAll(editionsList);
             }
@@ -228,9 +223,9 @@ public class AppliesToProcessor {
      * if the edition is known but should not be mapped to anything or "" if the edition is now known (ie an
      * error case).
      */
-    private static List<String> mapRawEditionToHumanReadable(String rawEdition) {
-        List<String> result = editionsMap.get(rawEdition);
-        return result != null ? result : Arrays.asList(EDITION_UNKNOWN);
+    private static String mapRawEditionToHumanReadable(String rawEdition, Map<String, String> map) {
+        String result = map.get(rawEdition);
+        return result != null ? result : EDITION_UNKNOWN;
     }
 
     /**
@@ -243,8 +238,7 @@ public class AppliesToProcessor {
     public static void validateEditions(AppliesToFilterInfo info, String appliesToHeader) throws RepositoryResourceCreationException {
         if (info.getRawEditions() != null) {
             for (String rawEdition : info.getRawEditions()) {
-                List<String> mappedEditions = mapRawEditionToHumanReadable(rawEdition);
-                if (mappedEditions.size() == 1 && mappedEditions.get(0).equals(EDITION_UNKNOWN)) {
+                if (EDITION_UNKNOWN.equals(mapRawEditionToHumanReadable(rawEdition, editionsMap))) {
                     throw new RepositoryResourceCreationException("Resource applies to at least one unknown edition: " + rawEdition +
                                                                   "; appliesTo= " + appliesToHeader, null);
                 }
@@ -253,34 +247,19 @@ public class AppliesToProcessor {
     }
 
     /**
-     * Parse the given raw appliesTo header into a list
-     * of AppliesToEntry objects
+     * Similiar logic to parseAppliesToHeader above, duplicate logic, be nice to find time to factor this into
+     * a common routine
+     *
+     * @param appliesTo
+     * @return
      */
     public static List<AppliesToEntry> parseAppliesToEntries(String appliesTo) {
         List<AppliesToEntry> result = new ArrayList<AppliesToEntry>();
-        List<List<String>> parsedProducts = doParse(appliesTo);
-        for (List<String> parsedProduct : parsedProducts) {
-            AppliesToEntry entry = new AppliesToEntry();
-            for (String productChunk : parsedProduct) {
-                entry.add(productChunk);
-            }
-            result.add(entry);
-        }
-        return result;
-    }
 
-    /**
-     * Should be parsing a string that looks like
-     * "blah;blah;blah,foo;foo;foo,baz;baz;baz"
-     * into a list of lists, so something like
-     * <blah,blah,blah>,<foo,foo,foo>,<baz,baz,baz>
-     */
-    private static List<List<String>> doParse(String appliesTo) {
         boolean quoted = false;
         int index = 0;
 
-        List<String> entry = new ArrayList<String>();
-        List<List<String>> result = new ArrayList<List<String>>();
+        AppliesToEntry entry = new AppliesToEntry();
         for (int i = 0; i < appliesTo.length(); i++) {
             char c = appliesTo.charAt(i);
             if (c == '"') {
@@ -289,11 +268,10 @@ public class AppliesToProcessor {
             if (!quoted) {
                 if (c == ',') {
                     entry.add(appliesTo.substring(index, i));
-                    // We've read one applies to entry in
-                    // Add to result and start a new one
+                    // We've read one applied to entry in. Make sure its ok
                     index = i + 1;
                     result.add(entry);
-                    entry = new ArrayList<String>();
+                    entry = new AppliesToEntry();
                 } else if (c == ';') {
                     entry.add(appliesTo.substring(index, i));
                     index = i + 1;
@@ -302,6 +280,7 @@ public class AppliesToProcessor {
         }
         entry.add(appliesTo.substring(index));
         result.add(entry);
+
         return result;
     }
 
