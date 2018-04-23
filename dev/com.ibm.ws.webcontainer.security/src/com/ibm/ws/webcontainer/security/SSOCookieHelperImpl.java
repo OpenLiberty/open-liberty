@@ -145,7 +145,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         return JwtSSOTokenHelper.getJwtCookieName();
     }
 
-    protected String getJwtCookieSecure() {
+    protected boolean getJwtCookieSecure() {
         return JwtSSOTokenHelper.isCookieSecured();
     }
 

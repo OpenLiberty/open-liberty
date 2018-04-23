@@ -34,7 +34,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 @Component(service = JwtSSOTokenHelper.class, name = "JwtSSOTokenHelper", immediate = true, property = "service.vendor=IBM")
 public class JwtSSOTokenHelper {
 
-    private static final TraceComponent tc = Tr.register(JwtSSOTokenHelper.class);
+    private static final TraceComponent tc = Tr.register(JwtSSOTokenHelper.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     public static final String JSON_WEB_TOKEN_SSO_PROXY = "JwtSSOTokenProxy";
     protected final static AtomicServiceReference<JwtSSOTokenProxy> jwtSSOTokenProxyRef = new AtomicServiceReference<JwtSSOTokenProxy>(JSON_WEB_TOKEN_SSO_PROXY);
@@ -94,7 +94,7 @@ public class JwtSSOTokenHelper {
             try {
                 jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
             } catch (WSSecurityException e) {
-                String msg = Tr.formatMessage(tc, "warn_jwt_sso_token_service_error");
+                String msg = Tr.formatMessage(tc, "WARN_JWT_SSO_TOKEN_SERVICE_ERROR");
                 Tr.error(tc, msg);
             }
         }
@@ -185,11 +185,11 @@ public class JwtSSOTokenHelper {
 
     }
 
-    public static String isCookieSecured() {
+    public static boolean isCookieSecured() {
         if (jwtSSOTokenProxyRef.getService() != null) {
             return jwtSSOTokenProxyRef.getService().isCookieSecured();
         }
-        return null;
+        return true;
 
     }
 }
