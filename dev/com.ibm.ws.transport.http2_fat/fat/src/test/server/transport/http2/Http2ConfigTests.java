@@ -18,13 +18,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-//@Mode(TestMode.QUARANTINE)
+@Mode(TestMode.QUARANTINE)
 public class Http2ConfigTests extends FATServletClient {
 
     private static final String CLASS_NAME = Http2ConfigTests.class.getName();
@@ -78,6 +80,16 @@ public class Http2ConfigTests extends FATServletClient {
 
     }
 
+    /**
+     * Test Coverage: Executes the testHeaderAndDataPost() test in order to request an HTTP/2
+     * connection over a server configured with the Servlet-4.0 feature and
+     * the protocolVersion attribute of the httpEndpoint element set to "http/1.1".
+     * Test Outcome: Server is not configured for HTTP/2, thus FAT client timeouts out with a
+     * com.ibm.ws.http2.test.exceptions.ClientPrefaceTimeoutException.
+     * Spec Section: NA
+     *
+     * @throws Exception
+     */
     @Test
     public void testServlet40H2Off() throws Exception {
 
@@ -94,6 +106,16 @@ public class Http2ConfigTests extends FATServletClient {
 
     }
 
+    /**
+     * Test Coverage: Executes the testHeaderAndDataPost() test in order to request an HTTP/2
+     * connection over a server configured with the Servlet-3.1 feature and
+     * the protocolVersion attribute of the httpEndpoint element set to "http/2".
+     * Test Outcome: Server is configured for HTTP/2, thus a SUCCESS message is returned as the
+     * output from the URL's response.
+     * Spec Section: NA
+     *
+     * @throws Exception
+     */
     @Test
     public void testServlet31H2On() throws Exception {
 
@@ -108,11 +130,20 @@ public class Http2ConfigTests extends FATServletClient {
     }
 
     @Test
+    /**
+     * Test Coverage: Executes the testHeaderAndDataPost() test in order to request an HTTP/2
+     * connection over a server configured with the Servlet-3.1 feature.
+     * Test Outcome: Server is not configured for HTTP/2, thus FAT client timeouts out with a
+     * com.ibm.ws.http2.test.exceptions.ClientPrefaceTimeoutException.
+     * Spec Section: NA
+     *
+     * @throws Exception
+     */
     public void testServlet31H2Off() throws Exception {
 
         try {
             startServers(serverServlet31H2Off);
-            test(serverServlet31H2On, FAIL);
+            test(serverServlet31H2Off, FAIL);
         }
 
         finally {

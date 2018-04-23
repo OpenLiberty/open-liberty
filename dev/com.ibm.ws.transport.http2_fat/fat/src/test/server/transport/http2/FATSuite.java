@@ -45,6 +45,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 AlwaysPassesTest.class, // LITE
                 Http2LiteModeTests.class, // LITE; QUARANTINE temporarily
                 Http2FullModeTests.class, // FULL; QUARANTINE temporarily
+                Http2ConfigTests.class, // QUARANTINE temporarily
                 //MultiSessionTests.class, // FULL; disabled for now
                 /** move tests to Http2FullTracingTests to diagnose failures via full tracing */
                 Http2FullTracingTests.class // FULL; QUARANTINE temporarily
