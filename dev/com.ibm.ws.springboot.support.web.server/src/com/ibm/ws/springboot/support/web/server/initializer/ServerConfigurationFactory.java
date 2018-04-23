@@ -41,6 +41,7 @@ public class ServerConfigurationFactory {
     public static final String ID_KEY_STORE = "springBootKeyStore-";
     public static final String ID_TRUST_STORE = "springBootTrustStore-";
 
+    public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String PORT = "port";
     public static final String ADDRESS = "address";
     public static final String SERVER_HEADER = "server.header";
@@ -62,6 +63,11 @@ public class ServerConfigurationFactory {
 
     public static ServerConfiguration createServerConfiguration(Map<String, Object> serverProperties, SpringBootConfigFactory configFactory, Function<String, URL> urlGetter) {
         ServerConfiguration sc = new ServerConfiguration();
+        Boolean useDefaultHost = (Boolean) serverProperties.get(LIBERTY_USE_DEFAULT_HOST);
+        if (useDefaultHost != null && useDefaultHost) {
+            // going to use the default host; return empty config
+            return sc;
+        }
         Integer port = (Integer) serverProperties.get(PORT);
         if (port == null) {
             throw new IllegalArgumentException("No port specified.");

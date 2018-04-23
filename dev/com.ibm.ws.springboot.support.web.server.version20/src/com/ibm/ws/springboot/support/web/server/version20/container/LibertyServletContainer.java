@@ -11,6 +11,7 @@
 package com.ibm.ws.springboot.support.web.server.version20.container;
 
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.ADDRESS;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.LIBERTY_USE_DEFAULT_HOST;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.PORT;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SERVER_HEADER;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_CIPHERS;
@@ -54,9 +55,11 @@ import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 public class LibertyServletContainer implements WebServer {
     private static final Object token = new Object() {};
     private final SpringBootConfig springBootConfig;
+    private final LibertyServletContainerFactory factory;
     private final AtomicInteger port = new AtomicInteger();
 
     public LibertyServletContainer(LibertyServletContainerFactory factory, ServletContextInitializer[] initializers) {
+        this.factory = factory;
         port.set(factory.getPort());
         // The Internet Assigned Numbers Authority (IANA) suggests the range 49152 to 65535 (215+214 to 216−1) for dynamic or private ports
         if (port.get() == 0) {
@@ -64,7 +67,7 @@ public class LibertyServletContainer implements WebServer {
         }
         SpringBootConfigFactory configFactory = SpringBootConfigFactory.findFactory(token);
         springBootConfig = configFactory.createSpringBootConfig();
-        ServerConfiguration serverConfig = getServerConfiguration(factory, configFactory);
+        ServerConfiguration serverConfig = getServerConfiguration(factory, configFactory, this);
 
         final CountDownLatch initDone = new CountDownLatch(1);
         final AtomicReference<Throwable> exception = new AtomicReference<>();
@@ -107,11 +110,15 @@ public class LibertyServletContainer implements WebServer {
 
     @Override
     public void stop() throws WebServerException {
-        springBootConfig.stop();
+        try {
+            springBootConfig.stop();
+        } finally {
+            factory.stopUsingDefaultHost(this);
+        }
     }
 
-    private static ServerConfiguration getServerConfiguration(LibertyServletContainerFactory factory, SpringBootConfigFactory configFactory) {
-        Map<String, Object> serverProperties = getServerProperties(factory);
+    private static ServerConfiguration getServerConfiguration(LibertyServletContainerFactory factory, SpringBootConfigFactory configFactory, LibertyServletContainer container) {
+        Map<String, Object> serverProperties = getServerProperties(factory, container);
         return ServerConfigurationFactory.createServerConfiguration(serverProperties, configFactory, (s) -> {
             try {
                 return ResourceUtils.getURL(s);
@@ -121,9 +128,11 @@ public class LibertyServletContainer implements WebServer {
         });
     }
 
-    private static Map<String, Object> getServerProperties(LibertyServletContainerFactory factory) {
+    private static Map<String, Object> getServerProperties(LibertyServletContainerFactory factory, LibertyServletContainer container) {
         Map<String, Object> serverProperties = new HashMap<>();
-
+        if (factory.shouldUseDefaultHost(container)) {
+            serverProperties.put(LIBERTY_USE_DEFAULT_HOST, Boolean.TRUE);
+        }
         serverProperties.put(PORT, factory.getPort());
 
         if (factory.getAddress() != null) {

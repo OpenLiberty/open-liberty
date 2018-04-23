@@ -67,6 +67,7 @@ import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
+import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instance;
 import com.ibm.ws.app.manager.springboot.support.SpringBootApplication;
@@ -181,7 +182,13 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (!serverConfig.compareAndSet(null, config)) {
                 throw new IllegalStateException("Server configuration already set.");
             }
-            String virtualHostId = config.getVirtualHosts().iterator().next().getId();
+
+            String virtualHostId = "default_host";
+            List<VirtualHost> virtualHosts = config.getVirtualHosts();
+            if (!virtualHosts.isEmpty()) {
+                virtualHostId = config.getVirtualHosts().iterator().next().getId();
+            }
+
             try {
                 if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, virtualHostId, helperParam))) {
                     throw new IllegalStateException("Config instance already created.");
@@ -201,7 +208,10 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (instance == null) {
                 throw new IllegalStateException("No Config instance set.");
             }
-            virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
+            if (!config.getVirtualHosts().isEmpty()) {
+                // only install a virtual host config if we are not using the default-host
+                virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
+            }
             instance.start();
         }
 
