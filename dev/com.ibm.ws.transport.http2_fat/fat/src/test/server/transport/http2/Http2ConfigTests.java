@@ -26,7 +26,7 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.QUARANTINE)
+@Mode(TestMode.FULL)
 public class Http2ConfigTests extends FATServletClient {
 
     private static final String CLASS_NAME = Http2ConfigTests.class.getName();

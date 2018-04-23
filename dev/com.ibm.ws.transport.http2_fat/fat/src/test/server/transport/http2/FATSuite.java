@@ -43,12 +43,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, // LITE
-                Http2LiteModeTests.class, // LITE; QUARANTINE temporarily
-                Http2FullModeTests.class, // FULL; QUARANTINE temporarily
-                Http2ConfigTests.class, // QUARANTINE temporarily
+                Http2LiteModeTests.class, // LITE
+                Http2FullModeTests.class, // FULL
+                Http2ConfigTests.class, // FULL
                 //MultiSessionTests.class, // FULL; disabled for now
                 /** move tests to Http2FullTracingTests to diagnose failures via full tracing */
-                Http2FullTracingTests.class // FULL; QUARANTINE temporarily
+                Http2FullTracingTests.class // FULL
 })
 public class FATSuite {
     private static final Class<?> c = FATSuite.class;
