@@ -35,7 +35,6 @@ import componenttest.rules.repeater.RepeatTests;
                 OpenAPIValidationTestFive.class,
                 OpenAPIValidationTestSix.class,
                 ProxySupportTest.class,
-                EE8CompatabilityTest.class,
                 EndpointAvailabilityTest.class,
                 UICustomizationTest.class
 })
