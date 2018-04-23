@@ -152,9 +152,9 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      * @param securityName
      * @param accessId
      * @param authMethod
-     * @param customProperties TODO
+     * @param customProperties
      */
-    protected void setPrincipals(Subject subject, String securityName, String accessId, String authMethod, Hashtable<String, ?> customProperties) throws Exception {
+    protected void setOtherPrincipals(Subject subject, String securityName, String accessId, String authMethod, Hashtable<String, ?> customProperties) throws Exception {
 //        Principal principal = new WSPrincipal(securityName, accessId, authMethod);
 //        subject.getPrincipals().add(principal);
         if (customProperties != null) {
@@ -295,7 +295,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
                     temporarySubject = new Subject();
                     setWSPrincipal(temporarySubject, securityName, accessId, authMethod);
                     setCredentials(temporarySubject, securityName, null);
-                    setPrincipals(temporarySubject, securityName, accessId, authMethod, null);
+                    setOtherPrincipals(temporarySubject, securityName, accessId, authMethod, null);
                     // Commit the newly created elements into the original Subject
                     subject.getPrincipals().addAll(temporarySubject.getPrincipals());
                     subject.getPublicCredentials().addAll(temporarySubject.getPublicCredentials());

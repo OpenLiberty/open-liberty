@@ -255,7 +255,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
             }
             setWSPrincipal(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
             setCredentials(temporarySubject, username, null);
-            setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
+            setOtherPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
             updateSharedState();
         } catch (Exception e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
@@ -297,7 +297,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                                                       uniqueUserId);
         setWSPrincipal(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
         setCredentials(temporarySubject, username, urAuthenticatedId);
-        setPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
+        setOtherPrincipals(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
     }
 
     /**
