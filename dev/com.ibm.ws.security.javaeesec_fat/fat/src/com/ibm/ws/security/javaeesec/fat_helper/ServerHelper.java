@@ -34,11 +34,11 @@ public class ServerHelper {
 
     public static void commonStopServer(LibertyServer myServer, boolean stopLdapServer) throws Exception {
 
-        myServer.stopServer();
-        myServer.setServerConfigurationFile("server.xml");
         if (stopLdapServer) {
             stopldapServer();
         }
+        myServer.stopServer();
+        myServer.setServerConfigurationFile("server.xml");
     }
 
     public static void setupldapServer() throws Exception {

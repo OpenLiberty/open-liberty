@@ -28,12 +28,12 @@ import org.springframework.boot.context.embedded.Ssl;
 import org.springframework.boot.context.embedded.Ssl.ClientAuth;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.SocketUtils;
 
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ConfigElementList;
 import com.ibm.ws.app.manager.springboot.container.config.HttpEndpoint;
-import com.ibm.ws.app.manager.springboot.container.config.HttpSession;
 import com.ibm.ws.app.manager.springboot.container.config.KeyEntry;
 import com.ibm.ws.app.manager.springboot.container.config.KeyStore;
 import com.ibm.ws.app.manager.springboot.container.config.SSLConfig;
@@ -59,6 +59,10 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
 
     public LibertyServletContainer(LibertyServletContainerFactory factory, ServletContextInitializer[] initializers) {
         port.set(factory.getPort());
+        // The Internet Assigned Numbers Authority (IANA) suggests the range 49152 to 65535 (215+214 to 216−1) for dynamic or private ports
+        if (port.get() == 0) {
+            port.set(SocketUtils.findAvailableTcpPort(49152));
+        }
         SpringBootConfigFactory configFactory = SpringBootConfigFactory.findFactory(token);
         springBootConfig = configFactory.createSpringBootConfig();
         String springBootConfigId = springBootConfig.getId();
@@ -95,7 +99,6 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
 
     @Override
     public int getPort() {
-        // TODO get real port when configured with zero
         return port.get();
     }
 
@@ -123,7 +126,7 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         VirtualHost virtualHost = new VirtualHost();
         virtualHost.setId(SPRING_VIRTUALHOST + springBootConfigId);
         HttpEndpoint httpEndpoint = serverConfig.getHttpEndpoints().iterator().next();
-        virtualHost.setAllowFromEndpoint(httpEndpoint.getId());
+        virtualHost.setAllowFromEndpointRef(httpEndpoint.getId());
         Set<String> aliases = virtualHost.getHostAliases();
         aliases.clear();
         // TODO would be better to use *:* for wildcarding the port
@@ -171,9 +174,6 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
             endpoint.getHttpOptions().setServerHeaderValue(factory.getServerHeader());
         }
 
-        if (factory.getSessionTimeout() > 0) {
-            configureSession(serverConfig, factory);
-        }
         endpoints.add(endpoint);
     }
 
@@ -306,12 +306,6 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         if (enabledCiphers != null) {
             sslConfig.setEnabledCiphers(enabledCiphers);
         }
-    }
-
-    private static void configureSession(ServerConfiguration serverConfig, LibertyServletContainerFactory factory) {
-        // TODO is this only configurable for all endpoints?
-        HttpSession session = serverConfig.getHttpSession();
-        session.setInvalidationTimeout(factory.getSessionTimeout());
     }
 
     private static void writeFile(InputStream in, File dest) throws FileNotFoundException, IOException {

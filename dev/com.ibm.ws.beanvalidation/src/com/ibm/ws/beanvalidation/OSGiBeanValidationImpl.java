@@ -126,13 +126,13 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         }
 
         if (isBeanValidationVersion20()) {
-            return getValidatorFactoryHVProvider(mmd);
+            return getValidatorFactoryHVProvider(mmd, loader);
         } else {
             return getValidatorFactoryApacheProvider(mmd, loader, validatorFactoryToSave);
         }
     }
 
-    private ValidatorFactory getValidatorFactoryHVProvider(ModuleMetaData mmd) {
+    private ValidatorFactory getValidatorFactoryHVProvider(ModuleMetaData mmd, ClassLoader loader) {
 
         BeanValidationMetaData beanValMetaData = (BeanValidationMetaData) mmd.getMetaData(ivModuleMetaDataSlot);
         if (beanValMetaData == null) {
@@ -145,8 +145,14 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
             synchronized (beanValMetaData) {
                 vf = beanValMetaData.getValidatorFactory();
                 if (vf == null) {
+                    ClassLoader tmpClassLoader;
+                    if (loader != null) {
+                        tmpClassLoader = loader;
+                    } else {
+                        tmpClassLoader = beanValMetaData.getModuleClassLoader();
+                    }
                     ValidatorFactoryBuilder validatorFactoryBuilder = validatorFactoryBuilderSR.getServiceWithException();
-                    vf = validatorFactoryBuilder.buildValidatorFactory(beanValMetaData.getModuleClassLoader(), beanValMetaData.getModuleUri());
+                    vf = validatorFactoryBuilder.buildValidatorFactory(tmpClassLoader, beanValMetaData.getModuleUri());
                     beanValMetaData.setValidatorFactory(vf);
                     mmd.setMetaData(ivModuleMetaDataSlot, beanValMetaData);
                 }

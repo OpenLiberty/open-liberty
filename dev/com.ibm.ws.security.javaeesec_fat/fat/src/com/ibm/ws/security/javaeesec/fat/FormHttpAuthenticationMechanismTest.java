@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,24 +11,40 @@
 
 package com.ibm.ws.security.javaeesec.fat;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
-import com.ibm.ws.security.javaeesec.fat_helper.ServerHelper;
+import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
+import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
-import com.ibm.ws.security.javaeesec.fat_singleIS.FormHttpAuthenticationMechanismTestSingleISTest;
+import com.ibm.ws.webcontainer.security.test.servlets.SSLHelper;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Test Description:
@@ -42,40 +58,61 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * values for getAuthType, getUserPrincipal and getRemoteUser after JASPI authentication.
  *
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 1.8)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class FormHttpAuthenticationMechanismTest extends FormHttpAuthenticationMechanismTestSingleISTest {
+public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
+
+    private static final String COOKIE_NAME = "jaspicSession";
+    private static final String JAR_NAME = "JavaEESecBase.jar";
+
+    private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
+    private static Class<?> logClass = FormHttpAuthenticationMechanismTest.class;
+    private static LocalLdapServer ldapServer;
+    private static String urlHttp;
+    private static String urlHttps;
+
+    private DefaultHttpClient httpclient;
+
+    /**
+     * Nearly empty server configuration. This should just contain the feature manager configuration with no
+     * registries or federated repository configured.
+     */
+//    private static ServerConfiguration emptyConfiguration = null;
 
     @BeforeClass
-    public static void setUp() throws Exception {
-
-        ServerHelper.setupldapServer();
-
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.basic");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecAnnotatedBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.annotatedbasic");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuth.war", true, JAR_NAME, false, "web.jar.base", "web.war.formlogin");
-        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuthRedirect.war", true, JAR_NAME, false, "web.jar.base", "web.war.redirectformlogin");
+    public static void setUpBeforeClass() throws Exception {
+        ldapServer = new LocalLdapServer();
+        ldapServer.start();
+        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuth.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.forward",
+                                               "web.war.identitystores.ldap.ldap1");
+        WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuthRedirect.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
+                                               "web.war.identitystores.ldap.ldap1");
         myServer.setServerConfigurationFile("form.xml");
         myServer.startServer(true);
-
-        urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
-
+        urlHttp = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
+        urlHttps = "https://" + myServer.getHostname() + ":" + myServer.getHttpDefaultSecurePort();
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
-
-        ServerHelper.commonStopServer(myServer, Constants.HAS_LDAP_SERVER);
+    public static void tearDownAfterClass() throws Exception {
+        if (ldapServer != null) {
+            ldapServer.stop();
+        }
+        myServer.stopServer();
     }
 
+    @SuppressWarnings("restriction")
     @Before
-    public void setupConnection() {
-        httpclient = new DefaultHttpClient();
+    public void setUp() {
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+        httpclient = new DefaultHttpClient(httpParams);
+        SSLHelper.establishSSLContext(httpclient, 0, myServer, null, null, null, null, null);
     }
 
     @After
-    public void cleanupConnection() {
+    public void tearDown() {
         httpclient.getConnectionManager().shutdown();
     }
 
@@ -85,6 +122,87 @@ public class FormHttpAuthenticationMechanismTest extends FormHttpAuthenticationM
     @Override
     protected String getCurrentTestName() {
         return name.getMethodName();
+    }
+
+    public FormHttpAuthenticationMechanismTest() {
+        super(myServer, logClass);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> Attempt to access a protected servlet configured for FORM login with JASPI activated.
+     * <LI> Login with a valid userId and password in the grantedgroup role and verify that
+     * <LI> JASPI authentication occurs and establishes return values for getAuthType, getUserPrincipal and getRemoteUser.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Return code 200
+     * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testJaspiFormLoginValidUserInRole_AllowedAccess() throws Exception {
+        myServer.setMarkToEndOfLog();
+        String response = executeGetRequestFormCreds(httpclient, urlHttp + Constants.DEFAULT_FORM_LOGIN_PAGE, false, urlHttp + "/JavaEEsecFormAuth/login.jsp",
+                                                     "login page for the form login test", urlHttp + "/JavaEEsecFormAuth/j_security_check",
+                                                     LocalLdapServer.USER1, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
+        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> Attempt to access a protected servlet configured for FORM login with JASPI activated.
+     * <LI> Login with a valid userId and password in the grantedgroup role and verify that
+     * <LI> JASPI authentication occurs and establishes return values for getAuthType, getUserPrincipal and getRemoteUser.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Return code 200
+     * <LI> Messages.log contains lines to show that JASPI authentication was processed on form display:
+     * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testJaspiFormLoginValidUserInRoleRedirect_AllowedAccess() throws Exception {
+        myServer.setMarkToEndOfLog();
+        String response = executeGetRequestFormCreds(httpclient, urlHttp + Constants.DEFAULT_REDIRECT_FORM_LOGIN_PAGE, true, urlHttp + "/JavaEEsecFormAuthRedirect/login.jsp",
+                                                     "login page for the form login test", urlHttp + "/JavaEEsecFormAuthRedirect/j_security_check",
+                                                     LocalLdapServer.USER1, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
+        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testSSOForFormAuthenticationMechanismDefinition() throws Exception {
+        String cookieHeaderString = driveResourceFlow(urlHttps + Constants.DEFAULT_REDIRECT_FORM_LOGIN_PAGE);
+        assertCookie(cookieHeaderString, false, true);
+        String response = redriveFlowWithCookieOnly(urlHttps + Constants.DEFAULT_REDIRECT_FORM_LOGIN_PAGE, HttpServletResponse.SC_OK);
+        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
+    }
+
+    private String driveResourceFlow(String resource) throws Exception, IOException {
+        HttpResponse httpResponse = executeGetRequestFormCreds(httpclient, resource, true, urlHttps + "/JavaEEsecFormAuthRedirect/login.jsp",
+                                                               "login page for the form login test", urlHttps + "/JavaEEsecFormAuthRedirect/j_security_check",
+                                                               LocalLdapServer.USER1, LocalLdapServer.PASSWORD);
+        String response = processResponse(httpResponse, HttpServletResponse.SC_OK);
+        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
+        Header cookieHeader = getCookieHeader(httpResponse, COOKIE_NAME);
+        return cookieHeader.toString();
+    }
+
+    private void assertCookie(String cookieHeaderString, boolean secure, boolean httpOnly) {
+        assertTrue("The Path parameter must be set.", cookieHeaderString.contains("Path=/"));
+        assertEquals("The Secure parameter must" + (secure == true ? "" : " not" + " be set."), secure, cookieHeaderString.contains("Secure"));
+        assertEquals("The HttpOnly parameter must" + (httpOnly == true ? "" : " not" + " be set."), httpOnly, cookieHeaderString.contains("HttpOnly"));
+    }
+
+    private String redriveFlowWithCookieOnly(String resource, int expectedStatusCode) throws Exception {
+        httpclient.getCredentialsProvider().clear();
+        return executeGetRequestNoAuthCreds(httpclient, resource, expectedStatusCode);
     }
 
 }

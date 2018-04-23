@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,9 @@ public class Constants {
     public final static String NO_NAME_VALIDATION = "NONE";
     public final static String DEFAULT_BASIC_REGISTRATION = "/JASPIBasic";
     public final static String DEFAULT_FORM_REGISTRATION = "/JASPIForm";
-    public final static String DEFAULT_FORM_LOGIN_PAGE = "/JavaEEsecFormAuth/JavaEEsecFormAuthServlet";
+    public final static String DEFAULT_FORM_LOGIN_PAGE = "/JavaEEsecFormAuth/FormServlet";
     public final static String DEFAULT_CUSTOM_FORM_LOGIN_PAGE = "/JavaEESecCustomFormLoginServlet/JavaEESecAnnotatedFormLoginServlet";
-    public final static String DEFAULT_REDIRECT_FORM_LOGIN_PAGE = "/JavaEEsecFormAuthRedirect/JavaEEsecFormAuthRedirectServlet";
+    public final static String DEFAULT_REDIRECT_FORM_LOGIN_PAGE = "/JavaEEsecFormAuthRedirect/FormServlet";
 
     public final static String AUTH_TYPE_BASIC = "BASIC";
     public final static String AUTH_TYPE_FORM = "FORM";

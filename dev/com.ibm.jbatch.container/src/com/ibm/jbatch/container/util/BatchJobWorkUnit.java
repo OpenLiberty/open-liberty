@@ -14,6 +14,7 @@
 package com.ibm.jbatch.container.util;
 
 import java.util.List;
+import javax.transaction.TransactionManager;
 
 import com.ibm.jbatch.container.callback.IJobExecutionEndCallbackService;
 import com.ibm.jbatch.container.callback.IJobExecutionStartCallbackService;
@@ -26,8 +27,9 @@ import com.ibm.jbatch.container.services.IBatchKernelService;
  */
 public class BatchJobWorkUnit extends BatchWorkUnit {
 
-	public BatchJobWorkUnit(IBatchKernelService batchKernel, RuntimeWorkUnitExecution runtimeExecution,
-			List<IJobExecutionStartCallbackService> beforeCallbacks, List<IJobExecutionEndCallbackService> afterCallbacks) {
-		super(batchKernel, runtimeExecution, beforeCallbacks, afterCallbacks);
-	}
+    public BatchJobWorkUnit(IBatchKernelService batchKernel, RuntimeWorkUnitExecution runtimeExecution,
+                            List<IJobExecutionStartCallbackService> beforeCallbacks, List<IJobExecutionEndCallbackService> afterCallbacks,
+                            TransactionManager tranMgr) {
+        super(batchKernel, runtimeExecution, beforeCallbacks, afterCallbacks, tranMgr);
+    }
 }

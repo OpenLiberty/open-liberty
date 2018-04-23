@@ -27,37 +27,42 @@ public final class WebAppEntryAdapter implements EntryAdapter<WebApp> {
     private static final int DEFAULT_MAX_VERSION = WebApp.VERSION_3_0;
 
     private ServiceReference<ServletVersion> versionRef;
-    private volatile int version = DEFAULT_MAX_VERSION;
+    private volatile int maxVersion = DEFAULT_MAX_VERSION;
 
-    public synchronized void setVersion(ServiceReference<ServletVersion> reference) {
+    public synchronized void setVersion(ServiceReference<ServletVersion> versionRef) {
+        this.versionRef = versionRef;
 
-        versionRef = reference;
-        version = (Integer) reference.getProperty("version");
+        Integer maxVersionValue = (Integer) versionRef.getProperty("version");
+        maxVersion = maxVersionValue.intValue();
     }
 
-    public synchronized void unsetVersion(ServiceReference<ServletVersion> reference) {
-        if (reference == this.versionRef) {
-            versionRef = null;
-            version = DEFAULT_MAX_VERSION;
+    public synchronized void unsetVersion(ServiceReference<ServletVersion> versionRef) {
+        if ( versionRef == this.versionRef ) {
+            this.versionRef = null;
+            this.maxVersion = DEFAULT_MAX_VERSION;
         }
     }
 
     @FFDCIgnore(ParseException.class)
     @Override
-    public WebApp adapt(Container root, OverlayContainer rootOverlay, ArtifactEntry artifactEntry, Entry entryToAdapt) throws UnableToAdaptException {
-        String path = artifactEntry.getPath();
-        WebApp webApp = (WebApp) rootOverlay.getFromNonPersistentCache(path, WebApp.class);
-        if (webApp == null) {
+    public WebApp adapt(
+        Container rawContainer,
+        OverlayContainer container,
+        ArtifactEntry rawWebAppEntry,
+        Entry webAppEntry) throws UnableToAdaptException {
+
+        String webAppPath = rawWebAppEntry.getPath();
+        WebApp webAppDD = (WebApp) container.getFromNonPersistentCache(webAppPath, WebApp.class);
+        if ( webAppDD == null ) {
             try {
-                WebAppDDParser ddParser = new WebAppDDParser(root, entryToAdapt, version);
-                webApp = ddParser.parse();
-            } catch (ParseException e) {
+                WebAppDDParser webAppDDParser = new WebAppDDParser(rawContainer, webAppEntry, maxVersion); // throws ParseException
+                webAppDD = webAppDDParser.parse(); // throws ParseException
+            } catch ( ParseException e ) {
                 throw new UnableToAdaptException(e);
             }
-
-            rootOverlay.addToNonPersistentCache(path, WebApp.class, webApp);
+            container.addToNonPersistentCache(webAppPath, WebApp.class, webAppDD);
         }
 
-        return webApp;
+        return webAppDD;
     }
 }

@@ -15,6 +15,8 @@ Bundle-SymbolicName: wlp-featureTasks
 
 Export-Package: com.ibm.ws.wlp.feature.tasks;version="1.0"
 
+globalize: false
+
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true
@@ -25,7 +27,7 @@ generate.replacement: false
 
 -buildpath: \
 	com.ibm.ws.kernel.boot.core;version=latest,\
-	org.apache.ant:ant;version=1.9.6,\
+	com.ibm.ws.org.apache.ant;version=latest,\
+	com.ibm.ws.org.apache.aries.util;version=latest,\
 	biz.aQute.bnd:biz.aQute.bnd;version=3.5.0;packages=**,\
-	org.apache.aries:org.apache.aries.util;version=1.0.0,\
-	lib/junit-report.jar;version=file
+	com.ibm.ws.componenttest:infra.buildtasks-core;version=4.0.0

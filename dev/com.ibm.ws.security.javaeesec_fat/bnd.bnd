@@ -18,8 +18,6 @@ src: \
 	test-applications/JavaEESec.war/src,\
 	test-applications/JavaEESecBasicAuthServlet.war/src,\
 	test-applications/JavaEESecAnnotatedBasicAuthServlet.war/src,\
-	test-applications/JavaEEsecFormAuth.war/src,\
-	test-applications/JavaEEsecFormAuthRedirect.war/src,\
 	test-applications/JavaEESecAnnotatedBasicAuthServletDeferred.war/src,\
 	test-applications/DatabaseAnnotatedBasicAuthServlet.war/src,\
 	test-applications/dbfat.war/src,\

@@ -39,7 +39,7 @@ Subsystem-Category: JavaEE8Application
  com.ibm.websphere.appserver.javaeedd-1.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
- com.ibm.websphere.appserver.javaeePlatform-7.0, \
+ com.ibm.websphere.appserver.javaeePlatform-8.0, \
  com.ibm.websphere.appserver.anno-1.0, \
  com.ibm.websphere.appserver.httptransport-1.0, \
  com.ibm.websphere.appserver.javax.servlet-4.0, \
@@ -49,9 +49,9 @@ Subsystem-Category: JavaEE8Application
  com.ibm.websphere.appserver.javaeeddSchema-1.0
 -bundles=com.ibm.ws.app.manager.war, \
  com.ibm.ws.managedobject, \
- com.ibm.ws.org.apache.commons.io, \
+ com.ibm.ws.org.apache.commons.io.1.4, \
  com.ibm.websphere.security, \
- com.ibm.ws.org.apache.commons.fileupload, \
+ com.ibm.ws.org.apache.commons.fileupload.1.2.1, \
  com.ibm.ws.webcontainer.servlet.4.0, \
  com.ibm.ws.webcontainer.servlet.4.0.factories, \
  com.ibm.ws.webcontainer.servlet.3.1, \

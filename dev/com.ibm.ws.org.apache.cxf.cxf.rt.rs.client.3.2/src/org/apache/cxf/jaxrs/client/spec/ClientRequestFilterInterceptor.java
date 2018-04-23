@@ -53,7 +53,7 @@ public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterc
         if (pf == null) {
             return;
         }
-        
+
         // Liberty change start
         // create an empty proxy output stream that the filter can interact with
         // an save a reference for later
@@ -72,9 +72,13 @@ public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterc
                 try {
                     filter.getProvider().filter(context);
 
+                    @SuppressWarnings("unchecked")
+                    Map<String, List<Object>> headers = CastUtils.cast((Map<String, List<Object>>)
+                                                                       outMessage.get(Message.PROTOCOL_HEADERS));
+                    HttpUtils.convertHeaderValuesToString(headers, false);
+
                     Response response = outMessage.getExchange().get(Response.class);
                     if (response != null) {
-                        convertHeadersToStrings(outMessage);
                         outMessage.getInterceptorChain().abort();
 
                         Message inMessage = new MessageImpl();
@@ -91,12 +95,6 @@ public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterc
                     throw new ProcessingException(ex);
                 }
             }
-            convertHeadersToStrings(outMessage);
         }
-    }
-
-    private static void convertHeadersToStrings(Message m) {
-        Map<String, List<Object>> headers = CastUtils.cast((Map<String, List<Object>>)m.get(Message.PROTOCOL_HEADERS));
-        HttpUtils.convertHeaderValuesToString(headers, false);
     }
 }

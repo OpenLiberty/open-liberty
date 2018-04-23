@@ -11,6 +11,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 task assembleBootstrap(type: Copy) {
+    inputs.property("javaHome", System.properties.('java.home').replace('\\', '\\\\').replace(':', '\\:'))
     def javaHome = System.properties.('java.home').replace('\\', '\\\\').replace(':', '\\:')
     from project.file('autoFVT-templates/bootstrapping.properties')
     into new File(buildDir, 'autoFVT-defaults')
@@ -35,7 +36,7 @@ task assembleBinaryDependencies() {
     }
 }
 
-assemble {
+jar {
     dependsOn assembleBootstrap
     dependsOn assembleBinaryDependencies
 }

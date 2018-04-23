@@ -10,21 +10,33 @@
  *******************************************************************************/
 package session.cache.web;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
+import javax.cache.CacheManager;
 import javax.cache.Caching;
+import javax.cache.management.CacheMXBean;
+import javax.cache.management.CacheStatisticsMXBean;
+import javax.management.JMX;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +54,39 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
     // Maximum number of nanoseconds for test to wait
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    /**
+     * Utility method to obtain the cache manager instance of the CacheStoreService
+     */
+    private CacheManager getCacheManager() throws Exception {
+        Class<?> c = Thread.currentThread().getContextClassLoader().getClass();
+        ClassLoader cl = c.getClassLoader();
+
+        Class<?> FrameworkUtil = cl.loadClass("org.osgi.framework.FrameworkUtil");
+        Class<?> ServiceReference = cl.loadClass("org.osgi.framework.ServiceReference");
+
+        Object bundle = FrameworkUtil
+                        .getMethod("getBundle", Class.class)
+                        .invoke(null, c);
+        Object bundleContext = bundle.getClass()
+                        .getMethod("getBundleContext")
+                        .invoke(bundle);
+        Object ref = bundleContext.getClass()
+                        .getMethod("getServiceReference", String.class)
+                        .invoke(bundleContext, "com.ibm.ws.session.SessionStoreService");
+        Object cacheStoreService = bundleContext.getClass()
+                        .getMethod("getService", ServiceReference)
+                        .invoke(bundleContext, ref);
+        try {
+            Field f = cacheStoreService.getClass().getDeclaredField("cacheManager");
+            f.setAccessible(true);
+            return (CacheManager) f.get(cacheStoreService);
+        } finally {
+            bundleContext.getClass()
+                            .getMethod("ungetService", ServiceReference)
+                            .invoke(bundleContext, ref);
+        }
+    }
 
     /**
      * Gets the current value of an attribute from the cache and writes it to the servlet response
@@ -88,7 +133,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     /**
      * Invalidate the active session, if any.
      */
-    public void invalidateSession(HttpServletRequest request, HttpServletResponse response) {
+    public void invalidateSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
         if (session != null) {
             System.out.println("Invalidating session: " + session.getId());
@@ -114,7 +159,12 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         String type = request.getParameter("type");
         Object expectedValue = toType(type, expected);
 
-        testCacheContains(key, expectedValue);
+        boolean useURI = Boolean.parseBoolean(request.getParameter("useURI"));
+
+        if (useURI)
+            testCacheViaURIContains(key, expectedValue);
+        else
+            testCacheContains(key, expectedValue);
     }
 
     /**
@@ -174,6 +224,39 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that the cache contains the specified attribute and value.
+     */
+    private void testCacheViaURIContains(String key, Object expectedValue) throws Exception {
+        byte[] expectedBytes = expectedValue == null ? null : toBytes(expectedValue);
+
+        System.out.println("testCacheContains cache entry " + key + " should have value: " + expectedValue);
+        System.out.println("as a byte array, this is: " + Arrays.toString(expectedBytes));
+
+        CacheManager cacheManager = getCacheManager();
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        byte[] bytes = cache.get(key);
+
+        assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
+                   "Bytes expected: " + Arrays.toString(expectedBytes) + EOLN +
+                   "Bytes observed: " + Arrays.toString(bytes),
+                   Arrays.equals(expectedBytes, bytes));
+    }
+
+    /**
+     * Set the value of a session attribute.
+     */
+    public void testGetAttribute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String attrName = request.getParameter("attribute");
+
+        String stringValue = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object value = toType(type, stringValue);
+
+        HttpSession session = request.getSession(false);
+        assertEquals(value, session.getAttribute(attrName));
+    }
+
+    /**
      * Use IBMSession.sync to request a manual update of the persistent store and verify that an update that
      * was made under a previous servlet request goes into effect immediately.
      */
@@ -215,6 +298,69 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         // Verify that attribute has been persisted to the cache
         testCacheContains(key, value);
+    }
+
+    /**
+     * Verify that CacheMXBean and CacheStatisticsMXBean provided for each of the caches created by the sessionCache feature
+     * can be obtained and report statistics about the cache.
+     */
+    public void testMXBeansEnabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        // CacheMXBean for session meta info cache
+        CacheMXBean metaInfoCacheMXBean = //
+                        JMX.newMBeanProxy(mbs,
+                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=hazelcast,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"),
+                                          CacheMXBean.class);
+        assertEquals(String.class.getName(), metaInfoCacheMXBean.getKeyType());
+        assertEquals(ArrayList.class.getName(), metaInfoCacheMXBean.getValueType());
+        assertTrue(metaInfoCacheMXBean.isManagementEnabled());
+        assertTrue(metaInfoCacheMXBean.isStatisticsEnabled());
+
+        // CacheMXBean for session attributes cache
+        CacheMXBean attrCacheMXBean = //
+                        JMX.newMBeanProxy(mbs,
+                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=hazelcast,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"),
+                                          CacheMXBean.class);
+        assertEquals(String.class.getName(), attrCacheMXBean.getKeyType());
+        assertEquals("[B", attrCacheMXBean.getValueType()); // byte[]
+        assertTrue(attrCacheMXBean.isManagementEnabled());
+        assertTrue(attrCacheMXBean.isStatisticsEnabled());
+
+        // CacheStatisticsMXBean for session meta info cache
+        CacheStatisticsMXBean metaInfoCacheStatsMXBean = //
+                        JMX.newMBeanProxy(mbs,
+                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=hazelcast,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"),
+                                          CacheStatisticsMXBean.class);
+        metaInfoCacheStatsMXBean.clear();
+        assertEquals(0, metaInfoCacheStatsMXBean.getCacheEvictions());
+
+        // CacheStatisticsMXBean for session attributes cache
+        CacheStatisticsMXBean attrCacheStatsMXBean = //
+                        JMX.newMBeanProxy(mbs,
+                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=hazelcast,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"),
+                                          CacheStatisticsMXBean.class);
+        assertEquals(0, attrCacheStatsMXBean.getCacheRemovals());
+
+        HttpSession session = request.getSession();
+        request.getSession().setAttribute("testMXBeans", 12.3f);
+        ((IBMSession) session).sync();
+
+        request.getSession().removeAttribute("testMXBeans");
+        ((IBMSession) session).sync();
+
+        assertEquals(1, attrCacheStatsMXBean.getCacheRemovals());
+
+        session.invalidate();
+    }
+
+    /**
+     * Verify that CacheMXBean and CacheStatisticsMXBean are not registered.
+     */
+    public void testMXBeansNotEnabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        Set<ObjectName> found = mbs.queryNames(new ObjectName("javax.cache:*"), null);
+        assertEquals(found.toString(), 0, found.size());
     }
 
     /**
@@ -270,6 +416,18 @@ public class SessionCacheConfigTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that sessions are not available, even if requesting a new session
+     */
+    public void testSessionCacheNotAvailable(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            HttpSession session = request.getSession(true);
+            fail("Should not be able to obtain session: " + session);
+        } catch (NullPointerException x) {
+            // expected due to misconfigured http session cache
+        }
+    }
+
+    /**
      * Set the value of a session attribute.
      * Precondition: in order for the test logic to be valid, the session attribute must not already have the same value.
      */
@@ -286,6 +444,43 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         // Verify that attribute does not get persisted to the cache yet
         String key = session.getId() + '.' + attrName;
         testCacheEntryDoesNotMatch(key, value);
+    }
+
+    /**
+     * Set the value of a session attribute.
+     * Precondition: in order for the test logic to be valid, the session attribute must not already have the same value.
+     */
+    public void testSetAttributeOnly(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String attrName = request.getParameter("attribute");
+
+        String stringValue = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object value = toType(type, stringValue);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(attrName, value);
+    }
+
+    /**
+     * Set the value of a session attribute and specify a maxInactiveInterval for the session.
+     */
+    public void testSetAttributeWithTimeout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String attrName = request.getParameter("attribute");
+
+        String stringValue = request.getParameter("value");
+        String type = request.getParameter("type");
+        Object value = toType(type, stringValue);
+
+        int maxInactiveInterval = Integer.parseInt(request.getParameter("maxInactiveInterval"));
+
+        HttpSession session = request.getSession(true);
+        String sessionId = session.getId();
+        System.out.println("session id is " + sessionId);
+        response.getWriter().write("session id: [" + sessionId + "]");
+
+        session.setAttribute(attrName, value);
+
+        session.setMaxInactiveInterval(maxInactiveInterval);
     }
 
     /**

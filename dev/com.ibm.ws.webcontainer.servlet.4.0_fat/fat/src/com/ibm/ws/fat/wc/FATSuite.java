@@ -57,6 +57,7 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
                 WCGetMappingTest.class,
                 WCEncodingTest.class,
                 WCTrailersTest.class,
+//              WCPushBuilderSecurityTest.class,
                 WCAddJspFileTest.class
 })
 public class FATSuite {

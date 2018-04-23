@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ejs.ras.TraceNLS;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -73,14 +72,12 @@ import com.ibm.ws.webcontainer.osgi.response.WCOutputStream;
 public class SRTServletResponse implements HttpServletResponse, IResponseOutput, IExtendedResponse, IServletResponse, Response, IOutputStreamObserver, HttpOutputStreamObserver  {
     private static boolean skipInputStreamRead = false;
     private boolean isCharEncodingExplicit;
-    private static final byte[] REASON_OK = "OK".getBytes();
+    private static final String REASON_OK = "OK";
     private static final String CONTENT_LANGUAGE_HEADER = "Content-Language";
     private static final byte[] CONTENT_LANGUAGE_HEADER_BYTES = CONTENT_LANGUAGE_HEADER.getBytes();
     private static final byte[] HEADER_CONTENT_TYPE_BYTES = WebContainerConstants.HEADER_CONTENT_TYPE.getBytes();
     protected static final String HEADER_CONTENT_LENGTH = "Content-Length";
-    private static final byte[] HEADER_CONTENT_LENGTH_BYTES = HEADER_CONTENT_LENGTH.getBytes();
     private static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
-    private static final byte[] HEADER_CONTENT_ENCODING_BYTES = HEADER_CONTENT_ENCODING.getBytes();
     private static final boolean keepContentLength = (Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("keepcontentlength"))).booleanValue();
     private static final boolean skipHeaderFlush = (Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.skipheaderflush"))).booleanValue();
     private static final String contentTypeCompatibility = WCCustomProperties.CONTENT_TYPE_COMPATIBILITY;
@@ -949,7 +946,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
 
             // PQ59244 - disallow content length header if content is encoded
             // LIBERTY
-            if (containsHeader(HEADER_CONTENT_ENCODING_BYTES) && containsHeader(HEADER_CONTENT_LENGTH_BYTES)) {
+            if (containsHeader(HEADER_CONTENT_ENCODING) && containsHeader(HEADER_CONTENT_LENGTH)) {
 
                 if (keepContentLength){
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
@@ -961,7 +958,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                         logger.logp(Level.FINE, CLASS_NAME,"commit", "Content-Length header disallowed w/presence of Content-Encoding header");
                     }
 
-                    removeHeader(HEADER_CONTENT_LENGTH_BYTES);
+                    removeHeader(HEADER_CONTENT_LENGTH);
                 }
             }
 
@@ -2087,7 +2084,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
             }
         }
 
-        String contentType = getHeader(HEADER_CONTENT_TYPE_BYTES);
+        String contentType = getHeader(WebContainerConstants.HEADER_CONTENT_TYPE);
 
         if (contentType!=null) {
             int index = contentType.indexOf("charset=");
@@ -2111,7 +2108,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"isCharEncodingSet", "_locale = " + _locale+ " ["+this+"]");
         
-        String contentType = getHeader(HEADER_CONTENT_TYPE_BYTES);
+        String contentType = getHeader(WebContainerConstants.HEADER_CONTENT_TYPE);
         if (contentType!=null) {
             int index = contentType.indexOf("charset=");
             if (index != -1) {

@@ -25,8 +25,8 @@ subprojects {
   if (bndProject != null) {
     plugins.apply 'biz.aQute.bnd'
   } else {
-    task release { }
     task publish { }
+    task release { }
     task releaseNeeded { dependsOn release }
     task copyPiiFiles { }
   }
@@ -47,6 +47,7 @@ subprojects {
   if (bndProject != null) {
     apply from: cnf.file('gradle/scripts/repos.gradle')
     apply from: cnf.file('gradle/scripts/publish.gradle')
+    apply from: cnf.file('gradle/scripts/anttaskdefs.gradle')
     apply from: cnf.file('gradle/scripts/tasks.gradle')
 
     if (bndis('fat.project')) {

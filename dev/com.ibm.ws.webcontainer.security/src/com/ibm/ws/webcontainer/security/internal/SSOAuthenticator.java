@@ -93,6 +93,8 @@ public class SSOAuthenticator implements WebAuthenticator {
     }
 
     //TODO Need a new design to improve performance when we have multiple cookie with the same name.
+    //TODO:  multi-cookies are in now, but we need to add removing them when logging out.
+
     /**
      * @param req
      * @param res
@@ -114,7 +116,7 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         authResult = handleJwtSSO(req, res);
-        if (authResult != null && (authResult.equals(AuthResult.SUCCESS) || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie())) {
+        if (authResult != null && (authResult.getStatus().equals(AuthResult.SUCCESS) || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie())) {
             return authResult;
         }
 
@@ -161,38 +163,26 @@ public class SSOAuthenticator implements WebAuthenticator {
      */
     private AuthenticationResult handleJwtSSO(HttpServletRequest req, HttpServletResponse res) {
         String jwtCookieName = JwtSSOTokenHelper.getJwtCookieName();
-        if (jwtCookieName == null) {
+        if (jwtCookieName == null) { // jwtsso feature not active
             return null;
         }
 
-        String[] hdrVals = CookieHelper.getCookieValues(getCookies(req), jwtCookieName);
-        String encodedjwtssotoken = null;
-        if (hdrVals != null) {
-            for (int n = 0; n < hdrVals.length; n++) {
-                String hdrVal = hdrVals[n];
-                if (hdrVal != null && hdrVal.length() > 0) {
-                    encodedjwtssotoken = hdrVal;
-                    break;
-                }
-            }
-        }
+        String encodedjwtssotoken = ssoCookieHelper.getJwtSsoTokenFromCookies(req, jwtCookieName);
+
         if (encodedjwtssotoken == null) { //jwt sso cookie is missing, look at the auth header
             encodedjwtssotoken = getJwtBearerToken(req);
         }
-        if (encodedjwtssotoken == null)
+        if (encodedjwtssotoken == null) {
             return null;
-        else
+        } else {
+            //check logged out cookie cache here. Must check full token, not just first cookie.
+            if (webAppSecurityConfig.isTrackLoggedOutSSOCookiesEnabled()) {
+                if (LoggedOutJwtSsoCookieCache.contains(encodedjwtssotoken)) {
+                    return new AuthenticationResult(AuthResult.FAILURE, Tr.formatMessage(tc, "JWT_ALREADY_LOGGED_OUT"));
+                }
+            }
             return authenticateWithJwt(req, res, encodedjwtssotoken);
-
-    }
-
-    /**
-     * @param req
-     * @return
-     */
-    private Cookie[] getCookies(HttpServletRequest req) {
-        return (req.getCookies());
-
+        }
     }
 
     /**

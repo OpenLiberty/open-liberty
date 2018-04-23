@@ -14,12 +14,12 @@
 
 	<!-- Enable features -->
 	<featureManager>
-		<feature>jsp-2.2</feature>
+		<feature>jsp-2.3</feature>
 		<feature>osgiconsole-1.0</feature>
-		<feature>httpservice-2.2</feature>
 		<feature>childAliasTest-1.0</feature>
 		<feature>childAliasTestB-1.0</feature>
 		<feature>configfatlibertyinternals-1.0</feature>
+		<feature>componentTest-1.0</feature>
 	</featureManager>
 
 	<testCAChild location="topLevel"/>

@@ -28,8 +28,20 @@ Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
-  com.ibm.ws.session.store.cache.CacheStoreService,\
   com.ibm.ws.session.store.cache.DefaultCachingProviderSupport
+
+Service-Component=com.ibm.ws.session.cache;\
+  implementation:="com.ibm.ws.session.store.cache.CacheStoreService";\
+  provide:="com.ibm.ws.session.SessionStoreService,com.ibm.wsspi.logging.Introspector";\
+  configuration-policy:=optional;\
+  library=com.ibm.wsspi.library.Library;\
+  monitor=com.ibm.ws.monitor.internal.MonitoringFrameworkExtender;\
+  serializationService=com.ibm.ws.serialization.SerializationService;\
+  userTransaction=javax.transaction.UserTransaction;\
+  dynamic:="monitor,userTransaction";\
+  greedy:="library,monitor,userTransaction";\
+  optional:="monitor,userTransaction";\
+  properties:="library.target=(id=unbound),monitor.target=(id=unbound)"
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\

@@ -16,6 +16,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -107,11 +109,8 @@ public class CacheHashMap extends BackedHashMap {
      */
     private String tcSessionMetaCache;
 
-    @FFDCIgnore(CacheException.class)
     CacheHashMap(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
         super(store, smc);
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         this.cacheStoreService = cacheStoreService;
         this._iStore = store;
@@ -121,10 +120,28 @@ public class CacheHashMap extends BackedHashMap {
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
 
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            cacheInit();
+            return null;
+        });
+    }
+
+    /**
+     * A helper method to perform JCache operations around finding, creating and initializing caches.
+     * Only invoke this method from the CacheHashMap constructor, within a doPrivileged block.
+     */
+    @FFDCIgnore(CacheException.class)
+    private void cacheInit() {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // Attempt lazy initialization if necessary
+        if (cacheStoreService.cacheManager == null)
+            cacheStoreService.activateLazily();
+
         // Build a unique per-application cache name by starting with the application context root and percent encoding
         // the / and : characters (JCache spec does not allow these in cache names)
         // and also the % character (which is necessary because of percent encoding)
-        String a = PERCENT.matcher(store.getId()).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
+        String a = PERCENT.matcher(_iStore.getId()).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
         a = SLASH.matcher(a).replaceAll("%2F");
         a = COLON.matcher(a).replaceAll("%3A");
 
@@ -168,6 +185,8 @@ public class CacheHashMap extends BackedHashMap {
         if (trace && tc.isDebugEnabled())
             tcReturn(cacheStoreService.tcCacheManager, create ? "createCache" : "getCache", tcSessionMetaCache, sessionMetaCache);
 
+        cacheStoreService.configureMonitoring(metaCacheName);
+
         // Session Attributes Cache
 
         String attrCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.attr.").append(a).toString();
@@ -206,6 +225,8 @@ public class CacheHashMap extends BackedHashMap {
         tcSessionAttrCache = "AttrCache" + Integer.toHexString(System.identityHashCode(sessionAttributeCache));
         if (trace && tc.isDebugEnabled())
             tcReturn(cacheStoreService.tcCacheManager, create ? "createCache" : "getCache", tcSessionAttrCache, sessionAttributeCache);
+
+        cacheStoreService.configureMonitoring(attrCacheName);
     }
 
     /**

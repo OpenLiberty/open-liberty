@@ -11,6 +11,11 @@
 package com.ibm.ws.logging.collector;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.KeyValuePairList;
+import com.ibm.ws.logging.data.Pair;
 
 /**
  * CollectorJsonHelpers contains methods shared between CollectorjsonUtils and CollectorJsonUtils1_1
@@ -34,6 +39,12 @@ public class CollectorJsonHelpers {
     private static final String gcEventTypeFieldJson = "\"type\":\"liberty_gc\"";
     private static String unchangingFieldsJson = null;
     private static String unchangingFieldsJson1_1 = null;
+    public final static String TRUE_BOOL = "true";
+    public final static String FALSE_BOOL = "false";
+    public final static String INT_SUFFIX = "_int";
+    public final static String FLOAT_SUFFIX = "_float";
+    public final static String BOOL_SUFFIX = "_bool";
+    public final static String LONG_SUFFIX = "_long";
 
     protected static String getEventType(String source, String location) {
         if (source.equals(CollectorConstants.GC_SOURCE) && location.equals(CollectorConstants.MEMORY)) {
@@ -65,7 +76,7 @@ public class CollectorJsonHelpers {
     }
 
     protected static boolean addToJSON(StringBuilder sb, String name, String value, boolean jsonEscapeName,
-                                       boolean jsonEscapeValue, boolean trim, boolean isFirstField, boolean isNumber) {
+                                       boolean jsonEscapeValue, boolean trim, boolean isFirstField, boolean isQuoteless) {
 
         // if name or value is null just return
         if (name == null || value == null)
@@ -88,7 +99,7 @@ public class CollectorJsonHelpers {
             sb.append(name);
 
         //If the type of the field is NUMBER, then do not add quotations around the value
-        if (isNumber) {
+        if (isQuoteless) {
 
             sb.append("\":");
 
@@ -377,4 +388,67 @@ public class CollectorJsonHelpers {
         return sb.toString();
     }
 
+    protected static String jsonRemoveSpace(String s) {
+        StringBuilder sb = new StringBuilder();
+        boolean isLine = false;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '\n') {
+                sb.append(c);
+                isLine = true;
+            } else if (c == ' ' && isLine) {
+            } else if (isLine && c != ' ') {
+                isLine = false;
+                sb.append(c);
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    protected static String getLogLevel(ArrayList<Pair> pairs) {
+        KeyValuePair kvp = null;
+        String loglevel = null;
+        for (Pair p : pairs) {
+            if (p instanceof KeyValuePair) {
+                kvp = (KeyValuePair) p;
+                if (kvp.getKey().equals(LogFieldConstants.LOGLEVEL)) {
+                    loglevel = kvp.getStringValue();
+                    break;
+                }
+            }
+        }
+        return loglevel;
+    }
+
+    public static void handleExtensions(KeyValuePairList extensions, String extKey, String extValue) {
+        extKey = LogFieldConstants.EXT_PREFIX + extKey;
+        if (extKey.indexOf('_', extKey.length() - 6) != -1) {
+            if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
+                try {
+                    extensions.addPair(extKey, Integer.parseInt(extValue));
+                } catch (NumberFormatException e) {
+                }
+            } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
+                try {
+                    extensions.addPair(extKey, Float.parseFloat(extValue));
+                } catch (NumberFormatException e) {
+                }
+            } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
+                if (extValue.toLowerCase().trim().equals(TRUE_BOOL)) {
+                    extensions.addPair(extKey, true);
+                } else if (extValue.toLowerCase().trim().equals(FALSE_BOOL)) {
+                    extensions.addPair(extKey, false);
+                }
+            } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
+                try {
+                    extensions.addPair(extKey, Long.parseLong(extValue));
+                } catch (NumberFormatException e) {
+                }
+            }
+        } else {
+            extensions.addPair(extKey, extValue);
+        }
+    }
 }

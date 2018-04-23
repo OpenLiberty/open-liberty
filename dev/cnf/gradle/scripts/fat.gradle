@@ -26,7 +26,7 @@ publishing {
 }
 
 task cleanFat(type: Delete) {
- delete autoFvtDir
+  delete autoFvtDir
 }
 
 task cleanBeforeRun(type: Delete) {
@@ -56,6 +56,7 @@ task addDerby(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
+
 task copyFeatureBundles {
   shouldRunAfter assemble
   enabled project.file('test-bundles').exists()
@@ -76,7 +77,6 @@ task autoFVT {
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
-  
   enabled project.file('fat').exists()
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
@@ -159,6 +159,7 @@ task autoFVT {
     // Check for minimum java level for test execution:
     def minJavaLevel = bnd('fat.minimum.java.level', bnd('javac.source'))
     bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
+    bndProps.setProperty('micro.version', bnd('libertyBundleMicroVersion'))
     
     File propsFile = new File(autoFvtDir, 'fat.bnd.properties')
     def writer = new FileWriter(propsFile)
@@ -223,11 +224,14 @@ task autoFVT {
       exclude '**/*.java'
     }
 
-    // Copy any locally cloned git repositories
+    // Copy any locally cloned git repositories' files
+    // This omits all git metadata by default (see gradle issue:1348).
+    File gitReposDir = new File(project.buildDir, 'gitRepos')
     copy {
-      from new File(project.buildDir, 'gitRepos')
+      from gitReposDir
       into new File(autoFvtDir, 'publish/gitRepos/')
     }
+    delete gitReposDir
 
     // Produce a list of features tested by this FAT
     def featureDeps = [] as Set
@@ -294,6 +298,7 @@ task runfat(type: Exec) {
   shouldRunAfter cleanBeforeRun
   System.setProperty("fat.test.localrun", "true");
   environment System.getProperties()
+  
   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
     executable "cmd"
     args '/c', 'ant', "-f", new File(autoFvtDir, 'TestBuild.xml')

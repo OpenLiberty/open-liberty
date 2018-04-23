@@ -59,6 +59,9 @@ import componenttest.topology.impl.LibertyServer;
  */
 public class MvnUtils {
 
+    private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
+    private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "30";
+    private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "20";
     public static File resultsDir;
     public static String wlp;
     public static File tckRunnerDir;
@@ -113,6 +116,9 @@ public class MvnUtils {
             mvn = mvn + ".cmd";
         }
         mvnCliRaw = new String[] { mvn, "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
+                                   "-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT,
+                                   "-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT,
+                                   "-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT,
                                    "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/tck" };
 
         mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliEnvVars(server, jarsFromWlp));
@@ -629,7 +635,7 @@ public class MvnUtils {
 
     /**
      * Return the project/version String of a directory's pom.xml file
-     * 
+     *
      * @param repo
      * @param subdir
      * @return
@@ -641,7 +647,17 @@ public class MvnUtils {
         File pomXml = new File(dir, "pom.xml");
         Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
         String query = "/project/version";
-        return getQueryInXml(pomXml, query, "", null).trim();
+        String projectVersion = getQueryInXml(pomXml, query, "", null);
+        // Some pom.xml files have no version but inherit it from the
+        // parent
+        if (projectVersion != null && projectVersion.trim().length() > 0) {
+            return projectVersion.trim();
+        } else {
+            query = "/project/parent/version";
+            String parentVersion = getQueryInXml(pomXml, query, "", null);
+            return parentVersion != null ? parentVersion.trim() : parentVersion;
+        }
+
     }
 
     /**

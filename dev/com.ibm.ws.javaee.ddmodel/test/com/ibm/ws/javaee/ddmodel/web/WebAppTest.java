@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,23 +20,26 @@ import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 
 /**
- *
+ * Servlet deployment descriptor parse tests.
  */
 public class WebAppTest extends WebAppTestBase {
 
+    // Servlet 3.0 cases ...
+
     @Test
-    public void testWeb30() throws Exception {
-        parse(webApp30() + "</web-app>");
+    public void testEE6Web30() throws Exception {
+        parse(webApp30() + webAppTail());
     }
 
     @Test
-    public void testEnvEntryValueWhitespace() throws Exception {
+    public void testEE6Web30EnvEntryValueWhitespace() throws Exception {
         WebApp webApp = parse(webApp30() +
                               "<env-entry>" +
                               "<env-entry-name> envName </env-entry-name>" +
                               "<env-entry-value> envValue </env-entry-value>" +
                               "</env-entry>" +
-                              "</web-app>");
+                              webAppTail());
+
         List<EnvEntry> envEntries = webApp.getEnvEntries();
         Assert.assertNotNull(envEntries);
         Assert.assertEquals(envEntries.size(), 1);
@@ -48,70 +51,111 @@ public class WebAppTest extends WebAppTestBase {
         Assert.assertEquals(envEntry.getValue(), " envValue ");
     }
 
-    @Test(expected = DDParser.ParseException.class)
-    public void testWeb31WithEE6Parser() throws Exception {
-        parse(webApp31() + "</web-app>");
-    }
-
-    @Test()
-    public void testWeb31WithEE7Parser() throws Exception {
-        parseWebApp(webApp31() + "</web-app>", WebApp.VERSION_3_1);
-    }
-
     @Test
-    public void testAbsoluteOrderingElement() throws Exception {
+    public void testEE6Web30AbsoluteOrderingElement() throws Exception {
         parse(webApp30() +
               "<absolute-ordering>" +
               "<name>Fragment1</name>" +
               "<name>Fragment2</name>" +
               "</absolute-ordering>" +
-              "</web-app>");
+              webAppTail());
+    }
+
+    // The prohibition against having more than one absolute ordering element
+    // was added in JavaEE7.
+    @Test
+    public void testEE6Web30AbsoluteOrderingDuplicateElements() throws Exception {
+        parse(webApp30() +
+              "<absolute-ordering>" +
+              "<name>Fragment1</name>" +
+              "<name>Fragment2</name>" +
+              "</absolute-ordering>" +
+              "<absolute-ordering>" +
+              "</absolute-ordering>" +
+              webAppTail());
     }
 
     @Test(expected = DDParser.ParseException.class)
-    public void testAbsoluteOrderingDuplicateElements30() throws Exception {
-        parseWebApp(webApp30() +
-                    "<absolute-ordering>" +
-                    "<name>Fragment1</name>" +
-                    "<name>Fragment2</name>" +
-                    "</absolute-ordering>" +
-                    "<absolute-ordering>" +
-                    "</absolute-ordering>" +
-                    "</web-app>", WebApp.VERSION_3_1);
+    public void testEE6Web30DenyUncoveredHttpMethods() throws Exception {
+        parse(webApp30() +
+              "<deny-uncovered-http-methods/>" +
+              webAppTail());
     }
 
     @Test(expected = DDParser.ParseException.class)
-    public void testAbsoluteOrderingDuplicateElements31() throws Exception {
-        parseWebApp(webApp31() +
-                    "<absolute-ordering>" +
-                    "<name>Fragment1</name>" +
-                    "<name>Fragment2</name>" +
-                    "</absolute-ordering>" +
-                    "<absolute-ordering>" +
-                    "</absolute-ordering>" +
-                    "</web-app>", WebApp.VERSION_3_1);
+    public void testEE6Web31() throws Exception {
+        parse(webApp31() + webAppTail());
     }
 
     @Test(expected = DDParser.ParseException.class)
-    public void testDenyUncoveredHttpMethods30() throws Exception {
-        parseWebApp(webApp30() +
-                    "<deny-uncovered-http-methods/>" +
-                    "</web-app>", WebApp.VERSION_3_0);
+    public void testEE6Web40() throws Exception {
+        parse(webApp40() + webAppTail());
+    }
+
+    // Servlet 3.1 cases ...
+
+    // Parse 3.0 and 3.1.  Do not parse 4.0.
+
+    @Test()
+    public void testEE7Web30() throws Exception {
+        parse(webApp30() + webAppTail(), WebApp.VERSION_3_1);
+    }
+
+    @Test()
+    public void testEE7Web31() throws Exception {
+        parse(webApp31() + webAppTail(), WebApp.VERSION_3_1);
+    }
+
+    @Test(expected = DDParser.ParseException.class)
+    public void testEE7Web31AbsoluteOrderingDuplicates() throws Exception {
+        parse(webApp31() +
+              "<absolute-ordering>" +
+              "<name>Fragment1</name>" +
+              "<name>Fragment2</name>" +
+              "</absolute-ordering>" +
+              "<absolute-ordering>" +
+              "</absolute-ordering>" +
+              webAppTail(),
+              WebApp.VERSION_3_1);
     }
 
     @Test
-    public void testDenyUncoveredHttpMethods31() throws Exception {
-        parseWebApp(webApp31() +
-                    "<deny-uncovered-http-methods/>" +
-                    "</web-app>", WebApp.VERSION_3_1);
-
+    public void testEE7Web31DenyUncoveredHttpMethods() throws Exception {
+        parse(webApp31() +
+              "<deny-uncovered-http-methods/>" +
+              webAppTail(),
+              WebApp.VERSION_3_1);
     }
 
     @Test(expected = DDParser.ParseException.class)
-    public void testDenyUncoveredHttpMethods31NotEmptyType() throws Exception {
-        parseWebApp(webApp31() +
-                    "<deny-uncovered-http-methods>junk</deny-uncovered-http-methods> +" +
-                    "</web-app>", WebApp.VERSION_3_1);
+    public void testEE7Web31DenyUncoveredHttpMethodsNotEmptyType() throws Exception {
+        parse(webApp31() +
+              "<deny-uncovered-http-methods>junk</deny-uncovered-http-methods>" +
+              webAppTail(),
+              WebApp.VERSION_3_1);
+    }
 
+    @Test(expected = DDParser.ParseException.class)
+    public void testEE7Web40() throws Exception {
+        parse(webApp40() + webAppTail(), WebApp.VERSION_3_1);
+    }
+
+    // Servlet 4.0 cases ...
+
+    // Parse everything.
+
+    @Test
+    public void testEE8Web30() throws Exception {
+        parse(webApp30() + webAppTail(), WebApp.VERSION_4_0);
+    }
+
+    @Test
+    public void testEE8Web31() throws Exception {
+        parse(webApp31() + webAppTail(), WebApp.VERSION_4_0);
+    }
+
+    @Test
+    public void testEE8Web40() throws Exception {
+        parse(webApp40() + webAppTail(), WebApp.VERSION_4_0);
     }
 }

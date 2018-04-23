@@ -1118,6 +1118,10 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
         // V5. WAS.webcontainer
 
         dispatchContext.setDispatcherType(dispatcherType);
+        
+        if (path == null){
+            dispatchContext.setNamedDispatcher(true);
+        }
 
         //Defect 632800
         //we need to keep track of the error dispatch type separately from the 

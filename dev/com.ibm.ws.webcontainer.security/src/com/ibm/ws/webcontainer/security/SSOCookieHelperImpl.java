@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,10 +29,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.util.ByteArray;
+import com.ibm.ws.webcontainer.security.internal.LoggedOutJwtSsoCookieCache;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.StringUtil;
 import com.ibm.wsspi.security.token.SingleSignonToken;
@@ -51,6 +54,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
     public SSOCookieHelperImpl(WebAppSecurityConfig config) {
         this(config, (String) null);
+
     }
 
     /**
@@ -69,7 +73,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      **/
     @Override
     public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
-new Exception("Toshi").printStackTrace();
         if (!allowToAddCookieToResponse(req))
             return;
         addJwtSsoCookiesToResponse(subject, req, resp);
@@ -109,16 +112,42 @@ new Exception("Toshi").printStackTrace();
     public void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         if (cookieByteString != null) {
-            Cookie ssoCookie = createJwtCookie(req, cookieByteString);
-            resp.addCookie(ssoCookie);
+            addJwtCookies(cookieByteString, req, resp);
             isJwtCookie = true;
         }
 
     }
 
-    public Cookie createJwtCookie(HttpServletRequest req, String cookieValue) {
-        Cookie ssoCookie = new Cookie("jwtToken", cookieValue);
+    /*
+     * add the cookie or cookies as needed, depending on size of token
+     */
+    protected void addJwtCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp) {
+        String baseName = getJwtCookieName();
+        if (baseName == null) {
+            return;
+        }
+        String[] chunks = splitString(cookieByteString, 3900);
+        String cookieName = baseName;
+        for (int i = 0; i < chunks.length; i++) {
+            if (i > 98) {
+                String eMsg = "Too many jwt cookies created";
+                com.ibm.ws.ffdc.FFDCFilter.processException(new Exception(eMsg), this.getClass().getName(), "132");
+                break;
+            }
+            Cookie ssoCookie = createJwtCookie(req, cookieName, chunks[i]); //name
+            resp.addCookie(ssoCookie);
+            cookieName = baseName + (i + 2 < 10 ? "0" : "") + (i + 2); //name02... name99
+        }
+    }
+
+    protected String getJwtCookieName() {
+        return JwtSSOTokenHelper.getJwtCookieName();
+    }
+
+    public Cookie createJwtCookie(HttpServletRequest req, String cookieName, String cookieValue) {
+        Cookie ssoCookie = new Cookie(cookieName, cookieValue);
         ssoCookie.setMaxAge(-1);
+        //The path has to be "/" so we will not have multiple cookies in the same domain
         ssoCookie.setPath("/");
         ssoCookie.setSecure(config.getSSORequiresSSL());
         ssoCookie.setHttpOnly(config.getHttpOnlyCookies());
@@ -127,6 +156,7 @@ new Exception("Toshi").printStackTrace();
         if (domainName != null) {
             ssoCookie.setDomain(domainName);
         }
+
         return ssoCookie;
     }
 
@@ -191,6 +221,19 @@ new Exception("Toshi").printStackTrace();
     public void removeSSOCookieFromResponse(HttpServletResponse resp) {
         if (resp instanceof com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) {
             ((com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) resp).removeCookie(getSSOCookiename());
+            removeJwtSSOCookies((com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) resp);
+        }
+    }
+
+    protected void removeJwtSSOCookies(com.ibm.wsspi.webcontainer.servlet.IExtendedResponse resp) {
+        String cookieName = getJwtCookieName();
+        if (cookieName == null)
+            return;
+        resp.removeCookie(cookieName);
+        // unknown how many additional cookies we had, just remove all possible cookies.
+        for (int i = 2; i <= 99; i++) {
+            String nextCookieName = cookieName + (i < 10 ? "0" : "") + i; //name02... name99
+            resp.removeCookie(nextCookieName);
         }
     }
 
@@ -213,6 +256,7 @@ new Exception("Toshi").printStackTrace();
     /*
      * 1) If we have the custom cookie name, then delete just the custom cookie name
      * 2) If we have the custom cookie name but no cookie found, then will delete the default cookie name LTPAToken2
+     * 3) If jwtsso is active, clean up those cookies too.
      */
     @Override
     public void createLogoutCookies(HttpServletRequest req, HttpServletResponse res) {
@@ -226,10 +270,40 @@ new Exception("Toshi").printStackTrace();
                     addLogoutCookieToList(req, ssoCookieName, logoutCookieList);
                 }
             }
+
+            String jwtCookieName = getJwtCookieName();
+            if (jwtCookieName != null) { // jwtsso is active, expire it's cookies too
+                //if (config.isTrackLoggedOutSSOCookiesEnabled())
+                LoggedOutJwtSsoCookieCache.put(getJwtSsoTokenFromCookies(req, jwtCookieName));
+
+                for (int i = 0; i < cookies.length; i++) {
+                    if (isJwtCookie(jwtCookieName, cookies[i].getName())) {
+                        cookies[i].setValue(null);
+                        addLogoutCookieToList(req, cookies[i].getName(), logoutCookieList);
+                    }
+                }
+
+            }
+            //TODO: deal with jwtsso's customizable cookie path.
             for (Cookie cookie : logoutCookieList) {
                 res.addCookie(cookie);
             }
         }
+    }
+
+    // jwtsso cookie names can be name, name02, 03, etc thru name99
+    // see if cookiename is a jwtsso cookie based on the name.
+    private boolean isJwtCookie(String baseName, String cookieName) {
+        if (baseName.equalsIgnoreCase(cookieName))
+            return true;
+        if (!(cookieName.startsWith(baseName))) {
+            return false;
+        }
+        if (cookieName.length() != baseName.length() + 2) {
+            return false;
+        }
+        String lastTwoChars = cookieName.substring(baseName.length());
+        return lastTwoChars.matches("\\d\\d");
     }
 
     /**
@@ -386,4 +460,78 @@ new Exception("Toshi").printStackTrace();
         String host = url.getHost().trim();
         return host;
     }
+
+    @Trivial
+    protected String[] splitString(String buf, int blockSize) {
+        ArrayList<String> al = new ArrayList<String>();
+        if (blockSize <= 0 || buf == null || buf.length() == 0) {
+            return al.toArray(new String[0]);
+        }
+        int begin = 0;
+        int end = 0;
+        int length = buf.length();
+        while (true) {
+            end = begin + (length - end < blockSize ? length - end : blockSize);
+            al.add(buf.substring(begin, end));
+            if (end >= length) {
+                break;
+            }
+            begin += (end - begin);
+        }
+
+        return al.toArray(new String[0]);
+    }
+
+    /**
+     * The token can be split across multiple cookies if it is over 3900 chars.
+     * Look for subsequent cookies and concatenate them in that case.
+     * The counterpart for this method is SSOCookieHelperImpl.addJwtSsoCookiesToResponse.
+     *
+     * @param req
+     * @return the token String or null if nothing found.
+     */
+    @Override
+    public String getJwtSsoTokenFromCookies(HttpServletRequest req, String baseName) {
+
+        StringBuffer tokenStr = new StringBuffer();
+        String cookieName = baseName;
+        for (int i = 1; i <= 99; i++) {
+            if (i > 1) {
+                cookieName = baseName + (i < 10 ? "0" : "") + i; //name02... name99
+            }
+            String cookieValue = getCookieValue(req, cookieName);
+            if (cookieValue == null) {
+                break;
+            }
+            if (cookieValue.length() > 0) {
+                tokenStr.append(cookieValue);
+            }
+        }
+        return tokenStr.length() > 0 ? tokenStr.toString() : null;
+    }
+
+    protected String getCookieValue(HttpServletRequest req, String cookieName) {
+        String[] hdrVals = CookieHelper.getCookieValues(getCookies(req), cookieName);
+        String result = null;
+        if (hdrVals != null) {
+            for (int n = 0; n < hdrVals.length; n++) {
+                String hdrVal = hdrVals[n];
+                if (hdrVal != null && hdrVal.length() > 0) {
+                    result = hdrVal;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param req
+     * @return
+     */
+    private Cookie[] getCookies(HttpServletRequest req) {
+        return (req.getCookies());
+
+    }
+
 }

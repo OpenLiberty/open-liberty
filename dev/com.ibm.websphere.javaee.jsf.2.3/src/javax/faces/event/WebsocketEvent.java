@@ -50,9 +50,9 @@ public final class WebsocketEvent implements Serializable
         return channel;
     }
 
-    public Serializable getUser()
+    public <S extends java.io.Serializable> S getUser()
     {
-        return user;
+        return (S) user;
     }
 
     public CloseReason.CloseCode getCloseCode()

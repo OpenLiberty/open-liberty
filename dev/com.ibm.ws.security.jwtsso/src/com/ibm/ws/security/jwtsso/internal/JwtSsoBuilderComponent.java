@@ -39,6 +39,7 @@ import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 
+// This class handles the builder objects, the JwtSsoComponent class handles the consumer objects.
 @Component(service = { JwtSsoBuilderConfig.class,
 		JwtConfig.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoBuilderConfig", property = "service.vendor=IBM")
 public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
@@ -154,8 +155,6 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 
 	@Activate
 	protected void activate(Map<String, Object> properties, ComponentContext cc) {
-		System.out.println("***** JWTSSO Builder activate *****"); // todo://
-																	// removeme
 		uniqueId = (String) properties.get(KEY_UNIQUE_ID);
 		process(properties);
 	}

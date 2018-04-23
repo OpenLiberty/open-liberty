@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ws.rs.ConstrainedTo;
 import javax.ws.rs.Priorities;
@@ -43,30 +42,30 @@ import org.apache.cxf.jaxrs.utils.AnnotationUtils;
 
 public class ConfigurableImpl<C extends Configurable<C>> implements Configurable<C> {
     private static final Logger LOG = LogUtils.getL7dLogger(ConfigurableImpl.class);
-    
-    private static final Class<?>[] RESTRICTED_CLASSES_IN_SERVER = {ClientRequestFilter.class, 
+
+    private static final Class<?>[] RESTRICTED_CLASSES_IN_SERVER = {ClientRequestFilter.class,
                                                                     ClientResponseFilter.class};
-    private static final Class<?>[] RESTRICTED_CLASSES_IN_CLIENT = {ContainerRequestFilter.class, 
+    private static final Class<?>[] RESTRICTED_CLASSES_IN_CLIENT = {ContainerRequestFilter.class,
                                                                     ContainerResponseFilter.class};
-    
+
     private ConfigurationImpl config;
     private final C configurable;
-    
+
     private final Class<?>[] restrictedContractTypes;
 
     public interface Instantiator {
         <T> Object create(Class<T> cls);
     }
-    
+
     public ConfigurableImpl(C configurable, RuntimeType rt) {
         this(configurable, new ConfigurationImpl(rt));
     }
-    
+
     public ConfigurableImpl(C configurable, Configuration config) {
         this.configurable = configurable;
         this.config = config instanceof ConfigurationImpl
             ? (ConfigurationImpl)config : new ConfigurationImpl(config);
-        restrictedContractTypes = RuntimeType.CLIENT.equals(config.getRuntimeType()) ? RESTRICTED_CLASSES_IN_CLIENT 
+        restrictedContractTypes = RuntimeType.CLIENT.equals(config.getRuntimeType()) ? RESTRICTED_CLASSES_IN_CLIENT
             : RESTRICTED_CLASSES_IN_SERVER;
     }
 
@@ -79,12 +78,12 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
         this(configurable, config);
     }
     //Liberty change end
-    
+
     static Class<?>[] getImplementedContracts(Object provider, Class<?>[] restrictedClasses) {
         Class<?> providerClass = provider instanceof Class<?> ? ((Class<?>)provider) : provider.getClass();
         Set<Class<?>> interfaces = Arrays.stream(providerClass.getInterfaces()).collect(Collectors.toSet());
         providerClass = providerClass.getSuperclass();
-        for (;providerClass != null && providerClass != Object.class; providerClass = providerClass.getSuperclass()) {
+        for (; providerClass != null && providerClass != Object.class; providerClass = providerClass.getSuperclass()) {
             interfaces.addAll(Arrays.stream(providerClass.getInterfaces()).collect(Collectors.toSet()));
         }
         List<Class<?>> implementedContracts = interfaces.stream()
@@ -92,7 +91,7 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
             .collect(Collectors.toList());
         return implementedContracts.toArray(new Class<?>[]{});
     }
-    
+
     protected C getConfigurable() {
         return configurable;
     }
@@ -135,7 +134,7 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
 
     @Override
     public C register(Class<?> providerClass, int bindingPriority) {
-        return doRegister(getInstantiator().create(providerClass), bindingPriority, 
+        return doRegister(getInstantiator().create(providerClass), bindingPriority,
                           getImplementedContracts(providerClass, restrictedContractTypes));
     }
 
@@ -189,7 +188,7 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
                             + " runtime because it is constrained to " + providerRuntime + " runtimes.");
                 return false;
             }
-            
+
             Class<?>[] restrictedInterfaces = RuntimeType.CLIENT.equals(providerRuntime) ? RESTRICTED_CLASSES_IN_CLIENT
                                                                                          : RESTRICTED_CLASSES_IN_SERVER;
             for (Class<?> restrictedContract : restrictedInterfaces) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,13 +73,25 @@ public class ApplicationClientDDParser extends DDParser {
                 return new ApplicationClientType(getDeploymentDescriptorPath());
             }
         }
-        else if (maxVersion >= ApplicationClient.VERSION_7 && "7".equals(vers)) {
-            if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                version = ApplicationClient.VERSION_7;
-                eePlatformVersion = 70;
-                return new ApplicationClientType(getDeploymentDescriptorPath());
-            }
+        else if ("7".equals(vers)) {
+        	if (maxVersion >= ApplicationClient.VERSION_7) { 
+        		if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+        			version = ApplicationClient.VERSION_7;
+        			eePlatformVersion = 70;
+        			return new ApplicationClientType(getDeploymentDescriptorPath());
+        		}
+        	}
         }
+        else if ("8".equals(vers)) {
+        	if (maxVersion >= ApplicationClient.VERSION_8) {
+        		if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+        			version = ApplicationClient.VERSION_8;
+        			eePlatformVersion = 80;
+        			return new ApplicationClientType(getDeploymentDescriptorPath());
+        		}
+        	}
+        }
+
         throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
     }
 }

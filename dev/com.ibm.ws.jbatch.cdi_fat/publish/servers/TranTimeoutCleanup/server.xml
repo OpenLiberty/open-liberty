@@ -1,0 +1,21 @@
+<server description="TranTimeoutCleanup">
+
+	<featureManager>
+		<feature>batch-1.0</feature>
+		<feature>cdi-1.2</feature>
+		<feature>componenttest-1.0</feature>
+		<!-- For Java 2 security -->
+		<feature>jaxb-2.2</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+
+	<application location="implicit.war" />
+
+	<logging maxFileSize="100" maxFiles="4"
+		traceSpecification="*=info:test=all:com.ibm.jbatch.*=all:com.ibm.ws.jbatch.*=all:EJBContainer=all:Injection=all:JCDI=all:MetaData=all:com.ibm.jbatch.*=all:com.ibm.ws.cdi*=all:com.ibm.ws.jbatch.*=all:org.jboss.weld*=all" />
+
+	<!--  Using in-memory persistence, though a bad choice for transactional persistence, let's us move
+	through the tests more quickly, allowing us to sleep for less time, getting through the bucket more quickly. -->
+
+</server>

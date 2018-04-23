@@ -20,14 +20,31 @@ import com.ibm.wsspi.adaptable.module.Container;
  */
 public interface ApplicationInfoFactory {
 
-    public ExtendedApplicationInfo createApplicationInfo(String appMgrName, String preferredName, Container container,
+    @Deprecated
+    public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName,
+                                                         Container container,
                                                          ApplicationClassesContainerInfo appClassesContainerInfo,
                                                          NestedConfigHelper configHelper);
 
-    public ExtendedEARApplicationInfo createEARApplicationInfo(String appMgrName, String preferredName, Container container,
+    public ExtendedApplicationInfo createApplicationInfo(String appName, String preferredName, Container container,
+                                                         ApplicationClassesContainerInfo appClassesContainerInfo,
+                                                         NestedConfigHelper configHelper,
+                                                         ApplicationInfoForContainer applicationInformation);
+
+    //public ExtendedApplicationInfo createApplicationInfo(String appMgrName, String preferredName, Container container,
+    //                                                     ApplicationClassesContainerInfo appClassesContainerInfo,
+    //                                                     NestedConfigHelper configHelper);
+
+    public ExtendedEARApplicationInfo createEARApplicationInfo(String appName, String preferredName, Container container,
                                                                ApplicationClassesContainerInfo appClassesContainerInfo,
                                                                NestedConfigHelper configHelper,
+                                                               ApplicationInfoForContainer applicationInformation,
                                                                Container libDirContainer, AppClassLoaderFactory classLoaderFactory);
+
+    //public ExtendedEARApplicationInfo createEARApplicationInfo(String appMgrName, String preferredName, Container container,
+    //                                                           ApplicationClassesContainerInfo appClassesContainerInfo,
+    //                                                           NestedConfigHelper configHelper,
+    //                                                           Container libDirContainer, AppClassLoaderFactory classLoaderFactory);
 
     public void destroyApplicationInfo(ApplicationInfo appInfo);
 }

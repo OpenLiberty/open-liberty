@@ -16,13 +16,13 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
  *
  */
 public final class SpringConstants {
-    public static final String SPRING_APP_TYPE = "spr";
+    public static final String SPRING_APP_TYPE = "spring";
+    public static final String SPRING_LIB_CACHE_NAME = "lib.index.cache";
     public static final String SPRING_BOOT_SUPPORT_CAPABILITY = "spring.boot.support";
     public static final String SPRING_BOOT_SUPPORT_CAPABILITY_JARS = "jars";
-    private static final String SPRING_LIB_CACHE_DIR = "lib.index.cache/";
-    public static final String SPRING_SHARED_LIB_CACHE_DIR = WsLocationConstants.SYMBOL_SHARED_RESC_DIR + SPRING_LIB_CACHE_DIR;
+    public static final String SPRING_SHARED_LIB_CACHE_DIR = WsLocationConstants.SYMBOL_SHARED_RESC_DIR + SPRING_LIB_CACHE_NAME + "/";
     private static final String SPRING_WORKAREA = WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "spring/";
-    public static final String SPRING_WORKAREA_LIB_CACHE_DIR = SPRING_WORKAREA + SPRING_LIB_CACHE_DIR;
+    public static final String SPRING_WORKAREA_LIB_CACHE_DIR = SPRING_WORKAREA + SPRING_LIB_CACHE_NAME + "/";
     public static final String SPRING_THIN_APPS_DIR = SPRING_WORKAREA + "spring.thin.apps/";
     public static final String SPRING_BOOT_CONFIG_NAMESPACE = "liberty.springboot.config";
     public static final String SPRING_BOOT_CONFIG_BUNDLE_PREFIX = "springBootVirtualHost@";
@@ -46,4 +46,5 @@ public final class SpringConstants {
                                                         "virtualHostName=\"";
     public static final String XMI_VIRTUAL_HOST_END = "\">\n" +
                                                       "</webappbnd:WebAppBinding>";
+    public static final String APP_ARGS = "applicationArgument";
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.enterprise.CallerPrincipal;
@@ -29,6 +30,7 @@ import javax.security.enterprise.credential.CallerOnlyCredential;
 import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
+import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
 import org.hamcrest.Description;
@@ -41,11 +43,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
-
-import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.security.javaeesec.CDIHelperTestWrapper;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
@@ -56,8 +58,6 @@ public class IdentityStoreHandlerServiceImplTest {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-
-    private static final String IS_MANDATORY_POLICY = "javax.security.auth.message.MessagePolicy.isMandatory";
 
     private IdentityStoreHandlerServiceImpl ishsi;
     private ModulePropertiesUtils mpu;
@@ -70,7 +70,9 @@ public class IdentityStoreHandlerServiceImplTest {
     private String realmName;
     private Set<String> groups;
     private CredentialValidationResult validResult;
-    
+    private BeanManager bm;
+    private CDIService cdis;
+    private CDIHelperTestWrapper cdiHelperTestWrapper;
 
     @Before
     public void setUp() {
@@ -82,8 +84,10 @@ public class IdentityStoreHandlerServiceImplTest {
             protected CDI getCDI() {
                 return cdi;
             }
-             protected ModulePropertiesUtils getModulePropertiesUtils() {
-                 return mpu;
+
+            @Override
+            protected ModulePropertiesUtils getModulePropertiesUtils() {
+                return mpu;
             }
         };
 
@@ -94,31 +98,30 @@ public class IdentityStoreHandlerServiceImplTest {
         callerPrincipal = new CallerPrincipal(principalName);
         groups = new HashSet<String>();
         validResult = new CredentialValidationResult(callerPrincipal, groups);
+
+        bm = mockery.mock(BeanManager.class, "bm1");
+        cdis = mockery.mock(CDIService.class);
+        cdiHelperTestWrapper = new CDIHelperTestWrapper(mockery, null);
+        cdiHelperTestWrapper.setCDIService(cdis);
     }
 
     @After
     public void tearDown() throws Exception {
+        cdiHelperTestWrapper.unsetCDIService(cdis);
         mockery.assertIsSatisfied();
     }
 
     @Test
-    public void testIsIdentityStoreHanderAvailable_True() throws Exception {
+    public void testIsIdentityStoreAvailable_True() throws Exception {
         withHttpAuthenticationMechanism(true);
-        withIdentityStoreHandler(identityStoreHandler);
-        assertTrue("the result should be true.", ishsi.isIdentityStoreHanderAvailable());
+        withIdentityStore();
+        assertTrue("the result should be true.", ishsi.isIdentityStoreAvailable());
     }
 
     @Test
     public void testIsIdentityStoreHanderAvailable_FalseNoHAM() throws Exception {
         withHttpAuthenticationMechanism(false);
-        assertFalse("the result should be false.", ishsi.isIdentityStoreHanderAvailable());
-    }
-
-    @Test
-    public void testIsIdentityStoreHanderAvailable_FalseNoIDStoreHandler() throws Exception {
-        withHttpAuthenticationMechanism(true);
-        withoutIdentityStoreHandler(false, true);
-        assertFalse("the result should be false.", ishsi.isIdentityStoreHanderAvailable());
+        assertFalse("the result should be false.", ishsi.isIdentityStoreAvailable());
     }
 
     @Test
@@ -164,7 +167,6 @@ public class IdentityStoreHandlerServiceImplTest {
             assertTrue("The message does not match with the expectation", e.getMessage().contains(msg));
         }
     }
-
 
     @Test
     public void testCreateHashtableInSubjectWithUserIdAndPassword_FailureNoHAM() throws Exception {
@@ -216,7 +218,6 @@ public class IdentityStoreHandlerServiceImplTest {
         }
     }
 
-
     private void withIdentityStoreHandlerResult(CredentialValidationResult result) {
         withIdentityStoreHandler(identityStoreHandler).withResult(result);
     }
@@ -250,6 +251,22 @@ public class IdentityStoreHandlerServiceImplTest {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
+    private IdentityStoreHandlerServiceImplTest withIdentityStore() {
+        final Instance<IdentityStore> IDStoreInstance = mockery.mock(Instance.class);
+
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).select(IdentityStore.class);
+                will(returnValue(IDStoreInstance));
+                one(IDStoreInstance).isUnsatisfied();
+                will(returnValue(false));
+                one(IDStoreInstance).isAmbiguous();
+                will(returnValue(false));
+            }
+        });
+        return this;
+    }
 
     @SuppressWarnings("unchecked")
     private IdentityStoreHandlerServiceImplTest withoutIdentityStoreHandler(final boolean unsatisfied, final boolean ambiguous) {
@@ -264,6 +281,8 @@ public class IdentityStoreHandlerServiceImplTest {
                 allowing(storeHandlerInstance).isAmbiguous();
                 will(returnValue(ambiguous));
                 never(storeHandlerInstance).get();
+                one(cdi).getBeanManager();
+                will(returnValue(bm));
             }
         });
         return this;

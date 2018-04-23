@@ -21,3 +21,5 @@
 
 # Ignore gradle metadata
 .gradle
+/.metadata/
+/.recommenders/

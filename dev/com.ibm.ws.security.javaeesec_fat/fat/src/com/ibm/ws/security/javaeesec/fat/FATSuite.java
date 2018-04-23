@@ -40,6 +40,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 HttpAuthenticationMechanismDBTest.class,
                 HttpAuthenticationMechanismDBNoUserTest.class,
                 HttpAuthenticationMechanismDBAuthAliasTest.class,
+                HttpAuthenticationMechanismDBAuthDataTest.class,
                 HttpAuthenticationMechanismDBShortNameTest.class,
                 HttpAuthenticationMechanismDBHashTest.class,
                 HttpAuthenticationMechanismDBHashBeanTest.class,
@@ -53,7 +54,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 EAREJBModuleTest.class,
                 MultipleModuleGlobalLoginTest.class,
                 MultipleModuleRunAsTest.class,
-                ScopedTest.class
+                ScopedTest.class,
+                CustomIdentityStoreHandlerTest.class,
+                NoIdentityStoreTest.class
 })
 
 /**

@@ -92,7 +92,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     }
 
     private void invokeSpringMain(Future<Boolean> mainInvokeResult, SpringBootModuleInfo springBootModuleInfo) {
-
+        final SpringBootApplicationImpl springBootApplication = springBootModuleInfo.getSpringBootApplication();
         final Method main;
         ClassLoader newTccl = springBootModuleInfo.getClassLoader();
         ClassLoader previousTccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
@@ -101,10 +101,9 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
             return null;
         });
         try {
-            SpringBootApplicationImpl springBootApp = springBootModuleInfo.getSpringBootApplication();
-            springBootApp.registerSpringConfigFactory();
-            Class<?> springAppClass = springBootModuleInfo.getClassLoader().loadClass(springBootApp.getSpringBootManifest().getSpringStartClass());
-            main = springAppClass.getMethod("main", String[].class);
+            springBootApplication.registerSpringConfigFactory();
+            Class<?> springApplicationClass = springBootModuleInfo.getClassLoader().loadClass(springBootApplication.getSpringBootManifest().getSpringStartClass());
+            main = springApplicationClass.getMethod("main", String[].class);
             // TODO not sure Spring Boot supports non-private main methods
             main.setAccessible(true);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
@@ -126,8 +125,8 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
                 return null;
             });
             try {
-                // TODO figure out how to pass arguments
-                main.invoke(null, new Object[] { new String[0] });
+                // get the application args to pass from the springBootApplication
+                main.invoke(null, new Object[] { springBootApplication.getAppArgs().toArray(new String[0]) });
                 futureMonitor.setResult(mainInvokeResult, true);
             } catch (InvocationTargetException e) {
                 Throwable target = e.getTargetException();
