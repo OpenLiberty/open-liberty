@@ -170,6 +170,10 @@ public class WebAppSecurityConfigImplTest {
         cfg.put("webAlwaysLogin", Boolean.TRUE);
         cfg.put("jaspicSessionForMechanismsEnabled", Boolean.TRUE);
         cfg.put("jaspicSessionCookieName", "jaspicSession");
+        cfg.put("loginErrorURL", "originalLoginError");
+        cfg.put("contextRootForFormAuthenticationMechanism", "/original");
+        cfg.put("basicAuthenticationMechanismRealmName", "realm");
+        cfg.put("overrideHttpAuthenticationMechanism", "original");
         WebAppSecurityConfig webCfgOld = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
 
         cfg.put("allowFailOverToBasicAuth", Boolean.FALSE);
@@ -180,10 +184,14 @@ public class WebAppSecurityConfigImplTest {
         cfg.put("webAlwaysLogin", Boolean.FALSE);
         cfg.put("jaspicSessionForMechanismsEnabled", Boolean.FALSE);
         cfg.put("jaspicSessionCookieName", "myJaspicSession");
+        cfg.put("loginErrorURL", "modifiedLoginError");
+        cfg.put("contextRootForFormAuthenticationMechanism", "/modified");
+        cfg.put("basicAuthenticationMechanismRealmName", "newRealm");
+        cfg.put("overrideHttpAuthenticationMechanism", "modified");
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
 
         assertEquals("When all settings have changed, all should be listed",
-                     "allowFailOverToBasicAuth=false,displayAuthenticationRealm=true,jaspicSessionCookieName=myJaspicSession,jaspicSessionForMechanismsEnabled=false,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false",
+                     "allowFailOverToBasicAuth=false,displayAuthenticationRealm=true,jaspicSessionCookieName=myJaspicSession,jaspicSessionForMechanismsEnabled=false,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false,loginErrorURL=modifiedLoginError,overrideHttpAuthenticationMechanism=modified,contextRootForFormAuthenticationMechanism=/modified,basicAuthenticationMechanismRealmName=newRealm",
                      webCfg.getChangedProperties(webCfgOld));
     }
 
@@ -317,6 +325,34 @@ public class WebAppSecurityConfigImplTest {
         driveSingleAttributeTest("webAlwaysLogin",
                                  Boolean.TRUE, Boolean.FALSE);
     }
+
+    @Test
+    public void getChangedProperties_loginErrorURL() {
+        driveSingleAttributeTest("loginErrorURL",
+                                 "", "/new");
+    }
+
+    @Test
+    public void getChangedProperties_overrideHttpAuthenticationMechanism() {
+        driveSingleAttributeTest("overrideHttpAuthenticationMechanism",
+                                 "BASIC", "FORM");
+    }
+
+    @Test
+    public void getChangedProperties_contextRootForFormAuthenticationMechanism() {
+        driveSingleAttributeTest("contextRootForFormAuthenticationMechanism",
+                                 "someValue", "");
+    }
+
+    @Test
+    public void getChangedProperties_basicAuthenticationMechanismRealmName() {
+        driveSingleAttributeTest("basicAuthenticationMechanismRealmName",
+                                 "old", "new");
+    }
+
+
+
+
 
     @Test
     public void testGetJaspicSessionCookieName() {

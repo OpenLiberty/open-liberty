@@ -40,4 +40,11 @@ public interface BridgeBuilderService {
      * otherwise return false;
      */
     boolean isCredentialPresent(HttpServletRequest req);
+
+    /**
+     * notify the configuration has been changed.
+     * @param delta String in the format of "name=value, name=value, ..." encapsulating the
+     *         properties that are different between original and new WebAppSecurityConfig.
+     */
+    void notifyConfigChanged(String delta);
 }

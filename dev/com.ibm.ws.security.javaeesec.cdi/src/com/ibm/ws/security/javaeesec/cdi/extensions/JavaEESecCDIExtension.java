@@ -56,6 +56,7 @@ import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -66,6 +67,7 @@ import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
+import com.ibm.ws.security.javaeesec.ApplicationUtils;
 import com.ibm.ws.threadContext.ModuleMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
@@ -181,8 +183,11 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             afterBeanDiscovery.addDefinitionError(de);
         }
         if (!isEmptyModuleMap()) {
+            // this is a JSR375 app.
             ModulePropertiesProviderBean bean = new ModulePropertiesProviderBean(beanManager, moduleMap);
             beansToAdd.add(bean);
+            // register the application name for recycle the apps.
+            ApplicationUtils.registerApplication(getApplicationName());
         }
 
         // TODO: Validate beans to add.
@@ -922,7 +927,16 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         String result = null;
         Map<URL, ModuleMetaData> mmds = getModuleMetaDataMap();
         if (mmds != null && !mmds.isEmpty()) {
-            result = mmds.get(0).getJ2EEName().getApplication();
+            for (Map.Entry<URL, ModuleMetaData> entry : mmds.entrySet()) {
+                ModuleMetaData mmd = entry.getValue();
+                if (mmd instanceof WebModuleMetaData) {
+                    J2EEName j2eeName = mmd.getJ2EEName();
+                    if (j2eeName != null) {
+                        result = j2eeName.getApplication();
+                        break;
+                    }
+                }
+            }
         }
         return result;
     }

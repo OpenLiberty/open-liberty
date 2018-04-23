@@ -162,7 +162,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsOverrideClientCertRequiredSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_NAME, APP_NAME);
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.
         setupClient(CERTUSER1_KEYFILE);
@@ -198,7 +198,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsOverrideClientCertRequiredNoCertFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_NAME, APP_NAME);
         try {
             setupClient(CERTUSER4_KEYFILE);
             accessPageExpectException(httpclient, urlBase + APP1_SERVLET);
@@ -242,7 +242,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsOverrideClientCertValidCertRequiredAuthzFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_NAME, APP_NAME);
         // setup client with invaliduser. certificate.
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.
@@ -276,7 +276,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsOverrideClientCertRequiredInvalidCertFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_NAME, APP_NAME);
         // setup client with invaliduser. certificate.
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.
@@ -310,7 +310,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsOverrideClientCertSupportSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_SUPPORT_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_SUPPORT_NAME, APP_NAME);
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.
         setupClient(CERTUSER1_KEYFILE);
@@ -346,7 +346,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsOverrideClientCertSupportNoCertFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_SUPPORT_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_SUPPORT_NAME, APP_NAME);
         // setup client with invaliduser. certificate.
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.
@@ -380,7 +380,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsOverrideClientCertSupportValidCertAuthzFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_SUPPORT_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_SUPPORT_NAME, APP_NAME);
         // setup client with invaliduser. certificate.
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.
@@ -414,7 +414,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsOverrideClientCertSupportInvalidCertFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_SUPPORT_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_NO_FAILOVER_SUPPORT_NAME, APP_NAME);
         // setup client with invaliduser. certificate.
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.

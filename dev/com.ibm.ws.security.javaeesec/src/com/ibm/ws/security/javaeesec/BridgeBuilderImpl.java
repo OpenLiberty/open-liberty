@@ -90,6 +90,11 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
         return false;
     }
 
+    @Override
+    public void notifyConfigChanged(String delta) {
+        ApplicationUtils.notifyConfigChanged(delta);
+    }
+
     protected ModulePropertiesUtils getModulePropertiesUtils() {
         return ModulePropertiesUtils.getInstance();
     }

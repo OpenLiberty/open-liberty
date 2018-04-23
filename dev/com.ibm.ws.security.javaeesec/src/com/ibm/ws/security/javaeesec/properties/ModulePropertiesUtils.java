@@ -159,4 +159,5 @@ public class ModulePropertiesUtils {
     protected ComponentMetaData getComponentMetaData() {
         return ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
     }
+
 }

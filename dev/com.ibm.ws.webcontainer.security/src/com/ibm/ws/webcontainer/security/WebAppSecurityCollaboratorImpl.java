@@ -330,6 +330,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     protected void updateComponents() {
+        updateComponents(null);
+    }
+    protected void updateComponents(String delta) {
         WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
         SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
         authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
@@ -337,6 +340,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
                                                                                               webAuthenticatorRef);
         authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
+        updateJASPIC(delta);
     }
 
     protected void modified(Map<String, Object> newProperties) {
@@ -348,7 +352,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             currentProps.putAll(newProperties);
         }
         webAppSecConfig = newWebAppSecConfig;
-        updateComponents();
+        updateComponents(deltaString);
         Tr.audit(tc, "WEB_APP_SECURITY_CONFIGURATION_UPDATED", deltaString);
     }
 
@@ -488,7 +492,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
                 if (webSecurityContext.getJaspiAuthContext() != null &&
                     webAuthenticatorRef != null) {
-                    WebAuthenticator jaspiService = webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
+                    WebAuthenticator jaspiService = webAuthenticatorRef.getService(JASPI_SERVICE_COMPONENT_NAME);
                     if (jaspiService != null) {
                         try {
                             ((JaspiService) jaspiService).postInvoke(webSecurityContext);
@@ -614,7 +618,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
          * normal processing.
          */
         if (isJaspiEnabled &&
-            ((JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi")).isAnyProviderRegistered(webRequest)) {
+            ((JaspiService) webAuthenticatorRef.getService(JASPI_SERVICE_COMPONENT_NAME)).isAnyProviderRegistered(webRequest)) {
             webReply = handleJaspi(receivedSubject, uriName, webRequest, webSecurityContext);
         }
 
@@ -1024,7 +1028,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         boolean isNewAuthenticate = false;
         boolean isCredentialPresent = false;
         if (isJaspiEnabled) {
-            jaspiService = (JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
+            jaspiService = (JaspiService) webAuthenticatorRef.getService(JASPI_SERVICE_COMPONENT_NAME);
             isNewAuthenticate = jaspiService.isProcessingNewAuthentication(req);
             isCredentialPresent = jaspiService.isCredentialPresent(req);
         }
@@ -1624,5 +1628,15 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     private void removeModuleMetaDataFromThreadLocal(Object key) {
         WebConfigUtils.removeWebModuleMetaData(key);
+    }
+
+    /**
+     * When global login config is changed, JSR375 applications need to be restarted
+     * in order to pick the new global login configuration.
+     */
+    private void updateJASPIC(String delta) {
+        if (delta != null && isJaspiEnabled) {
+            ((JaspiService)webAuthenticatorRef.getService(JASPI_SERVICE_COMPONENT_NAME)).notifyConfigChanged(delta);
+        }
     }
 }

@@ -183,7 +183,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     @Test
     public void testMultipleModuleWarsOverrideClientCertWithFailOverToBASuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_BA_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_BA_NAME, APP_NAME);
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.
         setupClient(CERTUSER1_KEYFILE);
@@ -219,7 +219,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     @Test
     public void testMultipleModuleWarsOverrideClientCertWithFailOverToBAFailOverSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_BA_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_BA_NAME, APP_NAME);
         // ------------- accessing module1 ---------------
         // since the certificate won't be sent, fallback to the specified BasicAuth.
         setupClient(CERTUSER4_KEYFILE);
@@ -254,7 +254,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     @Test
     public void testMultipleModuleWarsOverrideClientCertWithFailOverToFormSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_FORM_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_FORM_NAME, APP_NAME);
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.
         setupClient(CERTUSER1_KEYFILE);
@@ -290,7 +290,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     @Test
     public void testMultipleModuleWarsOverrideClientCertWithFailOverToFormFailOverSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_FORM_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_FORM_NAME, APP_NAME);
         // ------------- accessing module1 ---------------
         // since the certificate won't be sent, fallback to original  Form login and get redirect location for LdapIdentityStoreDefinision on this module.
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
@@ -332,7 +332,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     @Test
     public void testMultipleModuleWarsOverrideClientCertWithFailOverToAppDefinedSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_APP_DEFINED_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_APP_DEFINED_NAME, APP_NAME);
         // ------------- accessing module1 ---------------
         // No matter how to configure the app, it is overridden by the client cert authentication.
         setupClient(CERTUSER1_KEYFILE);
@@ -368,7 +368,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     @Test
     public void testMultipleModuleWarsOverrideClientCertWithFailOverToAppDefinedFailOverSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_APP_DEFINED_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_APP_DEFINED_NAME, APP_NAME);
         // ------------- accessing module1 ---------------
         // since the certificate won't be sent, fallback to original Form login and get redirect location for LdapIdentityStoreDefinision on this module.
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.

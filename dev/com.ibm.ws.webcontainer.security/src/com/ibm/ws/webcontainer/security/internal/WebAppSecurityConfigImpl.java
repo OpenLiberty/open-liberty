@@ -55,15 +55,15 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_SSO_REQUIRES_SSL = "ssoRequiresSSL";
     static final String CFG_KEY_SSO_USE_DOMAIN_FROM_URL = "ssoUseDomainFromURL";
     public static final String CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED = "useAuthenticationDataForUnprotectedResource";
-    static final String CFG_KEY_LOGIN_FORM_URL = "loginFormURL";
-    static final String CFG_KEY_LOGIN_ERROR_URL = "loginErrorURL";
+    public static final String CFG_KEY_LOGIN_FORM_URL = "loginFormURL";
+    public static final String CFG_KEY_LOGIN_ERROR_URL = "loginErrorURL";
     public static final String CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD = "allowAuthenticationFailOverToAuthMethod";
     static final String CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL = "includePathInWASReqURL";
     static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES = "trackLoggedOutSSOCookies";
     static final String CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME = "useOnlyCustomCookieName";
-    static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
-    static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
-    static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
+    public static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
+    public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
+    public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
     static final String CFG_KEY_JASPIC_SESSION_FOR_MECHANISMS_ENABLED = "jaspicSessionForMechanismsEnabled";
     static final String CFG_KEY_JASPIC_SESSION_COOKIE_NAME = "jaspicSessionCookieName";
 
@@ -407,7 +407,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
 
         StringBuffer buf = new StringBuffer();
         WebAppSecurityConfigImpl orig = (WebAppSecurityConfigImpl) original;
-        appendToBufferIfDifferent(buf, "allowFailOverToBasicAuth",
+        appendToBufferIfDifferent(buf, CFG_KEY_FAIL_OVER_TO_BASICAUTH,
                                   this.allowFailOverToBasicAuth, orig.allowFailOverToBasicAuth);
         appendToBufferIfDifferent(buf, "allowLogoutPageRedirectToAnyHost",
                                   this.allowLogoutPageRedirectToAnyHost, orig.allowLogoutPageRedirectToAnyHost);
@@ -445,11 +445,11 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
                                   this.useAuthenticationDataForUnprotectedResource, orig.useAuthenticationDataForUnprotectedResource);
         appendToBufferIfDifferent(buf, "webAlwaysLogin",
                                   this.webAlwaysLogin, orig.webAlwaysLogin);
-        appendToBufferIfDifferent(buf, "loginFormURL",
+        appendToBufferIfDifferent(buf, CFG_KEY_LOGIN_FORM_URL,
                                   this.loginFormURL, orig.loginFormURL);
-        appendToBufferIfDifferent(buf, "loginErrorURL",
+        appendToBufferIfDifferent(buf, CFG_KEY_LOGIN_ERROR_URL,
                                   this.loginErrorURL, orig.loginErrorURL);
-        appendToBufferIfDifferent(buf, "allowFailOverToAuthMethod",
+        appendToBufferIfDifferent(buf, CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD,
                                   this.allowFailOverToAuthMethod, orig.allowFailOverToAuthMethod);
         appendToBufferIfDifferent(buf, "includePathInWASReqURL",
                                   this.includePathInWASReqURL, orig.includePathInWASReqURL);
@@ -459,11 +459,11 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
                                   this.useOnlyCustomCookieName, orig.useOnlyCustomCookieName);
         appendToBufferIfDifferent(buf, "wasReqURLRedirectDomainNames",
                                   this.wasReqURLRedirectDomainNames, orig.wasReqURLRedirectDomainNames);
-        appendToBufferIfDifferent(buf, "overrideHttpAuthenticationMechanism",
+        appendToBufferIfDifferent(buf, CFG_KEY_OVERRIDE_HAM,
                                   this.overrideHttpAuthenticationMechanism, orig.overrideHttpAuthenticationMechanism);
-        appendToBufferIfDifferent(buf, "loginFormContextRoot",
+        appendToBufferIfDifferent(buf, CFG_KEY_LOGIN_FORM_CONTEXT_ROOT,
                                   this.loginFormContextRoot, orig.loginFormContextRoot);
-        appendToBufferIfDifferent(buf, "basicAuthRealmName",
+        appendToBufferIfDifferent(buf, CFG_KEY_BASIC_AUTH_REALM_NAME,
                                   this.basicAuthRealmName, orig.basicAuthRealmName);
         return buf.toString();
     }

@@ -1112,4 +1112,11 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         return false;
     }
 
+    @Override
+    public void notifyConfigChanged(String delta) {
+        BridgeBuilderService bridgeBuilderService = bridgeBuilderServiceRef.getService();
+        if (bridgeBuilderService != null) {
+            bridgeBuilderService.notifyConfigChanged(delta);
+        }
+    }
 }
