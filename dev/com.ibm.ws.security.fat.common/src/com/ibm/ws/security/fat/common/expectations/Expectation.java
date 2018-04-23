@@ -10,9 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.expectations;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
+import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 
 public abstract class Expectation {
+
+    private static Class<?> thisClass = Expectation.class;
 
     protected String testAction;
     protected String searchLocation;
@@ -21,6 +25,8 @@ public abstract class Expectation {
     protected String validationValue;
     protected String failureMsg;
     protected boolean isExpectationHandled;
+
+    protected TestValidationUtils validationUtils = new TestValidationUtils();
 
     public Expectation(String testAction, String searchLocation, String checkType, String searchFor, String failureMsg) {
         this(testAction, searchLocation, checkType, null, searchFor, failureMsg);
@@ -80,6 +86,7 @@ public abstract class Expectation {
         if (!isExpectationForAction(currentTestAction)) {
             return;
         }
+        Log.info(thisClass, "validate", "Checking " + this);
         validate(contentToValidate);
     }
 

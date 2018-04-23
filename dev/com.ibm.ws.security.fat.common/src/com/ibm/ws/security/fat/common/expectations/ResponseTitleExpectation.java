@@ -11,6 +11,7 @@
 package com.ibm.ws.security.fat.common.expectations;
 
 import com.ibm.ws.security.fat.common.Constants;
+import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 public class ResponseTitleExpectation extends Expectation {
 
@@ -22,7 +23,19 @@ public class ResponseTitleExpectation extends Expectation {
 
     @Override
     protected void validate(Object contentToValidate) throws Exception {
-        // TODO
+        try {
+            String responseTitle = getResponseTitle(contentToValidate);
+            validationUtils.validateStringContent(this, responseTitle);
+        } catch (Throwable e) {
+            throw new Exception(failureMsg + " Failed to validate response title: " + e.getMessage());
+        }
+    }
+
+    String getResponseTitle(Object contentToValidate) throws Exception {
+        if (contentToValidate instanceof String) {
+            return (String) contentToValidate;
+        }
+        return WebResponseUtils.getResponseTitle(contentToValidate);
     }
 
 }

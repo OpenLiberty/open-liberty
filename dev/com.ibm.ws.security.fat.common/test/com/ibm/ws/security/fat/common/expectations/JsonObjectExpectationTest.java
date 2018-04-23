@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.expectations;
 
+import static org.junit.Assert.fail;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -85,8 +87,29 @@ public class JsonObjectExpectationTest extends CommonSpecificExpectationTest {
         }
     }
 
+    /************************************** validate **************************************/
+
+    @Override
+    @Test
+    public void test_validate_nullContentObject() {
+        try {
+            Expectation exp = createBasicExpectation();
+            try {
+                exp.validate(null);
+                fail("Should have thrown an exception because this is not implemented yet, but did not.");
+            } catch (Exception e) {
+                verifyException(e, "not.+implemented");
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    // TODO
+
     /************************************** Helper methods **************************************/
 
+    @Override
     protected Expectation createBasicExpectation() {
         return new JsonObjectExpectation(TEST_ACTION, SEARCH_KEY, SEARCH_FOR_VAL, FAILURE_MESSAGE);
     }
