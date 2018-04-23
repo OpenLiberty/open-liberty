@@ -1921,9 +1921,64 @@ public final class JAXRSUtils {
             throw ExceptionUtils.toInternalServerErrorException(e, null);
         }
         final byte[] copiedBytes = baos.toByteArray();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            m.setContent(InputStream.class, new DiagByteArrayInputStream(copiedBytes));
+            m.setContent(ByteArrayInputStream.class, new DiagByteArrayInputStream(copiedBytes));
+            return new DiagByteArrayInputStream(copiedBytes);
+        }
         m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
         m.setContent(ByteArrayInputStream.class, new ByteArrayInputStream(copiedBytes));
         return new ByteArrayInputStream(copiedBytes);
+    }
+
+    // diagnostic - will auto-trace BAIS methods
+    private static class DiagByteArrayInputStream extends InputStream {
+
+        private final ByteArrayInputStream bais;
+
+        DiagByteArrayInputStream(byte[] buf) {
+            bais = new ByteArrayInputStream(buf);
+        }
+
+        DiagByteArrayInputStream(byte[] buf, int offset, int length) {
+            bais = new ByteArrayInputStream(buf, offset, length);
+        }
+
+        public int read() throws IOException {
+            return bais.read();
+        }
+
+        public int read(byte b[]) throws IOException {
+            return bais.read(b);
+        }
+
+        public int read(byte b[], int off, int len) throws IOException {
+            return bais.read(b, off, len);
+        }
+
+        public long skip(long n) throws IOException {
+            return bais.skip(n);
+        }
+
+        public int available() throws IOException {
+            return bais.available();
+        }
+
+        public void close() throws IOException {
+            bais.close();
+        }
+
+        public void mark(int readlimit) {
+            bais.mark(readlimit);
+        }
+
+        public synchronized void reset() throws IOException {
+            bais.reset();
+        }
+
+        public boolean markSupported() {
+            return bais.markSupported();
+        }
     }
     // Liberty change end
 }
