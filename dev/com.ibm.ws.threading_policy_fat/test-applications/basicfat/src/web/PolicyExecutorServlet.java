@@ -2820,6 +2820,9 @@ public class PolicyExecutorServlet extends FATServlet {
     // Use timed invokeAll to submit a group of tasks. Verify that none of them run on the submitter thread.
     // This test case is added to help guard against regression to code which relies on the behavior of
     // timed invokeAll never running tasks on the submitter thread.
+    // We think some customers might be relying on this behavior even though the JavaDoc/spec does not state it,
+    // so do not change this behavior or alter this test without having a very good reason, and in which case
+    // it should first be considered if the behavior ought to be made switchable.
     @Test
     public void testInvokeAllTimedSubmitterThreadDoesNotRunTasks() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTimedSubmitterThreadDoesNotRunTasks")
