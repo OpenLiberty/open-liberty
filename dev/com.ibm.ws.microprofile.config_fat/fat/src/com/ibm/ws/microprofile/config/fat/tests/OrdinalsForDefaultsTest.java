@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016 IBM Corporation and others.
+* Copyright (c) 2016, 2018 IBM Corporation and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -13,37 +13,36 @@ package com.ibm.ws.microprofile.config.fat.tests;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.appConfig.ordForDefaults.test.OrdinalsForDefaultsTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
+
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  *
  */
-public class OrdinalsForDefaultsTest extends AbstractConfigApiTest {
+@RunWith(FATRunner.class)
+public class OrdinalsForDefaultsTest extends FATServletClient {
 
-    private final static String testClassName = "OrdinalsForDefaultsTest";
+    public static final String APP_NAME = "ordForDefaults";
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("OrdForDefaultsServer");
+    @Server("OrdForDefaultsServer")
+    @TestServlet(servlet = OrdinalsForDefaultsTestServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server;
 
-    public OrdinalsForDefaultsTest() {
-        super("/ordForDefaults/");
-    }
-
-    @BuildShrinkWrap
-    public static Archive buildApp() {
-        String APP_NAME = "ordForDefaults";
-
+    @BeforeClass
+    public static void setUp() throws Exception {
         WebArchive ordForDefaults_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "com.ibm.ws.microprofile.appConfig.ordForDefaults.test")
                         .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
@@ -51,31 +50,14 @@ public class OrdinalsForDefaultsTest extends AbstractConfigApiTest {
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"),
                                                "microprofile-config.properties");
 
-        return ordForDefaults_war;
+        ShrinkHelper.exportDropinAppToServer(server, ordForDefaults_war);
+
+        server.startServer();
     }
 
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 
-    @Rule
-    public TestName testName = new TestName();
-
-    /**
-     * Tests that default properties files can tolerate having the same
-     * property defined in more that on micro-profile.xxx file and behaviour
-     * is as expected.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void defaultsMixedOrdinals() throws Exception {
-        test(testName.getMethodName());
-    }
-
-    @Test
-    public void defaultsOrdinalFromSource() throws Exception {
-        test(testName.getMethodName());
-    }
 }

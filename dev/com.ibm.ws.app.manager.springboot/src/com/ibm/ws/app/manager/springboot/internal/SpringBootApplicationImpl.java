@@ -14,9 +14,12 @@ import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_BUNDLE_PREFIX;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_NAMESPACE;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_THIN_APPS_DIR;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.VIRTUAL_HOST_END;
-import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.VIRTUAL_HOST_START;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_BND_NAME;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_VIRTUAL_HOST_END;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XMI_VIRTUAL_HOST_START;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_BND_NAME;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_VIRTUAL_HOST_END;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.XML_VIRTUAL_HOST_START;
 import static com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil.SPRING_LIB_INDEX_FILE;
 
 import java.io.BufferedReader;
@@ -28,6 +31,7 @@ import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -303,6 +307,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private final int id;
     private final Set<Runnable> shutdownHooks = new CopyOnWriteArraySet<>();
     private final AtomicBoolean uninstalled = new AtomicBoolean();
+    private final List<String> appArgs;
 
     public SpringBootApplicationImpl(ApplicationInformation<DeployedAppInfo> applicationInformation, SpringBootApplicationFactory factory, int id) throws UnableToAdaptException {
         super(applicationInformation, factory);
@@ -329,6 +334,13 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         this.rawContainer = newContainer;
         this.springContainerModuleInfo = mci;
         this.initError = error;
+        Object appArgsProp = applicationInformation.getConfigProperty(SpringConstants.APP_ARGS);
+        if (appArgsProp instanceof String[]) {
+            // make a copy of the args
+            appArgs = Collections.unmodifiableList(new ArrayList<>(Arrays.asList((String[]) appArgsProp)));
+        } else {
+            appArgs = Collections.emptyList();
+        }
     }
 
     private static SpringBootManifest getSpringBootManifest(Container container) throws UnableToAdaptException {
@@ -365,7 +377,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
                                                SpringBootManifest springBootManifest,
                                                SpringBootApplicationFactory factory) {
         String location = applicationInformation.getLocation();
-        if (location.toLowerCase().endsWith("*.xml")) {
+        if (location.toLowerCase().endsWith(".xml")) {
             // don't do this for loose applications
             return rawContainer;
         }
@@ -378,6 +390,12 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
 
         File springAppFile = new File(location);
+        if (springAppFile.isDirectory()) {
+            // for extracted applications; use it as-is
+            // assume deployer knows what they are doing; don't interfere
+            return rawContainer;
+        }
+
         // Make sure the spring thin apps directory is available
         WsResource thinAppsDir = factory.getLocationAdmin().resolveResource(SPRING_THIN_APPS_DIR);
         thinAppsDir.create();
@@ -400,16 +418,16 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             applicationInformation.setContainer(container);
             return artifactContainer;
         } catch (NoSuchAlgorithmException | IOException e) {
-            // Log error and continue to use the container for the SPR file
+            // Log error and continue to use the container for the SPRING file
             Tr.error(tc, "warning.could.not.thin.application", applicationInformation.getName(), e.getMessage());
         }
-        return null;
+        return rawContainer;
     }
 
     private static void thinSpringApp(LibIndexCache libIndexCache, File springAppFile, File thinSpringAppFile, long lastModified) throws IOException, NoSuchAlgorithmException {
         File parent = libIndexCache.getLibIndexParent();
         File workarea = libIndexCache.getLibIndexWorkarea();
-        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent, true);
+        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent);
         springBootThinUtil.execute();
         thinSpringAppFile.setLastModified(lastModified);
     }
@@ -433,11 +451,19 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         return springBootManifest;
     }
 
+    List<String> getAppArgs() {
+        return appArgs;
+    }
+
     @Override
     public Container createContainerFor(String id) throws IOException, UnableToAdaptException {
         Container container = setupContainer(applicationInformation.getPid(), rawContainer, factory);
         AddEntryToOverlay virtualHostBnd = container.adapt(AddEntryToOverlay.class);
-        virtualHostBnd.add(XML_BND_NAME, getVirtualHostConfig(id));
+
+        // Add both XML and XMI here incase an old web.xml file is used;
+        // easier to just supply both here than figure out which to supply
+        virtualHostBnd.add(XML_BND_NAME, getVirtualHostConfig(XML_VIRTUAL_HOST_START, id, XML_VIRTUAL_HOST_END));
+        virtualHostBnd.add(XMI_BND_NAME, getVirtualHostConfig(XMI_VIRTUAL_HOST_START, id, XMI_VIRTUAL_HOST_END));
         return container;
     }
 
@@ -474,10 +500,10 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         return super.uninstallApp();
     }
 
-    private String getVirtualHostConfig(String id) {
-        StringBuilder builder = new StringBuilder(VIRTUAL_HOST_START);
+    private String getVirtualHostConfig(String start, String id, String end) {
+        StringBuilder builder = new StringBuilder(start);
         builder.append("springVirtualHost-" + id);
-        builder.append(VIRTUAL_HOST_END);
+        builder.append(end);
         return builder.toString();
     }
 
@@ -512,7 +538,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             Container libContainer = libEntry.adapt(Container.class);
             if (libContainer != null) {
                 for (Entry entry : libContainer) {
-                    if (entry.getName().toLowerCase().endsWith(".jar") && !entry.getName().contains("tomcat-")) {
+                    if (!SpringBootThinUtil.isEmbeddedContainerImpl(entry.getName())) {
                         String jarEntryName = entry.getName();
                         Container jarContainer = entry.adapt(Container.class);
                         if (jarContainer != null) {
@@ -582,7 +608,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             ClassLoadingService cls = classLoadingService;
             List<Container> containers = new ArrayList<Container>();
             Iterator<ContainerInfo> infos = moduleClassesContainers.iterator();
-            // We want the first item to be at the end of the class path for a spr
+            // We want the first item to be at the end of the class path for a spring application
             if (infos.hasNext()) {
                 infos.next();
                 while (infos.hasNext()) {
@@ -644,13 +670,18 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         });
     }
 
+    @FFDCIgnore(IllegalStateException.class)
     void unregisterSpringConfigFactory() {
-        springBootConfigReg.updateAndGet((r) -> {
-            if (r != null) {
-                r.unregister();
-            }
-            return null;
-        });
+        try {
+            springBootConfigReg.updateAndGet((r) -> {
+                if (r != null) {
+                    r.unregister();
+                }
+                return null;
+            });
+        } catch (IllegalStateException e) {
+            // can happen if our bundle stopped first; just ignore
+        }
     }
 
     @Override

@@ -27,6 +27,8 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.Endpoint;
+import javax.websocket.EndpointConfig;
 import javax.websocket.Extension;
 import javax.websocket.Extension.Parameter;
 import javax.websocket.server.ServerEndpointConfig;
@@ -234,7 +236,7 @@ public class HandshakeProcessor {
         return endpointConfigurator.checkOrigin(headerOrigin);
     }
 
-    public void modifyHandshake() {
+    public void modifyHandshake(Endpoint _ep, EndpointConfig _epc) {
 
         Map<String, List<String>> responseHeaders = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
 
@@ -248,7 +250,7 @@ public class HandshakeProcessor {
         }
 
         // create handshake request object to give to modifier
-        HandshakeRequestExt handshakeRequest = new HandshakeRequestExt(httpRequest, requestHeaders, parameterMap, requestURI);
+        HandshakeRequestExt handshakeRequest = new HandshakeRequestExt(httpRequest, requestHeaders, parameterMap, requestURI, _ep, _epc);
 
         // create handshake response object to give to modifier
         HandshakeResponseExt handshakeResponse = new HandshakeResponseExt(responseHeaders);

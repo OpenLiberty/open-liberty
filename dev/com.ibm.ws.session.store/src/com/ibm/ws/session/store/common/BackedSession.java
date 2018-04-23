@@ -292,7 +292,7 @@ public abstract class BackedSession extends MemorySession {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[GET_ATTRIBUTE], "name= " + name);
         }
 
-        Object value = getValueGuts(name.toString());
+        Object value = getValueGuts(name.toString(), _smc.writeGetAndSetAttributes());
 
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             if (!SessionManagerConfig.isHideSessionValues()) {
@@ -318,7 +318,7 @@ public abstract class BackedSession extends MemorySession {
             }
         }
         _attributes.put(name, value);
-        Object oldValue = getValueGuts((String) name);
+        Object oldValue = getValueGuts((String) name, false);
         putValueGuts((String) name, value);
         Boolean oldIsListener = (Boolean) _attributeNames.put(name, newIsListener);
         _storeCallback.sessionAttributeSet(this, name, oldValue, oldIsListener, value, newIsListener);
@@ -490,26 +490,7 @@ public abstract class BackedSession extends MemorySession {
 
         if (swappable) {
             // Still want to update lists since whole session may not get written at first EOS
-            if (appDataTablesPerThread) {
-                Thread t = Thread.currentThread();
-                Hashtable sht = (Hashtable) appDataChanges.get(t);
-                if (sht == null) {
-                    sht = new Hashtable();
-                    appDataChanges.put(t, sht);
-                }
-                if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
-                    if (!SessionManagerConfig.isHideSessionValues()) {
-                        LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[PUT_VALUE_GUTS], "storing for " + getId() + " prop " + pName + " with value "
-                                                                                                                      + pValue + " via thread " + t);
-                    } else {
-                        LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[PUT_VALUE_GUTS], "storing for " + getId() + " prop " + pName + " via thread "
-                                                                                                                      + t);
-                    }
-                }
-                sht.put(pName, convObj);
-            } else { // appDataTablesPerSession
-                appDataChanges.put(pName, convObj);
-            }
+            includeInAppDataChanges(pName, _smc.writeGetAndSetAttributes() ? pValue : convObj, PUT_VALUE_GUTS);
 
             boolean listenerFlagSetInMethod = false; //a check for instanceof was moved into the individual instancof blocks ... still only want to get getListenerFlag() once.
 
@@ -600,11 +581,18 @@ public abstract class BackedSession extends MemorySession {
     /*
      * GetValueGuts
      */
-    synchronized Object getValueGuts(String id) {
+    synchronized Object getValueGuts(String id, boolean includeInAppDataChanges) {
         //create local variable - JIT performance improvement
         final boolean isTraceOn = com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[GET_VALUE_GUTS]);
+        }
+
+        if (includeInAppDataChanges && appDataChanges == null) {
+            if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
+                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[GET_VALUE_GUTS], "init appDataChanges");
+            }
+            appDataChanges = new Hashtable<String, Object>();
         }
 
         Object returnValue = (mNonswappableData == null) ? null : getNonswappableData().get(id);
@@ -620,6 +608,8 @@ public abstract class BackedSession extends MemorySession {
                 LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[GET_VALUE_GUTS], "Retrieved cached object for " + id);
             }
             returnValue = resolveObject(returnValue);
+            if (includeInAppDataChanges)
+                includeInAppDataChanges(id, returnValue, GET_VALUE_GUTS);
         } else {
             //if this is a new session, don't access the database because
             //the session in memory is up-to-date..
@@ -648,6 +638,8 @@ public abstract class BackedSession extends MemorySession {
                 }
                 if (returnValue != null) {
                     returnValue = resolveObject(returnValue);
+                    if (includeInAppDataChanges)
+                        includeInAppDataChanges(id, returnValue, GET_VALUE_GUTS);
                     if (returnValue instanceof HttpSessionBindingListener) {
                         _attributeNames.put(id, Boolean.TRUE);
                     } else {
@@ -667,6 +659,38 @@ public abstract class BackedSession extends MemorySession {
         return returnValue;
     }
 
+    /**
+     * Adds a session attribute to the tracked list of changed data.
+     * 
+     * Precondition: invoker must be synchronized on BackedSession instance
+     * 
+     * @param name name of session attribute
+     * @param value value of session attribute
+     * @param invoker constant indicating the invoking method: GET_VALUE_GUTS or PUT_VALUE_GUTS
+     */
+    private void includeInAppDataChanges(String name, Object value, int invoker) {
+        if (appDataTablesPerThread) {
+            Thread t = Thread.currentThread();
+            Hashtable sht = (Hashtable) appDataChanges.get(t);
+            if (sht == null) {
+                sht = new Hashtable();
+                appDataChanges.put(t, sht);
+            }
+            if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
+                if (!SessionManagerConfig.isHideSessionValues()) {
+                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[invoker], "storing for " + getId() + " prop " + name + " with value "
+                                                                                                                  + value + " via thread " + t);
+                } else {
+                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[invoker], "storing for " + getId() + " prop " + name + " via thread "
+                                                                                                                  + t);
+                }
+            }
+            sht.put(name, value);
+        } else { // appDataTablesPerSession
+            appDataChanges.put(name, value);
+        }
+    }
+
     /*
      * removeValueGuts - To remove the values
      */
@@ -677,7 +701,7 @@ public abstract class BackedSession extends MemorySession {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[REMOVE_VALUE_GUTS], "session " + getId() + " prop id " + pName);
         }
 
-        Object tmp = getValueGuts(pName);
+        Object tmp = getValueGuts(pName, false);
         // if object does not acutally exist, just return
         if (tmp == null) {
             if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {

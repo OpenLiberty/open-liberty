@@ -82,7 +82,7 @@ public class ConfigurationImpl implements Configuration {
         if (contracts != null) {
             providers.put(o, contracts);
         } else {
-            register(o, AnnotationUtils.getBindingPriority(o.getClass()), 
+            register(o, AnnotationUtils.getBindingPriority(o.getClass()),
                         ConfigurableImpl.getImplementedContracts(o, new Class<?>[]{}));
         }
     }

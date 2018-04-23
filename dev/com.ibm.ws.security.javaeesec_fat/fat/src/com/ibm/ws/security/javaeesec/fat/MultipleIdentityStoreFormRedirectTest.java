@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
     protected static String APP_NAME = "JavaEESecMultipleISForm";
     protected static String WAR_NAME = APP_NAME + ".war";
     protected static String XML_NAME = "multipleISForm.xml";
-    protected String queryString = "/" + APP_NAME + "/MultipleISFormServlet";
+    protected String queryString = "/" + APP_NAME + "/FormServlet";
     protected static String loginUri = "/" + APP_NAME + "/login.jsp";
     protected static String loginformUri = "/" + APP_NAME + "/j_security_check";
     protected static String TITLE_LOGIN_PAGE = "login page for the form login test";
@@ -86,11 +86,10 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-
         if (ldapServer != null) {
             ldapServer.stop();
         }
+        myServer.stopServer();
         myServer.setServerConfigurationFile("server.xml");
 
     }

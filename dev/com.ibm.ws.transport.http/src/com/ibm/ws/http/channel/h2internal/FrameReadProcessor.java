@@ -203,8 +203,8 @@ public class FrameReadProcessor {
                 } else {
                     throw new ProtocolException("Connection preface/magic was invalid");
                 }
-            } catch (FrameSizeException e1) {
-                throw new ProtocolException("Connection preface/magic was invalid");
+            } catch (Http2Exception e) {
+                throw new ProtocolException("Failed to complete the connection preface");
             }
         }
 

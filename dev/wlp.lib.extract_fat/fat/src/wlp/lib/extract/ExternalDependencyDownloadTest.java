@@ -27,6 +27,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -38,6 +43,8 @@ public class ExternalDependencyDownloadTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
+        ShrinkHelper.defaultDropinApp(hostingServer, HOST_APP_NAME, "web");
+
         // Start the server which hosts the dependency URLs
         // This runs for the whole test suite while we test installing samples which reference it
         hostingServer.startServer();
@@ -50,6 +57,7 @@ public class ExternalDependencyDownloadTest {
         }
     }
 
+    @Mode(TestMode.QUARANTINE)
     @Test
     public void testHTTP2HTTPSRedirect() throws Exception {
         String serverName = "http2httpsRedirectGood";
@@ -128,7 +136,7 @@ public class ExternalDependencyDownloadTest {
 
     /**
      * Generate a sample with the given dependency and server name and ensure that installing it fails.
-     * 
+     *
      * @param dependencyPath the path to download the dependency from, relative to the root of the dependency hosting app
      * @param serverName the server name that should be included in the sample
      * @throws Exception
@@ -139,6 +147,14 @@ public class ExternalDependencyDownloadTest {
         prepareSampleJar(dependencyPath, serverName);
         LibertyServer installServer = createEmptyServer(serverName);
 
+        boolean serveravailable = hostingServer.isStarted();
+        boolean fileavailable = hostingServer.fileExistsInLibertyInstallRoot("/usr/servers/" + serverName);
+
+        Log.info(ExternalDependencyDownloadTest.class, "serveravailable", Boolean.toString(serveravailable));
+        Log.info(ExternalDependencyDownloadTest.class, "fileavailable", Boolean.toString(fileavailable));
+        Log.info(ExternalDependencyDownloadTest.class, "getServerFolderFiles", listFiles(hostingServer.getUserDir() + "/servers"));
+        Log.info(ExternalDependencyDownloadTest.class, "getServerFiles", listFiles(hostingServer.getUserDir() + "/servers/" + serverName));
+
         // This method uses the sample jar created above
         installServer.installSampleWithExternalDependencies(serverName);
 
@@ -147,7 +163,7 @@ public class ExternalDependencyDownloadTest {
 
     /**
      * Generate a sample with the given dependency and server name and ensure that installing it fails.
-     * 
+     *
      * @param dependencyPath the path to download the dependency from, relative to the root of the dependency hosting app
      * @param serverName the server name that should be included in the sample
      * @throws Exception
@@ -173,7 +189,7 @@ public class ExternalDependencyDownloadTest {
      * Generate a simple sample with a dependency
      * <p>
      * The sample has one external dependency which points to a path under the depedencyHost app.
-     * 
+     *
      * @param dependencyPath the path to download the dependency from, relative to the root of the dependency hosting app
      * @param serverName the server name that should be included in the sample
      * @throws Exception
@@ -193,7 +209,7 @@ public class ExternalDependencyDownloadTest {
 
     /**
      * Ensure the server directory exists and create a new LibertyServer.
-     * 
+     *
      * @param serverName the name for the new server
      * @return the newly created server
      */
@@ -214,7 +230,7 @@ public class ExternalDependencyDownloadTest {
      * <li>A basic server.xml from publish/files/sampleServer.xml</li>
      * <li>A generated externaldependencies.xml</li>
      * </li>
-     * 
+     *
      * @param outSample the jar file to write the new sample to
      * @param serverName the name of the server to include in the sample jar
      * @param dependencyUrl the URL which the externaldependencies.xml file should point to
@@ -241,7 +257,7 @@ public class ExternalDependencyDownloadTest {
 
     /**
      * Write a directory to an archive
-     * 
+     *
      * @param out
      * @param path
      * @throws IOException
@@ -255,7 +271,7 @@ public class ExternalDependencyDownloadTest {
 
     /**
      * Read a file from disk and write it into an archive
-     * 
+     *
      * @param out
      * @param path
      * @param file
@@ -274,7 +290,7 @@ public class ExternalDependencyDownloadTest {
 
     /**
      * Copy the contents of one archive into another archive
-     * 
+     *
      * @param out
      * @param archive
      * @throws IOException
@@ -296,7 +312,7 @@ public class ExternalDependencyDownloadTest {
      * Copy from an input stream into an output stream until the end of the input stream is reached.
      * <p>
      * Does not close either stream.
-     * 
+     *
      * @param out
      * @param in
      * @throws IOException
@@ -313,7 +329,7 @@ public class ExternalDependencyDownloadTest {
      * Write a simple externaldependencies.xml file entry into a ZipOutputStream.
      * <p>
      * The generated file specifies one dependency with the given url and target path.
-     * 
+     *
      * @param out the ZipOutputStream to write to
      * @param dependencyUrl the URL hosting the dependency
      * @param dependencyTargetPath the destination path for the dependency
@@ -334,4 +350,24 @@ public class ExternalDependencyDownloadTest {
         writer.flush();
         out.closeEntry();
     }
+
+    public static String listFiles(String path) {
+        File folder = new File(path);
+        File[] listOfFiles = folder.listFiles();
+        String filenames = "Files: ";
+        String dirnames = "Directories: ";
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                filenames += listOfFiles[i].getName() + " ";
+            } else if (listOfFiles[i].isDirectory()) {
+                dirnames += listOfFiles[i].getName() + " ";
+            }
+        }
+
+        filenames += "\n";
+
+        return (filenames + dirnames);
+
+    }
+
 }

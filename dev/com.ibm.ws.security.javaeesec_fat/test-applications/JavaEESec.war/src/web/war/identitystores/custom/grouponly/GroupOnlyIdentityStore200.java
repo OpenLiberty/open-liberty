@@ -44,10 +44,8 @@ public class GroupOnlyIdentityStore200 implements IdentityStore {
 
     @Override
     public Set<String> getCallerGroups(CredentialValidationResult validationResult) {
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkPermission(new IdentityStorePermission("getGroups"));
-        }
+        // do not check IdentityStorePermission, because this class itself is not granted by default.
+
         // if user id contains "user", add groups."
         if (validationResult.getStatus() == CredentialValidationResult.Status.VALID) {
             if (validationResult.getCallerPrincipal().getName().contains("user")) {

@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.data.Pair;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
@@ -162,9 +163,9 @@ public class TraceHandlerImpl implements Handler {
                 KeyValuePair kvp = (KeyValuePair) p;
                 if (kvp.getKey().equals(key)) {
                     if (kvp.isInteger()) {
-                        return kvp.getIntValue().toString();
+                        return Integer.toString(kvp.getIntValue());
                     } else if (kvp.isLong()) {
-                        return kvp.getLongValue().toString();
+                        return Long.toString(kvp.getLongValue());
                     } else {
                         return kvp.getStringValue();
                     }
@@ -184,7 +185,8 @@ public class TraceHandlerImpl implements Handler {
             int counter = 1;
             while (counter <= 500) {
                 try {
-                    GenericData event = (GenericData) bufferMgr.getNextEvent(HANDLER_NAME);
+                    LogTraceData logTraceDataEvent = (LogTraceData) bufferMgr.getNextEvent(HANDLER_NAME);
+                    GenericData event = logTraceDataEvent.getGenData();
 
                     // String eventString = event.toString();
                     // if (eventString.contains("testTraceSourceForLibertyLogging") || eventString.contains("testTraceSourceForJUL")) {

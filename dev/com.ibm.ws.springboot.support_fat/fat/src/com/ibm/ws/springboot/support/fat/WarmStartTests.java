@@ -48,14 +48,12 @@ public class WarmStartTests extends AbstractSpringTests {
     }
 
     @Test
-    public void testWithSharedCache() throws Exception {
+    public void testWarmStartConfig() throws Exception {
         // First stop the server so we can start from a warm start
-        assertNotNull("The application was not installed", server
-                        .waitForStringInLog("CWWKZ0001I:.*"));
         server.stopServer(false);
 
         // remove any dropins
-        RemoteFile dropinsSpr = server.getFileFromLibertyServerRoot("dropins/spr");
+        RemoteFile dropinsSpr = server.getFileFromLibertyServerRoot("dropins/" + SPRING_APP_TYPE);
         RemoteFile[] dropinApps = dropinsSpr.list(true);
         for (RemoteFile dropinApp : dropinApps) {
             if (dropinApp.isFile()) {
@@ -75,8 +73,6 @@ public class WarmStartTests extends AbstractSpringTests {
         assertNotNull("The TCP Channel did not start after application starting", server.waitForStringInLog("CWWKO0219I:.*"));
         assertNotNull("The application was not installed", server.waitForStringInLog("CWWKZ0001I:.*"));
 
-        // NOTE we set the port to the expected port according to the test application.properties
-        server.setHttpDefaultPort(8081);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
     }
 }

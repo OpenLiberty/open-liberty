@@ -130,7 +130,7 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Instalator nie m\u00f3g\u01
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Upewnij si\u0119, \u017ce katalog zawiera sk\u0142adnik i pon\u00f3w operacj\u0119.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Nie mo\u017cna znale\u017a\u0107 pliku wykonywalnego {0} po sprawdzeniu w nast\u0119puj\u0105cych po\u0142o\u017ceniach: {1}
-ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Instalator nie m\u00f3g\u0142 znale\u017a\u0107 pliku wykonywalnego
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Instalator nie znalaz\u0142 lub nie mo\u017ce znale\u017a\u0107 pliku wykonywalnego.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Upewnij si\u0119, \u017ce plik wykonywalny istnieje i znajduje si\u0119 w jednym z podanych po\u0142o\u017ce\u0144.
 
 ERROR_EXECUTING_COMMAND=CWWKF1229E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wykonywania komendy: {0}. Komenda zwr\u00f3ci\u0142a kod wyj\u015bcia {1} i komunikat o b\u0142\u0119dzie: {2}
@@ -254,7 +254,7 @@ ERROR_ASSET_MISSING_DEPENDENT.explanation=Nie mo\u017cna pobra\u0107 lub zainsta
 ERROR_ASSET_MISSING_DEPENDENT.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Nie mo\u017cna uzyska\u0107 nast\u0119puj\u0105cych zasob\u00f3w aplikacyjnych: {0}. Sprawd\u017a, czy podane zasoby aplikacyjne s\u0105 poprawne. Aby znale\u017a\u0107 identyfikatory odpowiednich zasob\u00f3w aplikacyjnych, uruchom komend\u0119 installUtility find.
-ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Instalator nie m\u00f3g\u0142 pobra\u0107 okre\u015blonych zasob\u00f3w aplikacyjnych z repozytori\u00f3w.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Instalator nie mo\u017ce pobra\u0107 okre\u015blonych zasob\u00f3w aplikacyjnych z repozytori\u00f3w.
 ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Upewnij si\u0119, \u017ce okre\u015blone zasoby aplikacyjne s\u0105 poprawne, \u017ce podano poprawny identyfikator u\u017cytkownika i poprawne has\u0142o oraz \u017ce repozytoria s\u0105 dost\u0119pne.
 
 ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: Zas\u00f3b aplikacyjny {0} nie ma zastosowania do instalacji produktu {1}.  {2}

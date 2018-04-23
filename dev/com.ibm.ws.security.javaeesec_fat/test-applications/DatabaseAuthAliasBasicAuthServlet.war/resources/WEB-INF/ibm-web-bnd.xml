@@ -7,8 +7,4 @@
 
 	<virtual-host name="default_host" />
 
-     <resource-ref name="jdbc/derby1" binding-name="jdbc/derby1fat">
-		<authentication-alias name="auth1" />
-	</resource-ref>
-
 </web-bnd>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ˇ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,12 +15,14 @@ import java.util.Map;
 
 import javax.management.DynamicMBean;
 
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
@@ -28,13 +30,22 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.kernel.server.ServerInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.jwk.impl.JWKSet;
+import com.ibm.ws.security.jwt.config.ConsumerUtils;
+import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
-import com.ibm.ws.security.jwtsso.utils.JwtSsoUtils;
+import com.ibm.ws.security.jwtsso.utils.IssuerUtil;
+import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
+import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
+import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.ssl.SSLSupport;
 
-@Component(service = JwtSsoConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoConfig", property = "service.vendor=IBM")
+@Component(service = { JwtSsoConfig.class, MicroProfileJwtConfig.class,
+		JwtConsumerConfig.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoConfig", property = "service.vendor=IBM")
 public class JwtSsoComponent implements JwtSsoConfig {
 
 	private static final TraceComponent tc = Tr.register(JwtSsoComponent.class);
@@ -45,12 +56,30 @@ public class JwtSsoComponent implements JwtSsoConfig {
 
 	private ServerInfoMBean serverInfoMBean;
 
+	public static final String KEY_SSL_SUPPORT = "sslSupport";
+	private final AtomicServiceReference<SSLSupport> sslSupportRef = new AtomicServiceReference<SSLSupport>(
+			KEY_SSL_SUPPORT);
+	public static final String KEY_KEYSTORE_SERVICE = "keyStoreService";
+	private final AtomicServiceReference<KeyStoreService> keyStoreServiceRef = new AtomicServiceReference<KeyStoreService>(
+			KEY_KEYSTORE_SERVICE);
+
 	private boolean setCookiePathToWebAppContextPath;
 	private boolean includeLtpaCookie;
 	private boolean fallbackToLtpa;
+	private boolean cookieSecureFlag;
 	private String jwtBuilderRef;
 	private String jwtConsumerRef;
+	private String cookieName;
 	private WebAppSecurityConfig webAppSecConfig;
+
+	protected static final String KEY_UNIQUE_ID = "id";
+	protected String uniqueId = null;
+
+	private String signatureAlgorithm;
+
+	ConsumerUtils consumerUtils = null; // lazy init
+
+	private IssuerUtil issuerUtil;
 
 	@Override
 	public boolean isHttpOnlyCookies() {
@@ -60,11 +89,6 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	@Override
 	public boolean isSsoUseDomainFromURL() {
 		return WebConfigUtils.getWebAppSecurityConfig().getSSOUseDomainFromURL();
-	}
-
-	@Override
-	public boolean isSsoRequiresSSL() {
-		return WebConfigUtils.getWebAppSecurityConfig().getSSORequiresSSL();
 	}
 
 	@Override
@@ -88,10 +112,16 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	}
 
 	@Override
+	public boolean isCookieSecured() {
+		return cookieSecureFlag;
+	}
+
+	@Override
 	public String getJwtBuilderRef() {
 		return jwtBuilderRef;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getJwtConsumerRef() {
 		return jwtConsumerRef;
@@ -152,10 +182,41 @@ public class JwtSsoComponent implements JwtSsoConfig {
 		}
 	}
 
+	@Reference(service = KeyStoreService.class, name = KEY_KEYSTORE_SERVICE, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setKeyStoreService(ServiceReference<KeyStoreService> ref) {
+		keyStoreServiceRef.setReference(ref);
+		// keyStoreServiceMapRef.putReference((String) ref.getProperty(ID),
+		// ref);
+	}
+
+	protected void unsetKeyStoreService(ServiceReference<KeyStoreService> ref) {
+		keyStoreServiceRef.unsetReference(ref);
+		// keyStoreServiceMapRef.removeReference((String) ref.getProperty(ID),
+		// ref);
+	}
+
+	@Reference(service = SSLSupport.class, name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setSslSupport(ServiceReference<SSLSupport> ref) {
+		sslSupportRef.setReference(ref);
+	}
+
+	protected void updatedSslSupport(ServiceReference<SSLSupport> ref) {
+		sslSupportRef.setReference(ref);
+	}
+
+	protected void unsetSslSupport(ServiceReference<SSLSupport> ref) {
+		sslSupportRef.unsetReference(ref);
+	}
+
 	@Activate
 	protected void activate(Map<String, Object> properties, ComponentContext cc) {
-		System.out.println("***** JWTSSO activate *****"); // todo: removeme
+		uniqueId = (String) properties.get(KEY_UNIQUE_ID);
 		process(properties);
+		keyStoreServiceRef.activate(cc);
+		sslSupportRef.activate(cc);
+
+		JwtUtils.setKeyStoreService(keyStoreServiceRef);
+		JwtUtils.setSSLSupportService(sslSupportRef);
 	}
 
 	@Modified
@@ -166,18 +227,199 @@ public class JwtSsoComponent implements JwtSsoConfig {
 	@Deactivate
 	protected void deactivate(int reason, ComponentContext cc) {
 
+		keyStoreServiceRef.deactivate(cc);
+		sslSupportRef.deactivate(cc);
+		JwtUtils.setKeyStoreService(null);
+		JwtUtils.setSSLSupportService(null);
 	}
 
 	private void process(Map<String, Object> props) {
+		if (tc.isEntryEnabled()) {
+			Tr.entry(tc, "process", props);
+		}
 		if (props == null || props.isEmpty()) {
 			return;
 		}
-		setCookiePathToWebAppContextPath = (Boolean) props.get(JwtSsoUtils.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
-		includeLtpaCookie = (Boolean) props.get(JwtSsoUtils.CFG_KEY_INCLUDELTPACOOKIE);
-		fallbackToLtpa = (Boolean) props.get(JwtSsoUtils.CFG_KEY_FALLBACKTOLTPA);
-		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTBUILDERREF));
-		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoUtils.CFG_KEY_JWTCONSUMERREF));
+		setCookiePathToWebAppContextPath = (Boolean) props
+				.get(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
+		includeLtpaCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE);
+		fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_KEY_FALLBACKTOLTPA);
+		cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
+		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
+		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
+		cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
+		if (jwtConsumerRef == null) {
+			setJwtSsoConsumerDefaults();
+		}
+		if (tc.isEntryEnabled()) {
+			Tr.exit(tc, "process");
+		}
+	}
 
+	private void setJwtSsoConsumerDefaults() {
+		jwtConsumerRef = getId();
+		signatureAlgorithm = "RS256";
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "consumer id = ", jwtConsumerRef);
+		}
+		issuerUtil = new IssuerUtil();
+	}
+
+	/** {@inheritDoc} */
+
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return getUniqueId();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<String> getAudiences() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getSignatureAlgorithm() {
+		// TODO Auto-generated method stub
+		return signatureAlgorithm;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getSharedKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getTrustStoreRef() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getTrustedAlias() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getUniqueId() {
+		// TODO Auto-generated method stub
+		return uniqueId;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getUserNameAttribute() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getGroupNameAttribute() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean ignoreApplicationAuthMethod() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean getMapToUserRegistry() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getIssuer() {
+		// TODO Auto-generated method stub
+		return issuerUtil.getResolvedHostAndPortUrl(httpsendpointInfoMBean, httpendpointInfoMBean, serverInfoMBean,
+				uniqueId);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long getClockSkew() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean getJwkEnabled() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getJwkEndpointUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public ConsumerUtils getConsumerUtils() {
+		if (consumerUtils == null) { // lazy init
+			consumerUtils = new ConsumerUtils(keyStoreServiceRef);
+		}
+		return consumerUtils;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isValidationRequired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isHostNameVerificationEnabled() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getSslRef() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public JWKSet getJwkSet() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean getTokenReuse() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getCookieName() {
+		// TODO Auto-generated method stub
+		return cookieName;
 	}
 
 }

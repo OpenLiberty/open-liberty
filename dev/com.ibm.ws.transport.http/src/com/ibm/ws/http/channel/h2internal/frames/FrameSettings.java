@@ -128,7 +128,7 @@ public class FrameSettings extends Frame {
         while (numberOfSettings-- > 0) {
             settingId = frp.grabNext16BitInt();
             settingValue = frp.grabNext32BitInt();
-            settingValue = settingValue & 0x00000000ffffffffL; // convert to unsigned
+//            settingValue = settingValue & 0x00000000ffffffffL; // convert to unsigned
             putSettingValue(settingId, settingValue);
         }
     }

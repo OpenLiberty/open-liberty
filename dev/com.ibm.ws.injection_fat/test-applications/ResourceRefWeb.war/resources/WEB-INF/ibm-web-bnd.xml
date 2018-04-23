@@ -1,0 +1,23 @@
+<web-bnd 
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd"
+  version="1.0"
+>
+  <resource-ref name="ResRef_DS" binding-name="jdbc/TestDataSource"/>
+  <resource-ref name="com.ibm.ws.injection.resref.web.BasicResourceRefServlet/JNDI_Class_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
+  
+  <resource-ref name="com.ibm.ws.injection.resref.web.AdvResourceRefFilter/JNDI_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
+  
+  <resource-ref name="com.ibm.ws.injection.resref.web.AdvResRefHttpSessionAttributeListener/JNDI_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
+  
+  <resource-ref name="com.ibm.ws.injection.resref.web.AdvResRefHttpSessionListener/JNDI_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
+  
+  <resource-ref name="com.ibm.ws.injection.resref.web.AdvResRefServletContextAttributeListener/JNDI_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
+  
+  <resource-ref name="com.ibm.ws.injection.resref.web.AdvResRefServletContextListener/JNDI_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
+  
+  <resource-ref name="com.ibm.ws.injection.resref.web.AdvResRefServletRequestAttributeListener/JNDI_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
+  
+  <resource-ref name="com.ibm.ws.injection.resref.web.AdvResRefServletRequestListener/JNDI_Ann_DataSource" binding-name="jdbc/TestDataSource"/>
+</web-bnd>

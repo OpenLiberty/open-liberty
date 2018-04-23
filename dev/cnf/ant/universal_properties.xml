@@ -29,7 +29,7 @@ build_liberty* tasks and project-level build scripts should be defined here. -->
 	<property name="fe.suffix" value="${fe.build.increment}.linux" />
 
 	<!-- One central property to name the remote GSA server, to make it easy to override (perhaps with the IP address if DNS acts up). -->
-	<property name="remote.gsa.server" value="ausgsa.ibm.com" />
+	<property name="remote.gsa.server" value="rtpgsa.ibm.com" />
 
 	<!-- Upload properties used by the FE Upload Build -->
 	<property name="final.fe.gsa.server" value="${remote.gsa.server}" />
@@ -216,5 +216,11 @@ build_liberty* tasks and project-level build scripts should be defined here. -->
 	<!-- URL pointing to the location on DHE where our repository content is hosted -->
 	<property name="dhe.repo.base.url" value="https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp" />
 
+	<!-- Fix List generation locations and values -->
+	<property name="fixlist.dir" location="${basedir}/fixlist" />
+	<property name="liberty.image.common.dir" location="${basedir}/../image.common" />
+	<property name="liberty.build.im.offering.dir" location="${basedir}/../build.im.zip.offering" />
+	<property name="fixlist.archive.aparlist.dir" location="${liberty.image.common.dir}/aparlists" />
+	<property name="fixlist.build.projects.file" value="${fixlist.dir}/FixList-BuildProjects.txt" />
 </project>
 

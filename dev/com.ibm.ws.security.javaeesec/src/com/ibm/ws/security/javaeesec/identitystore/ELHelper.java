@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.identitystore;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -43,7 +45,7 @@ class ELHelper {
      * @return The evaluated expression.
      */
     @Trivial
-    static Object evaluateElExpression(String expression) {
+    protected Object evaluateElExpression(String expression) {
         return evaluateElExpression(expression, false);
     }
 
@@ -56,18 +58,42 @@ class ELHelper {
      * @return The evaluated expression.
      */
     @Trivial
-    static Object evaluateElExpression(String expression, boolean mask) {
+    protected Object evaluateElExpression(String expression, boolean mask) {
         final String methodName = "evaluateElExpression";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, methodName, new Object[] { (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, mask });
         }
 
-        Object result = CDIHelper.getELProcessor().eval(removeBrackets(expression, mask));
+        EvalPrivilegedAction evalPrivilegedAction = new EvalPrivilegedAction(expression, mask);
+        Object result = AccessController.doPrivileged(evalPrivilegedAction);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, methodName, (result == null) ? null : mask ? OBFUSCATED_STRING : result);
         }
         return result;
+    }
+
+    /*
+     * Class to avoid tracing expression that otherwise is traced when using
+     * an anonymous PrivilegedAction.
+     */
+    class EvalPrivilegedAction implements PrivilegedAction<Object> {
+
+        private final String expression;
+        private final boolean mask;
+
+        @Trivial
+        public EvalPrivilegedAction(String expression, boolean mask) {
+            this.expression = expression;
+            this.mask = mask;
+        }
+
+        @Trivial
+        @Override
+        public Object run() {
+            return CDIHelper.getELProcessor().eval(removeBrackets(expression, mask));
+        }
+
     }
 
     /**
@@ -117,7 +143,7 @@ class ELHelper {
      * @param immediateOnly Return null if the value is a deferred EL expression.
      * @return Either the evaluated EL expression or the non-EL value.
      */
-    static Integer processInt(String name, String expression, int value, boolean immediateOnly) {
+    protected Integer processInt(String name, String expression, int value, boolean immediateOnly) {
         Integer result = null;
         boolean immediate = false;
 
@@ -159,7 +185,7 @@ class ELHelper {
      * @param immediateOnly Return null if the value is a deferred EL expression.
      * @return Either the evaluated EL expression or the non-EL value.
      */
-    static LdapSearchScope processLdapSearchScope(String name, String expression, LdapSearchScope value, boolean immediateOnly) {
+    protected LdapSearchScope processLdapSearchScope(String name, String expression, LdapSearchScope value, boolean immediateOnly) {
         LdapSearchScope result;
         boolean immediate = false;
 
@@ -178,6 +204,9 @@ class ELHelper {
             Object obj = evaluateElExpression(expression);
             if (obj instanceof LdapSearchScope) {
                 result = (LdapSearchScope) obj;
+                immediate = isImmediateExpression(expression);
+            } else if (obj instanceof String) {
+                result = LdapSearchScope.valueOf(((String) obj).toUpperCase());
                 immediate = isImmediateExpression(expression);
             } else {
                 throw new IllegalArgumentException("Expected '" + name + "' to evaluate to an LdapSearchScope type.");
@@ -201,7 +230,7 @@ class ELHelper {
      * @return The String value.
      */
     @Trivial
-    static String processString(String name, String expression, boolean immediateOnly) {
+    protected String processString(String name, String expression, boolean immediateOnly) {
         return processString(name, expression, immediateOnly, false);
     }
 
@@ -222,7 +251,7 @@ class ELHelper {
      */
     @FFDCIgnore(ELException.class)
     @Trivial
-    static String processString(String name, String expression, boolean immediateOnly, boolean mask) {
+    protected String processString(String name, String expression, boolean immediateOnly, boolean mask) {
 
         final String methodName = "processString";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -270,7 +299,7 @@ class ELHelper {
      */
     @FFDCIgnore(ELException.class)
     @Trivial
-    static String[] processStringArray(String name, String expression, boolean immediateOnly, boolean mask) {
+    protected String[] processStringArray(String name, String expression, boolean immediateOnly, boolean mask) {
 
         final String methodName = "processStringArray";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -317,7 +346,7 @@ class ELHelper {
      */
     @FFDCIgnore(ELException.class)
     @Trivial
-    static Stream<String> processStringStream(String name, String expression, boolean immediateOnly, boolean mask) {
+    protected Stream<String> processStringStream(String name, String expression, boolean immediateOnly, boolean mask) {
 
         final String methodName = "processStringStream";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -359,7 +388,7 @@ class ELHelper {
      *
      * @return The validated useFor types.
      */
-    static Set<ValidationType> processUseFor(String useForExpression, ValidationType[] useFor, boolean immediateOnly) {
+    protected Set<ValidationType> processUseFor(String useForExpression, ValidationType[] useFor, boolean immediateOnly) {
         Set<ValidationType> result = null;
         boolean immediate = false;
 
@@ -367,20 +396,18 @@ class ELHelper {
          * The expression language value takes precedence over the direct setting.
          */
         if (useForExpression.isEmpty()) {
-            result = new HashSet<ValidationType>(Arrays.asList(useFor));
+            result = EnumSet.copyOf(Arrays.asList(useFor));
         } else {
             /*
              * Evaluate the EL expression to get the value.
              */
             Object obj = evaluateElExpression(useForExpression);
-            if (obj instanceof Object[]) {
-                result = new HashSet(Arrays.asList(obj));
-                immediate = isImmediateExpression(useForExpression);
-            } else if (obj instanceof Set) {
-                result = (Set<ValidationType>) obj;
+            if (obj instanceof ValidationType[]) {
+                ValidationType[] types = (ValidationType[]) obj;
+                result = EnumSet.copyOf(Arrays.asList(types));
                 immediate = isImmediateExpression(useForExpression);
             } else {
-                throw new IllegalArgumentException("Expected 'useForExpression' to evaluate to a Set<ValidationType>.");
+                throw new IllegalArgumentException("Expected 'useForExpression' to evaluate to an array of ValidationType.");
             }
         }
 

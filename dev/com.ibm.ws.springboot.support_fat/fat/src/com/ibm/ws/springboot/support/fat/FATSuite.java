@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 CommonWebServerTests15.class,
@@ -21,13 +23,25 @@ import org.junit.runners.Suite.SuiteClasses;
                 CommonWebServerTests20.class,
                 CommonWebServerTests20Servlet40.class,
                 ConfigDropinRootTests.class,
-                ConfigSpringBootAppTagTests.class,
+                ConfigSpringBootApplicationTagTests.class,
+                ConfigSpringBootApplicationClassloaderTests.class,
+                ConfigSpringBootApplicationWithArgsTests.class,
                 PreThinnedSpringBootTests.class,
                 WarmStartTests.class,
                 SSLTests15.class,
                 SSLTests20.class,
                 SSLMutualAuthTests15.class,
-                SSLMutualAuthTests20.class
+                SSLMutualAuthTests20.class,
+                JSPTests15.class,
+                MissingServletTests15.class,
+                MissingServletTests20.class,
+                NeedSpringBoot15FeatureTests.class,
+                NeedSpringBoot20FeatureTests.class,
+                NoServletRequiredAppTests15.class,
+                SpringBootUtilityThinTest.class,
+                WebAnnotationTests.class,
+                ExtractedAppTests.class,
+                WebSocketTests15.class
 })
 
 public class FATSuite {

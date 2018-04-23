@@ -25,8 +25,6 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.naming.InvalidNameException;
 import javax.naming.NamingEnumeration;
@@ -44,6 +42,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.wim.AccessControllerHelper;
 import com.ibm.wsspi.security.wim.exception.CertificateMapperException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.exception.WIMSystemException;
@@ -385,6 +385,7 @@ public class LdapHelper {
      *
      * @return The formatted DN. null will be returned if the specified DN is invalid.
      */
+    @FFDCIgnore(InvalidNameException.class)
     @SuppressWarnings("unchecked")
     public static String getValidDN(String dn) {
         Map<String, Map<String, String>> dnCache = null;
@@ -416,7 +417,6 @@ public class LdapHelper {
                 result = new LdapName(dn).toString();
                 dnCache.get(sDomainName).put(dn, result);
             } catch (InvalidNameException e) {
-                e.getMessage();
                 result = null;
             }
         }
@@ -821,6 +821,11 @@ public class LdapHelper {
      * Copy from com.ibm.ws.security.registry.ldap.CertificateMapper
      */
     public static String[] parseFilterDescriptor(String mapDesc) throws CertificateMapperException {
+        if (mapDesc == null || mapDesc.isEmpty()) {
+            String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_CERTIFICATE_FILTER, mapDesc);
+            throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, msg);
+        }
+
         int prev_idx, cur_idx, end_idx;
         ArrayList<String> list = new ArrayList<String>();
         for (prev_idx = cur_idx = 0, end_idx = mapDesc.length(); cur_idx < end_idx; prev_idx = cur_idx) {
@@ -847,10 +852,8 @@ public class LdapHelper {
                 cur_idx = mapDesc.indexOf("}", prev_idx);
             }
             if (cur_idx == -1) {
-                throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, Tr.formatMessage(
-                                                                                                                tc,
-                                                                                                                WIMMessageKey.INVALID_CERTIFICATE_FILTER,
-                                                                                                                WIMMessageHelper.generateMsgParms(mapDesc)));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_CERTIFICATE_FILTER, mapDesc);
+                throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, msg);
             }
             cur_idx++;
             list.add(mapDesc.substring(prev_idx, cur_idx));
@@ -902,42 +905,6 @@ public class LdapHelper {
             list.add(rdn);
         }
         return list.toArray(new String[0]);
-    }
-
-    /**
-     * Is the address an IPv6 Address.
-     *
-     * @param host
-     * @return
-     */
-    public static boolean isIPv6Addr(String host) {
-        if (host != null) {
-            if (host.contains("[") && host.contains("]"))
-                host = host.substring(host.indexOf("[") + 1, host.indexOf("]"));
-            host = host.toLowerCase();
-            Pattern p1 = Pattern.compile("^(?:(?:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9](?::|$)){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))$");
-            Pattern p2 = Pattern.compile("^(\\d{1,3}\\.){3}\\d{1,3}$");
-            Matcher m1 = p1.matcher(host);
-            boolean b1 = m1.matches();
-            Matcher m2 = p2.matcher(host);
-            boolean b2 = !m2.matches();
-            return b1 && b2;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Format the given address as an IPv6 Address.
-     *
-     * @param host
-     * @return
-     */
-    public static String formatIPv6Addr(String host) {
-        if (host == null)
-            return null;
-        else
-            return (new StringBuilder()).append("[").append(host).append("]").toString();
     }
 
     /**

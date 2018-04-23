@@ -41,7 +41,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.cxf.common.util.PropertyUtils;
-import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.helpers.HttpHeaderHelper;
 import org.apache.cxf.message.Message;
@@ -102,7 +101,6 @@ public class Headers {
         this.message = message;
         this.headers = getSetProtocolHeaders(message);
     }
-
     public Headers() {
         this.headers = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
         this.message = null;
@@ -134,7 +132,7 @@ public class Headers {
         filteredHeaders.putAll(headers);
         if (!logSensitiveHeaders) {
             for (String filteredKey : SENSITIVE_HEADERS) {
-                filteredHeaders.replace(filteredKey, SENSITIVE_HEADER_MARKER);
+                filteredHeaders.put(filteredKey, SENSITIVE_HEADER_MARKER);
             }
         }
         return filteredHeaders.toString();
@@ -143,6 +141,7 @@ public class Headers {
     public Map<String, List<String>> headerMap() {
         return headers;
     }
+
 
     /**
      * Write cookie header from given session cookies
@@ -180,44 +179,44 @@ public class Headers {
         }
         if (policy.isSetCacheControl()) {
             headers.put("Cache-Control",
-                        createMutableList(policy.getCacheControl()));
+                    createMutableList(policy.getCacheControl()));
         }
         if (policy.isSetHost()) {
             headers.put("Host",
-                        createMutableList(policy.getHost()));
+                    createMutableList(policy.getHost()));
         }
         if (policy.isSetConnection()) {
             headers.put("Connection",
-                        createMutableList(policy.getConnection().value()));
+                    createMutableList(policy.getConnection().value()));
         }
         if (policy.isSetAccept()) {
             headers.put("Accept",
-                        createMutableList(policy.getAccept()));
+                    createMutableList(policy.getAccept()));
         } else if (!headers.containsKey("Accept")) {
             headers.put("Accept", createMutableList("*/*"));
         }
         if (policy.isSetAcceptEncoding()) {
             headers.put("Accept-Encoding",
-                        createMutableList(policy.getAcceptEncoding()));
+                    createMutableList(policy.getAcceptEncoding()));
         }
         if (policy.isSetAcceptLanguage()) {
             headers.put("Accept-Language",
-                        createMutableList(policy.getAcceptLanguage()));
+                    createMutableList(policy.getAcceptLanguage()));
         }
         if (policy.isSetContentType()) {
             message.put(Message.CONTENT_TYPE, policy.getContentType());
         }
         if (policy.isSetCookie()) {
             headers.put("Cookie",
-                        createMutableList(policy.getCookie()));
+                    createMutableList(policy.getCookie()));
         }
         if (policy.isSetBrowserType()) {
             headers.put("User-Agent",
-                        createMutableList(policy.getBrowserType()));
+                    createMutableList(policy.getBrowserType()));
         }
         if (policy.isSetReferer()) {
             headers.put("Referer",
-                        createMutableList(policy.getReferer()));
+                    createMutableList(policy.getReferer()));
         }
     }
 
@@ -249,11 +248,12 @@ public class Headers {
             headers.put("Keep-Alive", createMutableList(policy.getKeepAliveParameters()));
         }
 
-        /*
-         * TODO - hook up these policies
-         * <xs:attribute name="SuppressClientSendErrors" type="xs:boolean" use="optional" default="false">
-         * <xs:attribute name="SuppressClientReceiveErrors" type="xs:boolean" use="optional" default="false">
-         */
+
+    /*
+     * TODO - hook up these policies
+    <xs:attribute name="SuppressClientSendErrors" type="xs:boolean" use="optional" default="false">
+    <xs:attribute name="SuppressClientReceiveErrors" type="xs:boolean" use="optional" default="false">
+    */
     }
 
     public void removeAuthorizationHeaders() {
@@ -263,13 +263,14 @@ public class Headers {
 
     public void setAuthorization(String authorization) {
         headers.put("Authorization",
-                    createMutableList(authorization));
+                createMutableList(authorization));
     }
 
     public void setProxyAuthorization(String authorization) {
         headers.put("Proxy-Authorization",
-                    createMutableList(authorization));
+                createMutableList(authorization));
     }
+
 
     /**
      * While extracting the Message.PROTOCOL_HEADERS property from the Message,
@@ -282,7 +283,7 @@ public class Headers {
      */
     public static Map<String, List<String>> getSetProtocolHeaders(final Message message) {
         Map<String, List<String>> headers =
-                        CastUtils.cast((Map<?, ?>) message.get(Message.PROTOCOL_HEADERS));
+            CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));
         if (null == headers) {
             headers = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
         } else if (headers instanceof HashMap) {
@@ -301,13 +302,13 @@ public class Headers {
         for (String key : connection.getHeaderFields().keySet()) {
             if (key != null) {
                 headers.put(HttpHeaderHelper.getHeaderKey(key),
-                            origHeaders.get(key));
+                    origHeaders.get(key));
             }
         }
     }
 
     private static List<String> createMutableList(String val) {
-        return new ArrayList<>(Arrays.asList(new String[] { val }));
+        return new ArrayList<>(Arrays.asList(new String[] {val}));
     }
 
     /**
@@ -363,7 +364,6 @@ public class Headers {
                     // otherwise if it is GET then just drop it
                     dropContentType = true;
                 }
-
             }
             if (!dropContentType) {
                 String ct = emptyRequest && !contentTypeSet ? "*/*" : determineContentType();
@@ -385,10 +385,10 @@ public class Headers {
         if (ctList != null && ctList.size() == 1 && ctList.get(0) != null) {
             ct = ctList.get(0).toString();
         } else {
-            ct = (String) message.get(Message.CONTENT_TYPE);
+            ct = (String)message.get(Message.CONTENT_TYPE);
         }
 
-        String enc = (String) message.get(Message.ENCODING);
+        String enc = (String)message.get(Message.ENCODING);
 
         if (null != ct) {
             if (enc != null
@@ -457,6 +457,12 @@ public class Headers {
             }
             for (Enumeration<String> e2 = req.getHeaders(fname); e2.hasMoreElements();) {
                 String val = e2.nextElement();
+                if ("Accept".equals(mappedName) && values.size() > 0) {
+                    //ensure we collapse Accept into first line
+                    String firstAccept = values.get(0);
+                    firstAccept = firstAccept + ", " + val;
+                    values.set(0, firstAccept);
+                }
                 values.add(val);
             }
         }
@@ -474,8 +480,8 @@ public class Headers {
         return PropertyUtils.isTrue(message.getContextualProperty(ALLOW_LOGGING_SENSITIVE_HEADERS));
     }
     private String getContentTypeFromMessage() {
-        final String ct = (String) message.get(Message.CONTENT_TYPE);
-        final String enc = (String) message.get(Message.ENCODING);
+        final String ct = (String)message.get(Message.CONTENT_TYPE);
+        final String enc = (String)message.get(Message.ENCODING);
 
         if (null != ct
             && null != enc
@@ -543,7 +549,6 @@ public class Headers {
                 }
                 response.setHeader(header, sb.toString());
             }
-
         }
     }
 
@@ -554,9 +559,9 @@ public class Headers {
         }
         String headerString;
         if (headerObject instanceof Date) {
-            headerString = toHttpDate((Date) headerObject);
+            headerString = toHttpDate((Date)headerObject);
         } else if (headerObject instanceof Locale) {
-            headerString = toHttpLanguage((Locale) headerObject);
+            headerString = toHttpLanguage((Locale)headerObject);
         } else {
             headerString = headerObject.toString();
         }
@@ -587,13 +592,6 @@ public class Headers {
     }
 
     public static String toHttpLanguage(Locale locale) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(locale.getLanguage());
-        String country = locale.getCountry();
-        if (!StringUtils.isEmpty(country)) {
-            // Locale.toString() will add "_" instead, '-' is typically expected
-            sb.append('-').append(country);
-        }
-        return sb.toString();
+        return locale.toString().replace('_', '-');
     }
 }

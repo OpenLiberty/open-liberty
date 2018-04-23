@@ -129,4 +129,9 @@ public interface WebAppSecurityConfig {
      * Returns the value of basicAuthRealmName
      */
     String getBasicAuthRealmName();
+
+    String getJaspicSessionCookieName();
+
+    boolean isJaspicSessionForMechanismsEnabled();
+
 }

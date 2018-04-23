@@ -130,7 +130,7 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Le programme d'installation
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=V\u00e9rifiez que le r\u00e9pertoire contient la fonction, puis relancez l'op\u00e9ration.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Impossible de localiser l''ex\u00e9cutable {0} apr\u00e8s v\u00e9rification des emplacements suivants : {1}
-ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Le programme d'installation n'a pas pu localiser le fichier ex\u00e9cutable
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Le programme d'installation n'est pas parvenu \u00e0 localiser le fichier ex\u00e9cutable.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=V\u00e9rifiez que le fichier ex\u00e9cutable existe dans l'un des emplacements sp\u00e9cifi\u00e9s.
 
 ERROR_EXECUTING_COMMAND=CWWKF1229E: Erreur lors de l''ex\u00e9cution de la commande : {0}. La commande s''est termin\u00e9e avec le code de sortie {1} et le message d''erreur : {2}
@@ -254,7 +254,7 @@ ERROR_ASSET_MISSING_DEPENDENT.explanation=L'actif ne peut pas \u00eatre install\
 ERROR_ASSET_MISSING_DEPENDENT.useraction=Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d'installer l'actif. Vous pouvez aussi t\u00e9l\u00e9charger wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central, et configurer le dossier extrait en tant r\u00e9f\u00e9rentiel bas\u00e9 sur un r\u00e9pertoire. Si vous ne disposez pas d'un acc\u00e8s Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l'actif manquant et d'\u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. Pour plus d'informations sur l'installation des actifs, consultez la documentation relative \u00e0 installUtility dans IBM Knowledge Center. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Impossible d''obtenir les actifs suivants : {0}. V\u00e9rifiez que les actifs sp\u00e9cifi\u00e9s sont valides. Pour identifier les ID des actifs applicables, lancez l''utilitaire de recherche installUtility.
-ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Le programme d'installation n'a pas pu extraire les actifs sp\u00e9cifi\u00e9s des r\u00e9f\u00e9rentiels.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Le programme d'installation ne peut pas extraire les actifs sp\u00e9cifi\u00e9s depuis les r\u00e9f\u00e9rentiels.
 ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Assurez-vous que les actifs sp\u00e9cifi\u00e9s sont valides, qu'un ID utilisateur et un mot de passe valides sont fournis, et que les r\u00e9f\u00e9rentiels sont accessibles.
 
 ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: L''actif {0} ne s''applique pas \u00e0 l''installation produit {1}.  {2}

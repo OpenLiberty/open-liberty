@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
+import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.version.ServletVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -25,20 +26,20 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
-public class WebFragmentTestBase extends WebAppTestBase {
-    protected boolean isWarModule = false;
+public class WebFragmentTestBase extends DDTestBase {
 
-    WebFragment parseWebFragment(final String xml) throws Exception {
-        return parseWebFragment(xml, WebApp.VERSION_3_0);
+    WebFragment parse(String xml) throws Exception {
+        return parse(xml, WebApp.VERSION_3_0);
     }
 
-    WebFragment parseWebFragment(final String xml, final int maxVersion) throws Exception {
+    WebFragment parse(final String xml, final int maxVersion) throws Exception {
         WebFragmentAdapter adapter = new WebFragmentAdapter();
         final Container root = mockery.mock(Container.class, "root" + mockId++);
         final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
         final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         final ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
         final Container container = mockery.mock(Container.class, "container" + mockId++);
+        @SuppressWarnings("unchecked")
         final ServiceReference<ServletVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         mockery.checking(new Expectations() {
@@ -93,5 +94,19 @@ public class WebFragmentTestBase extends WebAppTestBase {
                " version=\"3.1\"" +
                " id=\"WebFragment_ID\"" +
                ">";
+    }
+
+    protected static final String webFragment40() {
+        return "<web-fragment" +
+               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-fragment_4_0.xsd\"" +
+               " version=\"4.0\"" +
+               " id=\"WebFragment_ID\"" +
+               ">";
+    }
+
+    protected static String webFragmentTail() {
+        return "</web-fragment>";
     }
 }

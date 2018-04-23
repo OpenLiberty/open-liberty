@@ -10,7 +10,6 @@
  *******************************************************************************/
 defaultTasks 'clean', 'build'
 
-plugins.apply 'java'
 plugins.apply 'jacoco'
 
 /* Project version is the Bundle-Version attribute if a bundle gets released, otherwise
@@ -175,130 +174,7 @@ task publishLibNative(type: Copy) {
   into buildImage.file('wlp/lib/native')
 }
 
-task prereqFeatureResources {
-  dependsOn ':cnf:copyMavenLibs'
-  dependsOn publishWLPJars
-  dependsOn publishJavadoc
-  dependsOn publishToolJars
-  dependsOn publishSchemaResources
-  dependsOn publishPlatformFiles
-  dependsOn publishTemplates
-  dependsOn publishBinScripts
-  dependsOn publishClientScripts
-  dependsOn publishLibNative
-}
-
-task publishFeatureResources {
-  // Start building feature resources after all other assemble artifacts are done being published
-  dependsOn {
-    bndWorkspace.getProject(project.name)?.getDependson()*.getName().collect {
-      rootProject.project(it).tasks.getByName 'prereqFeatureResources'
-    }
-  }
-
-  def featureFiles = fileTree(dir: project.projectDir, include: '*.feature')
-  inputs.files(featureFiles).skipWhenEmpty()
-  outputs.dir buildImage.file('wlp/lib/features')
-  outputs.dir new File(project.buildDir, 'repo')
-  doFirst {
-    buildImage.mkdir('wlp/lib/features')
-    project.mkdir(new File(project.buildDir, 'repo'))
-  }
-  doLast {
-    ant.taskdef(resource: 'com/ibm/ws/wlp/feature/tasks/default.properties') {
-      classpath {
-        fileset(dir: cnf.file('lib')) {
-          include(name: "wlp-*.jar")
-        }
-        fileset(dir: cnf.file('mavenlibs')) {
-          include(name: "biz.aQute.bnd-*.jar")
-          include(name: "infra.buildtasks*.jar")
-          include(name: "asm-all-5.2.jar")
-          include(name: "org.apache.aries.util-*.jar")
-          include(name: "osgi.core*.jar")
-          include(name: "jackson*.jar")
-          include(name: "jsoup-*.jar")
-        }
-      }
-    }
-
-    ant.taskdef(resource: 'com/ibm/ws/wlp/repository/default.properties') {
-      classpath {
-        fileset(dir: "${rootDir}/cnf/lib/") {
-          include(name: "wlp-generateRepositoryContent.jar")
-        }
-        fileset(dir: "${rootDir}/cnf/mavenlibs") {
-          include(name: "org.apache.aries.util-*.jar")
-          include(name: "jsoup-*.jar")
-        }
-      }
-    }
-
-    // featureBnd task expects files in build/l10n
-    copy {
-      from project.file('resources/l10n')
-      into project.file('build/l10n')
-    }
-
-    featureFiles.each {
-      Properties props = new Properties()
-      props.load(new FileInputStream(it))
-
-      if (props['kind'] != null) {
-        String version = ("beta".equals(props['kind']) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
-
-        ant.featureBnd(bnd: it.getPath(),
-                createESA: "true",
-                dir: buildImage.file('wlp'),
-                esaDir: new File(project.buildDir, 'repo'),
-                createFor: props['kind'],
-                buildType: props['kind'],
-                junit: new File(project.buildDir, 'report/featureChecks.xml')) {
-          defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
-                  licensePath: buildImage.file('lafiles/featureTerms'),
-                  version: version,
-                  licenseType: "EPL",
-                  displayVersion: "OpenLiberty")
-          edition(baseEdition: "beta")
-          edition(baseEdition: "core",
-                  validEditions: "")
-          edition(baseEdition: "base",
-                  validEditions: "BASE,BASE_ILAN,DEVELOPERS,EXPRESS,ND,zOS")
-          edition(baseEdition: "nd",
-                  validEditions: "BASE_ILAN,DEVELOPERS,ND,zOS")
-          edition(baseEdition: "zos",
-                  validEditions: "zOS")
-          edition(baseEdition: "bluemix",
-                  validEditions: "BLUEMIX")
-          edition(baseEdition: "full")
-          edition(baseEdition: "unsupported")
-        }
-
-        delete "${buildDir}/repo/description.html"
-        ant.propertyfile(file: "${buildDir}/repo/assetInfo.properties") {
-          entry(key: "licenseType", value: "UNSPECIFIED")
-        }
-        ant.generateEsaDescriptionHtml(featureManifestFile: ant.properties['feature.manifest.file'],
-                descriptionHtmlOutputFile: "${buildDir}/repo/description.html",
-                generateKnowledgeCentreLinks: "true",
-                licenseType: "EPL")
-        ant.zip(destfile: "${buildDir}/repo/${props['symbolicName']}.esa.metadata.zip") {
-          fileset(dir: "${buildDir}/repo", includes: "description.html,assetInfo.properties")
-          zipfileset(dir: buildImage.file("lafiles/featureTerms_html"), fullpath: "lafiles/en.html", includes: "en.html")
-        }
-      }
-    }
-
-    copy {
-      from project.file('resources/l10n')
-      into buildImage.file('wlp/lib/features/l10n')
-    }
-
-  }
-}
-
 assemble {
-  dependsOn ':cnf:copyMavenLibs'
   dependsOn publishWLPJars
   dependsOn publishJavadoc
   dependsOn publishToolJars
@@ -308,24 +184,17 @@ assemble {
   dependsOn publishBinScripts
   dependsOn publishClientScripts
   dependsOn publishLibNative
-}
-
-publish {
-  dependsOn publishFeatureResources
 }
 
 compileJava {
   if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
-    def instrument = fileTree( dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes') )
+    inputs.files { rasInstrumentationInputFiles() }
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes'))
     doLast {
       if (instrument.isEmpty())
         return
-      ant.taskdef(name: 'instrumentForTrace', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentForTrace') {
-        classpath {
-            fileset(dir: cnf.file('lib'), includes: "ras-instrumentation.jar")
-        }
-      }
-      ant.instrumentForTrace( ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection') ) {
+      rasInstrumentationTaskdef(ant)
+      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
           fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
       }
     }
@@ -333,9 +202,8 @@ compileJava {
 }
 
 task globalize {
-    dependsOn ':cnf:copyMavenLibs'
-    enabled parseBoolean(bnd('globalize', 'true'))
-    ext.destinationDir = new File(buildDir, "src/${name}/java")
+  ext.destinationDir = new File(buildDir, "src/${name}/java")
+  if (parseBoolean(bnd('globalize', 'true'))) {
     inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
     outputs.dir destinationDir
     doFirst {
@@ -347,12 +215,7 @@ task globalize {
         into destinationDir
         include '**/package-info.java'
       }
-      ant.taskdef(resource: 'com/ibm/mantis/nls/antlib.xml') {
-        classpath {
-            fileset(dir: cnf.file('mavenlibs'), includes: "commons-*.jar")
-            fileset(dir: cnf.file('mavenlibs'), includes: "mantis-*.jar")
-        }
-      }
+      nlsTaskdef(ant)
       ant.validate() {
         fileset(dir: project.file('resources'), includes: "**/*.nlsprops", excludes: "**/*_*.nlsprops")
         completenessvalidator(messagesonly: "false")
@@ -435,6 +298,7 @@ task globalize {
         tmstransformer(dest: rootProject.file("build.pii.package/nlsxml/${project.name}"))
       }
     }
+  }
 }
 
 task copyPiiFiles(type: Copy) {
@@ -454,12 +318,16 @@ task buildfat {
 
 sourceSets {
   main {
-    java.srcDir globalize.destinationDir
+    if (parseBoolean(bnd('globalize', 'true'))) {
+      java.srcDir globalize.destinationDir
+    }
   }
 }
 
 compileJava {
-  dependsOn globalize
+  if (parseBoolean(bnd('globalize', 'true'))) {
+    dependsOn globalize
+  }
   options.warnings = false
   options.fork = true
 }
@@ -478,12 +346,8 @@ test {
   doFirst {
     if (testports.isEmpty())
       return
-    ant.taskdef(name: 'portSelector', classname: 'com.ibm.aries.buildtasks.PortSelector') {
-      classpath {
-        fileset(dir: cnf.file('mavenlibs'), includes: "infra.buildtasks*.jar")
-      }
-    }
     def propertiesFile = new File(compileTestJava.destinationDir, 'unittestports.properties')
+    portSelectorTaskdef(ant)
     ant.portSelector(engineName: "${bnd.buildEngineName}", location: propertiesFile, jvmarg: 'jvmargPorts')
     jvmArgs ant.jvmargPorts.tokenize()
   }
@@ -493,29 +357,6 @@ test {
       rootProject.ext.successfulTestCountTotal = rootProject.ext.successfulTestCountTotal + result.successfulTestCount
       rootProject.ext.failedTestCountTotal = rootProject.ext.failedTestCountTotal + result.failedTestCount
       rootProject.ext.skippedTestCountTotal = rootProject.ext.skippedTestCountTotal + result.skippedTestCount
-    }
-  }
-}
-
-def featuresToPublish() {
-  def features = []
-  fileTree(dir: project.projectDir, include: '*.feature').each {
-    Properties props = new Properties()
-    props.load(new FileInputStream(it))
-    features.add(props['symbolicName'])
-  }
-  return features
-}
-
-publishing {
-  publications {
-    featuresToPublish().each { feature ->
-      maven(MavenPublication) {
-        artifactId feature
-        version project.version
-        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa"), extension: 'esa'
-        artifact source: new File(project.buildDir, 'repo/' + feature + ".esa.metadata.zip"), extension: 'esa.metadata.zip'
-      }
     }
   }
 }
@@ -575,6 +416,69 @@ jacocoTestCoverageVerification {
   }
 }
 
-private boolean parseBoolean(String value) {
-  return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)
+/*
+ * This task is meant to perform a simple verification of all of the bundle jars that have been
+ * created for the liberty image. It runs as part of the Package Verification build. The check
+ * it performs is to simply inspect each bundle jar, and verify that if there is at least one
+ * file with translatable messages in it, there is a file for every language.
+*/
+task verifyBundleNLS {
+    doLast {
+        // This is the top level reference to each of the jar files in the build image
+        FileTree bundleJars= fileTree(dir: "${rootDir}/../../../messageVerificationImage/wlp/lib/");
+        bundleJars.include "**/*.jar"
+
+        /* This is the String that contains all of the projects that it is safe to IGNORE message
+         * verification failures for. It is loaded from the properties file messageVerifyIgnores.
+         */
+        String ignoresList = new File("${rootDir}/../../../ant_build/resources/configuration/messageVerifyIgnores").text
+
+        // This string holds all the projects with errors
+        String badProjectsProps = "";
+        String badProjectsNLS = "";
+
+        // With the list of bundle jars, loop over each one to perform the check
+        bundleJars.each { File jarFile ->
+            FileTree jarTree = zipTree( jarFile )
+
+            // Find all the NLS metatype.properties files based on a regex
+            FileTree metatypeFiles = jarTree.matching {
+                include 'OSGI-INF/l10n/**/*'
+            }
+
+            // Store the name of the jar file being examined, and strip off the version string and file type
+            String jarName = jarFile.getName()
+            jarName = jarName.replaceFirst( "_[0-9].[0-9]+.[0-9]+", "" )
+            jarName = jarName.replaceFirst( ".jar", "")
+            jarName += "\n"
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( metatypeFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsProps.isAllWhitespace() )
+                    badProjectsProps += jarFile.getName()
+                else
+                    badProjectsProps += ", " + jarFile.getName()
+            }
+
+            // Find all the NLS .nlsprops files based on a regex
+            // Note that the .nlsprops files have been compiled, so they will be .class files in the jar
+            FileTree nlspropsFiles = jarTree.matching {
+                include '**/resources/[^/]*.class'
+            }
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( nlspropsFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsNLS.isAllWhitespace() )
+                    badProjectsNLS += jarFile.getName()
+                else
+                    badProjectsNLS += ", " + jarFile.getName()
+            }
+        }
+
+        // If either of the checks have failures in them, fail the task
+        if( !badProjectsProps.isAllWhitespace() )
+            throw new GradleException("Missing metatype.properties files: " + badProjectsProps )
+        if( !badProjectsNLS.isAllWhitespace() )
+            throw new GradleException("Missing nlsprops files: " + badProjectsNLS )
+    }
 }

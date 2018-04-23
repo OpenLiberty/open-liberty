@@ -22,6 +22,9 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.app.manager.springboot.container.ApplicationError;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer;
@@ -35,6 +38,8 @@ import com.ibm.ws.threading.FutureMonitor;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "type:String=spring" })
 public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
+    private static final TraceComponent tc = Tr.register(SpringBootRuntimeContainer.class);
+
     static class SpringModuleMetaData extends MetaDataImpl implements ModuleMetaData {
         private final SpringBootModuleInfo moduleInfo;
 
@@ -87,7 +92,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     }
 
     private void invokeSpringMain(Future<Boolean> mainInvokeResult, SpringBootModuleInfo springBootModuleInfo) {
-
+        final SpringBootApplicationImpl springBootApplication = springBootModuleInfo.getSpringBootApplication();
         final Method main;
         ClassLoader newTccl = springBootModuleInfo.getClassLoader();
         ClassLoader previousTccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
@@ -96,10 +101,9 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
             return null;
         });
         try {
-            SpringBootApplicationImpl springBootApp = springBootModuleInfo.getSpringBootApplication();
-            springBootApp.registerSpringConfigFactory();
-            Class<?> springAppClass = springBootModuleInfo.getClassLoader().loadClass(springBootApp.getSpringBootManifest().getSpringStartClass());
-            main = springAppClass.getMethod("main", String[].class);
+            springBootApplication.registerSpringConfigFactory();
+            Class<?> springApplicationClass = springBootModuleInfo.getClassLoader().loadClass(springBootApplication.getSpringBootManifest().getSpringStartClass());
+            main = springApplicationClass.getMethod("main", String[].class);
             // TODO not sure Spring Boot supports non-private main methods
             main.setAccessible(true);
         } catch (ClassNotFoundException | NoSuchMethodException e) {
@@ -121,11 +125,32 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
                 return null;
             });
             try {
-                // TODO figure out how to pass arguments
-                main.invoke(null, new Object[] { new String[0] });
+                // get the application args to pass from the springBootApplication
+                main.invoke(null, new Object[] { springBootApplication.getAppArgs().toArray(new String[0]) });
                 futureMonitor.setResult(mainInvokeResult, true);
             } catch (InvocationTargetException e) {
-                futureMonitor.setResult(mainInvokeResult, e.getTargetException());
+                Throwable target = e.getTargetException();
+                String msgKey = null;
+                if (target instanceof ApplicationError) {
+                    switch (((ApplicationError) target).getType()) {
+                        case NEED_SPRING_BOOT_VERSION_15:
+                            msgKey = "error.need.springboot.version.15";
+                            break;
+                        case NEED_SPRING_BOOT_VERSION_20:
+                            msgKey = "error.need.springboot.version.20";
+                            break;
+                        case MISSING_SERVLET_FEATURE:
+                            msgKey = "error.missing.servlet";
+                            break;
+                        default:
+                            break;
+
+                    }
+                    Tr.error(tc, msgKey);
+                    futureMonitor.setResult(mainInvokeResult, target);
+                } else {
+                    futureMonitor.setResult(mainInvokeResult, e.getTargetException());
+                }
             } catch (IllegalAccessException | IllegalArgumentException e) {
                 // Auto FFDC here this should not happen
                 futureMonitor.setResult(mainInvokeResult, e);

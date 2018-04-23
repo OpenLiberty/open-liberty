@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.identitystore;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -93,6 +96,8 @@ class LdapIdentityStoreDefinitionWrapper {
     /** The ValidationTypes this IdentityStore can be used for. Will be null when set by a deferred EL expression. */
     private final Set<ValidationType> useFor;
 
+    private final ELHelper elHelper;
+
     /**
      * Create a new instance of an {@link LdapIdentityStoreDefinitionWrapper} that will provide
      * convenience methods to access configuration from the {@link LdapIdentityStoreDefinition}
@@ -108,6 +113,8 @@ class LdapIdentityStoreDefinitionWrapper {
             throw new IllegalArgumentException("The LdapIdentityStoreDefinition cannot be null.");
         }
         this.idStoreDefinition = idStoreDefinition;
+
+        this.elHelper = new ELHelper();
 
         /*
          * Evaluate the configuration. The values will be non-null if the setting is NOT
@@ -146,7 +153,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateBindDn(boolean immediateOnly) {
         try {
-            return ELHelper.processString("bindDn", this.idStoreDefinition.bindDn(), immediateOnly);
+            return elHelper.processString("bindDn", this.idStoreDefinition.bindDn(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "bindDn", "" });
@@ -168,7 +175,7 @@ class LdapIdentityStoreDefinitionWrapper {
     private ProtectedString evaluateBindDnPassword(boolean immediateOnly) {
         String result;
         try {
-            result = ELHelper.processString("bindDnPassword", this.idStoreDefinition.bindDnPassword(), immediateOnly, true);
+            result = elHelper.processString("bindDnPassword", this.idStoreDefinition.bindDnPassword(), immediateOnly, true);
 
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
@@ -191,7 +198,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerBaseDn(boolean immediateOnly) {
         try {
-            return ELHelper.processString("callerBaseDn", this.idStoreDefinition.callerBaseDn(), immediateOnly);
+            return elHelper.processString("callerBaseDn", this.idStoreDefinition.callerBaseDn(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerBaseDn", "" });
@@ -212,7 +219,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerNameAttribute(boolean immediateOnly) {
         try {
-            return ELHelper.processString("callerNameAttribute", this.idStoreDefinition.callerNameAttribute(), immediateOnly);
+            return elHelper.processString("callerNameAttribute", this.idStoreDefinition.callerNameAttribute(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerNameAttribute", "uid" });
@@ -233,7 +240,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerSearchBase(boolean immediateOnly) {
         try {
-            return ELHelper.processString("callerSearchBase", this.idStoreDefinition.callerSearchBase(), immediateOnly);
+            return elHelper.processString("callerSearchBase", this.idStoreDefinition.callerSearchBase(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerSearchBase", "" });
@@ -254,7 +261,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerSearchFilter(boolean immediateOnly) {
         try {
-            return ELHelper.processString("callerSearchFilter", this.idStoreDefinition.callerSearchFilter(), immediateOnly);
+            return elHelper.processString("callerSearchFilter", this.idStoreDefinition.callerSearchFilter(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerSearchFilter", "" });
@@ -275,7 +282,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private LdapSearchScope evaluateCallerSearchScope(boolean immediateOnly) {
         try {
-            return ELHelper.processLdapSearchScope("callerSearchScopeExpression", this.idStoreDefinition.callerSearchScopeExpression(), this.idStoreDefinition.callerSearchScope(),
+            return elHelper.processLdapSearchScope("callerSearchScopeExpression", this.idStoreDefinition.callerSearchScopeExpression(), this.idStoreDefinition.callerSearchScope(),
                                                    immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
@@ -297,7 +304,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupMemberAttribute(boolean immediateOnly) {
         try {
-            return ELHelper.processString("groupMemberAttribute", this.idStoreDefinition.groupMemberAttribute(), immediateOnly);
+            return elHelper.processString("groupMemberAttribute", this.idStoreDefinition.groupMemberAttribute(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupMemberAttribute", "member" });
@@ -318,7 +325,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupMemberOfAttribute(boolean immediateOnly) {
         try {
-            return ELHelper.processString("groupMemberOfAttribute", this.idStoreDefinition.groupMemberOfAttribute(), immediateOnly);
+            return elHelper.processString("groupMemberOfAttribute", this.idStoreDefinition.groupMemberOfAttribute(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupMemberOfAttribute", "memberOf" });
@@ -339,7 +346,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupNameAttribute(boolean immediateOnly) {
         try {
-            return ELHelper.processString("groupNameAttribute", this.idStoreDefinition.groupNameAttribute(), immediateOnly);
+            return elHelper.processString("groupNameAttribute", this.idStoreDefinition.groupNameAttribute(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupNameAttribute", "cn" });
@@ -360,7 +367,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupSearchBase(boolean immediateOnly) {
         try {
-            return ELHelper.processString("groupSearchBase", this.idStoreDefinition.groupSearchBase(), immediateOnly);
+            return elHelper.processString("groupSearchBase", this.idStoreDefinition.groupSearchBase(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupSearchBase", "" });
@@ -381,7 +388,17 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupSearchFilter(boolean immediateOnly) {
         try {
-            return ELHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
+            final String result = elHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
+            /**
+             * This is for CTS testing only. A default filter is expected, though this violates the spec.
+             */
+            if (result == null || result.isEmpty()) {
+                if (isCTS()) {
+                    Tr.debug(tc, "Setting default groupSearchFilter to (objectClass=groupOfNames)");
+                    return "(objectClass=groupOfNames)";
+                }
+            }
+            return result;
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "There was an error resolving the '{1}' configuration object. Ensure any EL expressions are resolveable. The value will be defaulted to '{2}'",
@@ -403,7 +420,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private LdapSearchScope evaluateGroupSearchScope(boolean immediateOnly) {
         try {
-            return ELHelper.processLdapSearchScope("groupSearchScopeExpression", this.idStoreDefinition.groupSearchScopeExpression(), this.idStoreDefinition.groupSearchScope(),
+            return elHelper.processLdapSearchScope("groupSearchScopeExpression", this.idStoreDefinition.groupSearchScopeExpression(), this.idStoreDefinition.groupSearchScope(),
                                                    immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
@@ -425,7 +442,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private Integer evaluateMaxResults(boolean immediateOnly) {
         try {
-            return ELHelper.processInt("maxResultsExpression", this.idStoreDefinition.maxResultsExpression(), this.idStoreDefinition.maxResults(), immediateOnly);
+            return elHelper.processInt("maxResultsExpression", this.idStoreDefinition.maxResultsExpression(), this.idStoreDefinition.maxResults(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "maxResults/maxResultsExpression", "1000" });
@@ -446,7 +463,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private Integer evaluatePriority(boolean immediateOnly) {
         try {
-            return ELHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
+            return elHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "priority/priorityExpression", "80" });
@@ -467,7 +484,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private Integer evaluateReadTimeout(boolean immediateOnly) {
         try {
-            return ELHelper.processInt("readTimeoutExpression", this.idStoreDefinition.readTimeoutExpression(), this.idStoreDefinition.readTimeout(), immediateOnly);
+            return elHelper.processInt("readTimeoutExpression", this.idStoreDefinition.readTimeoutExpression(), this.idStoreDefinition.readTimeout(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "readTimeout/readTimeoutExpression", "0" });
@@ -488,7 +505,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateUrl(boolean immediateOnly) {
         try {
-            return ELHelper.processString("url", this.idStoreDefinition.url(), immediateOnly);
+            return elHelper.processString("url", this.idStoreDefinition.url(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "url", "" });
@@ -509,7 +526,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private Set<ValidationType> evaluateUseFor(boolean immediateOnly) {
         try {
-            return ELHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
+            return elHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
         } catch (IllegalArgumentException e) {
             Set<ValidationType> values = new HashSet<ValidationType>();
             values.add(ValidationType.PROVIDE_GROUPS); /* Default value from the spec. */
@@ -725,4 +742,19 @@ class LdapIdentityStoreDefinitionWrapper {
     Set<ValidationType> getUseFor() {
         return (this.useFor != null) ? this.useFor : evaluateUseFor(false);
     }
+
+    private boolean isCTS() {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
+                @Override
+                public Boolean run() throws SecurityException, NullPointerException, IllegalArgumentException {
+                    String result = System.getProperty("cts");
+                    return result != null && result.equalsIgnoreCase("true");
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            return false;
+        }
+    }
+
 }

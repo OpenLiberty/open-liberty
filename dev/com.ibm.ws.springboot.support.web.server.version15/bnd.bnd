@@ -19,7 +19,7 @@ javac.source: 1.8
 javac.target: 1.8
 
 Bundle-Name: WebSphere Spring Boot 1.5 Web Server Support
-Bundle-SymbolicName: com.ibm.ws.springboot.support.web.server.version15 
+Bundle-SymbolicName: com.ibm.ws.springboot.support.web.server.version15
 Bundle-Description: WebSphere Spring Boot 1.5 Web Server Support, version ${bVersion}
 Private-Package: com.ibm.ws.springboot.support.web.server.version15.osgi.*
 Import-Package: \
@@ -33,13 +33,13 @@ instrument.disabled: true
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot15Server.jar; version:Version=1.5
 
 -buildpath: \
-	org.springframework:spring-core;version=4.3.13.RELEASE, \
-	org.springframework:spring-context;version=4.3.13.RELEASE, \
-	org.springframework:spring-aop;version=4.3.13.RELEASE, \
-	org.springframework:spring-expression;version=4.3.13.RELEASE, \
-	org.springframework:spring-beans;version=4.3.13.RELEASE, \
-	org.springframework.boot:spring-boot-autoconfigure;version=1.5.9.RELEASE, \
-	org.springframework.boot:spring-boot;version=1.5.9.RELEASE, \
+	org.springframework:spring-core;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-context;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-aop;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-expression;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework:spring-beans;strategy=exact;version=4.3.13.RELEASE, \
+	org.springframework.boot:spring-boot-autoconfigure;strategy=exact;version=1.5.9.RELEASE, \
+	org.springframework.boot:spring-boot;strategy=exact;version=1.5.9.RELEASE, \
 	com.ibm.websphere.org.osgi.core, \
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\

@@ -14,6 +14,7 @@ import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.common.TraceConstants;
 
 public class CommonConfigUtils {
@@ -161,6 +162,7 @@ public class CommonConfigUtils {
      * @return {@code null} if {@code original} is {@code null} or empty after the {@code java.lang.String.trim()} operation.
      *         Otherwise returns the trimmed result.
      */
+    @Trivial
     public static String trim(String original) {
         if (original == null) {
             return null;

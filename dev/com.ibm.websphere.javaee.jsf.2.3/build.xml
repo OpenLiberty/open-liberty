@@ -11,7 +11,7 @@
 <project name="com.ibm.websphere.javaee.jsf.2.3" default="build">
     <property name="spec.name" value="jsf"/>
     <property name="spec.marketing.version" value="2.3"/>
-    <property name="spec.javadoc.name" value="myfaces-api-2.3.0-beta-javadoc.jar"/>
+    <property name="spec.javadoc.name" value="myfaces-api-2.3.0-javadoc.jar"/>
     <property name="bundle.version" value="1.0"/>
     <import file="../ant_build/public_imports/spec_imports.xml"/>
  

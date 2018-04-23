@@ -25,7 +25,8 @@ dependencies {
     'org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0',
     'org.quartz-scheduler:quartz:2.2.1',
     'org.slf4j:slf4j-jdk14:1.7.7',
-    'org.slf4j:slf4j-api:1.7.7'
+    'org.slf4j:slf4j-api:1.7.7', 
+    'net.sf.jtidy:jtidy:9.3.8'
 }
 
 task addToDeltaspikeWar(type: Copy) {

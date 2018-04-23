@@ -25,6 +25,8 @@ public interface SSOCookieHelper {
 
     void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp);
 
+    void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp);
+
     void createLogoutCookies(HttpServletRequest req, HttpServletResponse resp);
 
     SingleSignonToken getDefaultSSOTokenFromSubject(final javax.security.auth.Subject subject);
@@ -36,5 +38,7 @@ public interface SSOCookieHelper {
     boolean allowToAddCookieToResponse(HttpServletRequest req);
 
     String getSSODomainName(HttpServletRequest req, List<String> ssoDomainList, boolean useURLDomain);
+
+    String getJwtSsoTokenFromCookies(HttpServletRequest req, String jwtCookieName);
 
 }
