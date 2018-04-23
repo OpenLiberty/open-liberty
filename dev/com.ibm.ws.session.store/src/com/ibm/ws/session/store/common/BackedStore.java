@@ -304,14 +304,14 @@ public abstract class BackedStore extends MemoryStore {
     public void updateSessionId(String oldId, ISession newSession) {
 
         final boolean isTraceOn = com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && WasLoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
-            WasLoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, "updateSessionId", oldId);
+        if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, "updateSessionId", oldId);
         }
         
         removeSession(oldId);
         
-        if (isTraceOn && WasLoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
-            WasLoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "updateSessionId", "Create BackedSession = " + newSession.toString());
+        if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "updateSessionId", "Create BackedSession = " + newSession.toString());
         }        
         
         long nowTime = System.currentTimeMillis();
@@ -321,14 +321,14 @@ public abstract class BackedStore extends MemoryStore {
         session.updateLastAccessTime(nowTime); // Insert access time    
         _sessions.put(newSession.getId(), session);        
 
-        if (isTraceOn && WasLoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
-            WasLoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "updateSessionId", "New BackedSession = " + session.toString());
+        if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "updateSessionId", "New BackedSession = " + session.toString());
         }       
 
         int rowCount = ((BackedHashMap)_sessions).updateLastAccessTime(session, nowTime); 
 
-        if (isTraceOn && WasLoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
-            WasLoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, "updateSessionId", "Update row count = " + rowCount);
+        if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, "updateSessionId", "Update row count = " + rowCount);
         }
     } 
 }
