@@ -184,4 +184,12 @@ public class JwtSSOTokenHelper {
         return null;
 
     }
+
+    public static String isCookieSecured() {
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().isCookieSecured();
+        }
+        return null;
+
+    }
 }

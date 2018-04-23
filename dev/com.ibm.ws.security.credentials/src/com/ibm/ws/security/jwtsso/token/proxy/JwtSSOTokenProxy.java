@@ -35,6 +35,8 @@ public interface JwtSSOTokenProxy {
 
     String getJwtCookieName();
 
+    boolean isCookieSecured();
+
     boolean shouldSetJwtCookiePathToWebAppContext();
 
     boolean shouldAlsoIncludeLtpaCookie();
