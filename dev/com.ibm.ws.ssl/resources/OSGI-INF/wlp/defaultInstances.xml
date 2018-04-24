@@ -10,11 +10,14 @@
  -->
 <server>
 
-    <!-- For minimum configuration, a user must specify a keystore + password
-         The default keystore has id "defaultKeyStore".
+    <!-- The default keystore has id "defaultKeyStore".
          Create a default repository (defaultSSLConfig) that uses that
          keystore (unless it is redefined by the user to use something else). -->
          
     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" />
+    
+    <!-- This default keystore will automatically use the 'keystore_password' env var
+         if no password is configured via XML, or the password defined in XML is empty. -->
+    <keyStore id="defaultKeyStore"/>
 
 </server>
