@@ -110,11 +110,10 @@ public class ClientBootstrapConfig extends BootstrapConfig {
     }
 
     /**
-     * Disabling the PermGen is only necessary in server processes. There is not need to
-     * generate this file in client processes.
+     * No need to generate server.env/client.env in the client process.
      */
     @Override
-    protected ReturnCode disablePermGenIfNecessary() {
+    protected ReturnCode generateServerEnv() {
         return ReturnCode.OK;
     }
 }
