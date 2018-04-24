@@ -533,8 +533,10 @@ public class SSOCookieHelperImplTest {
             super(config);
         }
 
+        boolean secure = true;
+
         @Override
-        public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue) {
+        public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue, boolean secure) {
             return new Cookie(cookieName, cookieValue); //skip hard-to-mock ssodomain stuff.
         }
 
