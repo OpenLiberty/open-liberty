@@ -175,12 +175,10 @@ public class SSOAuthenticator implements WebAuthenticator {
         if (encodedjwtssotoken == null) {
             return null;
         } else {
-            //check logged out cookie cache here. Must check full token, not just first cookie.
-            if (webAppSecurityConfig.isTrackLoggedOutSSOCookiesEnabled()) {
-                if (LoggedOutJwtSsoCookieCache.contains(encodedjwtssotoken)) {
-                    return new AuthenticationResult(AuthResult.FAILURE, Tr.formatMessage(tc, "JWT_ALREADY_LOGGED_OUT"));
-                }
+            if (LoggedOutJwtSsoCookieCache.contains(encodedjwtssotoken)) {
+                return new AuthenticationResult(AuthResult.FAILURE, Tr.formatMessage(tc, "JWT_ALREADY_LOGGED_OUT"));
             }
+
             return authenticateWithJwt(req, res, encodedjwtssotoken);
         }
     }
