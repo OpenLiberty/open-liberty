@@ -176,6 +176,7 @@ public class H2InboundLink extends HttpInboundLink {
         hcDebug = this.hashCode();
 
         initialVC.getStateMap().put(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE, "true");
+        initialVC.getStateMap().put("h2_frame_size", getConnectionSettings().maxFrameSize);
     }
 
     public synchronized long getInitialWindowSize() {
@@ -734,18 +735,22 @@ public class H2InboundLink extends HttpInboundLink {
      * @throws FlowControlException
      */
     public void incrementConnectionWindowUpdateLimit(int x) throws FlowControlException {
-        writeQ.incrementConnectionWindowUpdateLimit(x);
-        H2StreamProcessor stream;
-        for (Integer i : streamTable.keySet()) {
-            stream = streamTable.get(i);
-            stream.connectionWindowSizeUpdated();
+        if (!checkIfGoAwaySendingOrClosing()) {
+            writeQ.incrementConnectionWindowUpdateLimit(x);
+            H2StreamProcessor stream;
+            for (Integer i : streamTable.keySet()) {
+                stream = streamTable.get(i);
+                if (stream != null) {
+                    stream.connectionWindowSizeUpdated();
+                }
+            }
         }
     }
 
     /**
      * Update the initial window size for all open streams. Additionally, call updateInitialWindowsUpdateSize()
      * on each stream to notify it of the increase (and possible write out queued data)
-     * 
+     *
      * @param int newSize
      * @throws FlowControlException
      */

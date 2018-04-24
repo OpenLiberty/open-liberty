@@ -18,6 +18,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FramePriority extends Frame {
 
@@ -57,8 +58,8 @@ public class FramePriority extends Frame {
         this.exclusive = exclusive;
         this.streamDependency = streamDependency;
         this.weight = weight;
-
         frameType = FrameTypes.PRIORITY;
+        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -97,9 +98,14 @@ public class FramePriority extends Frame {
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
-
-        byte[] frame = super.buildFrameForWrite();
+    public WsByteBuffer buildFrameForWrite() {
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_PRIORITY);
@@ -114,7 +120,9 @@ public class FramePriority extends Frame {
         frameIndex += 4;
         utils.Move8BitstoByteArray(weight, frame, frameIndex);
 
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     @Override

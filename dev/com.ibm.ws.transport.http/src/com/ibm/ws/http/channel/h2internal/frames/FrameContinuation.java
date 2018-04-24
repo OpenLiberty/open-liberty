@@ -15,6 +15,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameContinuation extends Frame {
 
@@ -52,6 +53,7 @@ public class FrameContinuation extends Frame {
         this.END_HEADERS_FLAG = endHeaders;
         this.END_STREAM_FLAG = endStream;
         frameType = FrameTypes.CONTINUATION;
+        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -71,8 +73,14 @@ public class FrameContinuation extends Frame {
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
-        byte[] frame = super.buildFrameForWrite();
+    public WsByteBuffer buildFrameForWrite() {
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_CONTINUATION);
@@ -85,8 +93,9 @@ public class FrameContinuation extends Frame {
             frame[frameIndex] = headerBlockFragment[i];
             frameIndex++;
         }
-
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     public byte[] getHeaderBlockFragment() {

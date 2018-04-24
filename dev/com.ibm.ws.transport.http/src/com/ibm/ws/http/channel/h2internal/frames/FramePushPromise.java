@@ -16,6 +16,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FramePushPromise extends Frame {
 
@@ -65,6 +66,7 @@ public class FramePushPromise extends Frame {
             payloadLength += paddingLength + 1;
         }
         frameType = FrameTypes.PUSH_PROMISE;
+        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -115,9 +117,15 @@ public class FramePushPromise extends Frame {
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
+    public WsByteBuffer buildFrameForWrite() {
 
-        byte[] frame = super.buildFrameForWrite();
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_PUSH_PROMISE);
@@ -143,7 +151,9 @@ public class FramePushPromise extends Frame {
             frameIndex++;
         }
 
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     @Override
