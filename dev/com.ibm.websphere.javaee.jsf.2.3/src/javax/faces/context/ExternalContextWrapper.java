@@ -147,7 +147,7 @@ public abstract class ExternalContextWrapper extends ExternalContext implements 
     }
 
     @Override
-    public Map<String, String> getInitParameterMap()
+    public Map getInitParameterMap()
     {
         return getWrapped().getInitParameterMap();
     }
