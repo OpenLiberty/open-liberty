@@ -45,6 +45,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 AlwaysPassesTest.class, // LITE
                 Http2LiteModeTests.class, // LITE
                 Http2FullModeTests.class, // FULL
+                Http2ConfigTests.class, // FULL
                 //MultiSessionTests.class, // FULL; disabled for now
                 /** move tests to Http2FullTracingTests to diagnose failures via full tracing */
                 Http2FullTracingTests.class // FULL
