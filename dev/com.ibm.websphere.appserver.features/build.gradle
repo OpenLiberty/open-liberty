@@ -197,15 +197,8 @@ task publishFeatureResources {
         edition(baseEdition: "core",
                 validEditions: "")
         edition(baseEdition: "base",
-                validEditions: "BASE,BASE_ILAN,DEVELOPERS,EXPRESS,ND,zOS")
-        edition(baseEdition: "nd",
-                validEditions: "BASE_ILAN,DEVELOPERS,ND,zOS")
-        edition(baseEdition: "zos",
-                validEditions: "zOS")
-        edition(baseEdition: "bluemix",
-                validEditions: "BLUEMIX")
+                validEditions: "Open")
         edition(baseEdition: "full")
-        edition(baseEdition: "unsupported")
       }
 
       delete "${buildDir}/repo/description.html"
