@@ -18,6 +18,7 @@ import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.Source;
+import com.ibm.wsspi.collector.manager.SynchronousHandler;
 
 public class SourceManager {
 
@@ -91,9 +92,19 @@ public class SourceManager {
             //and it can start sending events to this buffer.
             source.setBufferManager(this.bufferMgr);
         }
-
         subscribers.add(handlerId);
-        bufferMgr.addHandler(handlerId);
+        /*
+         * Inform the handler that this source/buffer/conduit is now available:
+         * Synchronous Handler - Add handler as synchronous handler to the Buffer/Conduit's sync handler set
+         * Asynchronous Handler - Add handler as asynchronous handler into the Buffer/Conduit
+         *
+         */
+        if (handler instanceof SynchronousHandler) {
+            bufferMgr.addSyncHandler((SynchronousHandler) handler);
+        } else {
+            bufferMgr.addHandler(handlerId);
+        }
+
     }
 
     /**
@@ -106,7 +117,16 @@ public class SourceManager {
     public boolean removeSubscriber(Handler handler) {
         String handlerId = CollectorManagerUtils.getHandlerId(handler);
         subscribers.remove(handlerId);
-        bufferMgr.removeHandler(handlerId);
+        /*
+         * Inform the handler that this source/buffer will no longer be available:
+         * Synchronous Handler: Remove the synchronous handler from the Buffer/Conduit's sync handler set
+         * Asynchronous Handler: Remove the asynchronous handler from the the Buffer/Conduit
+         */
+        if (handler instanceof SynchronousHandler) {
+            bufferMgr.removeSyncHandler((SynchronousHandler) handler);
+        } else {
+            bufferMgr.removeHandler(handlerId);
+        }
 
         if (subscribers.isEmpty()) {
 
