@@ -976,9 +976,10 @@ public final class JAXRSUtils {
             m.put(FormUtils.FORM_PARAM_MAP, params);
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
-                InputStream entityStream = copyAndGetEntityStream(m); // Liberty change
+//                InputStream entityStream = copyAndGetEntityStream(m); // Liberty change
                 String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
-                String body = FormUtils.readBody(entityStream, enc); // Liberty change
+                String body = FormUtils.readBody(m.getContent(InputStream.class), enc);
+//                String body = FormUtils.readBody(entityStream, enc); // Liberty change
                 FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
