@@ -10,10 +10,14 @@ import java.util.regex.Pattern;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
+import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 
 public class TestValidationUtils {
 
     private final Class<?> thisClass = TestValidationUtils.class;
+
+    private CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
 
     /**
      * Logs the state of the test assertion and then invokes the JUnit assertTrue method to record the test "status"
@@ -57,6 +61,26 @@ public class TestValidationUtils {
         }
         assertFalse(failureMsg, testAssertion);
         return false;
+    }
+
+    public void validateResult(Object response, String currentAction, Expectations expectations) throws Exception {
+        String thisMethod = "validateResult";
+        loggingUtils.printMethodName(thisMethod, "Start of");
+
+        Log.info(thisClass, thisMethod, "currentAction is: " + currentAction);
+        if (expectations == null) {
+            Log.info(thisClass, thisMethod, "Expectations are null");
+            return;
+        }
+        try {
+            for (Expectation expectation : expectations.getExpectations()) {
+                expectation.validate(currentAction, response);
+            }
+        } catch (Exception e) {
+            Log.error(thisClass, thisMethod, e, "Error validating response");
+            throw e;
+        }
+        loggingUtils.printMethodName(thisMethod, "End of");
     }
 
     public void validateStringContent(Expectation expected, String contentToValidate) throws Exception {

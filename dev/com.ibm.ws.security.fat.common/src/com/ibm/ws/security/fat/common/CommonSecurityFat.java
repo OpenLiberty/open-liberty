@@ -42,11 +42,13 @@ public class CommonSecurityFat {
 
     @Before
     public void commonBeforeTest() {
+        loggingUtils.printMethodName("STARTING TEST CASE: " + testName.getMethodName());
         logTestCaseInServerLogs("STARTING");
     }
 
     @After
     public void commonAfterTest() {
+        loggingUtils.printMethodName("ENDING TEST CASE: " + testName.getMethodName());
         logTestCaseInServerLogs("ENDING");
     }
 
