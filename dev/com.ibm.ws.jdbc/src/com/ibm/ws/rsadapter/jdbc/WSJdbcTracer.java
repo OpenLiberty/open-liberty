@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -195,7 +197,12 @@ public class WSJdbcTracer implements InvocationHandler
             // - include SQL for PreparedStatement & CallableStatement
             final String query = methName.startsWith("prepare") && PreparedStatement.class.isAssignableFrom(returnType)
                            && args.length >= 1 && args[0] instanceof String ? (String) args[0] : null;
-            traceableResult = Proxy.newProxyInstance(WSJdbcWrapper.priv.getClassLoader(returnType), new Class[] { returnType }, new WSJdbcTracer(tracer, writer, result, returnType, query, false));
+            final WSJdbcTracer newTracer = new WSJdbcTracer(tracer, writer, result, returnType, query, false);
+            traceableResult = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                public Object run() {
+                    return Proxy.newProxyInstance(returnType.getClassLoader(), new Class[] { returnType }, newTracer);
+                }
+            });
         }
 
         // Trace exit after successful invocation.
