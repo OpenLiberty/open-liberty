@@ -26,7 +26,9 @@ Export-Package: javax.decorator; version=2.0, \
  javax.enterprise.inject.spi; version=2.0, \
  javax.enterprise.inject.spi.configurator; version=2.0, \
  javax.enterprise.util; version=2.0, \
- javax.inject; version=1, \
+ javax.inject; version=1
+ 
+Private-Package: javax.enterprise.inject.se
 
 Import-Package:  javax.el; version="[3.0.0,4.0.0)", \
  javax.decorator; version=2.0, \
