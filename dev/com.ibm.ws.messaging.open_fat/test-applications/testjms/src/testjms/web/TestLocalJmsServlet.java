@@ -149,6 +149,12 @@ public class TestLocalJmsServlet extends FATServlet implements JmsMinimalTests, 
         jmsObjectMessageTests.testObjectMessage_setObject_String();
     }
 
+    @Test
+    @Override
+    public void testObjectMessage_toString() throws Exception {
+        jmsObjectMessageTests.testObjectMessage_toString();
+    }
+
     // ======== STREAMMESSAGE TESTS ========
     private final JmsStreamMessageTests jmsStreamMessageTests = new JmsStreamMessageTestsImpl(CF_TYPE);
 
