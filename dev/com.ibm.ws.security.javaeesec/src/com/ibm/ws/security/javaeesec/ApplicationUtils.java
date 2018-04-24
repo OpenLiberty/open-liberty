@@ -98,7 +98,7 @@ public class ApplicationUtils implements ApplicationMetaDataListener {
         }
     }
 
-    private static boolean isAppRestartRequired(String delta) {
+    protected static boolean isAppRestartRequired(String delta) {
         if (delta != null &&
             ( delta.contains(WebAppSecurityConfigImpl.CFG_KEY_FAIL_OVER_TO_BASICAUTH) ||
               delta.contains(WebAppSecurityConfigImpl.CFG_KEY_LOGIN_FORM_URL) ||
@@ -127,5 +127,25 @@ public class ApplicationUtils implements ApplicationMetaDataListener {
         }
     }
 
+    /**
+     *  This is for unit test.
+     */
+    protected boolean isApplicationRegistered(String appName) {
+        return appsToRestart.contains(appName);
+    }
+
+    /**
+     *  This is for unit test.
+     */
+    protected int numberOfApplications() {
+        return appsToRestart.size();
+    }
+
+    /**
+     *  This is for unit test.
+     */
+    protected void clearApplications() {
+        appsToRestart.clear();
+    }
 
 }
