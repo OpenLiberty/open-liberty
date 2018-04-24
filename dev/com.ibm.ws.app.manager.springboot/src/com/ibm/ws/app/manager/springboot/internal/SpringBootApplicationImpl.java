@@ -308,6 +308,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private final Set<Runnable> shutdownHooks = new CopyOnWriteArraySet<>();
     private final AtomicBoolean uninstalled = new AtomicBoolean();
     private final List<String> appArgs;
+    private volatile AtomicReference<String> applicationActivated;
 
     public SpringBootApplicationImpl(ApplicationInformation<DeployedAppInfo> applicationInformation, SpringBootApplicationFactory factory, int id) throws UnableToAdaptException {
         super(applicationInformation, factory);
@@ -497,7 +498,14 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         if (uninstalled.getAndSet(true)) {
             return true;
         }
-        return super.uninstallApp();
+        try {
+            return super.uninstallApp();
+        } finally {
+            AtomicReference<String> current = applicationActivated;
+            if (current != null) {
+                current.compareAndSet(applicationInformation.getName(), null);
+            }
+        }
     }
 
     private String getVirtualHostConfig(String start, String id, String end) {
@@ -738,4 +746,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     public File getServerDir() {
         return factory.getLocationAdmin().resolveResource(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR).asFile();
     }
+
+    void setApplicationActivated(AtomicReference<String> applicationActivated) {
+        this.applicationActivated = applicationActivated;
+    }
+
 }

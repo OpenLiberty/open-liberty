@@ -34,7 +34,7 @@ public class NeedSpringBoot15FeatureTests extends AbstractSpringTests {
     @Test
     public void testNeedSpringBootFeature15() throws Exception {
         assertNotNull("No error message was found to enable springBoot-1.5 feature", server.waitForStringInLog("CWWKC0252E"));
-        server.stopServer("CWWKC0252E", "CWWKZ0002E");
+        stopServer(true, "CWWKC0252E", "CWWKZ0002E");
     }
 
     @Override

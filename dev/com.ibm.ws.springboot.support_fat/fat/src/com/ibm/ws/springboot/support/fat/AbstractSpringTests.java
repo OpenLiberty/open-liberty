@@ -82,12 +82,12 @@ public abstract class AbstractSpringTests {
         stopServer(true);
     }
 
-    public static void stopServer(boolean deleteSharedCache) throws Exception {
+    public static void stopServer(boolean deleteSharedCache, String... expectedFailuresRegExps) throws Exception {
         boolean isActive = serverStarted.getAndSet(false);
         try {
             // don't archive until after stopping and removing the lib.index.cache
             if (isActive) {
-                server.stopServer(false);
+                server.stopServer(false, expectedFailuresRegExps);
             }
         } finally {
             try {
