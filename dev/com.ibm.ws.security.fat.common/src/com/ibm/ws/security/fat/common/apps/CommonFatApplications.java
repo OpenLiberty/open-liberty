@@ -21,19 +21,13 @@ public class CommonFatApplications {
     }
 
     public static WebArchive getFormLoginApp() throws Exception {
-        return ShrinkHelper.buildDefaultAppFromPath("formlogin", getPathToWebcontainerSecurityApps(), "web.common", "web.formlogin");
+        return ShrinkHelper.buildDefaultAppFromPath("formlogin", getPathToTestApps(), "com.ibm.ws.security.fat.common.apps.formlogin.*");
     }
 
     private static String getPathToTestApps() {
         // When executing FATs, the "user.dir" property is <OL root>/dev/<FAT project>/build/libs/autoFVT/
         // Hence, to get back to this project, we have to navigate a few levels up.
         return System.getProperty("user.dir") + "/../../../../com.ibm.ws.security.fat.common/";
-    }
-
-    private static String getPathToWebcontainerSecurityApps() {
-        // When executing FATs, the "user.dir" property is <OL root>/dev/<FAT project>/build/libs/autoFVT/
-        // Hence, to get back to the webcontainer servlet project, we have to navigate a few levels up.
-        return System.getProperty("user.dir") + "/../../../../com.ibm.ws.webcontainer.security_test.servlets/";
     }
 
 }
