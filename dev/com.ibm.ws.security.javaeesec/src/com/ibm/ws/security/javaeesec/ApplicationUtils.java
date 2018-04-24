@@ -122,6 +122,8 @@ public class ApplicationUtils implements ApplicationMetaDataListener {
             }
             ApplicationRecycleCoordinator appCoord = (ApplicationRecycleCoordinator) priv.locateService(context, REFERENCE_APP_COORD);
             appCoord.recycleApplications(appsToRestart);
+            // in order to avoid any potential memory leak, clear the table when recycling the applications.
+            appsToRestart.clear();
         }
     }
 
