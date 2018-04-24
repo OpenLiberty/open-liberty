@@ -449,7 +449,7 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
                 ConversationMetaData cmd = (ConversationMetaData) auditManager.getJMSConversationMetaData();
 
                 Audit.audit(Audit.EventID.SECURITY_JMS_AUTHZ_01, user, cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
-                            cmd.getChainName(), busName, messagingEngine, destinationName, operationType, roles, "aliasDestination"
+                            cmd.getChainName(), busName, messagingEngine, destinationName, operationType, roles, "aliasDestination",
                             Integer.valueOf("201"));
             } else {
                 Audit.audit(Audit.EventID.SECURITY_JMS_AUTHZ_01, user, null, null, null, busName, messagingEngine, destinationName, operationType, 
