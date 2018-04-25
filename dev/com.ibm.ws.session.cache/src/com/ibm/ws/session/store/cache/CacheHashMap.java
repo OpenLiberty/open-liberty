@@ -597,12 +597,8 @@ public class CacheHashMap extends BackedHashMap {
                 ArrayList<?> oldValue, newValue;
                 long backoff = 20; // allows first two attempts without delay, then a delay of 160-319ms, then a delay of 320-639 ms, ...
                 for (boolean replaced = false; !replaced; ) {
-                    if ((backoff *= 2) > 100)
+                    if (backoff > 500 || (backoff *= 2) > 100)
                         try {
-                            // TODO remove this error and switch to enforce a maximum on backoff time
-                            // This error is temporarily here to identify how often this is reached
-                            if (backoff > 500)
-                                throw new RuntimeException("Giving up on retries"); 
                             TimeUnit.MILLISECONDS.sleep(backoff + (long) Math.random() * backoff);
                         } catch (InterruptedException x) {
                             FFDCFilter.processException(x, getClass().getName(), "324", new Object[] { id, backoff, propsToWrite, propsToRemove });
@@ -648,7 +644,6 @@ public class CacheHashMap extends BackedHashMap {
     protected void insertSession(BackedSession session) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        // TODO rewrite this. For now, it is copied based on DatabaseHashMap.insertSession
         String id = session.getId();
 
         listenerFlagUpdate(session);
@@ -713,7 +708,6 @@ public class CacheHashMap extends BackedHashMap {
         Object value = null;
         if (!((CacheSession) sess).getPopulatedAppData()) {
             String id = sess.getId();
-            String appName = getIStore().getId();
 
             String key = createSessionAttributeKey(id, attrName);
 
@@ -904,8 +898,6 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
-     * // TODO rewrite this. For now, it is copied based on DatabaseHashMap.insertSession
-     *
      * @see com.ibm.ws.session.store.common.BackedHashMap#persistSession(com.ibm.ws.session.store.common.BackedSession, boolean)
      */
     @FFDCIgnore(Exception.class) // FFDC logged manually with extra info
