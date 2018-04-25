@@ -10,6 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.initializer;
 
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_HTTP_ENDPOINT;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_KEY_STORE;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_SSL;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_TRUST_STORE;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_VIRTUAL_HOST;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,13 +39,9 @@ import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 /**
  *
  */
+@SuppressWarnings("restriction")
 public class ServerConfigurationFactory {
     private static final String SECURITY_DIR = "resources/security/";
-    public static final String ID_VIRTUAL_HOST = "springBootVirtualHost-";
-    public static final String ID_HTTP_ENDPOINT = "springBootHttpEndpoint-";
-    public static final String ID_SSL = "springBootSsl-";
-    public static final String ID_KEY_STORE = "springBootKeyStore-";
-    public static final String ID_TRUST_STORE = "springBootTrustStore-";
 
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String PORT = "port";

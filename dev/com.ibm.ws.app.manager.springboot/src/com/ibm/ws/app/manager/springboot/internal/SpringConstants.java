@@ -47,4 +47,10 @@ public final class SpringConstants {
     public static final String XMI_VIRTUAL_HOST_END = "\">\n" +
                                                       "</webappbnd:WebAppBinding>";
     public static final String APP_ARGS = "applicationArgument";
+
+    public static final String ID_VIRTUAL_HOST = "springBootVirtualHost-";
+    public static final String ID_HTTP_ENDPOINT = "springBootHttpEndpoint-";
+    public static final String ID_SSL = "springBootSsl-";
+    public static final String ID_KEY_STORE = "springBootKeyStore-";
+    public static final String ID_TRUST_STORE = "springBootTrustStore-";
 }

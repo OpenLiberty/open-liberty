@@ -88,6 +88,11 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         appsDir = server.getFileFromLibertyServerRoot("apps");
     }
 
+    @Override
+    public String getLogMethodName() {
+        return "-" + testName.getMethodName();
+    }
+
     @After
     public void deleteThinAppsAndStopServer() throws Exception {
         new RemoteFile(appsDir, SPRING_BOOT_15_BASE_THIN).delete();
