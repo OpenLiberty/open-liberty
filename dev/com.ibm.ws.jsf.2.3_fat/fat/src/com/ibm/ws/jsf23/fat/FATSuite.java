@@ -16,6 +16,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+import com.ibm.ws.jsf23.fat.tests.CDIConfigByACPTests;
+import com.ibm.ws.jsf23.fat.tests.CDIFacesInMetaInfTests;
+import com.ibm.ws.jsf23.fat.tests.CDIFacesInWebXMLTests;
+import com.ibm.ws.jsf23.fat.tests.CDIInjectionTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23CDIGeneralTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ClassLevelBeanValidationTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23CommandScriptTests;
@@ -82,7 +86,11 @@ import com.ibm.ws.jsf23.fat.tests.JSFDummyTest;
                 JSF23EvalScriptsTests.class,
                 JSF23ViewParametersTests.class,
                 JSF23UISelectManyTests.class,
-                JSF23ViewResourceTests.class
+                JSF23ViewResourceTests.class,
+                CDIInjectionTests.class,
+                CDIFacesInMetaInfTests.class,
+                CDIFacesInWebXMLTests.class,
+                CDIConfigByACPTests.class
 })
 public class FATSuite {
 

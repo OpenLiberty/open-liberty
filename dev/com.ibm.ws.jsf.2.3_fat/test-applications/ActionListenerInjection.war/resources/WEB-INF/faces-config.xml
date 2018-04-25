@@ -16,11 +16,9 @@
     version="2.3">
     
     <application>
-        <view-handler>com.ibm.ws.jsf23.fat.cdi.integration.viewhandler.CustomViewHandler</view-handler>
+        <action-listener>
+            com.ibm.ws.jsf23.fat.cdi.common.managed.CustomActionListener
+        </action-listener>
     </application>
-    
-    <factory>
-        <application-factory>com.ibm.ws.jsf23.fat.cdi.integration.application.CustomApplicationFactory</application-factory>
-    </factory>
 
 </faces-config>
