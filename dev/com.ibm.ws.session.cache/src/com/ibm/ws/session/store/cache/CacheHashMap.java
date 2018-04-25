@@ -778,14 +778,18 @@ public class CacheHashMap extends BackedHashMap {
         if (trace && tc.isDebugEnabled())
             tcInvoke(tcSessionMetaCache, "get", id);
 
-        ArrayList<?> oldValue = sessionMetaCache.get(id);
-
-        if (trace && tc.isDebugEnabled())
-            tcReturn(tcSessionMetaCache, "get", oldValue);
-
-        SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
         synchronized (sess) {
-            if (sessionInfo == null || sessionInfo.getLastAccess() != sess.getCurrentAccessTime()) {
+            ArrayList<?> oldValue = sessionMetaCache.get(id);
+
+            if (trace && tc.isDebugEnabled())
+                tcReturn(tcSessionMetaCache, "get", oldValue);
+
+            SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
+
+            long curAccessTime = sess.getCurrentAccessTime();
+            if (sessionInfo == null || sessionInfo.getLastAccess() != curAccessTime) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "session current access time: " + curAccessTime);
                 updateCount = 0;
             } else if (sessionInfo.getLastAccess() == nowTime) {
                 updateCount = 1; // be consistent with Statement.executeUpdate which returns 1 the when row matches but no changes are made
