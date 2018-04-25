@@ -361,7 +361,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
         }
         if (subject == null && ssoTokenBytes != null) {
-            subject = authCacheService.getSubject(ssoTokenBytes);
+            subject = authCacheService.getSubject(Base64Coder.base64EncodeToString(ssoTokenBytes));
         }
         if (subject == null) {
             String customCacheKey = null;
