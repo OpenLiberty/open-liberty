@@ -153,7 +153,6 @@ task createGradleBootstrap {
 
         depsList.add('    compile \'' + org + ':openliberty-MavenArtifact:' + getVersionFromReleaseRepo('dev', 'openliberty-MavenArtifact') + '@zip\'')
         depsList.add('    compile \'' + org + ':openliberty-singleJson:' + getVersionFromReleaseRepo('dev', 'openliberty-singleJson') + '@json\'')
-        depsList.add('    compile \'' + org + ':openliberty-modifiedgaFeatureList:' + getVersionFromReleaseRepo('dev', 'openliberty-modifiedgaFeatureList') + '@txt\'')
         
 
         File dependenciesFile = new File(project.buildDir, 'dependencies.gradle')
