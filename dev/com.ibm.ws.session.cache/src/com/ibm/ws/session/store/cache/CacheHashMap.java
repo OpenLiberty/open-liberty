@@ -785,8 +785,10 @@ public class CacheHashMap extends BackedHashMap {
 
         SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
         synchronized (sess) {
-            if (sessionInfo == null || sessionInfo.getLastAccess() != sess.getCurrentAccessTime() || sessionInfo.getLastAccess() == nowTime) {
+            if (sessionInfo == null || sessionInfo.getLastAccess() != sess.getCurrentAccessTime()) {
                 updateCount = 0;
+            } else if (sessionInfo.getLastAccess() == nowTime) {
+                updateCount = 1; // be consistent with Statement.executeUpdate which returns 1 the when row matches but no changes are made
             } else {
                 sessionInfo.setLastAccess(nowTime);
                 ArrayList<?> newValue = sessionInfo.getArrayList();
