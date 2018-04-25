@@ -127,6 +127,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         if (baseName == null) {
             return;
         }
+        if ((!req.isSecure()) && getJwtCookieSecure()) {
+            Tr.warning(tc, "JWT_COOKIE_SECURITY_MISMATCH", new Object[] {}); // CWWKS9127W
+        }
         String[] chunks = splitString(cookieByteString, 3900);
         String cookieName = baseName;
         for (int i = 0; i < chunks.length; i++) {

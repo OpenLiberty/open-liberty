@@ -145,3 +145,7 @@ SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Correct the URL specified on the logo
 JWT_ALREADY_LOGGED_OUT=CWWKS9126A: Authentication using a JSON Web Token did not succeed because the token was previously logged out.
 JWT_ALREADY_LOGGED_OUT.explanation=A JSON Web Token (JWT) that was previously logged out was resent for authentication.
 JWT_ALREADY_LOGGED_OUT.useraction=Obtain a new JSON Web Token.
+
+JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: The jwtSso feature is setting a secure cookie on an insecure HTTP request.  This might be a configuration error.  Use the HTTPS protocol or set the jwtSso configuration attribute setCookieSecureFlag to false.
+JWT_COOKIE_SECURITY_MISMATCH.explanation=A cookie is marked as secure but the protocol is HTTP, so the cookie will never be returned, this might cause subsequent requests to fail.
+JWT_COOKIE_SECURITY_MISMATCH.useraction=Use the HTTPS protocol or set the jwtSso configuration attribute setCookieSecureFlag to false.

@@ -558,6 +558,7 @@ public class SSOCookieHelperImplTest {
         String bigStr = sb.toString();
         mock.checking(new Expectations() {
             {
+                allowing(req).isSecure();
                 one(resp).addCookie(with(any(Cookie.class)));
                 one(resp).addCookie(with(any(Cookie.class)));
 //                allowing(config).getSSORequiresSSL();
