@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,54 +10,54 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.tests;
 
-import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.appConfig.cdi.web.XtorTestServletNamed;
 import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig11EE7;
 import com.ibm.ws.microprofile.config.fat.suite.RepeatConfig12EE8;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  *
  */
-public class CDIXtorInjectionTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class CDIXtorInjectionTest extends FATServletClient {
+
+    public static final String APP_NAME = "cdiConfig";
+
+    @Server("CDIConfigServer")
+    @TestServlet(servlet = XtorTestServletNamed.class, contextRoot = APP_NAME)
+    public static LibertyServer server;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        WebArchive war = SharedShrinkWrapApps.cdiConfigServerApps();
+
+        ShrinkHelper.exportDropinAppToServer(server, war);
+
+        server.startServer();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
+    }
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIConfigServer");
+    public static RepeatTests r = RepeatTests
+                    .with(new RepeatConfig11EE7("CDIConfigServer"))
+                    .andWith(new RepeatConfig12EE8("CDIConfigServer"));
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(RepeatConfig11EE7.INSTANCE).andWith(RepeatConfig12EE8.INSTANCE);
-
-    @BuildShrinkWrap
-    public static Archive buildApp() {
-        return SharedShrinkWrapApps.cdiConfigServerApps();
-    }
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
-    @Test
-    public void testConstructor() throws Exception {
-        test("SIMPLE_KEY4", "VALUE4");
-    }
-
-    @Test
-    public void testConstructorConfig() throws Exception {
-        test("SIMPLE_KEY5", "VALUE5");
-    }
-
-    private void test(String key, String expected) throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
-        getSharedServer().verifyResponse(browser, "/cdiConfig/xtor?key=" + key, key + "=" + expected);
-    }
 }

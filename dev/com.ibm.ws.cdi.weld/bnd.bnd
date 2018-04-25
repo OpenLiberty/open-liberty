@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -24,7 +24,8 @@ javac.target: 1.7
 -dsannotations: \
   com.ibm.ws.cdi.liberty.CDIRuntimeImpl,\
   com.ibm.ws.cdi.impl.managedobject.CDIManagedObjectService,\
-  com.ibm.ws.cdi.impl.inject.InjectProcessorProvider
+  com.ibm.ws.cdi.impl.inject.InjectProcessorProvider,\
+  com.ibm.ws.cdi.config.liberty.CDI12ContainerConfig
 
 Service-Component: \
  com.ibm.ws.cdi.weld.deserializationClassProvider;\
@@ -39,7 +40,11 @@ Service-Component: \
       
        
 Private-Package: com.ibm.ws.cdi.impl.*,\
+                com.ibm.ws.cdi.config.liberty, \
                 com.ibm.ws.cdi.liberty.*
+                
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
       
 Dynamic-Import: sun.misc, sun.nio.cs
 Import-Package: !org.scannotation.archiveiterator, \
@@ -58,6 +63,7 @@ Import-Package: !org.scannotation.archiveiterator, \
                 com.ibm.ws.cdi.internal.resources, \
                 org.jboss.weld;version="[2.4,4)",\
                 org.jboss.weld.annotated.enhanced;version="[2.4,4)",\
+                org.jboss.weld.bean;version="[2.4,4)",\
                 org.jboss.weld.bootstrap;version="[2.4,4)",\
                 org.jboss.weld.bootstrap.api;version="[2.4,4)",\
                 org.jboss.weld.bootstrap.api.helpers;version="[2.4,4)",\
@@ -72,6 +78,7 @@ Import-Package: !org.scannotation.archiveiterator, \
                 org.jboss.weld.manager;version="[2.4,4)",\
                 org.jboss.weld.manager.api;version="[2.4,4)",\
                 org.jboss.weld.probe;version="[2.4,4)",\
+                org.jboss.weld.resolution;version="[2.4,4)",\
                 org.jboss.weld.resources;version="[2.4,4)",\
                 org.jboss.weld.resources.spi;version="[2.4,4)",\
                 org.jboss.weld.security.spi;version="[2.4,4)",\
@@ -114,7 +121,7 @@ WS-TraceGroup: JCDI
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.kernel.boot,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-	com.ibm.ws.org.jboss.weld.2.4.5;version=latest, \
+	com.ibm.ws.org.jboss.weld.2.4.7;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

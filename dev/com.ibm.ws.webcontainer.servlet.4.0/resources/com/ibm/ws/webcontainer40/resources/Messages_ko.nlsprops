@@ -35,3 +35,17 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: \uc751\ub2f5 \ubb38\uc790 \uc778
 unsupported.response.encoding.[{0}].explanation=\uc751\ub2f5\uc5d0 \uc9c0\uc815\ub41c \uc751\ub2f5 \uc778\ucf54\ub529\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc624\ub958\uc785\ub2c8\ub2e4.
 unsupported.response.encoding.[{0}].useraction=\ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \uc9c0\uc815\ud55c \uc778\ucf54\ub529\uc774 \uc720\ud6a8\ud55c \uc778\ucf54\ub529\uc778\uc9c0 \uacb0\uc815\ud558\uc2ed\uc2dc\uc624.
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: \uc751\ub2f5\uc774 \ucee4\ubbf8\ud2b8\ub418\uba74 \ud2b8\ub808\uc77c\ub7ec\ub97c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+set.trailer.fields.committed.response.explanation=\uc751\ub2f5\uc774 \uc774\ubbf8 \ucee4\ubbf8\ud2b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+set.trailer.fields.committed.response.useraction=\ud2b8\ub808\uc77c\ub7ec\uac00 \uc124\uc815\ub418\uae30 \uc804\uc5d0 \uc751\ub2f5\uc774 \ucee4\ubbf8\ud2b8\ub418\uc9c0 \uc54a\uc558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: HTTP \ubc84\uc804\uc774 1.1 \uc774\uc0c1\uc774 \uc544\ub2c8\uba74 \ud2b8\ub808\uc77c\ub7ec\ub97c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+set.trailer.fields.incorrect.http.version.explanation=HTTP \ud2b8\ub808\uc77c\ub7ec\ub294 HTTP 1.1 \uc774\uc0c1\uc5d0\uc11c\ub9cc \uc9c0\uc6d0\ub429\ub2c8\ub2e4.
+set.trailer.fields.incorrect.http.version.useraction=HTTP 1.1 \uc774\uc0c1\uc774 \uc0ac\uc6a9\ub418\uace0 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: Transfer-Encoding \ud5e4\ub354 \uac12\uc774 "chunked"\uac00 \uc544\ub2c8\uba74 \ud2b8\ub808\uc77c\ub7ec\ub97c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+set.trailer.fields.incorrect.transfer.encoding.explanation=\ud2b8\ub808\uc77c\ub7ec\ub294 Transfer-Encoding \ud5e4\ub354 \uac12\uc774 "chunked"\uc778 \uacbd\uc6b0\uc5d0\ub9cc \uc9c0\uc6d0\ub429\ub2c8\ub2e4.
+set.trailer.fields.incorrect.transfer.encoding.useraction=Transfer-Encoding \ud5e4\ub354\uc5d0 "chunked" \uac12\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

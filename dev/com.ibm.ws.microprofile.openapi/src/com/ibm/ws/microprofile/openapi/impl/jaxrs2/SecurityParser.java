@@ -52,6 +52,24 @@ public class SecurityParser {
         return Optional.of(securityRequirements);
     }
 
+    public static Optional<SecurityRequirement> getSecurityRequirementFromSet(org.eclipse.microprofile.openapi.annotations.security.SecurityRequirementsSet securityRequirementsApi) {
+        if (securityRequirementsApi == null) {
+            return Optional.empty();
+        }
+        SecurityRequirement securityRequirement = new SecurityRequirementImpl();
+        for (org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement securityRequirementApi : securityRequirementsApi.value()) {
+            if (securityRequirementApi.scopes().length > 0) {
+                securityRequirement.addScheme(securityRequirementApi.name(), Arrays.asList(securityRequirementApi.scopes()));
+            } else {
+                securityRequirement.addScheme(securityRequirementApi.name());
+            }
+        }
+        if (securityRequirement.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(securityRequirement);
+    }
+
     public static Optional<SecurityScheme> getSecurityScheme(org.eclipse.microprofile.openapi.annotations.security.SecurityScheme securityScheme) {
         if (securityScheme == null) {
             return Optional.empty();

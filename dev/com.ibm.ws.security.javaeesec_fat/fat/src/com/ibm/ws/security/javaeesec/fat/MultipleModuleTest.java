@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,7 +70,7 @@ public class MultipleModuleTest extends JavaEESecTestBase {
     protected static String APP2_NAME = "multipleModule2";
     protected static String EAR_NAME = APP_NAME + ".ear";
     protected static String EAR2_NAME = APP2_NAME + ".ear";
-    protected static String APP1_SERVLET = "/" + MODULE1_ROOT + "/MultipleISFormServlet";
+    protected static String APP1_SERVLET = "/" + MODULE1_ROOT + "/FormServlet";
     protected static String APP2_SERVLET = "/" + MODULE2_ROOT + "/MultipleISCustomFormServlet";
 
     protected static String COMMON_APP1_SERVLET = "/" + MODULE1_ROOT + "/SecuredServlet";
@@ -128,11 +128,10 @@ public class MultipleModuleTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-
         if (ldapServer != null) {
             ldapServer.stop();
         }
+        myServer.stopServer();
         myServer.setServerConfigurationFile("server.xml");
     }
 

@@ -16,6 +16,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/defaultDecoratorApp.war/src,\
+	test-applications/DepProducerApp.war/src,\
 	test-applications/globalPriorityLib.jar/src,\
 	test-applications/globalPriorityWebApp.war/src,\
 	test-applications/utilLib.jar/src,\

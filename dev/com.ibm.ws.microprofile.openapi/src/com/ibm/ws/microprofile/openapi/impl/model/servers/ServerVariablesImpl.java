@@ -16,6 +16,9 @@ import java.util.Objects;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariables;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * ServerVariables
  *
@@ -73,7 +76,8 @@ public class ServerVariablesImpl extends LinkedHashMap<String, ServerVariable> i
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class ServerVariables {\n");
-        sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+        sb = (super.toString() != null) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
         sb.append("}");
         return sb.toString();
     }

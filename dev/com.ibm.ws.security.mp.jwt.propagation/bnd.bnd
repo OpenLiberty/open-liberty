@@ -18,7 +18,7 @@ Bundle-ActivationPolicy: lazy
 
 WS-TraceGroup: \
   Security
-																																																															
+
 Export-Package: \
   com.ibm.ws.security.mp.jwt.propagation
 

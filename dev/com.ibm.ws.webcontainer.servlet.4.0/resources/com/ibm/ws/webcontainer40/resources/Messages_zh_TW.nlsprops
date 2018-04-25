@@ -35,3 +35,17 @@ unsupported.response.encoding.[{0}]=CWWWC0401E: \u7121\u6cd5\u8a2d\u5b9a\u56de\u
 unsupported.response.encoding.[{0}].explanation=\u56de\u61c9\u4e2d\u6307\u5b9a\u7684\u56de\u61c9\u7de8\u78bc\u7121\u6548\u3002\u9019\u662f\u61c9\u7528\u7a0b\u5f0f\u932f\u8aa4\u3002
 unsupported.response.encoding.[{0}].useraction=\u8acb\u6aa2\u8996\u65e5\u8a8c\u4f86\u5224\u65b7\u6307\u5b9a\u7684\u7de8\u78bc\u662f\u5426\u70ba\u6709\u6548\u7684\u7de8\u78bc\u3002
 
+# -----------------------------------------------
+set.trailer.fields.committed.response=CWWWC0402E: \u5982\u679c\u56de\u61c9\u5df2\u78ba\u5b9a\uff0c\u5247\u7121\u6cd5\u8a2d\u5b9a\u6a19\u5c3e\u3002
+set.trailer.fields.committed.response.explanation=\u56de\u61c9\u5df2\u78ba\u5b9a\u3002
+set.trailer.fields.committed.response.useraction=\u5728\u8a2d\u5b9a\u6a19\u5c3e\u4e4b\u524d\uff0c\u8acb\u5148\u78ba\u8a8d\u56de\u61c9\u672a\u78ba\u5b9a\u3002
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.http.version=CWWWC0403E: \u5982\u679c HTTP \u7248\u672c\u4e0d\u662f 1.1 \u6216\u66f4\u65b0\u7248\u672c\uff0c\u5247\u7121\u6cd5\u8a2d\u5b9a\u6a19\u5c3e\u3002
+set.trailer.fields.incorrect.http.version.explanation=\u53ea\u6709 HTTP 1.1 \u6216\u66f4\u65b0\u7248\u672c\uff0c\u624d\u652f\u63f4 HTTP \u6a19\u5c3e\u3002
+set.trailer.fields.incorrect.http.version.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u7684\u662f HTTP 1.1 \u6216\u66f4\u65b0\u7248\u672c\u3002
+
+# -----------------------------------------------
+set.trailer.fields.incorrect.transfer.encoding=CWWWC0404E: \u5982\u679c Transfer-Encoding \u6a19\u982d\u503c\u4e0d\u662f "chunked"\uff0c\u5247\u7121\u6cd5\u8a2d\u5b9a\u6a19\u5c3e\u3002
+set.trailer.fields.incorrect.transfer.encoding.explanation=\u53ea\u6709\u5728 Transfer-Encoding \u6a19\u982d\u503c\u662f "chunked" \u6642\uff0c\u624d\u652f\u63f4\u6a19\u5c3e\u3002
+set.trailer.fields.incorrect.transfer.encoding.useraction=\u8acb\u78ba\u5b9a Transfer-Encoding \u6a19\u982d\u542b\u6709 "chunked" \u503c\u3002

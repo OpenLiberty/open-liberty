@@ -13,7 +13,9 @@ package com.ibm.ws.install.internal;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -33,6 +35,22 @@ import com.ibm.ws.install.InstallProgressEvent;
 import com.ibm.ws.install.RepositoryConfigUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.feature.internal.generator.ManifestFileProcessor;
+import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
+import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
+import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
+import com.ibm.ws.repository.connections.ProductDefinition;
+import com.ibm.ws.repository.connections.RepositoryConnection;
+import com.ibm.ws.repository.connections.RepositoryConnectionList;
+import com.ibm.ws.repository.connections.SingleFileRepositoryConnection;
+import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
+import com.ibm.ws.repository.exceptions.RepositoryException;
+import com.ibm.ws.repository.resolver.RepositoryResolutionException;
+import com.ibm.ws.repository.resolver.RepositoryResolver;
+import com.ibm.ws.repository.resources.RepositoryResource;
 
 /**
  *
@@ -47,6 +65,8 @@ public class InstallKernelMap implements Map {
     private static final String LICENSE_ACCEPT = "license.accept";
     private static final String REPOSITORIES_PROPERTIES = "repositories.properties";
     private static final String DOWLOAD_EXTERNAL_DEPS = "dowload.external.deps";
+    private static final String INSTALL_LOCAL_ESA = "install.local.esa";
+    private static final String LOCAL_ESA_DOWNLOAD_DIR = "local.esa.download.dir";
     private static final String USER_AGENT = "user.agent";
     private static final String PROGRESS_MONITOR_MESSAGE = "progress.monitor.message";
     private static final String PROGRESS_MONITOR_CANCELLED = "progress.monitor.cancelled";
@@ -61,6 +81,9 @@ public class InstallKernelMap implements Map {
     private static final String ACTION_UNINSTALL = "action.uninstall";
     private static final String ACTION_RESULT = "action.result";
     private static final String ACTION_ERROR_MESSAGE = "action.error.message";
+    private static final String ACTION_EXCEPTION_STACKTRACE = "action.exception.stacktrace";
+    private static final String FEATURES_TO_RESOLVE = "features.to.resolve";
+    private static final String SINGLE_JSON_FILE = "single.json.file";
     private static final String MESSAGE_LOCALE = "message.locale";
 
     // Return code
@@ -165,11 +188,22 @@ public class InstallKernelMap implements Map {
             return initKernel();
         } else if (ACTION_RESULT.equals(key)) {
             if (actionType.equals(ActionType.install)) {
-                return install();
+                Boolean localESAInstall = (Boolean) data.get(INSTALL_LOCAL_ESA);
+                if (localESAInstall == null || !localESAInstall) {
+                    return install();
+                } else {
+                    return localESAInstall();
+                }
             } else if (actionType.equals(ActionType.uninstall)) {
                 return uninstall();
             } else if (actionType.equals(ActionType.resolve)) {
-                return data.get(ACTION_RESULT);
+                Boolean localESAInstall = (Boolean) data.get(INSTALL_LOCAL_ESA);
+                if (localESAInstall == null || !localESAInstall) {
+                    return data.get(ACTION_RESULT);
+                } else {
+                    return singleFileResolve();
+                }
+
             }
         } else if (PROGRESS_MONITOR_SIZE.equals(key)) {
             return getMonitorSize();
@@ -192,6 +226,12 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (LOCAL_ESA_DOWNLOAD_DIR.equals(key)) {
+            if (value instanceof File) {
+                data.put(LOCAL_ESA_DOWNLOAD_DIR, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else if (REPOSITORIES_PROPERTIES.equals(key)) {
             if (value instanceof File) {
                 data.put(REPOSITORIES_PROPERTIES, value);
@@ -204,6 +244,9 @@ public class InstallKernelMap implements Map {
                         installKernel.setRepositoryProperties(repoProperties);
                     }
                 } catch (InstallException e) {
+                    data.put(ACTION_RESULT, ERROR);
+                    data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                    data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
                     throw new RuntimeException(e);
                 }
             } else {
@@ -212,6 +255,12 @@ public class InstallKernelMap implements Map {
         } else if (DOWLOAD_EXTERNAL_DEPS.equals(key)) {
             if (value instanceof Boolean) {
                 data.put(DOWLOAD_EXTERNAL_DEPS, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (INSTALL_LOCAL_ESA.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(INSTALL_LOCAL_ESA, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -251,7 +300,12 @@ public class InstallKernelMap implements Map {
             }
         } else if (ACTION_INSTALL.equals(key)) {
             if (value instanceof List || value instanceof File) {
-                resolve(value);
+                Boolean localESAInstall = (Boolean) data.get(INSTALL_LOCAL_ESA);
+                if (localESAInstall == null || !localESAInstall) {
+                    resolve(value);
+                } else {
+                    data.put(ACTION_INSTALL, value);
+                }
             } else {
                 throw new IllegalArgumentException();
             }
@@ -271,6 +325,34 @@ public class InstallKernelMap implements Map {
             if (value instanceof List) {
                 data.put(ACTION_UNINSTALL, value);
                 actionType = ActionType.uninstall;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (FEATURES_TO_RESOLVE.equals(key)) {
+            if (value instanceof List) {
+                Boolean localESAInstall = (Boolean) data.get(INSTALL_LOCAL_ESA);
+                if (localESAInstall != null && localESAInstall) {
+                    if ((List<File>) data.get(SINGLE_JSON_FILE) != null) {
+                        //resolution requires INSTALL_LOCAL_ESA == true and a SINGLE_JSON_FILE != null
+                        actionType = ActionType.resolve;
+                        data.put(FEATURES_TO_RESOLVE, value);
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (SINGLE_JSON_FILE.equals(key)) {
+            if (value instanceof List) {
+                Boolean localESAInstall = (Boolean) data.get(INSTALL_LOCAL_ESA);
+                if (localESAInstall != null && localESAInstall) {
+                    data.put(SINGLE_JSON_FILE, value);
+                } else {
+                    throw new IllegalArgumentException();
+                }
             } else {
                 throw new IllegalArgumentException();
             }
@@ -334,6 +416,8 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_RESULT, OK);
         data.put(ACTION_INSTALL_RESULT, null);
         data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
         actionType = ActionType.resolve;
         if (installObject instanceof List) {
             List<String> assets = (List<String>) installObject;
@@ -345,6 +429,7 @@ public class InstallKernelMap implements Map {
             } catch (InstallException e) {
                 data.put(ACTION_RESULT, ERROR);
                 data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             }
         } else if (installObject instanceof File) {
             File esaFile = (File) installObject;
@@ -359,6 +444,7 @@ public class InstallKernelMap implements Map {
                 } catch (InstallException e) {
                     data.put(ACTION_RESULT, ERROR);
                     data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                    data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
                 }
             } else {
                 data.put(ACTION_RESULT, ERROR);
@@ -367,6 +453,106 @@ public class InstallKernelMap implements Map {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Collection<String> singleFileResolve() {
+        data.put(ACTION_INSTALL, null);
+        data.put(ACTION_RESULT, OK);
+        data.put(ACTION_INSTALL_RESULT, null);
+        data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
+        Collection<ProductDefinition> productDefinitions = new HashSet<ProductDefinition>();
+        Collection<List<RepositoryResource>> resolveResult = null;
+        RepositoryResolver resolver = null;
+        Collection<String> featuresResolved = new ArrayList<String>();
+
+        try {
+
+            for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                productDefinitions.add(new ProductInfoProductDefinition(productInfo));
+            }
+            RepositoryConnectionList repoList = new RepositoryConnectionList();
+            List<File> singleJsonRepos = (List<File>) data.get(SINGLE_JSON_FILE);
+            for (File jsonRepo : singleJsonRepos) {
+                RepositoryConnection repo = new SingleFileRepositoryConnection(jsonRepo);
+                repoList.add(repo);
+            }
+
+            ManifestFileProcessor m_ManifestFileProcessor = new ManifestFileProcessor();
+            Collection<ProvisioningFeatureDefinition> installedFeatures = m_ManifestFileProcessor.getFeatureDefinitions().values();
+
+            int alreadyInstalled = 0;
+            Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
+            Collection<String> featuresAlreadyPresent = new ArrayList<String>();
+            for (ProvisioningFeatureDefinition feature : installedFeatures) {
+                if (featureToInstall.contains(feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
+                    alreadyInstalled += 1;
+                    if (feature.getIbmShortName() == null) {
+                        featuresAlreadyPresent.add(feature.getFeatureName());
+                    } else {
+                        featuresAlreadyPresent.add(feature.getIbmShortName());
+                    }
+                }
+            }
+            if (alreadyInstalled == featureToInstall.size()) {
+                throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
+            }
+
+            resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
+            resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+
+            for (List<RepositoryResource> item : resolveResult) {
+                for (RepositoryResource repoResrc : item) {
+                    featuresResolved.add(repoResrc.getMavenCoordinates());
+                }
+            }
+            actionType = ActionType.install;
+            featuresResolved = keepFirstInstance(featuresResolved);
+            return featuresResolved;
+        } catch (ProductInfoParseException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (DuplicateProductInfoException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (ProductInfoReplaceException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (RepositoryResolutionException e) {
+            data.put(ACTION_RESULT, ERROR);
+            InstallException ie = ExceptionUtils.create(e, (Collection<String>) data.get(FEATURES_TO_RESOLVE), (File) data.get(RUNTIME_INSTALL_DIR), false);
+            data.put(ACTION_ERROR_MESSAGE, ie.toString());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (RepositoryException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (Exception e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
+        actionType = ActionType.install;
+        return featuresResolved;
+    }
+
+    private static Collection<String> keepFirstInstance(Collection<String> dupStrCollection) {
+        Collection<String> uniqueStrCollection = new ArrayList<String>();
+        for (String str : dupStrCollection) {
+            if (!uniqueStrCollection.contains(str)) {
+                uniqueStrCollection.add(str);
+            }
+        }
+        return uniqueStrCollection;
     }
 
     private void checkLicense() throws InstallException {
@@ -397,6 +583,7 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_RESULT, OK);
         data.put(ACTION_INSTALL_RESULT, null);
         data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
         try {
             installKernel.checkResources();
             Boolean agreedToDownloadDependencies = (Boolean) data.get(DOWLOAD_EXTERNAL_DEPS);
@@ -407,10 +594,34 @@ public class InstallKernelMap implements Map {
         } catch (CancelException e) {
             data.put(ACTION_RESULT, CANCELLED);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             return CANCELLED;
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+            return ERROR;
+        }
+        return OK;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Integer localESAInstall() {
+        data.put(ACTION_RESULT, OK);
+        data.put(ACTION_INSTALL_RESULT, null);
+        data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
+        try {
+            InstallKernelImpl installKernel = (InstallKernelImpl) this.installKernel;
+            File esaFile = (File) data.get(ACTION_INSTALL);
+            Collection<String> installedAssets = installKernel.installLocalFeature(esaFile.getAbsolutePath(), InstallConstants.TO_USER, true,
+                                                                                   InstallConstants.ExistsAction.replace);
+            data.put(ACTION_INSTALL_RESULT, installedAssets);
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             return ERROR;
         }
         return OK;
@@ -445,6 +656,7 @@ public class InstallKernelMap implements Map {
             }
         } catch (InstallException e) {
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             return ERROR;
         }
         return OK;

@@ -287,6 +287,25 @@ public class SecuritySchemeValidatorTest {
     }
 
     @Test
+    public void testOpenIdConnectWithRelativeURL() {
+
+        Type type = Type.OPENIDCONNECT;
+        String url = "../../myserver/security/relative-url";
+
+        SecuritySchemeImpl invalidUrl = new SecuritySchemeImpl();
+        invalidUrl.setType(type);
+        invalidUrl.setOpenIdConnectUrl(url);
+
+        TestValidationHelper vh = new TestValidationHelper();
+        SecuritySchemeValidator validator = SecuritySchemeValidator.getInstance();
+        validator.validate(vh, context, key, invalidUrl);
+
+        //Check for number of events only to keep assert statement independent of error message
+        Assert.assertEquals(0, vh.getEventsSize());
+
+    }
+
+    @Test
     public void testPositiveApiKey() {
 
         Type type = Type.APIKEY;

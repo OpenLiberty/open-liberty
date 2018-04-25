@@ -22,20 +22,20 @@ Bundle-Description:MicroProfile Configuration 1.2 Implementation, version ${bVer
 testsrc: test/src
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.config12.impl.Config12ProviderResolverImpl
+-dsannotations: com.ibm.ws.microprofile.config12.archaius.Config12ProviderResolverImpl
 
 Export-Package: \
     !com.ibm.ws.microprofile.config.resources, \
     com.ibm.ws.microprofile.config.*, \
+    !com.ibm.ws.microprofile.config12.resources, \
     com.ibm.ws.microprofile.config12.*
 
-Private-Package: \
-    com.ibm.ws.microprofile.config.resources
+Private-Package: com.ibm.ws.microprofile.config.resources, \
+                 com.ibm.ws.microprofile.config12.resources
 
 Import-Package: \
         org.eclipse.microprofile.config;version="[1.0,2)", \
         org.eclipse.microprofile.config.spi;version="[1.2,2)", \
-        !com.ibm.ws.microprofile.config.*, \
         *
 
 WS-TraceGroup: APPCONFIG
@@ -54,7 +54,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	com.ibm.websphere.org.osgi.service.component;version=latest, \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
         com.ibm.ws.microprofile.config;version=latest, \
-	com.ibm.websphere.org.eclipse.microprofile.config.1.2;version=latest, \
+	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest, \
 	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

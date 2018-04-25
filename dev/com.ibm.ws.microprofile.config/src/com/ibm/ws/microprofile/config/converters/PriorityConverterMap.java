@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
@@ -22,12 +24,15 @@ import com.ibm.websphere.ras.annotation.Trivial;
  */
 public class PriorityConverterMap {
 
+    private static final TraceComponent tc = Tr.register(PriorityConverterMap.class);
+
     private final Map<Type, PriorityConverter> converters = new HashMap<>();
     private boolean unmodifiable = false;
 
     /**
      * Basic constructor
      */
+    @Trivial
     public PriorityConverterMap() {
         //no-op
     }
@@ -35,6 +40,7 @@ public class PriorityConverterMap {
     /**
      * Copy constructor
      */
+    @Trivial
     public PriorityConverterMap(PriorityConverterMap toCopy) {
         for (PriorityConverter converter : toCopy.getAll()) {
             _addConverter(converter);
@@ -50,8 +56,14 @@ public class PriorityConverterMap {
      * @param converter the new converter
      * @return the new converter if it was added or the existing converter if it was not
      */
+    @Trivial
     public PriorityConverter addConverter(PriorityConverter converter) {
         PriorityConverter existing = _addConverter(converter);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Converter added to map @ priority {0}: {1}={2}", existing.getPriority(), existing.getType(), existing);
+        }
+
         return existing;
     }
 
@@ -68,6 +80,7 @@ public class PriorityConverterMap {
             converters.put(type, converter);
             existing = converter;
         }
+
         return existing;
     }
 
@@ -76,6 +89,7 @@ public class PriorityConverterMap {
      *
      * @param convertersToAdd the converters to add
      */
+    @Trivial
     public void addAll(PriorityConverterMap convertersToAdd) {
         for (PriorityConverter converter : convertersToAdd.converters.values()) {
             _addConverter(converter);
@@ -95,6 +109,7 @@ public class PriorityConverterMap {
         return converter;
     }
 
+    @Trivial
     public void setUnmodifiable() {
         this.unmodifiable = true;
     }

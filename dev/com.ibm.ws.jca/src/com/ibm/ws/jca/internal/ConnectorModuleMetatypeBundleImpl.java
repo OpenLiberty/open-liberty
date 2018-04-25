@@ -50,7 +50,6 @@ import com.ibm.ws.jca.utils.metagen.MetaGenConstants;
 import com.ibm.ws.jca.utils.metagen.MetatypeGenerator;
 import com.ibm.ws.jca.utils.xml.metatype.Metatype;
 import com.ibm.ws.jca.utils.xml.metatype.MetatypeOcd;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.wsspi.classloading.ApiType;
 
 /**
@@ -104,7 +103,7 @@ class ConnectorModuleMetatypeBundleImpl implements ConnectorModuleMetatype {
         Map<String, Object> metagenConfig = metadataImpl.getMetaGenConfig();
         metagenConfig.put(MetaGenConstants.KEY_RAR_CLASSLOADER, raClassLoader);
 
-        MetaTypeFactory mtpService = PrivHelper.getService(bundleContext, MetaTypeFactory.class);
+        MetaTypeFactory mtpService = Utils.priv.getService(bundleContext, MetaTypeFactory.class);
         metatype = MetatypeGenerator.generateMetatype(metagenConfig, mtpService);
         metatypeXML = metatype.toMetatypeString(true);
 

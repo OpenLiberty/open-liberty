@@ -59,6 +59,7 @@ public class DiscriminatorValidatorTest {
         discriminator.addMapping("name", "value");
         validator.validate(vh, context, null, discriminator);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"propertyName\" field is missing or is set to an invalid value"));
     }
 
     @Test
@@ -71,5 +72,6 @@ public class DiscriminatorValidatorTest {
         discriminator.addMapping("name", "value");
         validator.validate(vh, context, null, discriminator);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("Required \"propertyName\" field is missing or is set to an invalid value"));
     }
 }

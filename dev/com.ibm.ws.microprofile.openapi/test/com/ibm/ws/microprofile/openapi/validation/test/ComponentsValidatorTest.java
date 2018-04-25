@@ -139,6 +139,7 @@ public class ComponentsValidatorTest {
 
         validator.validate(vh, context, null, components);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The map contains an invalid key. A map should not have empty or null keys"));
     }
 
     @Test
@@ -155,6 +156,7 @@ public class ComponentsValidatorTest {
 
         validator.validate(vh, context, null, components);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The map specifies an invalid value for the \"mySecurity\" key. A map should not have null values"));
     }
 
 }

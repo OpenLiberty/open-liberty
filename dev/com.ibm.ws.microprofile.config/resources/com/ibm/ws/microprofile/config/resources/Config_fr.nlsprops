@@ -94,6 +94,28 @@ no.such.element.CWMCG0015E=CWMCG0015E: La propri\u00e9t\u00e9 {0} est introuvabl
 no.such.element.CWMCG0015E.explanation=La propri\u00e9t\u00e9 demand\u00e9e n'existe dans aucune des sources configur\u00e9es.
 no.such.element.CWMCG0015E.useraction=Ajoutez la propri\u00e9t\u00e9 \u00e0 l'une des sources existantes ou ajoutez une nouvelle source contenant la propri\u00e9t\u00e9.
 
+# The server is unable to cancel the asynchronous update thread for the {0} Config Source.
+future.update.not.cancelled.CWMCG0016E=CWMCG0016E: Le serveur ne parvient pas \u00e0 annuler l'unit\u00e9 d'ex\u00e9cution de mise \u00e0 jour asynchrone pour la source de configuration {0}.
+future.update.not.cancelled.CWMCG0016E.explanation=La tentative d'annulation d'une mise \u00e0 jour asynchrone future a \u00e9chou\u00e9. Ceci est d\u00fb g\u00e9n\u00e9ralement \u00e0 un appel s'\u00e9ternisant pour mise \u00e0 jour \u00e0 une instance ConfigSource.
+future.update.not.cancelled.CWMCG0016E.useraction=Consultez le journal message.log du serveur et les journaux FFDC pour identifier le probl\u00e8me.
+
+# No implicit String constructor methods found for the {0} class.
+implicit.string.constructor.method.not.found.CWMCG0017E=CWMCG0017E: Aucune m\u00e9thode de construction de cha\u00eene implicite trouv\u00e9e pour la classe {0}.
+implicit.string.constructor.method.not.found.CWMCG0017E.explanation=Aucune m\u00e9thode de construction de cha\u00eene valide n'a \u00e9t\u00e9 trouv\u00e9e pour la classe sp\u00e9cifi\u00e9e.
+implicit.string.constructor.method.not.found.CWMCG0017E.useraction=V\u00e9rifiez que la classe sp\u00e9cifi\u00e9e poss\u00e8de une m\u00e9thode de construction de cha\u00eene valide. Pour identifier les m\u00e9thodes valides, reportez-vous \u00e0 la sp\u00e9cification relative \u00e0 la configuration de MicroProfile.
+
+# The {0} Generic Type Variable for the {1} conversion type is not supported.
+generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: La variable de type g\u00e9n\u00e9rique {0} pour le type de conversion {1} n'est pas prise en charge.
+generic.type.variables.notsupported.CWMCG0018E.explanation=Une tentative de conversion avec une variable de type g\u00e9n\u00e9rique, par exemple List<T>, a \u00e9t\u00e9 effectu\u00e9e. Ce cas de figure n'est pas pris en charge.
+generic.type.variables.notsupported.CWMCG0018E.useraction=A la place, utilisez un type d'argument concret, tel que List<String>.
+
+# Environment Variables Config Source
+environment.variables.config.source=Source de configuration des variables d'environnement
+# Properties File Config Source: {0}
+properties.file.config.source=Source de configuration du fichier de propri\u00e9t\u00e9s : {0}
+# System Properties Config Source
+system.properties.config.source=Source de configuration des propri\u00e9t\u00e9s syst\u00e8me
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config error message
 #-----------------------------------------------------------------------------------------------------------------------------

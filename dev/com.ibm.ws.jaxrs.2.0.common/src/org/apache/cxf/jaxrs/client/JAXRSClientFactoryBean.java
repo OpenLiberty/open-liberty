@@ -21,6 +21,8 @@ package org.apache.cxf.jaxrs.client;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -86,7 +88,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
     /**
      * Indicates if a single proxy or WebClient instance can be reused
      * by multiple threads.
-     * 
+     *
      * @param threadSafe if true then multiple threads can invoke on
      *            the same proxy or WebClient instance.
      */
@@ -97,7 +99,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
     /**
      * Sets the time a thread-local client state will be kept.
      * This property is ignored for thread-unsafe clients
-     * 
+     *
      * @param time secondsToKeepState
      */
     public void setSecondsToKeepState(long time) {
@@ -106,7 +108,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Gets the user name
-     * 
+     *
      * @return the name
      */
     public String getUsername() {
@@ -126,7 +128,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Gets the password
-     * 
+     *
      * @return the password
      */
     public String getPassword() {
@@ -157,7 +159,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Sets the resource class
-     * 
+     *
      * @param cls the resource class
      */
     public void setResourceClass(Class<?> cls) {
@@ -166,7 +168,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Sets the service class, may be called from a Spring handler
-     * 
+     *
      * @param cls the service class
      */
     public void setServiceClass(Class<?> cls) {
@@ -201,7 +203,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Gets the initial headers
-     * 
+     *
      * @return the headers
      */
     public Map<String, List<String>> getHeaders() {
@@ -210,7 +212,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Creates a WebClient instance
-     * 
+     *
      * @return WebClient instance
      */
     public WebClient createWebClient() {
@@ -259,7 +261,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Creates a proxy
-     * 
+     *
      * @param cls the proxy class
      * @param varValues optional list of values which will be used to substitute
      *            template variables specified in the class-level JAX-RS Path annotations
@@ -271,7 +273,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Create a Client instance. Proxies and WebClients are Clients.
-     * 
+     *
      * @return the client
      */
     public Client create() {
@@ -284,10 +286,10 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Create a Client instance. Proxies and WebClients are Clients.
-     * 
+     *
      * @param varValues optional list of values which will be used to substitute
      *            template variables specified in the class-level JAX-RS Path annotations
-     * 
+     *
      * @return the client
      */
     public Client createWithValues(Object... varValues) {
@@ -319,7 +321,14 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
             proxyImpl = createClientProxy(cri, isRoot, actualState, varValues);
             initClient(proxyImpl, ep, actualState == null);
 
-            ClassLoader theLoader = proxyLoader == null ? cri.getServiceClass().getClassLoader() : proxyLoader;
+            final Class<?> serviceClass = cri.getServiceClass();
+            ClassLoader theLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
+                @Override
+                public ClassLoader run() {
+                    return proxyLoader == null ? serviceClass.getClassLoader() : proxyLoader;
+                }
+            });
             Class<?>[] ifaces = new Class[] { Client.class, InvocationHandlerAware.class, cri.getServiceClass() };
             Client actualClient = (Client) ProxyHelper.getProxy(theLoader, ifaces, proxyImpl);
             proxyImpl.setProxyClient(actualClient);
@@ -418,7 +427,7 @@ public class JAXRSClientFactoryBean extends AbstractJAXRSFactoryBean {
 
     /**
      * Sets the initial client state, can be a thread-safe state.
-     * 
+     *
      * @param initialState the state
      */
     public void setInitialState(ClientState initialState) {

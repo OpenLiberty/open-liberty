@@ -814,14 +814,15 @@ public final class ThreadPoolController {
         double shrinkMagic = 0.0;
         boolean flippedCoin = false;
         int downwardCompareSpan = 0;
-        if (poolSize >= coreThreads + poolDecrement) {
-            // Count the number of consecutive times we've seen an empty queue
-            if (queueDepth > 0) {
-                consecutiveQueueEmptyCount = 0;
-            } else if (lastAction != LastAction.SHRINK) { // 9/5/2012
-                consecutiveQueueEmptyCount++;
-            }
 
+        // Count the number of consecutive times we've seen an empty queue
+        if (queueDepth > 0) {
+            consecutiveQueueEmptyCount = 0;
+        } else if (lastAction != LastAction.SHRINK) { // 9/5/2012
+            consecutiveQueueEmptyCount++;
+        }
+
+        if (poolSize >= coreThreads + poolDecrement) {
             // compareSpan is poolSize range used for throughput comparison
             downwardCompareSpan = Math.min(compareRange * poolDecrement, poolSize - coreThreads);
 

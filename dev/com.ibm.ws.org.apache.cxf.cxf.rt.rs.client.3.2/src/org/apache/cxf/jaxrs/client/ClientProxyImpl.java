@@ -254,7 +254,7 @@ public class ClientProxyImpl extends AbstractClient implements
             new MetadataMap<ParameterType, Parameter>();
 
         List<Parameter> parameters = ori.getParameters();
-        if (parameters.size() == 0) {
+        if (parameters.isEmpty()) {
             return map;
         }
         int requestBodyParam = 0;
@@ -370,7 +370,7 @@ public class ClientProxyImpl extends AbstractClient implements
 
         List<MediaType> accepts = getAccept(headers);
         if (accepts == null) {
-            boolean produceWildcard = ori.getProduceTypes().size() == 0
+            boolean produceWildcard = ori.getProduceTypes().isEmpty()
                 || ori.getProduceTypes().get(0).equals(MediaType.WILDCARD_TYPE);
             if (produceWildcard) {
                 accepts = InjectionUtils.isPrimitive(responseClass)
@@ -392,7 +392,7 @@ public class ClientProxyImpl extends AbstractClient implements
 
     private List<MediaType> getAccept(MultivaluedMap<String, String> allHeaders) {
         List<String> headers = allHeaders.get(HttpHeaders.ACCEPT);
-        if (headers == null || headers.size() == 0) {
+        if (headers == null || headers.isEmpty()) {
             return null;
         }
         List<MediaType> types = new ArrayList<>();
@@ -595,7 +595,7 @@ public class ClientProxyImpl extends AbstractClient implements
         }
         return jaxrsParamAnnAvailable;
     }
-    
+
     private void handleMatrixes(Method m,
                                 Object[] params,
                                 MultivaluedMap<ParameterType, Parameter> map,

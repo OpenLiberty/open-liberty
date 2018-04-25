@@ -43,6 +43,8 @@ import com.ibm.websphere.filetransfer.FileTransferMBean;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
+
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -69,6 +71,8 @@ public class FeaturelistGeneratorMBeanTest {
 
         outputDir = server.getServerRoot();
         Log.info(logClass, methodName, "serverRoot=" + outputDir);
+        RemoteFile downloadTarget = LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/download_target");
+        downloadTarget.mkdir();
 
         Log.info(logClass, methodName, "Starting server=" + server.getServerName());
         server.startServer();
@@ -143,7 +147,8 @@ public class FeaturelistGeneratorMBeanTest {
 
         if (server != null && server.isStarted()) {
             Log.finer(logClass, methodName, "Server is up, stopping it");
-            jmxConnector.close();
+            if (jmxConnector != null)
+                jmxConnector.close();
             server.stopServer();
         }
         Log.exiting(logClass, methodName);
@@ -151,7 +156,7 @@ public class FeaturelistGeneratorMBeanTest {
 
     /**
      * Invoke FeaturelistMBean.generate method
-     * 
+     *
      * @param params
      * @return response from MBean invoke
      * @throws Exception
@@ -169,7 +174,7 @@ public class FeaturelistGeneratorMBeanTest {
 
     /**
      * Invoke FileTransferMBean.downloadFile method
-     * 
+     *
      * @param params
      * @throws Exception
      */
@@ -182,7 +187,7 @@ public class FeaturelistGeneratorMBeanTest {
 
     /**
      * Invoke FileTransferMBean.deleteFile method
-     * 
+     *
      * @param params
      * @throws Exception
      */
@@ -195,7 +200,7 @@ public class FeaturelistGeneratorMBeanTest {
 
     /**
      * Invoke FeaturelistMBean.generate method
-     * 
+     *
      * @param encoding, locale, productExtension is empty
      * @throws Exception
      */
@@ -216,7 +221,7 @@ public class FeaturelistGeneratorMBeanTest {
 
     /**
      * Invoke FeaturelistMBean.generate method
-     * 
+     *
      * @param encoding, locale, productExtension is empty
      * @throws Exception
      */
@@ -237,7 +242,7 @@ public class FeaturelistGeneratorMBeanTest {
 
     /**
      * Invoke FeaturelistMBean.generate method
-     * 
+     *
      * @param encoding, locale is invalid, productExtension
      * @throws Exception
      */
@@ -259,7 +264,7 @@ public class FeaturelistGeneratorMBeanTest {
 
     /**
      * Invoke FeaturelistMBean.generate method
-     * 
+     *
      * @param encoding, locale, productExtension is invalid
      * @throws Exception
      */
@@ -282,7 +287,7 @@ public class FeaturelistGeneratorMBeanTest {
     /**
      * Invoke FeaturelistMBean.generate method and using FileTransferMBean remotely to download
      * feature list file and deletes it
-     * 
+     *
      * @param encoding, locale, productExtension is empty
      * @throws Exception
      */
@@ -320,7 +325,7 @@ public class FeaturelistGeneratorMBeanTest {
 
     /**
      * Invoke FeaturelistMBean.generate method with correct parameters
-     * 
+     *
      * @param encoding, locale, productExtension
      * @throws Exception
      */
@@ -342,7 +347,7 @@ public class FeaturelistGeneratorMBeanTest {
     /**
      * Invoke FeaturelistMBean.generate method using the JMX MBean API
      * downloads the feature list and transfers it over using FileTransfer MBean
-     * 
+     *
      * @param encoding, locale, productExtension
      * @throws Exception
      */

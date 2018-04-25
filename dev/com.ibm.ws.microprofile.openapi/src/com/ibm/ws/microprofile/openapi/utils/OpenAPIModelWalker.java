@@ -76,7 +76,7 @@ public final class OpenAPIModelWalker {
     }
 
     public void accept(OpenAPIModelVisitor visitor, boolean previsit) {
-        if (visitor != null) {
+        if (visitor != null && openAPI != null) {
             new Walker(openAPI, visitor, previsit).traverseOpenAPI();
         }
     }
@@ -86,7 +86,7 @@ public final class OpenAPIModelWalker {
     }
 
     public void accept(OpenAPIModelFilter visitor, boolean previsit) {
-        if (visitor != null) {
+        if (visitor != null && openAPI != null) {
             new Walker(openAPI, visitor, previsit).traverseOpenAPI();
         }
     }

@@ -12,18 +12,14 @@ package com.ibm.ws.cdi12.fat.tests;
 
 import java.io.File;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
@@ -43,37 +39,41 @@ public class ObservesInitializedTest extends LoggingTest {
     }
 
     @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
-       JavaArchive ObservesInitializedInJarsWebInfJar = ShrinkWrap.create(JavaArchive.class,"ObservesInitializedInJarsWebInfJar.jar")
-                        .addClass("cdi12.observersinjars.webinf.WebInfAutostartObserver")
-                        .addClass("cdi12.observersinjars.webinf.SomeClass");
+    public static Archive<?> buildShrinkWrap() {
+        JavaArchive observesInitializedInJarsWebInfJar = ShrinkWrap.create(JavaArchive.class, "ObservesInitializedInJarsWebInfJar.jar");
+        observesInitializedInJarsWebInfJar.addClass("cdi12.observersinjars.webinf.WebInfAutostartObserver");
+        observesInitializedInJarsWebInfJar.addClass("cdi12.observersinjars.webinf.SomeClass");
 
-       JavaArchive ObservesInitializedInJarsManifestJar = ShrinkWrap.create(JavaArchive.class,"ObservesInitializedInJarsManifestJar.jar")
-                        .addClass("cdi12.observersinjars.manifestjar.ManifestAutostartObserver")
-                        .addClass("cdi12.observersinjars.manifestjar.SomeClass");
+        JavaArchive observesInitializedInJarsManifestJar = ShrinkWrap.create(JavaArchive.class, "ObservesInitializedInJarsManifestJar.jar");
+        observesInitializedInJarsManifestJar.addClass("cdi12.observersinjars.manifestjar.ManifestAutostartObserver");
+        observesInitializedInJarsManifestJar.addClass("cdi12.observersinjars.manifestjar.SomeClass");
 
-       WebArchive ObservesInitializedInJars = ShrinkWrap.create(WebArchive.class, "ObservesInitializedInJars.war")
-                        .addClass("cdi12.observersinjarsbeforebean.WarBeforeBeansObserver")
-                        .addClass("cdi12.observersinjars.SomeClass")
-                        .addClass("cdi12.observersinjars.TestServlet")
-                        .addClass("cdi12.observersinjars.WarAutostartObserver")
-                        .addAsManifestResource(new File("test-applications/ObservesInitializedInJars.war/resources/META-INF/MANIFEST.MF"))
-                        .add(new FileAsset(new File("test-applications/ObservesInitializedInJars.war/resources/META-INF/services/javax.enterprise.inject.spi.Extension")), "/META-INF/services/javax.enterprise.inject.spi.Extension")
-                        .addAsLibrary(ObservesInitializedInJarsWebInfJar);
-       WebArchive ObservesInitializedInJarsSecondWar = ShrinkWrap.create(WebArchive.class, "ObservesInitializedInJarsSecondWar.war")
-                        .addClass("cdi12.observersinjarssecondwar.WarBeforeBeansObserver")
-                        .addClass("cdi12.observersinjarssecondwar.SomeClass")
-                        .addClass("cdi12.observersinjarssecondwar.TestServlet")
-                        .add(new FileAsset(new File("test-applications/ObservesInitializedInJarsSecondWar.war/resources/META-INF/services/javax.enterprise.inject.spi.Extension")), "/META-INF/services/javax.enterprise.inject.spi.Extension");
+        WebArchive observesInitializedInJars = ShrinkWrap.create(WebArchive.class, "ObservesInitializedInJars.war");
+        observesInitializedInJars.addClass("cdi12.observersinjarsbeforebean.WarBeforeBeansObserver");
+        observesInitializedInJars.addClass("cdi12.observersinjars.SomeClass");
+        observesInitializedInJars.addClass("cdi12.observersinjars.TestServlet");
+        observesInitializedInJars.addClass("cdi12.observersinjars.WarAutostartObserver");
+        observesInitializedInJars.addAsManifestResource(new File("test-applications/ObservesInitializedInJars.war/resources/META-INF/MANIFEST.MF"));
 
-       return ShrinkWrap.create(EnterpriseArchive.class,"ObservesInitializedInJars.ear")
-                        .add(new FileAsset(new File("test-applications/ObservesInitializedInJars.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                        .add(new FileAsset(new File("test-applications/ObservesInitializedInJars.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(ObservesInitializedInJars)
-                        .addAsModule(ObservesInitializedInJarsSecondWar)
-                        .addAsModule(ObservesInitializedInJarsManifestJar);
+        observesInitializedInJars.add(new FileAsset(new File("test-applications/ObservesInitializedInJars.war/resources/META-INF/services/javax.enterprise.inject.spi.Extension")),
+                                      "/META-INF/services/javax.enterprise.inject.spi.Extension");
+        observesInitializedInJars.addAsLibrary(observesInitializedInJarsWebInfJar);
+        WebArchive observesInitializedInJarsSecondWar = ShrinkWrap.create(WebArchive.class, "ObservesInitializedInJarsSecondWar.war");
+        observesInitializedInJarsSecondWar.addClass("cdi12.observersinjarssecondwar.WarBeforeBeansObserver");
+        observesInitializedInJarsSecondWar.addClass("cdi12.observersinjarssecondwar.SomeClass");
+        observesInitializedInJarsSecondWar.addClass("cdi12.observersinjarssecondwar.TestServlet");
+
+        observesInitializedInJarsSecondWar.add(new FileAsset(new File("test-applications/ObservesInitializedInJarsSecondWar.war/resources/META-INF/services/javax.enterprise.inject.spi.Extension")),
+                                               "/META-INF/services/javax.enterprise.inject.spi.Extension");
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ObservesInitializedInJars.ear");
+        ear.add(new FileAsset(new File("test-applications/ObservesInitializedInJars.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
+        ear.add(new FileAsset(new File("test-applications/ObservesInitializedInJars.ear/resources/META-INF/application.xml")), "/META-INF/application.xml");
+        ear.addAsModule(observesInitializedInJars);
+        ear.addAsModule(observesInitializedInJarsSecondWar);
+        ear.addAsModule(observesInitializedInJarsManifestJar);
+        return ear;
     }
-
 
     @Test
     @Mode(TestMode.FULL)

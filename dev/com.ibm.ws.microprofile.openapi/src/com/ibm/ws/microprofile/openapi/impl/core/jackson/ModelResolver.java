@@ -340,9 +340,24 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
         }
 
         if (type.isContainerType()) {
-            // We treat collections as primitive types, just need to add models for values (if any)
-            context.resolve(type.getContentType());
-            return null;
+            JavaType keyType = type.getKeyType();
+            JavaType valueType = type.getContentType();
+            if (keyType != null && valueType != null) {
+                Schema mapModel = new SchemaImpl().type(SchemaType.OBJECT).additionalProperties(context.resolve(valueType, new Annotation[] {}));
+                ((SchemaImpl) mapModel).name(name);
+                model = mapModel;
+            } else if (valueType != null) {
+                Schema items = context.resolve(valueType, new Annotation[] {});
+                Schema arrayModel = new SchemaImpl().type(SchemaType.ARRAY).items(items);
+                if (_isSetType(type.getRawClass())) {
+                    arrayModel.setUniqueItems(true);
+                }
+                ((SchemaImpl) arrayModel).name(name);
+                model = arrayModel;
+            } else {
+                model = new SchemaImpl().name(name).type(SchemaType.OBJECT);
+            }
+
         }
         XML xml = resolveXml(beanDesc.getClassInfo());
         if (xml != null) {
@@ -511,32 +526,33 @@ public class ModelResolver extends AbstractModelConverter implements ModelConver
             Class<?>[] anyOf = directSchemaAnnotation.anyOf();
             Class<?>[] oneOf = directSchemaAnnotation.oneOf();
 
+            final Schema m = model;
             List<Class<?>> allOfFiltered = Stream.of(allOf).distinct().filter(c -> !this.shouldIgnoreClass(c)).filter(c -> !(c.equals(Void.class))).collect(Collectors.toList());
             allOfFiltered.forEach(c -> {
                 Schema allOfRef = context.resolve(c);
                 Schema refSchema = new SchemaImpl().ref(((SchemaImpl) allOfRef).getName());
                 // allOf could have already being added during subtype resolving
-                if (model.getAllOf() == null || !model.getAllOf().contains(refSchema)) {
-                    model.addAllOf(refSchema);
+                if (m.getAllOf() == null || !m.getAllOf().contains(refSchema)) {
+                    m.addAllOf(refSchema);
                 }
-                removeParentProperties(model, allOfRef);
+                removeParentProperties(m, allOfRef);
             });
 
             List<Class<?>> anyOfFiltered = Stream.of(anyOf).distinct().filter(c -> !this.shouldIgnoreClass(c)).filter(c -> !(c.equals(Void.class))).collect(Collectors.toList());
             anyOfFiltered.forEach(c -> {
                 Schema anyOfRef = context.resolve(c);
                 //composedSchema.addAnyOfItem(new Schema().$ref(anyOfRef.getName()));
-                model.addAnyOf(new SchemaImpl().ref(((SchemaImpl) anyOfRef).getName()));
+                m.addAnyOf(new SchemaImpl().ref(((SchemaImpl) anyOfRef).getName()));
                 // remove shared properties defined in the parent
-                removeParentProperties(model, anyOfRef);
+                removeParentProperties(m, anyOfRef);
             });
 
             List<Class<?>> oneOfFiltered = Stream.of(oneOf).distinct().filter(c -> !this.shouldIgnoreClass(c)).filter(c -> !(c.equals(Void.class))).collect(Collectors.toList());
             oneOfFiltered.forEach(c -> {
                 Schema oneOfRef = context.resolve(c);
-                model.addOneOf(new SchemaImpl().ref(((SchemaImpl) oneOfRef).getName()));
+                m.addOneOf(new SchemaImpl().ref(((SchemaImpl) oneOfRef).getName()));
                 // remove shared properties defined in the parent
-                removeParentProperties(model, oneOfRef);
+                removeParentProperties(m, oneOfRef);
             });
 
         }

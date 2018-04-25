@@ -14,18 +14,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
@@ -57,20 +52,22 @@ public class EventMetaDataTest extends LoggingTest {
     }
 
     @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
+    public static Archive<?> buildShrinkWrap() {
 
-        WebArchive eventMetaData = ShrinkWrap.create(WebArchive.class, "eventMetaData.war")
-                        .addClass("com.ibm.ws.cdi12.test.MetaQualifier")
-                        .addClass("com.ibm.ws.cdi12.test.MetaDataServlet")
-                        .addClass("com.ibm.ws.cdi12.test.MyEvent")
-                        .addClass("com.ibm.ws.cdi12.test.RequestScopedBean")
-                        .add(new FileAsset(new File("test-applications/eventMetaData.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                        .add(new FileAsset(new File("test-applications/eventMetaData.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        WebArchive eventMetaData = ShrinkWrap.create(WebArchive.class, "eventMetaData.war");
+        eventMetaData.addClass("com.ibm.ws.cdi12.test.MetaQualifier");
+        eventMetaData.addClass("com.ibm.ws.cdi12.test.MetaDataServlet");
+        eventMetaData.addClass("com.ibm.ws.cdi12.test.MyEvent");
+        eventMetaData.addClass("com.ibm.ws.cdi12.test.RequestScopedBean");
+        eventMetaData.add(new FileAsset(new File("test-applications/eventMetaData.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
+        eventMetaData.add(new FileAsset(new File("test-applications/eventMetaData.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
 
-        return ShrinkWrap.create(EnterpriseArchive.class,"eventMetaData.ear")
-                        .add(new FileAsset(new File("test-applications/eventMetaData.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                        .add(new FileAsset(new File("test-applications/eventMetaData.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(eventMetaData);
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "eventMetaData.ear");
+        ear.add(new FileAsset(new File("test-applications/eventMetaData.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
+        ear.add(new FileAsset(new File("test-applications/eventMetaData.ear/resources/META-INF/application.xml")), "/META-INF/application.xml");
+        ear.addAsModule(eventMetaData);
+
+        return ear;
     }
 
     @Test

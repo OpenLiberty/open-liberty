@@ -26,7 +26,7 @@ public class StackTraceFilteringForIBMFeatureExceptionTest extends AbstractStack
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.badconfig.ibm");
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.badconfig.ibm", StackTraceFilteringForIBMFeatureExceptionTest.class);
 
         // install our user feature
         server.installUserBundle(BUNDLE_NAME); // NO HYPHENS! NO ".jar" SUFFIX!

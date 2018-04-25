@@ -68,7 +68,7 @@ MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=El servidor est\u00e1 iniciando 
 MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Verifique que se haya configurado un destino con el nombre especificado. Si la configuraci\u00f3n existe, espere a que el destino est\u00e9 disponible.
 
 MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I=CNTR4116I: El punto final de mensaje para el bean controlado por mensaje {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} no se hab\u00eda activado porque la especificaci\u00f3n de activaci\u00f3n {3} se hab\u00eda configurado con autoStart=false.
-MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=El punto final de mensaje no se ha activado porque la especificaci\u00f3n de activaci\u00f3n se hab\u00eda configurado con autoStart=false. El punto final de mensaje se activar\u00e1 cuando se emita un mandato resume.
+MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.explanation=El punto final de mensaje no se ha activado porque la especificaci\u00f3n de activaci\u00f3n se hab\u00eda configurado con autoStart=false.  El punto final de mensaje se activar\u00e1 cuando se emita un mandato resume.
 MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I.useraction=No se requiere ninguna acci\u00f3n.
 
 MDB_ENDPOINT_ALREADY_INACTIVE_CNTR4117I=CNTR4117I: La operaci\u00f3n de pausa no ha tenido ning\u00fan efecto porque el punto final de mensaje para el bean {0} en el m\u00f3dulo {1} de la aplicaci\u00f3n {2} ya est\u00e1 en pausa.

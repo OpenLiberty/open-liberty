@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -18,9 +19,11 @@ import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
+import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
 @ApplicationScoped
@@ -35,7 +41,17 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 public class FormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(FormAuthenticationMechanism.class);
-    private Utils utils = new Utils();
+
+    private final Utils utils;
+
+    public FormAuthenticationMechanism() {
+        utils = new Utils();
+    }
+
+    // this is for unit test.
+    protected FormAuthenticationMechanism(Utils utils) {
+        this.utils = utils;
+    }
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -43,45 +59,69 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
-        Subject clientSubject = httpMessageContext.getClientSubject();
-        @SuppressWarnings("unchecked")
-        HttpServletRequest req = httpMessageContext.getRequest();
-        HttpServletResponse rsp = httpMessageContext.getResponse();
-        String username = null;
-        String password = null;
-        // in order to preserve the post parameter, unless the target url is j_security_check, do not read
-        // j_username and j_password.
-        String uri = uri = req.getRequestURI();
-        if (uri.contains("/j_security_check")) {
-            username = req.getParameter("j_username");
-            password = req.getParameter("j_password");
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "URI : " + uri + ", j_username : " + username);
+        if (isJaspicSessionForMechanismsEnabled(httpMessageContext) && httpMessageContext.getRequest().getUserPrincipal() != null) {
+            httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
+            return AuthenticationStatus.SUCCESS;
         }
 
-        if (httpMessageContext.isAuthenticationRequest()) {
-            if (username != null && password != null) {
-                status = handleFormLogin(username, password, rsp, clientSubject, httpMessageContext);
-            } else {
-                status = AuthenticationStatus.SEND_CONTINUE;
+        Subject clientSubject = httpMessageContext.getClientSubject();
+        AuthenticationParameters authParams = httpMessageContext.getAuthParameters();
+        Credential cred = null;
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "AuthenticationParameters : " + authParams);
+        }
+        if (authParams != null) {
+            cred = authParams.getCredential();
+        }
+        if (cred != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Credential is found.");
             }
+            status = utils.handleAuthenticate(getCDI(), JavaEESecConstants.DEFAULT_REALM, cred, clientSubject, httpMessageContext);
         } else {
-            if (username == null || password == null) {
-                if (httpMessageContext.isProtected() == false) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "both isAuthenticationRequest and isProtected returns false. returing NOT_DONE,");
-                    }
-                    status = AuthenticationStatus.NOT_DONE;
+            HttpServletRequest req = httpMessageContext.getRequest();
+            HttpServletResponse rsp = httpMessageContext.getResponse();
+            String username = null;
+            String password = null;
+            // in order to preserve the post parameter, unless the target url is j_security_check, do not read
+            // j_username and j_password.
+            String uri = req.getRequestURI();
+            if (uri.contains("/j_security_check")) {
+                username = req.getParameter("j_username");
+                password = req.getParameter("j_password");
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "URI : " + uri + ", j_username : " + username);
+            }
+
+            if (httpMessageContext.isAuthenticationRequest()) {
+                if (username != null && password != null) {
+                    status = handleFormLogin(username, password, rsp, clientSubject, httpMessageContext);
                 } else {
                     status = AuthenticationStatus.SEND_CONTINUE;
                 }
             } else {
-                status = handleFormLogin(username, password, rsp, clientSubject, httpMessageContext);
+                if (username == null || password == null) {
+                    if (httpMessageContext.isProtected() == false) {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "both isAuthenticationRequest and isProtected returns false. returing NOT_DONE,");
+                        }
+                        status = AuthenticationStatus.NOT_DONE;
+                    } else {
+                        status = AuthenticationStatus.SEND_CONTINUE;
+                    }
+                } else {
+                    status = handleFormLogin(username, password, rsp, clientSubject, httpMessageContext);
+                }
             }
         }
 
         return status;
+    }
+
+    private boolean isJaspicSessionForMechanismsEnabled(HttpMessageContext httpMessageContext) {
+        WebAppSecurityConfig webAppSecurityConfig = (WebAppSecurityConfig) httpMessageContext.getRequest().getAttribute("com.ibm.ws.webcontainer.security.WebAppSecurityConfig");
+        return webAppSecurityConfig.isJaspicSessionForMechanismsEnabled();
     }
 
     @Override
@@ -102,20 +142,37 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
      * note that both username and password should not be null.
      */
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private AuthenticationStatus handleFormLogin(String username, @Sensitive String password, HttpServletResponse rsp, Subject clientSubject,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        int rspStatus = HttpServletResponse.SC_FORBIDDEN;
+        int rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
         UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
-        status = utils.validateUserAndPassword(getCDI(), "defaultRealm", clientSubject, credential, httpMessageContext);
+        status = utils.validateUserAndPassword(getCDI(), JavaEESecConstants.DEFAULT_REALM, clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
-            httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
+            Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
+            messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
+            if (isJaspicSessionForMechanismsEnabled(httpMessageContext)) {
+                messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
+                setCacheKey(clientSubject);
+            }
+            rspStatus = HttpServletResponse.SC_OK;
+        } else if (status == AuthenticationStatus.NOT_DONE) {
+            // set SC_OK, since if the target is not protected, it'll be processed.
             rspStatus = HttpServletResponse.SC_OK;
         } else {
             // TODO: Audit invalid user or password
         }
         rsp.setStatus(rspStatus);
         return status;
+    }
+
+    private void setCacheKey(Subject clientSubject) {
+        Hashtable<String, Object> subjectHashtable = utils.getSubjectExistingHashtable(clientSubject);
+        String uniqueId = (String) subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+        if (uniqueId != null && uniqueId.trim().isEmpty() == false) {
+            subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
+        }
     }
 
     protected CDI getCDI() {

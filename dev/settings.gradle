@@ -133,7 +133,8 @@ def loadBuildProps() {
   }
 
   // Must be run after isRelease is set
-  def (qualifier, timestamp) = getVersionQualifier(isRelease)
+  def timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
+  def qualifier = timestamp
   
   //For release builds we can use a consistent qualifier of the build label.
   //This comes from the RTC build engines
@@ -185,20 +186,6 @@ def loadBuildProps() {
     rootProject.ext.failedTestCountTotal = 0
     rootProject.ext.skippedTestCountTotal = 0
   }
-}
-
-def getVersionQualifier(boolean isRelease) {
-  //ex: 201708101600
-  def timestamp = new SimpleDateFormat("yyyyMMdd-HHmm").format(new java.util.Date())
-  if (isRelease) {
-    return [timestamp, timestamp]
-  }
-  def branchName = System.env.BRANCH_NAME ?: gitBranch()
-  if (branchName == '' || branchName == 'HEAD') {
-    // Default to master if something went wrong
-    branchName = 'master'
-  }
-  return [branchName, timestamp]
 }
 
 def gitBranch() {
@@ -268,7 +255,6 @@ gradle.bndWorkspaceConfigure(workspace)
 
 /* Add cnf project to the graph */
 include bnd_cnf
-include 'build.image'
 
 /* Start with the declared build project name */
 def defaultProjectName = bnd_build
@@ -293,31 +279,51 @@ def projectNames = startParameter.taskNames.collect { taskName ->
 
 /* Include the default project name if in a subproject or no tasks specified */
 if ((startParameter.currentDir != rootDir) || projectNames.empty) {
-  projectNames += defaultProjectName
+  projectNames.add(defaultProjectName)
 }
 
 /* If bnd_build used but declared empty, add all non-private folders of rootDir */
-if (projectNames.remove('')) {
-  rootDir.eachDir {
-    def projectName = it.name
-    if (!projectName.startsWith('.')) {
-      projectNames += projectName
-    }
-  }
+def addAll = projectNames.remove('')
+if (addAll) {
+  println 'Preparing all bnd projects in the workspace (this can take a while)'
 }
+
+def allBndProjects = workspace.getAllProjects().collect { project ->
+  if (!project.name.startsWith('.')) {
+    if (addAll) {
+      project.prepare()
+      include project.name
+    }
+    return project.name
+  } else {
+    return ''
+  }
+}.toSet()
+allBndProjects.remove('')
+if (addAll) {
+  println 'All bnd projects in the workspace have been prepared'
+}
+
+/* Add our common build/tool projects */
+projectNames.add('build.image')
+projectNames.add('wlp-bndPlugins')
+projectNames.add('wlp-rasInstrumentation')
 
 /* Add each project and its dependencies to the graph */
 projectNames.each { projectName ->
-  def project = workspace.getProject(projectName)
-  if (project) {
+  if (allBndProjects.contains(projectName)) {
     include projectName
-    project?.getDependson()*.getName().each {
+    workspace.getProject(projectName).getDependson()*.getName().each {
       include it
     }
+  } else if (new File(rootDir, projectName + '/springboot.gradle').exists()) {
+    include projectName
   }
 }
 
 /* Pass workspace to root project */
 gradle.projectsLoaded { gradle ->
   gradle.rootProject.ext.bndWorkspace = workspace
+  gradle.rootProject.ext.gradleBndProjects = allBndProjects
+  gradle.rootProject.ext.parseBoolean = { value -> parseBoolean(value) }
 }

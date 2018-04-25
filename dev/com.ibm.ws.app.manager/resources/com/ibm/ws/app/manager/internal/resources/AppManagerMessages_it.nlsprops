@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,10 +21,10 @@
 #
 # NLS_MESSAGEFORMAT_VAR
 #
-#   Strings in this file which contain replacement variables are processed by the MessageFormat 
-#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
-#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
-#   (single quote must be coded as one single quote '). 
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
 #
 # -------------------------------------------------------------------------------------------------
 #0001-0050: app manager
@@ -89,7 +89,7 @@ APPLICATION_STOP_FAILED=CWWKZ0010E: Si \u00e8 verificata un''eccezione durante l
 APPLICATION_STOP_FAILED.explanation=Il server non \u00e8 stato in grado di arrestare l'applicazione.
 APPLICATION_STOP_FAILED.useraction=Verificare che l'applicazione si trovi in uno stato in cui possa essere arrestata.
 
-#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
 #{0} is file name
 #{1} is exception message
 FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: Si \u00e8 verificata un''eccezione durante la ricerca del file {0}. Il messaggio dell''eccezione era: {1}
@@ -98,7 +98,7 @@ FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
 
 #{0} is application name
 APPLICATION_NOT_STARTED=CWWKZ0012I: L''applicazione {0} non \u00e8 stata avviata.
-APPLICATION_NOT_STARTED.explanation=Non \u00e8 stato possibile avviare l'applicazione a causa di errori precedenti. 
+APPLICATION_NOT_STARTED.explanation=Non \u00e8 stato possibile avviare l'applicazione a causa di errori precedenti.
 APPLICATION_NOT_STARTED.useraction=Controllare la configurazione dell'applicazione e ricercare nei log eventuali errori durante l'avvio dell'applicazione.
 
 #{0} the application name
@@ -134,7 +134,7 @@ PARTIAL_START.useraction=Risolvere il problema con la parte dell'applicazione ch
 
 #{0} is application name
 APPLICATION_NOT_UPDATED=CWWKZ0020I: Applicazione {0} non aggiornata.
-APPLICATION_NOT_UPDATED.explanation=Non \u00e8 stato possibile avviare l'applicazione a causa di errori precedenti. 
+APPLICATION_NOT_UPDATED.explanation=Non \u00e8 stato possibile avviare l'applicazione a causa di errori precedenti.
 APPLICATION_NOT_UPDATED.useraction=Controllare la configurazione dell'applicazione e ricercare nei log eventuali errori durante l'avvio dell'applicazione.
 
 #Existing message changed per resolution to design issue 117781
@@ -175,7 +175,7 @@ MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Il monitor dell'applicazione non \u
 MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Avviare il server con un avvio da sistema spento.
 
 #{0} is the start time in seconds
-APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitoraggio di {0} per rilevare eventuali applicazioni. 
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitoraggio di {0} per rilevare eventuali applicazioni.
 APPLICATION_MONITOR_STARTED.explanation=Il server sta monitorando una directory per rilevare l'eventuale distribuzione di applicazioni.
 APPLICATION_MONITOR_STARTED.useraction=Non \u00e8 richiesta alcuna azione.
 
@@ -192,7 +192,7 @@ MONITOR_DIR_CLEANUP_FAIL.useraction=Se la vecchia directory non \u00e8 pi\u00f9 
 
 #{0} is application name
 APPLICATION_MONITORING_FAIL=CWWKZ0060W: Impossibile monitorare l''applicazione {0}.
-APPLICATION_MONITORING_FAIL.explanation=\u00c8 stata installata un'applicazione ma su di essa non \u00e8 stato avviato il monitoraggio e, pertanto, se un file viene aggiornato nell'applicazione, la modifica non sar\u00e0 rilevata dal server. 
+APPLICATION_MONITORING_FAIL.explanation=\u00c8 stata installata un'applicazione ma su di essa non \u00e8 stato avviato il monitoraggio e, pertanto, se un file viene aggiornato nell'applicazione, la modifica non sar\u00e0 rilevata dal server.
 APPLICATION_MONITORING_FAIL.useraction=Quando si aggiornano i file in questa applicazione, occorrer\u00e0 disinstallare e reinstallare l'applicazione nel server.
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: L''applicazione {0} nell''ubicazione {1} si trova nella directory monitorata {2}. L''elemento dell''applicazione verr\u00e0 ignorato.
@@ -202,3 +202,17 @@ APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Correggere l'elemento dell'applic
 APPLICATION_UPDATED=CWWKZ0062I: L''applicazione {0} \u00e8 stata aggiornata, ma non riavviata.
 APPLICATION_UPDATED.explanation=Nell'applicazione specificata si \u00e8 verificata una modifica secondaria che \u00e8 stata ritenuta abbastanza trascurabile da non rendere necessario un riavvio dell'applicazione.
 APPLICATION_UPDATED.useraction=Non \u00e8 richiesta alcuna azione.
+
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: L'utilizzo di Jandex \u00e8 abilitato per tutte le applicazioni.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Per tutte le applicazioni, e quando gli indici Jandex sono disponibili, i dati classe e annotazione sono ottenuti dagli indici Jandex.
+APPLICATION_JANDEX_ENABLED_ALL.useraction=Non \u00e8 richiesta alcuna azione.
+
+#{0} is application name
+APPLICATION_JANDEX_ENABLED=CWWKZ0064I: L''utilizzo di Jandex \u00e8 abilitato per l''applicazione {0}.
+APPLICATION_JANDEX_ENABLED.explanation=Per l'applicazione specificata, e quando gli indici Jandex sono disponibili, i dati classe e annotazione sono ottenuti dagli indici Jandex.
+APPLICATION_JANDEX_ENABLED.useraction=Non \u00e8 richiesta alcuna azione.
+
+#{0} is application name
+APPLICATION_JANDEX_DISABLED=CWWKZ0065I: L''utilizzo di Jandex \u00e8 disabilitato per l''applicazione {0}.
+APPLICATION_JANDEX_DISABLED.explanation=L'indice Jandex \u00e8 disabilitato per l'applicazione specificata.
+APPLICATION_JANDEX_DISABLED.useraction=Non \u00e8 richiesta alcuna azione.

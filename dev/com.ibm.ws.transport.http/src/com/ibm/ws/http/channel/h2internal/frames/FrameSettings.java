@@ -19,6 +19,7 @@ import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameSettings extends Frame {
 
@@ -99,6 +100,7 @@ public class FrameSettings extends Frame {
         }
 
         frameType = FrameTypes.SETTINGS;
+        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -111,7 +113,7 @@ public class FrameSettings extends Frame {
     }
 
     @Override
-    public void processPayload(FrameReadProcessor frp) throws FrameSizeException {
+    public void processPayload(FrameReadProcessor frp) throws Http2Exception {
         // +-------------------------------+
         // |       Identifier (16)         |
         // +-------------------------------+-------------------------------+
@@ -123,16 +125,17 @@ public class FrameSettings extends Frame {
         }
         int numberOfSettings = this.payloadLength / 6;
         int settingId;
-        int settingValue;
+        long settingValue;
 
         while (numberOfSettings-- > 0) {
             settingId = frp.grabNext16BitInt();
             settingValue = frp.grabNext32BitInt();
+            settingValue = settingValue & 0x00000000ffffffffL; // convert to unsigned
             putSettingValue(settingId, settingValue);
         }
     }
 
-    public void processPayload(byte[] payload) throws ProtocolException {
+    public void processPayload(byte[] payload) throws Http2Exception {
         // +-------------------------------+
         // |       Identifier (16)         |
         // +-------------------------------+-------------------------------+
@@ -141,7 +144,7 @@ public class FrameSettings extends Frame {
 
         int numberOfSettings = this.payloadLength / 6;
         int settingId;
-        int settingValue;
+        long settingValue;
 
         int i = 0;
         while (numberOfSettings-- > 0) {
@@ -152,9 +155,15 @@ public class FrameSettings extends Frame {
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
+    public WsByteBuffer buildFrameForWrite() {
 
-        byte[] frame = super.buildFrameForWrite();
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_SETTINGS);
@@ -200,7 +209,9 @@ public class FrameSettings extends Frame {
             frameIndex += 4;
         }
 
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     @Override
@@ -214,21 +225,15 @@ public class FrameSettings extends Frame {
         if (enablePush != -1 && enablePush != 0 && enablePush != 1) {
             throw new ProtocolException("SETTINGS_ENABLE_PUSH must be set to 0 or 1 " + streamId);
         }
-
-        long unsignedWindowSize = initialWindowSize & 0x00000000ffffffffL;
-        if (initialWindowSize != -1 && unsignedWindowSize > MAX_INITIAL_WINDOW_SIZE) {
-            throw new FlowControlException("FLOW_CONTROL_ERROR value exceeded the max allowable value" + streamId);
-        }
-
-        if (initialWindowSize != -1 && initialWindowSize > MAX_INITIAL_WINDOW_SIZE) {
-            throw new FlowControlException("FLOW_CONTROL_ERROR value exceeded the max allowable value" + streamId);
-        }
         if (maxFrameSize != -1 && maxFrameSize < INITIAL_MAX_FRAME_SIZE) {
-            throw new ProtocolException("SETTINGS_MAX_FRAME_SIZE value is below the allowable minimum value" + streamId);
+            throw new ProtocolException("SETTINGS_MAX_FRAME_SIZE value is below the allowable minimum value");
         }
         if (maxFrameSize != -1 && maxFrameSize > MAX_FRAME_SIZE) {
-            throw new ProtocolException("SETTINGS_MAX_FRAME_SIZE value exceeded the max allowable value" + streamId);
+            throw new ProtocolException("SETTINGS_MAX_FRAME_SIZE value exceeded the max allowable value");
         }
+        /*
+         * We store initialWindowSize as a signed int, so overflow is checked in putSettingValue instead of here
+         */
     }
 
     @Override
@@ -278,25 +283,40 @@ public class FrameSettings extends Frame {
         return maxHeaderListSize;
     }
 
-    private void putSettingValue(int id, int value) {
+    private void putSettingValue(int id, long value) throws ProtocolException, FlowControlException {
         switch (id) {
             case HEADER_TABLE_SIZE_ID:
-                headerTableSize = value;
+                if (value > Integer.MAX_VALUE) {
+                    throw new ProtocolException("Max header table size setting value exceeded max allowable value");
+                }
+                headerTableSize = (int) value;
                 break;
             case ENABLE_PUSH_ID:
-                enablePush = value;
+                enablePush = (int) value;
                 break;
             case MAX_CONCURRENT_STREAMS_ID:
-                maxConcurrentStreams = value;
+                if (value > Integer.MAX_VALUE) {
+                    throw new ProtocolException("Max concurrent streams setting value exceeded max allowable value");
+                }
+                maxConcurrentStreams = (int) value;
                 break;
             case INITIAL_WINDOW_SIZE_ID:
-                initialWindowSize = value;
+                if (value > Integer.MAX_VALUE) {
+                    throw new FlowControlException("Initial window size setting value exceeded max allowable value");
+                }
+                initialWindowSize = (int) value;
                 break;
             case MAX_FRAME_SIZE_ID:
-                maxFrameSize = value;
+                if (value > Integer.MAX_VALUE) {
+                    throw new ProtocolException("Max frame size setting value exceeded max allowable value");
+                }
+                maxFrameSize = (int) value;
                 break;
             case MAX_HEADER_LIST_SIZE_ID:
-                maxHeaderListSize = value;
+                if (value > Integer.MAX_VALUE) {
+                    throw new ProtocolException("Max header list size setting value exceeded max allowable value");
+                }
+                maxHeaderListSize = (int) value;
                 break;
             default:
                 break;

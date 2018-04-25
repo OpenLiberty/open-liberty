@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,18 +16,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.Assert;
-
 import org.junit.Assume;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import junit.framework.Assert;
+
+@Ignore
 public class TrFormatMessageTest {
     private static final String TEST_NLS = "test.resources.Messages";
     private static final String javaVersion = System.getProperty("java.version");
 
     /**
      * Creates an Enumeration which wraps the List's iterator.
-     * 
+     *
      * @return an Enumeration which wraps the List's iterator.
      */
     private Enumeration<Locale> getEnumeration(List<Locale> locales) {

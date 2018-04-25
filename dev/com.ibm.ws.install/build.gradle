@@ -1,0 +1,57 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+task copyPublishMassiveRepo(type: Copy) {
+    from 'publish'
+    into 'build'
+    include 'massiveRepo/features/usertest.with.ibm.license.esa'
+    include 'massiveRepo/fixes/8550-wlp-archive-ifpm89011.jar'
+    include 'massiveRepo/samples/SampleX.jar'
+}
+
+task copyPublishZips(type: Copy) {
+    from 'publish/zips'
+    into 'build/unittest/zips'
+    include 'com.ibm.websphere.liberty.repo.core.manifest_8.5.5005.zip'
+    include 'invalid.zip'
+}
+
+task copyPublishZipsWlpDirs(type: Copy) {
+    from zipTree('publish/zips/wlpDirs.zip')
+    into 'build/unittest/wlpDirs'
+}
+
+task copyPublishZipsWlpDirsUninstallProduct(type: Copy) {
+    from zipTree('publish/zips/wlpDirs.zip')
+    into 'build/unittest/wlpDirs/testUninstallProduct'
+}
+
+task copyPublishZipsWlpDirsUninstallProductFeatures(type: Copy) {
+    from zipTree('publish/zips/wlpDirs.zip')
+    into 'build/unittest/wlpDirs/testUninstallProductFeatures'
+}
+
+task massiveCopyTask {
+    dependsOn copyPublishMassiveRepo
+    dependsOn copyPublishZips
+    dependsOn copyPublishZipsWlpDirs
+    dependsOn copyPublishZipsWlpDirsUninstallProduct
+    dependsOn copyPublishZipsWlpDirsUninstallProductFeatures
+    outputs.dirs('build/unittest/tmp')
+    doFirst {
+        project.mkdir('build/unittest/tmp')
+    }
+}
+
+test {
+    dependsOn massiveCopyTask
+    dependsOn jar
+}

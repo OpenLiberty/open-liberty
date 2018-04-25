@@ -10,11 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.converters;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  *
  */
 public class PrimitiveBooleanConverter extends BooleanConverter {
 
+    @Trivial
     public PrimitiveBooleanConverter() {
         super(boolean.class);
     }

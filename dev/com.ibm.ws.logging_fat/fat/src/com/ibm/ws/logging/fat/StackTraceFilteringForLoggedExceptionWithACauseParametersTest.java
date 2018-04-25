@@ -26,9 +26,9 @@ public class StackTraceFilteringForLoggedExceptionWithACauseParametersTest exten
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver");
-        server.startServer();
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.brokenserver", StackTraceFilteringForLoggedExceptionWithACauseParametersTest.class);
         ShrinkHelper.defaultDropinApp(server, "broken-servlet", "com.ibm.ws.logging.fat.broken.servlet");
+        server.startServer();
 
         // Hit the servlet, to drive the error
         hitWebPage("broken-servlet", "BrokenWithACauseServlet", true);

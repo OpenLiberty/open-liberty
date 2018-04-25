@@ -15,7 +15,7 @@ Bundle-Name: WAS WebContainer
 Bundle-SymbolicName: com.ibm.ws.webcontainer
 Bundle-Description: WAS WebContainer 8.0 with Servlet 3.0 support
 WLP-ServerName: IBM WebSphere Liberty
-WLP-ServerVersion: ${liberty.service.version}
+WLP-ServerVersion: ${libertyRelease}
 
 Service-Component: \
   com.ibm.ws.webcontainer.vhostmgr; \

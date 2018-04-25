@@ -1,13 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.jmx.internal;
 
 import java.lang.management.ManagementFactory;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jmx.PlatformMBeanService;
 import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
 
@@ -50,7 +52,7 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
 
     /**
      * DS method to activate this component.
-     * 
+     *
      * @param compContext
      */
     protected void activate(ComponentContext compContext) {
@@ -67,7 +69,7 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
 
     /**
      * DS method to deactivate this component.
-     * 
+     *
      * @param compContext
      */
     protected void deactivate(ComponentContext compContext) {
@@ -98,7 +100,7 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
                 // TODO: trace, FFDC?
             }
         } else {
-            // REVISIT: "jmx.objectname" was not specified or was not in 
+            // REVISIT: "jmx.objectname" was not specified or was not in
             // the right format. Ignoring this MBean for now since we don't
             // have an ObjectName. Possible that this MBean is a
             // javax.management.MBeanRegistration, do we want to try to
@@ -141,6 +143,7 @@ public final class DelayedMBeanActivatorHelper implements PlatformMBeanService, 
         }
     }
 
+    @FFDCIgnore(InstanceNotFoundException.class)
     private void unsetServiceReferenceInternal(ServiceReference<?> ref) {
         final ObjectName name = mBeanMap.remove(ref);
         if (name != null) {

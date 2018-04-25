@@ -28,12 +28,13 @@ import componenttest.rules.repeater.RepeatTests;
 @Mode(TestMode.FULL)
 public class CDIAsyncTest extends LoggingTest {
 
+    @ClassRule
+    public static SharedServer SHARED_SERVER = new SharedServer("CDIFaultTolerance");
+
     //run against both EE8 and EE7 features
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE7_FEATURES());
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("CDIFaultTolerance");
+                    .andWith(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()));
 
     @Test
     public void testAsync() throws Exception {

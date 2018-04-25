@@ -66,25 +66,13 @@ OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Invocation of user supplied Open
 OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=The feature constructs Tracer implementations with a user provided OpentracingTracerFactory. The OpentracingTracerFactory.newInstance method returned an exception.
 OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Determine why the user supplied OpentracingTracerFactory newInstance method returned an exception.
 
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: No Tracer is available for an inbound request. The inbound request will not be correlated with the upstream service.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=A Tracer implementation was not available when a request arrived at the application end point. This inbound request will not provide any information to the Opentracing service.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Examine previous errors to determine why a Tracer is not available.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: The Span created for an inbound request is not available for the response to the request. The inbound request will not be correlated the upstream service.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=The Span created when the request arrived is not available when the response returned. No Span information will be provided to the Opentracing service.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Examine previous errors to determine why a Span is not available.
-
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: No Tracer was found for an outbound request. The outbound request will not be correlated with the inbound request.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=A Tracer implementation was not available when a request is sent from the application. This outbound request will not provide any information to the Opentracing service.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Examine previous errors to determine why a Tracer is not available.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: The Span created for an outbound request is not available for the response to the request. The outbound request will not be correlated with the inbound request.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=The Span created when the request was sent is not available when the response returned. No Span information will be provided to the Opentracing service.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Examine previous errors to determine why a Span is not available.
-
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Invocation of user supplied OpentracingTracerFactory.newInstance(...) method returned null
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=The feature constructs Tracer implementations with a user provided OpentracingTracerFactory. The OpentracingTracerFactory.newInstance method returned null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determine why the user supplied OpentracingTracerFactory newInstance method returned null.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing will not function properly because an OpentracingTracerFactory class was not provided. JAX-RS requests will execute normally, but they will not be tracked.
+OPENTRACING_NO_TRACERFACTORY.useraction=For more information, see the documentation about how to enable OpenTracing distributed tracing.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

@@ -9,7 +9,7 @@ import web.jar.base.FlexibleBaseServlet;
 @DatabaseIdentityStoreDefinition(
                                  callerQuery = "select password from callertable where name = ?",
                                  groupsQuery = "select group_name from callertable_groups where caller_name = ?",
-                                 dataSourceLookup = "jdbc/derby1fat")
+                                 dataSourceLookup = "java:comp/env/jdbc/derby1fat")
 
 public class DatabaseAuthAliasBasicAuthServlet extends FlexibleBaseServlet {
     private static final long serialVersionUID = 1L;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
-/**
- *
- */
-public abstract class AbstractConfigSource implements ConfigSource {
+public abstract class AbstractConfigSource extends HashMap<String, String> implements ConfigSource {
 
     private final int ordinal;
     private final String name;
@@ -23,6 +23,11 @@ public abstract class AbstractConfigSource implements ConfigSource {
     public AbstractConfigSource(int ordinal, String id) {
         this.ordinal = ordinal;
         this.name = id;
+    }
+
+    public AbstractConfigSource(Map<String, String> properties, int ordinal, String id) {
+        this(ordinal, id);
+        putAll(properties);
     }
 
     /** {@inheritDoc} */
@@ -34,7 +39,7 @@ public abstract class AbstractConfigSource implements ConfigSource {
     /** {@inheritDoc} */
     @Override
     public String getValue(String propertyName) {
-        return getProperties().get(propertyName);
+        return get(propertyName);
     }
 
     /** {@inheritDoc} */
@@ -43,8 +48,8 @@ public abstract class AbstractConfigSource implements ConfigSource {
         return name;
     }
 
-    public void put(String key, String value) {
-        getProperties().put(key, value);
+    @Override
+    public Map<String, String> getProperties() {
+        return this;
     }
-
 }

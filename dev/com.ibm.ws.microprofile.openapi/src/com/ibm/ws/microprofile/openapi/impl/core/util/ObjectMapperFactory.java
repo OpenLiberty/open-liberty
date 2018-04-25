@@ -98,6 +98,10 @@ public class ObjectMapperFactory {
             }
         });
 
+        SimpleModule sm = new SimpleModule();
+        sm.addSerializer(Callback.class, new CallbackSerializer());
+        mapper.registerModule(sm);
+
         mapper.getSerializerProvider().setNullKeySerializer(new NullKeySerializer());
 
         Module deserializerModule = new DeserializationModule();

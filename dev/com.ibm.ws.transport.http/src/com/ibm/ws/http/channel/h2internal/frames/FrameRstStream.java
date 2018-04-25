@@ -17,6 +17,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameRstStream extends Frame {
 
@@ -50,6 +51,7 @@ public class FrameRstStream extends Frame {
         super(streamId, 4, (byte) 0x00, reserveBit, FrameDirection.WRITE);
         frameType = FrameTypes.RST_STREAM;
         this.errorCode = errorCode;
+        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -59,13 +61,28 @@ public class FrameRstStream extends Frame {
         // +---------------------------------------------------------------+
         // |                        Error Code (32)                        |
         // +---------------------------------------------------------------+
-        errorCode = frp.grabNext32BitInt();
+
+        if (payloadLength == 4) {
+            errorCode = frp.grabNext32BitInt();
+        } else {
+            for (int i = 0; i < payloadLength; i++) {
+                frp.grabNextByte();
+            }
+            FrameSizeException e = new FrameSizeException("RST_STREAM frame payload must have a length of 4 octets");
+            throw e;
+        }
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
+    public WsByteBuffer buildFrameForWrite() {
 
-        byte[] frame = super.buildFrameForWrite();
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_RST_STREAM);
@@ -75,7 +92,9 @@ public class FrameRstStream extends Frame {
 
         utils.Move32BitstoByteArray(errorCode, frame, frameIndex);
 
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     @Override
@@ -89,6 +108,10 @@ public class FrameRstStream extends Frame {
     protected void setFlags() {
         // No flags defined
 
+    }
+
+    public void setErrorCode(int code) {
+        errorCode = code;
     }
 
     public int getErrorCode() {

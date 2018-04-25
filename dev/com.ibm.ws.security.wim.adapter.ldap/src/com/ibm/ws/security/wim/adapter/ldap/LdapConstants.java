@@ -14,7 +14,6 @@ package com.ibm.ws.security.wim.adapter.ldap;
  * Constants used by LDAP repository.
  */
 public interface LdapConstants {
-    String LDAP_DEFAULT_ADPTER_CLASS = "com.ibm.ws.wim.adapter.ldap.LdapAdapter";
 
     /**
      * The name of LDAP Distinguished Name.
@@ -31,11 +30,6 @@ public interface LdapConstants {
      * The separator used in LDAP Distinguished Name.
      */
     String LDAP_DN_SEPARATOR = ",";
-
-    /**
-     * Initial context factory class provided by SUN JNDI LDAP Provider
-     */
-    String LDAP_SUN_SPI = "com.sun.jndi.ldap.LdapCtxFactory";
 
     /**
      * The Distinguished Name LDAP data type, used in WIM external id attribute map.
@@ -217,22 +211,6 @@ public interface LdapConstants {
     short LDAP_OPERATOR_GE = 4;
 
     short LDAP_OPERATOR_LE = 5;
-
-    String LDAP_ENV_PROP_FACTORY_SOCKET = "java.naming.ldap.factory.socket";
-
-    String LDAP_ENV_PROP_DEREF_ALIASES = "java.naming.ldap.derefAliases";
-
-    String LDAP_ENV_PROP_CONNECT_POOL = "com.sun.jndi.ldap.connect.pool";
-
-    String LDAP_ENV_PROP_CONNECT_TIMEOUT = "com.sun.jndi.ldap.connect.timeout";
-
-    String LDAP_ENV_PROP_READ_TIMEOUT = "com.sun.jndi.ldap.read.timeout";
-
-    String LDAP_ENV_PROP_ATTRIBUTES_BINARY = "java.naming.ldap.attributes.binary";
-
-    String LDAP_URL_PREFIX = "ldap://";
-
-    String LDAP_URL_SSL_PREFIX = "ldaps://";
 
     String IDS_LDAP_SERVER = "IBM TIVOLI DIRECTORY SERVER";
 

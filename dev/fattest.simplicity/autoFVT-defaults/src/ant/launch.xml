@@ -106,6 +106,7 @@
         <echo message="fat.minimum.java.level=${fat.minimum.java.level}"/>
         <echo message="java.specification.version=${java.specification.version}"/>
         <echo message="FAT entry point will be: ${test.bucket.class}"/>
+		<echo message="micro.version=${micro.version}"/>
 	</target>
 
 	<!-- Properties used: test.bucket.name, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class -->
@@ -379,6 +380,8 @@
 					<sysproperty key="java.protocol.handler.pkgs" value="sun.net.www.protocol|com.sun.net.ssl.internal.www.protocol" />
 					<!-- if LibertyServer.stopServer() should check messages.log for unexpected errors/warnings -->
 					<sysproperty key="enable.server.log.validation" value="${enable.server.log.validation}" />
+					<!-- Pass bundle micro version -->
+					<sysproperty key="micro.version" value="${micro.version}"/>
 					<!-- show junit where the test case is located-->
 					<classpath refid="test.bucket.path" />
 					<!-- report will be generated as xml -->
@@ -539,7 +542,7 @@
 			</fileset>
 			<report format="frames" todir="${dir.log.html}" />
 		</junitreport>
-		<echo>HTML report is available at ${dir.log.html}</echo>
+		<echo>HTML report is available at ${dir.log.html}/index.html</echo>
 	</target>
 
 	<!-- Properties used: dir.log -->

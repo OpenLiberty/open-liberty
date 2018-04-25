@@ -20,6 +20,9 @@ src: \
 
 fat.project: true
 
+tested.features: \
+	servlet-4.0, cdi-2.0
+
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\

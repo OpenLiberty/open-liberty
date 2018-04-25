@@ -1,0 +1,10 @@
+
+task copyGeneratedToBuildImageBinTools (type:Copy) {
+    dependsOn publishWLPJars
+    from buildImage.file('wlp/lib')
+    into buildImage.file('wlp/bin/tools')
+    include 'bootstrap-agent.jar'
+    rename 'bootstrap-agent.jar', 'ws-javaagent.jar'
+}
+
+assemble.dependsOn copyGeneratedToBuildImageBinTools

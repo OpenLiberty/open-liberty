@@ -15,7 +15,10 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -81,7 +84,10 @@ public class HttpAuthenticationMechanismDBShortNameTest extends JavaEESecTestBas
 
     @Before
     public void setupConnection() {
-        httpclient = new DefaultHttpClient();
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+
+        httpclient = new DefaultHttpClient(httpParams);
     }
 
     @After
@@ -95,6 +101,10 @@ public class HttpAuthenticationMechanismDBShortNameTest extends JavaEESecTestBas
     }
 
     /**
+     * HttpParams httpParams = new BasicHttpParams();
+     * httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+     *
+     * httpclient = new DefaultHttpClient(httpParams);
      * Verify the following:
      * <OL>
      * <LI> Attempt to access a protected servlet configured for basic authentication with JASPI activated.
@@ -110,9 +120,8 @@ public class HttpAuthenticationMechanismDBShortNameTest extends JavaEESecTestBas
      * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
-    public void testJaspiAnnotatedDBBasicAuthValidUserInRole_AllowedAccess() throws Exception {
+    public void testDBShortName_AllowedAccessUser() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // check based on user
@@ -121,10 +130,16 @@ public class HttpAuthenticationMechanismDBShortNameTest extends JavaEESecTestBas
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER1, Constants.getRemoteUserFound + Constants.DB_USER1);
 
-        // check based on group
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER2,
-                                                   Constants.DB_USER2_PWD,
-                                                   HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    @Test
+    public void testDBShortName_AllowedAccessGroup() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER2,
+                                                          Constants.DB_USER2_PWD,
+                                                          HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER2, Constants.getRemoteUserFound + Constants.DB_USER2);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -141,7 +156,6 @@ public class HttpAuthenticationMechanismDBShortNameTest extends JavaEESecTestBas
      * <LI> Return code 403
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testJaspiAnnotatedDBBasicAuthValidUser_NoAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

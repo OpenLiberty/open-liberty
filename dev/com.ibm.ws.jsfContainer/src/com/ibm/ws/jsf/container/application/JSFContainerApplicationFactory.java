@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,8 @@ public class JSFContainerApplicationFactory extends ApplicationFactory {
 
     private final ApplicationFactory delegate;
     private final JSF_PROVIDER providerType;
-    private volatile boolean initialized = false;
     private volatile String appName = null;
+    private volatile Application application;
 
     public JSFContainerApplicationFactory() {
         try {
@@ -57,19 +57,20 @@ public class JSFContainerApplicationFactory extends ApplicationFactory {
 
     @Override
     public Application getApplication() {
-        Application a = delegate.getApplication();
-        // Perform lazy initialization of CDI and Bval integration because this is
-        // the earliest point where we have a valid reference to an Application object
-        if (!initialized) {
+        if (application == null) {
             synchronized (this) {
-                final String m = "getApplication";
-                if (!initialized) {
+                if (application == null) {
+                    application = delegate.getApplication();
+
+                    // Perform lazy initialization of CDI and Bval integration because this is
+                    // the earliest point where we have a valid reference to an Application object
+                    final String m = "getApplication";
                     try {
                         // Need to get the application name in order to register with CDI,
                         // so use JNDI to get the application name
                         appName = InitialContext.doLookup("java:app/AppName");
                     } catch (NamingException e) {
-                        throw new RuntimeException(Messages.get("jsf.container.no.app.name", a.toString()), e);
+                        throw new RuntimeException(Messages.get("jsf.container.no.app.name", application.toString()), e);
                     }
 
                     if (log.isLoggable(Level.FINEST))
@@ -78,19 +79,21 @@ public class JSFContainerApplicationFactory extends ApplicationFactory {
 
                     serviceabilityChecks();
 
+                    application = new JSFContainerApplication(application, appName);
+
                     // CDI will always be enabled with the jsfContainer feature
-                    CDIJSFInitializer.initialize(a, appName);
+                    CDIJSFInitializer.initialize(application, appName);
 
                     if (JSFContainer.isBeanValidationEnabled())
                         JSFContainer.initializeBeanValidation();
 
-                    initialized = true;
                     if (log.isLoggable(Level.INFO))
                         log.logp(Level.INFO, clazz, m, Messages.get("jsf.container.init", providerType.toString(), appName));
                 }
             }
         }
-        return a;
+
+        return application;
     }
 
     @Override

@@ -10,14 +10,11 @@
  *******************************************************************************/
 
 compileJava {
+    inputs.files { rasInstrumentationInputFiles() }
     doLast {
-        ant.taskdef(name: 'instrumentForTrace', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentForTrace') {
-            classpath {
-                fileset(dir: cnf.file('lib'), includes: 'ras-instrumentation.jar')
-            }
-        }
+        rasInstrumentationTaskdef(ant)
         println 'Running manual instrumentation for webcontainer.servlet.4.0'
-        ant.instrumentForTrace( ffdc: true, taskInjection: false ) {
+        ant.instrumentForTrace(ffdc: true, taskInjection: false) {
             fileset(dir: compileJava.destinationDir) {
                 include(name: '**/*.class')
                 exclude(name: '**/com/ibm/ws/webcontainer40/**')

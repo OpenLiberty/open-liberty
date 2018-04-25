@@ -24,9 +24,9 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for Container complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Container">
  * &lt;complexContent>
@@ -38,25 +38,24 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The Container object represents a general container object, which is an object that contains other objects. It is designed for ease of integration with LDAP.
- * 
+ *
  * <p> The Container object extends the Entity object and defines a single property: <b>cn</b>
- * 
+ *
  * <ul>
  * <li><b>cn</b>: defines the common name for this Container object.</li>
  * </ul>
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Container", propOrder = {
-                                          "cn"
+                                           "cn"
 })
-public class Container
-                extends Entity
-{
+public class Container extends Entity {
 
     protected String cn;
+
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
     private static ArrayList superTypeList = null;
@@ -70,10 +69,10 @@ public class Container
 
     /**
      * Gets the value of the cn property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getCn() {
         return cn;
@@ -81,10 +80,10 @@ public class Container
 
     /**
      * Sets the value of the cn property.
-     * 
+     *
      * @param value
      *            allowed object is {@link String }
-     * 
+     *
      */
     public void setCn(String value) {
         this.cn = value;
@@ -92,10 +91,10 @@ public class Container
 
     /**
      * Returns true if the <b>cn</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetCn() {
         return (this.cn != null);
@@ -103,13 +102,13 @@ public class Container
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     @Override
     public Object get(String propName) {
@@ -121,10 +120,10 @@ public class Container
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     @Override
     public boolean isSet(String propName) {
@@ -136,12 +135,12 @@ public class Container
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
      * @param value
      *            allowed object is {@link Object}
-     * 
+     *
      */
     @Override
     public void set(String propName, Object value) {
@@ -153,10 +152,10 @@ public class Container
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      */
     @Override
     public void unset(String propName) {
@@ -165,7 +164,7 @@ public class Container
 
     /**
      * Gets the name of this model object, <b>Container</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -176,10 +175,10 @@ public class Container
 
     /**
      * Gets a list of all supported properties for this model object, <b>Container</b>
-     * 
+     *
      * @param entityTypeName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -206,10 +205,10 @@ public class Container
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
      *            allowed object is {@link String}
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -232,7 +231,7 @@ public class Container
     /**
      * Gets a list of any model objects which this model object, <b>Container</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -247,9 +246,9 @@ public class Container
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
+     *
      *            allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
@@ -267,7 +266,7 @@ public class Container
 
     /**
      * Gets a set of any model objects which extend this model object, <b>Container</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -280,7 +279,7 @@ public class Container
 
     /**
      * Returns this model object, <b>Container</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -288,5 +287,4 @@ public class Container
     public String toString() {
         return WIMTraceHelper.trace(this);
     }
-
 }

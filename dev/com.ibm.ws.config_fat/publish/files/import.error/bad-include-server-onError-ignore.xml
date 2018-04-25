@@ -17,9 +17,10 @@
     <include location="./common/not-common.xml"/>
     
     <featureManager>
-        <feature>servlet-3.0</feature>
+        <feature>servlet-3.1</feature>
         <feature>localConnector-1.0</feature>
         <feature>configfatlibertyinternals-1.0</feature>
+		<feature>componentTest-1.0</feature>
     </featureManager>
     
     <com.ibm.ws.config updateTrigger="mbean" />

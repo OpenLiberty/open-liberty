@@ -29,7 +29,9 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
-public class GenericXMLConfigSource extends HashMapConfigSource implements ConfigSource {
+import com.ibm.ws.microprofile.config.AbstractConfigSource;
+
+public class GenericXMLConfigSource extends AbstractConfigSource implements ConfigSource {
 
     public GenericXMLConfigSource(ConcurrentMap<String, String> properties, int ordinal, String id) {
         super(properties, ordinal, id);

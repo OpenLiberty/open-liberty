@@ -21,10 +21,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
@@ -42,6 +46,7 @@ import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.appbnd.internal.delegation.DefaultDelegationProvider;
+import com.ibm.ws.security.authentication.IdentityStoreHandlerService;
 import com.ibm.ws.security.authorization.AuthorizationTableService;
 import com.ibm.ws.security.authorization.RoleSet;
 import com.ibm.ws.security.authorization.builtin.BaseAuthorizationTableService;
@@ -53,6 +58,7 @@ import com.ibm.ws.security.registry.UserRegistryChangeListener;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.ws.security.token.internal.TraceConstants;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * WebAppAuthorizationTableService handles the creation
@@ -69,6 +75,10 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
            property = { "service.vendor=IBM", "com.ibm.ws.security.authorization.table.name=WebApp" })
 public class AppBndAuthorizationTableService extends BaseAuthorizationTableService implements ApplicationMetaDataListener, AuthorizationTableService, UserRegistryChangeListener {
     private static final TraceComponent tc = Tr.register(AppBndAuthorizationTableService.class);
+
+    static final String KEY_IDENTITY_STORE_HANDLER_SERVICE = "identityStoreHandlerService";
+    private final AtomicServiceReference<IdentityStoreHandlerService> identityStoreHandlerServiceRef = new AtomicServiceReference<IdentityStoreHandlerService>(KEY_IDENTITY_STORE_HANDLER_SERVICE);
+
 
     private volatile DefaultDelegationProvider defaultDelegationProvider = null;
     private ServiceRegistration<DelegationProvider> defaultDelegationProviderReg;
@@ -91,6 +101,17 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      * only modified during application deployment and undeployment.
      */
     private final ConcurrentMap<String, AuthzInfo> resourceToAuthzInfoMap = new ConcurrentHashMap<String, AuthzInfo>(16, 0.7f, 1);
+
+    @Reference(service = IdentityStoreHandlerService.class, name = KEY_IDENTITY_STORE_HANDLER_SERVICE,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC)
+    protected void setIdentityStoreHandlerService(ServiceReference<IdentityStoreHandlerService> reference) {
+        identityStoreHandlerServiceRef.setReference(reference);
+    }
+
+    protected void unsetIdentityStoreHandlerService(ServiceReference<IdentityStoreHandlerService> reference) {
+        identityStoreHandlerServiceRef.unsetReference(reference);
+    }
 
     private static final class AuthzInfo {
         final Collection<SecurityRole> securityRoles;
@@ -144,7 +165,7 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
     private void registerDefaultDelegationProvider(ComponentContext cc) {
         defaultDelegationProvider = new DefaultDelegationProvider();
         defaultDelegationProvider.setSecurityService(securityServiceRef.getService());
-
+        defaultDelegationProvider.setIdentityStoreHandlerService(identityStoreHandlerServiceRef);
         BundleContext bc = cc.getBundleContext();
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("type", "defaultProvider");
@@ -156,12 +177,14 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
     @Override
     protected void activate(ComponentContext cc) {
         super.activate(cc);
+        identityStoreHandlerServiceRef.activate(cc);
         registerDefaultDelegationProvider(cc);
     }
 
     @Override
     protected void deactivate(ComponentContext cc) {
         super.deactivate(cc);
+        identityStoreHandlerServiceRef.deactivate(cc);
         if (defaultDelegationProviderReg != null) {
             defaultDelegationProviderReg.unregister();
         }

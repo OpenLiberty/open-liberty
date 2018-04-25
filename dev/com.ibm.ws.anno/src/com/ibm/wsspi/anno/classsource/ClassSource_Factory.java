@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direc
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_EJB;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_WAR;
 import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.anno.classsource.ClassSource_MappedSimple.SimpleClassProvider;
 import com.ibm.wsspi.anno.util.Util_Factory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
@@ -37,12 +38,43 @@ public interface ClassSource_Factory {
 
     //
 
+    /**
+     * Create default class source options.
+     *
+     * @return New default class source options.
+     */
+    ClassSource_Options createOptions();
+
+    //
+
     String getCanonicalName(String classSourceName);
 
     //
 
-    ClassSource_Aggregate createAggregateClassSource(String name)
-                    throws ClassSource_Exception;
+    /**
+     * Create a new empty aggregate class source. Give the class source
+     * default options.
+     * 
+     * @param name The name of the class source.
+     *
+     * @return THe new class source.
+     *
+     * @throws ClassSource_Exception Thrown if there was a problem creating the class source.
+     */
+    ClassSource_Aggregate createAggregateClassSource(String name) throws ClassSource_Exception;
+
+    /**
+     * Create a new empty aggregate class source. Assign options to the new
+     * class source.
+     * 
+     * @param name The name of the class source.
+     * @param options Options for the new class source.
+     *
+     * @return The new class source.
+     *
+     * @throws ClassSource_Exception Thrown if there was a problem creating the class source.
+     */
+    ClassSource_Aggregate createAggregateClassSource(String name, ClassSource_Options options) throws ClassSource_Exception;
 
     //
 
@@ -50,23 +82,45 @@ public interface ClassSource_Factory {
     // as children of an aggregate class source, and the root aggregate class
     // source is usually created with it's own intern map.
 
-    ClassSource_Aggregate createAggregateClassSource(Util_InternMap internMap, String name)
-                    throws ClassSource_Exception;
+    ClassSource_Aggregate createAggregateClassSource(
+                                                     Util_InternMap internMap, String name) throws ClassSource_Exception;
 
-    ClassSource_MappedDirectory createDirectoryClassSource(Util_InternMap internMap, String name, String dirPath)
-                    throws ClassSource_Exception;
+    ClassSource_Aggregate createAggregateClassSource(
+                                                     Util_InternMap internMap, String name, ClassSource_Options options) throws ClassSource_Exception;
 
-    ClassSource_MappedJar createJarClassSource(Util_InternMap internMap, String name, String jarPath)
-                    throws ClassSource_Exception;
+    //
 
-    ClassSource_ClassLoader createClassLoaderClassSource(Util_InternMap internMap, String name, ClassLoader classLoader)
-                    throws ClassSource_Exception;
+    ClassSource_MappedContainer createContainerClassSource(
+                                                           Util_InternMap internMap, String name, Container container) throws ClassSource_Exception;
 
-    ClassSource_MappedContainer createContainerClassSource(Util_InternMap internMap, String name, Container container)
-                    throws ClassSource_Exception;
+    ClassSource_MappedContainer createContainerClassSource(
+                                                           Util_InternMap internMap, String name, ClassSource_Options options, Container container) throws ClassSource_Exception;
 
-    ClassSource_MappedSimple createSimpleClassSource(Util_InternMap internMap, String name, ClassSource_MappedSimple.SimpleClassProvider provider)
-                    throws ClassSource_Exception;
+    ClassSource_MappedSimple createSimpleClassSource(
+                                                     Util_InternMap internMap, String name, SimpleClassProvider provider) throws ClassSource_Exception;
+
+    ClassSource_MappedSimple createSimpleClassSource(
+                                                     Util_InternMap internMap, String name, ClassSource_Options options,
+                                                         SimpleClassProvider provider) throws ClassSource_Exception;
+
+    ClassSource_MappedDirectory createDirectoryClassSource(
+                                                           Util_InternMap internMap, String name, String dirPath) throws ClassSource_Exception;
+
+    ClassSource_MappedDirectory createDirectoryClassSource(
+                                                           Util_InternMap internMap, String name, ClassSource_Options options, String dirPath) throws ClassSource_Exception;
+
+    ClassSource_MappedJar createJarClassSource(
+                                               Util_InternMap internMap, String name, String jarPath) throws ClassSource_Exception;
+
+    ClassSource_MappedJar createJarClassSource(
+                                               Util_InternMap internMap, String name, ClassSource_Options options, String jarPath) throws ClassSource_Exception;
+
+    ClassSource_ClassLoader createClassLoaderClassSource(
+                                                         Util_InternMap internMap, String name, ClassLoader classLoader) throws ClassSource_Exception;
+
+    ClassSource_ClassLoader createClassLoaderClassSource(
+                                                         Util_InternMap internMap, String name, ClassSource_Options options,
+                                                         ClassLoader classLoader) throws ClassSource_Exception;
 
     //
 
@@ -79,4 +133,10 @@ public interface ClassSource_Factory {
     ClassSource_Specification_Container_EJB newEJBContainerSpecification();
 
     ClassSource_Specification_Container_WAR newWARContainerSpecification();
+
+    /**
+     * @param useJandex
+     * @return
+     */
+    ClassSource_Options createOptions(boolean useJandex);
 }

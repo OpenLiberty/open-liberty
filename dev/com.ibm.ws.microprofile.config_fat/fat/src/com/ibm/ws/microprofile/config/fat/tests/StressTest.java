@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,37 +12,39 @@ package com.ibm.ws.microprofile.config.fat.tests;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.appConfig.stress.test.StressTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  *
  */
 @Mode(TestMode.FULL)
-public class StressTest extends AbstractConfigApiTest {
+@RunWith(FATRunner.class)
+public class StressTest extends FATServletClient {
 
-    private final static String testClassName = "StressTest";
+    public static final String APP_NAME = "stress";
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("StressServer");
+    @Server("StressServer")
+    @TestServlet(servlet = StressTestServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server;
 
-    @BuildShrinkWrap
-    public static Archive buildApp() {
-        String APP_NAME = "stress";
-
+    @BeforeClass
+    public static void setUp() throws Exception {
         WebArchive stress_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "com.ibm.ws.microprofile.appConfig.stress.test")
                         .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
@@ -52,43 +54,14 @@ public class StressTest extends AbstractConfigApiTest {
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource"),
                                                "services/org.eclipse.microprofile.config.spi.ConfigSource");
 
-        return stress_war;
+        ShrinkHelper.exportDropinAppToServer(server, stress_war);
+
+        server.startServer();
     }
 
-    public StressTest() {
-        super("/stress/");
-    }
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
-    @Rule
-    public TestName testName = new TestName();
-
-    @Test
-    public void testLargeConfigSources() throws Exception {
-        test(testName.getMethodName());
-    }
-
-    @Test
-    public void testLargeDynamicUpdates() throws Exception {
-        test(testName.getMethodName());
-    }
-
-    @Test
-    public void testManyConfigSources() throws Exception {
-        test(testName.getMethodName());
-    }
-
-    @Test
-    public void testRegistrationDeregistration() throws Exception {
-        //this test used to have a x1000 loop inside it but the http request was timing out
-        //so have switched the internal loop to x100 and calling the test 10 times
-        for (int i = 0; i < 10; i++) {
-            test(testName.getMethodName());
-        }
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 
 }

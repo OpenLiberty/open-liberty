@@ -15,6 +15,7 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.openapi.impl.model.servers.ServerImpl;
 
 /**
@@ -119,10 +120,11 @@ public class ServerInfo {
         this.isUserServer = isUserServer;
     }
 
+    @Trivial
     public void updateOpenAPIWithServers(OpenAPI openapi) {
         if (isUserServer) {
-            if (OpenAPIUtils.isDebugEnabled(tc)) {
-                Tr.debug(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
             }
             return;
         }
@@ -148,5 +150,12 @@ public class ServerInfo {
             Server secureServer = new ServerImpl().url(secureUrl);
             openapi.addServer(secureServer);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ServerInfo [host=" + this.host + ", httpPort=" + this.httpPort + ", httpsPort="
+               + this.httpsPort + ", applicationPath=" + this.applicationPath + ", isUserServer="
+               + this.isUserServer + "]";
     }
 }

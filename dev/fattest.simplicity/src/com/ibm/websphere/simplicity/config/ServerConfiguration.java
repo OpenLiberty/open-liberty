@@ -65,6 +65,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "httpSession")
     private HttpSession httpSession;
 
+    @XmlElement(name = "httpSessionCache")
+    private ConfigElementList<HttpSessionCache> httpSessionCaches;
+
     @XmlElement(name = "httpSessionDatabase")
     private HttpSessionDatabase httpSessionDatabase;
 
@@ -73,6 +76,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "webApplication")
     private ConfigElementList<WebApplication> webApplications;
+
+    @XmlElement(name = "springBootApplication")
+    private ConfigElementList<SpringBootApplication> springBootApplications;
 
     @XmlElement(name = "cloudant")
     private ConfigElementList<Cloudant> cloudants;
@@ -130,6 +136,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "managedThreadFactory")
     private ConfigElementList<ManagedThreadFactory> managedThreadFactories;
+
+    @XmlElement(name = "monitor")
+    private ConfigElementList<Monitor> monitors;
 
     @XmlElement(name = "resourceAdapter")
     private ConfigElementList<ResourceAdapter> resourceAdapters;
@@ -420,6 +429,15 @@ public class ServerConfiguration implements Cloneable {
     }
 
     /**
+     * @return the list of httpSesssionCache configuration elements
+     */
+    public ConfigElementList<HttpSessionCache> getHttpSessionCaches() {
+        if (this.httpSessionCaches == null)
+            this.httpSessionCaches = new ConfigElementList<HttpSessionCache>();
+        return this.httpSessionCaches;
+    }
+
+    /**
      * @return the HTTP session manager database configuration for this server
      */
     public HttpSessionDatabase getHttpSessionDatabase() {
@@ -493,6 +511,12 @@ public class ServerConfiguration implements Cloneable {
         if (this.managedThreadFactories == null)
             this.managedThreadFactories = new ConfigElementList<ManagedThreadFactory>();
         return this.managedThreadFactories;
+    }
+
+    public ConfigElementList<Monitor> getMonitors() {
+        if (monitors == null)
+            monitors = new ConfigElementList<Monitor>();
+        return monitors;
     }
 
     public ConfigElementList<ResourceAdapter> getResourceAdapters() {
@@ -630,6 +654,16 @@ public class ServerConfiguration implements Cloneable {
             this.webApplications = new ConfigElementList<WebApplication>();
         }
         return this.webApplications;
+    }
+
+    /**
+     * @return explicitly installed Spring Boot applications
+     */
+    public ConfigElementList<SpringBootApplication> getSpringBootApplications() {
+        if (this.springBootApplications == null) {
+            this.springBootApplications = new ConfigElementList<SpringBootApplication>();
+        }
+        return this.springBootApplications;
     }
 
     /**

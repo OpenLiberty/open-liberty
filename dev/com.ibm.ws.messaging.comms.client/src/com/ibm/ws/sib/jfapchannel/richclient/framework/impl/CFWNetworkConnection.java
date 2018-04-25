@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import com.ibm.wsspi.channelfw.ConnectionReadyCallback;
 import com.ibm.wsspi.channelfw.OutboundProtocol;
 import com.ibm.wsspi.channelfw.OutboundVirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.tcpchannel.TCPConnectRequestContext;
 
 /**
@@ -159,9 +160,20 @@ public class CFWNetworkConnection implements NetworkConnection
       else
          vc.getStateMap().put(OutboundProtocol.PROTOCOL, "BUS_TO_BUS");
 
-      // Now start the connect
-      ((OutboundVirtualConnection)vc).connectAsynch(tcpTarget, callback);
-
+      // Check to see if the channel framework is stopped. If it is, then it is not safe to call the 
+      // channel framework because it may not drive the callback. Note that the channel framework could 
+      // stop after the call to isStopping has returned.
+      if (FrameworkState.isStopping()) {
+    	  // Drive the callback directly here.
+          if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+              SibTr.debug(this, tc, "Framework.isStopping() == true");
+          callback.destroy(new IllegalStateException("Framework stopped"));
+          
+      } else {
+        // Now start the connect.
+        ((OutboundVirtualConnection)vc).connectAsynch(tcpTarget, callback);
+      }
+      
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "connectAsynch");
    }
 

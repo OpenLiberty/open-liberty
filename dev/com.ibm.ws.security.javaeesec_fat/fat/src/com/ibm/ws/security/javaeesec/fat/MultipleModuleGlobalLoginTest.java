@@ -19,7 +19,6 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -69,7 +68,7 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
     protected static String APP2_NAME = "multipleModule2";
     protected static String EAR_NAME = APP_NAME + ".ear";
     protected static String EAR2_NAME = APP2_NAME + ".ear";
-    protected static String APP1_SERVLET = "/" + MODULE1_ROOT + "/MultipleISFormServlet";
+    protected static String APP1_SERVLET = "/" + MODULE1_ROOT + "/FormServlet";
     protected static String APP2_SERVLET = "/" + MODULE2_ROOT + "/MultipleISCustomFormServlet";
 
     protected static String COMMON_APP1_SERVLET = "/" + MODULE1_ROOT + "/SecuredServlet";
@@ -131,11 +130,10 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-
         if (ldapServer != null) {
             ldapServer.stop();
         }
+        myServer.stopServer();
         myServer.setServerConfigurationFile("server.xml");
     }
 
@@ -284,7 +282,6 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
-
 /* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {
         Pattern p = Pattern.compile("[\\s\\S]*value=\"(.+)\".*autocomplete[\\s\\S]*");
@@ -388,7 +385,7 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
 
     protected void runMultipulModuleBasicAuthScenario() throws Exception {
         // ------------- accessing module1 ---------------
-        // Execute BA login 
+        // Execute BA login
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP1_SERVLET, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, HttpServletResponse.SC_OK);
         verifyResponse(response, LocalLdapServer.USER1, IS1_REALM_NAME, IS2_GROUP_REALM_NAME, IS1_GROUPS);
         httpclient.getConnectionManager().shutdown();
@@ -410,7 +407,7 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
 
         // Execute BA login for custom identity store in the different module.
         // this should fail.
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP1_SERVLET, REALM2_USER, REALM2_PASSWORD, HttpServletResponse.SC_FORBIDDEN);
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP1_SERVLET, REALM2_USER, REALM2_PASSWORD, HttpServletResponse.SC_UNAUTHORIZED);
 
         httpclient.getConnectionManager().shutdown();
         setupConnection();
@@ -437,8 +434,7 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
 
         // Execute BA login for custom identity store in the different module.
         // This should fail.
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP2_SERVLET, REALM1_USER, REALM1_PASSWORD, HttpServletResponse.SC_FORBIDDEN);
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + APP2_SERVLET, REALM1_USER, REALM1_PASSWORD, HttpServletResponse.SC_UNAUTHORIZED);
     }
-
 
 }

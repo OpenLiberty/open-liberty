@@ -10,12 +10,9 @@
  *******************************************************************************/
 
 compileTestJava {
+    inputs.files { rasInstrumentationInputFiles() }
     doLast {
-        ant.taskdef(name: 'instrumentWithFFDC', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentWithFFDC') {
-            classpath {
-                fileset(dir: cnf.file('lib'), includes: 'ras-instrumentation.jar')
-            }
-        }
+        rasInstrumentationTaskdef(ant)
         ant.instrumentWithFFDC() {
             fileset(dir: compileTestJava.destinationDir) {
                 include(name: '**/com/ibm/ws/ras/instrumentation/test/*.class')

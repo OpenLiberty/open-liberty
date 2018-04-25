@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -296,17 +296,9 @@ public class CollectorManagerImpl implements CollectorManager {
                         Tr.debug(tc, "Subscribing to source " + sourceId, handlerId);
                     }
                     srcMgr.addSubscriber(handler);
-                    /*
-                     * Inform the handler that this source/buffer/conduit is now available:
-                     * Synchronous Handler - Add handler as synchronous handler to the Buffer/Conduit's sync handler set
-                     * Asynchronous Handler - Set the buffer/conduit into the handler for async consumption
-                     *
-                     */
-                    if (handler instanceof SynchronousHandler) {
-                        ((BufferManagerImpl) srcMgr.getBufferManager()).addSyncHandler((SynchronousHandler) handler);
-                    } else {
-                        handler.setBufferManager(sourceId, srcMgr.getBufferManager());
-                    }
+
+                    //This does nothing for a SynchronousHandler
+                    handler.setBufferManager(sourceId, srcMgr.getBufferManager());
 
                     //Add as subscribed source to the handler's Handler Manager
                     hdlrMgr.addSubscribedSource(srcMgr.getSource());
@@ -341,16 +333,9 @@ public class CollectorManagerImpl implements CollectorManager {
                 //Check if the source is available
                 if (sourceMgrs.containsKey(sourceId) && sourceMgrs.get(sourceId).getSource() != null) {
                     SourceManager srcMgr = sourceMgrs.get(sourceId);
-                    /*
-                     * Inform the handler that this source/buffer will no longer be available:
-                     * Synchronous Handler: Remove the synchronous handler from the Buffer/Conduit's sync handler set
-                     * Asynchronous Handler: Remove buffer/conduit from the asynchronous handler
-                     */
-                    if (handler instanceof SynchronousHandler) {
-                        ((BufferManagerImpl) srcMgr.getBufferManager()).removeSyncHandler((SynchronousHandler) handler);
-                    } else {
-                        handler.unsetBufferManager(sourceId, srcMgr.getBufferManager());
-                    }
+
+                    //This does nothing for a SynchronousHandler
+                    handler.unsetBufferManager(sourceId, srcMgr.getBufferManager());
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Unsubscribing from source " + sourceId, handlerId);
@@ -382,6 +367,13 @@ public class CollectorManagerImpl implements CollectorManager {
     }
 
     private synchronized void startSourceWithBufferManager(String sourceId, Handler handler) {
+        /*
+         * An active Buffer already exists. This must mean we subscribed two handlers wanting
+         * the same source really quickly back-to-back before the source was set into CollectorManager
+         */
+        if (activeBuffMgrServices.containsKey(sourceId)) {
+            return;
+        }
         //result[0] is sourceName
         //result[1] is location
         String[] result = sourceId.split("\\|");

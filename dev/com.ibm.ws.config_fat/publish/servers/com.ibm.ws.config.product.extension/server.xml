@@ -13,7 +13,7 @@
     <!-- Enable features -->
     <featureManager>
         <feature>osgiconsole-1.0</feature>
-        <feature>jsp-2.2</feature>
+        <feature>jsp-2.3</feature>
     </featureManager>
 
 </server>

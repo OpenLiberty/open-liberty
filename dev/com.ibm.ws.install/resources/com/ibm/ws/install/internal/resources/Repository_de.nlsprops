@@ -19,11 +19,9 @@
 ERROR_DIRECTORY_NOT_EXISTS=CWWKF1500E: Das angegebene Verzeichnis {0} ist nicht vorhanden.
 ERROR_DIRECTORY_NOT_EXISTS.explanation=Das System hat das angegebene Verzeichnis nicht gefunden.
 ERROR_DIRECTORY_NOT_EXISTS.useraction=Geben Sie ein g\u00fcltiges Verzeichnis an.
-
 ERROR_PATH_IS_FILE=CWWKF1501E: {0} ist eine Datei. Es ist ein Verzeichnispfad erforderlich.
 ERROR_PATH_IS_FILE.explanation=Das System erfordert ein g\u00fcltiges Verzeichnis.
 ERROR_PATH_IS_FILE.useraction=Geben Sie ein g\u00fcltiges Verzeichnis an.
-
 ERROR_INVALID_INDEX_FILE=CWWKF1502E: {0} ist keine g\u00fcltige indexierte Datei.
 ERROR_INVALID_INDEX_FILE.explanation=Die indexierte Datei ist besch\u00e4digt oder sie hat nicht das richtige Format.
 ERROR_INVALID_INDEX_FILE.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).

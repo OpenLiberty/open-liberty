@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.http.channel.h2internal;
 public enum FrameTypes {
     NOT_SET,
     UNKNOWN,
+    PUSHPROMISEHEADERS,
     DATA, // 0x00
     HEADERS, // 0x01
     PRIORITY, // 0x02

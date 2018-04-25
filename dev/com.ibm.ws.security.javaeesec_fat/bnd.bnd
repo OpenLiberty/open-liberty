@@ -18,11 +18,10 @@ src: \
 	test-applications/JavaEESec.war/src,\
 	test-applications/JavaEESecBasicAuthServlet.war/src,\
 	test-applications/JavaEESecAnnotatedBasicAuthServlet.war/src,\
-	test-applications/JavaEEsecFormAuth.war/src,\
-	test-applications/JavaEEsecFormAuthRedirect.war/src,\
 	test-applications/JavaEESecAnnotatedBasicAuthServletDeferred.war/src,\
 	test-applications/DatabaseAnnotatedBasicAuthServlet.war/src,\
 	test-applications/dbfat.war/src,\
+	test-applications/dbfatCustomHash.war/src,\
 	test-applications/dbfatAuthAlias.war/src,\
 	test-applications/DatabaseAuthAliasBasicAuthServlet.war/src,\
 	test-applications/IdentityStores.jar/src,\
@@ -30,7 +29,13 @@ src: \
 	test-applications/DatabaseIdstoreDeferred.war/src,\
 	test-applications/securityContextHamApp.war/src,\
 	test-applications/SecurityEJBinWAR.jar/src,\
-	test-applications/ejbinwarservlet.war/src
+	test-applications/ejbinwarservlet.war/src,\
+	test-applications/multipleDB.war/src,\
+	test-applications/securityContextEJBInWar.war/src,\
+	test-applications/CustomPasswordHash.jar/src,\
+	test-applications/CustomPasswordHashBean.jar/src,\
+	test-applications/DatabaseAnnotatedCustomHash.war/src,\
+	test-applications/DatabaseAnnotatedCustomHashBean.war/src
 
 javac.source: 1.8
 javac.target: 1.8

@@ -15,7 +15,10 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -55,7 +58,10 @@ public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {
 
     @Before
     public void setupConnection() {
-        httpclient = new DefaultHttpClient();
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+
+        httpclient = new DefaultHttpClient(httpParams);
     }
 
     @After
@@ -110,9 +116,8 @@ public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {
      * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
-    public void testAllowedAccess() throws Exception {
+    public void testAllowedAccessUser() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // check based on user
@@ -121,10 +126,16 @@ public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {
                                                           HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER1, Constants.getRemoteUserFound + Constants.DB_USER1);
 
-        // check based on group
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER2,
-                                                   Constants.DB_USER2_PWD,
-                                                   HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    @Test
+    public void testAllowedAccessGroup() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER2,
+                                                          Constants.DB_USER2_PWD,
+                                                          HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER2, Constants.getRemoteUserFound + Constants.DB_USER2);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -141,13 +152,12 @@ public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {
      * <LI> Return code 403
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testInvalidUser() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "baduser",
                                         "pwd",
-                                        HttpServletResponse.SC_FORBIDDEN);
+                                        HttpServletResponse.SC_UNAUTHORIZED);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -163,7 +173,6 @@ public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {
      * <LI> Return code 403
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testValidUser_NoAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -307,8 +307,7 @@ public class IdentityStoreHandlerImplTest {
         ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
-        assertEquals("The result shuld be NT_VALIDATED_RESULT.", CredentialValidationResult.NOT_VALIDATED_RESULT, result);
-        assertTrue("CWWKS1910E error message was not logged", outputMgr.checkForStandardErr("CWWKS1910E:"));
+        assertEquals("The result shuld be NOT_VALIDATED_RESULT.", CredentialValidationResult.NOT_VALIDATED_RESULT, result);
     }
 
     @Test
@@ -331,7 +330,6 @@ public class IdentityStoreHandlerImplTest {
         ConcurrentHashMap<String, Set<IdentityStore>> ism = new ConcurrentHashMap<String, Set<IdentityStore>>();
         Set<IdentityStore> iss = ish.getIdentityStores(ism);
         assertEquals("no identityStores should be placed", 0, iss.size());
-        assertTrue("Expected error message was not logged", outputMgr.checkForStandardErr("CWWKS1910E:"));
     }
 
     /*************** support methods **************/

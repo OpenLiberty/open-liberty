@@ -65,8 +65,8 @@ public class LinkValidator extends TypeValidator<Link> {
                 if (operationRefDefined) {
                     if (t.getOperationRef().startsWith("#")) {
                         boolean isValid = true;
-                        String[] operationRef = t.getOperationRef().split("/");
-                        if (operationRef.length != 4) {
+                        String[] operationRef;
+                        if (!t.getOperationRef().startsWith("#/paths/") || (operationRef = t.getOperationRef().split("/")).length != 4) {
                             isValid = false;
                         } else {
                             String pathKey = operationRef[2].replace("~1", "/").replace("~0", "~");

@@ -156,7 +156,12 @@ public class MetricRegistryImpl extends MetricRegistry {
     @Override
     public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
         final Metric existing = metrics.putIfAbsent(name, metric);
-        this.metadata.putIfAbsent(name, metadata);
+        //Create Copy of Metadata object so it can't be changed after its registered
+        Metadata metadataCopy = new Metadata(metadata.getName(), metadata.getDisplayName(), metadata.getDescription(), metadata.getTypeRaw(), metadata.getUnit());
+        for (String tag : metadata.getTags().keySet()) {
+            metadataCopy.getTags().put(tag, metadata.getTags().get(tag));
+        }
+        this.metadata.putIfAbsent(name, metadataCopy);
         if (existing == null) {
         } else {
             throw new IllegalArgumentException("A metric named " + name + " already exists");

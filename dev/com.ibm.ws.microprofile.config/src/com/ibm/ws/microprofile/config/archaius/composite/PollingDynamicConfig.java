@@ -183,7 +183,7 @@ public class PollingDynamicConfig implements Closeable {
             if (future != null) {
                 if (!(future.isDone() || future.isCancelled())) {
                     boolean cancelled = future.cancel(true);
-                    if (!cancelled && TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    if (!cancelled && tc.isWarningEnabled()) {
                         Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
                     }
                 }
@@ -200,6 +200,7 @@ public class PollingDynamicConfig implements Closeable {
      * @param key
      * @return True if the key is contained within this or any of it's child configurations
      */
+    @Trivial
     protected boolean containsKey(String key) {
         return current.containsKey(key);
     }
@@ -209,13 +210,19 @@ public class PollingDynamicConfig implements Closeable {
      *
      * @param key
      */
+    @Trivial
     protected String getRawProperty(String key) {
-        return current.get(key);
+        String rawValue = source.getValue(key);
+        if (rawValue != null) {
+            current.put(key, rawValue);
+        }
+        return rawValue;
     }
 
     /**
      * @return Return an iterator to all property names owned by this config
      */
+    @Trivial
     protected Iterator<String> getKeys() {
         return current.keySet().iterator();
     }

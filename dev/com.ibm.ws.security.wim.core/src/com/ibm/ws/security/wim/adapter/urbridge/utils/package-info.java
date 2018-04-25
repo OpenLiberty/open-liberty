@@ -6,7 +6,11 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0.16")
+@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
 package com.ibm.ws.security.wim.adapter.urbridge.utils;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.ws.security.wim.util.TraceConstants;;

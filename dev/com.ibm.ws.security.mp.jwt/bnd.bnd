@@ -31,12 +31,16 @@ WS-TraceGroup: \
 
 
 Export-Package: \
-   com.ibm.ws.security.mp.jwt
+   com.ibm.ws.security.mp.jwt, \
+   com.ibm.ws.security.mp.jwt.impl, \
+   com.ibm.ws.security.mp.jwt.error, \
+   com.ibm.ws.security.mp.jwt.tai
 
 
 Import-Package: \
    javax.servlet;version="!", \
    javax.servlet.*;version="!", \
+   com.ibm.ws.security.jwt.utils, \
    *
 
 Private-Package: \

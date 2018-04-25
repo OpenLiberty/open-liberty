@@ -18,6 +18,9 @@ import java.util.Objects;
 import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.callbacks.Callback;
 
+import com.ibm.ws.microprofile.openapi.Constants;
+import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
+
 /**
  * Callback
  *
@@ -78,7 +81,10 @@ public class CallbackImpl extends LinkedHashMap<String, PathItem> implements Cal
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class Callback {\n");
-        sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+        sb = (super.toString() != null) ? sb.append("    ").append(toIndentedString(super.toString())).append("\n") : sb.append("");
+        sb = ($ref != null) ? sb.append("    $ref: ").append(toIndentedString($ref)).append("\n") : sb.append("");
+        sb = (extensions != null) ? sb.append("    extensions: ").append(OpenAPIUtils.mapToString(extensions)).append("\n") : sb.append("");
+
         sb.append("}");
         return sb.toString();
     }

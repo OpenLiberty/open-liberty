@@ -14,6 +14,7 @@ import java.security.Principal;
 import java.util.logging.Logger;
 
 import javax.ejb.SessionContext;
+import javax.security.enterprise.SecurityContext;
 
 /**
  *
@@ -22,7 +23,7 @@ public abstract class SecurityEJBBeanBase {
 
     private class Authentication {
 
-        protected String authenticate(String method, SessionContext context, Logger logger) {
+        protected String authenticate(String method, SessionContext context, SecurityContext securityContext, Logger logger) {
             Principal principal = context.getCallerPrincipal();
             String principalName = null;
             if (principal != null) {
@@ -33,8 +34,8 @@ public abstract class SecurityEJBBeanBase {
 
             boolean isManager = false;
             boolean isEmployee = false;
-            isManager = context.isCallerInRole("Manager");
-            isEmployee = context.isCallerInRole("Employee");
+            isManager = securityContext.isCallerInRole("Manager");
+            isEmployee = securityContext.isCallerInRole("Employee");
             int len = principalName.length() + 12;
             StringBuffer result = new StringBuffer(len);
             result.append("EJB  = " + SecurityEJBBeanBase.this.getClass().getSimpleName() + "\n");
@@ -50,9 +51,6 @@ public abstract class SecurityEJBBeanBase {
             result.append("\n");
             result.append("   isCallerInRole(Employee)=");
             result.append(isEmployee);
-            result.append("\n");
-            result.append("   isCallerInRole(**)=");
-            result.append(context.isCallerInRole("**"));
             result.append("\n");
             logger.info("result: " + result);
             return result.toString();
@@ -88,6 +86,8 @@ public abstract class SecurityEJBBeanBase {
 
     protected abstract SessionContext getContext();
 
+    protected abstract SecurityContext getSecurityContext();
+
     protected abstract Logger getLogger();
 
     public void withDeprecation() {
@@ -95,6 +95,7 @@ public abstract class SecurityEJBBeanBase {
     }
 
     protected String authenticate(String method) {
-        return a.authenticate(method, getContext(), getLogger());
+        return a.authenticate(method, getContext(), getSecurityContext(), getLogger());
     }
+
 }

@@ -79,11 +79,10 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-
         if (ldapServer != null) {
             ldapServer.stop();
         }
+        myServer.stopServer();
         myServer.setServerConfigurationFile("server.xml");
 
     }
@@ -249,7 +248,7 @@ public class MultipleIdentityStoreBasicTest extends JavaEESecTestBase {
         myServer.setMarkToEndOfLog();
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
                                                           LocalLdapServer.INVALIDPASSWORD,
-                                                          HttpServletResponse.SC_FORBIDDEN);
+                                                          HttpServletResponse.SC_UNAUTHORIZED);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }

@@ -29,6 +29,7 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.DefaultNotification;
@@ -60,11 +61,7 @@ class WARDeployedAppInfo extends DeployedAppInfoBase {
         if (contextRoot == null) {
             contextRoot = ContextRootUtil.getContextRoot(getContainer());
         }
-        this.webContainerModuleInfo = new WebModuleContainerInfo(webModuleHandler,
-                        factory.getModuleMetaDataExtenders().get("web"),
-                        factory.getNestedModuleMetaDataFactories().get("web"),
-                        applicationInformation.getContainer(), null,
-                        moduleURI, moduleClassesInfo, contextRoot);
+        this.webContainerModuleInfo = new WebModuleContainerInfo(webModuleHandler, factory.getModuleMetaDataExtenders().get("web"), factory.getNestedModuleMetaDataFactories().get("web"), applicationInformation.getContainer(), null, moduleURI, moduleClassesInfo, contextRoot);
         moduleContainerInfos.add(webContainerModuleInfo);
     }
 
@@ -82,7 +79,7 @@ class WARDeployedAppInfo extends DeployedAppInfoBase {
             ClassLoadingService cls = classLoadingService;
             List<Container> containers = new ArrayList<Container>();
             Iterator<ContainerInfo> infos = moduleClassesContainers.iterator();
-            // We want the first item to be at the end of the class path for a war 
+            // We want the first item to be at the end of the class path for a war
             if (infos.hasNext()) {
                 infos.next();
                 while (infos.hasNext()) {
@@ -91,18 +88,15 @@ class WARDeployedAppInfo extends DeployedAppInfoBase {
                 // Add the first item to the end.
                 containers.add(moduleClassesContainers.get(0).getContainer());
             }
-            
+
             GatewayConfiguration gwCfg = cls.createGatewayConfiguration()
                             // TODO call .setApplicationVersion() with some appropriate value
-                            .setApplicationName(j2eeAppName)
-                            .setDynamicImportPackage(DYNAMIC_IMPORT_PACKAGE_LIST);
+                            .setApplicationName(j2eeAppName).setDynamicImportPackage(DYNAMIC_IMPORT_PACKAGE_LIST);
 
             ProtectionDomain protectionDomain = getProtectionDomain();
 
-            ClassLoaderConfiguration clCfg = cls.createClassLoaderConfiguration()
-                            .setId(cls.createIdentity("WebModule", j2eeAppName + "#" + j2eeModuleName))
-                            .setProtectionDomain(protectionDomain)
-			    .setIncludeAppExtensions(true);
+            ClassLoaderConfiguration clCfg = cls.createClassLoaderConfiguration().setId(cls.createIdentity("WebModule", j2eeAppName + "#"
+                                                                                                                        + j2eeModuleName)).setProtectionDomain(protectionDomain).setIncludeAppExtensions(true);
 
             return createTopLevelClassLoader(containers, gwCfg, clCfg);
         } else {
@@ -116,7 +110,8 @@ class WARDeployedAppInfo extends DeployedAppInfoBase {
                                                                                webContainerModuleInfo.moduleName,
                                                                                getContainer(),
                                                                                this,
-                                                                               getConfigHelper());
+                                                                               getConfigHelper(),
+                                                                               (ApplicationInfoForContainer) applicationInformation);
         webContainerModuleInfo.moduleName = appInfo.getName();
         // ??? Contrary to the EE specs, we use the deployment name, not the EE
         // application name, as the default context root for compatibility.

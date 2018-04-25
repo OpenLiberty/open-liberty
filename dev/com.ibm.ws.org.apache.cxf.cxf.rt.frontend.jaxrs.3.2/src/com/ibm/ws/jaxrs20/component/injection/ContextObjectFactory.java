@@ -17,6 +17,7 @@ import static com.ibm.ws.jaxrs20.internal.JaxRsCommonConstants.TR_RESOURCE_BUNDL
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.security.AccessController;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Map;
@@ -38,6 +39,7 @@ import com.ibm.ws.jaxrs20.injection.ApplicationInjectionProxy;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
 import com.ibm.ws.jaxrs20.injection.metadata.InjectionRuntimeContext;
 import com.ibm.ws.kernel.service.util.PrivHelper;
+import com.ibm.ws.kernel.service.util.SecureAction;
 
 /**
  * Object factory to inject a proxy instance for fields annotated with @Context.
@@ -47,6 +49,7 @@ import com.ibm.ws.kernel.service.util.PrivHelper;
 public class ContextObjectFactory implements ObjectFactory {
 
     private static final TraceComponent tc = Tr.register(ContextObjectFactory.class, TR_GROUP, TR_RESOURCE_BUNDLE);
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     private Dictionary<String, Object> props = null;
 
@@ -83,7 +86,7 @@ public class ContextObjectFactory implements ObjectFactory {
             proxy = new ApplicationInjectionProxy();
         } else {
 
-            proxy = Proxy.newProxyInstance(PrivHelper.getClassLoader(contextClass),
+            proxy = Proxy.newProxyInstance(priv.getClassLoader(contextClass),
                                            new Class[] { contextClass },
                                            new InvocationHandler() {
                                                @Override

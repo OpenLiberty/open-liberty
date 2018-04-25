@@ -15,7 +15,6 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
@@ -31,7 +30,6 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-
 import com.ibm.ws.microprofile.openapi.impl.core.converter.ModelConverter;
 import com.ibm.ws.microprofile.openapi.impl.core.converter.ModelConverterContext;
 
@@ -110,16 +108,16 @@ public abstract class AbstractModelConverter implements ModelConverter {
             return "Array";
         }
 
-        if (type.isMapLikeType()) {
-            return "Map";
-        }
+//        if (type.isMapLikeType()) {
+//            return "Map";
+//        }
 
-        if (type.isContainerType()) {
-            if (Set.class.isAssignableFrom(type.getRawClass())) {
-                return "Set";
-            }
-            return "List";
-        }
+//        if (type.isContainerType()) {
+//            if (Set.class.isAssignableFrom(type.getRawClass())) {
+//                return "Set";
+//            }
+//            return "List";
+//        }
         if (beanDesc == null) {
             beanDesc = _mapper.getSerializationConfig().introspectClassAnnotations(type);
         }

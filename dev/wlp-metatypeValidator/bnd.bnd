@@ -1,0 +1,21 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: wlp-metatypeValidator
+
+Export-Package: \
+	com.ibm.ws.metatype.validator;version=1.0,\
+	com.ibm.ws.metatype.validator.xml;version=1.0
+
+globalize: false
+
+instrument.disabled: true
+
+publish.wlp.jar.disabled: true
+
+tool.project: true
+
+generate.replacement: false
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core;version=latest

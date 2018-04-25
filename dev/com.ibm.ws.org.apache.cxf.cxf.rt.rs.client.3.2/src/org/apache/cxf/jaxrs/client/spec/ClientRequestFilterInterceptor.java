@@ -19,6 +19,7 @@
 package org.apache.cxf.jaxrs.client.spec;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.transport.MessageObserver;
+import org.apache.cxf.transport.http.ProxyOutputStream;
 
 public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterceptor {
 
@@ -52,6 +54,14 @@ public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterc
             return;
         }
 
+        // Liberty change start
+        // create an empty proxy output stream that the filter can interact with
+        // an save a reference for later
+        ProxyOutputStream pos = new ProxyOutputStream();
+        outMessage.setContent(OutputStream.class, pos);
+        outMessage.setContent(ProxyOutputStream.class, pos);
+        // Liberty change end
+
         List<ProviderInfo<ClientRequestFilter>> filters = pf.getClientRequestFilters();
         if (!filters.isEmpty()) {
 
@@ -61,11 +71,14 @@ public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterc
                 InjectionUtils.injectContexts(filter.getProvider(), filter, outMessage);
                 try {
                     filter.getProvider().filter(context);
-                    
+
+                    @SuppressWarnings("unchecked")
+                    Map<String, List<Object>> headers = CastUtils.cast((Map<String, List<Object>>)
+                                                                       outMessage.get(Message.PROTOCOL_HEADERS));
+                    HttpUtils.convertHeaderValuesToString(headers, false);
 
                     Response response = outMessage.getExchange().get(Response.class);
                     if (response != null) {
-                        convertHeadersToStrings(outMessage);
                         outMessage.getInterceptorChain().abort();
 
                         Message inMessage = new MessageImpl();
@@ -82,12 +95,6 @@ public class ClientRequestFilterInterceptor extends AbstractOutDatabindingInterc
                     throw new ProcessingException(ex);
                 }
             }
-            convertHeadersToStrings(outMessage);
         }
-    }
-
-    private static void convertHeadersToStrings(Message m) {
-        Map<String, List<Object>> headers = CastUtils.cast((Map<String, List<Object>>)m.get(Message.PROTOCOL_HEADERS));
-        HttpUtils.convertHeaderValuesToString(headers, false);
     }
 }

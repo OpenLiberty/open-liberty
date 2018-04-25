@@ -70,7 +70,6 @@ public class BasicTestServlet extends FATDatabaseServlet {
     private List<String> globalSchemaList = null;
     private boolean isGetColorRegistered = false;
     private boolean isGetUserRegistered = false;
-    public static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
     @Resource
     private UserTransaction tran;

@@ -62,31 +62,36 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
         LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12BeansXmlValidationServer");
         ShrinkHelper.exportDropinAppToServer(server, invalidBeansXml);
         hasSetUp = true;
-        server.waitForStringInLogUsingMark("CWWKZ0001I");
     }        
 
     @Test
     @ExpectedFFDC({ "org.jboss.weld.exceptions.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEnablingBeansXmlValidation() throws Exception {
         server = LibertyServerFactory.getLibertyServer("cdi12BeansXmlValidationServer");
+        boolean foundNetworkError = false;
 
         try {
 
             server.startServer(true);
 
-            if (!server.findStringsInLogs("WELD-001210").isEmpty()) {
+            if (server.waitForStringInLog("WELD-001210") != null) {
                 /*
                  * WELD-001210 means that the server could not get the schema document from java.sun.com.
                  * In this case the server defaults to saying the xml is valid.
                  */
                 System.out.println("Due to the network issue we could not download the schema file for beans.xml; we will supress the test failure");
+                foundNetworkError = true;
             } else {
                 fail("The application should not start successfully.");
             }
         } catch (Exception e) {
-            assertNotNull("WELD-001208 Warning message not found", server.waitForStringInLog("WELD-001208: Error when validating wsjar:file:.*"));
-            assertNotNull("CWWKZ0002E: An exception occurred while starting the application",
+            //I saw a failure with WELD-001208 in the logs, but not CWWKZ0002E, so I'm adding a fallback WELD-001210 check.
+            //If we saw WELD-001210 before or we see it now skip the asserts. 
+            if (foundNetworkError == false && server.waitForStringInLog("WELD-001210") == null) {
+                assertNotNull("WELD-001208 Warning message not found", server.waitForStringInLog("WELD-001208: Error when validating wsjar:file:.*"));
+                assertNotNull("CWWKZ0002E: An exception occurred while starting the application",
                           server.waitForStringInLog("CWWKZ0002E: An exception occurred while starting the application.*"));
+            }
         }
 
     }

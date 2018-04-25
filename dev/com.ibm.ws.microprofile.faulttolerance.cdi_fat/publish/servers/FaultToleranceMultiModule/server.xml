@@ -22,5 +22,4 @@
 		<feature>mpFaultTolerance-1.0</feature>
 	</featureManager>
 	
-	    <logging traceSpecification="FAULTTOLERANCE=all=enabled:logservice=all=enabled:*=info=enabled:com.ibm.websphere.microprofile.faulttolerance.*=all=enabled:com.ibm.ws.threading.Policy*=all:com.ibm.ws.threading.internal.Policy*=all"/>
 </server>

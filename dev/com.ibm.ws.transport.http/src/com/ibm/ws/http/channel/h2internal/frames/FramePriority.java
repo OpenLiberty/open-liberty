@@ -18,6 +18,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FramePriority extends Frame {
 
@@ -57,8 +58,8 @@ public class FramePriority extends Frame {
         this.exclusive = exclusive;
         this.streamDependency = streamDependency;
         this.weight = weight;
-
         frameType = FrameTypes.PRIORITY;
+        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -69,30 +70,42 @@ public class FramePriority extends Frame {
         // |E|                  Stream Dependency (31)                     | Weight (8) |
         // +-+-------------+-----------------------------------------------+------------+
 
-        try {
-            byte firstPayloadByte = frp.grabNextByte();
+        if (payloadLength == 5) {
+            try {
+                byte firstPayloadByte = frp.grabNextByte();
 
-            exclusive = utils.getReservedBit(firstPayloadByte);
+                exclusive = utils.getReservedBit(firstPayloadByte);
 
-            firstPayloadByte = (byte) (firstPayloadByte & Constants.MASK_7F);
-            streamDependency = frp.grabNext24BitInt(firstPayloadByte);
+                firstPayloadByte = (byte) (firstPayloadByte & Constants.MASK_7F);
+                streamDependency = frp.grabNext24BitInt(firstPayloadByte);
 
-            // convert signed byte to integer as if the byte was unsigned.
-            weight = (0x00FF & frp.grabNextByte());
+                // convert signed byte to integer as if the byte was unsigned.
+                weight = (0x00FF & frp.grabNextByte());
 
-            // weight comes over the wire as 0 - 255, but as per spec instructions should be 1 - 256 internally
-            weight = weight + 1;
-        } catch (FrameSizeException e) {
-            e.setConnectionError(false);
-            throw e;
+                // weight comes over the wire as 0 - 255, but as per spec instructions should be 1 - 256 internally
+                weight = weight + 1;
+            } catch (FrameSizeException e) {
+                e.setConnectionError(false);
+                throw e;
+            }
+        } else {
+            for (int i = 0; i < payloadLength; i++) {
+                // clear out the bad payload from the buffer
+                frp.grabNextByte();
+            }
+            throw new FrameSizeException("PRIORITY frame must have a length of 5 octets");
         }
-
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
-
-        byte[] frame = super.buildFrameForWrite();
+    public WsByteBuffer buildFrameForWrite() {
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_PRIORITY);
@@ -107,11 +120,13 @@ public class FramePriority extends Frame {
         frameIndex += 4;
         utils.Move8BitstoByteArray(weight, frame, frameIndex);
 
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     @Override
-    public void validate(H2ConnectionSettings settings) throws ProtocolException {
+    public void validate(H2ConnectionSettings settings) throws FrameSizeException, ProtocolException {
         if (streamId == 0) {
             throw new ProtocolException("PRIORITY frame stream ID cannot be 0x0");
         } else if (this.streamId == this.streamDependency) {
@@ -119,9 +134,9 @@ public class FramePriority extends Frame {
             pe.setConnectionError(false);
             throw pe;
         } else if (this.payloadLength != 5) {
-            ProtocolException pe = new ProtocolException("PRIORITY frame must have a length of 5 octets");
-            pe.setConnectionError(false);
-            throw pe;
+            FrameSizeException fse = new FrameSizeException("PRIORITY frame must have a length of 5 octets");
+            fse.setConnectionError(false);
+            throw fse;
         }
 
     }

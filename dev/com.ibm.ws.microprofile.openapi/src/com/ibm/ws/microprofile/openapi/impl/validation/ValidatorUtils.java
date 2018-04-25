@@ -73,7 +73,7 @@ public class ValidatorUtils {
     public static boolean isValidURI(String uriStr) {
         try {
             @SuppressWarnings("unused")
-            URI url = new URI(uriStr);
+            URI uri = new URI(uriStr);
             return true;
         } catch (URISyntaxException e) {
             return false;

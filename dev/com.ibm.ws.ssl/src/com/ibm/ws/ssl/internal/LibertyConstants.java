@@ -20,6 +20,7 @@ public interface LibertyConstants {
     static final String KEY_ID = "id";
     static final String KEY_DEFAULT_REPERTOIRE = "sslRef";
     static final Object KEY_OUTBOUND_DEFAULT_REPERTOIRE = "outboundSSLRef";
+    static final Object KEY_OUTBOUND_HOSTNAME_VERIFICATION = "httpHostNameVerification";
     static final String DEFAULT_SSL_CONFIG_ID = "defaultSSLConfig";
 
     static final String KEY_KEYSTORE_REF = "keyStoreRef";

@@ -40,6 +40,7 @@ import org.junit.Test;
 import com.ibm.websphere.config.mbeans.ServerXMLConfigurationMBean;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -140,7 +141,8 @@ public class ServerXMLConfigurationMBeanTest {
 
         if (server != null && server.isStarted()) {
             Log.finer(logClass, methodName, "Server is up, stopping it");
-            jmxConnector.close();
+            if (jmxConnector != null)
+                jmxConnector.close();
             server.stopServer();
         }
         Log.exiting(logClass, methodName);

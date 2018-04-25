@@ -53,9 +53,9 @@ public class ConfigExtensionsTest {
         extensionsServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configExtensionsTest-1.0.mf");
         extensionsServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configExtensionsTestB-1.0.mf");
         //copy the extensions tests bundles into the server lib location
-        extensionsServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.extensions_1.0.0.jar");
-        extensionsServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.extensions.b_1.0.0.jar");
-        extensionsServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.extensions.schema.generator_1.0.0.jar");
+        extensionsServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.extensions.jar");
+        extensionsServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.extensions.b.jar");
+        extensionsServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.extensions.schema.generator.jar");
 
         //use our default server.xml to start with
         extensionsServer.setServerConfigurationFile("extensions/server.xml");
@@ -66,14 +66,14 @@ public class ConfigExtensionsTest {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        extensionsServer.stopServer();
+        extensionsServer.stopServer("CWWKG0061E", "CWWKG0062E", "CWWKG0067E", "CWWKG0060E", "CWWKG0067E", "CWWKG0059E", "CWWKG0058E");
         // Delete the files we copied over
         extensionsServer.deleteFileFromLibertyInstallRoot("lib/features/configExtensionsTest-1.0.mf");
         extensionsServer.deleteFileFromLibertyInstallRoot("lib/features/configExtensionsTestB-1.0.mf");
 
-        extensionsServer.deleteFileFromLibertyInstallRoot("lib/test.config.extensions_1.0.0.jar");
-        extensionsServer.deleteFileFromLibertyInstallRoot("lib/test.config.extensions.b_1.0.0.jar");
-        extensionsServer.deleteFileFromLibertyInstallRoot("lib/test.config.extensions.schema.generator_1.0.0.jar");
+        extensionsServer.deleteFileFromLibertyInstallRoot("lib/test.config.extensions.jar");
+        extensionsServer.deleteFileFromLibertyInstallRoot("lib/test.config.extensions.b.jar");
+        extensionsServer.deleteFileFromLibertyInstallRoot("lib/test.config.extensions.schema.generator.jar");
 
     }
 
@@ -197,7 +197,7 @@ public class ConfigExtensionsTest {
         try {
             //stop the server, collecting logs from any previous tests
             //and switch to the alternate serverB1.xml config
-            extensionsServer.stopServer(true);
+            extensionsServer.stopServer(true, "CWWKG0061E", "CWWKG0062E", "CWWKG0067E", "CWWKG0060E", "CWWKG0067E", "CWWKG0059E", "CWWKG0058E");
             extensionsServer.setServerConfigurationFile("extensions/serverB1.xml");
             extensionsServer.startServer();
             String id = "CWWKG0059E";
@@ -214,7 +214,7 @@ public class ConfigExtensionsTest {
             HttpUtils.findStringInUrl(extensionsServer, CONTEXT_ROOT + "/test?id=test.config.extensions.different.bundle.config&" + servicePid, PID_PASS);
         } finally {
             //stop and package up this server
-            extensionsServer.stopServer(true);
+            extensionsServer.stopServer(true, "CWWKG0061E", "CWWKG0062E", "CWWKG0067E", "CWWKG0060E", "CWWKG0067E", "CWWKG0059E", "CWWKG0058E");
             //restore the original server.xml
             //by setting our original server.xml back again
             extensionsServer.setServerConfigurationFile("extensions/server.xml");
@@ -235,7 +235,7 @@ public class ConfigExtensionsTest {
     public void testSchemaGeneratorErrorMessages() throws Exception {
         try {
             extensionsServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configExtensionsSchemaGeneratorTest-1.0.mf");
-            extensionsServer.stopServer(true);
+            extensionsServer.stopServer(true, "CWWKG0061E", "CWWKG0062E", "CWWKG0067E", "CWWKG0060E", "CWWKG0067E", "CWWKG0059E", "CWWKG0058E");
             extensionsServer.setServerConfigurationFile("extensions/serverSchemaGenerator.xml");
             extensionsServer.startServer();
 
@@ -252,7 +252,7 @@ public class ConfigExtensionsTest {
             assertNotNull("Expected message " + msgId + " not found in log.", extensionsServer.waitForStringInLog(msgId + ".*test.config.extensions.sub.error.no.parent.pid"));
         } finally {
             //stop and package up this server
-            extensionsServer.stopServer(true);
+            extensionsServer.stopServer(true, "CWWKG0061E", "CWWKG0062E", "CWWKG0067E", "CWWKG0060E", "CWWKG0067E", "CWWKG0059E", "CWWKG0058E");
             //restore the original server.xml
             //by setting our original server.xml back again
             extensionsServer.setServerConfigurationFile("extensions/server.xml");

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests.implicit;
  
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.junit.AfterClass;
@@ -89,9 +91,9 @@ public class ImplicitBeanArchiveTest extends LoggingTest {
                         .addAsLibrary(archiveWithNoScanBeansXML)
                         .addAsLibrary(archiveWithAnnotatedModeBeansXML);
 
+       server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitBeanArchive);
-
-       server.waitForStringInLogUsingMark("CWWKZ0001I.*Application implicitBeanArchive started");
+       assertNotNull("implicitBeanArchive started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitBeanArchive"));
     }
 
     @Rule

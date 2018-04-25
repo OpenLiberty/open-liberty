@@ -90,6 +90,7 @@ public class SchemaValidatorTest {
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Schema Object of \"array\" type must have \"items\" property defined"));
     }
 
     @Test
@@ -105,6 +106,7 @@ public class SchemaValidatorTest {
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Schema Object must not have both \"readOnly\" and \"writeOnly\" fields set to true"));
     }
 
     @Test
@@ -118,6 +120,7 @@ public class SchemaValidatorTest {
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The Schema Object must have the \"multipleOf\" property set to a number strictly greater than zero"));
     }
 
     @Test
@@ -133,6 +136,8 @@ public class SchemaValidatorTest {
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(2, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"maxLength\" property of the Schema Object must be greater than or equal to zero"));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The \"minLength\" property of the Schema Object must be greater than or equal to zero"));
     }
 
     @Test
@@ -148,6 +153,8 @@ public class SchemaValidatorTest {
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(2, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"maxLength\" property is not appropriate for the Schema Object of \"object\" type"));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The \"minLength\" property is not appropriate for the Schema Object of \"object\" type"));
     }
 
     @Test
@@ -162,6 +169,7 @@ public class SchemaValidatorTest {
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(1, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"uniqueItems\" property is not appropriate for the Schema Object of \"string\" type"));
     }
 
     @Test
@@ -178,6 +186,8 @@ public class SchemaValidatorTest {
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(2, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"minItems\" property of the Schema Object must be greater than or equal to zero"));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The \"maxItems\" property of the Schema Object must be greater than or equal to zero"));
     }
 
     @Test
@@ -193,6 +203,8 @@ public class SchemaValidatorTest {
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(2, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"minProperties\" property of the Schema Object must be greater than or equal to zero"));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The \"maxProperties\" property of the Schema Object must be greater than or equal to zero"));
     }
 
     @Test
@@ -208,5 +220,7 @@ public class SchemaValidatorTest {
 
         validator.validate(vh, context, null, schema);
         Assert.assertEquals(2, vh.getEventsSize());
+        Assert.assertTrue(vh.getResult().getEvents().get(0).message.contains("The \"minProperties\" property is not appropriate for the Schema Object of \"number\" type"));
+        Assert.assertTrue(vh.getResult().getEvents().get(1).message.contains("The \"maxProperties\" property is not appropriate for the Schema Object of \"number\" type"));
     }
 }

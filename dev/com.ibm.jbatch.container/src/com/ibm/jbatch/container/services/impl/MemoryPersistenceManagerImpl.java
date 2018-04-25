@@ -1340,7 +1340,7 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
         if (delieveredQuery.equals(queryHelper.DEFAULT_QUERY)) {
             return getJobInstances(page, pageSize);
         } else {
-            throw new UnsupportedOperationException("The REST URL search parameters requesting this function"
+            throw new UnsupportedOperationException("The REST URL search parameters requesting this function "
                                                     + "are not supported by the Java batch memory-based persistence configuration.");
         }
     }

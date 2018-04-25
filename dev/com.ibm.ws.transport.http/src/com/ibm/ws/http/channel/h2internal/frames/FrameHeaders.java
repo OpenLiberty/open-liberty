@@ -21,6 +21,7 @@ import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.h2internal.huffman.HuffmanEncoder;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameHeaders extends Frame {
 
@@ -71,26 +72,6 @@ public class FrameHeaders extends Frame {
     }
 
     /**
-     * Read frame constructor for pushed headers
-     */
-    public FrameHeaders(int streamId, byte[] headerBlockFragment) {
-        super(streamId, 0, (byte) 0x00, false, FrameDirection.READ);
-        frameType = FrameTypes.HEADERS;
-
-        if (headerBlockFragment != null) {
-            payloadLength += headerBlockFragment.length;
-        }
-        this.headerBlockFragment = headerBlockFragment;
-
-        this.END_STREAM_FLAG = false;
-        this.END_HEADERS_FLAG = true;
-
-        frameType = FrameTypes.HEADERS;
-        setInitialized();
-
-    }
-
-    /**
      * Write frame constructor
      */
     public FrameHeaders(int streamId, byte[] headerBlockFragment, int streamDependency, int paddingLength, int weight,
@@ -119,6 +100,7 @@ public class FrameHeaders extends Frame {
         this.weight = weight;
 
         frameType = FrameTypes.HEADERS;
+        writeFrameLength += payloadLength;
         setInitialized();
     }
 
@@ -134,8 +116,8 @@ public class FrameHeaders extends Frame {
         this.END_HEADERS_FLAG = endHeaders;
         this.exclusive = false;
         this.weight = 0;
-
         frameType = FrameTypes.HEADERS;
+        writeFrameLength += payloadLength;
         setInitialized();
     }
 
@@ -192,8 +174,14 @@ public class FrameHeaders extends Frame {
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
-        byte[] frame = super.buildFrameForWrite();
+    public WsByteBuffer buildFrameForWrite() {
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_HEADERS);
@@ -226,7 +214,9 @@ public class FrameHeaders extends Frame {
             frame[frameIndex] = 0x00;
             frameIndex++;
         }
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     public byte[] getHeaderBlockFragment() {
@@ -248,7 +238,9 @@ public class FrameHeaders extends Frame {
         } else if (this.paddingLength >= this.payloadLength) {
             throw new ProtocolException("HEADERS padding length must be less than the length of the payload");
         } else if (this.streamId == this.streamDependency) {
-            throw new ProtocolException("HEADERS frame stream cannot depend on itself");
+            ProtocolException pe = new ProtocolException("HEADERS frame stream cannot depend on itself");
+            pe.setConnectionError(false);
+            throw pe;
         } else if (this.paddingLength < 0) {
             throw new ProtocolException("HEADERS padding length is invalid");
         }
@@ -491,5 +483,4 @@ public class FrameHeaders extends Frame {
 
         return frameToString.toString();
     }
-
 }

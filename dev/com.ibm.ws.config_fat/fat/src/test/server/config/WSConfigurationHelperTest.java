@@ -12,9 +12,12 @@ package test.server.config;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -32,7 +35,7 @@ public class WSConfigurationHelperTest extends ServletRunner {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see test.server.config.ServletRunner#getContextRoot()
      */
     @Override
@@ -42,7 +45,7 @@ public class WSConfigurationHelperTest extends ServletRunner {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see test.server.config.ServletRunner#getServletMapping()
      */
     @Override
@@ -55,8 +58,11 @@ public class WSConfigurationHelperTest extends ServletRunner {
 
         // Use the feature/bundle from the merged config tests
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/mergedConfigTest-1.0.mf");
-        server.copyFileToLibertyInstallRoot("lib", "bundles/test.merged.config_1.0.0.jar");
+        server.copyFileToLibertyInstallRoot("lib", "bundles/test.merged.config.jar");
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
+
+        WebArchive configHelperApp = ShrinkHelper.buildDefaultApp("confighelper", "test.config.helper");
+        ShrinkHelper.exportAppToServer(server, configHelperApp);
 
         server.startServer("helperTest.log");
         //make sure the URL is available

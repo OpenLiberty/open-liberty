@@ -1,0 +1,26 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: SingleJSONGenerator
+Bundle-SymbolicName: com.ibm.ws.repository.generator
+Bundle-Description: Tool for creating Single JSON Repository from features.
+
+WS-TraceGroup: repo.resource
+
+Export-Package: \
+    com.ibm.ws.repository.generator;version=1.0
+
+-buildpath: \
+	com.ibm.ws.repository;version=latest,\
+	com.ibm.ws.repository.parsers;version=latest,\
+	org.apache.ant:ant;version=1.9.6
