@@ -203,8 +203,8 @@ APPLICATION_UPDATED=CWWKZ0062I: A(z) {0} alkalmaz\u00e1s friss\u00edt\u00e9sre k
 APPLICATION_UPDATED.explanation=Kisebb m\u00f3dos\u00edt\u00e1s t\u00f6rt\u00e9nt a megadott alkalmaz\u00e1sban, ami nem ig\u00e9nyli az alkalmaz\u00e1s \u00fajraind\u00edt\u00e1s\u00e1t.
 APPLICATION_UPDATED.useraction=Semmit sem kell tennie.
 
-APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: A Jandex haszn\u00e1lat enged\u00e9lyezve van minden alkalmaz\u00e1shoz.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=Minden alkalmaz\u00e1s eset\u00e9n, amikor a Jandex indexek el\u00e9rhet\u0151k, az oszt\u00e1ly \u00e9s annot\u00e1ci\u00f3 adatok a Jandex indexekb\u0151l ker\u00fclnek beszerz\u00e9sre.
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: A Jandex haszn\u00e1lat\u00e1nak alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1sa minden alkalmaz\u00e1s eset\u00e9ben true \u00e9rt\u00e9kre lett m\u00f3dos\u00edtva.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Minden alkalmaz\u00e1s eset\u00e9n, amikor a Jandex indexek el\u00e9rhet\u0151k, az oszt\u00e1ly \u00e9s annot\u00e1ci\u00f3 adatok a Jandex indexekb\u0151l ker\u00fclnek beszerz\u00e9sre, kiv\u00e9ve, ha a Jandex haszn\u00e1lat kifejezetten le van tiltva az alkalmaz\u00e1shoz.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=Semmit sem kell tennie.
 
 #{0} is application name

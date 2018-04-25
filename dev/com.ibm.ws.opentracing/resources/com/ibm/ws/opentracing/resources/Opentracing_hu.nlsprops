@@ -66,25 +66,13 @@ OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: A felhaszn\u00e1l\u00f3 \u00e1lt
 OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=A szolg\u00e1ltat\u00e1s \u00f6ssze\u00e1ll\u00edtja a Tracer megval\u00f3s\u00edt\u00e1sokat egy felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory seg\u00edts\u00e9g\u00e9vel. Az OpentracingTracerFactory.newInstance met\u00f3dus kiv\u00e9telt adott vissza.
 OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=\u00c1llap\u00edtsa meg, hogy a felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory newInstance met\u00f3dus mi\u00e9rt adott vissza kiv\u00e9telt.
 
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: A bej\u00f6v\u0151 k\u00e9r\u00e9shez nem \u00e1ll rendelkez\u00e9sre Tracer. A bej\u00f6v\u0151 k\u00e9r\u00e9s nem korrel\u00e1l a fels\u0151bb szint\u0171 szolg\u00e1ltat\u00e1ssal.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=A Tracer megval\u00f3s\u00edt\u00e1s nem volt el\u00e9rhet\u0151, amikor k\u00e9r\u00e9s \u00e9rkezett az alkalmaz\u00e1s v\u00e9gpontj\u00e1n\u00e1l. A bej\u00f6v\u0151 k\u00e9r\u00e9s nem biztos\u00edt inform\u00e1ci\u00f3kat az Opentracing szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Vizsg\u00e1lja meg a kor\u00e1bbi hib\u00e1kat annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a Tracer mi\u00e9rt nem \u00e9rhet\u0151 el.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: A bej\u00f6v\u0151 k\u00e9r\u00e9shez l\u00e9trehozott Span nem el\u00e9rhet\u0151 a k\u00e9rd\u00e9s megv\u00e1laszol\u00e1s\u00e1hoz. A bej\u00f6v\u0151 k\u00e9r\u00e9s nem korrel\u00e1l a fels\u0151bb szint\u0171 szolg\u00e1ltat\u00e1ssal.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=A k\u00e9r\u00e9s meg\u00e9rkez\u00e9sekor l\u00e9trehozott Span nem volt el\u00e9rhet\u0151 a v\u00e1lasz visszak\u00fcld\u00e9sekor. Az Opentracing szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra nem biztos\u00edtott Span inform\u00e1ci\u00f3k.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Vizsg\u00e1lja meg a kor\u00e1bbi hib\u00e1kat annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a Span mi\u00e9rt nem \u00e9rhet\u0151 el.
-
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: A kimen\u0151 k\u00e9r\u00e9shez nem tal\u00e1lhat\u00f3 Tracer. A kimen\u0151 k\u00e9r\u00e9s nem korrel\u00e1l a bej\u00f6v\u0151 k\u00e9r\u00e9ssel.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=A Tracer megval\u00f3s\u00edt\u00e1s nem volt el\u00e9rhet\u0151, amikor az alkalmaz\u00e1s k\u00e9r\u00e9st k\u00fcld\u00f6tt. A kimen\u0151 k\u00e9r\u00e9s nem biztos\u00edt inform\u00e1ci\u00f3kat az Opentracing szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Vizsg\u00e1lja meg a kor\u00e1bbi hib\u00e1kat annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a Tracer mi\u00e9rt nem \u00e9rhet\u0151 el.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: A kimen\u0151 k\u00e9r\u00e9shez l\u00e9trehozott Span nem el\u00e9rhet\u0151 a k\u00e9rd\u00e9s megv\u00e1laszol\u00e1s\u00e1hoz. A kimen\u0151 k\u00e9r\u00e9s nem korrel\u00e1l a bej\u00f6v\u0151 k\u00e9r\u00e9ssel.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=A k\u00e9r\u00e9s k\u00fcld\u00e9sekor l\u00e9trehozott Span nem volt el\u00e9rhet\u0151 a v\u00e1lasz visszak\u00fcld\u00e9sekor. Az Opentracing szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra nem biztos\u00edtott Span inform\u00e1ci\u00f3k.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Vizsg\u00e1lja meg a kor\u00e1bbi hib\u00e1kat annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a Span mi\u00e9rt nem \u00e9rhet\u0151 el.
-
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: A felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory.newInstance(...) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott vissza.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=A szolg\u00e1ltat\u00e1s \u00f6ssze\u00e1ll\u00edtja a Tracer megval\u00f3s\u00edt\u00e1sokat egy felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory seg\u00edts\u00e9g\u00e9vel. Az OpentracingTracerFactory.newInstance met\u00f3dus null\u00e9rt\u00e9ket adott vissza.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=\u00c1llap\u00edtsa meg, hogy a felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory newInstance met\u00f3dus mi\u00e9rt adott vissza null\u00e9rt\u00e9ket.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: Az OpenTracing nem tudja nyomon k\u00f6vetni a JAX-RS k\u00e9r\u00e9seket, mert nem lett biztos\u00edtva egy OpentracingTracerFactory oszt\u00e1ly.
+OPENTRACING_NO_TRACERFACTORY.explanation=Az OpenTracing nem fog megfelel\u0151en m\u0171k\u00f6dni, mert nem lett biztos\u00edtva egy OpentracingTracerFactory oszt\u00e1ly. A JAX-RS k\u00e9r\u00e9sek norm\u00e1lisan v\u00e9gre lesznek hajtva, de nem lesznek nyomon k\u00f6vetve.
+OPENTRACING_NO_TRACERFACTORY.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az OpenTracing osztott nyomk\u00f6vet\u00e9s enged\u00e9lyez\u00e9s\u00e9t le\u00edr\u00f3 dokument\u00e1ci\u00f3t.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

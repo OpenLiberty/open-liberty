@@ -274,12 +274,12 @@ JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: N\u00e3o \u00e9 poss\u00edvel recupera
 JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=O armazenamento confi\u00e1vel especificado pela configura\u00e7\u00e3o de consumidor JWT n\u00e3o cont\u00e9m nenhum certificado de assinante. Um certificado de assinante \u00e9 necess\u00e1rio para validar o token JWT.
 JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Verifique se o armazenamento confi\u00e1vel que \u00e9 usado pela configura\u00e7\u00e3o de consumidor JWT cont\u00e9m pelo menos um certificado de assinante. O armazenamento confi\u00e1vel pode ser configurado usando o atributo 'trustStoreRef' na configura\u00e7\u00e3o de consumidor JWT ou como parte da configura\u00e7\u00e3o geral de SSL do servidor.
 
-# Do not translate "JWT", "trustedAlias"
+# Do not translate "JWT", "trustedAlias", "keyName"
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
-JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: N\u00e3o \u00e9 poss\u00edvel recuperar uma chave de assinatura do armazenamento confi\u00e1vel. O atributo 'trustedAlias' n\u00e3o foi especificado na configura\u00e7\u00e3o de consumidor JWT e h\u00e1 m\u00faltiplos certificados de assinante no armazenamento confi\u00e1vel.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=M\u00faltiplos certificados de assinante foram localizados no armazenamento confi\u00e1vel configurado. Quando h\u00e1 m\u00faltiplos certificados no armazenamento confi\u00e1vel, o atributo 'trustedAlias' deve ser especificado na configura\u00e7\u00e3o de consumidor JWT para estabelecer qual dos certificados usar.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Especifique o atributo de configura\u00e7\u00e3o de consumidor JWT 'trustedAlias' com o alias do certificado de assinante apropriado.
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: N\u00e3o \u00e9 poss\u00edvel determinar qual certificado de assinante no armazenamento confi\u00e1vel deve ser usado. Inclua o atributo 'trustedAlias' na configura\u00e7\u00e3o do consumidor JWT ou o atributo 'keyName' na configura\u00e7\u00e3o MP-JWT.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=M\u00faltiplos certificados de assinante foram localizados no armazenamento confi\u00e1vel configurado. Quando h\u00e1 v\u00e1rios certificados no armazenamento confi\u00e1vel, o atributo 'trustedAlias' deve ser especificado na configura\u00e7\u00e3o de consumidor JWT ou o atributo 'keyName' deve ser especificado na configura\u00e7\u00e3o MP-JWT para estabelecer qual certificado deve ser usado.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Especifique qual certificado utilizar no armazenamento confi\u00e1vel, incluindo o alias do certificado de assinante adequado no atributo de configura\u00e7\u00e3o do consumidor JWT 'trustedAlias' ou no atributo de configura\u00e7\u00e3o MP-JWT 'keyName'.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: A API de filtro de solicita\u00e7\u00e3o do cliente n\u00e3o propagou o JSON Web Token (JWT).

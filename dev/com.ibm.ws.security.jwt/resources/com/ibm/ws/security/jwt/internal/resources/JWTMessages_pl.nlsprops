@@ -274,12 +274,12 @@ JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Nie mo\u017cna pobra\u0107 klucza podp
 JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=Magazyn zaufanych certyfikat\u00f3w okre\u015blony w konfiguracji konsumenta JWT nie zawiera \u017cadnych certyfikat\u00f3w os\u00f3b podpisuj\u0105cych. Certyfikat osoby podpisuj\u0105cej jest wymagany do sprawdzenia poprawno\u015bci znacznika JWT.
 JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Sprawd\u017a, czy magazyn zaufanych certyfikat\u00f3w u\u017cywany w konfiguracji konsumenta JWT zawiera co najmniej jeden certyfikat osoby podpisuj\u0105cej. Magazyn zaufanych certyfikat\u00f3w mo\u017cna skonfigurowa\u0107 przy u\u017cyciu atrybutu trustStoreRef w konfiguracji konsumenta JWT lub w ramach og\u00f3lnej konfiguracji SSL serwera.
 
-# Do not translate "JWT", "trustedAlias"
+# Do not translate "JWT", "trustedAlias", "keyName"
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
-JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Nie mo\u017cna pobra\u0107 klucza podpisywania z magazynu zaufanych certyfikat\u00f3w. Nie okre\u015blono atrybutu trustedAlias w konfiguracji konsumenta JWT, a w magazynie zaufanych certyfikat\u00f3w znajduje si\u0119 wiele certyfikat\u00f3w osoby podpisuj\u0105cej.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=W skonfigurowanym magazynie zaufanych certyfikat\u00f3w znaleziono wiele certyfikat\u00f3w os\u00f3b podpisuj\u0105cych. Je\u015bli w magazynie zaufanych certyfikat\u00f3w znajduje si\u0119 wiele certyfikat\u00f3w, nale\u017cy okre\u015bli\u0107 atrybut trustedAlias w konfiguracji konsumenta JWT w celu ustalenia, kt\u00f3rego certyfikatu u\u017cy\u0107.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Okre\u015bl atrybut trustedAlias konfiguracji konsumenta JWT z aliasem odpowiedniego certyfikatu osoby podpisuj\u0105cej.
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: W magazynie zaufanych certyfikat\u00f3w nie mo\u017cna okre\u015bli\u0107 certyfikatu osoby podpisuj\u0105cej, kt\u00f3ry ma by\u0107 u\u017cywany. Dodaj atrybut trustedAlias do konfiguracji konsumenta JWT lub atrybut keyName do konfiguracji znacznika MP-JWT.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=W skonfigurowanym magazynie zaufanych certyfikat\u00f3w znaleziono wiele certyfikat\u00f3w os\u00f3b podpisuj\u0105cych. Je\u015bli w magazynie zaufanych certyfikat\u00f3w znajduje si\u0119 wiele certyfikat\u00f3w, nale\u017cy poda\u0107 atrybut trustedAlias w konfiguracji konsumenta JWT lub atrybut keyName w konfiguracji znacznika MP-JWT w celu okre\u015blenia certyfikatu, kt\u00f3ry ma by\u0107 u\u017cywany.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Wska\u017c, kt\u00f3ry certyfikat z magazynu zaufanych certyfikat\u00f3w ma zosta\u0107 u\u017cyty, dodaj\u0105c alias odpowiedniego certyfikatu osoby podpisuj\u0105cej do atrybutu trustedAlias konfiguracji konsumenta JWT lub atrybutu keyName konfiguracji znacznika MP-JWT.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: Interfejs API filtrowania \u017c\u0105da\u0144 klienta nie propaguje znacznika JSON Web Token (JWT).

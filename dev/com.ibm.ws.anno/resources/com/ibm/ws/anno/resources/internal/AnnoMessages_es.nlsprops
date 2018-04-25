@@ -553,3 +553,14 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Consulte la excepci\u00f3
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Error interno de exploraci\u00f3n de clases: El proceso de Jandex duplica el proceso de clase [ {0} ].
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} A number
+# # {3} A number
+# # {4} The name of a file or the name of a directory
+# # Read - Past tense. 
+ANNO_JANDEX_USAGE=CWWKC0092I: Se han le\u00eddo los \u00edndices Jandex de {0} de los archivadores {1} ({2} de {3} clases) en {4}. 
+ANNO_JANDEX_USAGE.explanation=Esto muestra el n\u00famero de archivadores del m\u00f3dulo que se han procesado al leer los \u00edndices Jandex en lugar de explorar los archivos de clases reales. Tambi\u00e9n muestra el n\u00famero total de clases de la aplicaci\u00f3n que se han procesado mediante la lectura de los \u00edndices Jandex.
+ANNO_JANDEX_USAGE.useraction=Si est\u00e1 previsto que los \u00edndices Jandex los lea la aplicaci\u00f3n, no es necesaria ninguna acci\u00f3n. Si los \u00edndices Jandex no se van a leer en la aplicaci\u00f3n, establezca el atributo useJandex="false" del elemento de la aplicaci\u00f3n en server.xml. De forma alternativa, establezca useJandex="false" en el elemento applicationManger en server.xml para ignorar los \u00edndices Jandex de todas las aplicaciones.
+

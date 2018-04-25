@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Accertarsi che il punto di injectio
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: Impossibile inserire l''asserzione nel punto di injection {0} per gli ambiti ApplicationScoped o SessionScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Il punto di injection annotato con il qualificatore Asserzione per un tipo non elaborato deve appartenere a una classe con l'annotazione di ambito RequestScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Accertarsi che il punto di injection sia membro di una classe nell'ambito RequestScoped per l'asserzione che si desidera inserire.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: Un principal JsonWebToken non pu\u00f2 essere inserito perch\u00e9 uno non \u00e8 disponibile. Proteggere la risorsa richiedente in modo che l'autenticazione si verifichi prima che si acceda alla risorsa.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=\u00c8 stata richiesta l'injection di un JsonWebToken, ma uno non \u00e8 disponibile.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Assicurarsi che l'autenticazione utente si sia verificata prima dell'accesso alla risorsa che sta richiedendo l'injection. 
