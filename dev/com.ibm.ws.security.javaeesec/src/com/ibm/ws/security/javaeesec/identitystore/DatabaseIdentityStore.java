@@ -177,10 +177,11 @@ public class DatabaseIdentityStore implements IdentityStore {
         try {
             groupsQuery = idStoreDefinition.getGroupsQuery();
             Connection conn = getConnection();
+            ResultSet result = null;
             try {
                 prep = conn.prepareStatement(groupsQuery);
                 prep.setString(1, caller);
-                ResultSet result = runQuery(prep, caller);
+                result = runQuery(prep, caller);
 
                 if (result == null) {
                     if (tc.isEventEnabled()) {
@@ -198,7 +199,15 @@ public class DatabaseIdentityStore implements IdentityStore {
                     }
                 }
             } finally {
-                conn.close();
+                if (result != null) {
+                    result.close();
+                }
+                if (prep != null) {
+                    prep.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             }
         } catch (NamingException | SQLException | IllegalArgumentException e) {
             Tr.warning(tc, "JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS", new Object[] { caller, groupsQuery, groups, e });
@@ -261,7 +270,7 @@ public class DatabaseIdentityStore implements IdentityStore {
             }
 
             Connection conn = getConnection();
-
+            ResultSet result = null;
             try {
 
                 prep = conn.prepareStatement(callerQuery);
@@ -272,7 +281,7 @@ public class DatabaseIdentityStore implements IdentityStore {
                  */
                 prep.setMaxRows(2);
 
-                ResultSet result = runQuery(prep, caller);
+                result = runQuery(prep, caller);
 
                 if (result == null) {
                     if (tc.isEventEnabled()) {
@@ -301,7 +310,15 @@ public class DatabaseIdentityStore implements IdentityStore {
                     }
                 }
             } finally {
-                conn.close();
+                if (result != null) {
+                    result.close();
+                }
+                if (prep != null) {
+                    prep.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             }
         } catch (NamingException | SQLException | IllegalArgumentException e) {
             Tr.error(tc, "JAVAEESEC_ERROR_GEN_DB", new Object[] { caller, callerQuery, e });
