@@ -39,5 +39,21 @@
         </application-bnd>
     </application>
 
+    <application type="war" id="NoJavaEESecForm" name="NoJavaEESecForm" location="NoJavaEESecForm.war">
+        <application-bnd>
+            <security-role name="group1">
+                <group name="certgroup1" />
+            </security-role>    
+        </application-bnd>
+    </application>
+
+    <application type="war" id="NoJavaEESecBasic" name="NoJavaEESecBasic" location="NoJavaEESecBasic.war">
+        <application-bnd>
+            <security-role name="group1">
+                <group name="certgroup1" />
+            </security-role>    
+        </application-bnd>
+    </application>
+
     <include location="../fatTestPorts.xml" />
 </server>

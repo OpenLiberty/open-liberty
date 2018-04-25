@@ -784,15 +784,17 @@ public class JavaEESecTestBase {
      * This is an internal method used to set the server.xml
      * if the file in changed, restart the server.
      */
-    public void setServerConfiguration(String serverXML, String appName) throws Exception {
+    public void setServerConfiguration(String serverXML, String... appNames) throws Exception {
         if (!serverConfigurationFile.equals(serverXML)) {
             // Update server.xml
             Log.info(logClass, "setServerConfiguration", "setServerConfigurationFile to : " + serverXML);
-//            server.stopServer();
             server.setMarkToEndOfLog();
             server.setServerConfigurationFile("/" + serverXML); 
-            server.addInstalledAppForValidation(appName);
-//            server.startServer(true);
+            if (appNames != null) {
+                for (String appName : appNames) {
+                    server.addInstalledAppForValidation(appName);
+                }
+            }
             serverConfigurationFile = serverXML;
         }
     }
