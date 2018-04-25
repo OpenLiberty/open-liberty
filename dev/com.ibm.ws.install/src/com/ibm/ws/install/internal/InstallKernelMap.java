@@ -469,7 +469,6 @@ public class InstallKernelMap implements Map {
         Collection<String> featuresResolved = new ArrayList<String>();
 
         try {
-
             for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
                 productDefinitions.add(new ProductInfoProductDefinition(productInfo));
             }
@@ -503,6 +502,10 @@ public class InstallKernelMap implements Map {
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
             resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
 
+            Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
+            if (accepted == null || !accepted) {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
+            }
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {
                     featuresResolved.add(repoResrc.getMavenCoordinates());
