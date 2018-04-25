@@ -30,6 +30,7 @@ import com.ibm.ws.http.channel.h2internal.frames.FramePriority;
 import com.ibm.ws.http.channel.h2internal.frames.FramePushPromise;
 import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 import test.common.SharedOutputManager;
 
@@ -54,11 +55,11 @@ public class FrameTest {
     int byteSize = 1;
     int frameHeaderSize = Frame.SIZE_FRAME_BEFORE_PAYLOAD;
 
-    private void verifyBaseFrame(Frame frame, int streamId, int payloadLength, byte[] frameBytes) {
+    private void verifyBaseFrame(Frame frame, int streamId, int payloadLength, WsByteBuffer frameBytes) {
         Assert.assertTrue("streamID not set correctly: " + frame.getStreamId() + " != " + streamId, frame.getStreamId() == streamId);
         Assert.assertTrue("Payload length is not correct", frame.getPayloadLength() == payloadLength);
         Assert.assertTrue("buildFrameForWrite() size is not correct",
-                          frameBytes.length == frameHeaderSize + frame.getPayloadLength());
+                          frameBytes.remaining() == frameHeaderSize + frame.getPayloadLength());
         Assert.assertTrue("frame was not initialized", frame.getInitialized());
         Exception exception = null;
         try {
@@ -82,11 +83,6 @@ public class FrameTest {
     }
 
     @Test
-    public void testFrameDummyRemoveLater() {
-        Assert.assertTrue(true);
-    }
-
-    @Test
     public void testSettings() {
         int streamId = 0;
         boolean reserveBit = false;
@@ -100,7 +96,7 @@ public class FrameTest {
         int expectedPayloadSize = (settingPayloadSize * 6) * byteSize;
 
         FrameSettings frame = new FrameSettings(streamId, headerTableSize, enablePush, maxConcurrentStreams, initialWindowSize, maxFrameSize, maxHeaderListSize, reserveBit);
-        byte[] frameBytes = frame.buildFrameForWrite();
+        WsByteBuffer frameBytes = frame.buildFrameForWrite();
         H2ConnectionSettings settings = new H2ConnectionSettings();
         settings.updateSettings(frame);
 
@@ -142,7 +138,7 @@ public class FrameTest {
         int expectedPayloadSize = (paddingFieldLength + paddingLength + headerBlockFragment.length) * byteSize;
 
         FrameHeaders frame = new FrameHeaders(streamId, headerBlockFragment, streamDependency, paddingLength, weight, endStream, endHeaders, padded, priority, exclusive, reserveBit);
-        byte[] frameBytes = frame.buildFrameForWrite();
+        WsByteBuffer frameBytes = frame.buildFrameForWrite();
         byte[] headerBytes = frame.getHeaderBlockFragment();
 
         verifyBaseFrame(frame, streamId, expectedPayloadSize, frameBytes);
@@ -166,7 +162,7 @@ public class FrameTest {
         int expectedPayloadSize = (paddingFieldLength + paddingLength + data.length) * byteSize;
 
         FrameData frame = new FrameData(streamId, data, paddingLength, endStream, padded, reserveBit);
-        byte[] frameBytes = frame.buildFrameForWrite();
+        WsByteBuffer frameBytes = frame.buildFrameForWrite();
         byte[] dataBytes = frame.getData();
 
         verifyBaseFrame(frame, streamId, expectedPayloadSize, frameBytes);
@@ -189,7 +185,7 @@ public class FrameTest {
         int expectedPayloadSize = (8 + debugData.length) * byteSize;
 
         FrameGoAway frame = new FrameGoAway(streamId, debugData, errorCode, lastStreamId, reserveBit);
-        byte[] frameBytes = frame.buildFrameForWrite();
+        WsByteBuffer frameBytes = frame.buildFrameForWrite();
         byte[] debugBytes = frame.getDebugData();
 
         verifyBaseFrame(frame, streamId, expectedPayloadSize, frameBytes);
@@ -219,7 +215,7 @@ public class FrameTest {
         int expectedPayloadSize = 4 * byteSize;
 
         FrameRstStream frame = new FrameRstStream(streamId, errorCode, reserveBit);
-        byte[] frameBytes = frame.buildFrameForWrite();
+        WsByteBuffer frameBytes = frame.buildFrameForWrite();
 
         verifyBaseFrame(frame, streamId, expectedPayloadSize, frameBytes);
         verifyFlags(frame, false, false, false, false, false);
@@ -243,7 +239,7 @@ public class FrameTest {
         int expectedPayloadSize = (paddingFieldLength + 4 + paddingLength + headerBlockFragment.length) * byteSize;
 
         FramePushPromise frame = new FramePushPromise(streamId, headerBlockFragment, promisedStreamId, paddingLength, endHeaders, padded, reserveBit);
-        byte[] frameBytes = frame.buildFrameForWrite();
+        WsByteBuffer frameBytes = frame.buildFrameForWrite();
         byte[] headerBytes = frame.getHeaderBlockFragment();
 
         verifyBaseFrame(frame, streamId, expectedPayloadSize, frameBytes);
@@ -265,7 +261,7 @@ public class FrameTest {
         int expectedPayloadSize = 5 * byteSize;
 
         FramePriority frame = new FramePriority(streamId, streamDependency, weight, exclusive, reserveBit);
-        byte[] frameBytes = frame.buildFrameForWrite();
+        WsByteBuffer frameBytes = frame.buildFrameForWrite();
 
         verifyBaseFrame(frame, streamId, expectedPayloadSize, frameBytes);
         verifyFlags(frame, false, false, false, false, false);
@@ -282,7 +278,7 @@ public class FrameTest {
         byte[] payload = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
 
         FramePing frame = new FramePing(streamId, payload, reserveBit);
-        byte[] frameBytes = frame.buildFrameForWrite();
+        WsByteBuffer frameBytes = frame.buildFrameForWrite();
 
         verifyBaseFrame(frame, streamId, payload.length, frameBytes);
         verifyFlags(frame, false, false, false, false, false);
@@ -301,7 +297,7 @@ public class FrameTest {
         int expectedPayloadSize = (headerBlockFragment.length) * byteSize;
 
         FrameContinuation frame = new FrameContinuation(streamId, headerBlockFragment, endHeaders, endStream, reserveBit);
-        byte[] frameBytes = frame.buildFrameForWrite();
+        WsByteBuffer frameBytes = frame.buildFrameForWrite();
         byte[] headerBytes = frame.getHeaderBlockFragment();
 
         verifyBaseFrame(frame, streamId, expectedPayloadSize, frameBytes);

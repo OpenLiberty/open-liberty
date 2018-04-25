@@ -56,11 +56,6 @@ public class HeaderTest {
     }
 
     @Test
-    public void testHeaderDummyRemoveLater() {
-        Assert.assertTrue(true);
-    }
-
-    @Test
     public void testDynamicTable() {
 
         //New dynamic table entries are meant to be at the lowest table index. If an eviction needs to occur
