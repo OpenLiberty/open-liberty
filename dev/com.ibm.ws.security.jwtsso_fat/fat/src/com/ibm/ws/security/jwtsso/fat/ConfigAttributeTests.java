@@ -152,6 +152,9 @@ public class ConfigAttributeTests extends CommonJwtFat {
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6022E_JWT_ISSUER_NOT_TRUSTED + ".+" + Pattern.quote(issuer)));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
 
         // log in, which should drive building a token.
         response = actions.doFormLogin(response, defaultUser, defaultPassword);

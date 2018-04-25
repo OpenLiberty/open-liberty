@@ -60,10 +60,21 @@ public class CommonExpectations {
      * </ol>
      */
     public static Expectations successfullyReachedProtectedResourceWithJwtCookie(String testAction, String protectedUrl, String username) {
+        return successfullyReachedProtectedResourceWithJwtCookie(testAction, protectedUrl, username, JwtFatConstants.DEFAULT_ISS_REGEX);
+    }
+
+    /**
+     * Sets expectations that will check:
+     * <ol>
+     * <li>Successfully reached the specified URL
+     * <li>Response text includes JWT cookie and principal information
+     * </ol>
+     */
+    public static Expectations successfullyReachedProtectedResourceWithJwtCookie(String testAction, String protectedUrl, String username, String issuerRegex) {
         Expectations expectations = new Expectations();
         expectations.addExpectations(successfullyReachedUrl(testAction, protectedUrl));
         expectations.addExpectations(getResponseTextExpectationsForJwtCookie(testAction, JwtFatConstants.JWT_COOKIE_NAME, username));
-        expectations.addExpectations(getJwtPrincipalExpectations(testAction, username, JwtFatConstants.DEFAULT_ISS_REGEX));
+        expectations.addExpectations(getJwtPrincipalExpectations(testAction, username, issuerRegex));
         return expectations;
     }
 

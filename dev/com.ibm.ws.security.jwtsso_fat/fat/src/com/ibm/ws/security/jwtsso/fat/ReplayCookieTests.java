@@ -17,13 +17,17 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
+import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -158,6 +162,84 @@ public class ReplayCookieTests extends CommonJwtFat {
 
     /**
      * Tests:
+     * - Logs into the protected resource with the JWT SSO feature configured
+     * - Create an identical JWT SSO cookie but with an empty signature segment
+     * - Re-access the protected resource in a new web conversation, including the truncated JWT SSO cookie
+     * Expects:
+     * - Upon re-access, should receive the login page because the JWT cookie is not valid
+     * - FFDCs should be emitted because the JWT signature is not valid
+     */
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+                    "com.ibm.ws.security.authentication.AuthenticationException" })
+    @Test
+    public void test_reaccessResource_jwtCookieWithEmptySignature() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+
+        // Remove the cookie signature, but leave the trailing "." so the JWT still has three parts (an empty signature)
+        String cookieValue = jwtCookie.getValue();
+        String truncatedValue = cookieValue.substring(0, cookieValue.lastIndexOf(".") + 1);
+        Cookie truncatedCookie = createIdenticalCookieWithNewValue(jwtCookie, truncatedValue);
+
+        Log.info(thisClass, testName.getMethodName(), "Original cookie value  : " + cookieValue);
+        Log.info(thisClass, testName.getMethodName(), "Truncated cookie value : " + truncatedCookie.getValue());
+
+        // Access the protected again using a new conversation with the truncated JWT SSO cookie included
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT + ".+"
+                                                                                        + "Problem verifying signature"));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, truncatedCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - Logs into the protected resource with the JWT SSO feature configured
+     * - Create an identical JWT SSO cookie but remove the signature segment
+     * - Re-access the protected resource in a new web conversation, including the truncated JWT SSO cookie
+     * Expects:
+     * - Upon re-access, should receive the login page because the JWT cookie is not valid
+     * - FFDCs should be emitted because the JWT is not formatted correctly
+     */
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+                    "com.ibm.ws.security.authentication.AuthenticationException" })
+    @Test
+    public void test_reaccessResource_signatureRemovedFromJwtCookie() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+
+        // Remove the entire signature from the JWT, including the "." denoting the signature segment
+        String cookieValue = jwtCookie.getValue();
+        String truncatedValue = cookieValue.substring(0, cookieValue.lastIndexOf("."));
+        Cookie cookieWithoutSignature = createIdenticalCookieWithNewValue(jwtCookie, truncatedValue);
+
+        Log.info(thisClass, testName.getMethodName(), "Original cookie value  : " + cookieValue);
+        Log.info(thisClass, testName.getMethodName(), "Truncated cookie value : " + cookieWithoutSignature.getValue());
+
+        // Access the protected again using a new conversation with the truncated JWT SSO cookie included
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT + ".+"
+                                                                                        + "Invalid JOSE Compact Serialization"));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, cookieWithoutSignature);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
      * - Log into the protected resource WITHOUT the JWT SSO feature, obtaining an LTPA token/cookie
      * - Reconfigure the server to enable the JWT SSO feature
      * - fallbackToLtpa is not set, meaning we should NOT fall back to use the LTPA token
@@ -169,7 +251,7 @@ public class ReplayCookieTests extends CommonJwtFat {
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
 
-        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), new WebClient(), protectedUrl, defaultUser, defaultPassword);
+        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
 
@@ -198,7 +280,7 @@ public class ReplayCookieTests extends CommonJwtFat {
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie_fallbackToLtpa() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
 
-        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), new WebClient(), protectedUrl, defaultUser, defaultPassword);
+        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_useLtpaIfJwtAbsent.xml");
 
@@ -242,6 +324,61 @@ public class ReplayCookieTests extends CommonJwtFat {
 
         Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - Logs into the protected resource with the JWT SSO feature configured
+     * - Access a different protected resource in a new web conversation without the JWT SSO cookie
+     * Expects:
+     * - Should receive the login page because a cookie is not present
+     */
+    @Test
+    public void test_obtainJwt_accessNewProtectedResource_withoutJwtCookie() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+
+        actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+
+        // Access a different protected resource without the JWT cookie
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        String newProtectedUrl = httpUrlBase + JwtFatConstants.ALL_ROLE_SERVLET_PATH;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(testName.getMethodName(), newProtectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - Logs into the protected resource with the JWT SSO feature configured
+     * - Access a different protected resource in a new web conversation with the JWT SSO cookie included
+     * Expects:
+     * - Should reach the other resource without having to log in
+     */
+    @Test
+    public void test_obtainJwt_accessNewProtectedResource_withJwtCookie() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+
+        // Access a different protected resource with the JWT cookie
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        String newProtectedUrl = httpUrlBase + JwtFatConstants.ALL_ROLE_SERVLET_PATH;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, newProtectedUrl, defaultUser));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), newProtectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /********************************************** Helper methods **********************************************/
+
+    private Cookie createIdenticalCookieWithNewValue(Cookie cookieToDuplicate, String newCookieValue) {
+        return new Cookie(cookieToDuplicate.getDomain(), cookieToDuplicate.getName(), newCookieValue, cookieToDuplicate.getPath(), cookieToDuplicate.getExpires(), cookieToDuplicate.isSecure(), cookieToDuplicate.isHttpOnly());
     }
 
 }

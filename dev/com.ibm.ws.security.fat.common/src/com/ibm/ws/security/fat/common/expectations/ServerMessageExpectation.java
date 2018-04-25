@@ -13,6 +13,7 @@ package com.ibm.ws.security.fat.common.expectations;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
 
 import componenttest.topology.impl.LibertyServer;
@@ -47,6 +48,7 @@ public class ServerMessageExpectation extends Expectation {
 
     boolean isMessageLogged() {
         String errorMsg = server.waitForStringInLogUsingMark(validationValue, 100);
+        Log.info(getClass(), "isMessageLogged", "Found message: " + errorMsg);
         return (errorMsg != null);
     }
 

@@ -24,6 +24,7 @@ public class JwtFatConstants extends Constants {
     public static final String DEFAULT_ISS_REGEX = "https?://" + "[^/]+" + JwtFatConstants.DEFAULT_ISS_CONTEXT;
 
     public static final String SIMPLE_SERVLET_PATH = "/formlogin/SimpleServlet";
+    public static final String ALL_ROLE_SERVLET_PATH = "/formlogin/AllRoleServlet";
 
     public static final String USER_1 = "user1";
     public static final String USER_1_PWD = "user1pwd";

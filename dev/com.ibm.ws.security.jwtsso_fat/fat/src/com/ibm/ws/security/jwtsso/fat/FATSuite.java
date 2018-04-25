@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FeatureOnlyTest.class,
                 ConfigAttributeTests.class,
                 CookieProcessingTests.class,
-                ReplayCookieTests.class
+                ReplayCookieTests.class,
+                CookieExpirationTests.class,
 })
 public class FATSuite {}
