@@ -14,10 +14,5 @@
       <class-name>javax.security.auth.AuthPermission</class-name>
       <name>wssecurity.applicationReadCredential</name>
    </permission>
-<!--   
-   <permission>
-      <class-name>javax.security.auth.AuthPermission</class-name>
-      <name>wssecurity.getRunAsSubject</name>
-   </permission>
--->
+
 </permissions>
