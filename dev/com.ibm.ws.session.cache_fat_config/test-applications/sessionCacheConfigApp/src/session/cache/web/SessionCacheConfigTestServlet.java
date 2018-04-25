@@ -12,8 +12,8 @@ package session.cache.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -420,12 +420,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
      * Verify that sessions are not available, even if requesting a new session
      */
     public void testSessionCacheNotAvailable(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        try {
-            HttpSession session = request.getSession(true);
-            fail("Should not be able to obtain session: " + session);
-        } catch (NullPointerException x) {
-            // expected due to misconfigured http session cache
-        }
+        assertNull("Should not be able to obtain session", request.getSession(true));
     }
 
     /**

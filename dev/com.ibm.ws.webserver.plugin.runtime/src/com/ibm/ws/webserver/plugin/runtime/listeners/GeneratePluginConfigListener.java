@@ -293,9 +293,9 @@ public class GeneratePluginConfigListener implements RuntimeUpdateListener, Appl
         String cookieName = this.cookieNames.get(webApp.getApplicationName());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "application initialized, app : " + webApp.getApplicationName() + ", old cookie name : " + this.cookieNames.get(webApp.getApplicationName())
-                               + ", new cookie name : " + sccfg.getName());
+                               + ", new cookie name : " + sccfg == null ? null : sccfg.getName());
 
-        if (cookieName != null && !cookieName.equals(sccfg.getName())) {
+        if (cookieName != null && sccfg != null && !cookieName.equals(sccfg.getName())) {
             synchronized (this) {
                 if (isFuturePluginTask()) {
                     submitGeneratePluginTask();
