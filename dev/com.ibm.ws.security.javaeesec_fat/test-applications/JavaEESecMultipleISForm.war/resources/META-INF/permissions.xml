@@ -38,12 +38,6 @@
 
    <permission>
       <class-name>java.util.PropertyPermission</class-name>
-      <name>org.glassfish.web.rfc2109_cookie_names_enforced</name>
-      <actions>read</actions>
-   </permission>
-
-   <permission>
-      <class-name>java.util.PropertyPermission</class-name>
       <name>line.separator</name>
       <actions>read</actions>
    </permission>
