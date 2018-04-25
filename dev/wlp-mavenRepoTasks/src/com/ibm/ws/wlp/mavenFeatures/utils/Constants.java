@@ -28,6 +28,8 @@ public class Constants {
 	public static final String VISIBILITY_VALUE_PUBLIC = "PUBLIC";
 	public static final String VISIBILITY_VALUE_INSTALL = "INSTALL";
 	public static final String MAVEN_COORDINATES_KEY = "mavenCoordinates";
+	public static final String LICENSE_ID_KEY = "licenseId";
+	public static final String LICENSE_ID_RESTRICTED_SUBSTRING = "restricted";
 	
 	public static final String API_DEPENDENCIES_GROUP_ID = "com.ibm.websphere.appserver.api";
 	public static final String SPI_DEPENDENCIES_GROUP_ID = "com.ibm.websphere.appserver.spi";
@@ -35,7 +37,18 @@ public class Constants {
 	public static final String WEBSPHERE_LIBERTY_FEATURES_GROUP_ID = "com.ibm.websphere.appserver.features";
 	public static final String OPEN_LIBERTY_FEATURES_GROUP_ID = "io.openliberty.features";
 	public static final String JSON_ARTIFACT_ID = "features";
-
+	
+	public static final String LICENSE_DISTRIBUTION_REPO = "repo";
+	public static final String LICENSE_NAME_EPL = "Eclipse Public License";
+	public static final String LICENSE_URL_EPL = "https://www.eclipse.org/legal/epl-v10.html";
+	public static final String LICENSE_NAME_FEATURE_TERMS = "Additional Features Terms & Conditions";
+	public static final String LICENSE_URL_FEATURE_TERMS_PREFIX = "http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/";
+	public static final String LICENSE_URL_FEATURE_TERMS_SUFFIX = "/lafiles/featureTerms/";
+	public static final String LICENSE_URL_FEATURE_TERMS_RESTRICTED_SUFFIX = "/lafiles/featureTerms-restricted/";
+	public static final String LICENSE_NAME_MAVEN = "IBM International License Agreement for Non-Warranted Programs";
+	public static final String LICENSE_URL_MAVEN = "http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/";
+	public static final String LICENSE_COMMENTS_MAVEN = "Additional notices http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/notices.html";
+	
 	public static final String SHORT_NAME_KEY = "shortName";
 	
 	public static final String MAVEN_MODEL_VERSION = "4.0.0";
