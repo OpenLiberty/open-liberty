@@ -65,7 +65,7 @@ public class IBMRestServlet extends HttpServlet {
         } else {
             // TODO: Get endpoint from some place and then init
             if (endpoint == null) {
-                throw new ServletException("Coult not find endpoint information.");
+                throw new ServletException("Could not find endpoint information.");
             }
         }
     }
