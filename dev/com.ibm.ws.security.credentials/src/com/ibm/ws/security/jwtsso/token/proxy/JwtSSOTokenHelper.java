@@ -39,18 +39,18 @@ public class JwtSSOTokenHelper {
     public static final String JSON_WEB_TOKEN_SSO_PROXY = "JwtSSOTokenProxy";
     protected final static AtomicServiceReference<JwtSSOTokenProxy> jwtSSOTokenProxyRef = new AtomicServiceReference<JwtSSOTokenProxy>(JSON_WEB_TOKEN_SSO_PROXY);
 
-    static private boolean isJdk18Up = (JavaInfo.majorVersion() >= 8);
+    static private boolean isJavaVersionAtLeast18 = (JavaInfo.majorVersion() >= 8);
 
     @Reference(service = JwtSSOTokenProxy.class, name = JSON_WEB_TOKEN_SSO_PROXY, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setJwtSSOToken(ServiceReference<JwtSSOTokenProxy> ref) {
-        if (isJavaVersionAtLeast18()) {
+        if (isJavaVersionAtLeast18) {
             jwtSSOTokenProxyRef.setReference(ref);
         }
     }
 
     protected void unsetJwtSSOToken(ServiceReference<JwtSSOTokenProxy> ref) {
-        if (isJavaVersionAtLeast18()) {
+        if (isJavaVersionAtLeast18) {
             jwtSSOTokenProxyRef.unsetReference(ref);
         }
 
@@ -58,7 +58,7 @@ public class JwtSSOTokenHelper {
 
     @org.osgi.service.component.annotations.Activate
     protected void activate(ComponentContext cc) {
-        if (isJavaVersionAtLeast18()) {
+        if (isJavaVersionAtLeast18) {
             jwtSSOTokenProxyRef.activate(cc);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Jwt SSO token helper service is activated");
@@ -74,7 +74,7 @@ public class JwtSSOTokenHelper {
 
     @org.osgi.service.component.annotations.Deactivate
     protected void deactivate(ComponentContext cc) {
-        if (isJavaVersionAtLeast18()) {
+        if (isJavaVersionAtLeast18) {
             jwtSSOTokenProxyRef.deactivate(cc);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Jwt SSO token helper service is deactivated");
@@ -83,10 +83,6 @@ public class JwtSSOTokenHelper {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Jwt SSO token helper service is activated");
         }
-    }
-
-    private static boolean isJavaVersionAtLeast18() {
-        return isJdk18Up;
     }
 
     public static void createJwtSSOToken(Subject subject) {
@@ -148,9 +144,9 @@ public class JwtSSOTokenHelper {
         }
     }
 
-    public static boolean isJwtSSOTokenValid(Subject subject) {
+    public static boolean isSubjectValid(Subject subject) {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            return jwtSSOTokenProxyRef.getService().isJwtSSOTokenValid(subject);
+            return jwtSSOTokenProxyRef.getService().isSubjectValid(subject);
         }
         return false;
     }
