@@ -11,13 +11,13 @@
 <server>
 
     <featureManager>
-        <feature>jsp-2.3</feature>
-        <feature>jwtSso-1.0</feature>
+        <feature>jsp-2.3</feature>        
         <feature>componenttest-1.0</feature>
+        <feature>jwtSso-1.0</feature>
     </featureManager>
-    <jwtSso  setCookieSecureFlag="false" />
-
+    <jwtSso cookieName="easyrider"  includeLtpaCookie="true" setCookieSecureFlag="false"/>
     <include location="../fatTestPorts.xml"/>
+     
 
     <keyStore id="defaultKeyStore" password="Liberty" />
 
