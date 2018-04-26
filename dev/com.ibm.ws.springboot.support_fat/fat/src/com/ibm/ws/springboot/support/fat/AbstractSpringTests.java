@@ -32,8 +32,12 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.config.HttpEndpoint;
+import com.ibm.websphere.simplicity.config.KeyStore;
+import com.ibm.websphere.simplicity.config.SSLConfig;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
+import com.ibm.websphere.simplicity.config.VirtualHost;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -183,11 +187,23 @@ public abstract class AbstractSpringTests {
         System.out.println("Configuring server for " + testName.getMethodName());
         if (serverStarted.compareAndSet(false, true)) {
             ServerConfiguration config = server.getServerConfiguration();
+
+            // START CLEAR out configs from previous tests
             List<SpringBootApplication> applications = config.getSpringBootApplications();
             applications.clear();
             Set<String> features = config.getFeatureManager().getFeatures();
             features.clear();
             features.addAll(getFeatures());
+            List<VirtualHost> virtualHosts = config.getVirtualHosts();
+            virtualHosts.clear();
+            List<HttpEndpoint> endpoints = config.getHttpEndpoints();
+            endpoints.clear();
+            List<SSLConfig> ssls = config.getSsls();
+            ssls.clear();
+            List<KeyStore> keystores = config.getKeyStores();
+            keystores.clear();
+            // END CLEAR
+
             RemoteFile appFile = getApplicationFile();
             boolean dropinsTest = false;
             switch (getApplicationConfigType()) {
