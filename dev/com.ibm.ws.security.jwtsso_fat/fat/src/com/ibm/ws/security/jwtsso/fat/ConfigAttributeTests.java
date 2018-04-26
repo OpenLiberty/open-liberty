@@ -85,7 +85,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
      *
      */
     @Mode(TestMode.LITE)
-    //@Test
+    @Test
     public void test_cookieName_includeLtpa() throws Exception {
         reconfigServer("server_testcookiename.xml");
         Expectations expectations = new Expectations();
@@ -210,6 +210,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException",
                    "com.ibm.websphere.security.WSSecurityException",
                    "com.ibm.websphere.security.jwt.InvalidConsumerException" })
@@ -243,6 +244,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
                    "com.ibm.websphere.security.WSSecurityException" })
@@ -264,6 +266,42 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         assertTrue("did not access protected resource", check);
         assertTrue("did not find expected ltpa cookie", responseStr.contains("cookie: LtpaToken2"));
         assertFalse("found unexpected jwt cookie", responseStr.contains("cookie: jwtToken"));
+    }
+
+    /**
+     * set cookieSecure flag to true and inspect cookie to see that it happened.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    public void test_cookieSecure() throws Exception {
+        reconfigServer("server_testcookiesecure.xml");
+        ArrayList<String> ignoredErrors = new ArrayList<String>();
+        ignoredErrors.add("CWWKS9127W");
+        server.addIgnoredErrors(ignoredErrors);
+
+        String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/formlogin/SimpleServlet";
+
+        WebClient wc = new WebClient();
+
+        Page response = invokeUrl(wc, protectedUrl); // get back the login page
+
+        // now disable redirect so we can see the cookies in the 302
+        wc.getOptions().setRedirectEnabled(false);
+        wc.getOptions().setThrowExceptionOnFailingStatusCode(false);
+
+        response = performLogin(response);
+
+        String responseStr = response.getWebResponse().getContentAsString();
+        String cookie = response.getWebResponse().getResponseHeaderValue("Set-Cookie");
+
+        assertTrue("did not find expected  cookie", cookie != null);
+        assertTrue("cookie name is wrong", cookie.contains("jwtToken"));
+        assertTrue("cookie is not secure", cookie.contains("Secure"));
+        // check for warning that secure cookie is being set on http
+        String errorMsg = server.waitForStringInLogUsingMark("CWWKS9127W", 100);
+        assertFalse("Did not find expected warning message CWWKS9127W in log", errorMsg == null);
     }
 
     void reconfigServer(String fileName) throws Exception {
