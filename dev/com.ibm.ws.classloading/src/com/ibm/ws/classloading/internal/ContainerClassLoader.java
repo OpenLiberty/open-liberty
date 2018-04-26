@@ -113,7 +113,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
     /**
      * Util method to totally read an input stream into a byte array.
      * Used for class definition.
-     * 
+     *
      * @param stream the stream to read.
      * @return byte array of data from stream.
      * @throws IOException if an error occurs.
@@ -159,14 +159,14 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         interface UniversalResource {
             /**
              * Obtain the URL for this resource, or null if it has none.
-             * 
+             *
              * @return
              */
             public URL getResourceURL();
 
             /**
              * Obtain the ByteResourceInformation for this resource.
-             * 
+             *
              * @return
              * @throws IOException if the ByteResourceInformation is unable to be returned.
              */
@@ -181,7 +181,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Attempt to obtain a resource given a path.
-         * 
+         *
          * @param name the path to look for the resource at
          * @return UniversalResource if found, null otherwise.
          */
@@ -221,13 +221,13 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             boolean pSlash = resourceName.endsWith("/");
 
             if (uSlash == pSlash) {
-                //if the path requested, and the url, both end, or both do not end, in slashes, 
+                //if the path requested, and the url, both end, or both do not end, in slashes,
                 //return the result.
                 return url;
             } else {
                 //path and url had different endings.. one had a slash, the other did not.
                 if (uSlash) {
-                    //if the url ended in a slash (and the path did not, else we would have returned 
+                    //if the url ended in a slash (and the path did not, else we would have returned
                     //already.. ) then strip the slash from the end of the url.
                     return ContainerClassLoader.stripTrailingSlash(url);
                 } else {
@@ -364,7 +364,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "CCL: updating map for adaptable container with path " + this.container.getPath());
             //could speed this up using an adapter to access the underlying artifact container to use localOnly..
-            //we'll keep it simple for now though and just use the existing adaptable api layer.             
+            //we'll keep it simple for now though and just use the existing adaptable api layer.
             int chop = 1;
             if (!"/".equals(this.container.getPath())) {
                 chop = this.container.getPath().length() + 1; //we add 1 to remove the leading slash from entries below this.
@@ -408,13 +408,13 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             boolean uSlash = url.getPath().endsWith("/");
             boolean pSlash = resourceName.endsWith("/");
             if (uSlash == pSlash) {
-                //if the path requested, and the url, both end, or both do not end, in slashes, 
+                //if the path requested, and the url, both end, or both do not end, in slashes,
                 //return the result.
                 return url;
             } else {
                 //path and url had different endings.. one had a slash, the other did not.
                 if (uSlash) {
-                    //if the url ended in a slash (and the path did not, else we would have returned 
+                    //if the url ended in a slash (and the path did not, else we would have returned
                     //already.. ) then strip the slash from the end of the url.
                     return ContainerClassLoader.stripTrailingSlash(url);
                 } else {
@@ -466,9 +466,9 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 //root, then we have to ensure that the path requested
                 //cannot escape to the parent container(s).
                 //this normalize is strictly not needed if the path has already been normalized
-                //which is the case for map based processing, and we could update to remove it 
+                //which is the case for map based processing, and we could update to remove it
                 //to gain a little extra speed.
-                //Currently the map based path is only in play when the maps are built, so 
+                //Currently the map based path is only in play when the maps are built, so
                 //we normalise here for safety.
                 path = PathUtils.normalize(path);
                 if (!PathUtils.isNormalizedPathAbsolute(path)) {
@@ -563,14 +563,14 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
     private interface SmartClassPath {
         /**
          * Add an adaptable Container to the classpath.
-         * 
+         *
          * @param container the container to add.
          */
         void addContainer(Container container);
 
         /**
          * Add an ArtifactContainer to the classpath.
-         * 
+         *
          * @param container the container to add.
          */
         void addArtifactContainer(ArtifactContainer container);
@@ -652,7 +652,8 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         final static Integer maxLastFound = Integer.getInteger("com.ibm.ws.classloading.container.lastFound", 900);
         final static Integer maxLastReallyNotFound = Integer.getInteger("com.ibm.ws.classloading.container.lastReallyNotFound", 900);
         final static boolean propsInUse = (!usePackageMap || System.getProperty("com.ibm.ws.classloading.container.lastNotFound") != null
-                                           || System.getProperty("com.ibm.ws.classloading.container.lastFound") != null || System.getProperty("com.ibm.ws.classloading.container.lastReallyNotFound") != null);
+                                           || System.getProperty("com.ibm.ws.classloading.container.lastFound") != null
+                                           || System.getProperty("com.ibm.ws.classloading.container.lastReallyNotFound") != null);
 
         static {
             if (propsInUse && tc.isDebugEnabled()) {
@@ -694,7 +695,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Internal method to add a new UniversalContainer to the list.
-         * 
+         *
          * @param uc
          */
         @SuppressWarnings("deprecation")
@@ -740,7 +741,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
             }
 
-            //Note method is synchronized to attempt to keep these two always executing together, 
+            //Note method is synchronized to attempt to keep these two always executing together,
             //although the implementation is written so it wont matter if the 'wrong' lastNotFound
             //set is used with a given cp entry. They all start empty, and are equiv at this stage.
             classPath.add(uc);
@@ -759,7 +760,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         }
 
         private List<UniversalContainer> getUniversalContainersForPath(String path, List<UniversalContainer> classpath) {
-            //if we have outstanding requests, then we should just use the classpath, else 
+            //if we have outstanding requests, then we should just use the classpath, else
             //we risk not seeing content on the classpath that we should see.
             if (outstandingContainers.get() > 0) {
                 if (tc.isDebugEnabled())
@@ -771,13 +772,13 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             path = PathUtils.normalizeUnixStylePath(path);
             int startidx = path.startsWith("/") == true ? 1 : 0; //will use this in substring to chop off leading slash when needed.
             int slashidx = path.lastIndexOf('/');
-            // '/' maps to all containers.. 
+            // '/' maps to all containers..
             // as will '/fish' and '/anything'
             // any paths at 2nd level deep, or below, eg /fish/chips  or /anything/else or /a/b/c will use map.
             //
             // slash idx -1 means no /'s in string                  - use all containers
             // slash idx 0 means / was the first and only '/' char  - use all containers
-            // slash idx >0 means / was present after other chars, so we use the map..             
+            // slash idx >0 means / was present after other chars, so we use the map..
             if (slashidx > 0) {
                 Integer key = path.substring(startidx, slashidx).hashCode();
                 if (tc.isDebugEnabled())
@@ -787,9 +788,9 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 //but will block if there is a package update in progress
                 //This is a narrow window, as we already tested that the outstanding
                 //containers value was zero, so to block here means another thread snuck
-                //in between there, and here, and altered the classpath. 
+                //in between there, and here, and altered the classpath.
                 //We don't alter the classpath often, and blocking will ensure correct
-                //behavior. 
+                //behavior.
                 ReadLock read = rwLock.readLock();
                 read.lock();
                 List<UniversalContainer> containersForKey;
@@ -807,7 +808,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                         Tr.debug(tc, "CCL: key was unknown, returning empty set. ");
                     return Collections.emptyList();
                 }
-            }//else, leave locationsToCheck as classpath.
+            } //else, leave locationsToCheck as classpath.
             else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "CCL: request for a root level resource... : '" + path + "' returning original set with " + classpath.size());
@@ -831,14 +832,14 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                     //no hit in not-found-cache.. try to obtain.
                     UniversalContainer.UniversalResource ur = uc.getResource(path);
                     if (ur != null) {
-                        //got one.. 
+                        //got one..
                         ByteResourceInformation is = ur.getByteResourceInformation();
                         if (is != null) {
                             return is;
                         }
                     } else {
                         //looked, but did not find.. update the not-found-cache.
-                        //(unless we used packagemap to get here, in which case it's 
+                        //(unless we used packagemap to get here, in which case it's
                         //(not the right cache! so don't touch it!
                         if (!usePackageMap && lastNotFoundForThisContainer != null) {
                             addPath(lastNotFoundForThisContainer, path);
@@ -859,7 +860,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                     Tr.debug(tc, "CCL: [" + this.hashCode() + "]  getResourceURL : '" + path + "' " + "lastFound hit.");
                 return cached;
             }
-            //test negative cache next.. 
+            //test negative cache next..
             if (lastReallyNotFoundURL.containsKey(path)) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "CCL: [" + this.hashCode() + "]  getResourceURL : '" + path + "' " + "lastReallyNotFound hit.");
@@ -932,7 +933,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                             urls.add(url);
                         }
                     } else {
-                        //looked but did not find.. update cache. 
+                        //looked but did not find.. update cache.
                         if (!usePackageMap && lastNotFoundForThisContainer != null) {
                             addPath(lastNotFoundForThisContainer, path);
                         }
@@ -1031,7 +1032,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             }
             // looks like we might have to do it ourselves - use a sync block to ensure only one thread
             // invokes lazyInit()
-            synchronized (this) { // Double-check locking works because smartClassPath is volatile               
+            synchronized (this) { // Double-check locking works because smartClassPath is volatile
                 if (ContainerClassLoader.this.smartClassPath == this) {
                     try {
                         if (tc.isDebugEnabled())
@@ -1064,28 +1065,28 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
     protected interface ByteResourceInformation {
         /**
          * Returns the bytes for the class loaded from this resource.
-         * 
+         *
          * @return The byte[]
          */
         byte[] getBytes();
 
         /**
          * Attempts to load the manifest for the current resource URL and returns it.
-         * 
+         *
          * @return The manifest or <code>null</code> if an error occurred loading it (or it didn't exist)
          */
         Manifest getManifest();
 
         /**
          * Returns the resource URL for this resource
-         * 
+         *
          * @return
          */
         public URL getResourceUrl();
 
         /**
          * Returns the resource style path to this resource, this will be in the form "a/b/c" rather than a . notation.
-         * 
+         *
          * @return The resource path
          */
         public String getResourcePath();
@@ -1117,7 +1118,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Returns the bytes for the class loaded from this resource.
-         * 
+         *
          * @return The byte[]
          */
         @Override
@@ -1127,7 +1128,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Attempts to load the manifest for the current resource URL and returns it.
-         * 
+         *
          * @return The manifest or <code>null</code> if an error occurred loading it (or it didn't exist)
          */
         @Override
@@ -1168,7 +1169,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Returns the resource URL for this resource
-         * 
+         *
          * @return
          */
         @Override
@@ -1178,7 +1179,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Returns the resource style path to this resource, this will be in the form "a/b/c" rather than a . notation.
-         * 
+         *
          * @return The resource path
          */
         @Override
@@ -1213,7 +1214,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Returns the bytes for the class loaded from this resource.
-         * 
+         *
          * @return The byte[]
          */
         @Override
@@ -1223,7 +1224,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Attempts to load the manifest for the current resource URL and returns it.
-         * 
+         *
          * @return The manifest or <code>null</code> if an error occurred loading it (or it didn't exist)
          */
         @Override
@@ -1259,7 +1260,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Returns the resource URL for this resource
-         * 
+         *
          * @return
          */
         @Override
@@ -1269,7 +1270,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
         /**
          * Returns the resource style path to this resource, this will be in the form "a/b/c" rather than a . notation.
-         * 
+         *
          * @return The resource path
          */
         @Override
@@ -1281,7 +1282,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
     /**
      * Main constructor.. build a container loader with the specified adaptable Container classpath.<p>
      * Additional classpath entries are only addable via addLibraryFile.
-     * 
+     *
      * @param classpath Containers to use as classpath entries.
      * @param parent classloader to act as parent.
      */
@@ -1338,6 +1339,20 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         }
 
         enumerations.add(Collections.enumeration(urls));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            int i = 0;
+            StringBuilder sb = new StringBuilder();
+            List<URL> urlList = new ArrayList<URL>();
+            while (enumerations.hasMoreElements()) {
+                URL url = enumerations.nextElement();
+                urlList.add(url);
+                sb.append("\n  ").append(url);
+                i++;
+            }
+            sb.append("\n  ").append("Total elements: ").append(i);
+            enumerations = new CompositeEnumeration<URL>(Collections.enumeration(urlList));
+            Tr.debug(tc, sb.toString());
+        }
         return enumerations;
     }
 
@@ -1379,7 +1394,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         String sealedString = mA.getValue(Name.SEALED);
         Boolean sealed = (sealedString == null ? Boolean.FALSE : sealedString.equalsIgnoreCase("true"));
 
-        //now overwrite global attributes with the specific attributes 
+        //now overwrite global attributes with the specific attributes
         String unixName = name.replaceAll("\\.", "/") + "/"; //replace all dots with slash and add trailing slash
         mA = manifest.getAttributes(unixName);
         if (mA != null) {
@@ -1423,7 +1438,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
     /**
      * Method to allow adding shared libraries to this classloader, currently using File.
-     * 
+     *
      * @param f the File to add as a shared lib.. can be a dir or a jar (or a loose xml ;p)
      */
     @FFDCIgnore(NullPointerException.class)
@@ -1441,7 +1456,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             return;
 
         //this area subject to refactor following shared lib rework..
-        //ideally the shared lib code will start passing us ArtifactContainers, and it 
+        //ideally the shared lib code will start passing us ArtifactContainers, and it
         //will own the management of the ACF via DS.
 
         //NASTY.. need to use DS to get the ACF, not OSGi backdoor ;p
@@ -1473,7 +1488,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
     /**
      * Check that a file is an archive
-     * 
+     *
      * @param f
      */
     @FFDCIgnore(PrivilegedActionException.class)
@@ -1508,7 +1523,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
     /**
      * Returns a URL with the trailing / stripped off
-     * 
+     *
      * @param url
      * @return
      */
@@ -1537,7 +1552,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
      * that loaded by other loaders, regardless of the changes to those classes.
      * Likewise, this method will return true if there are non-class files that
      * were modified.
-     * 
+     *
      * @param notification the Notification object containing modified files.
      * @return true if all classes in the notification that were loaded by this loader
      *         were able to be redefined. Otherwise, false.
@@ -1607,7 +1622,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
 
                 }
 
-                if (success/* still */&& !classesToRedefine.isEmpty()) {
+                if (success/* still */ && !classesToRedefine.isEmpty()) {
                     success = redefiner.redefineClasses(classesToRedefine);
                 }
 

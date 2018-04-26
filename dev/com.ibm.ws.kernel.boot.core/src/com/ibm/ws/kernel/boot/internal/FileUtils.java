@@ -24,6 +24,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -706,5 +707,25 @@ public class FileUtils {
             }
         }
         return false;
+    }
+
+    @Trivial
+    public static String readFile(File f) {
+        if (f == null || !f.exists() || !f.canRead())
+            return null;
+
+        try {
+            Scanner s = new Scanner(f);
+            try {
+                // The '\\Z' delimiter is the end of string anchor, which allows the entire file
+                // to be scanned in as a single string
+                return s.useDelimiter("\\Z").next();
+            } finally {
+                s.close();
+            }
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 }

@@ -235,7 +235,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Configure httpSessionCache pointing at a library that lacks a valid JCache provider. Access a session before and after,
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before is not.
      */
-    @AllowedFFDC(value = { "java.lang.NullPointerException", // from starting web app with invalid session cache config
+    @AllowedFFDC(value = { "javax.cache.CacheException", // expected on error path: No CachingProviders have been configured
+                           "java.lang.NullPointerException", // from starting web app with invalid session cache config
                            "java.net.MalformedURLException" // TODO possible bug
     })
     @Test
@@ -309,7 +310,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
     }
 
-    @AllowedFFDC(value = { "java.lang.NullPointerException", // from starting web app with invalid session cache config
+    @AllowedFFDC(value = { "javax.cache.CacheException", // expected on error path: No CachingProviders have been configured
+                           "java.lang.NullPointerException", // from starting web app with invalid session cache config
                            "java.net.MalformedURLException" // TODO possible bug
     })
     @Test

@@ -21,5 +21,5 @@ IBM-API-Package: org.jboss.weld;type="internal",\
   com.ibm.websphere.appserver.websocket-1.1, \
   com.ibm.websphere.appserver.javaeeCompatible-8.0
 -jars=com.ibm.ws.jsfContainer; location:=lib/
-kind=noship
+kind=beta
 edition=core

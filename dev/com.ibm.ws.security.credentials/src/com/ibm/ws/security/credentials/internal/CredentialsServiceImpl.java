@@ -117,6 +117,7 @@ public class CredentialsServiceImpl implements CredentialsService {
         while (itr.hasNext()) {
             CredentialProvider provider = itr.next();
             isValid = isValid && provider.isSubjectValid(subject);
+            //TODO - JwtSSOToken fallback to LTPA
             if (!isValid) {
                 break;
             }

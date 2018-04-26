@@ -2421,46 +2421,6 @@ public class H2FATDriverServlet extends FATServlet {
         handleErrors(h2Client, testName);
     }
 
-    public void testContinuationFrameAfterHeaderFrameWithEndOfStream(HttpServletRequest request,
-                                                                     HttpServletResponse response) throws InterruptedException, Exception {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testContinuationFrameAfterHeaderFrameWithEndOfStream", "Started!");
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testContinuationFrameAfterHeaderFrameWithEndOfStream",
-                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
-        }
-        String testName = "testContinuationFrameAfterHeaderFrameWithEndOfStream";
-
-        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-
-        h2Client.addExpectedFrame(EMPTY_SETTINGS_FRAME);
-        addFirstExpectedHeaders(h2Client);
-
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
-        h2Client.addExpectedFrame(errorFrame);
-
-        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
-        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
-
-        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_ONLY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
-        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-        h2Client.sendFrame(frameHeadersToSend);
-
-        List<H2HeaderField> firstContinuationHeadersToSend = new ArrayList<H2HeaderField>();
-        firstContinuationHeadersToSend.add(new H2HeaderField("harold", "padilla"));
-        FrameContinuationClient firstContinuationHeaders = new FrameContinuationClient(3, null, true, true, false);
-        firstContinuationHeaders.setHeaderFields(firstContinuationHeadersToSend);
-        h2Client.sendFrame(firstContinuationHeaders);
-
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
-        handleErrors(h2Client, testName);
-    }
-
     public void testDataFrameAfterContinuationFrame(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testDataFrameAfterContinuationFrame", "Started!");

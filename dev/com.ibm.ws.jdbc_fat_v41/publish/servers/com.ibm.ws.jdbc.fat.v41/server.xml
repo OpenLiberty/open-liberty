@@ -62,5 +62,9 @@
     
     <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
+    <!--  Permissions for application to access mbeans -->
+    <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="javax.management.MBeanPermission" actions="queryNames"/>
+    <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+
     <variable name="onError" value="FAIL"/>
 </server>

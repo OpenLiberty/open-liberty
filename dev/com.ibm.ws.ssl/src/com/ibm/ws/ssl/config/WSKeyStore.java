@@ -63,7 +63,7 @@ import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
  * <p>
  * This class represents a KeyStore configuration in the runtime.
  * </p>
- * 
+ *
  * @author IBM Corporation
  * @version WAS 7.0
  * @since WAS 7.0
@@ -135,7 +135,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Constructor using a provided name and array of properties.
-     * 
+     *
      * @param _name
      * @param properties
      * @throws Exception
@@ -153,8 +153,7 @@ public class WSKeyStore extends Properties {
             final String key = keys.nextElement();
 
             final Object oValue = properties.get(key);
-            if (!(oValue instanceof String))
-            {
+            if (!(oValue instanceof String)) {
                 if (key.equalsIgnoreCase(KEY_STORE_POLLING_RATE) &&
                     oValue instanceof Long) {
                     this.pollingRate = (Long) oValue;
@@ -217,13 +216,13 @@ public class WSKeyStore extends Properties {
             if (this.location == null && specifiedType == null) {
                 this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
                 specifiedType = this.type = Constants.KEYSTORE_TYPE_JKS;
-
-                // If the type and location are not present, definitely a JKS
-                // which means we need a password.
-                if (this.password.isEmpty()) {
-                    // we're now on a path where we would create a keystore for them: *require* a password,
-                    // as that will be used to create the key store
-                    Tr.error(tc, "ssl.default.keystore.config.error");
+            }
+            if (password.isEmpty()) {
+                String envPassword = System.getenv("keystore_password");
+                if (envPassword != null && !envPassword.isEmpty()) {
+                    password = new SerializableProtectedString(envPassword.toCharArray());
+                } else {
+                    Tr.info(tc, "ssl.defaultKeyStore.not.created.CWPKI0819I");
                     throw new IllegalArgumentException("Required keystore information is missing, must provide a password for the default keystore");
                 }
             }
@@ -287,7 +286,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Determines if the location is rooted in the server's output location.
-     * 
+     *
      * @param location
      * @return true if the location is under the server's output location; false otherwise.
      */
@@ -303,7 +302,7 @@ public class WSKeyStore extends Properties {
      * This method will resolve all symbolic names in the location.
      * If location is just a file name, then we assume its location is
      * the LibertyConstants.DEFAULT_CONFIG_LOCATION.
-     * 
+     *
      * @param _location
      */
     private void setLocation(String _location) {
@@ -366,7 +365,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Constructor.
-     * 
+     *
      * @param keyStore
      */
     private void setUpInternalProperties() {
@@ -454,7 +453,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Set the keystore type to the input value.
-     * 
+     *
      * @param _type
      */
     private void setType(String _type) {
@@ -464,7 +463,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Set the provider for this keystore to the input value.
-     * 
+     *
      * @param _provider
      */
     private void setProvider(String _provider) {
@@ -475,7 +474,7 @@ public class WSKeyStore extends Properties {
     /**
      * Set the flag on whether this keystore is filebased or not to the input
      * value.
-     * 
+     *
      * @param flag
      */
     private void setFileBased(Boolean flag) {
@@ -485,7 +484,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Set the flag on whether this keystore is read only to the input flag.
-     * 
+     *
      * @param flag
      */
     private void setReadOnly(Boolean flag) {
@@ -495,7 +494,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Set the flag on whether this keystore should initialize at startup.
-     * 
+     *
      * @param flag
      */
     private void setInitializeAtStartup(Boolean flag) {
@@ -505,7 +504,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query the name of this keystore.
-     * 
+     *
      * @return String
      */
     public String getName() {
@@ -514,7 +513,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query the location of this keystore.
-     * 
+     *
      * @return String
      */
     public String getLocation() {
@@ -526,7 +525,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query the password of this keystore.
-     * 
+     *
      * @return String
      */
     public String getPassword() {
@@ -535,7 +534,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query the provider of this keystore.
-     * 
+     *
      * @return String
      */
     public String getProvider() {
@@ -544,7 +543,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query the type of this keystore.
-     * 
+     *
      * @return String
      */
     public String getType() {
@@ -553,7 +552,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query whether or not this keystore is file based.
-     * 
+     *
      * @return Boolean
      */
     public Boolean getFileBased() {
@@ -562,7 +561,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query whether or not this keystore is read only.
-     * 
+     *
      * @return Boolean
      */
     public Boolean getReadOnly() {
@@ -571,7 +570,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query whether or not this keystore should initialize at startup.
-     * 
+     *
      * @return Boolean
      */
     public Boolean getInitializeAtStartup() {
@@ -580,7 +579,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query whether or not this keystore is a stash file.
-     * 
+     *
      * @return Boolean
      */
     public Boolean getStashFile() {
@@ -589,7 +588,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query the monitor interval
-     * 
+     *
      * @return Boolean
      */
     public long getPollingRate() {
@@ -600,7 +599,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query the file monitoring trigger
-     * 
+     *
      * @return Boolean
      */
     public String getTrigger() {
@@ -611,7 +610,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query the possible custom properties of this keystore.
-     * 
+     *
      * @return Map<String,String>
      */
     public Map<String, String> getCustomProps() {
@@ -630,7 +629,7 @@ public class WSKeyStore extends Properties {
     /**
      * Get the key store wrapped by this object. Synchronized version of
      * getKeyStore().
-     * 
+     *
      * @param reinitialize
      * @param createIfNotPresent
      * @return KeyStore
@@ -838,7 +837,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Get the key store wrapped by this object.
-     * 
+     *
      * @param reinitialize
      * @param createIfNotPresent
      * @return KeyStore
@@ -854,7 +853,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Store the current information into the wrapped keystore.
-     * 
+     *
      * @throws Exception
      */
     public void store() throws Exception {
@@ -918,7 +917,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Initialize the wrapped keystore.
-     * 
+     *
      * @param reinitialize
      * @throws Exception
      */
@@ -949,7 +948,7 @@ public class WSKeyStore extends Properties {
      * Cycle through the keystore looking for expired certificates. Print a
      * warning for any certificates that are expired or will expire during the
      * input interval.
-     * 
+     *
      * @param daysBeforeExpireWarning
      * @param keyStoreName
      * @throws Exception
@@ -991,7 +990,7 @@ public class WSKeyStore extends Properties {
     /**
      * Print a warning about a certificate being expired or soon to be expired in
      * the keystore.
-     * 
+     *
      * @param daysBeforeExpireWarning
      * @param keyStoreName
      * @param alias
@@ -1021,7 +1020,7 @@ public class WSKeyStore extends Properties {
 
     /***
      * Decode an individual password property.
-     * 
+     *
      * @param password
      * @return String
      */
@@ -1055,7 +1054,7 @@ public class WSKeyStore extends Properties {
     /**
      * The purpose of this method is to open the passed in file which represents
      * the key store.
-     * 
+     *
      * @param fileName
      * @return InputStream
      * @throws MalformedURLException
@@ -1115,7 +1114,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Set a new certificate into the keystore and save the updated store.
-     * 
+     *
      * @param alias
      * @param cert
      * @throws KeyStoreException
@@ -1164,7 +1163,8 @@ public class WSKeyStore extends Properties {
                 // a true failure. If the cert was not added then we need to rethrow the
                 // exception.
                 final String ksType = getProperty(Constants.SSLPROP_KEY_STORE_TYPE);
-                if ((ksType.equals(Constants.KEYSTORE_TYPE_JCERACFKS) || ksType.equals(Constants.KEYSTORE_TYPE_JCECCARACFKS) || ksType.equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
+                if ((ksType.equals(Constants.KEYSTORE_TYPE_JCERACFKS) || ksType.equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
+                     || ksType.equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
                     KeyStore ks = getKeyStore(true, false);
 
                     if (mgr.checkIfSignerAlreadyExistsInTrustStore((X509Certificate) cert, ks)) {
@@ -1284,7 +1284,7 @@ public class WSKeyStore extends Properties {
 
     /**
      * Query the password of a key entry in this keystore.
-     * 
+     *
      * @param alias
      * @return
      */
@@ -1309,8 +1309,7 @@ public class WSKeyStore extends Properties {
         myKeyStore = null;
     }
 
-    public boolean isOracleVendor()
-    {
+    public boolean isOracleVendor() {
         String vendorName = getSystemProperty("java.vendor");
         boolean isOracle = false;
         if (vendorName != null) {
@@ -1322,8 +1321,7 @@ public class WSKeyStore extends Properties {
     }
 
     @SuppressWarnings("unchecked")
-    public String getSystemProperty(final String propName)
-    {
+    public String getSystemProperty(final String propName) {
         String value = (String) java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
             @Override
             public Object run() {
