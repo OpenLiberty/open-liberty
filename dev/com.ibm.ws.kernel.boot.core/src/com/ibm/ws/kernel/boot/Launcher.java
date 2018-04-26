@@ -249,7 +249,7 @@ public class Launcher {
                 // Use initialized bootstrap configuration to create the server lock.
                 // This ensures the server and nested workarea directory exist and are writable
                 ServerLock.createServerLock(bootProps);
-                rc = bootProps.disablePermGenIfNecessary();
+                rc = bootProps.generateServerEnv();
                 break;
             case MESSAGE_ACTION:
                 rc = showMessage(launchArgs);
