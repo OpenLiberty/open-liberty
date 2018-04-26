@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.tcpchannel.internal.TCPChannelMessageConstants;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 
@@ -26,7 +27,7 @@ import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
  * and Native code when making IO requests. It identifies a particular operation
  * via its channel identifier and call identifier, and carries the return code
  * and number of bytes affected by a successful operation.
- * 
+ *
  */
 public class CompletionKey {
     private static final TraceComponent tc = Tr.register(CompletionKey.class,
@@ -62,12 +63,17 @@ public class CompletionKey {
      * handle int lengths through ByteBuffers. This is potentially lossy for the
      * bytes affected, but not for the completion key (as we passed that in as
      * an int).
-     * 
+     *
      * Impl: This jlong[] will be mapped directly to a IOCBTYPE in the async
      * natives, any changes to this class impl must be reflected in the native
      * and vice versa.
      */
+
+    // This is the allocated direct ByteBuffer
+    private WsByteBuffer wsByteBuf;
+    // This is the wrapper ByteBuffer for "wsByteBuf".
     private ByteBuffer rawData;
+    // This is a Byte[] used to optimize accessed to the "rawData" ByteBuffer.
     private LocalByteBuffer stagingByteBuffer;
 
     private int bufferCount = 0;
@@ -84,7 +90,7 @@ public class CompletionKey {
     /**
      * Create a "long" Completion Key which includes data relating to data
      * buffers.
-     * 
+     *
      * @param channelIdentifier a long value holding the channelID
      * @param callIdentifier a long value holding the callID
      * @param bufferCount a count of the number of data buffers to include
@@ -94,10 +100,8 @@ public class CompletionKey {
             throw new IllegalArgumentException("Buffer count cannot be < 0 !");
         int bufferLength = 8 * (FIRST_BUFFER_INDEX + (bufferCount * 2));
 
-        this.rawData = this.allocateDirect(bufferLength);
-        this.stagingByteBuffer = new LocalByteBuffer(bufferLength);
-
-        this.rawData.order(ByteOrder.nativeOrder());
+        // Release current and allocate new  "wsByteBuf", "rawData", and "stagingByteBuffer" objects.
+        getNewDirectByteBuffer(bufferLength);
 
         this.stagingByteBuffer.putLong(CHANNEL_ID_INDEX * 8, channelIdentifier);
         this.stagingByteBuffer.putLong(CALL_ID_INDEX * 8, callIdentifier);
@@ -105,21 +109,62 @@ public class CompletionKey {
         this.stagingByteBuffer.putLong(RETURN_CODE_INDEX * 8, 0);
         this.stagingByteBuffer.putLong(NATIVE_STRUCTURE_INDEX * 8, 0);
         this.stagingByteBuffer.putLong(RETURN_STATUS_INDEX * 8, 0);
+        this.stagingByteBuffer.putLong(FIRST_BUFFER_INDEX * 8, 0);
+        this.stagingByteBuffer.putLong((FIRST_BUFFER_INDEX + 1) * 8, 0);
 
         this.channelIdentifier = channelIdentifier;
         this.callIdentifier = callIdentifier;
         this.bufferCount = bufferCount;
     }
 
-    protected ByteBuffer allocateDirect(int bufferLength) {
+    protected void getNewDirectByteBuffer(int bufferLength) {
         WsByteBufferPoolManager wsByteBufferManager = ChannelFrameworkFactory.getBufferManager();
-        return wsByteBufferManager.allocateDirect(bufferLength).getWrappedByteBufferNonSafe();
+
+        // Free existing ByteBuffer objects.
+        if (this.rawData != null) {
+            if (this.wsByteBuf != null) {
+                this.wsByteBuf.release();
+                this.wsByteBuf = null;
+            }
+            this.rawData = null;
+
+            this.stagingByteBuffer = null;
+        }
+
+        // Get new DirectByteBuffer to handler requested size. Keep both WsByteBuffer, wrapper ByteBuffer, and optimized
+        // byte[] in sync.
+        this.wsByteBuf = wsByteBufferManager.allocateDirect(bufferLength);
+
+        this.rawData = this.wsByteBuf.getWrappedByteBufferNonSafe();
+        this.rawData.order(ByteOrder.nativeOrder());
+
+        this.stagingByteBuffer = new LocalByteBuffer(bufferLength);
+    }
+
+    /**
+     * Cleanup resources held by CompletionKey
+     */
+    protected void destroy() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "CompletionKey::destroy entered for:" + this);
+        }
+
+        // Free existing ByteBuffer objects.
+        if (this.rawData != null) {
+            if (this.wsByteBuf != null) {
+                this.wsByteBuf.release();
+                this.wsByteBuf = null;
+            }
+            this.rawData = null;
+
+            this.stagingByteBuffer = null;
+        }
     }
 
     /**
      * Gets the native address of the start of the byte buffer which holds the
      * data for this CompletionKey.
-     * 
+     *
      * @return long
      */
     public long getAddress() {
@@ -128,7 +173,7 @@ public class CompletionKey {
 
     /**
      * Sets the address and length of a buffer with a specified index.
-     * 
+     *
      * @param address of the buffer
      * @param length of the buffer in bytes
      * @param index of the buffer to set, where 0 is the first buffer
@@ -146,7 +191,7 @@ public class CompletionKey {
     /**
      * Returns the number of buffer elements that can be accommodated by this
      * CompletionKey.
-     * 
+     *
      * @return int
      */
     public int getBufferCount() {
@@ -156,7 +201,7 @@ public class CompletionKey {
     /**
      * Returns the number of bytes affected (read/written) for the completed
      * operation identified by this data.
-     * 
+     *
      * @return long
      */
     public long getBytesAffected() {
@@ -166,7 +211,7 @@ public class CompletionKey {
     /**
      * Sets the number of bytes affected (read/written) for the completed
      * operation identified by this data.
-     * 
+     *
      * @param count the number of bytes.
      */
     public void setBytesAffected(int count) {
@@ -175,7 +220,7 @@ public class CompletionKey {
 
     /**
      * Returns the call identifier for the operation relating to this data.
-     * 
+     *
      * @return long
      */
     public long getCallIdentifier() {
@@ -184,7 +229,7 @@ public class CompletionKey {
 
     /**
      * Sets the call identifier for the operation relating to this data.
-     * 
+     *
      * @param callid
      */
     public void setCallIdentifier(long callid) {
@@ -194,7 +239,7 @@ public class CompletionKey {
 
     /**
      * Returns the channel identifier for the operation relating to this data.
-     * 
+     *
      * @return long
      */
     public long getChannelIdentifier() {
@@ -203,7 +248,7 @@ public class CompletionKey {
 
     /**
      * Returns the operation result status.
-     * 
+     *
      * @return long
      */
     public long getReturnStatus() {
@@ -212,7 +257,7 @@ public class CompletionKey {
 
     /**
      * Returns the operation return status.
-     * 
+     *
      * @param status
      */
     public void setReturnStatus(int status) {
@@ -222,7 +267,7 @@ public class CompletionKey {
     /**
      * Returns the result code for the operation where the operation has
      * completed.
-     * 
+     *
      * @return the platform-specific return code.
      */
     public int getReturnCode() {
@@ -247,7 +292,7 @@ public class CompletionKey {
 
     /**
      * Returns whether or not the operation used the JIT buffer completed.
-     * 
+     *
      * @return the platform-specific return code.
      */
     public boolean wasJITBufferUsed() {
@@ -257,7 +302,7 @@ public class CompletionKey {
     /**
      * Sets the platform-specific return code for the operation identified by
      * the channel and call id.
-     * 
+     *
      * @param rc
      */
     public void setReturnCode(int rc) {
@@ -271,14 +316,10 @@ public class CompletionKey {
         // save native structure data from old structure
         long nativeStruct = this.stagingByteBuffer.getLong(NATIVE_STRUCTURE_INDEX * 8);
 
-        // Use optimized ByteBuffer manager
-        //this.rawData = ByteBuffer.allocateDirect(bufferLength);
-        this.rawData = this.allocateDirect(bufferLength);
-
-        this.rawData.order(ByteOrder.nativeOrder());
+        // Release current and allocate new  "wsByteBuf", "rawData", and "stagingByteBuffer" objects.
+        getNewDirectByteBuffer(bufferLength);
 
         // reset all values in the new structure with data from original
-        this.stagingByteBuffer = new LocalByteBuffer(bufferLength);
         this.stagingByteBuffer.putLong(CHANNEL_ID_INDEX * 8, this.channelIdentifier);
         this.stagingByteBuffer.putLong(CALL_ID_INDEX * 8, callIdentifier);
         this.stagingByteBuffer.putLong(BYTES_AFFECTED_INDEX * 8, -1L);
@@ -303,6 +344,8 @@ public class CompletionKey {
         this.stagingByteBuffer.putLong(RETURN_CODE_INDEX * 8, 0);
         this.stagingByteBuffer.putLong(NATIVE_STRUCTURE_INDEX * 8, 0);
         this.stagingByteBuffer.putLong(RETURN_STATUS_INDEX * 8, 0);
+        this.stagingByteBuffer.putLong(FIRST_BUFFER_INDEX * 8, 0);
+        this.stagingByteBuffer.putLong((FIRST_BUFFER_INDEX + 1) * 8, 0);
 
         this.channelIdentifier = _channelIdentifier;
         this.callIdentifier = _callIdentifier;
@@ -311,18 +354,23 @@ public class CompletionKey {
     /**
      * Returns a printable representation of the receiver suitable for display
      * to a user.
-     * 
+     *
      * @return the formatted string.
      */
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder(128);
         buffer.append(this.getClass().getName());
-        buffer.append("[channel id=").append(getChannelIdentifier());
-        buffer.append(", call id=").append(getCallIdentifier());
+        buffer.append("[channel id=").append(Long.toHexString(getChannelIdentifier()));
+        buffer.append(", call id=").append(Long.toHexString(getCallIdentifier()));
+        buffer.append(", wsByteBuf native addr=").append(Long.toHexString(this.getAddress()));
         buffer.append(", rc=").append(getReturnCode());
         buffer.append(", bytes=").append(getBytesAffected());
-        buffer.append(", Native address/JIT used=").append(this.stagingByteBuffer.getLong(NATIVE_STRUCTURE_INDEX * 8));
+        buffer.append(", JIT Buffer used=").append(wasJITBufferUsed());
+        buffer.append(", Native address/JIT used=").append(Long.toHexString(this.stagingByteBuffer.getLong(NATIVE_STRUCTURE_INDEX * 8)));
+        buffer.append(", return status=").append(Long.toHexString(getReturnStatus()));
+        buffer.append(", 1st Buff address=").append(Long.toHexString(this.stagingByteBuffer.getLong(FIRST_BUFFER_INDEX * 8)));
+        buffer.append(", 1st Buff len=").append(Long.toHexString(this.stagingByteBuffer.getLong((FIRST_BUFFER_INDEX + 1) * 8)));
         buffer.append("]\n");
         return buffer.toString();
     }
