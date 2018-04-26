@@ -116,11 +116,8 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         authResult = handleJwtSSO(req, res);
-        if (authResult != null && (authResult.getStatus().equals(AuthResult.SUCCESS))) {
+        if ((authResult != null && authResult.getStatus().equals(AuthResult.SUCCESS)) || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie()) {
             return authResult;
-        }
-        if (!JwtSSOTokenHelper.shouldFallbackToLtpaCookie()) { // shouldFallBack is true if jwtsso not active.
-            return new AuthenticationResult(AuthResult.FAILURE, "");
         }
 
         String cookieName = ssoCookieHelper.getSSOCookiename();
