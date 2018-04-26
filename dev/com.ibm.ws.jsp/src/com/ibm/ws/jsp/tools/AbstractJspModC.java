@@ -849,6 +849,7 @@ public abstract class AbstractJspModC {
         List dependentsList = new ArrayList();
         JspResources jspResources = null;
         boolean removeV4FirstTime=true;
+        List<JspResources> upToDateJspsList = new ArrayList<JspResources>(); // for saving a list of JSPs to add to web.xml later 
         for (Iterator itr = files.iterator(); itr.hasNext();) {
             String resourcePath = (String) itr.next();
             JspInputSource inputSource = context.getJspInputSourceFactory().createJspInputSource(resourcePath);
@@ -918,6 +919,8 @@ public abstract class AbstractJspModC {
                 }
             }
             else {
+                // Populating a list of JSPs that are up to date to add them to the generated web.xml later
+                upToDateJspsList.add(jspResources); 
                 if (logger!=null)
                     logger.logp(Level.INFO,CLASS_NAME,"translateDir",resourcePath + " is up to date.");
                 upToDateCount++;
@@ -969,36 +972,6 @@ public abstract class AbstractJspModC {
                     }
                 }
                 syncAndSmap(options, translatedJsps, translationResultMap);
-
-                // defect 201384 begin
-                // collect servlet config information
-                if (options.isUseFullPackageNames() && genWebXml !=null) {
-                    String servletClass;
-                    JspResources jspRes = null;
-                    for (Iterator itr = translatedJsps.iterator(); itr.hasNext();) {
-                        jspRes = (JspResources) itr.next();
-                        servletClass=jspRes.getPackageName()+"."+jspRes.getClassName();
-                        genWebXmlDocument.getDocumentElement().appendChild(genWebXmlDocument.createTextNode("\n\t"));
-                        Element servletElement = genWebXmlDocument.createElement("servlet");
-                        Element servletNameElement = genWebXmlDocument.createElement("servlet-name");
-                        Element servletClassElement = genWebXmlDocument.createElement("servlet-class");
-                        servletNameElement.appendChild(genWebXmlDocument.createTextNode(servletClass));
-                        servletClassElement.appendChild(genWebXmlDocument.createTextNode(servletClass));
-                        servletElement.appendChild(genWebXmlDocument.createTextNode("\n\t\t"));
-                        servletElement.appendChild(servletNameElement);
-                        servletElement.appendChild(genWebXmlDocument.createTextNode("\n\t\t"));
-                        servletElement.appendChild(servletClassElement);
-                        servletElement.appendChild(genWebXmlDocument.createTextNode("\n\t"));
-                        genWebXmlDocument.getDocumentElement().appendChild(servletElement);
-                    }
-                    for (Iterator itr = translatedJsps.iterator(); itr.hasNext();) {
-                        jspRes = (JspResources) itr.next();
-                        servletClass=jspRes.getPackageName()+"."+jspRes.getClassName();
-                        WebXmlMappings mapping=new WebXmlMappings(servletClass,jspRes.getInputSource().getRelativeURL());
-                        this.genWebXmlMappings.add(mapping);
-                    }
-                }
-                // defect 201384 end
             }
             finally {
                 if (sourceFiles != null) {
@@ -1016,6 +989,41 @@ public abstract class AbstractJspModC {
             }
             // end 199761
          }
+         
+        // defect 201384 begin
+        // collect servlet config information
+        if (options.isUseFullPackageNames() && genWebXml !=null) {
+            String servletClass;
+            JspResources jspRes = null;
+            // Add JSPs to web.xml
+            List<JspResources> processedJspsJspResources = new ArrayList<JspResources>(translatedJsps);
+            processedJspsJspResources.addAll(upToDateJspsList);
+            
+            for (Iterator itr = processedJspsJspResources.iterator(); itr.hasNext();) {
+                jspRes = (JspResources) itr.next();
+                servletClass=jspRes.getPackageName()+"."+jspRes.getClassName();
+                genWebXmlDocument.getDocumentElement().appendChild(genWebXmlDocument.createTextNode("\n\t"));
+                Element servletElement = genWebXmlDocument.createElement("servlet");
+                Element servletNameElement = genWebXmlDocument.createElement("servlet-name");
+                Element servletClassElement = genWebXmlDocument.createElement("servlet-class");
+                servletNameElement.appendChild(genWebXmlDocument.createTextNode(servletClass));
+                servletClassElement.appendChild(genWebXmlDocument.createTextNode(servletClass));
+                servletElement.appendChild(genWebXmlDocument.createTextNode("\n\t\t"));
+                servletElement.appendChild(servletNameElement);
+                servletElement.appendChild(genWebXmlDocument.createTextNode("\n\t\t"));
+                servletElement.appendChild(servletClassElement);
+                servletElement.appendChild(genWebXmlDocument.createTextNode("\n\t"));
+                genWebXmlDocument.getDocumentElement().appendChild(servletElement);
+            }
+            for (Iterator itr = processedJspsJspResources.iterator(); itr.hasNext();) {
+                jspRes = (JspResources) itr.next();
+                servletClass=jspRes.getPackageName()+"."+jspRes.getClassName();
+                WebXmlMappings mapping=new WebXmlMappings(servletClass,jspRes.getInputSource().getRelativeURL());
+                this.genWebXmlMappings.add(mapping);
+            }
+        }
+        // defect 201384 end
+
     }
 
     private int createFilesList(File sourceFiles, List translatedJsps, JspOptions options) throws IOException {
