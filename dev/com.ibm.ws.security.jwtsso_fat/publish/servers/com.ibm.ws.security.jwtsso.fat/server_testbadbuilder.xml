@@ -15,7 +15,8 @@
         <feature>componenttest-1.0</feature>
         <feature>jwtSso-1.0</feature>
     </featureManager>
-    <jwtSso  jwtBuilderRef="bogusbuilder" setCookieSecureFlag="false"/>
+     <authentication cacheEnabled="false"/>
+    <jwtSso  jwtBuilderRef="bogusbuilder"  fallbackToLtpa="false" includeLtpaCookie="true" setCookieSecureFlag="false"/>
     <include location="../fatTestPorts.xml"/>
      
 

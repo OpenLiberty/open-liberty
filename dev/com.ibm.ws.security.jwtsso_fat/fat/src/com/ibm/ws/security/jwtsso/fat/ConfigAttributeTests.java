@@ -110,6 +110,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
 
     /**
      * specify a nonexistent builderRef, login should fail and we should get a meaningful error message in the log.
+     * The ltpa cookie is included, but fallback is false, so fallback should not occur.
      *
      * @throws Exception
      */
@@ -118,7 +119,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
                    "com.ibm.websphere.security.WSSecurityException" })
-    public void test_badJwtBuilderRef() throws Exception {
+    public void test_invalidBuilderRef_ltpaFallbackFalse() throws Exception {
         reconfigServer("server_testbadbuilder.xml");
         ArrayList<String> ignoredErrors = new ArrayList<String>();
         ignoredErrors.add("CWWKS6201W");
@@ -155,20 +156,114 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/formlogin/SimpleServlet";
 
         Page response = invokeUrl(new WebClient(), protectedUrl); // get back the login page
-
         validationUtils.validateResult(response, ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
 
-        expectations.addExpectations(getSuccessfulProtectedResourceExpectationsForJwtCookie(ACTION_SUBMIT_LOGIN_CREDENTIALS, protectedUrl));
-        expectations.addExpectations(getJwtPrincipalExpectations(ACTION_SUBMIT_LOGIN_CREDENTIALS));
-
-        response = performLogin(response);
-
-        validationUtils.validateResult(response, ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
+        response = performLogin(response); // get back the servlet, we hope.
 
         String responseStr = response.getWebResponse().getContentAsString();
         boolean check = responseStr.contains("\"iss\":\"https://flintstone:19443/jwt/defaultJWT\"");
         assertTrue("Issuer in token did not match the one configured in the builder", check);
 
+    }
+
+    /**
+     * specify an existing and valid jwtConsumerRef and jwtBuilderRef. The issuer in the builder and
+     * consumer match, and are non-default. A separate test checks that the non-default builder is used.
+     * When both are used together, if we can authenticate to the app and then re-access the app,
+     * the second access will cause the token to be checked by the consumer.
+     * If the jwtConsumerRef is in use as it should be, then the second access will succeed.
+     *
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void test_validConsumerRef() throws Exception {
+        reconfigServer("server_testgoodconsumer.xml");
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(getSuccessfulLoginPageExpectations(ACTION_INVOKE_PROTECTED_RESOURCE));
+
+        String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/formlogin/SimpleServlet";
+
+        WebClient wc = new WebClient();
+        Page response = invokeUrl(wc, protectedUrl); // get back the login page
+        validationUtils.validateResult(response, ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+
+        response = performLogin(response);
+
+        String responseStr = response.getWebResponse().getContentAsString();
+        boolean check = responseStr.contains("\"iss\":\"https://flintstone:19443/jwt/defaultJWT\"");
+        assertTrue("Issuer in token did not match the one configured in the builder", check);
+
+        // now access resource a second time, force token to be examined by consumer
+        response = invokeUrl(wc, protectedUrl);
+        responseStr = response.getWebResponse().getContentAsString();
+        boolean check2 = responseStr.contains("SimpleServlet");
+        assertTrue("Did not access protected resource with custom consumer", check2);
+
+    }
+
+    /**
+     * specify an invalid consumer and try to authenticate. We should get an error message about the
+     * invalid consumer.
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException",
+                   "com.ibm.websphere.security.WSSecurityException",
+                   "com.ibm.websphere.security.jwt.InvalidConsumerException" })
+    public void test_invalidConsumerRef() throws Exception {
+        reconfigServer("server_testbadconsumer.xml");
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(getSuccessfulLoginPageExpectations(ACTION_INVOKE_PROTECTED_RESOURCE));
+
+        String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/formlogin/SimpleServlet";
+
+        WebClient wc = new WebClient();
+        Page response = invokeUrl(wc, protectedUrl); // get back the login page
+        validationUtils.validateResult(response, ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+
+        response = performLogin(response); // should fail and we should get login page again
+
+        String responseStr = response.getWebResponse().getContentAsString();
+        boolean check = responseStr.contains("Form Login Page");
+        assertTrue("Did not receive login page on failure", check);
+
+        String errorMsg = server.waitForStringInLogUsingMark("CWWKS6030E", 100);
+        assertFalse("Did not find expected error message CWWKS6030E in log", errorMsg == null);
+
+    }
+
+    /**
+     * Specify an invalid builder, includeLtpa, and fallBackToLtpa. There should be no jwt cookie present,
+     * there should be an ltpa cookie present, and because fallback is enabled, we should be able to access
+     * the resource.
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
+                   "com.ibm.ws.security.jwt.internal.JwtTokenException",
+                   "com.ibm.websphere.security.WSSecurityException" })
+    public void test_fallbackToLtpaTrue() throws Exception {
+        reconfigServer("server_testfallbacktoltpatrue.xml");
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(getSuccessfulLoginPageExpectations(ACTION_INVOKE_PROTECTED_RESOURCE));
+
+        String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/formlogin/SimpleServlet";
+
+        WebClient wc = new WebClient();
+        Page response = invokeUrl(wc, protectedUrl); // get back the login page
+        validationUtils.validateResult(response, ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+
+        response = performLogin(response);
+
+        String responseStr = response.getWebResponse().getContentAsString();
+        boolean check = responseStr.contains("SimpleServlet");
+        assertTrue("did not access protected resource", check);
+        assertTrue("did not find expected ltpa cookie", responseStr.contains("cookie: LtpaToken2"));
+        assertFalse("found unexpected jwt cookie", responseStr.contains("cookie: jwtToken"));
     }
 
     void reconfigServer(String fileName) throws Exception {
