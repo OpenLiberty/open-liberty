@@ -27,6 +27,7 @@ public class LibertyFeature {
 	private final String productVersion;
 	private final MavenCoordinates mavenCoordinates;
 	private final boolean isWebsphereLiberty;
+	private final boolean restrictedLicense;
 
 	/**
 	 * Construct LibertyFeature
@@ -39,7 +40,7 @@ public class LibertyFeature {
 	 * @param mavenCoordinates Maven coordinates
 	 * @param isWebsphereLiberty If true then it is WebSphere Liberty, else Open Liberty
 	 */
-	public LibertyFeature(String symbolicName, String shortName, String name, String description, Map<String, Collection<String>> requiredFeaturesWithTolerates, String productVersion, String mavenCoordinates, boolean isWebsphereLiberty) {
+	public LibertyFeature(String symbolicName, String shortName, String name, String description, Map<String, Collection<String>> requiredFeaturesWithTolerates, String productVersion, String mavenCoordinates, boolean isWebsphereLiberty, boolean restrictedLicense) {
 		super();
 		this.symbolicName = symbolicName;
 		this.shortName = shortName;
@@ -56,6 +57,7 @@ public class LibertyFeature {
 					artifactId, productVersion);
 		}
 		this.isWebsphereLiberty = isWebsphereLiberty;
+		this.restrictedLicense = restrictedLicense;
 	}
 
 	public String getSymbolicName() {
@@ -78,6 +80,9 @@ public class LibertyFeature {
 	}
 	public boolean isWebsphereLiberty() {
 		return isWebsphereLiberty;
+	}
+	public boolean isRestrictedLicense() {
+		return restrictedLicense;
 	}
 	
 	/**
