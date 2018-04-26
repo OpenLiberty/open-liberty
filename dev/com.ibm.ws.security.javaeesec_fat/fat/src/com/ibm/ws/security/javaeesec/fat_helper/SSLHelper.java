@@ -46,7 +46,7 @@ public class SSLHelper {
      * @param server the LibertyServer
      */
     public static void establishSSLContext(HttpClient client, int port, LibertyServer server) {
-        establishSSLContext(client, port, server, null, null, null, null, "TLS");
+        establishSSLContext(client, port, server, null, null, null, null, "TLSv1.2");
     }
 
     /**
@@ -145,7 +145,7 @@ public class SSLHelper {
                 }
 
                 if (sslProtocol == null)
-                    sslProtocol = "TLS";
+                    sslProtocol = "TLSv1.2";
 
                 SSLContext ctx = SSLContext.getInstance(sslProtocol);
                 ctx.init(keyManagers, trustManagers, null);
