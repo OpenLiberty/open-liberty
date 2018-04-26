@@ -60,6 +60,7 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_15_APP_JAVA = "com.ibm.ws.springboot.support.version15.test.java.app.jar";
     public static final String SPRING_BOOT_15_APP_WEBANNO = "com.ibm.ws.springboot.support.version15.test.webanno.app.jar";
     public static final String SPRING_BOOT_15_APP_WEBSOCKET = "com.ibm.ws.springboot.support.version15.test.websocket.app.jar";
+    public static final String SPRING_BOOT_15_APP_ACTUATOR = "com.ibm.ws.springboot.support.version15.test.actuator.app.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
 
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
@@ -236,7 +237,7 @@ public abstract class AbstractSpringTests {
             modifyServerConfiguration(config);
             server.updateServerConfiguration(config);
             String methodName = getLogMethodName();
-            String logName = getClass().getSimpleName() + (methodName.isEmpty() ? "" : "-") + methodName + ".log";
+            String logName = getClass().getSimpleName() + methodName + ".log";
             server.startServer(logName, true, false);
 
             if (expectApplicationSuccess()) {

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -171,19 +170,8 @@ public class ConfigServerXMLOverrideTests extends AbstractSpringTests {
     }
 
     @Override
-    public void configureServer() throws Exception {
-        // do nothing to avoid starting server with @BeforeClass
-    }
-
-    @Override
     public String getLogMethodName() {
         return "-" + testName.getMethodName();
-    }
-
-    @Before
-    public void configureOverrideServer() throws Exception {
-        // configure for each test method
-        super.configureServer();
     }
 
     @After
