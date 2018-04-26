@@ -29,6 +29,7 @@ src: \
 	test-bundles/test.config.childalias.c/src,\
 	test-bundles/test.config.extensions/src,\
 	test-bundles/test.config.extensions.schema.generator/src,\
+	test-bundles/test.config.variables,\
 	test-bundles/test.metatype.provider/src,\
 	test-bundles/test.prod.extensions/src,\
 	test-bundles/test.user.prod.extensions/src
@@ -39,6 +40,7 @@ fat.project: true
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest, \
 	com.ibm.ws.componenttest:public.api;version=1.0.0, \
 	com.ibm.websphere.filetransfer;version=latest, \

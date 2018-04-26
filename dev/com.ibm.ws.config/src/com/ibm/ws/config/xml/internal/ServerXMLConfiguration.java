@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import com.ibm.websphere.config.ConfigParserException;
 import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -135,6 +137,7 @@ class ServerXMLConfiguration {
 
         try {
             variableRegistry.updateSystemVariables(getVariables());
+            bundleContext.registerService(ConfigVariables.class, variableRegistry, new Hashtable<String, Object>());
         } catch (ConfigMergeException e) {
             // Rethrow if onError=FAIL. An error message has already been issued otherwise.
             if (ErrorHandler.INSTANCE.fail()) {
