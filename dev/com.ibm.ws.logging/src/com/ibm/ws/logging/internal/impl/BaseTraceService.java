@@ -742,7 +742,7 @@ public class BaseTraceService implements TrService {
 
             RoutedMessage routedMessage = null;
             if (externalMessageRouter.get() != null) {
-                String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
+                String message = formatter.messageLogFormat(logRecord, formattedVerboseMsg);
                 routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, message, logRecord);
             } else {
                 routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
