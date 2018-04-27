@@ -791,7 +791,7 @@ public class CacheHashMap extends BackedHashMap {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "session current access time: " + curAccessTime);
                 updateCount = 0;
-            } else if (sessionInfo.getLastAccess() == nowTime) {
+            } else if (sessionInfo.getLastAccess() >= nowTime) { // avoid setting last access cache already has a later time
                 updateCount = 1; // be consistent with Statement.executeUpdate which returns 1 the when row matches but no changes are made
             } else {
                 sessionInfo.setLastAccess(nowTime);
