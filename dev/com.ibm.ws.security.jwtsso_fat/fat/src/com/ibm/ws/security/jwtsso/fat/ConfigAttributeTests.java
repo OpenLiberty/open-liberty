@@ -109,7 +109,8 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     }
 
     /**
-     * specify a nonexistent builderRef, login should fail and we should get a meaningful error message in the log.
+     * Test the jwtBuilderRef attribute. Specify a nonexistent builderRef,
+     * login should fail and we should get a meaningful error message in the log.
      * The ltpa cookie is included, but fallback is false, so fallback should not occur.
      *
      * @throws Exception
@@ -139,10 +140,10 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     }
 
     /**
-     * specify an existing and valid jwtBuilderRef, authenticate, examine the token contents in the
-     * output of the test application to confirm the ref was used to create the token. *
-     *
-     * TODO: we have bug here, when builder changes in config, we keep building tokens with previous builder.
+     * Test the jwtBuilderRef attribute. Specify an existing and valid jwtBuilderRef,
+     * authenticate, examine the token contents in the
+     * output of the test application to confirm the ref was used to create the token.
+     * Authcache must be disabled in server.xml for this test.
      *
      * @throws Exception
      */
@@ -167,8 +168,9 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     }
 
     /**
-     * specify an existing and valid jwtConsumerRef and jwtBuilderRef. The issuer in the builder and
-     * consumer match, and are non-default. A separate test checks that the non-default builder is used.
+     * Test the jwtConsumerRef attribute. Specify an existing and valid jwtConsumerRef and jwtBuilderRef.
+     * The issuer in the builder and consumer match, and are non-default.
+     * A separate test checks that the non-default builder is used.
      * When both are used together, if we can authenticate to the app and then re-access the app,
      * the second access will cause the token to be checked by the consumer.
      * If the jwtConsumerRef is in use as it should be, then the second access will succeed.
@@ -204,8 +206,8 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     }
 
     /**
-     * specify an invalid consumer and try to authenticate. We should get an error message about the
-     * invalid consumer.
+     * Test the jwtConsumerRef attribute. Specify an invalid consumer and try to authenticate.
+     * We should get an error message about the invalid consumer.
      *
      * @throws Exception
      */
@@ -237,6 +239,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     }
 
     /**
+     * Test the fallbackToLtpa attribute.
      * Specify an invalid builder, includeLtpa, and fallBackToLtpa. There should be no jwt cookie present,
      * there should be an ltpa cookie present, and because fallback is enabled, we should be able to access
      * the resource.
@@ -269,13 +272,14 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     }
 
     /**
-     * set cookieSecure flag to true and inspect cookie to see that it happened.
+     * Test the setCookieSecureFlag attribute. Use the default setting (true),
+     * and inspect cookie to see that it happened.
      *
      * @throws Exception
      */
     @Test
     @Mode(TestMode.LITE)
-    public void test_cookieSecure() throws Exception {
+    public void test_cookieSecureTrue_httpOnlyTrue() throws Exception {
         reconfigServer("server_testcookiesecure.xml");
         ArrayList<String> ignoredErrors = new ArrayList<String>();
         ignoredErrors.add("CWWKS9127W");
@@ -293,15 +297,48 @@ public class ConfigAttributeTests extends CommonSecurityFat {
 
         response = performLogin(response);
 
-        String responseStr = response.getWebResponse().getContentAsString();
         String cookie = response.getWebResponse().getResponseHeaderValue("Set-Cookie");
-
+        Log.info(thisClass, "", "value of cookie header: " + cookie);
         assertTrue("did not find expected  cookie", cookie != null);
         assertTrue("cookie name is wrong", cookie.contains("jwtToken"));
         assertTrue("cookie is not secure", cookie.contains("Secure"));
+        assertTrue("cookie is not marked HttpOnly", cookie.contains("HttpOnly"));
         // check for warning that secure cookie is being set on http
         String errorMsg = server.waitForStringInLogUsingMark("CWWKS9127W", 100);
         assertFalse("Did not find expected warning message CWWKS9127W in log", errorMsg == null);
+    }
+
+    /**
+     * Test that the jwtsso cookie respects the webAppSecurity httpOnlyCookies attribute setting.
+     * Set webAppSecurity httpOnlyCookies="false" and inspect the cookie.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    public void test_cookieSecureTrue_httpOnlyFalse() throws Exception {
+        reconfigServer("server_testcookiesecure_httponlyfalse.xml");
+        ArrayList<String> ignoredErrors = new ArrayList<String>();
+        ignoredErrors.add("CWWKS9127W");
+        server.addIgnoredErrors(ignoredErrors);
+
+        String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/formlogin/SimpleServlet";
+
+        WebClient wc = new WebClient();
+
+        Page response = invokeUrl(wc, protectedUrl); // get back the login page
+
+        // now disable redirect so we can see the cookies in the 302
+        wc.getOptions().setRedirectEnabled(false);
+        wc.getOptions().setThrowExceptionOnFailingStatusCode(false);
+
+        response = performLogin(response);
+
+        String cookie = response.getWebResponse().getResponseHeaderValue("Set-Cookie");
+        Log.info(thisClass, "", "value of cookie header: " + cookie);
+        assertTrue("did not find expected  cookie", cookie != null);
+        assertTrue("cookie name is wrong", cookie.contains("jwtToken"));
+        assertFalse("cookie is marked HttpOnly and should not be.", cookie.contains("HttpOnly"));
     }
 
     void reconfigServer(String fileName) throws Exception {
@@ -310,7 +347,6 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         server.setServerConfigurationFile(relpath + fileName);
         server.waitForStringInLog("CWWKF0008I|CWWKG0017I", 180000);
         // CWWKF0008I Feature update completed, CWWKG0017I: The server configuration was successfully updated
-
     }
 
     Expectations getSuccessfulLoginPageExpectations(String testAction) {

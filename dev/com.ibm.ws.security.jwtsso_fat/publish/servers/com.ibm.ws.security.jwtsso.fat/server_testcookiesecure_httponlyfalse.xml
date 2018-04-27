@@ -16,8 +16,8 @@
         <feature>jwtSso-1.0</feature>
     </featureManager>
     
-    <!--  no jwtsso config element, so cookie setting should be secured --> 
-   
+    
+    <webAppSecurity httpOnlyCookies="false" />
     <include location="../fatTestPorts.xml"/>
      
 
