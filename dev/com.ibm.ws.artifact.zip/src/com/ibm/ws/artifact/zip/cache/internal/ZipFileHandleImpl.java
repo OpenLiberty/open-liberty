@@ -103,11 +103,12 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         } else {
             zipFileReaper = new ZipFileReaper(
                 "zip cache reaper",
+                ZipCachingProperties.ZIP_CACHE_DEBUG_STATE,
                 ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
-                ZipCachingProperties.ZIP_CACHE_REAPER_FIRST_SHORT_INTERVAL,
-                ZipCachingProperties.ZIP_CACHE_REAPER_FIRST_LONG_INTERVAL,
-                ZipCachingProperties.ZIP_CACHE_REAPER_HIT_SHORT_INTERVAL,
-                ZipCachingProperties.ZIP_CACHE_REAPER_HIT_LONG_INTERVAL);
+                ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
+                ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MAX,
+                ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MIN,
+                ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX);
         }
     }
 
@@ -232,12 +233,12 @@ public class ZipFileHandleImpl implements ZipFileHandle {
     @Override
     @Trivial
     public InputStream getInputStream(ZipFile useZipFile, String zipEntryName) throws IOException {
-    	ZipEntry zipEntry = useZipFile.getEntry(zipEntryName);
-    	if ( zipEntry == null ) {
-    		throw new FileNotFoundException("Zip file [ " + getPath() + " ] does not container entry [ " + zipEntryName + " ]");
-    	}
+        ZipEntry zipEntry = useZipFile.getEntry(zipEntryName);
+        if ( zipEntry == null ) {
+            throw new FileNotFoundException("Zip file [ " + getPath() + " ] does not container entry [ " + zipEntryName + " ]");
+        }
 
-    	return getInputStream(useZipFile, zipEntry);
+        return getInputStream(useZipFile, zipEntry);
     }
 
     /**
@@ -366,21 +367,21 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         int totalRead = 0;
 
         while ( remainingRead > 0 ) {
-        	int nextRead = inputStream.read(bytes, totalRead, remainingRead); // throws IOException
-        	if ( nextRead <= 0 ) {
-            	// 'nextRead == 0' should only ever happen if 'remainingRead == 0', which ought
-            	// never be the case here.  Treat a '0' return value as an error.
-        		//
-        		// 'nextRead == -1' means the end of input was reached.
+            int nextRead = inputStream.read(bytes, totalRead, remainingRead); // throws IOException
+            if ( nextRead <= 0 ) {
+                // 'nextRead == 0' should only ever happen if 'remainingRead == 0', which ought
+                // never be the case here.  Treat a '0' return value as an error.
+                //
+                // 'nextRead == -1' means the end of input was reached.
 
-        		throw new IOException(
-        			"Read only [ " + Integer.valueOf(totalRead) + " ]" +
-        			" of expected [ " + Integer.valueOf(expectedRead) + " ] bytes" +
-        			" from [ " + name + " ]");
-        	} else {
-        		remainingRead -= nextRead;
-        		totalRead += nextRead;
-        	}
+                throw new IOException(
+                    "Read only [ " + Integer.valueOf(totalRead) + " ]" +
+                    " of expected [ " + Integer.valueOf(expectedRead) + " ] bytes" +
+                    " from [ " + name + " ]");
+            } else {
+                remainingRead -= nextRead;
+                totalRead += nextRead;
+            }
         }
 
         return bytes;
