@@ -363,7 +363,7 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
   File gitReposDir = new File(project.buildDir, 'gitRepos')
 
   // If running locally use git directly
-  if( System.properties['fat.test.localrun'] || System.properties['spawn.experimentalfat.buckets'].contains(proj)){
+  if( System.properties['fat.test.localrun'] || (System.properties['spawn.experimentalfat.buckets'] != null && System.properties['spawn.experimentalfat.buckets'].contains(proj)) ){
 
     File repoDir = new File(gitReposDir, folder)
     String into = repoDir.getAbsolutePath()
