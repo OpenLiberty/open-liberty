@@ -14,6 +14,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -908,8 +909,9 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * @return the class.
      * @throws ClassNotFoundException
      * @throws UnableToAdaptException
+     * @throws MalformedURLException
      */
-    public Class<?> loadClass(final String className) throws ClassNotFoundException, UnableToAdaptException {
+    public Class<?> loadClass(final String className) throws ClassNotFoundException, UnableToAdaptException, MalformedURLException {
         ClassLoader raClassLoader = resourceAdapterSvc.getClassLoader();
         if (raClassLoader != null) {
             return Utils.priv.loadClass(raClassLoader, className);

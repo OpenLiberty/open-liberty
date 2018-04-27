@@ -38,7 +38,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.classloading.ClassProvider;
 import com.ibm.ws.classloading.LibertyClassLoader;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.ws.jca.rar.ResourceAdapterBundleService;
 import com.ibm.ws.jca.utils.xml.metatype.Metatype;
@@ -145,8 +144,9 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
      *
      * @param context for this component instance
      * @throws UnableToAdaptException
+     * @throws MalformedURLException
      */
-    protected void activate(ComponentContext context) throws UnableToAdaptException {
+    protected void activate(ComponentContext context) throws UnableToAdaptException, MalformedURLException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "activate", context.getProperties());
@@ -199,8 +199,9 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
      *
      * @return class loader
      * @throws UnableToAdaptException
+     * @throws MalformedURLException
      */
-    public ClassLoader getClassLoader() throws UnableToAdaptException {
+    public ClassLoader getClassLoader() throws UnableToAdaptException, MalformedURLException {
         lock.readLock().lock();
         try {
             if (classloader != null)
@@ -225,10 +226,11 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
      * Returns the class loader for the resource adapter file
      *
      * @throws UnableToAdaptException
+     * @throws MalformedURLException
      *
      * @returns class loader for resource adapter file
      */
-    private ClassLoader createRarClassLoader() throws UnableToAdaptException {
+    private ClassLoader createRarClassLoader() throws UnableToAdaptException, MalformedURLException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // Get the files needed to convert the rar file artifact containers into adaptable containers
@@ -379,9 +381,9 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
      * @param rarContainer resource adapter container object
      * @return ProtectionDomain object configured for the resource adapter
      * @throws UnableToAdaptException
+     * @throws MalformedURLException
      */
-    @FFDCIgnore({ MalformedURLException.class })
-    private ProtectionDomain getProtectionDomain(Container rarContainer) throws UnableToAdaptException {
+    private ProtectionDomain getProtectionDomain(Container rarContainer) throws UnableToAdaptException, MalformedURLException {
         PermissionCollection perms = new Permissions();
 
         if (!java2SecurityEnabled()) {
@@ -415,10 +417,10 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
             String loc = rarFilePath;
             codesource = new CodeSource(new URL("file://" + (loc.startsWith("/") ? "" : "/") + loc), (java.security.cert.Certificate[]) null);
         } catch (MalformedURLException e) {
-            codesource = null;
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Code Source could not be set. Setting it to null.", e);
+                Tr.debug(tc, "CodeSource could not be created for RA file path of: rarFilePath", e);
             }
+            throw e;
         }
         ProtectionDomain protectionDomain = new ProtectionDomain(codesource, perms);
         return protectionDomain;
