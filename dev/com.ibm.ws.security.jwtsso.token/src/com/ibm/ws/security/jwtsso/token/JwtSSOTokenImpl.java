@@ -435,6 +435,16 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 		return null;
 	}
 
+	@Override
+	public boolean isCookieSecured() {
+		// TODO Auto-generated method stub
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
+		if (jwtssobuilderConfig != null) {
+			return jwtssobuilderConfig.isCookieSecured();
+		}
+		return true;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *
