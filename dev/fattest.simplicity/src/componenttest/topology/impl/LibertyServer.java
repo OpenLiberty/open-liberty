@@ -3711,6 +3711,18 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Reconfigures the server to use the new configuration file provided (relative to the autoFVT test files directory), waits for the
+     * configuration update to be processed, and waits for all of the specified messages (if any).
+     */
+    public void reconfigureServer(String newConfigFile, String... waitForMessages) throws Exception {
+        Log.info(c, "reconfigureServer", "Reconfiguring server to use new config: " + newConfigFile);
+        setMarkToEndOfLog();
+
+        setServerConfigurationFile(newConfigFile);
+        waitForConfigUpdateInLogUsingMark(installedApplications, waitForMessages);
+    }
+
+    /**
      * Replaces the server configuration. This encapsulates the necessary logic
      * to deal with system / JDK idiosyncrasies.
      *
