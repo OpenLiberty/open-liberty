@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.Constants;
-import com.ibm.ws.security.fat.common.apps.CommonFatApplications;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
@@ -52,6 +52,9 @@ public class FeatureOnlyTest extends CommonSecurityFat {
     public static final String ACTION_INVOKE_PROTECTED_RESOURCE = "invokeProtectedResource";
     public static final String ACTION_SUBMIT_LOGIN_CREDENTIALS = "submitLoginCredentials";
 
+    public static final String APP_TESTMARKER = "testmarker";
+    public static final String APP_FORMLOGIN = "formlogin";
+
     public static final String JWT_COOKIE_NAME = "jwtToken";
     public static final String JWT_REGEX = "[a-zA-Z0-9_=-]+\\.[a-zA-Z0-9_=-]+\\.[a-zA-Z0-9_=-]+";
 
@@ -68,12 +71,27 @@ public class FeatureOnlyTest extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.exportDropinAppToServer(server, CommonFatApplications.getTestMarkerApp());
-        ShrinkHelper.exportAppToServer(server, CommonFatApplications.getFormLoginApp());
-
-        serverTracker.addServer(server);
+        setUpServer(server);
 
         server.startServer();
+    }
+
+    static void setUpServer(LibertyServer server) throws Exception {
+        ShrinkHelper.exportDropinAppToServer(server, getTestMarkerApp());
+        ShrinkHelper.exportAppToServer(server, getFormLoginApp());
+
+        server.addInstalledAppForValidation(APP_TESTMARKER);
+        server.addInstalledAppForValidation(APP_FORMLOGIN);
+
+        serverTracker.addServer(server);
+    }
+
+    private static WebArchive getTestMarkerApp() throws Exception {
+        return ShrinkHelper.buildDefaultApp(APP_TESTMARKER, "com.ibm.ws.security.fat.common.apps.testmarker.*");
+    }
+
+    private static WebArchive getFormLoginApp() throws Exception {
+        return ShrinkHelper.buildDefaultApp(APP_FORMLOGIN, "com.ibm.ws.security.fat.common.apps.formlogin.*");
     }
 
     /**
