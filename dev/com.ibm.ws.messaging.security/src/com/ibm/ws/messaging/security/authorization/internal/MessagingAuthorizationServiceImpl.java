@@ -99,7 +99,7 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
                 messagingEngine = auditManager.getJMSMessagingEngine();
         }
 
-        roles = new String[] {"MessagingSecurityConstants.OPERATION_TYPE_RECEIVE"};
+        roles = new String[] {MessagingSecurityConstants.OPERATION_TYPE_RECEIVE};
       
         if (operationType.equalsIgnoreCase(MessagingSecurityConstants.OPERATION_TYPE_BROWSE)) {
             if (checkQueueAccess(authenticatedSubject, destination, MessagingSecurityConstants.OPERATION_TYPE_RECEIVE, false)) {
