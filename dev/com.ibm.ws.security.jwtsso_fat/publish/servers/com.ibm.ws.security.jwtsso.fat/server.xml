@@ -17,6 +17,8 @@
     </featureManager>
     <jwtSso  setCookieSecureFlag="false" />
 
+    <jwtSso setCookieSecureFlag="false" />
+
     <include location="../fatTestPorts.xml"/>
 
     <keyStore id="defaultKeyStore" password="Liberty" />

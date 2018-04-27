@@ -70,14 +70,19 @@ public class SAFConfigHelper {
     /**
      * Create a user in SAF.
      */
-    public static void addUser(String userName, String[] groups, String uid, String password, Cleanup c, boolean ignoreCleanupError) throws Exception {
+    public static void addUser(String userName, String[] groups, String uid, String password, Cleanup c, boolean ignoreCleanupError, boolean passwordExpired) throws Exception {
         // Attempt to delete the user first.
         new CleanupUser(userName, true).call();
 
         runTsoCmd("ADDUSER " + userName + " DFLTGRP(" + groups[0] + ")");
         c.addCleanup(new CleanupUser(userName, ignoreCleanupError));
 
-        runTsoCmd("ALTUSER " + userName + " PASSWORD(" + password + ") NOEXPIRED");
+        if (passwordExpired == true) {
+            runTsoCmd("ALTUSER " + userName + " PASSWORD(" + password + ") EXPIRED");
+        } else {
+            runTsoCmd("ALTUSER " + userName + " PASSWORD(" + password + ") NOEXPIRED");
+        }
+
         runTsoCmd("PASSWORD USER(" + userName + ") NOINTERVAL");
 
         // Add OMVS segment, if uid specified.
@@ -89,6 +94,13 @@ public class SAFConfigHelper {
         for (int i = 1; i < groups.length; ++i) {
             connectUserToGroup(userName, groups[i]);
         }
+    }
+
+    /**
+     * Create a user in SAF.
+     */
+    public static void addUser(String userName, String[] groups, String uid, String password, Cleanup c, boolean ignoreCleanupError) throws Exception {
+        addUser(userName, groups, uid, password, c, ignoreCleanupError, false);
     }
 
     /**
@@ -140,6 +152,13 @@ public class SAFConfigHelper {
      */
     public static void changePassphrase(String userName, String passphrase) throws Exception {
         runTsoCmd("ALTUSER " + userName + " PHRASE('" + passphrase + "') NOEXPIRED");
+    }
+
+    /**
+     * Change a user's password to one that is marked expired.
+     */
+    public static void changePasswordExpired(String userName, String password) throws Exception {
+        runTsoCmd("ALTUSER " + userName + " PASSWORD(" + password + ") EXPIRED");
     }
 
     /**

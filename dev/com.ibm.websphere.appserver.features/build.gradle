@@ -302,12 +302,12 @@ task generateMavenArtifact {
 }
 
 task zipOpenLibertyMavenRepo(type: Zip) {
-    dependsOn generateMavenArtifact
-    from project.file('build/temp')
-    include "mavenArtifact/**"
-    archiveName 'openliberty-mavenArtifact.zip'
-    destinationDir distsDir
-}
+     dependsOn generateMavenArtifact
+     from project.file('build/temp/mavenArtifact')
+     include "io/**"
+     archiveName 'openliberty-mavenArtifact.zip'
+     destinationDir distsDir
+ }
 
 publishing {
   publications {

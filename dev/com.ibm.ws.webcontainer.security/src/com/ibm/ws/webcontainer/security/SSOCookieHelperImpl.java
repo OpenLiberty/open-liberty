@@ -127,6 +127,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         if (baseName == null) {
             return;
         }
+        if ((!req.isSecure()) && getJwtCookieSecure()) {
+            Tr.warning(tc, "JWT_COOKIE_SECURITY_MISMATCH", new Object[] {}); // CWWKS9127W
+        }
         String[] chunks = splitString(cookieByteString, 3900);
         String cookieName = baseName;
         for (int i = 0; i < chunks.length; i++) {
@@ -135,7 +138,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                 com.ibm.ws.ffdc.FFDCFilter.processException(new Exception(eMsg), this.getClass().getName(), "132");
                 break;
             }
-            Cookie ssoCookie = createCookie(req, cookieName, chunks[i]); //name
+            Cookie ssoCookie = createCookie(req, cookieName, chunks[i], getJwtCookieSecure()); //name
             resp.addCookie(ssoCookie);
             cookieName = baseName + (i + 2 < 10 ? "0" : "") + (i + 2); //name02... name99
         }
@@ -143,6 +146,10 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
     protected String getJwtCookieName() {
         return JwtSSOTokenHelper.getJwtCookieName();
+    }
+
+    protected boolean getJwtCookieSecure() {
+        return JwtSSOTokenHelper.isCookieSecured();
     }
 
     /**
@@ -156,15 +163,15 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      */
 
     public Cookie createCookie(HttpServletRequest req, String cookieValue) {
-        return createCookie(req, getSSOCookiename(), cookieValue);
+        return createCookie(req, getSSOCookiename(), cookieValue, config.getSSORequiresSSL());
     }
 
-    public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue) {
+    public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue, boolean isSecure) {
         Cookie ssoCookie = new Cookie(cookieName, cookieValue);
         ssoCookie.setMaxAge(-1);
         //The path has to be "/" so we will not have multiple cookies in the same domain
         ssoCookie.setPath("/");
-        ssoCookie.setSecure(config.getSSORequiresSSL());
+        ssoCookie.setSecure(isSecure);
         ssoCookie.setHttpOnly(config.getHttpOnlyCookies());
 
         String domainName = getSSODomainName(req, config.getSSODomainList(), config.getSSOUseDomainFromURL());
@@ -263,7 +270,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             }
 
             logoutJwtCookies(req, cookies, logoutCookieList);
-
 
             //TODO: deal with jwtsso's customizable cookie path.
             for (Cookie cookie : logoutCookieList) {
