@@ -11,15 +11,16 @@
 <server>
 
     <featureManager>
-        <feature>jsp-2.3</feature>
-        <feature>jwtSso-1.0</feature>
+        <feature>jsp-2.3</feature>        
         <feature>componenttest-1.0</feature>
+        <feature>jwtSso-1.0</feature>
     </featureManager>
-    <jwtSso  setCookieSecureFlag="false" />
-
-    <jwtSso setCookieSecureFlag="false" />
-
+     <authentication cacheEnabled="false"/>
+    <jwtSso  jwtBuilderRef="builder02" jwtConsumerRef="bogusconsumer" setCookieSecureFlag="false"/>
+     <jwtBuilder  id="builder02" issuer="https://flintstone:19443/jwt/defaultJWT"/>
+     <jwtConsumer id="consumer45" issuer="https://flintstone:19443/jwt/defaultJWT"/>
     <include location="../fatTestPorts.xml"/>
+     
 
     <keyStore id="defaultKeyStore" password="Liberty" />
 
