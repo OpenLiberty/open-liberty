@@ -85,8 +85,16 @@ public class DynamicVirtualHostManager implements Runnable {
             if ( transportMap.get(name) == null ) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Missing host = " + host.hashCode() + " : this = " + this);
-                }  
-                missingHosts.add(name);
+                }
+                if (!name.startsWith("springBootVirtualHost-")) {
+                    // Ignore missing virtual hosts for Spring Boot.
+                    // Spring Boot support will either use the existing configuration of
+                    // a virtual host with the correct ID or generate a new one on the fly
+                    // there is no need to post a warning for a missing one after some period
+                    // of time.  This has proven to introduce a timing issue when virtual
+                    // host configuration is dynamically created.
+                    missingHosts.add(name);
+                }
             }
         }
         
