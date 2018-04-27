@@ -47,7 +47,6 @@
     permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";
     -->
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-    <javaPermission codebase="${server.config.dir}/connectors/DerbyRA.rar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/loginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.myJAASLoginEntryName"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>

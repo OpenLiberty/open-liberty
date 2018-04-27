@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,16 @@
 package com.ibm.ws.jca.internal;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.AccessController;
+import java.security.AllPermission;
+import java.security.CodeSource;
+import java.security.Permission;
+import java.security.PermissionCollection;
+import java.security.Permissions;
 import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,10 +38,14 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.classloading.ClassProvider;
 import com.ibm.ws.classloading.LibertyClassLoader;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.ws.jca.rar.ResourceAdapterBundleService;
 import com.ibm.ws.jca.utils.xml.metatype.Metatype;
+import com.ibm.ws.security.java2sec.PermissionManager;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
 import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
@@ -58,6 +70,9 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
 //@Component(pid="com.ibm.ws.jca.bundleResourceAdapter")
 public class ResourceAdapterService extends DeferredService implements ClassProvider, MetaTypeProvider {
     private static final TraceComponent tc = Tr.register(ResourceAdapterService.class);
+    private static final String PERMISSION_XML = "permissions.xml";
+
+    private PermissionManager permissionManager;
 
     /**
      * Class loader for the RAR file.
@@ -129,9 +144,9 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
      * Best practice: this should be a protected method, not public or private
      *
      * @param context for this component instance
-     * @throws BundleException
+     * @throws UnableToAdaptException
      */
-    protected void activate(ComponentContext context) {
+    protected void activate(ComponentContext context) throws UnableToAdaptException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "activate", context.getProperties());
@@ -183,8 +198,9 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
      * Returns the class loader for the resource adapter.
      *
      * @return class loader
+     * @throws UnableToAdaptException
      */
-    public ClassLoader getClassLoader() {
+    public ClassLoader getClassLoader() throws UnableToAdaptException {
         lock.readLock().lock();
         try {
             if (classloader != null)
@@ -208,9 +224,11 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
     /**
      * Returns the class loader for the resource adapter file
      *
+     * @throws UnableToAdaptException
+     *
      * @returns class loader for resource adapter file
      */
-    private ClassLoader createRarClassLoader() {
+    private ClassLoader createRarClassLoader() throws UnableToAdaptException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // Get the files needed to convert the rar file artifact containers into adaptable containers
@@ -340,7 +358,10 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
             Tr.debug(this, tc, "Resource adapter [ " + rarFilePath + " ]: Class loader ID [ " + rarClassLoaderId + " ]");
         }
 
-        ClassLoaderConfiguration clCfg = classloadingSvc.createClassLoaderConfiguration().setId(rarClassLoaderId);
+        Container rarContainer = _amf.getContainer(rarOverlayDirectory, rarCacheDirForOverlayContent, c);
+        ProtectionDomain protectionDomain = getProtectionDomain(rarContainer);
+
+        ClassLoaderConfiguration clCfg = classloadingSvc.createClassLoaderConfiguration().setId(rarClassLoaderId).setProtectionDomain(protectionDomain);
 
         ClassLoader rarClassLoader = classloadingSvc.createTopLevelClassLoader(classLoaderContainers, gwCfg, clCfg);
 
@@ -349,6 +370,107 @@ public class ResourceAdapterService extends DeferredService implements ClassProv
         }
 
         return rarClassLoader;
+    }
+
+    /**
+     * Create a protection domain for the given RA, that includes the effective server
+     * java security permissions as well as those defined in the RA's permissions.xml.
+     *
+     * @param rarContainer resource adapter container object
+     * @return ProtectionDomain object configured for the resource adapter
+     * @throws UnableToAdaptException
+     */
+    @FFDCIgnore({ MalformedURLException.class })
+    private ProtectionDomain getProtectionDomain(Container rarContainer) throws UnableToAdaptException {
+        PermissionCollection perms = new Permissions();
+
+        if (!java2SecurityEnabled()) {
+            perms.add(new AllPermission());
+        } else {
+
+            PermissionsConfig permissionsConfig = null;
+            try {
+                permissionsConfig = rarContainer.adapt(PermissionsConfig.class);
+            } catch (UnableToAdaptException ex) {
+                //J2CA8817E: Resource adapter {0} encountered a parse error when processing deployment descriptor {1}: {2}
+                Tr.error(tc, "J2CA8817.parse.deployment.descriptor.failed", rarContainer.getName(), "META-INF/permissions.xml", ex);
+                throw ex;
+            }
+
+            if (permissionsConfig != null) {
+                List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions = permissionsConfig.getPermissions();
+                addPermissions(configuredPermissions);
+            }
+
+            ArrayList<Permission> mergedPermissions = permissionManager.getEffectivePermissions(rarFilePath);
+            int count = mergedPermissions.size();
+            for (int i = 0; i < count; i++)
+                perms.add(mergedPermissions.get(i));
+        }
+
+        CodeSource codesource;
+        try {
+            // codesource must start file:///
+            // assume loc starts with 0 or 1 /
+            String loc = rarFilePath;
+            codesource = new CodeSource(new URL("file://" + (loc.startsWith("/") ? "" : "/") + loc), (java.security.cert.Certificate[]) null);
+        } catch (MalformedURLException e) {
+            codesource = null;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Code Source could not be set. Setting it to null.", e);
+            }
+        }
+        ProtectionDomain protectionDomain = new ProtectionDomain(codesource, perms);
+        return protectionDomain;
+    }
+
+    /**
+     * Add a list of permissions to the permissions manager.
+     *
+     * @param configuredPermissions permissions to add to the PermissionManager
+     */
+    private void addPermissions(List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions) {
+
+        String codeBase = rarFilePath;
+        for (com.ibm.ws.javaee.dd.permissions.Permission permission : configuredPermissions) {
+            Permission perm = permissionManager.createPermissionObject(permission.getClassName(),
+                                                                       permission.getName(),
+                                                                       permission.getActions(), null, null, null, PERMISSION_XML);
+
+            if (perm != null) {
+                permissionManager.addPermissionsXMLPermission(codeBase, perm);
+            }
+        }
+    }
+
+    /**
+     * Checks whether or not java 2 security is enabled by seeing
+     * if there is a security manager available.
+     *
+     * @return true if java 2 security is enabled
+     */
+    private boolean java2SecurityEnabled() {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * Declarative Services method for setting the permission manager.
+     *
+     * @param permissionManager the permission manager
+     */
+    protected void setPermissionManager(PermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
+    /**
+     * Declarative Services method for unsetting the permission manager.
+     */
+    protected void unsetPermissionManager(PermissionManager permissionManager) {
+        this.permissionManager = null;
     }
 
     /**
