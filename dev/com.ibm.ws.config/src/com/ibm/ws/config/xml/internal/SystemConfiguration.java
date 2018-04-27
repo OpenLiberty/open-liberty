@@ -83,7 +83,6 @@ class SystemConfiguration {
         VariableRegistry variableRegistryService = variableRegistryTracker.getService();
 
         ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, bc.getDataFile("variableCache"));
-        registerService(bc, ConfigVariables.class.getName(), variableRegistry);
 
         MetaTypeRegistry metatypeRegistry = metatypeRegistryTracker.getService();
 

@@ -137,7 +137,10 @@ class ServerXMLConfiguration {
 
         try {
             variableRegistry.updateSystemVariables(getVariables());
-            bundleContext.registerService(ConfigVariables.class, variableRegistry, new Hashtable<String, Object>());
+            // Register the ConfigVariables service now that we have populated the registry
+            Hashtable<String, Object> properties = new Hashtable<String, Object>();
+            properties.put("service.vendor", "IBM");
+            bundleContext.registerService(ConfigVariables.class, variableRegistry, properties);
         } catch (ConfigMergeException e) {
             // Rethrow if onError=FAIL. An error message has already been issued otherwise.
             if (ErrorHandler.INSTANCE.fail()) {
