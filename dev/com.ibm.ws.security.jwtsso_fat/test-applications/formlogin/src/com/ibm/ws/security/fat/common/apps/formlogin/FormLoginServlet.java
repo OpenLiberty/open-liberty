@@ -6,16 +6,19 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwtsso.fat;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package com.ibm.ws.security.fat.common.apps.formlogin;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                FeatureOnlyTest.class,
-})
-public class FATSuite {}
+/**
+ * Form Login Servlet
+ */
+public class FormLoginServlet extends BaseServlet {
+    private static final long serialVersionUID = 1L;
+
+    public FormLoginServlet() {
+        super("FormLoginServlet");
+    }
+
+}
