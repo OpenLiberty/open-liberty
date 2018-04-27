@@ -675,7 +675,9 @@ public class BaseTraceService implements TrService {
         if (internalMsgRouter != null) {
             retMe &= internalMsgRouter.route(routedMessage);
         } else {
-            earlierMessages.add(routedMessage);
+            String message = formatter.messageLogFormat(routedMessage.getLogRecord(), routedMessage.getFormattedVerboseMsg());
+            RoutedMessage specialRoutedMessage = new RoutedMessageImpl(routedMessage.getFormattedMsg(), routedMessage.getFormattedVerboseMsg(), message, routedMessage.getLogRecord());
+            earlierMessages.add(specialRoutedMessage);
         }
         return retMe;
     }
