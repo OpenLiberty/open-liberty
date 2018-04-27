@@ -92,9 +92,6 @@ public class SSOAuthenticator implements WebAuthenticator {
         return authResult;
     }
 
-    //TODO Need a new design to improve performance when we have multiple cookie with the same name.
-    //TODO:  multi-cookies are in now, but we need to add removing them when logging out.
-
     /**
      * @param req
      * @param res
