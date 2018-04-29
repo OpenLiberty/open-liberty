@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
 import java.util.Arrays;
@@ -21,11 +19,9 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Test;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -57,10 +53,30 @@ public class ConfigSpringBootApplicationClassloaderTests extends AbstractSpringT
     }
 
     static enum ApiTypeVisibility {
-        NONE                { public String toString() { return ""; } },
-        DEFAULT             { public String toString() { return "spec, ibm-api"; } }, 
-        DEFAULT_ADD_TP      { public String toString() { return "spec, ibm-api, third-party"; } },
-        DEFAULT_NO_IBMAPI   { public String toString() { return "spec, third-party"; } }
+        NONE {
+            @Override
+            public String toString() {
+                return "";
+            }
+        },
+        DEFAULT {
+            @Override
+            public String toString() {
+                return "spec, ibm-api";
+            }
+        },
+        DEFAULT_ADD_TP {
+            @Override
+            public String toString() {
+                return "spec, ibm-api, third-party";
+            }
+        },
+        DEFAULT_NO_IBMAPI {
+            @Override
+            public String toString() {
+                return "spec, third-party";
+            }
+        }
     }
 
     void configureClassloader(SpringBootApplication appConfig) {
@@ -71,23 +87,21 @@ public class ConfigSpringBootApplicationClassloaderTests extends AbstractSpringT
             ClassloaderElement loader = new ClassloaderElement();
             loader.setApiTypeVisibility(ApiTypeVisibility.DEFAULT.toString());
             configuredLoaders.add(loader);
-        }
-        else if (testName.getMethodName().endsWith("DefaultNoIbmApiVisibility")) {
+        } else if (testName.getMethodName().endsWith("DefaultNoIbmApiVisibility")) {
             ClassloaderElement loader = new ClassloaderElement();
             loader.setApiTypeVisibility(ApiTypeVisibility.DEFAULT_NO_IBMAPI.toString());
             configuredLoaders.add(loader);
-        }
-        else {
+        } else {
         }
     }
 
     @After
     public void stopServerAfterTest() {
-       try {
-           AbstractSpringTests.stopServer();
-       } catch (Exception e) {
-           e.printStackTrace(System.out);
-       }
+        try {
+            AbstractSpringTests.stopServer();
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
     }
 
     @Test

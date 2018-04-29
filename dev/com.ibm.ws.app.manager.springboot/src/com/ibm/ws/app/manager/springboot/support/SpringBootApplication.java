@@ -28,12 +28,12 @@ public interface SpringBootApplication {
      * Creates a new container that is bound to the giving virtual
      * host id.
      *
-     * @param id the virtual host id to bind to.
+     * @param virtualHostId the virtual host id to bind to.
      * @return a container that is bound to a virtual host
      * @throws IOException
      * @throws UnableToAdaptException
      */
-    Container createContainerFor(String id) throws IOException, UnableToAdaptException;
+    Container createContainerFor(String virtualHostId) throws IOException, UnableToAdaptException;
 
     /**
      * Returns the ModuleClassesContainerInfo for the applications class loader.
