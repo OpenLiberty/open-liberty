@@ -538,8 +538,10 @@ public class ArtifactAPIServlet extends HttpServlet {
 
         writer.println("  Max Pending Zip Closes [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING) + " ]");
 
-        writer.println("  Min Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SHORT_INTERVAL) + " ]");
-        writer.println("  Max Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL) + " ]");
+        writer.println("  Zip Close Min Quick Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN) + " ]");
+        writer.println("  Zip Close Max Quick Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MAX) + " ]");        
+        writer.println("  Zip Close Min Slow Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MIN) + " ]");
+        writer.println("  Zip Close Max Slow  Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX) + " ]");                
 
         boolean pass = true;
 
