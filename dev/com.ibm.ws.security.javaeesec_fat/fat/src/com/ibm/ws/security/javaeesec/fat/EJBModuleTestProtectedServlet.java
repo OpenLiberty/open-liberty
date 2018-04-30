@@ -436,7 +436,7 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
 
         verifyEjbRunAsUserResponse(response, Constants.ejb01Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodRunAsSpecified,
-                                   Constants.getEjbCallerPrincipal + LocalLdapServer.USER2, Constants.DB_USER2);
+                                   Constants.getEjbCallerPrincipal + Constants.DB_USER3, Constants.DB_USER2);
         Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
         Log.info(logClass, getCurrentTestName(), "-----Exiting testisRunAsUserInRoleLDAPtoDBWar1");
         httpclient.getConnectionManager().shutdown();

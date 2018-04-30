@@ -47,18 +47,26 @@
 	</application>
 
 	<webContainer deferServletLoad="false" />
-
-	<dataSource id="db" fat.modify="true" jndiName="jdbc/derby2fat">
+	
+	<application type="war" id="DefaultQueryDatabaseServlet2"
+		name="DefaultQueryDatabaseServlet2" location="dbfat2.war">
+		<classloader commonLibraryRef="DerbyLib" />
+	</application>
+	
+	<dataSource id="derby1" jndiName="jdbc/derby2fat"
+		fat.modify="true">
 		<jdbcDriver libraryRef="DerbyLib" />
-		<properties.derby.embedded databaseName="memory:db1"
-			createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+		<properties.derby.embedded databaseName="memory:derby1"
+			createDatabase="create" />
+		<containerAuthData user="dbuser1" password="{xor}Oz0vKDtu" />
 	</dataSource>
-
+	
 	<library id="DerbyLib" fat.modify="true">
-		<fileset dir="${shared.resource.dir}/derby" includes="*.jar" />
+		<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
 	</library>
 
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar"
 		className="java.security.AllPermission" />
+		
 	<include location="../fatTestPorts.xml" />
 </server>

@@ -30,7 +30,7 @@ public class CustomQueryDatabaseServlet extends FATDatabaseServlet {
     @SuppressWarnings("restriction")
     @Override
     public void init() throws ServletException {
-        System.out.println("CustomQueryDatabaseServlet: Creating database for DatabaseIdentityStore: derby2fat");
+        System.out.println("CustomQueryDatabaseServlet: Creating database for DatabaseIdentityStore: derby1fat");
         try {
             DataSource ds = (DataSource) new InitialContext().lookup("jdbc/derby1fat");
 
@@ -63,6 +63,10 @@ public class CustomQueryDatabaseServlet extends FATDatabaseServlet {
 
                 stmt1 = conn.createStatement();
                 stmt1.executeUpdate("insert into " + callerGroups + " (group_name, caller_name) values ('" + Constants.DB_GROUP3 + "' , '" + Constants.DB_USER2 + "')");
+                stmt1.close();
+
+                stmt1 = conn.createStatement();
+                stmt1.executeUpdate("insert into " + callerTable + " (password, name) values ('" + Constants.DB_USER3_PWD_HASH + "' , '" + Constants.DB_USER3 + "')");
                 stmt1.close();
 
             } finally {
