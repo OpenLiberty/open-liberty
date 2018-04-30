@@ -10,20 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.sib.api.jms.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
-import javax.jms.JMSException;
-import javax.jms.MessageFormatException;
-import javax.jms.ObjectMessage;
-
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.api.jms.ApiJmsConstants;
@@ -34,6 +20,19 @@ import com.ibm.ws.sib.mfp.MessageCreateFailedException;
 import com.ibm.ws.sib.mfp.ObjectFailedToSerializeException;
 import com.ibm.ws.sib.utils.SerializedObjectInfoHelper;
 import com.ibm.ws.sib.utils.ras.SibTr;
+
+import javax.jms.JMSException;
+import javax.jms.MessageFormatException;
+import javax.jms.ObjectMessage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * @author matrober
@@ -141,7 +140,7 @@ public class JmsObjectMessageImpl extends JmsMessageImpl implements ObjectMessag
      */
     @Override
     public String toString() {
-        return String.format("%s%nObject payload info: %s", super.toString(), getObjectInfo());
+        return String.format("%s%n%s", super.toString(), getObjectInfo());
     }
 
     // ********************* INTERFACE METHODS ***********************
@@ -255,6 +254,9 @@ public class JmsObjectMessageImpl extends JmsMessageImpl implements ObjectMessag
         return getObjectInfoFromSerializedObject();
     }
 
+    private static final String HEADER_PAYLOAD_SIZE = "Object payload size";
+    private static final String HEADER_PAYLOAD_OBJ  = "Object payload class";
+
     /**
      * Gets a description of the class for the object payload from the real object.
      * @return String describing the object payload's class
@@ -262,7 +264,8 @@ public class JmsObjectMessageImpl extends JmsMessageImpl implements ObjectMessag
     private String getObjectInfoFromRealObject() throws IOException, ClassNotFoundException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getObjectInfoFromRealObject");
         final Serializable obj = objMsg.getRealObject();
-        final String result = (obj == null) ? "null" : ObjectStreamClass.lookupAny(obj.getClass()).toString();
+        final String oscDesc = (obj == null) ? "null" : ObjectStreamClass.lookupAny(obj.getClass()).toString();
+        final String result = String.format("%s: %s", HEADER_PAYLOAD_OBJ, oscDesc);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getObjectInfoFromRealObject", result);
         return result;
     }
@@ -273,12 +276,15 @@ public class JmsObjectMessageImpl extends JmsMessageImpl implements ObjectMessag
      */
     private String getObjectInfoFromSerializedObject() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getObjectInfoFromSerializedObject");
-        String result;
+        String oscDesc;
+        byte[] data = new byte[0];
         try {
-            result = SerializedObjectInfoHelper.getObjectInfo(objMsg.getSerializedObject());
+            data = objMsg.getSerializedObject();
+            oscDesc = SerializedObjectInfoHelper.getObjectInfo(data);
         } catch (ObjectFailedToSerializeException e) {
-            result = String.format("unserializable class: %s", e.getExceptionInserts()[0]);
+            oscDesc = String.format("unserializable class: %s", e.getExceptionInserts()[0]);
         }
+        final String result = String.format("%s: %d%n%s: %s", HEADER_PAYLOAD_SIZE, data.length, HEADER_PAYLOAD_OBJ, oscDesc);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getObjectInfoFromSerializedObject", result);
         return result;
     }
