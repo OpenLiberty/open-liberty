@@ -29,7 +29,7 @@ public class SSLTests15 extends SSLCommonTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1", "ssl-1.0"));
+        return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1", "transportSecurity-1.0"));
     }
 
     @Override

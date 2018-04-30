@@ -16,7 +16,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
  *
  */
 public final class SpringConstants {
-    public static final String SPRING_APP_TYPE = "spr";
+    public static final String SPRING_APP_TYPE = "spring";
     public static final String SPRING_LIB_CACHE_NAME = "lib.index.cache";
     public static final String SPRING_BOOT_SUPPORT_CAPABILITY = "spring.boot.support";
     public static final String SPRING_BOOT_SUPPORT_CAPABILITY_JARS = "jars";
@@ -46,4 +46,11 @@ public final class SpringConstants {
                                                         "virtualHostName=\"";
     public static final String XMI_VIRTUAL_HOST_END = "\">\n" +
                                                       "</webappbnd:WebAppBinding>";
+    public static final String APP_ARGS = "applicationArgument";
+
+    public static final String ID_VIRTUAL_HOST = "springBootVirtualHost-";
+    public static final String ID_HTTP_ENDPOINT = "springBootHttpEndpoint-";
+    public static final String ID_SSL = "springBootSsl-";
+    public static final String ID_KEY_STORE = "springBootKeyStore-";
+    public static final String ID_TRUST_STORE = "springBootTrustStore-";
 }

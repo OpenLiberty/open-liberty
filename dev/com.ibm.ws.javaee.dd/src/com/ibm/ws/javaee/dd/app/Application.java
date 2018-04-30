@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,43 @@ public interface Application
     static final String DD_NAME = "META-INF/application.xml";
 
     /**
-     * @return version="..." attribute value
+     * Integer value of "1.2" for {@link #getVersion}.
      */
+    int VERSION_1_2 = 12;
+
+    /**
+     * Integer value of "1.3" for {@link #getVersion}.
+     */
+    int VERSION_1_3 = 13;
+
+    /**
+     * Integer value of "1.4" for {@link #getVersion}.
+     */
+    int VERSION_1_4 = 14;
+
+    /**
+     * Integer value of "5" for {@link #getVersion}.
+     */
+    int VERSION_5 = 50;
+
+    /**
+     * Integer value of "6" for {@link #getVersion}.
+     */
+    int VERSION_6 = 60;
+
+    /**
+     * Integer value of "7" for {@link #getVersion}.
+     */
+    int VERSION_7 = 70;
+    
+    /**
+     * Integer value of "8" for {@link #getVersion}.
+     */
+    int VERSION_8 = 80;
+    
+    /**
+     * @return the version
+     */    
     String getVersion();
 
     /**

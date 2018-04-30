@@ -33,4 +33,6 @@ public interface Http2PushBuilder {
 
     String getPath();
 
+    String getPathQueryString();
+
 }

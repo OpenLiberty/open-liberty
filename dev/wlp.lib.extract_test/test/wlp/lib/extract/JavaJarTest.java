@@ -1031,13 +1031,13 @@ public class JavaJarTest {
         }
         testExtract();
 
-        // How do we know we've installed Extended? I've taken lib/features/jaxb-2.2.mf
+        // How do we know we've installed Extended? I've taken jaxws-2.2
         // as an example file that is in Extended and is not in Core.
-        File anExtendedFile = new File(wlpDir, "lib/features/com.ibm.websphere.appserver.jaxb-2.2.mf");
-        Assert.assertFalse("The extended file to be installed lib/features/com.ibm.websphere.appserver.jaxb-2.2.mf already exists", anExtendedFile.exists());
+        File anExtendedFile = new File(wlpDir, "lib/features/com.ibm.websphere.appserver.jaxws-2.2.mf");
+        Assert.assertFalse("The extended file to be installed lib/features/com.ibm.websphere.appserver.jaxws-2.2.mf already exists", anExtendedFile.exists());
 
         execute(tmpDir, null, null, WlpJarType.EXTENDED, null, new String[0], EXIT_OK, input("x", "x", "1", "wlp"));
-        Assert.assertTrue("The extended file lib/features/com.ibm.websphere.appserver.jaxb-2.2.mf failed to be installed", anExtendedFile.exists());
+        Assert.assertTrue("The extended file lib/features/com.ibm.websphere.appserver.jaxws-2.2.mf failed to be installed", anExtendedFile.exists());
     }
 
     @Test

@@ -17,6 +17,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 /**
  * Frame class representing a frame that has frame type not defined in the http/2 spec
@@ -37,6 +38,7 @@ public class FrameUnknown extends Frame {
     public FrameUnknown(int streamId, byte[] payload, boolean reserveBit) {
         super(streamId, 8, (byte) 0x00, reserveBit, FrameDirection.WRITE);
         frameType = FrameTypes.UNKNOWN;
+        writeFrameLength += payloadLength;
         setInitialized();
     }
 
@@ -46,12 +48,21 @@ public class FrameUnknown extends Frame {
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
+    public WsByteBuffer buildFrameForWrite() {
 
-        byte[] frame = super.buildFrameForWrite();
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
+
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_UNKNOWN);
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     @Override

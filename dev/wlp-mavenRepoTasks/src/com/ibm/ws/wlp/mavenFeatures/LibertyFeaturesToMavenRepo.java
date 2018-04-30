@@ -45,6 +45,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.License;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -102,7 +103,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				throw new MavenRepoGeneratorException("Output dir " + outputDir + " could not be created or is not a directory.");
 			}
 			
-			// parse OL features JSON
+			// parse Open Liberty features JSON
 			Map<String, LibertyFeature> allFeatures = new HashMap<String, LibertyFeature>();
 			if (openLibertyJson != null) {
 				File openLibertyJsonFile = new File(openLibertyJson);
@@ -114,7 +115,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				allFeatures.putAll(parseFeaturesAndCreateModifiedJson(openLibertyJsonFile, modifiedOpenLibertyJsonFile, false));
 				  		
 			}
-			// parse CL features JSON
+			// parse WebSphere Liberty features JSON
 			if (websphereLibertyJson != null) {
 				File websphereLibertyJsonFile = new File(websphereLibertyJson);
 				try {
@@ -132,6 +133,10 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			
 			// for each LibertyFeature
 			for (LibertyFeature feature : allFeatures.values()) {
+				if (websphereLibertyJson != null && !feature.isWebsphereLiberty()) {
+					// if WebSphere Liberty build, only output WebSphere Liberty artifacts
+					continue;
+				}
 				
 				// copy ESA to target dirs
 				System.out.println("This is the feature: "+ feature.getSymbolicName());
@@ -166,12 +171,11 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				}
 			}
 
-			// Copy JSON artifacts and generate POMs
-			if (openLibertyJson != null) {
+			// Copy JSON artifacts and generate POMs for either Open or WebSphere Liberty
+			if (websphereLibertyJson == null) {
 				copyJsonArtifact(modifiedOpenLibertyJsonFile, outputDir, version, false);
 				generateJsonPom(outputDir, version, false);
-			}
-			if (websphereLibertyJson != null) {
+			} else {
 				copyJsonArtifact(modifiedWebsphereLibertyJsonFile, outputDir, version, true);
 				generateJsonPom(outputDir, version, true);
 			}
@@ -242,6 +246,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setName(feature.getName());
 		model.setDescription(feature.getDescription());
 		model.setPackaging(type.getType());
+		setLicense(model, coordinates.getVersion(), true, feature.isRestrictedLicense(), Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID.equals(coordinates.getGroupId()));
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		model.setDependencies(dependencies);
@@ -291,6 +296,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setArtifactId(coordinates.getArtifactId());
 		model.setVersion(coordinates.getVersion());
 		model.setPackaging(Constants.ArtifactType.JSON.getType());
+		setLicense(model, version, false, false, isWebsphereLiberty);
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		model.setDependencies(dependencies);
@@ -312,6 +318,25 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			throw new MavenRepoGeneratorException("Could not write POM file " + targetFile, e);
 		}
 		
+	}
+	
+	private static void setLicense(Model model, String version, boolean feature, boolean restrictedLicense, boolean isWebsphereLiberty) {
+		License license = new License();
+		if (!isWebsphereLiberty) {
+			license.setName(Constants.LICENSE_NAME_EPL);
+			license.setUrl(Constants.LICENSE_URL_EPL);
+			license.setDistribution(Constants.LICENSE_DISTRIBUTION_REPO);
+		} else if (feature) {
+			license.setName(Constants.LICENSE_NAME_FEATURE_TERMS);
+			license.setUrl(Constants.LICENSE_URL_FEATURE_TERMS_PREFIX + version + (restrictedLicense ? Constants.LICENSE_URL_FEATURE_TERMS_RESTRICTED_SUFFIX : Constants.LICENSE_URL_FEATURE_TERMS_SUFFIX));
+			license.setDistribution(Constants.LICENSE_DISTRIBUTION_REPO);
+		} else {
+			license.setName(Constants.LICENSE_NAME_MAVEN);
+			license.setUrl(Constants.LICENSE_URL_MAVEN);
+			license.setDistribution(Constants.LICENSE_DISTRIBUTION_REPO);
+			license.setComments(Constants.LICENSE_COMMENTS_MAVEN);
+		}
+		model.addLicense(license);
 	}
 
 	/**
@@ -530,6 +555,9 @@ public class LibertyFeaturesToMavenRepo extends Task {
 					description = name;
 				}
 				
+				String licenseId = json.getString(Constants.LICENSE_ID_KEY);
+				boolean restrictedLicense = licenseId.contains(Constants.LICENSE_ID_RESTRICTED_SUBSTRING);
+				
 				String mavenCoordinates = null;
 				if (wlpInfo.containsKey(Constants.MAVEN_COORDINATES_KEY)) {
 					mavenCoordinates = wlpInfo.getString(Constants.MAVEN_COORDINATES_KEY);
@@ -539,7 +567,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 					}
 				}
 
-				LibertyFeature feature = new LibertyFeature(symbolicName, shortName, name, description, requireFeaturesWithTolerates, productVersion, mavenCoordinates, isWebsphereLiberty);
+				LibertyFeature feature = new LibertyFeature(symbolicName, shortName, name, description, requireFeaturesWithTolerates, productVersion, mavenCoordinates, isWebsphereLiberty, restrictedLicense);
 				
 				features.put(symbolicName, feature);
 			}

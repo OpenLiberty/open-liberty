@@ -671,6 +671,59 @@ public class BootstrapConfigTest {
     }
 
     @Test
+    public void testNewServerExistingKeystorePassword() throws Exception {
+        File commonFile = new File(Constants.TEST_TMP_ROOT);
+        File newServerDir = new File(commonFile, "servers/newEnvServer");
+
+        try {
+            TestUtils.cleanTempFiles(newServerDir);
+
+            // Simulate a java8 JDK
+            initProps.put("java.specification.version", "1.8");
+            File serverEnv = TestUtils.createTempFile("server", "env");
+
+            // Simulate creation of a server.env template file
+            BufferedWriter bw = new BufferedWriter(new FileWriter(serverEnv));
+            bw.write("WLP_MY_ENV_VAR=true\n");
+            bw.write("keystore_password=liberty");
+            bw.close();
+
+            //Create bootstrap props to make a new server from.
+            bc = new ServerEnvTestBootstrapConfig(serverEnv, initProps);
+            bc.findLocations("newEnvServer", Constants.TEST_TMP_ROOT, null, null, null);
+            System.out.println(newServerDir.toURI().toString());
+
+            // Invoke configure with property indicating that the server should be created
+            bc.verifyProcess(VerifyServer.CREATE, null);
+
+            //Sanity check that a server was created
+            assertTrue("new server should have been created", newServerDir.exists() && newServerDir.isDirectory());
+            assertEquals("intended server should be created", newServerDir.getCanonicalFile(), bc.configDir.getCanonicalFile());
+
+            //Real testing lines. Verify server.env was appended to instead of overwritten, and keystore_password was preserved
+            BufferedReader br = new BufferedReader(new FileReader(serverEnv));
+            String customAdditionLine = br.readLine();
+            String keystorePasswordLine = br.readLine();
+            String maxPermSizeLine = br.readLine();
+            String extraLine = br.readLine();
+            br.close();
+            assertNull("server.env should only have 3 lines, but found an extra line: " + extraLine, extraLine);
+
+            System.out.println(customAdditionLine);
+            System.out.println(keystorePasswordLine);
+            System.out.println(maxPermSizeLine);
+
+            assertTrue("Server env file should contain WLP_MY_ENV_VAR=true as the first line", "WLP_MY_ENV_VAR=true".equals(customAdditionLine));
+            assertTrue("Server env file should contain keystore_password=liberty as the second line but was: " + keystorePasswordLine,
+                       "keystore_password=liberty".equals(keystorePasswordLine));
+            assertTrue("Server env file should contain WLP_SKIP_MAXPERMSIZE=true as the third line", "WLP_SKIP_MAXPERMSIZE=true".equals(maxPermSizeLine));
+
+        } finally {
+            TestUtils.cleanTempFiles(newServerDir.getParentFile()); // servers dir
+        }
+    }
+
+    @Test
     public void testNewServerCustomServerEnvAppend() throws Exception {
         File commonFile = new File(Constants.TEST_TMP_ROOT);
         File newServerDir = new File(commonFile, "servers/newEnvServer");
@@ -702,14 +755,22 @@ public class BootstrapConfigTest {
             //Real testing lines. Verify server.env was appended to instead of overwritten.
             BufferedReader br = new BufferedReader(new FileReader(serverEnv));
             String customAdditionLine = br.readLine();
+            String keystorePasswordLine = br.readLine();
             String maxPermSizeLine = br.readLine();
+            String extraLine = br.readLine();
+            br.close();
+            assertNull("server.env should only have 3 lines, but found an extra line: " + extraLine, extraLine);
 
             System.out.println(customAdditionLine);
+            System.out.println(keystorePasswordLine);
             System.out.println(maxPermSizeLine);
-            br.close();
 
             assertTrue("Server env file should contain WLP_MY_ENV_VAR=true as the first line", "WLP_MY_ENV_VAR=true".equals(customAdditionLine));
-            assertTrue("Server env file should contain WLP_SKIP_MAXPERMSIZE=true as the second line", "WLP_SKIP_MAXPERMSIZE=true".equals(maxPermSizeLine));
+            assertTrue("Server env file should contain keystore_password=... as the second line but was: " + keystorePasswordLine,
+                       keystorePasswordLine.startsWith("keystore_password="));
+            assertEquals("Generated keystore password should be 23 chars long: " + keystorePasswordLine, 23,
+                         keystorePasswordLine.substring("keystore_password=".length()).length());
+            assertTrue("Server env file should contain WLP_SKIP_MAXPERMSIZE=true as the third line", "WLP_SKIP_MAXPERMSIZE=true".equals(maxPermSizeLine));
 
         } finally {
             TestUtils.cleanTempFiles(newServerDir.getParentFile()); // servers dir

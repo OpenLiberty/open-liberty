@@ -12,7 +12,7 @@
     
     <include location="../fatTestPorts.xml"/>
     
-    <httpSession maxInMemorySessionCount="1" allowOverflow="false"/>
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false"/>
     
     <bell libraryRef="HazelcastLib" service="javax.cache.spi.CachingProvider"/>
 

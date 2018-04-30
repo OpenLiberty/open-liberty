@@ -46,11 +46,11 @@ public class SpringBootUtilityScriptUtils {
         }
     }
 
-    protected static List<String> execute(List<EnvVar> envVars, List<String> args) throws IOException, InterruptedException {
+    public static List<String> execute(List<EnvVar> envVars, List<String> args) throws IOException, InterruptedException {
         return execute(envVars, args, false);
     }
 
-    protected static List<String> execute(List<EnvVar> envVars, List<String> args, boolean ignoreError) throws IOException, InterruptedException {
+    public static List<String> execute(List<EnvVar> envVars, List<String> args, boolean ignoreError) throws IOException, InterruptedException {
         if (envVars == null) {
             envVars = Collections.emptyList();
         }
@@ -150,7 +150,7 @@ public class SpringBootUtilityScriptUtils {
         }
     }
 
-    protected static boolean findMatchingLine(List<String> lines, String regex) {
+    public static boolean findMatchingLine(List<String> lines, String regex) {
         Pattern pattern = Pattern.compile(regex);
         for (String line : lines) {
             if (pattern.matcher(line).matches()) {

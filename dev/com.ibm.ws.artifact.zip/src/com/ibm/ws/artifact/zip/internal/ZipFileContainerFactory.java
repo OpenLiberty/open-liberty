@@ -249,6 +249,11 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
 
     //
 
+    // TODO: There is an implementation conflict.  These are also provided
+    //       as the service property "handlesEntry".  More appropriately,
+    //       this test would use the service property value, instead of
+    //       hard coding the accepted extensions.
+
     private static final String[] ZIP_EXTENSIONS = new String[] {
         "jar",
         "zip",
@@ -257,21 +262,53 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
         "sar"
     };
 
+    private static final String ZIP_EXTENSION_SPRING = "spring";
+
+    private static final boolean IGNORE_CASE = true;
+
+    /**
+     * Tell if a file name has a zip file type extension.
+     * 
+     * These are: "jar", "zip", "ear", "war", "rar", "eba", "esa",
+     * "sar", and "spring".
+     * 
+     * See also the service property "handlesEntry".
+     *
+     * @param name The file name to test.
+     * 
+     * @return True or false telling if the file has one of the
+     *     zip file type extensions.
+     */
     private static boolean hasZipExtension(String name) {
         int nameLen = name.length();
+
+        // Need '.' plus at least three characters.
+
         if ( nameLen < 4 ) {
             return false;
-        } else if ( name.charAt(nameLen - 4) != '.' ) {
+        }
+
+        // Need '.' plus at least six characters for ".spring".
+
+        if ( nameLen >= 7 ) {
+            if ( (name.charAt(nameLen - 7) == '.') &&
+                 name.regionMatches(IGNORE_CASE, nameLen - 6, ZIP_EXTENSION_SPRING, 0, 6) ) {
+                return true;
+            }
+        }
+
+        if ( name.charAt(nameLen - 4) != '.' ) {
             return false;
         } else {
             for ( String ext : ZIP_EXTENSIONS ) {
-                if ( name.regionMatches(true, nameLen - 3, ext, 0, 3) ) { // ignore case
+                if ( name.regionMatches(IGNORE_CASE, nameLen - 3, ext, 0, 3) ) { // ignore case
                     return true;
                 }
             }
             return false;
         }
-        // return name.matches("(?i:(.*)\\.(ZIP|[SEJRW]AR|E[BS]A))");
+
+        // return name.matches("(?i:(.*)\\.(ZIP|[SEJRW]AR|E[BS]A|SPRING))");
     }
 
     // If we caught an exception, it's not a zip file.

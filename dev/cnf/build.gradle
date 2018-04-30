@@ -45,13 +45,23 @@ task copyMavenLibs(type: Copy) {
     into project.file('mavenlibs')
 }
 
-task refreshPlugins {
-    dependsOn ':wlp-bndPlugins:refresh'
-}
+def pluginsProject = project(':wlp-bndPlugins')
 
-task refresh {
-    dependsOn copyMavenLibs
-    dependsOn refreshPlugins
+task updatePluginClasses(type: Copy) {
+    dependsOn ':wlp-bndPlugins:jar'
+    from zipTree(bnd('build.bnd.plugins.jar'))
+    into project.file('bndplugins/classes')
+    doLast {
+        println 'Refresh bnd Projects after building bnd plugins in ' + project.name
+        bnd.project.refresh()
+        bnd.project.clear()
+        parent.subprojects {
+            if (project != pluginsProject) {
+                bnd.project.refresh()
+                bnd.project.clear()
+            }
+        }
+    }
 }
 
 task cleanRepos(type: Delete) {
@@ -66,7 +76,8 @@ task cleanRepos(type: Delete) {
 
 task initialize {
     dependsOn cleanRepos
-    dependsOn refresh
+    dependsOn copyMavenLibs
+    dependsOn updatePluginClasses
     doLast {
         println "Gradle Initialized"
     }
@@ -77,15 +88,13 @@ clean {
 }
 
 classes {
-    dependsOn refreshPlugins
+    dependsOn updatePluginClasses
 }
-
-def pluginsProject = project(':wlp-bndPlugins')
 
 /* bnd plugins influence bundle contents, so add plugins project output to jar inputs */
 parent.subprojects {
   if (project != pluginsProject) {
-    jar.inputs.files tasks.getByPath(':wlp-bndPlugins:refresh')
+    jar.inputs.files { tasks.getByPath(':cnf:updatePluginClasses') }
   }
 }
 
@@ -154,7 +163,6 @@ task createGradleBootstrap {
         depsList.add('    compile \'' + org + ':openliberty-MavenArtifact:' + getVersionFromReleaseRepo('dev', 'openliberty-MavenArtifact') + '@zip\'')
         depsList.add('    compile \'' + org + ':openliberty-singleJson:' + getVersionFromReleaseRepo('dev', 'openliberty-singleJson') + '@json\'')
         depsList.add('    compile \'' + org + ':openliberty-modifiedgaFeatureList:' + getVersionFromReleaseRepo('dev', 'openliberty-modifiedgaFeatureList') + '@txt\'')
-        
 
         File dependenciesFile = new File(project.buildDir, 'dependencies.gradle')
         dependenciesFile.createNewFile()

@@ -18,6 +18,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameWindowUpdate extends Frame {
 
@@ -51,6 +52,7 @@ public class FrameWindowUpdate extends Frame {
         super(streamId, 4, (byte) 0x00, reserveBit, FrameDirection.WRITE);
         this.windowSizeIncrement = windowSizeIncrement;
         frameType = FrameTypes.WINDOW_UPDATE;
+        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -69,9 +71,15 @@ public class FrameWindowUpdate extends Frame {
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
+    public WsByteBuffer buildFrameForWrite() {
 
-        byte[] frame = super.buildFrameForWrite();
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_WINDOW_UPDATE);
@@ -82,7 +90,9 @@ public class FrameWindowUpdate extends Frame {
         // then the four byte payload
         utils.Move31BitstoByteArray(windowSizeIncrement, frame, frameIndex);
 
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     public int getWindowSizeIncrement() {

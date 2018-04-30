@@ -1579,8 +1579,19 @@ public interface WIMMessageKey {
      * Entity type name is not specified for property names.
      */
     String ENTITY_TYPE_NAME_NOT_SPECIFIED = "ENTITY_TYPE_NAME_NOT_SPECIFIED";
+
     /**
      * Value for timestamp format specified for LDAP adapter is invalid.
      */
     String INVALID_TIMESTAMP_FORMAT = "INVALID_TIMESTAMP_FORMAT";
+
+    /**
+     * The extended property has already been defined and will be ignored.
+     */
+    String DUPLICATE_PROPERTY_EXTENDED = "DUPLICATE_PROPERTY_EXTENDED";
+
+    /**
+     * The extended property cannot override a property on the entity.
+     */
+    String DUPLICATE_PROPERTY_ENTITY = "DUPLICATE_PROPERTY_ENTITY";
 }

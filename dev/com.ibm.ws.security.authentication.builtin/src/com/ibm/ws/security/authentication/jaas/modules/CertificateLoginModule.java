@@ -246,9 +246,9 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
         temporarySubject = new Subject();
         Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
         hashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, AccessIdUtil.getUniqueId(accessId));
+        temporarySubject.getPublicCredentials().add(hashtable);
         setWSPrincipal(temporarySubject, username, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
         setCredentials(temporarySubject, username, username);
-        temporarySubject.getPublicCredentials().add(hashtable);
         temporarySubject.getPublicCredentials().remove(hashtable);
     }
 
@@ -302,7 +302,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
                                                       ur.getUniqueUserId(username));
         setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
         setCredentials(temporarySubject, securityName, username);
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
+        setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
     }
 
     /** {@inheritDoc} */

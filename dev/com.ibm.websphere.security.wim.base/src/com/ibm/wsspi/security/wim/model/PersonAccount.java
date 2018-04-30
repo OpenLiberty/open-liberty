@@ -23,6 +23,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
@@ -118,6 +121,8 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
                                                "active"
 })
 public class PersonAccount extends LoginAccount {
+    private static final TraceComponent tc = Tr.register(PersonAccount.class);
+
     private static final String PROP_UID = "uid";
     private static final String PROP_CN = "cn";
     private static final String PROP_SN = "sn";
@@ -249,7 +254,7 @@ public class PersonAccount extends LoginAccount {
     private static ArrayList superTypeList = null;
     private static HashSet subTypeList = null;
     protected Map<String, Object> extendedPropertiesValue = new HashMap<String, Object>(); // TODO Should this be private?
-    private static Map<String, String> extendedPropertiesDatatype = new HashMap<String, String>();
+    private static Map<String, String> extendedPropertiesDataType = new HashMap<String, String>();
     private static Map<String, Object> extendedPropertiesDefaultValue = new HashMap<String, Object>();
     private static Set<String> extendedMultiValuedProperties = new HashSet<String>();
 
@@ -2340,7 +2345,7 @@ public class PersonAccount extends LoginAccount {
             return getIMs();
         }
 
-        if (extendedPropertiesDatatype.containsKey(propName))
+        if (extendedPropertiesDataType.containsKey(propName))
             return getExtendedProperty(propName);
 
         return super.get(propName);
@@ -2529,7 +2534,7 @@ public class PersonAccount extends LoginAccount {
             return isSetIMs();
         }
 
-        if (extendedPropertiesDatatype.containsKey(propName))
+        if (extendedPropertiesDataType.containsKey(propName))
             return isSetExtendedProperty(propName);
 
         return super.isSet(propName);
@@ -2718,7 +2723,7 @@ public class PersonAccount extends LoginAccount {
             getIMs().add(((String) value));
         }
 
-        if (extendedPropertiesDatatype.containsKey(propName))
+        if (extendedPropertiesDataType.containsKey(propName))
             setExtendedProperty(propName, value);
 
         super.set(propName, value);
@@ -2871,7 +2876,7 @@ public class PersonAccount extends LoginAccount {
             unsetIMs();
         }
 
-        if (extendedPropertiesDatatype.containsKey(propName))
+        if (extendedPropertiesDataType.containsKey(propName))
             unSetExtendedProperty(propName);
 
         super.unset(propName);
@@ -3001,8 +3006,8 @@ public class PersonAccount extends LoginAccount {
                 names.add(PROP_BUSINESS_POSTAL_CODE);
                 names.add(PROP_BUSINESS_COUNTRY_NAME);
                 names.add(PROP_IMS);
-                if (extendedPropertiesDatatype != null && extendedPropertiesDatatype.keySet().size() > 0)
-                    names.addAll(extendedPropertiesDatatype.keySet());
+                if (extendedPropertiesDataType != null && extendedPropertiesDataType.keySet().size() > 0)
+                    names.addAll(extendedPropertiesDataType.keySet());
                 names.addAll(LoginAccount.getPropertyNames("LoginAccount"));
                 propertyNames = Collections.unmodifiableList(names);
                 return propertyNames;
@@ -3080,8 +3085,8 @@ public class PersonAccount extends LoginAccount {
     public String getDataType(String propName) {
         if (dataTypeMap.containsKey(propName)) {
             return ((String) dataTypeMap.get(propName));
-        } else if (extendedPropertiesDatatype.containsKey(propName)) {
-            return extendedPropertiesDatatype.get(propName);
+        } else if (extendedPropertiesDataType.containsKey(propName)) {
+            return extendedPropertiesDataType.get(propName);
         } else {
             return super.getDataType(propName);
         }
@@ -3158,7 +3163,7 @@ public class PersonAccount extends LoginAccount {
      * @throws ClassCastException If the value was not of the correct data type.
      */
     private void setExtendedProperty(String property, Object value) {
-        String dataType = extendedPropertiesDatatype.get(property);
+        String dataType = extendedPropertiesDataType.get(property);
         String valueClass = value.getClass().getSimpleName();
 
         if (dataType.equals(valueClass) && !extendedMultiValuedProperties.contains(property)) {
@@ -3204,7 +3209,17 @@ public class PersonAccount extends LoginAccount {
         if (dataType == null || "null".equalsIgnoreCase(dataType))
             return;
 
-        extendedPropertiesDatatype.put(propName, dataType);
+        if (extendedPropertiesDataType.containsKey(propName)) {
+            Tr.warning(tc, WIMMessageKey.DUPLICATE_PROPERTY_EXTENDED, new Object[] { propName, "PersonAccount" });
+            return;
+        }
+
+        if (getPropertyNames("PersonAccount").contains(propName)) {
+            Tr.warning(tc, WIMMessageKey.DUPLICATE_PROPERTY_ENTITY, new Object[] { propName, "PersonAccount" });
+            return;
+        }
+
+        extendedPropertiesDataType.put(propName, dataType);
         if (defaultValue != null)
             extendedPropertiesDefaultValue.put(propName, defaultValue);
         if (multiValued)
@@ -3215,9 +3230,10 @@ public class PersonAccount extends LoginAccount {
      * Removes all extended properties defined in this PersonAccount entity
      */
     public static void clearExtendedProperties() {
-        extendedPropertiesDatatype.clear();
+        extendedPropertiesDataType.clear();
         extendedPropertiesDefaultValue.clear();
         extendedMultiValuedProperties.clear();
+        reInitializePropertyNames();
     }
 
     /**
@@ -3227,7 +3243,7 @@ public class PersonAccount extends LoginAccount {
      *         returned object is a {@link Set}
      */
     public Set<String> getExtendedPropertyNames() {
-        return new HashSet<String>(extendedPropertiesDatatype.keySet());
+        return new HashSet<String>(extendedPropertiesDataType.keySet());
     }
 
     @Override

@@ -19,7 +19,6 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -48,11 +47,7 @@ public class ErrorPathsTest extends FATServletClient {
     /**
      * Verify that the jsf-2.3 and jsfContainer-2.3 features cannot be loaded at the
      * same time.
-     *
-     * Ignore this test until jsfContainer-2.3 is marked as beta so that we can make
-     * the jsf-2.3 and jsfContainer-2.3 feature conflict.
      */
-    @Ignore
     @Test
     @ExpectedFFDC("java.lang.IllegalArgumentException")
     public void testFeatureConflict() throws Exception {

@@ -446,6 +446,11 @@ class ConfigEvaluator {
             rawValue = getUnconfiguredAttributeValue(context, attributeDef);
         }
 
+        // Process any list variables of the form ${list(variableName)}. We do this here separately from the other variable expression
+        // processing so that the values are available prior to cardinality checks.
+        if (rawValue != null) {
+            rawValue = processVariableLists(rawValue, attributeDef, context, ignoreWarnings);
+        }
         if (rawValue != null) {
             try {
                 actualValue = evaluateMetaType(rawValue, attributeDef, context, ignoreWarnings);
@@ -491,6 +496,41 @@ class ConfigEvaluator {
         }
 
         return actualValue;
+    }
+
+    /**
+     * Replaces list variable expressions in raw string values
+     */
+    private Object processVariableLists(Object rawValue, ExtendedAttributeDefinition attributeDef,
+                                        EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
+        if (attributeDef != null && !attributeDef.resolveVariables())
+            return rawValue;
+
+        if (rawValue instanceof List) {
+            List<Object> returnList = new ArrayList<Object>();
+            List<Object> values = (List<Object>) rawValue;
+            for (Object o : values) {
+                Object processed = processVariableLists(o, attributeDef, context, ignoreWarnings);
+                if (processed instanceof List)
+                    returnList.addAll((List<Object>) processed);
+                else
+                    returnList.add(processed);
+            }
+            return returnList;
+        } else if (rawValue instanceof String) {
+            // Look for functions of the form ${list(variableName)} first
+            Matcher matcher = XMLConfigConstants.VAR_LIST_PATTERN.matcher((String) rawValue);
+            if (matcher.find()) {
+                String var = matcher.group(1);
+                String rep = getProperty(var, context, ignoreWarnings);
+                return rep == null ? rawValue : MetaTypeHelper.parseValue(rep);
+            } else {
+                return rawValue;
+            }
+        } else {
+            return rawValue;
+        }
+
     }
 
     boolean isWildcardReference(ExtendedAttributeDefinition attributeDef) {
@@ -1080,37 +1120,6 @@ class ConfigEvaluator {
         return collection == null ? null : collection.toArray(new String[collection.size()]);
     }
 
-    private Object createTypedArray(int size, int type) {
-        if (type == AttributeDefinition.BOOLEAN) {
-            return new boolean[size];
-        } else if (type == AttributeDefinition.BYTE) {
-            return new byte[size];
-        } else if (type == AttributeDefinition.CHARACTER) {
-            return new char[size];
-        } else if (type == AttributeDefinition.DOUBLE) {
-            return new double[size];
-        } else if (type == AttributeDefinition.FLOAT) {
-            return new float[size];
-        } else if (type == AttributeDefinition.INTEGER) {
-            return new int[size];
-        } else if (type == AttributeDefinition.LONG) {
-            return new long[size];
-        } else if (type == AttributeDefinition.SHORT) {
-            return new short[size];
-        } else if (type == MetaTypeFactory.DURATION_TYPE) {
-            return new long[size];
-        } else if (type == MetaTypeFactory.DURATION_S_TYPE) {
-            return new long[size];
-        } else if (type == MetaTypeFactory.DURATION_M_TYPE) {
-            return new long[size];
-        } else if (type == MetaTypeFactory.DURATION_H_TYPE) {
-            return new long[size];
-        } else {
-            return new String[size];
-        }
-
-    }
-
     /**
      * Evaluate a list of values to an array of the target attribute type.
      *
@@ -1575,6 +1584,8 @@ class ConfigEvaluator {
     }
 
     private String resolveVariables(String str, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
+
+        // Look for normal variables of the form $(variableName)
         Matcher matcher = XMLConfigConstants.VAR_PATTERN.matcher(str);
         while (matcher.find()) {
             String var = matcher.group(1);
@@ -1750,8 +1761,13 @@ class ConfigEvaluator {
             if (attrDef.resolveVariables() == false)
                 return "${" + variableName + "}";
 
+            boolean isList = false;
+            if (variableName.startsWith("list(") && variableName.endsWith(")")) {
+                variableName = variableName.substring(5, variableName.length() - 1);
+                isList = true;
+            }
             Object variableValue = variableRegistry.lookupVariable(variableName);
-            if (variableValue == null && !variableName.equals(attrDef.getID())) {
+            if (variableValue == null && !variableName.equals(attrDef.getID()) && !isList) {
                 // Try a metatype attribute
                 ExtendedAttributeDefinition targetAttrDef = context.getAttributeDefinition(variableName);
                 if (targetAttrDef != null) {
@@ -1760,7 +1776,10 @@ class ConfigEvaluator {
             }
 
             context.addDefinedVariable(variableName, variableValue);
-            return variableValue;
+            if (variableValue == null)
+                return null;
+
+            return isList ? MetaTypeHelper.parseValue((String) variableValue) : variableValue;
         }
         return null;
     }

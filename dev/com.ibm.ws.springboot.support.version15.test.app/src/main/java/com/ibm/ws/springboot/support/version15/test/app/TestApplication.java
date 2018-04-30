@@ -15,7 +15,9 @@ import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
@@ -24,6 +26,10 @@ public class TestApplication {
 	public static final String TEST_ATTR = "test.weblistener.attr";
 	@Autowired
 	ServletContext context; 
+
+	@Autowired
+	private Environment env;
+
 	public static void main(String[] args) {
 		SpringApplication.run(TestApplication.class, args);
 	}
@@ -38,6 +44,11 @@ public class TestApplication {
 		return "Hello. You clicked a button.";
 	}
 
+	@RequestMapping(value="/getAppProp")
+	public String getAppProperty(@RequestParam("key") String key) {
+		return env.getProperty(key);
+	}
+
 	@RequestMapping("/testWebListenerAttr")
 	public String testWebListenerAttr() {
 		// should be null
@@ -48,4 +59,26 @@ public class TestApplication {
 			return "FAILED";
 		}
 	}
+	
+	static final String 
+			IbmApiClazzName = "com.ibm.websphere.application.ApplicationMBean",
+			TpClazzName 	= "javax.mail.Message";
+
+	@RequestMapping("/loadIbmApiClass")
+	public String loadApiClass() { return loadClazz(IbmApiClazzName); }
+
+	@RequestMapping("/loadTpClass")
+	public String loadTpClass() { return loadClazz(TpClazzName); }
+
+	String loadClazz(String clazzName) {
+		Class clazz = null;
+		try {
+			clazz = this.getClass().getClassLoader().loadClass(clazzName);
+		} catch (Exception e) {
+			e.printStackTrace(System.out);
+		} finally {
+			return "SPRING BOOT, YOU GOT" + ((null==clazz) ? " NO " : " ") + "CLAZZ: " + clazzName;
+		}
+	}
+
 }

@@ -94,14 +94,28 @@ public class Http2FullModeTests extends FATServletClient {
                                  testName);
     }
 
+    /**
+     * Test Coverage: Client Sends Upgrade Header followed by a SETTINGS frame
+     * Test Outcome: Connection should work ok
+     * Spec Section: 6.5
+     *
+     * @throws Exception
+     */
     @Test
     public void testUpgradeHeaderFollowedBySettingsFrame() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
     /**
-     * Sending a Priority frame on an idle stream. All streams start in idle state.
-     * Receiving any frame other than HEADERS or PRIORITY on a stream in this state MUST be treated as a connection error (Section 5.4.1) of type PROTOCOL_ERROR.
+     * Test Coverage: Sending a Priority frame on an idle stream. All streams start in idle state.
+     * Test Outcome: Connections and streams should complete successfully.
+     * Spec Section: 5.1
+     *
+     * Test Notes:
+     * Receiving any frame other than HEADERS or PRIORITY on a stream in this state
+     * MUST be treated as a connection error of type PROTOCOL_ERROR.
+     *
+     * @throws Exception
      */
     @Test
     public void testPriorityFrameOnIdleStream() throws Exception {
@@ -109,16 +123,16 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending a Window_Update frame on an half-closed stream.
-     * half-closed (remote):
+     * Test Coverage: Sending a Window_Update frame on an half-closed stream.
+     * Test Outcome: Respond with a connection error, PROTOCOL_ERROR, and close the connection
+     * Spec Section: 5.1
+     *
+     * Test Notes:
      * A stream that is "half-closed (remote)" is no longer being used by
      * the peer to send frames. In this state, an endpoint is no longer
      * obligated to maintain a receiver flow-control window.
      *
-     * If an endpoint receives additional frames, other than
-     * WINDOW_UPDATE, PRIORITY, or RST_STREAM, for a stream that is in
-     * this state, it MUST respond with a stream error (Section 5.4.2) of
-     * type STREAM_CLOSED.
+     * @throws Exception
      */
     @Test
     public void testWindowsUpdateFrameOnHalfClosedStream() throws Exception {
@@ -126,16 +140,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending a RST_STREAM frame on an half-closed stream.
-     * half-closed (remote):
-     * A stream that is "half-closed (remote)" is no longer being used by
-     * the peer to send frames. In this state, an endpoint is no longer
-     * obligated to maintain a receiver flow-control window.
+     * Test Coverage: Sending a RST_STREAM frame on an half-closed stream.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 5.1
      *
-     * If an endpoint receives additional frames, other than
-     * WINDOW_UPDATE, PRIORITY, or RST_STREAM, for a stream that is in
-     * this state, it MUST respond with a stream error (Section 5.4.2) of
-     * type STREAM_CLOSED.
      */
     @Test
     public void testRstStreamFrameOnHalfClosedStream() throws Exception {
@@ -143,7 +151,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending a priority frame after a stream has finished.
+     * Test Coverage: Sending a priority frame after a stream has finished.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 5.1
+     *
+     * Test Notes:
      * An endpoint MUST NOT send frames other than PRIORITY on a closed stream.
      *
      * @throws Exception
@@ -154,12 +166,13 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending a Continuation frame after a Headers frame.
+     * Test Coverage: Sending a Continuation frame after a Headers frame.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.10
      *
-     * Any number of CONTINUATION
-     * frames can be sent, as long as the preceding frame is on the same
-     * stream and is a HEADERS, PUSH_PROMISE, or CONTINUATION frame without
-     * the END_HEADERS flag set.
+     * Test Notes:
+     * Any number of CONTINUATION frames can be sent, as long as the preceding frame is on the same
+     * stream and is a HEADERS, PUSH_PROMISE, or CONTINUATION frame without the END_HEADERS flag set.
      *
      * @throws Exception
      *
@@ -169,6 +182,14 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage:
+     * Test Outcome:
+     * Spec Section:
+     *
+     * @throws Exception
+     *
+     */
     @Test
     public void testTwoContFrameAfterHeadersFrame() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
@@ -176,9 +197,9 @@ public class Http2FullModeTests extends FATServletClient {
 
     /**
      *
-     * Sending HEADER with 8 bytes padding and 8 bytes data block.
-     *
-     * The HEADERS frame can include padding.
+     * Test Coverage: Sending HEADER with 8 bytes padding and 8 bytes data block.
+     * Test Outcome: The HEADERS frame can include padding, so connection should work ok.
+     * Spec Section: 6.2, 6.1
      *
      * @throws Exception
      */
@@ -188,7 +209,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending HEADER with priority set.
+     * Test Coverage: Sending HEADERS frame with priority set.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.2
+     *
      *
      * @throws Exception
      */
@@ -198,11 +222,13 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending a PRIORITY frame on stream 3 before sending anything else.
+     * Test Coverage: Sending a PRIORITY frame on stream 3 before sending anything else.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.3
      *
+     * Test Notes:
      * The PRIORITY frame (type=0x2) specifies the sender-advised priority
-     * of a stream (Section 5.3). It can be sent in any stream state,
-     * including idle or closed streams.
+     * of a stream. It can be sent in any stream state, including idle or closed streams.
      *
      * @throws Exception
      */
@@ -211,17 +237,26 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Sending a PRIORITY frame with the max weight.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.3
+     *
+     * @throws Exception
+     */
     @Test
     public void testSendPriorityFrameWithPriority256() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
     /**
-     * Send a PRIORITY frame on stream 3 with a stream dependency on stream 5.
+     * Test Coverage: Send a PRIORITY frame on stream 3 with a stream dependency on stream 5.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.3, 5.3
      *
+     * Test Notes:
      * Stream Dependency: A 31-bit stream identifier for the stream that
-     * this stream depends on (see Section 5.3). This field is only
-     * present if the PRIORITY flag is set.
+     * this stream depends on. This field is only present if the PRIORITY flag is set.
      *
      * @throws Exception
      */
@@ -231,10 +266,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending PRIORITY frame with exclusive flag on.
-     *
-     * E: A single-bit flag indicating that the stream dependency is
-     * exclusive (see Section 5.3).
+     * Test Coverage: Sending PRIORITY frame with exclusive flag on.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.3
      *
      * @throws Exception
      */
@@ -245,12 +279,13 @@ public class Http2FullModeTests extends FATServletClient {
 
     /**
      *
-     * Sending PRIORITY on a higher stream (5) and then send a HEADER on stream (3); in this order.
+     * Test Coverage: Sending PRIORITY on a higher stream (5) and then send a HEADER on stream (3); in this order.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 5.3.3
      *
-     * The PRIORITY frame can be sent for a stream in the "idle" or "closed"
-     * state. This allows for the reprioritization of a group of dependent
-     * streams by altering the priority of an unused or closed parent
-     * stream.
+     * Test Notes:
+     * The PRIORITY frame can be sent for a stream in the "idle" or "closed" state. This allows for the
+     * reprioritization of a group of dependent streams by altering the priority of an unused or closed parent stream.
      *
      * @throws Exception
      */
@@ -260,11 +295,13 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending RST_STREAM to cancel stream id 3 after sending a HEADER frame with end of stream false.
+     * Test Coverage: Sending RST_STREAM to cancel stream id 3 after sending a HEADER frame with end of stream false.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.4
      *
-     * The RST_STREAM frame (type=0x3) allows for immediate termination of a
-     * stream. RST_STREAM is sent to request cancellation of a stream or to
-     * indicate that an error condition has occurred.
+     * Test Notes:
+     * The RST_STREAM frame (type=0x3) allows for immediate termination of a stream. RST_STREAM is sent to
+     * request cancellation of a stream or to indicate that an error condition has occurred.
      *
      * @throws Exception
      */
@@ -274,8 +311,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * Sending a SETTING frame.
+     * Test Coverage: Sending a SETTING frame with various values for the input parameters
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.5.2
      *
      * @throws Exception
      */
@@ -285,8 +323,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending WindowUpdate on stream 0 to affect all streams.
+     * Test Coverage: Sending WindowUpdate on stream 0 to affect all streams.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.9
      *
+     * Test Notes:
      * Flow control operates at two levels: on each individual stream and on the entire connection.
      *
      * @throws Exception
@@ -297,9 +338,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Sending WindowUpdate on stream 3 to affect this stream only.
-     *
-     * Flow control operates at two levels: on each individual stream and on the entire connection.
+     * Test Coverage: Sending WindowUpdate on stream 3 to affect this stream only.
+     * Test Outcome: Flow control operates at two levels: on each individual stream and on the entire connection.
+     * Therefore only stream 3 flow control should be affected.
+     * Spec Section: 6.9
      *
      * @throws Exception
      */
@@ -308,19 +350,21 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
-    /**
-     * WTL: the server is responding to this request with a 404. Liberty doesn't support the '*' on http 1.1, so for now
-     * we can ignore this case.
-     *
-     * @throws Exception
-     */
-    //@Test
-    public void testSendOptionsRequest() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+//    /**
+//     * WTL: the server is responding to this request with a 404. Liberty doesn't support the '*' on http 1.1, so for now
+//     * we can ignore this case.
+//     *
+//     * @throws Exception
+//     */
+//    //@Test
+//    public void testSendOptionsRequest() throws Exception {
+//        runTest(defaultServletPath, testName.getMethodName());
+//    }
 
     /**
-     * :path pseudo-header field:
+     * Test Coverage: use OPTIONS header with path URI that is different for the upgrade header
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 3.2
      *
      * @throws Exception
      */
@@ -329,76 +373,169 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use and Add non-Huffman encoded Index Header,
+     * header value is empty string, header key is in static table
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testIndexedHeaderField() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use and Add non-Huffman encoded Index Header
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testIndexedHeaderFieldNoHuffman() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use and Add Huffman encoded Index Header
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testIndexedHeaderFieldHuffmanEncoded() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use and Add non-Huffman encoded Custom Header
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testIndexedCustomHeaderField() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use and Add Huffman encoded Custom Header
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testIndexedCustomHeaderFieldHuffmanEncoded() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use a non-Huffman encoded header that is not indexed
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testNoIndexHeaderField() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use a Huffman encoded header that is not indexed
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testNoIndexHeaderFieldHuffmanEncoded() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use a non-Huffman encoded custom header that is not indexed
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testNoIndexCustomHeaderField() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use a Huffman encoded custom header that is not indexed
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testNoIndexCustomHeaderFieldHuffmanEncoded() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use a non-Huffman encoded header that is never indexed
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testNeverIndexHeaderField() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use a Huffman encoded header that is never indexed
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testNeverIndexHeaderFieldHuffmanEncoded() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use a non-Huffman encoded custom header that is never indexed
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testNeverIndexCustomHeaderField() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Use a Huffman encoded custom header that is never indexed
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: n/a
+     *
+     * @throws Exception
+     */
     @Test
     public void testNeverIndexCustomHeaderFieldHuffmanEncoded() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
     /**
-     * Protocols that use HPACK determine the maximum size that the encoder
-     * is permitted to use for the dynamic table. In HTTP/2, this value is
-     * determined by the SETTINGS_HEADER_TABLE_SIZE setting (see
-     * Section 6.5.2 of [HTTP2]).
+     * Test Coverage: Protocols that use HPACK determine the maximum size that the encoder
+     * is permitted to use for the dynamic table. In HTTP/2, this value is determined by the
+     * SETTINGS_HEADER_TABLE_SIZE setting. Change this size using the SETTINGS frame from the client.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.5.2.
      *
      * @throws Exception
      */
@@ -408,8 +545,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Multiple updates to the maximum table size can occur between the
-     * transmission of two header blocks.
+     * Test Coverage: Send Multiple updates for the maximum table size between the transmission of two header blocks.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.5, 6.5.2.
      *
      * @throws Exception
      */
@@ -419,8 +557,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Implementations MUST discard frames
-     * that have unknown or unsupported types.
+     * Test Coverage: Send a frame with an invalid type, followed by a PING frame;
+     * Test Outcome: expect only a PING from the server. Server should ignore any unknown types.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -430,7 +569,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Flags are assigned semantics specific to the indicated frame type.
+     * Test Coverage: Send a Ping that has an undefined flag bit set
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 4.1
+     *
+     * Test Notes: Flags are assigned semantics specific to the indicated frame type.
      * Flags that have no defined semantics for a particular frame type
      * MUST be ignored and MUST be left unset (0x0) when sending.
      *
@@ -442,6 +585,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage Send a Ping that has the reserve bit set
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 4.1
+     *
+     * Test Notes:
      * R: A reserved 1-bit field. The semantics of this bit are undefined,
      * and the bit MUST remain unset (0x0) when sending and MUST be
      * ignored when receiving.
@@ -453,20 +601,23 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
-    /**
-     * Need to be able to create a huge Data frame...
-     *
-     * @throws Exception
-     */
-    //@Test
-    public void testDataFrameMaxSize() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+//    /**
+//     * Need to be able to create a huge Data frame...
+//     *
+//     * @throws Exception
+//     */
+//    //@Test
+//    public void testDataFrameMaxSize() throws Exception {
+//        runTest(defaultServletPath, testName.getMethodName());
+//    }
 
     /**
-     * A decoding
-     * error in a header block MUST be treated as a connection error
-     * (Section 5.4.1) of type COMPRESSION_ERROR.
+     * Test Coverage: A decoding error in a header block MUST be treated as a connection error of type COMPRESSION_ERROR.
+     * Therefore send Header frame with an invalid Header Block Fragment.
+     * Test Outcome: Connection close with GOAWAY containing Compression error
+     * Spec Section: 4.3
+     *
+     * @throws Exception
      */
     @Test
     public void testInvalidHeaderBlock() throws Exception {
@@ -474,9 +625,13 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * 8.1.2.3:
-     * All HTTP/2 requests MUST include exactly one valid value for the ":method", ":scheme", and ":path" pseudo-header fields,
-     * unless it is a CONNECT request (Section 8.3).
+     * Test Coverage: All HTTP/2 requests MUST include exactly one valid value for the ":method", ":scheme",
+     * and ":path" pseudo-header fields, unless it is a CONNECT request.
+     * Therefore send a Header Frame without including :scheme or :path
+     * Test Outcome: RST_STREAM with PROTOCOL_ERROR should be sent from the server
+     * Spec Section: 8.1.2.3, 8.3
+     *
+     * @throws Exception
      */
     @Test
     public void testInvalidHeaderFields() throws Exception {
@@ -484,9 +639,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * idle: Receiving any frame other than HEADERS or PRIORITY on a stream in
-     * this state MUST be treated as a connection error (Section 5.4.1)
-     * of type PROTOCOL_ERROR.
+     * Test Coverage: idle: In an IDLE state send a DATA Frame.
+     * Test Outcome: Receiving any frame other than HEADERS or PRIORITY on a stream in
+     * idle state MUST be treated as a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -496,9 +652,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * idle: Receiving any frame other than HEADERS or PRIORITY on a stream in
-     * this state MUST be treated as a connection error (Section 5.4.1)
-     * of type PROTOCOL_ERROR.
+     * Test Coverage: idle: In an IDLE state send a RST_STREAM Frame.
+     * Test Outcome: Receiving any frame other than HEADERS or PRIORITY on a stream in
+     * idle state MUST be treated as a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -508,9 +665,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * idle: Receiving any frame other than HEADERS or PRIORITY on a stream in
-     * this state MUST be treated as a connection error (Section 5.4.1)
-     * of type PROTOCOL_ERROR.
+     * Test Coverage: idle: In an IDLE state send a WINDOW_UPDATE Frame.
+     * Test Outcome: Receiving any frame other than HEADERS or PRIORITY on a stream in
+     * idle state MUST be treated as a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -520,9 +678,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * idle: Receiving any frame other than HEADERS or PRIORITY on a stream in
-     * this state MUST be treated as a connection error (Section 5.4.1)
-     * of type PROTOCOL_ERROR.
+     * Test Coverage: idle: In an IDLE state send a CONTINUATION Frame.
+     * Test Outcome: Receiving any frame other than HEADERS or PRIORITY on a stream in
+     * idle state MUST be treated as a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -532,11 +691,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * closed:
-     *
-     * An endpoint that receives any frame other than PRIORITY
-     * after receiving a RST_STREAM MUST treat that as a stream error
-     * (Section 5.4.2) of type STREAM_CLOSED.
+     * Test Coverage: closed: in a CLOSED state send a DATA Frame
+     * Test Outcome: An endpoint that receives any frame other than PRIORITY
+     * after receiving a RST_STREAM MUST treat that as a stream error of type STREAM_CLOSED.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -546,12 +704,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * closed:
-     *
-     * An endpoint that receives any frame other than PRIORITY
-     * after receiving a RST_STREAM MUST treat that as a stream error
-     * (Section 5.4.2) of type STREAM_CLOSED.
+     * Test Coverage: closed: in a CLOSED state send a HEADER Frame
+     * Test Outcome: An endpoint that receives any frame other than PRIORITY
+     * after receiving a RST_STREAM MUST treat that as a stream error of type STREAM_CLOSED.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -561,12 +717,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * closed:
-     *
-     * An endpoint that receives any frame other than PRIORITY
-     * after receiving a RST_STREAM MUST treat that as a stream error
-     * (Section 5.4.2) of type STREAM_CLOSED.
+     * Test Coverage: closed: in a CLOSED state send a CONTINUATION Frame
+     * Test Outcome: An endpoint that receives any frame other than PRIORITY
+     * after receiving a RST_STREAM MUST treat that as a stream error of type STREAM_CLOSED.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -575,18 +729,23 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: closed: send a DATA frame on a closed stream
+     * Test Outcome: connection closed with a GOAWAY Frame.
+     * Spec Section: 5.1
+     *
+     * @throws Exception
+     */
     @Test
     public void testDataFrameAfterHeaderFrameWithEndOfStream() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
     /**
-     *
-     * closed:
-     *
-     * An endpoint that receives any frame other than PRIORITY
-     * after receiving a RST_STREAM MUST treat that as a stream error
-     * (Section 5.4.2) of type STREAM_CLOSED.
+     * Test Coverage: closed: in a CLOSED state send a HEADER Frame
+     * Test Outcome: An endpoint that receives any frame other than PRIORITY
+     * after receiving a RST_STREAM MUST treat that as a stream error of type STREAM_CLOSED.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -596,25 +755,12 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * closed:
-     *
-     * An endpoint that receives any frame other than PRIORITY
-     * after receiving a RST_STREAM MUST treat that as a stream error
-     * (Section 5.4.2) of type STREAM_CLOSED.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testContinuationFrameAfterHeaderFrameWithEndOfStream() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
-
-    /**
-     * If the END_HEADERS bit is not set, this frame MUST be followed by
+     * Test Coverage: send DATA frame before END_HEADERS has been sent.
+     * Test Outcome: If the END_HEADERS bit is not set, this frame MUST be followed by
      * another CONTINUATION frame. A receiver MUST treat the receipt of
      * any other type of frame or a frame on a different stream as a
-     * connection error (Section 5.4.1) of type PROTOCOL_ERROR.
+     * connection error of type PROTOCOL_ERROR.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -624,10 +770,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * CONTINUATION frames MUST be associated with a stream. If a
-     * CONTINUATION frame is received whose stream identifier field is 0x0,
-     * the recipient MUST respond with a connection error (Section 5.4.1) of
-     * type PROTOCOL_ERROR.
+     * Test Coverage: Send a CONTINUATION frame on stream 0
+     * Test Outcome: If a CONTINUATION frame is received whose stream identifier field is 0x0,
+     * the recipient MUST respond with a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 5.1
      *
      * @throws Exception
      */
@@ -637,12 +783,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * CONTINUATION frames MUST be associated with a stream. If a
-     * CONTINUATION frame is received whose stream identifier field is 0x0,
-     * the recipient MUST respond with a connection error (Section 5.4.1) of
-     * type PROTOCOL_ERROR.
+     * Test Coverage: Send CONTINUATION after setting End of Headers flag set on HEADER frame
+     * Test Outcome: respond with a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 5.1
      *
-     * @throws
+     * @throws Exception
      */
     @Test
     public void testContinuationFrameAfterAnEndOfHeaders() throws Exception {
@@ -650,12 +795,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * CONTINUATION frames MUST be associated with a stream. If a
-     * CONTINUATION frame is received whose stream identifier field is 0x0,
-     * the recipient MUST respond with a connection error (Section 5.4.1) of
-     * type PROTOCOL_ERROR.
+     * Test Coverage: Send CONTINUATION after setting End of Headers flag set on previous CONTINUATION frame
+     * Test Outcome: respond with a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 5.1
      *
-     * @throws
+     * @throws Exception
      */
     @Test
     public void testSecondContinuationFrameAfterAnEndOfHeaders() throws Exception {
@@ -663,10 +807,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * CONTINUATION frames MUST be associated with a stream. If a
-     * CONTINUATION frame is received whose stream identifier field is 0x0,
-     * the recipient MUST respond with a connection error (Section 5.4.1) of
-     * type PROTOCOL_ERROR.
+     * Test Coverage: Send CONTINUATION after sending a DATA frame
+     * Test Outcome: respond with a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 5.1
      *
      * @throws
      */
@@ -675,16 +818,24 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Send DATA frame on stream 0
+     * Test Outcome: respond with a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 6.1
+     *
+     * @throws
+     */
     @Test
     public void testDataFrameOnStream0() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
     /**
-     * The total number of padding octets is determined by the value of the
+     * Test Coverage: Send a DATA Frame with a pad length greater than the payload length
+     * Test Outcome: The total number of padding octets is determined by the value of the
      * Pad Length field. If the length of the padding is the length of the
-     * frame payload or greater, the recipient MUST treat this as a
-     * connection error (Section 5.4.1) of type PROTOCOL_ERROR.
+     * frame payload or greater, the recipient MUST treat this as a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 6.1
      *
      * @throws Exception
      */
@@ -694,11 +845,12 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * A HEADERS frame without the END_HEADERS flag set MUST be followed
-     * by a CONTINUATION frame for the same stream. A receiver MUST
-     * treat the receipt of any other type of frame or a frame on a
-     * different stream as a connection error (Section 5.4.1) of type
-     * PROTOCOL_ERROR.
+     * Test Coverage: Send a HEADER frame without END_HEADERS flag set. Then send a PRIORITY frame, then
+     * send CONTINUATION frame(s) with END_HEADERS flag set correctly.
+     * Test Outcome: A HEADERS frame without the END_HEADERS flag set MUST be followed
+     * by a CONTINUATION frame for the same stream. A receiver MUST treat the receipt of any other
+     * type of frame or a frame on a different stream as a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 6.2
      *
      * @throws Exception
      */
@@ -707,16 +859,23 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Send HEADERS frame on stream 0
+     * Test Outcome: respond with a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 6.2
+     *
+     * @throws Exception
+     */
     @Test
     public void testHeaderFrameOnStream0() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
     /**
-     * The HEADERS frame can include padding. Padding fields and flags are
-     * identical to those defined for DATA frames (Section 6.1). Padding
-     * that exceeds the size remaining for the header block fragment MUST be
-     * treated as a PROTOCOL_ERROR.
+     * Test Coverage: Send a HEADERS frame where the pad length is greater than the payload length
+     * Test Outcome: HEADERS Padding fields and flags are identical to those defined for DATA frames. Padding
+     * that exceeds the size remaining for the header block fragment MUST be treated as a PROTOCOL_ERROR.
+     * Spec Section: 6.2, 6.1
      *
      * @throws Exception
      */
@@ -725,15 +884,23 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Send PRIORITY frame on stream 0
+     * Test Outcome: respond with a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 6.3
+     *
+     * @throws Exception
+     */
     @Test
     public void testPriorityFrameOnStream0() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
     /**
-     *
-     * A PRIORITY frame with a length other than 5 octets MUST be treated as
-     * a stream error (Section 5.4.2) of type FRAME_SIZE_ERROR.
+     * Test Coverage: Send PRIORITY frame with a length other than 5 octets
+     * Test Outcome: A PRIORITY frame with a length other than 5 octets MUST be treated as
+     * a stream error of type FRAME_SIZE_ERROR.
+     * Spec Section: 6.3
      *
      * @throws Exception
      */
@@ -742,12 +909,22 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Send RST_FRAME frame on stream 0
+     * Test Outcome: respond with a connection error of type PROTOCOL_ERROR.
+     * Spec Section: 6.4
+     *
+     * @throws Exception
+     */
     @Test
     public void testRstStreamFrameOnStream0() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
     /**
+     * Test Coverage: Send a RST_STREAM with a 3 byte payload
+     * Test Outcome: RST_STREAM payload must be 4 bytes, therefore truea this as a connection error
+     * Spec Section: 6.4
      *
      * @throws Exception
      */
@@ -757,19 +934,22 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a SETTINGS frame with a SETTINGS_INITIAL_WINDOW_SIZE that is above the max size
+     * Test Outcome: return a connection error of type FLOW_CONTROL_ERROR
+     * Spec Section: 6.5
      *
-     * Indicates the sender's initial
-     * window size (in octets) for stream-level flow control. The
-     * initial value is 2^16-1 (65,535) octets.
+     * Test Notes:
+     * Indicates the sender's initial. window size (in octets) for stream-level flow control.
+     * The initial value is 2^16-1 (65,535) octets.
      *
-     * This setting affects the window size of all streams (see
-     * Section 6.9.2).
+     * This setting affects the window size of all streams (see Section 6.9.2).
      *
      * Values above the maximum flow-control window size of 2^31-1 MUST
      * be treated as a connection error (Section 5.4.1) of type
      * FLOW_CONTROL_ERROR.
      *
      * @throws Exception
+     *
      */
     @Test
     public void testSettingFrameWithLessThanMinimunFrameSize() throws Exception {
@@ -777,12 +957,14 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a SETTINGS frame with a value for MAX_FRAME_SIZE that is above the maximum
+     * Test Outcome: return a connection error of type PROTOCOL_ERROR
+     * Spec Section: 6.5
      *
+     * Test Notes:
      * The initial value is 2^14 (16,384) octets. The value advertised
      * by an endpoint MUST be between this initial value and the maximum
      * allowed frame size (2^24-1 or 16,777,215 octets), inclusive.
-     * Values outside this range MUST be treated as a connection error
-     * (Section 5.4.1) of type PROTOCOL_ERROR.
      *
      * @throws Exception
      */
@@ -791,29 +973,32 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
-    /**
-     *
-     * Indicates the sender's initial
-     * window size (in octets) for stream-level flow control. The
-     * initial value is 2^16-1 (65,535) octets.
-     *
-     * This setting affects the window size of all streams (see
-     * Section 6.9.2).
-     *
-     * Values above the maximum flow-control window size of 2^31-1 MUST
-     * be treated as a connection error (Section 5.4.1) of type
-     * FLOW_CONTROL_ERROR.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testSettingFrameWithInvalidMaxWindowSize() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+    // Current the same as testSettingFrameWithLessThanMinimunFrameSize, so needs to be re-worked
+//    /**
+//     *
+//     * Indicates the sender's initial
+//     * window size (in octets) for stream-level flow control. The
+//     * initial value is 2^16-1 (65,535) octets.
+//     *
+//     * This setting affects the window size of all streams (see
+//     * Section 6.9.2).
+//     *
+//     * Values above the maximum flow-control window size of 2^31-1 MUST
+//     * be treated as a connection error (Section 5.4.1) of type
+//     * FLOW_CONTROL_ERROR.
+//     *
+//     * @throws Exception
+//     */
+//    @Test
+//    public void testSettingFrameWithInvalidMaxWindowSize() throws Exception {
+//        runTest(defaultServletPath, testName.getMethodName());
+//    }
 
     /**
-     * An endpoint that receives a SETTINGS frame with any unknown or
-     * unsupported identifier MUST ignore that setting.
+     * Test Coverage: Send a SETTINGS frame with an invalid identifier.
+     * Test Outcome: An endpoint that receives a SETTINGS frame with any unknown or
+     * unsupported identifier MUST ignore that setting. Connection should work ok
+     * Spec Section: 6.5
      *
      * @throws Exception
      */
@@ -823,13 +1008,17 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a SETTINGS frame with ACK set and a payload
+     * Test Outcome: Return a connection error of type FRAME_SIZE_ERROR and close the connection.
+     * Spec Section: 6.5.3
+     *
+     * Test Notes:
      * ACK (0x1): When set, bit 0 indicates that this frame acknowledges
      * receipt and application of the peer's SETTINGS frame. When this
      * bit is set, the payload of the SETTINGS frame MUST be empty.
      * Receipt of a SETTINGS frame with the ACK flag set and a length
      * field value other than 0 MUST be treated as a connection error
-     * (Section 5.4.1) of type FRAME_SIZE_ERROR. For more information,
-     * see Section 6.5.3 ("Settings Synchronization").
+     * of type FRAME_SIZE_ERROR.
      *
      * @throws Exception
      */
@@ -839,11 +1028,16 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a SETTINGS frame on a stream other than 0
+     * Test Outcome: Return a connection error of type PROTOCOL_ERROR and close the connection
+     * Spec Section: 6.5
+     *
+     * Test Notes:
      * SETTINGS frames always apply to a connection, never a single stream.
      * The stream identifier for a SETTINGS frame MUST be zero (0x0). If an
      * endpoint receives a SETTINGS frame whose stream identifier field is
      * anything other than 0x0, the endpoint MUST respond with a connection
-     * error (Section 5.4.1) of type PROTOCOL_ERROR.
+     * error of type PROTOCOL_ERROR.
      *
      * @throws Exception
      */
@@ -853,9 +1047,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * A SETTINGS frame with a length other than a multiple of 6 octets MUST
-     * be treated as a connection error (Section 5.4.1) of type
-     * FRAME_SIZE_ERROR.
+     * Test Coverage: Send a SETTINGS frame of the wrong size (other than a multiple of 6 octets)
+     * Test Outcome: Return a connection error of type FRAME_SIZE_ERROR and close the connection.
+     * Spec Section: 6.5
      *
      * @throws Exception
      */
@@ -865,7 +1059,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * An endpoint MUST NOT respond to PING frames containing this flag.
+     * Test Coverage: Send a PING frame with ACK set
+     * Test Outcome: Verify that a PING response is not returned.
+     * Spec Section: 6.7
      *
      * @throws Exception
      */
@@ -875,10 +1071,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * If a PING
-     * frame is received with a stream identifier field value other than
-     * 0x0, the recipient MUST respond with a connection error
-     * (Section 5.4.1) of type PROTOCOL_ERROR.
+     * Test Coverage: Send a PING frame on a stream other than 0
+     * Test Outcome: Return a connection error of type PROTOCOL_ERROR and close the connection
+     * Spec Section: 6.7
      *
      * @throws Exception
      */
@@ -888,6 +1083,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a PING frame of the wrong size (other than 8 bytes)
+     * Test Outcome: Return a connection error of type FRAME_SIZE_ERROR and close the connection.
+     * Spec Section: 6.7
      *
      * @throws Exception
      */
@@ -897,10 +1095,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * The GOAWAY frame applies to the connection, not a specific stream.
-     * An endpoint MUST treat a GOAWAY frame with a stream identifier other
-     * than 0x0 as a connection error (Section 5.4.1) of type
-     * PROTOCOL_ERROR.
+     * Test Coverage: Send a GOAWAY frame on a stream other than 0
+     * Test Outcome: Return a connection error of type PROTOCOL_ERROR and close the connection
+     * Spec Section: 6.8
      *
      * @throws Exception
      */
@@ -910,6 +1107,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: One stream 0, send a WINDOW_UPDATE that causes the window to exceed 2^31-1 octets
+     * Test Outcome: Return a connection error of type FLOW_CONTROL_ERROR and close the connection
+     * Spec Section: 6.9.1
+     *
+     * Test Notes:
      * A sender MUST NOT allow a flow-control window to exceed 2^31-1
      * octets. If a sender receives a WINDOW_UPDATE that causes a flow-
      * control window to exceed this maximum, it MUST terminate either the
@@ -926,6 +1128,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: One stream 3, send a WINDOW_UPDATE that causes the window to exceed 2^31-1 octets
+     * Test Outcome: Return a RST_STREAM with error of type FLOW_CONTROL_ERROR for that stream.
+     * Spec Section: 6.9.1
+     *
+     * Test Notes:
      * A sender MUST NOT allow a flow-control window to exceed 2^31-1
      * octets. If a sender receives a WINDOW_UPDATE that causes a flow-
      * control window to exceed this maximum, it MUST terminate either the
@@ -941,12 +1148,15 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a connection preface with a bad "magic" string
+     * Test Outcome: Return a PROTOCOL_ERROR and close the connection
+     * Spec Section: 3.5
+     *
+     * Test Notes:
      * Clients and servers MUST treat an invalid connection preface as a
      * connection error (Section 5.4.1) of type PROTOCOL_ERROR. A GOAWAY
      * frame (Section 6.8) MAY be omitted in this case, since an invalid
      * preface indicates that the peer is not using HTTP/2.
-     *
-     * FIXME: When this test is on, the server fails to stop.
      *
      * @throws Exception
      */
@@ -956,6 +1166,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Interleave HEADER and CONTINUATION frames between streams on the same connection
+     * Test Outcome: Return a connection error, PROTOCOL_ERROR, and close the connection.
+     * Spec Section: 4.3
+     *
+     * Test Notes:
      * Each header block is processed as a discrete unit. Header blocks
      * MUST be transmitted as a contiguous sequence of frames, with no
      * interleaved frames of any other type or from any other stream.
@@ -968,8 +1183,12 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * An endpoint that
-     * receives an unexpected stream identifier MUST respond with a
+     * Test Coverage: Send an incorrect, lower than previous, stream identifier
+     * Test Outcome: Return a connection error, PROTOCOL_ERROR, and close the connection.
+     * Spec Section: 5.1.1
+     *
+     * Test Notes:
+     * An endpoint that receives an unexpected stream identifier MUST respond with a
      * connection error (Section 5.4.1) of type PROTOCOL_ERROR.
      *
      * @throws Exception
@@ -980,8 +1199,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * A stream cannot depend on itself. An endpoint MUST treat this as a
-     * stream error (Section 5.4.2) of type PROTOCOL_ERROR.
+     * Test Coverage: Send a HEADERS frame that makes the new stream dependent on itself
+     * Test Outcome: A stream cannot depend on itself. An endpoint MUST treat this as a
+     * stream error of type PROTOCOL_ERROR, so respond with an RST_STREAM on that stream.
+     * Spec Section: 5.3.1
      *
      * @throws Exception
      */
@@ -991,8 +1212,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * A stream cannot depend on itself. An endpoint MUST treat this as a
-     * stream error (Section 5.4.2) of type PROTOCOL_ERROR.
+     * Test Coverage: Send a PRIORITY frame that makes the new stream dependent on itself
+     * Test Outcome: A stream cannot depend on itself. An endpoint MUST treat this as a
+     * stream error of type PROTOCOL_ERROR, so respond with an RST_STREAM on that stream.
+     * Spec Section: 5.3.1
      *
      * @throws Exception
      */
@@ -1002,10 +1225,13 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * However, extension frames that appear in
-     * the middle of a header block (Section 4.3) are not permitted; these
-     * MUST be treated as a connection error (Section 5.4.1) of type
-     * PROTOCOL_ERROR.
+     * Test Coverage: Send a frame of undefined type, when a CONTINUATION frame was expected.
+     * Test Outcome: Respond with a connection error, PROTOCOL_ERROR, and close the connection.
+     * Spec Section: 4.3, 5.4.1
+     *
+     * Test Notes:
+     * However, extension frames that appear in the middle of a header block (Section 4.3) are not permitted; these
+     * MUST be treated as a connection error (Section 5.4.1) of type PROTOCOL_ERROR.
      *
      * @throws Exception
      */
@@ -1015,9 +1241,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * The initial value is 1, which indicates that server push is
-     * permitted. Any value other than 0 or 1 MUST be treated as a
-     * connection error (Section 5.4.1) of type PROTOCOL_ERROR.
+     * Test Coverage: Send a SETTINGS frame with an invalid SETTINGS_ENABLE_PUSH value.
+     * Test Outcome: Respond with a connection error, PROTOCOL_ERROR, and close the connection.
+     * Spec Section: 6.5.2
      *
      * @throws Exception
      */
@@ -1027,10 +1253,12 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * The sender MUST NOT
-     * send a flow-controlled frame with a length that exceeds the space
-     * available in either of the flow-control windows advertised by the
-     * receiver.
+     * Test Coverage:
+     * Test Outcome:
+     * Spec Section:
+     *
+     * The sender MUST NOT send a flow-controlled frame with a length that exceeds the space
+     * available in either of the flow-control windows advertised by the receiver.
      *
      * @throws Exception
      */
@@ -1040,9 +1268,13 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a GOAWAY with an undefined error code.
+     * Test Outcome: Respond with a GOAWAY, do not do anything special/different because of the undefined error code.
+     * Spec Section: 7
+     *
+     * Test Notes:
      * Unknown or unsupported error codes MUST NOT trigger any special
-     * behavior. These MAY be treated by an implementation as being
-     * equivalent to INTERNAL_ERROR.
+     * behavior. These MAY be treated by an implementation as being equivalent to INTERNAL_ERROR.
      *
      * @throws Exception
      */
@@ -1052,6 +1284,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a RST_STREAM with an undefined error code
+     * Test Outcome: process the RST_STREAM as normal
+     * Spec Section: 7
+     *
+     * Test Notes:
      * Unknown or unsupported error codes MUST NOT trigger any special
      * behavior. These MAY be treated by an implementation as being
      * equivalent to INTERNAL_ERROR.
@@ -1066,14 +1303,16 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send an Invalid pseudo header in a HEADERS frame
+     * Test Outcome: Respond with an RST_STREAM, PROTOCOL_ERROR for that stream
+     * Spec Section: 8.1.2.6
      *
-     * Pseudo-header fields are only valid in the context in which they are
-     * defined. Pseudo-header fields defined for requests MUST NOT appear
-     * in responses; pseudo-header fields defined for responses MUST NOT
-     * appear in requests. Pseudo-header fields MUST NOT appear in
-     * trailers. Endpoints MUST treat a request or response that contains
-     * undefined or invalid pseudo-header fields as malformed
-     * (Section 8.1.2.6).
+     * Test Notes:
+     * Pseudo-header fields are only valid in the context in which they are defined.
+     * Pseudo-header fields defined for requests MUST NOT appear in responses;
+     * pseudo-header fields defined for responses MUST NOT appear in requests.
+     * Pseudo-header fields MUST NOT appear in trailers.
+     * Endpoints MUST treat a request or response that contain undefined or invalid pseudo-header fields as malformed
      *
      * @throws Exception
      */
@@ -1083,14 +1322,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send an Invalid pseudo header in a HEADERS frame
+     * Test Outcome: Respond with an RST_STREAM, PROTOCOL_ERROR for that stream
+     * Spec Section: 8.1.2.6
      *
-     * Pseudo-header fields are only valid in the context in which they are
-     * defined. Pseudo-header fields defined for requests MUST NOT appear
-     * in responses; pseudo-header fields defined for responses MUST NOT
-     * appear in requests. Pseudo-header fields MUST NOT appear in
-     * trailers. Endpoints MUST treat a request or response that contains
-     * undefined or invalid pseudo-header fields as malformed
-     * (Section 8.1.2.6).
      *
      * @throws Exception
      */
@@ -1100,14 +1335,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * Pseudo-header fields are only valid in the context in which they are
-     * defined. Pseudo-header fields defined for requests MUST NOT appear
-     * in responses; pseudo-header fields defined for responses MUST NOT
-     * appear in requests. Pseudo-header fields MUST NOT appear in
-     * trailers. Endpoints MUST treat a request or response that contains
-     * undefined or invalid pseudo-header fields as malformed
-     * (Section 8.1.2.6).
+     * Test Coverage: Send an Invalid pseudo header in a trailing HEADERS frame
+     * Test Outcome: Respond with an RST_STREAM, PROTOCOL_ERROR for that stream
+     * Spec Section: 8.1.2.6
      *
      * @throws Exception
      */
@@ -1117,14 +1347,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * Pseudo-header fields are only valid in the context in which they are
-     * defined. Pseudo-header fields defined for requests MUST NOT appear
-     * in responses; pseudo-header fields defined for responses MUST NOT
-     * appear in requests. Pseudo-header fields MUST NOT appear in
-     * trailers. Endpoints MUST treat a request or response that contains
-     * undefined or invalid pseudo-header fields as malformed
-     * (Section 8.1.2.6).
+     * Test Coverage: Send valid pseudo headers but after other headers
+     * Test Outcome: Respond with a connection error, COMPRESSION_ERROR, and close the connection.
+     * Spec Section:8.1.2.6
      *
      * @throws Exception
      */
@@ -1134,14 +1359,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * Pseudo-header fields are only valid in the context in which they are
-     * defined. Pseudo-header fields defined for requests MUST NOT appear
-     * in responses; pseudo-header fields defined for responses MUST NOT
-     * appear in requests. Pseudo-header fields MUST NOT appear in
-     * trailers. Endpoints MUST treat a request or response that contains
-     * undefined or invalid pseudo-header fields as malformed
-     * (Section 8.1.2.6).
+     * Test Coverage:
+     * Test Outcome:
+     * Spec Section:
      *
      * @throws Exception
      */
@@ -1151,14 +1371,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send an invalid TE Header
+     * Test Outcome: Respond with a connection error, COMPRESSION_ERROR, and close the connection.
+     * Spec Section:8.1.2.6
      *
-     * Pseudo-header fields are only valid in the context in which they are
-     * defined. Pseudo-header fields defined for requests MUST NOT appear
-     * in responses; pseudo-header fields defined for responses MUST NOT
-     * appear in requests. Pseudo-header fields MUST NOT appear in
-     * trailers. Endpoints MUST treat a request or response that contains
-     * undefined or invalid pseudo-header fields as malformed
-     * (Section 8.1.2.6).
+     * @throws Exception
      */
     @Test
     public void testHeaderFrameWithBadTEHeader() throws Exception {
@@ -1167,6 +1384,11 @@ public class Http2FullModeTests extends FATServletClient {
 
     /**
      *
+     * Test Coverage: Send a HEADERS with an empty ":path" pseudo header
+     * Test Outcome: Respond with an RST_STREAM, PROTOCOL_ERROR for that stream
+     * Spec Section: 8.1.2.3
+     *
+     * Test Notes:
      * The ":path" pseudo-header field includes the path and query parts
      * of the target URI (the "path-absolute" production and optionally a
      * '?' character followed by the "query" production (see Sections 3.3
@@ -1186,11 +1408,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * All HTTP/2 requests MUST include exactly one valid value for the
-     * ":method", ":scheme", and ":path" pseudo-header fields, unless it is
-     * a CONNECT request (Section 8.3). An HTTP request that omits
-     * mandatory pseudo-header fields is malformed (Section 8.1.2.6).
+     * Test Coverage: Send a HEADERS with no ":method" pseudo header
+     * Test Outcome: Respond with an RST_STREAM, PROTOCOL_ERROR for that stream
+     * Spec Section: 8.1.2.3
      *
      * @throws Exception
      */
@@ -1201,10 +1421,9 @@ public class Http2FullModeTests extends FATServletClient {
 
     /**
      *
-     * All HTTP/2 requests MUST include exactly one valid value for the
-     * ":method", ":scheme", and ":path" pseudo-header fields, unless it is
-     * a CONNECT request (Section 8.3). An HTTP request that omits
-     * mandatory pseudo-header fields is malformed (Section 8.1.2.6).
+     * Test Coverage: Send a HEADERS with no ":scheme" pseudo header
+     * Test Outcome: Respond with an RST_STREAM, PROTOCOL_ERROR for that stream
+     * Spec Section: 8.1.2.3
      *
      * @throws Exception
      */
@@ -1214,11 +1433,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * All HTTP/2 requests MUST include exactly one valid value for the
-     * ":method", ":scheme", and ":path" pseudo-header fields, unless it is
-     * a CONNECT request (Section 8.3). An HTTP request that omits
-     * mandatory pseudo-header fields is malformed (Section 8.1.2.6).
+     * Test Coverage: Send a HEADERS with no ":path" pseudo header
+     * Test Outcome: Respond with an RST_STREAM, PROTOCOL_ERROR for that stream
+     * Spec Section: 8.1.2.3
      *
      * @throws Exception
      */
@@ -1228,11 +1445,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * All HTTP/2 requests MUST include exactly one valid value for the
-     * ":method", ":scheme", and ":path" pseudo-header fields, unless it is
-     * a CONNECT request (Section 8.3). An HTTP request that omits
-     * mandatory pseudo-header fields is malformed (Section 8.1.2.6).
+     * Test Coverage: Send a HEADERS with two ":method" pseudo header
+     * Test Outcome: Respond with a connection error, COMPRESSION_ERROR, and close the connection.
+     * Spec Section:8.1.2.3
      *
      * @throws Exception
      */
@@ -1242,11 +1457,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * All HTTP/2 requests MUST include exactly one valid value for the
-     * ":method", ":scheme", and ":path" pseudo-header fields, unless it is
-     * a CONNECT request (Section 8.3). An HTTP request that omits
-     * mandatory pseudo-header fields is malformed (Section 8.1.2.6).
+     * Test Coverage: Send a HEADERS with two ":scheme" pseudo header
+     * Test Outcome: Respond with a connection error, COMPRESSION_ERROR, and close the connection.
+     * Spec Section:8.1.2.3
      *
      * @throws Exception
      */
@@ -1256,11 +1469,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * All HTTP/2 requests MUST include exactly one valid value for the
-     * ":method", ":scheme", and ":path" pseudo-header fields, unless it is
-     * a CONNECT request (Section 8.3). An HTTP request that omits
-     * mandatory pseudo-header fields is malformed (Section 8.1.2.6).
+     * Test Coverage: Send a HEADERS with an two ":path" pseudo header
+     * Test Outcome: Respond with a connection error, COMPRESSION_ERROR, and close the connection.
+     * Spec Section:8.1.2.3
      *
      * @throws Exception
      */
@@ -1270,7 +1481,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a DATA frame which has more data than specified by the content-length header
+     * Test Outcome: Respond with a RST_STREAM, PROTOCOL_ERROR, and close the stream
+     * Spec Section: 8.1.2.6
      *
+     * Test Notes:
      * A request or response that includes a payload body can include a
      * content-length header field. A request or response is also malformed
      * if the value of a content-length header field does not equal the sum
@@ -1295,20 +1510,9 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     *
-     * A request or response that includes a payload body can include a
-     * content-length header field. A request or response is also malformed
-     * if the value of a content-length header field does not equal the sum
-     * of the DATA frame payload lengths that form the body. A response
-     * that is defined to have no payload, as described in [RFC7230],
-     * Section 3.3.2, can have a non-zero content-length header field, even
-     * though no content is included in DATA frames.
-     *
-     * Intermediaries that process HTTP requests or responses (i.e., any
-     * intermediary not acting as a tunnel) MUST NOT forward a malformed
-     * request or response. Malformed requests or responses that are
-     * detected MUST be treated as a stream error (Section 5.4.2) of type
-     * PROTOCOL_ERROR.
+     * Test Coverage:
+     * Test Outcome:
+     * Spec Section:
      *
      * @throws Exception
      */
@@ -1318,10 +1522,13 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * An endpoint that receives a HEADERS
-     * frame without the END_STREAM flag set after receiving a final (non-
-     * informational) status code MUST treat the corresponding request or
-     * response as malformed (Section 8.1.2.6).
+     * Test Coverage: Sent HEADERS frame after sending a DATA frame that closed the stream
+     * Test Outcome: Respond with a connection error, STREAM_CLOSED, PROTOCOL_ERROR, and close the connection
+     * Spec Section: Section 8.1
+     *
+     * Test Notes:
+     * An endpoint that receives a HEADERS frame without the END_STREAM flag set after receiving a final (non-
+     * informational) status code MUST treat the corresponding request or response as malformed.
      *
      * @throws Exception
      */
@@ -1331,7 +1538,12 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * * A client cannot push. Thus, servers MUST treat the receipt of a
+     * Test Coverage: Send a PUSH_PROMISE frame from the client
+     * Test Outcome: Respond with a connection error, PROTOCOL_ERROR, and close the connection
+     * Spec Section: 8.2
+     *
+     * Test Notes.
+     * A client cannot push. Thus, servers MUST treat the receipt of a
      * PUSH_PROMISE frame as a connection error (Section 5.4.1) of type
      * PROTOCOL_ERROR. Clients MUST reject any attempt to change the
      * SETTINGS_ENABLE_PUSH setting to a value other than 0 by treating the
@@ -1344,23 +1556,28 @@ public class Http2FullModeTests extends FATServletClient {
         runTest(defaultServletPath, testName.getMethodName());
     }
 
-    /**
-     * Endpoints MUST NOT exceed the limit set by their peer. An endpoint
-     * that receives a HEADERS frame that causes its advertised concurrent
-     * stream limit to be exceeded MUST treat this as a stream error
-     * (Section 5.4.2) of type PROTOCOL_ERROR or REFUSED_STREAM.
-     *
-     * WTL: this is not how SETTINGS_MAX_CONCURRENT_STREAMS works - that setting is only dictates how many streams the other peer is
-     * allowed to open, not how many the current peer is.
-     *
-     * @throws Exception
-     */
-    //@Test
-    public void testSingleConnectionStressMaxStreams() throws Exception {
-        runStressTest(5);
-    }
+//    /**
+//     * Endpoints MUST NOT exceed the limit set by their peer. An endpoint
+//     * that receives a HEADERS frame that causes its advertised concurrent
+//     * stream limit to be exceeded MUST treat this as a stream error
+//     * (Section 5.4.2) of type PROTOCOL_ERROR or REFUSED_STREAM.
+//     *
+//     * WTL: this is not how SETTINGS_MAX_CONCURRENT_STREAMS works - that setting is only dictates how many streams the other peer is
+//     * allowed to open, not how many the current peer is.
+//     *
+//     * @throws Exception
+//     */
+//    //@Test
+//    public void testSingleConnectionStressMaxStreams() throws Exception {
+//        runStressTest(5);
+//    }
 
     /**
+     * Test Coverage: Send a DATA frame payload of 16384 bytes.
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 4.1
+     *
+     * Test Notes:
      * All implementations MUST be capable of receiving and minimally
      * processing frames up to 2^14 octets in length, plus the 9-octet frame
      * header (Section 4.1). The size of the frame header is not included
@@ -1373,6 +1590,10 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a DATA frame payload of 16384 + 1 bytes, which is 1 above the maximum.
+     * Test Outcome: Respond with a connection error of FRAME_SIZE_ERROR and close the connection
+     * Spec Section: 4.1
+     *
      * An endpoint MUST send an error code of FRAME_SIZE_ERROR if a frame
      * exceeds the size defined in SETTINGS_MAX_FRAME_SIZE, exceeds any
      * limit defined for the frame type, or is too small to contain
@@ -1385,6 +1606,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a HEADERS frame that has a header entry that is bigger than the max frame size
+     * Test Outcome: Respond with a connection error of FRAME_SIZE_ERROR and close the connection
+     * Spec Section: 4.3
+     *
+     * Test Notes:
      * A frame size error in a frame that could alter
      * the state of the entire connection MUST be treated as a connection
      * error (Section 5.4.1); this includes any frame carrying a header
@@ -1397,11 +1623,14 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Just as in HTTP/1.x, header field names are strings of ASCII
-     * characters that are compared in a case-insensitive fashion. However,
-     * header field names MUST be converted to lowercase prior to their
-     * encoding in HTTP/2. A request or response containing uppercase
-     * header field names MUST be treated as malformed (Section 8.1.2.6).
+     * Test Coverage: Send a HEADERS frame that has at least one header field name with at least one capital letter
+     * Test Outcome: Respond with a connection error of COMPRESSION_ERROR and close the connection
+     * Spec Section: 8.1.2
+     *
+     * Test Notes:
+     * Just as in HTTP/1.x, header field names are strings of ASCII characters that are compared in a
+     * case-insensitive fashion. However, header field names MUST be converted to lowercase prior to their
+     * encoding in HTTP/2. A request or response containing uppercase header field names MUST be treated as malformed.
      *
      * @throws Exception
      */
@@ -1411,7 +1640,12 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a HEADERS frame with a change to the dynamic table size, after the stream was closed by
+     * the other side:
+     * Test Outcome: Respond with a connection error of COMPRESSION_ERROR and close the connection
+     * Spec Section: 6.5.3, 6.3
      *
+     * Test Notes:
      * A change in the maximum size of the dynamic table is signaled via a
      * dynamic table size update (see Section 6.3). This dynamic table size
      * update MUST occur at the beginning of the first header block
@@ -1426,6 +1660,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a Header table index value that is too large.
+     * Test Outcome: Respond with a connection error of COMPRESSION_ERROR and close the connection
+     * Spec Section:
+     *
+     * Test Notes:
      * Indices strictly greater than the sum of the lengths of both tables
      * MUST be treated as a decoding error.
      *
@@ -1437,6 +1676,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a HEADERS frame that has too much padding and is therefore invalid
+     * Test Outcome: Respond with a connection error of COMPRESSION_ERROR and close the connection
+     * Spec Section: 6.2, 6.1
+     *
+     * Test Notes:
      * As the Huffman-encoded data doesn't always end at an octet boundary,
      * some padding is inserted after it, up to the next octet boundary. To
      * prevent this padding from being misinterpreted as part of the string
@@ -1459,6 +1703,11 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Send a HEADERS frame that has a Huffman index value of 0
+     * Test Outcome: Respond with a connection error of COMPRESSION_ERROR and close the connection
+     * Spec Section:
+     *
+     * Test Notes:
      * The index value of 0 is not used. It MUST be treated as a decoding
      * error if found in an indexed header field representation.
      *
@@ -1470,10 +1719,13 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * When the
-     * value of SETTINGS_INITIAL_WINDOW_SIZE changes, a receiver MUST adjust
-     * the size of all stream flow-control windows that it maintains by the
-     * difference between the new value and the old value.
+     * Test Coverage: Adjust the window size from negative to positive
+     * Test Outcome: Data is sent once the window size is large enough
+     * Spec Section: 6.9.2
+     *
+     * Test Notes.
+     * When the value of SETTINGS_INITIAL_WINDOW_SIZE changes, a receiver MUST adjust the size of
+     * all stream flow-control windows that it maintains by the difference between the new value and the old value.
      *
      * FIXME: The server is not adjusting the size of the DATA frame after the new SETTINGS_INITIAL_WINDOW_SIZE changed from 0 to 1.
      * This test will be incomplete when the problem is fixed as I don't know how the DATA frame will look like.

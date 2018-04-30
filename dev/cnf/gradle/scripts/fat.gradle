@@ -158,6 +158,7 @@ task autoFVT {
     // Check for minimum java level for test execution:
     def minJavaLevel = bnd('fat.minimum.java.level', bnd('javac.source'))
     bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
+    bndProps.setProperty('micro.version', bnd('libertyBundleMicroVersion'))
     
     File propsFile = new File(autoFvtDir, 'fat.bnd.properties')
     def writer = new FileWriter(propsFile)

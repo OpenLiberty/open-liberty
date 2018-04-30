@@ -919,6 +919,91 @@ public class ConfigEvaluatorTest {
         assertEquals("a,b,c", dictionary.get("logDirectory"));
     }
 
+    // SAme as testVariableExtension, but using a variable list function
+    @Test
+    public void testVariableExtensionList() throws Exception {
+        changeLocationSettings("default");
+
+        String loggingPid = "com.ibm.ws.logging";
+        MockObjectClassDefinition loggingOCD = new MockObjectClassDefinition("logging");
+        MockAttributeDefinition logDirectoryAttribute = new MockAttributeDefinition("logDirectory", AttributeDefinition.STRING, 5, null);
+        logDirectoryAttribute.setVariable("list(com.ibm.ws.logging.log.directory)");
+        loggingOCD.addAttributeDefinition(logDirectoryAttribute);
+        loggingOCD.setAlias("logging");
+
+        MockBundle bundle = new MockBundle();
+        MockMetaTypeInformation metatype = new MockMetaTypeInformation(bundle);
+        metatype.add(loggingPid, true, loggingOCD);
+
+        MetaTypeRegistry registry = new MetaTypeRegistry();
+        assertFalse("The registry should be updated", registry.addMetaType(metatype).isEmpty());
+
+        RegistryEntry loggingRE = registry.getRegistryEntry(loggingPid);
+
+        String xml = "<server>" +
+                     "  <logging id=\"one\"/>\n" +
+                     "</server>";
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(xml));
+
+        VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
+        variableRegistryHelper.addVariable("com.ibm.ws.logging.log.directory", "a,b,c");
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper);
+        TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
+
+        ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "one");
+
+        EvaluationResult result = evaluator.evaluate(entry, loggingRE);
+        Dictionary<String, Object> dictionary = result.getProperties();
+        String[] value = (String[]) dictionary.get("logDirectory");
+        assertEquals("a", value[0]);
+        assertEquals("b", value[1]);
+        assertEquals("c", value[2]);
+
+    }
+
+    @Test
+    public void testVariableExtensionListCardinalityFailure() throws Exception {
+        changeLocationSettings("default");
+
+        String loggingPid = "com.ibm.ws.logging";
+        MockObjectClassDefinition loggingOCD = new MockObjectClassDefinition("logging");
+        MockAttributeDefinition logDirectoryAttribute = new MockAttributeDefinition("logDirectory", AttributeDefinition.STRING, 2, null);
+        logDirectoryAttribute.setVariable("list(com.ibm.ws.logging.log.directory)");
+        loggingOCD.addAttributeDefinition(logDirectoryAttribute);
+        loggingOCD.setAlias("logging");
+
+        MockBundle bundle = new MockBundle();
+        MockMetaTypeInformation metatype = new MockMetaTypeInformation(bundle);
+        metatype.add(loggingPid, true, loggingOCD);
+
+        MetaTypeRegistry registry = new MetaTypeRegistry();
+        assertFalse("The registry should be updated", registry.addMetaType(metatype).isEmpty());
+
+        RegistryEntry loggingRE = registry.getRegistryEntry(loggingPid);
+
+        String xml = "<server>" +
+                     "  <logging id=\"one\"/>\n" +
+                     "</server>";
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(xml));
+
+        VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
+        variableRegistryHelper.addVariable("com.ibm.ws.logging.log.directory", "a,b,c");
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper);
+        TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
+
+        ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "one");
+
+        try {
+            EvaluationResult result = evaluator.evaluate(entry, loggingRE);
+        } catch (ConfigEvaluatorException ex) {
+            // Passed
+            return;
+        }
+
+        fail("A ConfigEvaluatorException should have been thrown for a cardinality violation");
+
+    }
+
     @Test
     public void testVariableExpression() throws Exception {
         changeLocationSettings("default");
@@ -941,6 +1026,8 @@ public class ConfigEvaluatorTest {
         topOCD.addAttributeDefinition(intVector2Attribute);
         MockAttributeDefinition valueAttribute = new MockAttributeDefinition("value", AttributeDefinition.STRING, Integer.MAX_VALUE, null);
         topOCD.addAttributeDefinition(valueAttribute);
+        MockAttributeDefinition intValueAttribute = new MockAttributeDefinition("intValue", AttributeDefinition.INTEGER, Integer.MAX_VALUE, null);
+        topOCD.addAttributeDefinition(intValueAttribute);
         topOCD.setAlias("top");
 
         MockBundle bundle = new MockBundle();
@@ -1053,12 +1140,27 @@ public class ConfigEvaluatorTest {
                      "    <value>${int/int}</value>\n" +
                      // Misc
                      "    <value>${int.with.dots+0}</value>" +
+                     // list operator
+                     "    <value>${list(array2)}</value>" +
+                     "    <value>${list(multiValue)}</value>" +
+                     "    <value>${list(singleValue)}</value>" +
+                     "    <value>${list(IDoNotExist)}</value>" +
+                     "    <value>${  list(array2)}</value>" +
+                     "    <value>${list( array2 )}</value>" +
+                     "    <value>${list(}</value>" +
+                     "    <value>${list(varArray)}</value>" +
+                     "    <intValue>${list(intArray2)}</intValue>" +
+                     "    <intValue>${list(intValues)}</intValue>" +
                      "  </top>\n" +
                      "  <top id=\"two\"/>" +
                      "</server>";
         ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(xml));
 
         VariableRegistryHelper variableRegistryHelper = new VariableRegistryHelper(new SymbolRegistry());
+        variableRegistryHelper.addVariable("multiValue", "a,b,c");
+        variableRegistryHelper.addVariable("singleValue", "a");
+        variableRegistryHelper.addVariable("intValues", "1,2,3,4,5");
+        variableRegistryHelper.addVariable("varArray", "${multiValue}, ${singleValue}, ${intValues}");
         ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryHelper);
         TestConfigEvaluator evaluator = createConfigEvaluator(registry, variableRegistry, null);
 
@@ -1158,6 +1260,49 @@ public class ConfigEvaluatorTest {
         Assert.assertEquals("1", values[index++]);
         // Misc
         Assert.assertEquals("2048", values[index++]);
+        // Lists
+        // List expression 1 -- ${list(array2)
+        Assert.assertEquals("pid_one", values[index++]);
+        Assert.assertEquals("pid_two", values[index++]);
+
+        // List expression 2 -- ${list(multiValues)}
+        Assert.assertEquals("a", values[index++]);
+        Assert.assertEquals("b", values[index++]);
+        Assert.assertEquals("c", values[index++]);
+
+        // List expression 3 -- ${list(singleValue)}
+        Assert.assertEquals("a", values[index++]);
+
+        // Broken List expressions
+        Assert.assertEquals("${list(IDoNotExist)}", values[index++]);
+        Assert.assertEquals("${  list(array2)}", values[index++]);
+        Assert.assertEquals("${list( array2 )}", values[index++]);
+        Assert.assertEquals("${list(}", values[index++]);
+
+        // List expression composed of variables -- ${list(varValue)}  (composed of ${multiValues}, ${singleValue}, ${intValues})
+        Assert.assertEquals("a", values[index++]);
+        Assert.assertEquals("b", values[index++]);
+        Assert.assertEquals("c", values[index++]);
+        Assert.assertEquals("a", values[index++]);
+        Assert.assertEquals("1", values[index++]);
+        Assert.assertEquals("2", values[index++]);
+        Assert.assertEquals("3", values[index++]);
+        Assert.assertEquals("4", values[index++]);
+        Assert.assertEquals("5", values[index++]);
+
+        // Integer List expression 1 -- ${list(intArray)}
+        index = 0;
+        int[] intValues = (int[]) dictionary.get("intValue");
+        Assert.assertEquals(1, intValues[index++]);
+        Assert.assertEquals(2, intValues[index++]);
+
+        // Integer List expression 2 -- ${list(intValues)}
+        Assert.assertEquals(1, intValues[index++]);
+        Assert.assertEquals(2, intValues[index++]);
+        Assert.assertEquals(3, intValues[index++]);
+        Assert.assertEquals(4, intValues[index++]);
+        Assert.assertEquals(5, intValues[index++]);
+
     }
 
     /**

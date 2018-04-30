@@ -11,7 +11,7 @@
 /**
  * 04/26/10 F743-25523     leou      Initial version
  * 05/10/10 F743-25523.1   leou      Move Jaspi hooks to WebAuthenticator
- * 05/27/10 654357         leou      CTS6: jaspic failure - testName:  CheckValidateReqAuthException, do not call secureResponse during postInvoke 
+ * 05/27/10 654357         leou      CTS6: jaspic failure - testName:  CheckValidateReqAuthException, do not call secureResponse during postInvoke
  * 08/11/10 665302         leou      Authorization problem with cache key using JASPI authentication
  */
 package com.ibm.ws.webcontainer.security;
@@ -33,4 +33,6 @@ public interface UnprotectedResourceService {
      * example of userName: "user:sp2_realm_No/user2"
      */
     boolean logout(HttpServletRequest request, HttpServletResponse response, String userName);
+
+    boolean postLogout(HttpServletRequest request, HttpServletResponse response);
 }

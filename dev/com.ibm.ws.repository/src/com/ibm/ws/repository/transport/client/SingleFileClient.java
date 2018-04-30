@@ -95,17 +95,19 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
 
             idCounter = new AtomicInteger(1);
             assets = new HashMap<String, JsonObject>();
-            JsonReader reader = Json.createReader(new FileInputStream(file));
-            JsonArray assetList = reader.readArray();
-            for (JsonValue val : assetList) {
-                String id = Integer.toString(idCounter.getAndIncrement());
-                if (val.getValueType() == ValueType.OBJECT) {
-                    assets.put(id, (JsonObject) val);
+            try (JsonReader reader = Json.createReader(new FileInputStream(file))) {
+                JsonArray assetList = reader.readArray();
+                for (JsonValue val : assetList) {
+                    String id = Integer.toString(idCounter.getAndIncrement());
+                    if (val.getValueType() == ValueType.OBJECT) {
+                        assets.put(id, (JsonObject) val);
+                    }
                 }
             }
         }
 
         return assets;
+
     }
 
     @Override
@@ -239,20 +241,13 @@ public class SingleFileClient extends AbstractRepositoryClient implements Reposi
                 jsonToStore.add(json);
             }
         }
-
         // Write the assets back to the file
-        FileOutputStream out = null;
-        try {
-            Map<String, Object> config = new HashMap<String, Object>();
-            config.put(JsonGenerator.PRETTY_PRINTING, true);
-            JsonWriterFactory writerFactory = Json.createWriterFactory(config);
-            out = new FileOutputStream(file);
-            JsonWriter streamWriter = writerFactory.createWriter(out);
+        Map<String, Object> config = new HashMap<String, Object>();
+        config.put(JsonGenerator.PRETTY_PRINTING, true);
+        JsonWriterFactory writerFactory = Json.createWriterFactory(config);
+        try (FileOutputStream out = new FileOutputStream(file);
+                        JsonWriter streamWriter = writerFactory.createWriter(out)) {
             streamWriter.write(jsonToStore.build());
-        } finally {
-            if (out != null) {
-                out.close();
-            }
         }
     }
 

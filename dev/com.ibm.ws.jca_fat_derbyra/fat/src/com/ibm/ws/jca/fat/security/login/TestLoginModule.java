@@ -11,6 +11,8 @@
 package com.ibm.ws.jca.fat.security.login;
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 
 import javax.resource.spi.ManagedConnectionFactory;
@@ -54,7 +56,7 @@ public class TestLoginModule implements LoginModule {
             setPasswordCredentialInSubject(callbacks);
             setPropertiesInSubject(callbacks);
         } catch (Exception e) {
-            throw new LoginException(e.getMessage());
+            throw (LoginException) new LoginException(e.getMessage()).initCause(e);
         }
 
         return true;
@@ -70,9 +72,15 @@ public class TestLoginModule implements LoginModule {
 
     private void setPasswordCredentialInSubject(Callback[] callbacks) {
         ManagedConnectionFactory managedConnectionFactory = ((WSManagedConnectionFactoryCallback) callbacks[0]).getManagedConnectionFacotry();
-        PasswordCredential passwordCredential = new PasswordCredential("loginModuleUser", "loginModulePwd".toCharArray());
+        final PasswordCredential passwordCredential = new PasswordCredential("loginModuleUser", "loginModulePwd".toCharArray());
         passwordCredential.setManagedConnectionFactory(managedConnectionFactory);
-        subject.getPrivateCredentials().add(passwordCredential);
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                subject.getPrivateCredentials().add(passwordCredential);
+                return null;
+            }
+        });
     }
 
     /*

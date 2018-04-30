@@ -29,11 +29,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.ssl.internal.KeystoreConfig;
 import com.ibm.ws.ssl.internal.LibertyConstants;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -215,8 +215,6 @@ public class WSKeyStoreTest {
             new WSKeyStore(LibertyConstants.DEFAULT_KEYSTORE_REF_ID, props, testConfigService);
             fail("Expecting an exception");
         } catch (IllegalArgumentException e) {
-            assertTrue("Expected warning about default key store password",
-                       outputMgr.checkForStandardErr("CWPKI0805E"));
             assertEquals(e.getMessage(), "Required keystore information is missing, must provide a password for the default keystore");
         }
     }
@@ -234,8 +232,6 @@ public class WSKeyStoreTest {
             new WSKeyStore(LibertyConstants.DEFAULT_KEYSTORE_REF_ID, props, testConfigService);
             fail("Expecting an IllegalArgumentException when the location is not defined");
         } catch (IllegalArgumentException e) {
-            assertTrue("Expected warning about default key store password",
-                       outputMgr.checkForStandardErr("CWPKI0805E"));
             assertEquals(e.getMessage(), "Required keystore information is missing, must provide a password for the default keystore");
         }
     }

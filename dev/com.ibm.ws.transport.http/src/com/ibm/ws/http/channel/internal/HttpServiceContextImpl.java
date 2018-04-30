@@ -1913,16 +1913,21 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
                 H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
 
-                ArrayList<Frame> bodyFrames = link.prepareBody(WsByteBufferUtils.asByteArray(wsbb), this.isFinalWrite);
+                // if all expected body bytes will be written out, set the end of stream flag
+                addBytesWritten(length);
+                boolean addEndOfStream = false;
+                if (msg.getContentLength() == getNumBytesWritten()) {
+                    addEndOfStream = true;
+                }
+
+                ArrayList<Frame> bodyFrames = link.prepareBody(wsbb, length, addEndOfStream);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "formatBody: On an HTTP/2.0 connection, adding DATA frames to be written : " + bodyFrames);
                 }
 
                 framesToWrite.addAll(bodyFrames);
-
                 // save the amount of data written inside actual body
-                addBytesWritten(length);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "formatBody: total bytes now : " + getNumBytesWritten());
@@ -2388,7 +2393,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                         framesToWrite.addAll(h2Link.prepareHeaders(WsByteBufferUtils.asByteArray(trailers), true));
                     }
                 } else {
-                    framesToWrite.addAll(h2Link.prepareBody(null, this.isFinalWrite));
+                    framesToWrite.addAll(h2Link.prepareBody(null, 0, this.isFinalWrite));
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "sendFullOutgoing : final write prepared : " + framesToWrite);

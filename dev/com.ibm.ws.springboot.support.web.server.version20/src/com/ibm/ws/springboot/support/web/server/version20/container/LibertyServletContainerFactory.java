@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.version20.container;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.springframework.beans.BeansException;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.AbstractServletWebServerFactory;
@@ -20,9 +23,11 @@ import org.springframework.context.ApplicationContextAware;
 /**
  *
  */
+@ConfigurationProperties(prefix = "server.liberty", ignoreUnknownFields = true)
 public class LibertyServletContainerFactory extends AbstractServletWebServerFactory implements ApplicationContextAware {
-
-    ApplicationContext context;
+    private boolean useDefaultHost = true;
+    private ApplicationContext context;
+    private final AtomicReference<LibertyServletContainer> usingDefaultHost = new AtomicReference<>();
 
     @Override
     public WebServer getWebServer(ServletContextInitializer... initializers) {
@@ -38,4 +43,17 @@ public class LibertyServletContainerFactory extends AbstractServletWebServerFact
         return context.getId();
     }
 
+    public void setUseDefaultHost(boolean useDefaultHost) {
+        this.useDefaultHost = useDefaultHost;
+    }
+
+    boolean shouldUseDefaultHost(LibertyServletContainer container) {
+        // only use default host if configured to and
+        // this is the root application context
+        return useDefaultHost && context.getParent() == null && usingDefaultHost.compareAndSet(null, container);
+    }
+
+    void stopUsingDefaultHost(LibertyServletContainer container) {
+        usingDefaultHost.compareAndSet(container, null);
+    }
 }

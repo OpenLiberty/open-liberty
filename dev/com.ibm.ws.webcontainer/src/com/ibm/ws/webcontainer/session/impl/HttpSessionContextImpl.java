@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2012 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.session.impl;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -599,7 +601,7 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
           if ((CollaboratorHelperImpl.getCurrentSecurityCollaborator(sd.getServletContext()) != null)  &&
                           (WSSecurityHelper.isServerSecurityEnabled()))
           {
-              userName = SecurityContext.getUser();
+              userName = getUser();
           }
           else {
               userName = _request.getRemoteUser();
@@ -638,6 +640,16 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
       securityCheckObject.setSessionObject(sd);
       return securityCheckObject;
   }
+
+private String getUser() {
+    return AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+        @Override
+        public String run() {
+            return SecurityContext.getUser();
+        }
+    });
+}
 
   /*
    * This method called by webcontainer when app requests session. We always
@@ -713,7 +725,7 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
       {
           LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[CHECK_SECURITY], "calling getUser");
       }
-      auth = SecurityContext.getUser();
+      auth = getUser();
     }
     else
     {

@@ -34,7 +34,7 @@ public class NeedSpringBoot20FeatureTests extends AbstractSpringTests {
     @Test
     public void testNeedSpringBootFeature20() throws Exception {
         assertNotNull("No error message was found to enable springBoot-2.0 feature", server.waitForStringInLog("CWWKC0253E"));
-        server.stopServer("CWWKC0253E", "CWWKZ0002E");
+        stopServer(true, "CWWKC0253E", "CWWKZ0002E");
     }
 
     @Override

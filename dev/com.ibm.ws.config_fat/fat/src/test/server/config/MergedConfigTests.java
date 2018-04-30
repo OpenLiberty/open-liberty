@@ -12,9 +12,12 @@ package test.server.config;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -108,20 +111,20 @@ public class MergedConfigTests extends ServletRunner {
 
     @Test
     public void testDefaultInstances1() throws Exception {
-        // Test that a normal defaultInstances file was read. This works with any of the server.xml files, so no need to 
-        // update. 
+        // Test that a normal defaultInstances file was read. This works with any of the server.xml files, so no need to
+        // update.
         test(server);
     }
 
     @Test
     public void testDefaultInstances2() throws Exception {
-        // Verify onConflict="merge_when_exists". Works with any server.xml from these tests, so no need to update it. 
+        // Verify onConflict="merge_when_exists". Works with any server.xml from these tests, so no need to update it.
         test(server);
     }
 
     @Test
     public void testDefaultInstances3() throws Exception {
-        // Verify onConflict="merge_when_does_not_exist". Works with any server.xml from these tests, so no need to update it. 
+        // Verify onConflict="merge_when_does_not_exist". Works with any server.xml from these tests, so no need to update it.
         test(server);
     }
 
@@ -132,7 +135,10 @@ public class MergedConfigTests extends ServletRunner {
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
 
         //copy the bundle into the server lib location
-        server.copyFileToLibertyInstallRoot("lib", "bundles/test.merged.config_1.0.0.jar");
+        server.copyFileToLibertyInstallRoot("lib", "bundles/test.merged.config.jar");
+
+        WebArchive mergedconfigApp = ShrinkHelper.buildDefaultApp("mergedconfig", "test.config.merged");
+        ShrinkHelper.exportAppToServer(server, mergedconfigApp);
 
         server.startServer("mergedConfig.log");
         //make sure the URL is available
@@ -142,9 +148,9 @@ public class MergedConfigTests extends ServletRunner {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKG0101W");
         server.deleteFileFromLibertyInstallRoot("lib/features/mergedConfigTest-1.0.mf");
-        server.deleteFileFromLibertyInstallRoot("lib/test.merged.config_1.0.0.jar");
+        server.deleteFileFromLibertyInstallRoot("lib/test.merged.config.jar");
         server.deleteFileFromLibertyInstallRoot("lib/features/configfatlibertyinternals-1.0.mf");
     }
 

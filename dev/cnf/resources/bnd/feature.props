@@ -9,7 +9,7 @@ Subsystem-Localization: OSGI-INF/l10n/${symbolicName}
 visibility=private
 singleton=false
 Subsystem-SymbolicName: ${symbolicName}; visibility:=${visibility}; singleton:=${singleton}
-IBM-ProductID: com.ibm.websphere.appserver
+IBM-ProductID: io.openliberty
 IBM-InstallTo: core
 Subsystem-Vendor: IBM Corp.
 -removeheaders=\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2015 IBM Corporation and others.
+ * Copyright (c) 1998, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,9 +42,7 @@ import com.ibm.ws.util.ThreadContextAccessor;
  * transaction to be started and whether the invocation threw an exception.
  */
 
-public class EJSDeployedSupport
-                implements EJBRequestData, InvocationToken //d194342.1.1
-{
+public class EJSDeployedSupport implements EJBRequestData, InvocationToken {
     private static final TraceComponent tc = Tr.register(EJSDeployedSupport.class,
                                                          "EJBContainer",
                                                          "com.ibm.ejs.container.container");
@@ -261,6 +259,13 @@ public class EJSDeployedSupport
     protected int ivRunUnderUOW;
 
     /**
+     * When set to true, currentTx needs to be reset during postInvoke
+     * because the value set during preInvoke or processTxContextChange
+     * may no longer be valid.
+     */
+    protected boolean resetCurrentTx;
+
+    /**
      * Set to the Stateful bean instance being created within the scope of
      * this method context. Typically, this would be when this method context
      * corresponds to a home create method... and the 'beanO' field is that
@@ -323,14 +328,12 @@ public class EJSDeployedSupport
      *
      * <p>NOTE: This constructor must exist to support ejbdeploy wrappers.
      */
-    public EJSDeployedSupport() // d640281
-    {
+    public EJSDeployedSupport() {
         ivThreadData = EJSContainer.getThreadData();
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getClass().getSimpleName() +
                '[' + methodInfo.getMethodSignature() +
                ", " + methodInfo.getEJBMethodInterface() +
@@ -339,33 +342,27 @@ public class EJSDeployedSupport
     }
 
     @Override
-    public EJBMethodMetaData getEJBMethodMetaData()
-    {
+    public EJBMethodMetaData getEJBMethodMetaData() {
         return methodInfo;
     }
 
     @Override
-    public Object[] getMethodArguments()
-    {
+    public Object[] getMethodArguments() {
         return ivEJBMethodArguments;
     }
 
     @Override
-    public BeanId getBeanId()
-    {
+    public BeanId getBeanId() {
         return ivWrapper.beanId;
     }
 
     @Override
-    public Object getBeanInstance()
-    {
-        if (methodInfo.isHome())
-        {
+    public Object getBeanInstance() {
+        if (methodInfo.isHome()) {
             return null;
         }
 
-        if (beanO == null)
-        {
+        if (beanO == null) {
             // This method may only be called by after activation collaborators.
             IllegalStateException ex = new IllegalStateException();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -379,16 +376,14 @@ public class EJSDeployedSupport
     /**
      * Returns exception, if any, raised by bean method invocation.
      */
-    public final Throwable getException()
-    {
+    public final Throwable getException() {
         return ivException;
     } // getException
 
     /**
      * Returns root exception, if any, raised by bean method invocation.
      */
-    public final Throwable getRootCause()
-    {
+    public final Throwable getRootCause() {
         return rootEx;
     } // getRootCause
 
@@ -400,8 +395,7 @@ public class EJSDeployedSupport
      *
      * @param ex the <code>Throwable</code> thrown by bean method <p>
      */
-    public final void setCheckedException(Exception ex)
-    {
+    public final void setCheckedException(Exception ex) {
         getExceptionMappingStrategy().setCheckedException(this, ex); // d135756
     } // setCheckedException
 
@@ -415,37 +409,24 @@ public class EJSDeployedSupport
      * @param ex the <code>Exception</code> thrown by bean method <p>
      */
     // d395666 - rewrote entire method.
-    public final void setUncheckedException(Throwable ex) // d111077
-    throws RemoteException
-    {
+    public final void setUncheckedException(Throwable ex) throws RemoteException {
         ExceptionMappingStrategy exceptionStrategy = getExceptionMappingStrategy();
         Throwable mappedException = exceptionStrategy.setUncheckedException(this, ex);
-        if (mappedException != null)
-        {
-            if (mappedException instanceof RemoteException)
-            {
+        if (mappedException != null) {
+            if (mappedException instanceof RemoteException) {
                 throw (RemoteException) mappedException;
-            }
-            else if (mappedException instanceof RuntimeException)
-            {
+            } else if (mappedException instanceof RuntimeException) {
                 throw (RuntimeException) mappedException;
-            }
-            else if (mappedException instanceof Error)
-            {
+            } else if (mappedException instanceof Error) {
                 throw (Error) mappedException; // d395666
-            }
-            else
-            {
+            } else {
                 // Unless there is a defect in mapping strategy, this should
                 // never happen.  But if it does, we are going to wrap
                 // what is returned with a RemoteException. This is added
                 // measure to ensure we do not break applications that
                 // existed prior to EJB 3.
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                {
-                    Tr.event(tc
-                             , "unexpected Throwable returned by exception mapping strategy"
-                             , new Object[] { mappedException, exceptionStrategy });
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "unexpected Throwable returned by exception mapping strategy", new Object[] { mappedException, exceptionStrategy });
                 }
                 throw ExceptionUtil.RemoteException(mappedException);
             }
@@ -453,44 +434,29 @@ public class EJSDeployedSupport
     } // setUncheckedException
 
     //  For backward compatibility with previously deployed code.       d111077.1
-    public final void setUncheckedException(Exception ex)
-                    throws RemoteException
-    {
+    public final void setUncheckedException(Exception ex) throws RemoteException {
         setUncheckedException((Throwable) ex);
     } // setUncheckedException
 
     // d395666 - rewrote entire method.
-    public final void setUncheckedLocalException(Throwable ex) // d113344
-    throws EJBException
-    {
+    public final void setUncheckedLocalException(Throwable ex) throws EJBException {
         ExceptionMappingStrategy exceptionStrategy = getExceptionMappingStrategy();
         Throwable mappedException = exceptionStrategy.setUncheckedException(this, ex);
-        if (mappedException != null)
-        {
-            if (mappedException instanceof EJBException)
-            {
+        if (mappedException != null) {
+            if (mappedException instanceof EJBException) {
                 throw (EJBException) mappedException;
-            }
-            else if (mappedException instanceof RuntimeException)
-            {
+            } else if (mappedException instanceof RuntimeException) {
                 throw (RuntimeException) mappedException;
-            }
-            else if (mappedException instanceof Error)
-            {
+            } else if (mappedException instanceof Error) {
                 throw (Error) mappedException;
-            }
-            else
-            {
+            } else {
                 // Unless there is a defect in mapping strategy, this should
                 // never happen.  But if it does, we are going to
                 // wrap what is returned with a EJBException. This is added
                 // measure to ensure we do not break applications that
                 // existed prior to EJB 3.
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                {
-                    Tr.event(tc
-                             , "unexpected Throwable returned by exception mapping strategy"
-                             , new Object[] { mappedException, exceptionStrategy });
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "unexpected Throwable returned by exception mapping strategy", new Object[] { mappedException, exceptionStrategy });
                 }
                 throw ExceptionUtil.EJBException(mappedException);
             }
@@ -503,8 +469,7 @@ public class EJSDeployedSupport
      * EJBThreadData.ivCallbackBeanO, which should usually be used instead of
      * this method.
      */
-    public final BeanO getBeanO()
-    {
+    public final BeanO getBeanO() {
         return beanO;
     } // getBeanO
 
@@ -512,24 +477,20 @@ public class EJSDeployedSupport
      * Get the ContainerTx instance on which the current method is
      * being dispatched.
      */
-    public final ContainerTx getCurrentTx()
-    {
+    public final ContainerTx getCurrentTx() {
         return currentTx;
     }
 
-    public final EJSContainer getContainer()
-    {
+    public final EJSContainer getContainer() {
         return ivWrapper == null ? EJSContainer.getDefaultContainer() : ivWrapper.container; //d583637
     }
 
-    public StatefulBeanO getCachedWrapperBeanO() // F61004.6
-    {
+    public StatefulBeanO getCachedWrapperBeanO() {
         EJSWrapperCommon wc = ivWrapper.ivCommon;
         return wc == null ? null : wc.ivCachedBeanO;
     }
 
-    final void setEJBMethodInfo(EJBMethodInfoImpl m) // d154342.4
-    {
+    final void setEJBMethodInfo(EJBMethodInfoImpl m) {
         this.methodInfo = m;
     }
 
@@ -537,8 +498,7 @@ public class EJSDeployedSupport
      * Internal method to allow EJB Container code to get the EJBMethodInfo
      * implementation object and access the instance variables directly.
      */
-    public EJBMethodInfoImpl getEJBMethodInfoImpl()
-    {
+    public EJBMethodInfoImpl getEJBMethodInfoImpl() {
         return this.methodInfo;
     }
 
@@ -549,13 +509,11 @@ public class EJSDeployedSupport
      * This method is only applicable to singleton beans with container managed
      * concurrency or stateful beans.
      */
-    public final long getConcurrencyAccessTimeout()
-    {
+    public final long getConcurrencyAccessTimeout() {
         return methodInfo.ivAccessTimeout;
     }
 
-    public final ExceptionType getExceptionType()
-    {
+    public final ExceptionType getExceptionType() {
         return exType;
     }
 
@@ -571,15 +529,11 @@ public class EJSDeployedSupport
      *         static variable Boolean.FALSE is returned if rollback is "false".
      */
     // d395666 - added entire method.
-    protected Boolean getApplicationExceptionRollback(Throwable t)
-    {
+    protected Boolean getApplicationExceptionRollback(Throwable t) {
         Boolean rollback;
-        if (ivIgnoreApplicationExceptions) // F743761.CodRv
-        {
+        if (ivIgnoreApplicationExceptions) {
             rollback = null;
-        }
-        else
-        {
+        } else {
             ComponentMetaData cmd = getComponentMetaData();
             EJBModuleMetaDataImpl mmd = (EJBModuleMetaDataImpl) cmd.getModuleMetaData();
             rollback = mmd.getApplicationExceptionRollback(t);
@@ -587,15 +541,11 @@ public class EJSDeployedSupport
         return rollback;
     }
 
-    ExceptionMappingStrategy getExceptionMappingStrategy() // F61004.3
-    {
+    ExceptionMappingStrategy getExceptionMappingStrategy() {
         return ivWrapper.ivInterface.ivExceptionStrategy;
     }
 
-    public final Exception
-                    mapCSITransactionRolledBackException(CSITransactionRolledbackException ex)
-                                    throws com.ibm.websphere.csi.CSIException
-    {
+    public final Exception mapCSITransactionRolledBackException(CSITransactionRolledbackException ex) throws com.ibm.websphere.csi.CSIException {
         return getExceptionMappingStrategy().mapCSITransactionRolledBackException(this, ex);
     }
 
@@ -609,16 +559,14 @@ public class EJSDeployedSupport
      *            See MID_getLink, MID_REMOTE_HOME_INDEX,
      *            and MID_LOCAL_HOME_INDEX constants in EJSContainer.
      */
-    final public void setEJBMethodId(int methodid) // d130230
-    {
+    final public void setEJBMethodId(int methodid) {
         this.methodId = methodid;
     }
 
     /**
      * Get te method ID of the current method being processed by EJB container.
      **/
-    public final int getEJBMethodId()
-    {
+    public final int getEJBMethodId() {
         return methodId;
     }
 
@@ -630,13 +578,12 @@ public class EJSDeployedSupport
      * developer and client programmers, they are considered a
      * continuation of the prior method invocation.
      */
-    final public boolean beganInThisScope() // d130230
-    {
+    final public boolean beganInThisScope() {
         // Return true if current tran began in the scope of this method
         // or the current method is a PM home internal call and a transaction
         // began in the scope of the prior method invocation.
         return ((this.began) || // d156688
-        (this.previousBegan && (this.methodId < 0)));
+                (this.previousBegan && (this.methodId < 0)));
     }
 
     /**
@@ -647,13 +594,12 @@ public class EJSDeployedSupport
      * developer and client programmers, they are considered a
      * continuation of the prior method invocation.
      */
-    final public boolean beganAndEndInThisScope() // d139562.11
-    {
+    final public boolean beganAndEndInThisScope() {
         // Return true if current tran began in the scope of this method
         // or the current method is a PM home internal call and a transaction
         // began in the scope of the prior method invocation.
         return ((this.began) || // d156688
-        (this.previousBegan && (this.methodId < 0)));
+                (this.previousBegan && (this.methodId < 0)));
     }
 
     /**
@@ -691,10 +637,8 @@ public class EJSDeployedSupport
      */
     //d194342.1.1 - added entire method.
     @Override
-    public void enlistInvocationCallback(InvocationCallback callback, Object cookie)
-    {
-        if (ivEJBMethodCallback == null)
-        {
+    public void enlistInvocationCallback(InvocationCallback callback, Object cookie) {
+        if (ivEJBMethodCallback == null) {
             ivEJBMethodCallback = new ArrayList<InvocationCallback>();
             ivEJBMethodCallbackCookie = new ArrayList<Object>();
         }
@@ -714,24 +658,18 @@ public class EJSDeployedSupport
      * </ul>
      */
     //d194342.1.1 - added entire method.
-    public void invocationCallbackPostInvoke()
-    {
-        if (ivEJBMethodCallback != null)
-        {
+    public void invocationCallbackPostInvoke() {
+        if (ivEJBMethodCallback != null) {
             int n = ivEJBMethodCallback.size();
-            for (int i = 0; i < n; i++)
-            {
-                try
-                {
+            for (int i = 0; i < n; i++) {
+                try {
                     InvocationCallback callback = ivEJBMethodCallback.get(i);
                     callback.postInvoke(ivEJBMethodCallbackCookie.get(i));
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     FFDCFilter.processException(t, CLASS_NAME +
                                                    ".ejbMethodCallbackPostInvoke",
                                                 "332", this);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc,
                                  "ignoring exception thrown by EJBMethodCallback.postInvoke",
                                  t);
@@ -748,8 +686,7 @@ public class EJSDeployedSupport
      */
     // d194342.1.1 - added entire method.
     @Override
-    final public int getContainerType()
-    {
+    final public int getContainerType() {
         return InvocationToken.EJB_CONTAINER;
     }
 
@@ -759,8 +696,7 @@ public class EJSDeployedSupport
      * @see com.ibm.ws.util.InvocationToken#getContainerType()
      */
     @Override
-    final public ComponentMetaData getComponentMetaData()
-    {
+    final public ComponentMetaData getComponentMetaData() {
         return methodInfo.getComponentMetaData();
     }
 
@@ -770,18 +706,15 @@ public class EJSDeployedSupport
      * @see com.ibm.ws.util.InvocationToken#getContainerType()
      */
     @Override
-    final public MethodMetaData getMethodMetaData()
-    {
+    final public MethodMetaData getMethodMetaData() {
         return methodInfo;
     }
 
     /**
      * Returns the context data associated with this method invocation.
      **/
-    public Map<String, Object> getContextData()
-    {
-        if (ivContextData == null)
-        {
+    public Map<String, Object> getContextData() {
+        if (ivContextData == null) {
             ivContextData = new HashMap<String, Object>();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -799,34 +732,27 @@ public class EJSDeployedSupport
      * @return binding context for currently active extended-scoped
      *         persistence context.
      */
-    public Object getExPcBindingContext()
-    {
+    public Object getExPcBindingContext() {
         Object jpaContext = null;
 
         // First, if a new bean instance is being created in this method context,
         // then the jpa context of that new bean instance is the current active
         // context... even if it is null.
-        if (ivCreateBeanO != null)
-        {
+        if (ivCreateBeanO != null) {
             jpaContext = ivCreateBeanO.ivExPcContext;
-        }
-        else if (beanO != null)
-        {
+        } else if (beanO != null) {
             // Second, if the bean the current method was invoked on is NOT
             // a home (i.e. it has a home) then the jpa context is that of
             // the current bean... even if it is null.
-            if (beanO.home != null)
-            {
-                if (beanO instanceof StatefulBeanO)
-                {
+            if (beanO.home != null) {
+                if (beanO instanceof StatefulBeanO) {
                     jpaContext = ((StatefulBeanO) beanO).ivExPcContext;
                 }
             }
             // Finally, if the bean associated with this method context is a
             // stateful home then the jpa context is that of the calling
             // bean (i.e. the bean that called home.create).
-            else if (ivWrapper.bmd.isStatefulSessionBean() && ivCallerContext != null)
-            {
+            else if (ivWrapper.bmd.isStatefulSessionBean() && ivCallerContext != null) {
                 jpaContext = ivCallerContext.getExPcBindingContext();
             }
         }
@@ -838,8 +764,7 @@ public class EJSDeployedSupport
      * Return true if the activated bean needs to be enlisted in the active
      * transaction for this method invocation.
      */
-    public boolean isTxEnlistNeededForActivate()
-    {
+    public boolean isTxEnlistNeededForActivate() {
         // If uowCtrlPreInvoked wasn't called, this must be a lightweight method,
         // so the bean doesn't need to enlist with the transaction.
         return uowCtrlPreInvoked;

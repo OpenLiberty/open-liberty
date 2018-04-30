@@ -16,9 +16,7 @@ Bundle-SymbolicName: com.ibm.ws.security.fat.common
 Bundle-Description: Common code for security FAT projects; version=${bVersion}
 
 Export-Package: \
-    com.ibm.ws.security.fat.common, \
-    com.ibm.ws.security.fat.common.apps.*, \
-    com.ibm.ws.security.fat.common.expectations
+    com.ibm.ws.security.fat.common.*
 
 Import-Package: \
     !*.internal.*, \
@@ -29,7 +27,8 @@ Private-Package: \
 
 src: \
     src,\
-    test-applications/testmarker/src
+    test-applications/testmarker/src,\
+    test-applications/formlogin/src
 
 test.project: true
 publish.wlp.jar.disabled: true
@@ -49,7 +48,9 @@ publish.wlp.jar.disabled: true
     fattest.simplicity;version=latest, \
     net.sourceforge.htmlunit:htmlunit;version=2.27, \
     httpunit:httpunit;version=1.7, \
-    com.ibm.ws.org.apache.commons.lang3.3.5;version=latest
+    com.ibm.ws.org.apache.commons.lang3.3.5;version=latest, \
+    com.ibm.websphere.security;version=latest, \
+    com.ibm.ws.security.token;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -73,3 +74,4 @@ publish.wlp.jar.disabled: true
     xalan:xalan;version=2.7.1, \
     net.sourceforge.htmlunit:neko-htmlunit;version=2.28, \
     xerces:xercesImpl;version=2.11.0
+

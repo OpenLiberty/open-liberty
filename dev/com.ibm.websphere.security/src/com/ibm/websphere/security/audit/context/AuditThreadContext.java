@@ -32,6 +32,7 @@ public class AuditThreadContext {
     private Object jmsConversationMetaData;
     private String jmsBusName;
     private String jmsMessagingEngine;
+    private String jmsCallType;
 
     public void setHttpServletRequest(Object req) {
         auditReq = req;
@@ -81,6 +82,14 @@ public class AuditThreadContext {
 
     public Object getJMSConversationMetaData() {
         return jmsConversationMetaData;
+    }
+
+    public void setJMSCallType(String callType) {
+        jmsCallType = callType;
+    }
+
+    public String getJMSCallType() {
+        return jmsCallType;
     }
 
     public void setJMSBusName(String busName) {

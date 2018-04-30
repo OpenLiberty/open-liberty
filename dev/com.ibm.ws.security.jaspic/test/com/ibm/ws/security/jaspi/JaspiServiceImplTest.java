@@ -326,7 +326,7 @@ public class JaspiServiceImplTest {
         loginHashtable.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, "bob");
         AuthenticationResult result = jaspiWebAuthenticator.authenticate(mockReq, mockRsp, props);
         assertNotNull(result);
-        assertEquals(result.getStatus(), AuthResult.FAILURE);
+        assertEquals(result.getStatus(), AuthResult.RETURN);
     }
 
     @Test

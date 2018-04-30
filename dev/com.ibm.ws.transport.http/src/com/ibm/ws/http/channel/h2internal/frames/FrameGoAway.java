@@ -18,6 +18,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameGoAway extends Frame {
 
@@ -62,6 +63,7 @@ public class FrameGoAway extends Frame {
         this.errorCode = errorCode;
         this.lastStreamId = lastStreamId;
         frameType = FrameTypes.GOAWAY;
+        writeFrameLength += payloadLength;
         setInitialized();
     }
 
@@ -102,9 +104,14 @@ public class FrameGoAway extends Frame {
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
-
-        byte[] frame = super.buildFrameForWrite();
+    public WsByteBuffer buildFrameForWrite() {
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_GOAWAY);
@@ -125,7 +132,9 @@ public class FrameGoAway extends Frame {
             frame[frameIndex] = debugData[i];
             frameIndex++;
         }
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     public int getLastStreamId() {

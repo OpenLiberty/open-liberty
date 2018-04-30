@@ -25,8 +25,6 @@ public interface ContainerInstanceFactory<T> {
 
     interface Instance {
 
-        String getId();
-
         void start();
 
         void stop();
@@ -34,5 +32,5 @@ public interface ContainerInstanceFactory<T> {
 
     Class<T> getType();
 
-    Instance intialize(SpringBootApplication app, String id, T helperParam) throws IOException, UnableToAdaptException, MetaDataException;
+    Instance intialize(SpringBootApplication app, String id, String virtualHostId, T helperParam) throws IOException, UnableToAdaptException, MetaDataException;
 }

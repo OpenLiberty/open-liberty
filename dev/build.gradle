@@ -43,6 +43,16 @@ subprojects {
       }
     }
   }
+  tasks.withType(Javadoc) {
+    doFirst {
+      // Starting with JDK 9.0.4 the javadoc compiler started to striclty enforce proper HTML
+      // syntax and other breaking changes.  Fixing all of these ocurrances would take far too
+      // long and be a poor use of time, so we will disable these checks for JDK9 and up
+      if(JavaVersion.current().isJava9Compatible()) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+      }
+    }
+  }
 
   if (bndProject != null) {
     apply from: cnf.file('gradle/scripts/repos.gradle')

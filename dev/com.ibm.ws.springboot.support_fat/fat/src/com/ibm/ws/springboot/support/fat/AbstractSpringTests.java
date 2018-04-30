@@ -13,9 +13,7 @@ package com.ibm.ws.springboot.support.fat;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,39 +28,64 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.config.HttpEndpoint;
+import com.ibm.websphere.simplicity.config.KeyStore;
+import com.ibm.websphere.simplicity.config.SSLConfig;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
+import com.ibm.websphere.simplicity.config.VirtualHost;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 public abstract class AbstractSpringTests {
+
+    @Rule
+    public TestName testName = new TestName();
+
     static enum AppConfigType {
-        DROPINS_SPR,
+        DROPINS_SPRING,
         DROPINS_ROOT,
         SPRING_BOOT_APP_TAG
     }
+
+    public static final String ID_VIRTUAL_HOST = "springBootVirtualHost-";
+    public static final String ID_HTTP_ENDPOINT = "springBootHttpEndpoint-";
+    public static final String ID_SSL = "springBootSsl-";
+    public static final String ID_KEY_STORE = "springBootKeyStore-";
+    public static final String ID_TRUST_STORE = "springBootTrustStore-";
 
     public static final String SPRING_BOOT_15_APP_BASE = "com.ibm.ws.springboot.support.version15.test.app.jar";
     public static final String SPRING_BOOT_15_APP_WAR = "com.ibm.ws.springboot.support.version15.test.war.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_15_APP_JAVA = "com.ibm.ws.springboot.support.version15.test.java.app.jar";
     public static final String SPRING_BOOT_15_APP_WEBANNO = "com.ibm.ws.springboot.support.version15.test.webanno.app.jar";
+    public static final String SPRING_BOOT_15_APP_WEBSOCKET = "com.ibm.ws.springboot.support.version15.test.websocket.app.jar";
+    public static final String SPRING_BOOT_15_APP_ACTUATOR = "com.ibm.ws.springboot.support.version15.test.actuator.app.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.support.version20.test.app-0.0.1-SNAPSHOT.jar";
 
+    public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";
     public static final String SHARED_SPRING_LIB_INDEX_CACHE = "resources/" + SPRING_LIB_INDEX_CACHE;
     public static final String SPRING_THIN_APPS_DIR = "spring.thin.apps";
+    public static final String SPRING_APP_TYPE = "spring";
     public static final int EXPECTED_HTTP_PORT = 8081;
+    public static final int DEFAULT_HTTP_PORT;
+    public static final int DEFAULT_HTTPS_PORT;
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.springboot.support.fat.SpringBootTests");
     static {
+        DEFAULT_HTTP_PORT = server.getHttpDefaultPort();
+        DEFAULT_HTTPS_PORT = server.getHttpDefaultSecurePort();
         // NOTE we set the port to the expected ports according to the test application.properties
         // Tests can change this, but it will be reset by the @After method resetDefaultPorts
         server.setHttpDefaultPort(EXPECTED_HTTP_PORT);
         server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
+
     }
     public static final AtomicBoolean serverStarted = new AtomicBoolean();
     public static final Collection<RemoteFile> dropinFiles = new ArrayList<>();
@@ -71,31 +94,39 @@ public abstract class AbstractSpringTests {
 
     @AfterClass
     public static void stopServer() throws Exception {
+        stopServer(true);
+    }
+
+    public static void stopServer(boolean cleanupApps, String... expectedFailuresRegExps) throws Exception {
         boolean isActive = serverStarted.getAndSet(false);
         try {
             // don't archive until after stopping and removing the lib.index.cache
             if (isActive) {
-                server.stopServer(false);
+                server.stopServer(false, expectedFailuresRegExps);
             }
         } finally {
             try {
-                server.deleteDirectoryFromLibertyServerRoot(SPRING_WORKAREA_DIR + SPRING_LIB_INDEX_CACHE);
-                for (RemoteFile remoteFile : dropinFiles) {
-                    remoteFile.delete();
+                if (cleanupApps) {
+                    server.deleteDirectoryFromLibertyServerRoot(SPRING_WORKAREA_DIR + SPRING_LIB_INDEX_CACHE);
+                    for (RemoteFile remoteFile : dropinFiles) {
+                        remoteFile.delete();
+                    }
+
+                    server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
                 }
-                server.deleteDirectoryFromLibertyInstallRoot("usr/shared/" + SHARED_SPRING_LIB_INDEX_CACHE);
-                //clear bootstrap.properties
+                // always clear bootstrap.properties
                 bootStrapProperties.clear();
-                try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
-                    bootStrapProperties.store(out, "");
-                }
             } catch (Exception e) {
                 // ignore
             } finally {
-                dropinFiles.clear();
+                if (cleanupApps) {
+                    dropinFiles.clear();
+                }
                 if (isActive) {
                     server.postStopServerArchive();
                 }
+                // always clear logs after archiving
+                server.deleteDirectoryFromLibertyServerRoot("logs/");
             }
         }
     }
@@ -109,7 +140,7 @@ public abstract class AbstractSpringTests {
     }
 
     public AppConfigType getApplicationConfigType() {
-        return AppConfigType.DROPINS_SPR;
+        return AppConfigType.DROPINS_SPRING;
     }
 
     public Map<String, String> getBootStrapProperties() {
@@ -131,48 +162,99 @@ public abstract class AbstractSpringTests {
         return true;
     }
 
+    public void modifyAppConfiguration(SpringBootApplication appConfig) {
+        // do nothing by default
+    }
+
+    public void modifyServerConfiguration(ServerConfiguration config) {
+        // do nothing by default
+    }
+
+    public boolean useDefaultVirtualHost() {
+        return false;
+    }
+
+    public String getLogMethodName() {
+        return "";
+    }
+
+    public int getDropinCopyNum() {
+        return 0;
+    }
+
     @Before
     public void configureServer() throws Exception {
+        System.out.println("Configuring server for " + testName.getMethodName());
         if (serverStarted.compareAndSet(false, true)) {
-            configureBootStrapProperties();
             ServerConfiguration config = server.getServerConfiguration();
+
+            // START CLEAR out configs from previous tests
             List<SpringBootApplication> applications = config.getSpringBootApplications();
             applications.clear();
             Set<String> features = config.getFeatureManager().getFeatures();
             features.clear();
             features.addAll(getFeatures());
+            List<VirtualHost> virtualHosts = config.getVirtualHosts();
+            virtualHosts.clear();
+            List<HttpEndpoint> endpoints = config.getHttpEndpoints();
+            endpoints.clear();
+            List<SSLConfig> ssls = config.getSsls();
+            ssls.clear();
+            List<KeyStore> keystores = config.getKeyStores();
+            keystores.clear();
+            // END CLEAR
+
             RemoteFile appFile = getApplicationFile();
+            boolean dropinsTest = false;
             switch (getApplicationConfigType()) {
-                case DROPINS_SPR: {
-                    new File(new File(server.getServerRoot()), "dropins/spr/").mkdirs();
-                    appFile.copyToDest(server.getFileFromLibertyServerRoot("dropins/spr/"));
-                    RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot("dropins/spr/"), appFile.getName());
-                    appFile.copyToDest(dest);
+                case DROPINS_SPRING: {
+                    String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
+                    new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
+                    appFile.copyToDest(server.getFileFromLibertyServerRoot(dropinsSpring));
+                    RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot(dropinsSpring), appFile.getName());
                     dropinFiles.add(dest);
+                    dropinsTest = true;
                     break;
                 }
                 case DROPINS_ROOT: {
                     new File(new File(server.getServerRoot()), "dropins/").mkdirs();
                     String appName = appFile.getName();
-                    appName = appName.substring(0, appName.length() - 3) + "spr";
+                    appName = appName.substring(0, appName.length() - 3) + SPRING_APP_TYPE;
                     RemoteFile dest = new RemoteFile(server.getFileFromLibertyServerRoot("dropins/"), appName);
                     appFile.copyToDest(dest);
                     dropinFiles.add(dest);
+
+                    int copyNum = getDropinCopyNum();
+                    for (int i = 0; i < copyNum; i++) {
+                        int lastDot = dest.getName().lastIndexOf(".");
+                        String copyName = "app.copy" + i + appName.substring(lastDot);
+                        RemoteFile copyDest = new RemoteFile(server.getFileFromLibertyServerRoot("dropins/"), copyName);
+                        appFile.copyToDest(copyDest);
+                        dropinFiles.add(copyDest);
+                    }
+                    dropinsTest = true;
                     break;
                 }
                 case SPRING_BOOT_APP_TAG: {
                     SpringBootApplication app = new SpringBootApplication();
                     app.setLocation(appFile.getName());
                     app.setName("testName");
+                    modifyAppConfiguration(app);
+                    if (!useDefaultVirtualHost()) {
+                        app.getApplicationArguments().add("--" + LIBERTY_USE_DEFAULT_HOST + "=false");
+                    }
                     applications.add(app);
                     break;
                 }
                 default:
                     break;
             }
-
+            configureBootStrapProperties(dropinsTest);
+            modifyServerConfiguration(config);
             server.updateServerConfiguration(config);
-            server.startServer(getClass().getSimpleName() + ".log", true, false);
+            String methodName = getLogMethodName();
+            String logName = getClass().getSimpleName() + methodName + ".log";
+            server.startServer(logName, true, false);
 
             if (expectApplicationSuccess()) {
                 assertNotNull("The application was not installed", server
@@ -191,14 +273,13 @@ public abstract class AbstractSpringTests {
         server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
     }
 
-    private void configureBootStrapProperties() throws Exception {
+    private void configureBootStrapProperties(boolean dropinsTest) throws Exception {
         bootStrapPropertiesFile = new File(server.getFileFromLibertyServerRoot("bootstrap.properties").getAbsolutePath());
-        try (InputStream in = new FileInputStream(bootStrapPropertiesFile)) {
-            bootStrapProperties.load(in);
-        }
         bootStrapProperties.putAll(getDefaultBootStrapProperties());
         bootStrapProperties.putAll(getBootStrapProperties());
-
+        if (dropinsTest && !useDefaultVirtualHost()) {
+            bootStrapProperties.put(LIBERTY_USE_DEFAULT_HOST, Boolean.FALSE.toString());
+        }
         try (OutputStream out = new FileOutputStream(bootStrapPropertiesFile)) {
             bootStrapProperties.store(out, "");
         }

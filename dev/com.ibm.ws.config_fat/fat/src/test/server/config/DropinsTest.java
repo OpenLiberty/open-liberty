@@ -13,9 +13,12 @@ package test.server.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.topology.impl.LibertyServer;
@@ -232,6 +235,9 @@ public class DropinsTest extends ServletRunner {
         // Delete dropin configurations just in case
         server.deleteAllDropinConfigurations();
 
+        WebArchive dropinsApp = ShrinkHelper.buildDefaultApp("configdropins", "test.config.dropins");
+        ShrinkHelper.exportAppToServer(server, dropinsApp);
+
         server.startServer("configDropins.log");
 
         //make sure the URL is available
@@ -242,7 +248,7 @@ public class DropinsTest extends ServletRunner {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKG0014E");
         server.deleteFileFromLibertyInstallRoot("lib/features/configfatlibertyinternals-1.0.mf");
 
     }

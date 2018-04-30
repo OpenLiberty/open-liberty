@@ -38,13 +38,14 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.javaeesec.CDIHelper;
+import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.wsspi.security.registry.RegistryHelper;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 public class Utils {
 
     private static final TraceComponent tc = Tr.register(Utils.class);
-    private boolean logNoIDWarning = false;
+    private boolean logNoIDInfo = false;
 
     public Utils() {}
 
@@ -69,9 +70,9 @@ public class Utils {
                 throw new AuthenticationException("No IdentityStoreHandler found");
             }
         } else {
-            if (!logNoIDWarning) {
-                Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE");
-                logNoIDWarning = true;
+            if (!logNoIDInfo) {
+                Tr.info(tc, "JAVAEESEC_CDI_INFO_NO_IDENTITY_STORE");
+                logNoIDInfo = true;
             }
             if (isRegistryAvailable()) {
                 // If an identity store is not available, fall back to the original user registry.
@@ -138,6 +139,12 @@ public class Utils {
         String callerUniqueId = result.getCallerUniqueId();
         String realm = result.getIdentityStoreId();
         realm = realm != null ? realm : realmName;
+        if (realm == null || realm.isEmpty()) {
+            realm = JavaEESecConstants.DEFAULT_REALM;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "The realm name is not defined, \"defaultRealm\" is used.");
+            }
+        }
         String uniqueId = callerUniqueId != null ? callerUniqueId : callerPrincipalName;
 
         setCommonAttributes(subjectHashtable, realm, callerPrincipalName);

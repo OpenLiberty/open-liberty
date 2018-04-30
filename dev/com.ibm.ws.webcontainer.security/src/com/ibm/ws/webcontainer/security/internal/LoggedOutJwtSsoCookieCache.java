@@ -26,7 +26,7 @@ import java.util.Set;
 public class LoggedOutJwtSsoCookieCache {
     private static ArrayList<String> clist = null;
     private static Set<String> cSet = null;
-    private static int maxSize = 1000;
+    private static int maxSize = 10000;
     private static int lastPosition = 0;
     private static boolean atCapacity = false;
     private static boolean initialized = false;
@@ -43,8 +43,6 @@ public class LoggedOutJwtSsoCookieCache {
         }
         initialized = true;
     }
-
-    static String lastResult = null;
 
     // store as digests to save space
     static String toDigest(String input) {
@@ -77,7 +75,6 @@ public class LoggedOutJwtSsoCookieCache {
             lastPosition = 0;
             atCapacity = true;
         }
-
     }
 
     static int getSetSize() { // unit testing
@@ -88,7 +85,6 @@ public class LoggedOutJwtSsoCookieCache {
         if (!initialized)
             return false;
         return tokenString == null ? false : cSet.contains(toDigest(tokenString));
-
     }
 
 }

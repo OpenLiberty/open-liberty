@@ -409,7 +409,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * javax.security.auth.Subject)
 	 */
 	@Override
-	public boolean isJwtSSOTokenValid(Subject subject) {
+	public boolean isSubjectValid(Subject subject) {
 		// TODO Auto-generated method stub
 		String encodedjwt = getJwtSSOToken(subject);
 		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
@@ -433,6 +433,16 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 			return jwtssobuilderConfig.getCookieName();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isCookieSecured() {
+		// TODO Auto-generated method stub
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
+		if (jwtssobuilderConfig != null) {
+			return jwtssobuilderConfig.isCookieSecured();
+		}
+		return true;
 	}
 
 	/*

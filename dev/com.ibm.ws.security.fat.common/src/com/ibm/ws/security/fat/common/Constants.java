@@ -32,4 +32,12 @@ public class Constants {
     public static final String RESPONSE_URL = "url";
     public static final String JSON_OBJECT = "jsonObject";
 
+    public static final String HEADER_SET_COOKIE = "Set-Cookie";
+
+    public static final String J_SECURITY_CHECK = "j_security_check";
+    public static final String J_USERNAME = "j_username";
+    public static final String J_PASSWORD = "j_password";
+
+    public static final String LTPA_COOKIE_NAME = "LtpaToken2";
+
 }

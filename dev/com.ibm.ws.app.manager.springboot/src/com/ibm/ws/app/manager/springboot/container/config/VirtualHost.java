@@ -13,6 +13,7 @@ package com.ibm.ws.app.manager.springboot.container.config;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -22,7 +23,7 @@ public class VirtualHost extends ConfigElement {
 
     @XmlElement(name = "hostAlias")
     private Set<String> hostAliases;
-    private String allowFromEndpoint;
+    private String allowFromEndpointRef;
 
     public Set<String> getHostAliases() {
         if (hostAliases == null) {
@@ -31,20 +32,25 @@ public class VirtualHost extends ConfigElement {
         return hostAliases;
     }
 
-    public String getAllowFromEndpoint() {
-        return allowFromEndpoint;
+    public String getAllowFromEndpointRef() {
+        return allowFromEndpointRef;
     }
 
-    public void setAllowFromEndpoint(String allowFromEndpoint) {
-        this.allowFromEndpoint = allowFromEndpoint;
+    @XmlAttribute(name = "allowFromEndpointRef")
+    public void setAllowFromEndpointRef(String allowFromEndpoint) {
+        this.allowFromEndpointRef = allowFromEndpoint;
     }
 
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("VirtualHost{");
+        buf.append("id=\"" + this.getId() + "\" ");
         if (this.hostAliases != null)
             for (String hostAlias : hostAliases)
                 buf.append("hostAlias=\"" + hostAlias + "\" ");
+        if (this.allowFromEndpointRef != null) {
+            buf.append("allowFromEndpointRef=\"" + this.allowFromEndpointRef + "\" ");
+        }
         buf.append("}");
 
         return buf.toString();

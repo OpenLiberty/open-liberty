@@ -253,15 +253,6 @@ Workspace.addGestalt(Constants.GESTALT_BATCH, null)
 Workspace workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
 gradle.bndWorkspaceConfigure(workspace)
 
-def allBndProjects = workspace.getAllProjects().collect { project ->
-  if (!project.name.startsWith('.') && parseBoolean(project.getProperty('bnd.project', 'true'))) {
-    return project.name
-  } else {
-    return ''
-  }
-}.toSet()
-allBndProjects.remove('')
-
 /* Add cnf project to the graph */
 include bnd_cnf
 
@@ -288,12 +279,29 @@ def projectNames = startParameter.taskNames.collect { taskName ->
 
 /* Include the default project name if in a subproject or no tasks specified */
 if ((startParameter.currentDir != rootDir) || projectNames.empty) {
-  projectNames += defaultProjectName
+  projectNames.add(defaultProjectName)
 }
 
 /* If bnd_build used but declared empty, add all non-private folders of rootDir */
-if (projectNames.remove('')) {
-  projectNames.addAll(allBndProjects)
+def addAll = projectNames.remove('')
+if (addAll) {
+  println 'Preparing all bnd projects in the workspace (this can take a while)'
+}
+
+def allBndProjects = workspace.getAllProjects().collect { project ->
+  if (!project.name.startsWith('.')) {
+    if (addAll) {
+      project.prepare()
+      include project.name
+    }
+    return project.name
+  } else {
+    return ''
+  }
+}.toSet()
+allBndProjects.remove('')
+if (addAll) {
+  println 'All bnd projects in the workspace have been prepared'
 }
 
 /* Add our common build/tool projects */

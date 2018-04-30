@@ -198,7 +198,7 @@ public class CustomFormAuthenticationMechanismTest {
     public void testValidateRequestInvalidIdAndPWIdentityStoreHandler() throws Exception {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext(ap).withIsNewAuthentication(false).withGetResponse();
-        withUsernamePassword(USER1, "invalid").withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withUsernamePassword(USER1, "invalid").withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
         withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
@@ -231,7 +231,7 @@ public class CustomFormAuthenticationMechanismTest {
     public void testValidateRequestInvalidIdAndPWNoIdentityStoreHandlerCallbackHandler() throws Exception {
         final MyCallbackHandler mch = new MyCallbackHandler();
         withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withHandler(mch);
-        withUsernamePassword(USER1, "invalid").withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withUsernamePassword(USER1, "invalid").withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
         withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
@@ -250,7 +250,6 @@ public class CustomFormAuthenticationMechanismTest {
             cfam.validateRequest(request, res, hmc);
             fail("AuthenticationException should be thrown.");
         } catch (AuthenticationException e) {
-            assertTrue("CWWKS1930W  message was not logged", outputMgr.checkForStandardOut("CWWKS1930W:"));
             assertTrue("The message does not match with the expectation", e.getMessage().contains(msg));
         }
     }

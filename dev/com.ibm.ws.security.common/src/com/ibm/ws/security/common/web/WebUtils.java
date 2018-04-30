@@ -11,13 +11,16 @@
 package com.ibm.ws.security.common.web;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.StringBuffer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -351,17 +354,17 @@ public class WebUtils {
 
       if (orig != null && orig.length() > SECRETequalsLen) {
         if (orig.indexOf(SECRETequals) > -1) {
-          java.lang.StringBuffer sb = null;
+          StringBuffer sb = null;
           int i = 0;
           // http://localhost/path?client_secret=pw
           //                      ^ 
           if ((i=orig.indexOf("?"))>-1) {
-              sb = new java.lang.StringBuffer(orig.substring(0,i+1));
+              sb = new StringBuffer(orig.substring(0,i+1));
               if (orig.length() > i+1) {
                   orig=orig.substring(i+1);
               }
           } else {
-              sb = new java.lang.StringBuffer();
+              sb = new StringBuffer();
           }
 
           // client_secret=pw&abc=123
@@ -389,18 +392,67 @@ public class WebUtils {
       return retVal;
     }
 
+    // stripSecretFromParameters
+    // processes the parameter map for tracing, replacing the value
+    // for any parameter that matches secret with *****
+    @Trivial
+    public static String stripSecretsFromParameters(Map<String, String[]> pMap, String [] secretStrings) {
+       String retVal = null;
+       if (pMap != null && pMap.size()>0) {
+         java.util.List<String> secretList = null;
+         if (secretStrings!=null && secretStrings.length!=0) {
+             secretList = java.util.Arrays.asList(secretStrings);
+         } else {
+             secretList = new ArrayList();
+         }
+
+         StringBuffer sb = new StringBuffer();
+         java.util.Set<String> keys = pMap.keySet();
+         for (String key : keys) {
+           sb.append("{"+key+"=");
+           if (secretList.contains(key)) {
+               sb.append("*****");
+           } else {
+               String[] values = pMap.get(key);
+               sb.append(java.util.Arrays.toString(values));
+           }
+           sb.append("}");
+         }
+         retVal = sb.toString();
+       } 
+       return retVal;
+   }
+
+    @Trivial
+    public static String stripSecretFromParameters(Map<String, String[]> pMap, String secretString) {
+        return stripSecretsFromParameters(pMap, new String[] {secretString});
+    }
+
     // getRequestStringForTrace
     // processes an HTTPServletRequest url and query string to replace sensitive
     // information and returns a string for tracing
     @Trivial
     public static String getRequestStringForTrace(HttpServletRequest request, String[] secretStrings) {
-        if (request == null) {
+        if (request==null || request.getRequestURL()==null) {
             return "[]";
         }
-        String url = ((request.getRequestURL()==null)?null:request.getRequestURL().toString());
-        String queryString = request.getQueryString();
 
-        return "["+stripSecretsFromUrl(url,secretStrings)+"], queryString["+((queryString==null)?"":stripSecretsFromUrl(queryString,secretStrings))+"]";
+        StringBuffer sb = new StringBuffer("["+stripSecretsFromUrl(request.getRequestURL().toString(),secretStrings)+"]");
+
+        String query = request.getQueryString();
+        if (query!=null) {
+            String queryString = stripSecretsFromUrl(query,secretStrings);
+            if (queryString!=null) {
+                sb.append(", queryString["+queryString+"]");
+            }
+        } else {
+            Map<String, String[]> pMap = request.getParameterMap();
+            String paramString = stripSecretsFromParameters(pMap, secretStrings);
+            if (paramString!=null) {
+                sb.append(", parameters["+paramString+"]");
+            }
+        }
+        return sb.toString();
     }
 
 
