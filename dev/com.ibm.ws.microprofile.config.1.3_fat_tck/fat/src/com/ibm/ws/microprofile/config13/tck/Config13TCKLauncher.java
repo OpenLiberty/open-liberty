@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config13.tck;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,16 +28,6 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class Config13TCKLauncher {
 
-    private static final Map<String, String> ENV;
-
-    static {
-        ENV = new HashMap<>();
-        ENV.put("my_int_property", "45");
-        ENV.put("MY_BOOLEAN_PROPERTY", "true");
-        ENV.put("my_string_property", "haha");
-        ENV.put("MY_STRING_PROPERTY", "woohoo");
-    }
-
     @Server("Config13TCKServer")
     public static LibertyServer server;
 
@@ -57,7 +44,7 @@ public class Config13TCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig13Tck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.config.1.3_fat_tck", this.getClass() + ":launchConfig13Tck", ENV);
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.config.1.3_fat_tck", this.getClass() + ":launchConfig13Tck");
     }
 
 }

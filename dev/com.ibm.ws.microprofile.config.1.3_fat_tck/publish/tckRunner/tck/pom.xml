@@ -18,7 +18,7 @@
     <name>MicroProfile Config 1.3 TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.config.version>1.3</microprofile.config.version>
+        <microprofile.config.version>1.3-SNAPSHOT</microprofile.config.version>
         <arquillian.version>1.1.13.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -128,6 +128,12 @@
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
                     </systemPropertyVariables>
+                    <environmentVariables>
+                        <my_int_property>45</my_int_property>
+                        <MY_BOOLEAN_PROPERTY>true</MY_BOOLEAN_PROPERTY>
+                        <my_string_property>haha</my_string_property>
+                        <MY_STRING_PROPERTY>woohoo</MY_STRING_PROPERTY>
+                    </environmentVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
