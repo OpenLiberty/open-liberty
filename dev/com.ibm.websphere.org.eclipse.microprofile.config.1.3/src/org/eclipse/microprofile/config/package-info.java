@@ -75,6 +75,6 @@
  * 
  */
 
-@org.osgi.annotation.versioning.Version("1.1")
+@org.osgi.annotation.versioning.Version("1.0.1")
 package org.eclipse.microprofile.config;
 

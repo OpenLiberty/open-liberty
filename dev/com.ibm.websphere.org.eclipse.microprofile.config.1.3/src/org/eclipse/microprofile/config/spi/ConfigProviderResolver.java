@@ -137,7 +137,13 @@ public abstract class ConfigProviderResolver {
         }
 
         // start from the root CL and go back down to the TCCL
-        ConfigProviderResolver instance = loadSpi(cl.getParent());
+        ClassLoader parentcl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return cl.getParent();
+            }
+        });
+        ConfigProviderResolver instance = loadSpi(parentcl);
 
         if (instance == null) {
             ServiceLoader<ConfigProviderResolver> sl = ServiceLoader.load(

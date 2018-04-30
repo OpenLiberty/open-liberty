@@ -32,9 +32,13 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
  
 /**
+ * <p>
  * Binds the injection point with a configured value.
  * Can be used to annotate injection points of type {@code TYPE}, {@code Optional<TYPE>} or {@code javax.inject.Provider<TYPE>},
  * where {@code TYPE} can be {@code String} and all types which have appropriate converters.
+ * <p>
+ * Injected values are the same values that would be retrieved from an injected {@link org.eclipse.microprofile.config.Config} instance 
+ * or from the instance retrieved from {@link org.eclipse.microprofile.config.ConfigProvider#getConfig()}
  *
  * <h2>Examples</h2>
  *

@@ -71,12 +71,18 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
  * @author <a href="mailto:viktor.klang@gmail.com">Viktor Klang</a>
  */
 public final class ConfigProvider {
+    private static final ConfigProviderResolver INSTANCE = ConfigProviderResolver.instance();
+
     private ConfigProvider() {
     }
 
     /**
      * Provide a {@link Config} based on all {@link org.eclipse.microprofile.config.spi.ConfigSource ConfigSources} of the
      * current Thread Context ClassLoader (TCCL)
+     * <p>
+     * 
+     * <p>
+     * 
      * The {@link Config} will be stored for future retrieval.
      * <p>
      * There is exactly a single Config instance per ClassLoader
@@ -84,7 +90,7 @@ public final class ConfigProvider {
      * @return the config object for the thread context classloader
      */
     public static Config getConfig() {
-        return ConfigProviderResolver.instance().getConfig();
+        return INSTANCE.getConfig();
     }
 
     /**
@@ -98,6 +104,6 @@ public final class ConfigProvider {
      * @return the config for the specified classloader
      */
     public static Config getConfig(ClassLoader cl) {
-        return ConfigProviderResolver.instance().getConfig(cl);
+        return INSTANCE.getConfig(cl);
     }
 }

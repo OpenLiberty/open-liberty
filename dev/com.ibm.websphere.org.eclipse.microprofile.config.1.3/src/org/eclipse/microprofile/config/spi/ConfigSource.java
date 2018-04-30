@@ -32,7 +32,6 @@ package org.eclipse.microprofile.config.spi;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 /**
  * <p>Implement this interfaces to provide a ConfigSource.
@@ -146,4 +145,5 @@ public interface ConfigSource {
      * @return the 'name' of the configuration source, e.g. 'property-file mylocation/myproperty.properties'
      */
     String getName();
+
 }
