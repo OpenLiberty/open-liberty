@@ -89,7 +89,6 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.ad.nested',
     'com.ibm.ws.security.wim.adapter.ldap.fat.ad.noId',
     'com.ibm.ws.security.wim.adapter.ldap.fat.ad.ssl',
-    'com.ibm.ws.security.wim.adapter.ldap.fat.context.pool.on.ldap.fail',
     'com.ibm.ws.security.wim.adapter.ldap.fat.context.pool.timeout',
     'com.ibm.ws.security.wim.adapter.ldap.fat.custom',
     'com.ibm.ws.security.wim.adapter.ldap.fat.custom.getname',
