@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
 import org.jboss.weld.config.ConfigurationKey;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -36,6 +37,7 @@ import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
 import com.ibm.ws.cdi.impl.weld.ProbeExtensionArchive;
 import com.ibm.ws.cdi.impl.weld.WebSphereCDIDeploymentImpl;
+import com.ibm.ws.cdi.impl.weld.WebSphereEEModuleDescriptor;
 import com.ibm.ws.cdi.internal.interfaces.Application;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
@@ -370,14 +372,15 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
             ArchiveType childType = child.getType();
             String archiveID = null;
-            String eeModuleDescriptorID = null;
+            EEModuleDescriptor eeModuleDescriptor = null;
             if (childType == ArchiveType.WEB_INF_LIB ||
                 childType == ArchiveType.MANIFEST_CLASSPATH ||
                 childType == ArchiveType.JAR_MODULE ||
                 childType == ArchiveType.SHARED_LIB) {
 
                 archiveID = parentModule.getId() + "#" + childType + "#" + child.getName();
-                eeModuleDescriptorID = parentModule.getEEModuleDescriptorId();
+                //a module library uses the same descriptor ID as it's parent module
+                eeModuleDescriptor = new WebSphereEEModuleDescriptor(parentModule.getEEModuleDescriptorId(), childType);
 
             } else {
                 // This isn't the right type to be a child library, skip it
@@ -400,7 +403,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                                                                               archiveID,
                                                                               child,
                                                                               cdiRuntime,
-                                                                              eeModuleDescriptorID);
+                                                                              eeModuleDescriptor);
 
             discoveredBdas.addDiscoveredBda(parentType, newChildBda);
             moduleArchivePaths.add(childPath);

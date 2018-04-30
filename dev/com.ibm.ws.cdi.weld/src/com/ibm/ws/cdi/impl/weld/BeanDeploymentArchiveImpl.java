@@ -38,8 +38,6 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
-import org.jboss.weld.bootstrap.spi.EEModuleDescriptor.ModuleType;
-import org.jboss.weld.bootstrap.spi.helpers.EEModuleDescriptorImpl;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.exceptions.IllegalArgumentException;
@@ -100,7 +98,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
     private final ServiceRegistry weldServiceRegistry;
     private final String id;
-    private final String eeModuleDescptorId;
+    private final EEModuleDescriptor eeModuleDescriptor;
 
     private final Set<WebSphereBeanDeploymentArchive> accessibleBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
     private final Set<WebSphereBeanDeploymentArchive> descendantBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
@@ -134,7 +132,6 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final Map<Class<?>, List<InjectionPoint>> staticInjectionPoints = new HashMap<Class<?>, List<InjectionPoint>>();
 
     private final CDIArchive archive;
-    private ModuleType eeModuleType = null;
 
     //package visibility only ... use factory
     BeanDeploymentArchiveImpl(WebSphereCDIDeployment cdiDeployment,
@@ -146,9 +143,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                               Set<String> additionalBeanDefiningAnnotations,
                               boolean extensionCanSeeApplicationBDAs,
                               Set<String> extensionClassNames,
-                              String eeModuleDescptorId) throws CDIException {
+                              EEModuleDescriptor eeModuleDescriptor) throws CDIException {
         this.id = archiveID;
-        this.eeModuleDescptorId = eeModuleDescptorId == null ? archiveID : eeModuleDescptorId;
+        this.eeModuleDescriptor = eeModuleDescriptor;
         this.archive = archive;
         this.classloader = archive.getClassLoader();
         this.cdiDeployment = cdiDeployment;
@@ -182,51 +179,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         }
 
         WebSphereInjectionServices injectionServices = cdiDeployment.getInjectionServices();
-        EEModuleDescriptor eeModuleDescriptor = new EEModuleDescriptorImpl(this.eeModuleDescptorId, getWeldModuleType());
         this.weldServiceRegistry.add(InjectionServices.class, injectionServices);
         this.weldServiceRegistry.add(ResourceLoader.class, this.resourceLoader);
         this.weldServiceRegistry.add(EEModuleDescriptor.class, eeModuleDescriptor);
-    }
-
-    private ModuleType getWeldModuleType() {
-        if (this.eeModuleType == null) {
-            ModuleType moduleType = ModuleType.EAR;
-            switch (archive.getType()) {
-                case EAR_LIB:
-                    moduleType = ModuleType.EAR;
-                    break;
-
-                case WEB_INF_LIB:
-                    moduleType = ModuleType.WEB;
-                    break;
-                case WEB_MODULE:
-                    moduleType = ModuleType.WEB;
-                    break;
-                case EJB_MODULE:
-                    moduleType = ModuleType.EJB_JAR;
-                    break;
-                case CLIENT_MODULE:
-                    moduleType = ModuleType.APPLICATION_CLIENT;
-                    break;
-                case RAR_MODULE:
-                    moduleType = ModuleType.CONNECTOR;
-                    break;
-                case SHARED_LIB:
-                    moduleType = ModuleType.EAR;
-                    break;
-                case ON_DEMAND_LIB:
-                    moduleType = ModuleType.EAR;
-                    break;
-                case RUNTIME_EXTENSION:
-                    moduleType = ModuleType.EAR;
-                    break;
-                default:
-                    moduleType = ModuleType.EAR;
-                    break;
-            }
-            eeModuleType = moduleType;
-        }
-        return eeModuleType;
     }
 
     @Override
@@ -1015,7 +970,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     /** {@inheritDoc} */
     @Override
     public String getEEModuleDescriptorId() {
-        return eeModuleDescptorId;
+        return eeModuleDescriptor.getId();
     }
 
     /**
