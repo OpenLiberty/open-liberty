@@ -36,7 +36,8 @@ Private-Package: \
 
 -dsannotations: \
   com.ibm.ws.kernel.server.internal.ServerInfoMBeanImpl, \
-  com.ibm.ws.kernel.server.internal.ServerEndpointControlMBeanImpl
+  com.ibm.ws.kernel.server.internal.ServerEndpointControlMBeanImpl, \
+  com.ibm.ws.kernel.server.internal.ServerActionsMXBeanImpl
 
 instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class
 

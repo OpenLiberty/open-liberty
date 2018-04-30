@@ -25,20 +25,23 @@ class IBMJavaDumperImpl extends JavaDumper {
     }
 
     @Override
-    public File dump(JavaDumpAction action, File outputDir) {
+    public File dump(JavaDumpAction action, File outputDir, String nameToken, int maximum) {
         Method method;
 
         switch (action) {
             case HEAP:
                 method = heapDumpToFileMethod;
+                pruneFiles(maximum, outputDir, "heapdump", "phd", nameToken);
                 break;
 
             case SYSTEM:
                 method = systemDumpToFileMethod;
+                pruneFiles(maximum, outputDir, "core", "dmp", nameToken);
                 break;
 
             case THREAD:
                 method = javaDumpToFileMethod;
+                pruneFiles(maximum, outputDir, "javacore", "txt", nameToken);
                 break;
 
             default:
@@ -63,7 +66,7 @@ class IBMJavaDumperImpl extends JavaDumper {
             // We dont get a core*.dmp file as it goes to a dataset
             return null;
         } else {
-            return new File(resultPath);
+            return moveDump(addNameToken(new File(resultPath), nameToken), outputDir);
         }
     }
 }

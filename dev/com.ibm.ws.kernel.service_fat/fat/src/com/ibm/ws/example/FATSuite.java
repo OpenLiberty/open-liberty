@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.example;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * @version 1.0.0
+ * Tests for com.ibm.ws.kernel.service
  */
-@org.osgi.annotation.versioning.Version("1.0.0")
-@TraceOptions(messageBundle = "com.ibm.ws.kernel.service.utils.resources.ServiceMessages")
-package com.ibm.ws.kernel.server.internal;
-
-import com.ibm.websphere.ras.annotation.TraceOptions;
+@RunWith(Suite.class)
+@SuiteClasses({
+                ServerActionsMXBeanTests.class,
+})
+public class FATSuite {}

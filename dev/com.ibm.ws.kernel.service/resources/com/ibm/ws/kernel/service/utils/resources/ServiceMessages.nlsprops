@@ -56,6 +56,10 @@ invalidDuration=CWWKE0107W: The specified parameter does not represent a duratio
 invalidDuration.explanation=The value for the specified configuration parameter is not, or cannot be converted to, a duration value.
 invalidDuration.useraction=Ensure that the value specified in the server configuration is a valid representation of a duration value.
 
+invalidActionDirectory=CWWKE0120E: The specified directory {0} does not exist.
+invalidActionDirectory.explanation=If a directory is specified, then it must exist before calling this function.
+invalidActionDirectory.useraction=Ensure that the specified directory exists.
+
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #

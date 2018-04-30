@@ -33,7 +33,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
     }
 
     @Override
-    public File dump(JavaDumpAction action, File outputDir) {
+    public File dump(JavaDumpAction action, File outputDir, String nameToken, int maximum) {
         Pattern pattern;
         String dumpDirVar;
         String methodName;
@@ -44,6 +44,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
                 dumpDirVar = "IBM_HEAPDUMPDIR";
                 pattern = HEAPDUMP_PATTERN;
                 methodName = "HeapDump";
+                pruneFiles(maximum, outputDir, "heapdump", "phd", nameToken);
                 break;
 
             case SYSTEM:
@@ -51,6 +52,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
                 dumpDirVar = "IBM_COREDIR";
                 pattern = CORE_DUMP_PATTERN;
                 methodName = "SystemDump";
+                pruneFiles(maximum, outputDir, "core", "dmp", nameToken);
                 break;
 
             case THREAD:
@@ -58,6 +60,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
                 dumpDirVar = "IBM_JAVACOREDIR";
                 pattern = JAVACORE_PATTERN;
                 methodName = "JavaDump";
+                pruneFiles(maximum, outputDir, "javacore", "txt", nameToken);
                 break;
 
             default:
@@ -67,7 +70,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
         // There is no API for generating a dump to a specific file, so
         // determine the directory where the JVM will put the dump, find
         // existing files in the directory matching the dump name, generate
-        // the dump, and then find the newly created file. 
+        // the dump, and then find the newly created file.
 
         File dumpDir;
 
@@ -102,7 +105,7 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
 
             for (String fileName : fileNames) {
                 if (!existingDumps.contains(fileName) && pattern.matcher(fileName).matches()) {
-                    return new File(dumpDir, fileName);
+                    return moveDump(addNameToken(new File(dumpDir, fileName), nameToken), outputDir);
                 }
             }
         }

@@ -80,7 +80,7 @@ class HotSpotJavaDumperImpl extends JavaDumper {
 
     /**
      * Lazily-initialized VirtualMachine for generating Java dumps.
-     * 
+     *
      * @see #getVirtualMachine
      */
     private VirtualMachine vm;
@@ -92,13 +92,15 @@ class HotSpotJavaDumperImpl extends JavaDumper {
     }
 
     @Override
-    public File dump(JavaDumpAction action, File outputDir) {
+    public File dump(JavaDumpAction action, File outputDir, String nameToken, int maximum) {
         switch (action) {
             case HEAP:
-                return createHeapDump(outputDir);
+                pruneFiles(maximum, outputDir, "java", "hprof", nameToken);
+                return addNameToken(createHeapDump(outputDir), nameToken);
 
             case THREAD:
-                return createThreadDump(outputDir);
+                pruneFiles(maximum, outputDir, "javadump", "txt", nameToken);
+                return addNameToken(createThreadDump(outputDir), nameToken);
 
             default:
                 return null;
@@ -107,7 +109,7 @@ class HotSpotJavaDumperImpl extends JavaDumper {
 
     /**
      * Create a dump file with a unique name.
-     * 
+     *
      * @param outputDir the directory to contain the file
      * @param prefix the prefix for the filename
      * @param extension the file extension, not including a leading "."
@@ -127,7 +129,7 @@ class HotSpotJavaDumperImpl extends JavaDumper {
 
     /**
      * Create a heap dump. This is the same as jmap -dump:file=...
-     * 
+     *
      * @param outputDir the server output directory
      * @return the resulting file
      */
@@ -155,7 +157,7 @@ class HotSpotJavaDumperImpl extends JavaDumper {
     /**
      * Create a thread dump. This is the same output normally printed to the
      * console when a kill -QUIT or Ctrl-Break is sent to the process.
-     * 
+     *
      * @param outputDir the server output directory
      * @return the resulting file, or null if the dump could not be created
      */

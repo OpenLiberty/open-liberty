@@ -469,6 +469,14 @@ info.addProductExtension.useraction=No action is required.
 # Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
 #
 
+error.dump.rename.fail=CWWKE0200E: The dump artifact {0} could not be renamed to the destination file {1}.
+error.dump.rename.fail.explanation=The dump was still created but the operation has been interrupted.
+error.dump.rename.fail.useraction=Review the arguments supplied to the method.
+
+error.dump.delete.fail=CWWKE0201E: The dump artifact {0} could not be deleted as part of dump file rotation. There are {1} matching dump artifacts.
+error.dump.delete.fail.explanation=The operation requested a maximum number of dump artifacts and deleting matching dump artifacts to achieve this failed.
+error.dump.delete.fail.useraction=Review filesystem permissions of the dump artifacts.
+
 error.clientNameCharacter=CWWKE0900E: The specified client name contains a character that is not valid (name={0}). \
   Valid characters are: Unicode alphanumeric (e.g. 0-9, a-z, A-Z), underscore (_), dash (-), plus (+), and period (.). \
   A client name cannot begin with a dash (-) or period (.).
