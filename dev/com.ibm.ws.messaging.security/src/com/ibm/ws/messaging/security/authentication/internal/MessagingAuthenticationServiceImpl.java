@@ -211,11 +211,11 @@ public class MessagingAuthenticationServiceImpl implements
                 if (auditManager != null && auditManager.getJMSConversationMetaData() != null) {
                     ConversationMetaData cmd = (ConversationMetaData) auditManager.getJMSConversationMetaData();
 
-                    Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, messagingEngine, cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
-                                cmd.getChainName(), userName, busName, credType,
+                    Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, userName, cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
+                                cmd.getChainName(), busName, messagingEngine, credType,
                                 Integer.valueOf("201"));
                 } else {
-                    Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, messagingEngine, null, null, null, userName, busName, credType, Integer.valueOf("201"));
+                    Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, userName, null, null, null, busName, messagingEngine, credType, Integer.valueOf("201"));
                 }
 
                 throwAuthenticationException(userName);//114580
@@ -268,10 +268,10 @@ public class MessagingAuthenticationServiceImpl implements
             if (auditManager != null && auditManager.getJMSConversationMetaData() != null) {
                 ConversationMetaData cmd = (ConversationMetaData) auditManager.getJMSConversationMetaData();
 
-                Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, messagingEngine, cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
-                            cmd.getChainName(), userName, busName, credType, Integer.valueOf("201"));
+                Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, userName, cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
+                            cmd.getChainName(), busName, messagingEngine, credType, Integer.valueOf("201"));
             } else {
-                Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, messagingEngine, null, null, null, userName, busName, credType, Integer.valueOf("201"));
+                Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, userName, null, null, null, busName, messagingEngine, credType, Integer.valueOf("201"));
             }
 
             throwAuthenticationException(userName);//114580
@@ -285,7 +285,7 @@ public class MessagingAuthenticationServiceImpl implements
             Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, userName, cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
                         cmd.getChainName(), busName, messagingEngine, credType, Integer.valueOf("200"));
         } else {
-            Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, userName, null, busName, messagingEngine, credType, Integer.valueOf("200"));
+            Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, userName, null, null, null, busName, messagingEngine, credType, Integer.valueOf("200"));
         }
 
         return result;
@@ -324,11 +324,11 @@ public class MessagingAuthenticationServiceImpl implements
                 if (auditManager != null && auditManager.getJMSConversationMetaData() != null) {
                     ConversationMetaData cmd = (ConversationMetaData) auditManager.getJMSConversationMetaData();
 
-                    Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, messagingEngine, cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
-                                cmd.getChainName(), userName, busName, credType,
+                    Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, userName, cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
+                                cmd.getChainName(), busName, messagingEngine, credType,
                                 Integer.valueOf("201"));
                 } else {
-                    Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, messagingEngine, null, null, null, userName, busName, credType, Integer.valueOf("201"));
+                    Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, userName, null, null, null, busName, messagingEngine, credType, Integer.valueOf("201"));
                 }
 
                 throwAuthenticationException(userName);//114580
@@ -343,7 +343,7 @@ public class MessagingAuthenticationServiceImpl implements
             Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, certificates.toString(), cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
                         cmd.getChainName(), busName, messagingEngine, credType, Integer.valueOf("200"));
         } else {
-            Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, certificates.toString(), null, busName, messagingEngine, credType, Integer.valueOf("200"));
+            Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_01, certificates.toString(), null, null, null, busName, messagingEngine, credType, Integer.valueOf("200"));
         }
 
         return result;
@@ -351,8 +351,23 @@ public class MessagingAuthenticationServiceImpl implements
 
     @Override
     public void logout(Subject subj) {
+        String userName = null;
+        try {
+            userName = _messagingSecurityService.getUniqueUserName(subj);
+        } catch (MessagingSecurityException e) {
+            //No FFDC Code Needed
+        }
 
-        Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_TERMINATE_01, subj, Integer.valueOf("200"));
+        if (auditManager != null && auditManager.getJMSConversationMetaData() != null) {
+            ConversationMetaData cmd = (ConversationMetaData) auditManager.getJMSConversationMetaData();
+
+            Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_TERMINATE_01, userName, 
+                        cmd.getRemoteAddress().getHostAddress(), new Integer(cmd.getRemotePort()).toString(),
+                        cmd.getChainName(), auditManager.getJMSBusName(), auditManager.getJMSMessagingEngine(), null, Integer.valueOf("200"));
+        } else {
+            Audit.audit(Audit.EventID.SECURITY_JMS_AUTHN_TERMINATE_01, userName, null, null, null, 
+                        auditManager.getJMSBusName(), auditManager.getJMSMessagingEngine(), null, Integer.valueOf("200"));
+        }
 
         /*
          * What should we do when we logout? In tWAS it is just executing some

@@ -90,4 +90,5 @@ instrument.disabled: true
 	com.ibm.ws.messaging.utils;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.ws.serialization;version=latest,\
+	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
