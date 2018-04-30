@@ -56,7 +56,6 @@ task addDerby(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
-
 task copyFeatureBundles {
   shouldRunAfter assemble
   enabled project.file('test-bundles').exists()
@@ -298,7 +297,6 @@ task runfat(type: Exec) {
   shouldRunAfter cleanBeforeRun
   System.setProperty("fat.test.localrun", "true");
   environment System.getProperties()
-  
   if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
     executable "cmd"
     args '/c', 'ant', "-f", new File(autoFvtDir, 'TestBuild.xml')
