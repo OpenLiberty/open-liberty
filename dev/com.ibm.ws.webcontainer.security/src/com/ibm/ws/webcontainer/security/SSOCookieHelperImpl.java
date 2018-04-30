@@ -286,9 +286,11 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected void logoutJwtCookies(HttpServletRequest req, Cookie[] cookies, java.util.ArrayList<Cookie> logoutCookieList) {
         String jwtCookieName = getJwtCookieName();
         if (jwtCookieName != null) { // jwtsso is active, expire it's cookies too
-            if (config.isTrackLoggedOutSSOCookiesEnabled()) {
-                LoggedOutJwtSsoCookieCache.put(getJwtSsoTokenFromCookies(req, jwtCookieName));
+            String jwtTokenStr = getJwtSsoTokenFromCookies(req, jwtCookieName);
+            if (jwtTokenStr != null) {
+                LoggedOutJwtSsoCookieCache.put(jwtTokenStr);
             }
+
             for (int i = 0; i < cookies.length; i++) {
                 if (isJwtCookie(jwtCookieName, cookies[i].getName())) {
                     cookies[i].setValue(null);
