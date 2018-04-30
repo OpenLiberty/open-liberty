@@ -81,10 +81,8 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
 
     /**
      * Close down the configs
-     *
-     * @throws IOException
      */
-    private void shutdown() throws IOException {
+    public void shutdown() {
         synchronized (configCache) {
             for (Map.Entry<ClassLoader, WeakReference<Config>> entry : configCache.entrySet()) {
                 WeakReference<Config> configRef = entry.getValue();

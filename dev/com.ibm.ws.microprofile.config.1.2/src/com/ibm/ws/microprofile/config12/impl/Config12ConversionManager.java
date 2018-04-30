@@ -14,11 +14,12 @@ package com.ibm.ws.microprofile.config12.impl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.converters.AutomaticConverter;
+import com.ibm.ws.microprofile.config.converters.BuiltInConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.ConversionStatus;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+import com.ibm.ws.microprofile.config12.converters.ImplicitConverter;
 
 public class Config12ConversionManager extends ConversionManager {
 
@@ -41,7 +42,7 @@ public class Config12ConversionManager extends ConversionManager {
     @Override
     protected <T> ConversionStatus implicitConverters(String rawString, Class<T> type) {
         ConversionStatus status = new ConversionStatus();
-        AutomaticConverter automaticConverter = getConverter(type);
+        BuiltInConverter automaticConverter = getConverter(type);
 
         //will be null if a suitable string constructor method could not be found
         if (automaticConverter != null) {
@@ -65,11 +66,11 @@ public class Config12ConversionManager extends ConversionManager {
     }
 
     @FFDCIgnore(IllegalArgumentException.class)
-    private <T> AutomaticConverter getConverter(Class<T> type) {
-        AutomaticConverter automaticConverter = null;
+    protected <T> BuiltInConverter getConverter(Class<T> type) {
+        ImplicitConverter automaticConverter = null;
 
         try {
-            automaticConverter = new AutomaticConverter(type);
+            automaticConverter = new ImplicitConverter(type);
         } catch (IllegalArgumentException e) {
             //no FFDC
             //this means that a suitable string constuctor method could not be found for the given class

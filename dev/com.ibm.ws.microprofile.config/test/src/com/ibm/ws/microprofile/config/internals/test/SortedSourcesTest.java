@@ -19,11 +19,12 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.config.impl.SortedSources;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
 /**
  *
  */
-public class SortedSourcesTest {
+public class SortedSourcesTest extends AbstractConfigTest {
 
     @Test
     public void testSimpleOrdinalSort() {
