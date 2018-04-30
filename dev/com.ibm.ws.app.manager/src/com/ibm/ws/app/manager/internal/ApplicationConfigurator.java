@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1079,10 +1078,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             }
             // the last update we received for this pid had the same name, so proceed with updating
 
-            // First check to see if the config has changed in a meaningful way. If not, return.
-            if (isMinorUpdate(appFromPid.getConfig(), newAppConfig))
-                return;
-
             app = appFromPid;
             app.setConfig(newAppConfig);
             if (app.getStateMachine() != null) {
@@ -1126,54 +1121,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             episode.configureApp(app);
             episode.dropReference();
         }
-    }
-
-    /**
-     * Checks to see if the property changes should result in updating the application. At the moment this
-     * only ignores the "appProperties" element.
-     *
-     * This decision should probably be pushed to the app handler.
-     */
-    private boolean isMinorUpdate(ApplicationConfig oldAppConfig, ApplicationConfig newAppConfig) {
-        Dictionary<String, Object> old = oldAppConfig.getServiceProperties();
-        Dictionary<String, Object> updated = newAppConfig.getServiceProperties();
-
-        // Ignore appProperties elements for this comparison-- updates are handled by microProfile
-        old.remove("appProperties");
-        updated.remove("appProperties");
-
-        // If a property was added or removed, return false
-        if (old.size() != updated.size())
-            return false;
-
-        Enumeration<String> keys = old.keys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            Object newValue = updated.get(key);
-
-            if (newValue == null) {
-                // If a property was removed, return false
-                return false;
-            } else if (!equalConfigValues(old.get(key), newValue)) {
-                // If a value was changed, return false;
-                return false;
-            } else {
-                updated.remove(key);
-            }
-        }
-        return updated.isEmpty() ? true : false;
-    }
-
-    private boolean equalConfigValues(Object c1, Object c2) {
-        if (c1 instanceof String && c2 instanceof String)
-            return c1.equals(c2);
-        if (c1 instanceof String[] && c2 instanceof String[])
-            return Arrays.equals((String[]) c1, (String[]) c2);
-        if (c1 instanceof Map && c2 instanceof Map)
-            return c1.equals(c2);
-        if (c1 != null)
-            return c1.equals(c2);
-        return (c2 == null);
     }
 
     // called only from synchronized methods
