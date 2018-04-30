@@ -32,8 +32,6 @@
 package org.eclipse.microprofile.config;
 
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
@@ -48,6 +46,11 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  * <p>
  * The config objects produced via the injection model <pre>@Inject Config</pre> are guaranteed to be serializable, while
  * the programmatically created ones are not required to be serializable.
+ * <p>
+ * If one or more converters are registered for a class of a requested value then one of the registered converters 
+ * which has the highest priority is used to convert the string value retrieved from config sources. 
+ * The highest priority means the highest priority number.
+ * For more information about converters, see {@link org.eclipse.microprofile.config.spi.Converter}
  *
  * <h3>Usage</h3>
  *
@@ -87,17 +90,17 @@ public interface Config {
     /**
      * Return the resolved property value with the specified type for the
      * specified property name from the underlying {@link ConfigSource ConfigSources}.
-     *
+     * 
      * If this method gets used very often then consider to locally store the configured value.
      *
      * @param <T>
-     *             the property type
+     *             The property type
      * @param propertyName
      *             The configuration propertyName.
      * @param propertyType
      *             The type into which the resolve property value should get converted
      * @return the resolved property value as an object of the requested type.
-     * @throws IllegalArgumentException if the property cannot be converted to the specified type.
+     * @throws java.lang.IllegalArgumentException if the property cannot be converted to the specified type.
      * @throws java.util.NoSuchElementException if the property isn't present in the configuration.
      */
     <T> T getValue(String propertyName, Class<T> propertyType);
@@ -105,18 +108,18 @@ public interface Config {
     /**
      * Return the resolved property value with the specified type for the
      * specified property name from the underlying {@link ConfigSource ConfigSources}.
-     *
+     *     
      * If this method is used very often then consider to locally store the configured value.
      *
      * @param <T>
-     *             the property type
+     *             The property type
      * @param propertyName
      *             The configuration propertyName.
      * @param propertyType
      *             The type into which the resolve property value should be converted
-     * @return the resolved property value as an Optional of the requested type.
+     * @return The resolved property value as an Optional of the requested type.
      *
-     * @throws IllegalArgumentException if the property cannot be converted to the specified type.
+     * @throws java.lang.IllegalArgumentException if the property cannot be converted to the specified type.
      */
     <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType);
 
