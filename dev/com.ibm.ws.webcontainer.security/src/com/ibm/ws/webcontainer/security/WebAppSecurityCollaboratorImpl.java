@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -399,7 +399,17 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      */
     @Override
     public Principal getUserPrincipal() {
-        return collabUtils.getCallerPrincipal(false, null, true, isJaspiEnabled);
+        if (System.getSecurityManager() == null) {
+            return collabUtils.getCallerPrincipal(false, null, true, isJaspiEnabled);
+        } else {
+            return AccessController.doPrivileged(new PrivilegedAction<Principal>() {
+
+                @Override
+                public Principal run() {
+                    return collabUtils.getCallerPrincipal(false, null, true, isJaspiEnabled);
+                }
+            });
+        }
     }
 
     /**
@@ -1002,14 +1012,10 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             isNewAuthenticate = jaspiService.isProcessingNewAuthentication(req);
             isCredentialPresent = jaspiService.isCredentialPresent(req);
         }
-        if (!isNewAuthenticate) {
-            // if JSR-375 HttpAuthenticationMechanism is not enabled, and if there is a valid subject in the context, return it.
-            Subject callerSubject = subjectManager.getCallerSubject();
-            if (!subjectHelper.isUnauthenticated(callerSubject)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "The underlying login mechanism has committed");
-                return true;
-            }
+
+        // if JSR-375 HttpAuthenticationMechanism is not enabled, and if there is a valid subject in the context, return it.
+        if (!isNewAuthenticate && isAlreadyAuthenticated()) {
+            return true;
         }
 
         WebReply webReply = PERMIT_REPLY;
@@ -1042,6 +1048,30 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         int statusCode = webReply != null ? Integer.valueOf(webReply.getStatusCode()) : resp.getStatus();
         Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, statusCode);
         return result;
+    }
+
+    private boolean isAlreadyAuthenticated() {
+        if (System.getSecurityManager() == null) {
+            return isCallerSubjectAuthenticated();
+        } else {
+            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+                @Override
+                public Boolean run() {
+                    return isCallerSubjectAuthenticated();
+                }
+            });
+        }
+    }
+
+    private Boolean isCallerSubjectAuthenticated() {
+        Subject callerSubject = subjectManager.getCallerSubject();
+        if (!subjectHelper.isUnauthenticated(callerSubject)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "The underlying login mechanism has committed");
+            return true;
+        }
+        return false;
     }
 
     @Override

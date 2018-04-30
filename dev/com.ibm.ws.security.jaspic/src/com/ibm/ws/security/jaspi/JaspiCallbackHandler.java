@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,7 @@ package com.ibm.ws.security.jaspi;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.security.AccessController;
 import java.security.Principal;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -49,13 +47,14 @@ import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.webcontainer.security.JaspiService;
 import com.ibm.wsspi.security.registry.RegistryHelper;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 /**
  * @author IBM Corp.
- * 
+ *
  */
 public class JaspiCallbackHandler implements CallbackHandler {
 
@@ -74,7 +73,7 @@ public class JaspiCallbackHandler implements CallbackHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.security.auth.callback.CallbackHandler#handle(javax.security.auth.callback.Callback[])
      */
     @Override
@@ -109,12 +108,11 @@ public class JaspiCallbackHandler implements CallbackHandler {
      * Callback for PasswordValidation. This callback may be used by an authentication module to employ the password
      * validation facilities of its containing runtime. This Callback would typically be called by a ServerAuthModule
      * during validateRequest processing.
-     * 
+     *
      * Verify user/password in active user registry. If password is valid, set Callback result = true and add to clientSubject a JaspiCustomCredential
      * with custom data that is used later by JaspiAuthenticator to create a WAS subject.
      */
-    protected void handlePasswordValidationCallback(PasswordValidationCallback callback)
-                    throws RemoteException, EntryNotFoundException, CustomRegistryException {
+    protected void handlePasswordValidationCallback(PasswordValidationCallback callback) throws RemoteException, EntryNotFoundException, CustomRegistryException {
 
         Subject clientSubject = callback.getSubject();
         String userName = callback.getUsername();
@@ -154,17 +152,17 @@ public class JaspiCallbackHandler implements CallbackHandler {
          * getName() javadoc:
          * "When the values returned by this method and the getPrincipal methods are null, the handler must establish the
          * container's representation of the unauthenticated caller principal within the Subject."
-         * 
+         *
          * In CallerPrincipalCallback(Subject s, String n) ctor:
          * "When the String argument n is null, the handler will establish the container's representation of the unauthenticated caller principal
          * (which may or may not be equal to null, depending on the requirements of the container type). When the container type requires that
          * a non-null principal be established as the caller principal, the value obtained by calling getName on the principal may not match the
          * argument value."
-         * 
+         *
          * getPrincipal() javadoc:
          * "When the values returned by this method and the getName methods are null, the handler must establish the container's
          * representation of the unauthenticated caller principal within the Subject."
-         * 
+         *
          * In CallerPrincipalCallback(Subject s, Principal p) ctor:
          * The CallbackHandler must establish the argument Principal as the caller principal associated with the invocation being processed by the
          * container. When the argument Principal is null, the handler will establish the container's representation of the unauthenticated caller
@@ -196,8 +194,7 @@ public class JaspiCallbackHandler implements CallbackHandler {
      * Callback establishing group principals within the argument subject. This callback is intended to be called by
      * a serverAuthModule during its validateRequest processing.
      */
-    protected void handleGroupPrincipalCallback(GroupPrincipalCallback callback)
-                    throws CustomRegistryException, EntryNotFoundException, RemoteException {
+    protected void handleGroupPrincipalCallback(GroupPrincipalCallback callback) throws CustomRegistryException, EntryNotFoundException, RemoteException {
         Subject clientSubject = callback.getSubject();
         Hashtable<String, Object> credData = null;
         if (clientSubject != null) {
@@ -243,9 +240,7 @@ public class JaspiCallbackHandler implements CallbackHandler {
             Tr.debug(tc, "handleGroupPrincipalCallback", credData);
     }
 
-    protected void addUseridAndGroupsKeys(String securityName,
-                                          Hashtable<String,
-                                          Object> credData) {
+    protected void addUseridAndGroupsKeys(String securityName, Hashtable<String, Object> credData) {
         try {
             UserRegistry registry = getUserRegistry();
             if (registry != null && registry.isValidUser(securityName)) {
@@ -255,8 +250,7 @@ public class JaspiCallbackHandler implements CallbackHandler {
                 credData.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groups);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Added userid: " + securityName + "  and groups: " + groups);
-            }
-            else {
+            } else {
                 if (registry == null)
                     credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:defaultRealm/" + securityName);
                 else
@@ -269,8 +263,8 @@ public class JaspiCallbackHandler implements CallbackHandler {
     }
 
     @FFDCIgnore({ com.ibm.websphere.security.PasswordCheckFailedException.class })
-    protected boolean checkUserPassword(String user, @Sensitive String password, UserRegistry registry, String realmName, Subject clientSubject)
-                    throws EntryNotFoundException, CustomRegistryException, RemoteException {
+    protected boolean checkUserPassword(String user, @Sensitive String password, UserRegistry registry, String realmName,
+                                        Subject clientSubject) throws EntryNotFoundException, CustomRegistryException, RemoteException {
         String userSecurityName;
         try {
             userSecurityName = registry.checkPassword(user, password);
@@ -308,19 +302,11 @@ public class JaspiCallbackHandler implements CallbackHandler {
         return credData;
     }
 
-    protected Hashtable<String, Object> getSubjectCustomData(final Subject clientSubject) {
+    protected Hashtable<String, Object> getSubjectCustomData(@Sensitive final Subject clientSubject) {
         Hashtable<String, Object> cred = jaspiService.getCustomCredentials(clientSubject);
         if (cred == null) {
-            PrivilegedAction<Hashtable<String, Object>> action = new PrivilegedAction<Hashtable<String, Object>>() {
-
-                @Override
-                public Hashtable<String, Object> run() {
-                    Hashtable<String, Object> newCred = new Hashtable<String, Object>();
-                    clientSubject.getPrivateCredentials().add(newCred);
-                    return newCred;
-                }
-            };
-            cred = AccessController.doPrivileged(action);
+            SubjectHelper subjectHelper = new SubjectHelper();
+            cred = subjectHelper.createNewHashtableInSubject(clientSubject);
         }
         return cred;
     }

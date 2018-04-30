@@ -11,6 +11,8 @@
 package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.annotation.Priority;
 import javax.el.ELProcessor;
@@ -29,6 +31,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.webcontainer.security.CookieHelper;
@@ -117,7 +120,7 @@ public class RememberMeInterceptor {
         public AuthenticationStatus interceptValidateRequest() throws Exception {
             AuthenticationStatus status = AuthenticationStatus.SUCCESS;
             HttpServletRequest request = httpMessageContext.getRequest();
-            String rememberMeCookieValue = getRememberMeCookieValue(request);
+            ProtectedString rememberMeCookieValue = getRememberMeCookieValue(request);
             CredentialValidationResult result = CredentialValidationResult.INVALID_RESULT;
             RememberMeIdentityStore rememberMeIdentityStore = getRememberMeIdentityStore();
 
@@ -131,9 +134,9 @@ public class RememberMeInterceptor {
             return status;
         }
 
-        private CredentialValidationResult authenticateWithRememberMeCookie(HttpServletRequest request, @Sensitive String rememberMeCookieValue,
+        private CredentialValidationResult authenticateWithRememberMeCookie(HttpServletRequest request, ProtectedString rememberMeCookieValue,
                                                                             RememberMeIdentityStore rememberMeIdentityStore) {
-            RememberMeCredential credential = new RememberMeCredential(rememberMeCookieValue);
+            RememberMeCredential credential = new RememberMeCredential(new String(rememberMeCookieValue.getChars()));
             CredentialValidationResult result = rememberMeIdentityStore.validate(credential);
 
             if (CredentialValidationResult.Status.VALID.equals(result.getStatus())) {
@@ -149,8 +152,8 @@ public class RememberMeInterceptor {
 
             if (AuthenticationStatus.SUCCESS.equals(status)) {
                 if (isRememberMe()) {
-                    String rememberMeCookieValue = rememberMeIdentityStore.generateLoginToken((CallerPrincipal) httpMessageContext.getCallerPrincipal(),
-                                                                                              httpMessageContext.getGroups());
+                    ProtectedString rememberMeCookieValue = new ProtectedString(rememberMeIdentityStore.generateLoginToken((CallerPrincipal) httpMessageContext.getCallerPrincipal(),
+                                                                                                                           httpMessageContext.getGroups()).toCharArray());
                     setRememberMeCookieInResponse(rememberMeCookieValue, httpMessageContext.getResponse());
                 }
             }
@@ -159,22 +162,21 @@ public class RememberMeInterceptor {
 
         public Void interceptCleanSubject() {
             HttpServletRequest request = httpMessageContext.getRequest();
-            String rememberMeCookie = getRememberMeCookieValue(request);
+            ProtectedString rememberMeCookie = getRememberMeCookieValue(request);
 
             if (rememberMeCookie != null) {
                 removeCookie(request, httpMessageContext.getResponse());
-                getRememberMeIdentityStore().removeLoginToken(rememberMeCookie);
+                getRememberMeIdentityStore().removeLoginToken(new String(rememberMeCookie.getChars()));
             }
             return null;
         }
 
-        @Sensitive
-        private String getRememberMeCookieValue(HttpServletRequest request) {
-            String rememberMeCookie = null;
+        private ProtectedString getRememberMeCookieValue(HttpServletRequest request) {
+            ProtectedString rememberMeCookie = null;
             Cookie[] cookies = request.getCookies();
             String[] cookieValues = CookieHelper.getCookieValues(cookies, cookieName);
             if (cookieValues != null) {
-                rememberMeCookie = cookieValues[0];
+                rememberMeCookie = new ProtectedString(cookieValues[0].toCharArray());
             }
             return rememberMeCookie;
         }
@@ -184,17 +186,40 @@ public class RememberMeInterceptor {
                 ((IExtendedResponse) response).removeCookie(cookieName);
             }
 
-            Cookie rememberMeInvalidationCookie = createCookie("", 0);
+            Cookie rememberMeInvalidationCookie = createRemovalCookie("", 0);
             response.addCookie(rememberMeInvalidationCookie);
         }
 
-        private Cookie createCookie(@Sensitive String value, int maxAge) {
-            Cookie cookie = new Cookie(cookieName, value);
+        // A ProtectedString is not needed for the removal cookie. Use a String for better performance.
+        private Cookie createRemovalCookie(@Sensitive String value, int maxAge) {
+            Cookie cookie = AccessController.doPrivileged(new PrivilegedAction<Cookie>() {
+
+                @Override
+                public Cookie run() {
+                    return new Cookie(cookieName, value);
+                }
+            });
+            setCommonCookieAttributes(maxAge, cookie);
+            return cookie;
+        }
+
+        private Cookie createCookie(ProtectedString value, int maxAge) {
+            Cookie cookie = AccessController.doPrivileged(new PrivilegedAction<Cookie>() {
+
+                @Override
+                public Cookie run() {
+                    return new Cookie(cookieName, new String(value.getChars()));
+                }
+            });
+            setCommonCookieAttributes(maxAge, cookie);
+            return cookie;
+        }
+
+        private void setCommonCookieAttributes(int maxAge, Cookie cookie) {
             cookie.setMaxAge(maxAge);
             cookie.setPath("/");
             cookie.setSecure(isSecure());
             cookie.setHttpOnly(isHttpOnly());
-            return cookie;
         }
 
         private boolean isSecure() {
@@ -220,7 +245,7 @@ public class RememberMeInterceptor {
             }
         }
 
-        private void setRememberMeCookieInResponse(@Sensitive String rememberMeCookieValue, HttpServletResponse response) {
+        private void setRememberMeCookieInResponse(ProtectedString rememberMeCookieValue, HttpServletResponse response) {
             Cookie rememberMeCookie = createCookie(rememberMeCookieValue, getCookieMaxAgeInSeconds());
             response.addCookie(rememberMeCookie);
         }
