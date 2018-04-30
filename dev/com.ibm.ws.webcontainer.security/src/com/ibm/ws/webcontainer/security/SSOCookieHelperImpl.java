@@ -113,7 +113,11 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         if (cookieByteString != null) {
-            addJwtCookies(cookieByteString, req, resp);
+            String testString = getJwtSsoTokenFromCookies(req, getJwtCookieName());
+            boolean cookieAlreadySent = testString != null && testString.equals(cookieByteString);
+            if (!cookieAlreadySent) {
+                addJwtCookies(cookieByteString, req, resp);
+            }
             isJwtCookie = true;
         }
 
