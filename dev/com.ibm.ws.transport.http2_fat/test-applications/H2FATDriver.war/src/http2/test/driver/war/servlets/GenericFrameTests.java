@@ -54,7 +54,8 @@ public class GenericFrameTests extends H2FATDriverServlet {
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
         secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        secondHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+        // cannot assume language of test machine
+        secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
         FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(7, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
 
