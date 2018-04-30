@@ -7,5 +7,5 @@ IBM-API-Package: javax.json; type="spec", \
 IBM-ShortName: jsonpContainer-1.1
 Subsystem-Name: JavaScript Object Notation Processing 1.1 via Bells
 -features=com.ibm.websphere.appserver.jsonpImpl-1.1.0
-kind=beta
+kind=ga
 edition=core

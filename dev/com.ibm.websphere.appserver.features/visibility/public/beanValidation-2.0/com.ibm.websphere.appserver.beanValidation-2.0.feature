@@ -28,5 +28,5 @@ IBM-API-Package: javax.validation; type="spec", \
   com.ibm.ws.org.hibernate.validator.6.0.7.Final, \
   com.ibm.ws.org.jboss.logging.3.3.0, \
   com.ibm.ws.com.fasterxml.classmate.1.3.1
-kind=beta
+kind=ga
 edition=core
