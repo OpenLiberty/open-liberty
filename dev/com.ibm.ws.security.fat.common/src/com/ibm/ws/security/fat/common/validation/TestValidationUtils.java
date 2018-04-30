@@ -89,7 +89,13 @@ public class TestValidationUtils {
         }
         String checkType = expected.getCheckType();
 
-        if (Constants.STRING_CONTAINS.equals(checkType)) {
+        if (Constants.STRING_NULL.equals(checkType)) {
+            validateStringNull(expected, contentToValidate);
+        } else if (Constants.STRING_NOT_NULL.equals(checkType)) {
+            validateStringNotNull(expected, contentToValidate);
+        } else if (Constants.STRING_EQUALS.equals(checkType)) {
+            validateStringEquals(expected, contentToValidate);
+        } else if (Constants.STRING_CONTAINS.equals(checkType)) {
             validateStringContains(expected, contentToValidate);
         } else if (Constants.STRING_DOES_NOT_CONTAIN.equals(checkType)) {
             validateStringDoesNotContain(expected, contentToValidate);
@@ -100,6 +106,34 @@ public class TestValidationUtils {
         } else {
             throw new Exception("String comparison type (" + checkType + ") unknown. Check that the offending test case has coded its expectations correctly.");
         }
+    }
+
+    void validateStringNull(Expectation expected, String contentToValidate) {
+        boolean assertion = contentToValidate == null;
+
+        String failureSubMsg = "Expected value to be null, but received [" + contentToValidate + "]";
+        assertTrueAndLog("validateStringNull", expected.getFailureMsg() + " " + failureSubMsg, assertion);
+    }
+
+    void validateStringNotNull(Expectation expected, String contentToValidate) {
+        boolean assertion = contentToValidate != null;
+
+        String failureSubMsg = "Expected value not to be null, but it was.";
+        assertTrueAndLog("validateStringNotNull", expected.getFailureMsg() + " " + failureSubMsg, assertion);
+    }
+
+    void validateStringEquals(Expectation expected, String contentToValidate) {
+        String searchFor = expected.getValidationValue();
+        if (searchFor == null) {
+            validateStringNull(expected, contentToValidate);
+            return;
+        }
+        assertContentNotNull(contentToValidate, searchFor);
+
+        boolean assertion = searchFor.equals(contentToValidate);
+
+        String failureSubMsg = "Was expecting content to equal [" + searchFor + "] but received [" + contentToValidate + "]";
+        assertTrueAndLog("validateStringEquals", expected.getFailureMsg() + " " + failureSubMsg, assertion);
     }
 
     void validateStringContains(Expectation expected, String contentToValidate) {
