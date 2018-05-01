@@ -185,7 +185,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Verify that after correcting the uri, session data is persisted.
      */
     @AllowedFFDC(value = { "javax.cache.CacheException", // for invalid uri
-                           "java.lang.NullPointerException", // from starting web app with invalid session cache config
                            "java.net.MalformedURLException" // TODO possible bug
     })
     @Test
@@ -228,7 +227,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             run("invalidateSession", session);
         } finally {
-            server.stopServer("SRVE8059E", // An unexpected exception occurred when trying to retrieve the session context. Caused by: java.lang.IllegalArgumentException: Not available Hazelcast instance...
+            server.stopServer("SRVE8059E", // An unexpected exception occurred when trying to retrieve the session context java.lang.RuntimeException: Internal Server Error
+                              "SESN0307E", // An exception occurred when trying to initialize the cache. Exception is javax.cache.CacheException: Error opening URI
                               "SRVE0297E.*NullPointerException" // TODO fails when WebApp.destroy/SessionContext.stop invoked after deactivate
             );
         }
@@ -239,7 +239,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before is not.
      */
     @AllowedFFDC(value = { "javax.cache.CacheException", // expected on error path: No CachingProviders have been configured
-                           "java.lang.NullPointerException", // from starting web app with invalid session cache config
                            "java.net.MalformedURLException" // TODO possible bug
     })
     @Test
@@ -273,7 +272,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             run("invalidateSession", session);
         } finally {
-            server.stopServer("SRVE8059E"); // An unexpected exception occurred when trying to retrieve the session context. javax.cache.CacheException: No CachingProviders have been configured
+            server.stopServer("SRVE8059E", // An unexpected exception occurred when trying to retrieve the session context java.lang.RuntimeException: Internal Server Error
+                              "SESN0307E"); // An exception occurred when trying to initialize the cache. Exception is: javax.cache.CacheException: No CachingProviders have been configured
         }
     }
 
@@ -314,7 +314,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     }
 
     @AllowedFFDC(value = { "javax.cache.CacheException", // expected on error path: No CachingProviders have been configured
-                           "java.lang.NullPointerException", // from starting web app with invalid session cache config
                            "java.net.MalformedURLException" // TODO possible bug
     })
     @Test
@@ -345,7 +344,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         run("testSetAttribute&attribute=testModifyFileset&value=1", session);
         run("testCacheContains&attribute=testModifyFileset&value=1", session);
 
-        server.stopServer("CWWKL0012W.*bogus", "SRVE8059E", "CWWKE0701E.*CacheException");
+        server.stopServer("CWWKL0012W.*bogus", "SRVE8059E", "CWWKE0701E.*CacheException", "SESN0307E");
     }
 
     /**
