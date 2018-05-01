@@ -65,9 +65,9 @@ public class DelaySseResource extends Application {
             retry = 3;
             delayTime = System.currentTimeMillis() - startTime;
             //Since HTTP dates are in seconds we need to allow for a slightly lower result
-            if (!(delayTime >= 9500)) {
-                returnMessage = "Test 2 failed.  Expected delay time (10000 ms), actual delay time:  " + delayTime;
-                System.out.println("Test 2 failed.  Expected delay time (10000 ms), actual delay time:  " + delayTime);
+            if (!(delayTime >= 9000)) {
+                returnMessage = "Test 2 failed.  Expected delay time (>=9000 ms), actual delay time:  " + delayTime;
+                System.out.println("Test 2 failed.  Expected delay time (>=9000 ms), actual delay time:  " + delayTime);
             } else {
                 returnMessage = "Retry Test Successful";
             }
@@ -83,9 +83,9 @@ public class DelaySseResource extends Application {
         } else if (retry == 3) {
             delayTime = System.currentTimeMillis() - startTime;
             //Since HTTP dates are in seconds we need to allow for a slightly lower result
-            if (!(delayTime >= 4500)) {
-                returnMessage = "Test 3 failed.  Expected delay time (5000), actual delay time:  " + delayTime;
-                System.out.println("Test 3 failed.  Expected delay time (5000), actual delay time:  " + delayTime);
+            if (!(delayTime >= 4000)) {
+                returnMessage = "Test 3 failed.  Expected delay time (>=4000), actual delay time:  " + delayTime;
+                System.out.println("Test 3 failed.  Expected delay time (>=4000), actual delay time:  " + delayTime);
             } else {
                 returnMessage = "Reset Test Successful";
             }
