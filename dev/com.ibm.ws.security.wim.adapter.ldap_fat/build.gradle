@@ -144,7 +144,8 @@ autoFVT.doLast {
    * Copy the clientcert.zip into test servers.
    */
   servers = [
-    'com.ibm.ws.security.wim.adapter.ldap.fat.custom.certmapper',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.custom.certmapper.bell',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.custom.certmapper.feature',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.certlogin',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.fedcertlogin',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.certlogin_SBInFilter'
@@ -172,26 +173,36 @@ autoFVT.doLast {
   }
   
   /*
-   * Copy the certificate mapper JAR.
+   * Copy the certificate mapper JAR to both the shared directory for use as a BELL and
+   * to the bundles directory for use as a user feature.
    */
    copy { 
-     from new File(appBuildDir, 'certificateMapper.jar')
+     from new File(appBuildDir, 'com.ibm.ws.security.wim.adapter.ldap.certificate.mapper.sample_1.0.jar')
      into new File(autoFvtDir, 'publish/shared')
+   }
+   copy { 
+     from new File(appBuildDir, 'com.ibm.ws.security.wim.adapter.ldap.certificate.mapper.sample_1.0.jar')
+     into new File(autoFvtDir, 'publish/bundles')
    }
 }
 
 /*
- * Generate the CertificateMapper JAR.
+ * Generate the JAR for the certificate mapper sample. This JAR will be compatible
+ * for use both as a BELL and as a user feature.
  */
 task certificateMapper_JAR(type: Jar, dependsOn: classes) { 
   destinationDir file("${appBuildDir}")
-  archiveName "certificateMapper.jar"
+  archiveName "com.ibm.ws.security.wim.adapter.ldap.certificate.mapper.sample_1.0.jar"
+  manifest { 
+  	from 'test-applications/certificateMappers/META-INF/MANIFEST.MF'
+  }
 
   from ('build/classes/java/main') { 
     include 'test/cert/mappers/*.class'
   }
   from ('test-applications/certificateMappers') {
-    include 'META-INF/**'
+    include 'META-INF/services/*'
+    include 'OSGI-INF/**'
   }
 }
 

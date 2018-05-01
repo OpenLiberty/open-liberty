@@ -46,6 +46,7 @@ import test.common.SharedOutputManager;
  *
  * @author Rohan Z
  */
+@SuppressWarnings("restriction")
 public class ProfileManagerLoginTest {
     private static final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 

@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.security.CertificateMapFailedException;
 import com.ibm.websphere.security.CertificateMapNotSupportedException;
-import com.ibm.websphere.security.CertificateMapper;
+import com.ibm.websphere.security.X509CertificateMapper;
 import com.ibm.websphere.simplicity.config.BasicRegistry;
 import com.ibm.websphere.simplicity.config.BasicRegistry.User;
 import com.ibm.websphere.simplicity.config.Bell;
@@ -43,12 +43,15 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+/**
+ * Test importing {@link X509CertificateMapper} instances bundled in a shared
+ * library via the BELLS feature.
+ */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-@SuppressWarnings("restriction")
-public class CustomCertificateMapperTest {
-    private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.registry.basic.fat.custom.certmapper");
-    private static final Class<?> c = CustomCertificateMapperTest.class;
+public class CustomCertificateMapperInBellTest {
+    private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.registry.basic.fat.custom.certmapper.bell");
+    private static final Class<?> c = CustomCertificateMapperInBellTest.class;
     private static ClientCertAuthClient client;
 
     private final static String CLIENT_CERT_SERVLET = "ClientCertServlet";
@@ -61,16 +64,11 @@ public class CustomCertificateMapperTest {
     private static final String ID_MAPPER_1 = "mapper1";
     private static final String ID_MAPPER_2 = "mapper2";
     private static final String ID_MAPPER_3 = "mapper3";
-    private static final String ID_MAPPER_4 = "mapper4";
 
     private static final String ID_LIBRARY_1 = "library1";
-    private static final String PATH_LIBRARY_1 = "${wlp.user.dir}/shared/certificateMapper.jar";
+    private static final String PATH_LIBRARY_1 = "${wlp.user.dir}/shared/com.ibm.ws.security.registry.basic.certificate.mapper.sample_1.0.jar";
 
-    /**
-     * Nearly empty server configuration. This should just contain the feature manager configuration with no
-     * registries or federated repository configured.
-     */
-    private static ServerConfiguration emptyConfiguration = null;
+    private static ServerConfiguration originalConfiguration = null;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -101,7 +99,7 @@ public class CustomCertificateMapperTest {
         /*
          * The original server configuration has no registry or Federated Repository configuration.
          */
-        emptyConfiguration = myServer.getServerConfiguration();
+        originalConfiguration = myServer.getServerConfiguration();
     }
 
     /**
@@ -111,7 +109,7 @@ public class CustomCertificateMapperTest {
      * @throws Exception If there was an error configuring the server.
      */
     private static void updateLibertyServer(String certificateMapperId) throws Exception {
-        ServerConfiguration server = emptyConfiguration.clone();
+        ServerConfiguration server = originalConfiguration.clone();
 
         BasicRegistry basic = new BasicRegistry();
         basic.setCertificateMapMode("CUSTOM");
@@ -185,7 +183,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for CertificateMapper.mapCertificate() call.
          */
-        String trace = "The custom CertificateMapper returned the following mapping: " + BASIC_USER_1;
+        String trace = "The custom X.509 certificate mapper returned the following mapping: " + BASIC_USER_1;
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find mapping result in logs.", matching.isEmpty());
     }
@@ -208,7 +206,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for the expected error message.
          */
-        String trace = "CertificateMapFailedException: The mapped name 'BasicUser2' does not map to a valid registry user";
+        String trace = "CWWKS3109W";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find CertificateMapNotSupportedException in logs.", matching.isEmpty());
 
@@ -239,7 +237,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for the expected error message.
          */
-        String trace = "The custom CertificateMapper '" + ID_MAPPER_2 + "' threw a CertificateMapNotSupportedException.";
+        String trace = "CWWKS3110W";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find CertificateMapFailedException in logs.", matching.isEmpty());
 
@@ -272,7 +270,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for the expected error message.
          */
-        String trace = "The custom CertificateMapper '" + ID_MAPPER_3 + "' threw a CertificateMapFailedException.";
+        String trace = "CWWKS3111E";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find CertificateMapFailedException in logs.", matching.isEmpty());
 
@@ -302,7 +300,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for the expected error message.
          */
-        String trace = "A CertificateMapper with ID '" + invalidMapperId + "' was not found.";
+        String trace = "CWWKS3108W";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find expected error in logs.", matching.isEmpty());
 
@@ -315,34 +313,51 @@ public class CustomCertificateMapperTest {
     }
 
     /**
-     * Test handling of a {@link CertificateMapper} implementation that returns null from
-     * the {@link CertificateMapper#getId()} method.
+     * Test handling of certificate map mode "NOT_SUPPORTED".
+     *
+     * This is not really specifically a custom certificate mapper test, but they make it easy to verify
+     * this behavior.
      *
      * @throws Exception If the test failed for an unforeseen reason.
      */
     @Test
-    public void getId_returns_null() throws Exception {
+    @ExpectedFFDC({ "com.ibm.ws.security.registry.CertificateMapNotSupportedException" })
+    public void map_mode_not_supported() throws Exception {
 
-        updateLibertyServer(ID_MAPPER_4);
+        ServerConfiguration server = originalConfiguration.clone();
+
+        BasicRegistry basic = new BasicRegistry();
+        basic.setCertificateMapMode("NOT_SUPPORTED");
+        server.getBasicRegistries().add(basic);
+
+        User user1 = new User();
+        user1.setName(BASIC_USER_1);
+        user1.setPassword("password");
+        basic.getUsers().add(user1);
+
+        updateConfigDynamically(myServer, server);
+
+        /****************************************/
 
         client = setupClient(BASIC_USER_1_CERT_FILE, true);
         String response = client.access("/SimpleServlet", 403);
         assertNull("Expected null response.", response);
 
         /*
-         * Check for the expected error message. There is a message printed out that the getId()
-         * method returns null, but depending on how this is run, that will only get printed
-         * out on server startup.
+         * Check for the expected error message.
          */
-        String trace = "A CertificateMapper with ID '" + ID_MAPPER_4 + "' was not found.";
+        String trace = "CWWKS3113W";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find expected error in logs.", matching.isEmpty());
 
-        /*
-         * Expect CWWKS1101W error.
-         */
-        trace = "CWWKS1101W: CLIENT-CERT Authentication did not succeed for the client certificate with dn CN=BasicUser1,O=IBM,C=US. The dn does not map to a user in the registry.";
-        matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
-        assertFalse("Did not find expected CWWKS1101W error in logs.", matching.isEmpty());
+//
+// TODO CertificateLoginModule does not catch CertificateMapNotSupportedException and therefore FFDC is thrown and not this message.
+//
+//             /*
+//              * Check for the expected error message.
+//              */
+//             trace = "CWWKS1101W: CLIENT-CERT Authentication did not succeed for the client certificate with dn CN=BasicUser2,O=IBM,C=US. The dn does not map to a user in the registry.";
+//             matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
+//             assertFalse("Did not find expected CWWKS1101W error in logs.", matching.isEmpty());
     }
 }

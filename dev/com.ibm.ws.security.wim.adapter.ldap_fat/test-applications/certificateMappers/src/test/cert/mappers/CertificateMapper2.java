@@ -19,31 +19,25 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import com.ibm.websphere.security.CertificateMapFailedException;
-import com.ibm.websphere.security.CertificateMapNotSupportedException;
-import com.ibm.websphere.security.CertificateMapper;
+import com.ibm.websphere.security.X509CertificateMapper;
 
 /**
  * LDAP CertificateMapper instance that returns a LDAP filter.
  */
-public class CertificateMapper2 implements CertificateMapper {
+public class CertificateMapper2 implements X509CertificateMapper {
 
     private static final String CLASS_NAME = CertificateMapper2.class.getSimpleName();
 
     @Override
-    public String getId() {
-        return "mapper2";
-    }
+    public String mapCertificate(X509Certificate[] certificates) throws CertificateMapFailedException {
 
-    @Override
-    public String mapCertificate(X509Certificate certificate) throws CertificateMapNotSupportedException, CertificateMapFailedException {
-
-        if (certificate == null) {
-            throw new CertificateMapFailedException("Certificate is null.");
+        if (certificates == null || certificates.length == 0 || certificates[0] == null) {
+            throw new CertificateMapFailedException("No certificate was provided.");
         }
 
         LdapName dn;
         try {
-            dn = new LdapName(certificate.getSubjectX500Principal().getName());
+            dn = new LdapName(certificates[0].getSubjectX500Principal().getName());
         } catch (InvalidNameException e) {
             throw new CertificateMapFailedException("The certificate's subject's X.500 principal was not in the form of a distinguished name.", e);
         }

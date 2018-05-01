@@ -29,7 +29,8 @@ autoFVT.doLast {
    * Copy the clientcert.zip into test servers.
    */
   def servers = [
-    'com.ibm.ws.security.registry.basic.fat.custom.certmapper'
+    'com.ibm.ws.security.registry.basic.fat.custom.certmapper.bell',
+    'com.ibm.ws.security.registry.basic.fat.custom.certmapper.feature'
   ]
   servers.each { server ->
     copy { 
@@ -40,26 +41,36 @@ autoFVT.doLast {
   }
   
   /*
-   * Copy the certificate mapper JARs.
+   * Copy the certificate mapper JAR to both the shared directory for use as a BELL and
+   * to the bundles directory for use as a user feature.
    */
    copy { 
-     from new File(appBuildDir, 'certificateMapper.jar')
+     from new File(appBuildDir, 'com.ibm.ws.security.registry.basic.certificate.mapper.sample_1.0.jar')
      into new File(autoFvtDir, 'publish/shared')
+   }
+   copy { 
+     from new File(appBuildDir, 'com.ibm.ws.security.registry.basic.certificate.mapper.sample_1.0.jar')
+     into new File(autoFvtDir, 'publish/bundles')
    }
 }
 
 /*
- * Generate the JAR for CertificateMapper1.
+ * Generate the JAR for the certificate mapper sample. This JAR will be compatible
+ * for use both as a BELL and as a user feature.
  */
 task certificateMapper_JAR(type: Jar, dependsOn: classes) { 
   destinationDir file("${appBuildDir}")
-  archiveName "certificateMapper.jar"
+  archiveName "com.ibm.ws.security.registry.basic.certificate.mapper.sample_1.0.jar"
+  manifest { 
+  	from 'test-applications/certificateMappers/META-INF/MANIFEST.MF'
+  }
 
   from ('build/classes/java/main') { 
     include 'test/cert/mappers/*.class'
   }
   from ('test-applications/certificateMappers') {
-    include 'META-INF/**'
+    include 'META-INF/services/*'
+    include 'OSGI-INF/**'
   }
 }
 

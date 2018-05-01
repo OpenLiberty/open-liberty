@@ -26,7 +26,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.security.CertificateMapFailedException;
-import com.ibm.websphere.security.CertificateMapper;
+import com.ibm.websphere.security.X509CertificateMapper;
+import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.simplicity.config.Bell;
 import com.ibm.websphere.simplicity.config.File;
 import com.ibm.websphere.simplicity.config.Library;
@@ -43,13 +44,17 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+/**
+ * Test importing {@link X509CertificateMapper} instances bundled in a shared
+ * library via the BELLS feature.
+ */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @SuppressWarnings("restriction")
-public class CustomCertificateMapperTest {
+public class CustomCertificateMapperInBellTest {
 
-    private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.custom.certmapper");
-    private static final Class<?> c = CustomCertificateMapperTest.class;
+    private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.custom.certmapper.bell");
+    private static final Class<?> c = CustomCertificateMapperInBellTest.class;
     private static ClientCertAuthClient client;
 
     private final static String CLIENT_CERT_SERVLET = "ClientCertServlet";
@@ -60,11 +65,12 @@ public class CustomCertificateMapperTest {
     private final static String LDAP_USER_1 = "LDAPUser1";
     private final static String LDAP_USER_2 = "LDAPUser2";
 
-    private static ServerConfiguration emptyConfiguration = null;
+    private static ServerConfiguration originalConfiguration = null;
     private static EmbeddedApacheDS ldapServer = null;
 
-    private static final String LDAP_PARTITION_DN = "O=IBM,C=US";
-    private static final String LDAP_USER_1_DN = "CN=" + LDAP_USER_1 + "," + LDAP_PARTITION_DN;
+    private static final String LDAP_PARTITION_1_DN = "O=IBM,C=US";
+    private static final String LDAP_PARTITION_2_DN = "O=IBM,C=UK";
+    private static final String LDAP_USER_1_DN = "CN=" + LDAP_USER_1 + "," + LDAP_PARTITION_1_DN;
     private static final String LDAP_USER_2_DN = "CN=" + LDAP_USER_2;
 
     private static final String ID_MAPPER_1 = "mapper1";
@@ -74,7 +80,7 @@ public class CustomCertificateMapperTest {
     private static final String ID_MAPPER_5 = "mapper5";
 
     private static final String ID_LIBRARY_1 = "library1";
-    private static final String PATH_LIBRARY_1 = "${wlp.user.dir}/shared/certificateMapper.jar";
+    private static final String PATH_LIBRARY_1 = "${wlp.user.dir}/shared/com.ibm.ws.security.wim.adapter.ldap.certificate.mapper.sample_1.0.jar";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -119,9 +125,9 @@ public class CustomCertificateMapperTest {
                       myServer.waitForStringInLog("CWWKF0011I"));
 
         /*
-         * The original server configuration has no registry or Federated Repository configuration.
+         * The original server configuration.
          */
-        emptyConfiguration = myServer.getServerConfiguration();
+        originalConfiguration = myServer.getServerConfiguration();
     }
 
     /**
@@ -130,20 +136,26 @@ public class CustomCertificateMapperTest {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupLdapServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("subordinate");
-        ldapServer.addPartition("testing", LDAP_PARTITION_DN);
+        ldapServer = new EmbeddedApacheDS("testserver");
+        ldapServer.addPartition("partition1", LDAP_PARTITION_1_DN);
+        ldapServer.addPartition("partition2", LDAP_PARTITION_2_DN);
         ldapServer.startServer();
 
         /*
          * Add the partition entries.
          */
-        Entry entry = ldapServer.newEntry(LDAP_PARTITION_DN);
+        Entry entry = ldapServer.newEntry(LDAP_PARTITION_1_DN);
+        entry.add("objectclass", "organization");
+        entry.add("o", "ibm");
+        ldapServer.add(entry);
+
+        entry = ldapServer.newEntry(LDAP_PARTITION_2_DN);
         entry.add("objectclass", "organization");
         entry.add("o", "ibm");
         ldapServer.add(entry);
 
         /*
-         * Create the user and group.
+         * Create the users.
          */
         entry = ldapServer.newEntry(LDAP_USER_1_DN);
         entry.add("objectclass", "inetorgperson");
@@ -156,11 +168,11 @@ public class CustomCertificateMapperTest {
     /**
      * Convenience method to configure the Liberty server with an {@link LdapRegistry} configuration.
      *
-     * @param certificateMapperId The ID for the {@link CertificateMapper} instance to use.
+     * @param certificateMapperId The ID for the {@link X509CertificateMapper} instance to use.
      * @throws Exception If there was an error configuring the server.
      */
     private static void updateLibertyServer(String certificateMapperId) throws Exception {
-        ServerConfiguration server = emptyConfiguration.clone();
+        ServerConfiguration server = originalConfiguration.clone();
 
         /*
          * Configure LDAP.
@@ -169,7 +181,7 @@ public class CustomCertificateMapperTest {
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
         ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
-        ldap.setBaseDN(LDAP_PARTITION_DN);
+        ldap.setBaseDN(LDAP_PARTITION_1_DN);
         ldap.setBindDN(EmbeddedApacheDS.getBindDN());
         ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
         ldap.setLdapType("Custom");
@@ -227,7 +239,7 @@ public class CustomCertificateMapperTest {
     }
 
     /**
-     * Test mapping with a {@link CertificateMapper} that maps the X.509 certificate to a
+     * Test mapping with a {@link X509CertificateMapper} that maps the X.509 certificate to a
      * distinguished name that does exist on the LDAP server.
      *
      * @throws Exception If the test failed for an unforeseen reason.
@@ -244,7 +256,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for CertificateMapper.mapCertificate() call.
          */
-        String trace = "The custom CertificateMapper returned the following mapping: " + LDAP_USER_1_DN;
+        String trace = "The custom X.509 certificate mapper returned the following mapping: " + LDAP_USER_1_DN;
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find mapping result in logs.", matching.isEmpty());
 
@@ -257,7 +269,7 @@ public class CustomCertificateMapperTest {
     }
 
     /**
-     * Test mapping with a {@link CertificateMapper} that maps the X.509 certificate to a
+     * Test mapping with a {@link X509CertificateMapper} that maps the X.509 certificate to a
      * distinguished name that does NOT exist on the LDAP server.
      *
      * @throws Exception If the test failed for an unforeseen reason.
@@ -274,7 +286,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for CertificateMapper.mapCertificate() call.
          */
-        String trace = "The custom CertificateMapper returned the following mapping: " + LDAP_USER_2_DN;
+        String trace = "The custom X.509 certificate mapper returned the following mapping: " + LDAP_USER_2_DN;
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find mapping result in logs.", matching.isEmpty());
 
@@ -301,7 +313,7 @@ public class CustomCertificateMapperTest {
     }
 
     /**
-     * Test mapping with a {@link CertificateMapper} that maps the X.509 certificate to an
+     * Test mapping with a {@link X509CertificateMapper} that maps the X.509 certificate to an
      * LDAP filter that does map to a user on the LDAP server.
      *
      * @throws Exception If the test failed for an unforeseen reason.
@@ -318,7 +330,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for CertificateMapper.mapCertificate() call.
          */
-        String trace = "The custom CertificateMapper returned the following mapping: \\(CN=" + LDAP_USER_1 + "\\)";
+        String trace = "The custom X.509 certificate mapper returned the following mapping: \\(CN=" + LDAP_USER_1 + "\\)";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find mapping result in logs.", matching.isEmpty());
 
@@ -331,7 +343,7 @@ public class CustomCertificateMapperTest {
     }
 
     /**
-     * Test mapping with a {@link CertificateMapper} that maps the X.509 certificate to an
+     * Test mapping with a {@link X509CertificateMapper} that maps the X.509 certificate to an
      * LDAP filter that does NOT map to a user on the LDAP server.
      *
      * @throws Exception If the test failed for an unforeseen reason.
@@ -348,7 +360,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for CertificateMapper.mapCertificate() call.
          */
-        String trace = "The custom CertificateMapper returned the following mapping: \\(CN=" + LDAP_USER_2 + "\\)";
+        String trace = "The custom X.509 certificate mapper returned the following mapping: \\(CN=" + LDAP_USER_2 + "\\)";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find mapping result in logs.", matching.isEmpty());
 
@@ -368,13 +380,13 @@ public class CustomCertificateMapperTest {
     }
 
     /**
-     * Test handling of a {@link CertificateMapper} implementation that throws {@link CertificateMapNotSupportedException}
-     * from the {@link CertificateMapper#mapCertificate(java.security.cert.X509Certificate)} method.
+     * Test handling of a {@link X509CertificateMapper} implementation that throws {@link CertificateMapNotSupportedException}
+     * from the {@link X509CertificateMapper#mapCertificate(java.security.cert.X509Certificate)} method.
      *
      * @throws Exception If the test failed for an unforeseen reason.
      */
     @Test
-    @ExpectedFFDC({ "com.ibm.ws.security.registry.CertificateMapNotSupportedException", "com.ibm.wsspi.security.wim.exception.CertificateMapNotSupportedException" })
+    @ExpectedFFDC({ "com.ibm.ws.security.registry.CertificateMapNotSupportedException" })
     public void certificate_map_not_supported_exception() throws Exception {
 
         updateLibertyServer(ID_MAPPER_3);
@@ -386,7 +398,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for the expected error message.
          */
-        String trace = "The custom CertificateMapper '" + ID_MAPPER_3 + "' threw a CertificateMapNotSupportedException.";
+        String trace = "CWIML4542E";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find CertificateMapNotSupportedException in logs.", matching.isEmpty());
 
@@ -402,8 +414,8 @@ public class CustomCertificateMapperTest {
     }
 
     /**
-     * Test handling of a {@link CertificateMapper} implementation that throws {@link CertificateMapFailedException}
-     * from the {@link CertificateMapper#mapCertificate(java.security.cert.X509Certificate)} method.
+     * Test handling of a {@link X509CertificateMapper} implementation that throws {@link CertificateMapFailedException}
+     * from the {@link X509CertificateMapper#mapCertificate(java.security.cert.X509Certificate)} method.
      *
      * @throws Exception If the test failed for an unforeseen reason.
      */
@@ -420,7 +432,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for the expected error message.
          */
-        String trace = "The custom CertificateMapper '" + ID_MAPPER_4 + "' threw a CertificateMapFailedException.";
+        String trace = "CWIML4503E";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find CertificateMapFailedException in logs.", matching.isEmpty());
 
@@ -451,7 +463,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for the expected error message.
          */
-        String trace = "A CertificateMapper with ID '" + invalidMapperId + "' was not found.";
+        String trace = "CWIML4500W";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find expected error in logs.", matching.isEmpty());
 
@@ -464,13 +476,13 @@ public class CustomCertificateMapperTest {
     }
 
     /**
-     * Test handling of an no certificateMapperId set in the configuration.
+     * Test handling of no certificateMapperId set in the configuration.
      *
      * @throws Exception If the test failed for an unforeseen reason.
      */
     @Test
     @ExpectedFFDC({ "com.ibm.wsspi.security.wim.exception.CertificateMapFailedException" })
-    public void null_mapper_id() throws Exception {
+    public void no_mapper_id() throws Exception {
 
         updateLibertyServer(null);
 
@@ -481,7 +493,7 @@ public class CustomCertificateMapperTest {
         /*
          * Check for the expected error message.
          */
-        String trace = "No certificateMapperId was found for this registry.";
+        String trace = "CWIML4500W";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find expected error in logs.", matching.isEmpty());
 
@@ -494,14 +506,13 @@ public class CustomCertificateMapperTest {
     }
 
     /**
-     * Test handling of a {@link CertificateMapper} implementation that returns null from
-     * the {@link CertificateMapper#getId()} method.
+     * Test handling of when an invalid value (null) is returned from the mapper implementation.
      *
      * @throws Exception If the test failed for an unforeseen reason.
      */
     @Test
     @ExpectedFFDC({ "com.ibm.wsspi.security.wim.exception.CertificateMapFailedException" })
-    public void getId_returns_null() throws Exception {
+    public void certificate_map_null() throws Exception {
 
         updateLibertyServer(ID_MAPPER_5);
 
@@ -510,11 +521,9 @@ public class CustomCertificateMapperTest {
         assertNull("Expected null response.", response);
 
         /*
-         * Check for the expected error message. There is a message printed out that the getId()
-         * method returns null, but depending on how this is run, it may only get printed
-         * out on server startup.
+         * Check for the expected error message.
          */
-        String trace = "A CertificateMapper with ID '" + ID_MAPPER_5 + "' was not found.";
+        String trace = "CWIML4504W";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find expected error in logs.", matching.isEmpty());
 
@@ -524,5 +533,233 @@ public class CustomCertificateMapperTest {
         trace = "CWWKS1101W: CLIENT-CERT Authentication did not succeed for the client certificate with dn " + LDAP_USER_1_DN + ". The dn does not map to a user in the registry.";
         matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find expected CWWKS1101W error in logs.", matching.isEmpty());
+    }
+
+    /**
+     * Test that when there are multiple federated repositories and one of them throws a
+     * CertificateMapNotSupportedException and one of them returns a valid result that the
+     * authentication is honored.
+     *
+     * This is not really specifically a custom certificate mapper test, but they make it easy to verify
+     * this behavior.
+     *
+     * @throws Exception If the test failed for some reason.
+     */
+    @Test
+    public void multiple_repositories_failed_valid() throws Exception {
+        ServerConfiguration server = originalConfiguration.clone();
+
+        /*
+         * This LDAP server will throw a CertificateMapNotSupportedException.
+         */
+        LdapRegistry ldap = new LdapRegistry();
+        ldap.setRealm("LDAPRealm1");
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setBaseDN(LDAP_PARTITION_2_DN);
+        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
+        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setLdapType("Custom");
+        ldap.setCertificateMapMode("CUSTOM");
+        server.getLdapRegistries().add(ldap);
+        ldap.setCertificateMapperId(ID_MAPPER_3);
+
+        /*
+         * This LDAP server will allow LDAP user 1 to authenticate.
+         */
+        ldap = new LdapRegistry();
+        ldap.setRealm("LDAPRealm2");
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setBaseDN(LDAP_PARTITION_1_DN);
+        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
+        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setLdapType("Custom");
+        ldap.setCertificateMapMode("CUSTOM");
+        server.getLdapRegistries().add(ldap);
+        ldap.setCertificateMapperId(ID_MAPPER_1);
+
+        /*
+         * Setup the library.
+         */
+        File file1 = new File();
+        file1.setName(PATH_LIBRARY_1);
+        Library library1 = new Library();
+        library1.setId(ID_LIBRARY_1);
+        library1.setNestedFile(file1);
+        server.getLibraries().add(library1);
+
+        /*
+         * Setup the BELL.
+         */
+        Bell bell = new Bell();
+        bell.setLibraryRef(ID_LIBRARY_1);
+        server.getBells().add(bell);
+
+        updateConfigDynamically(myServer, server);
+
+        /*******************/
+        client = setupClient(USER1_CERT_FILE, true);
+        String response = client.access("/SimpleServlet", 200);
+        verifyProgrammaticAPIValues(LDAP_USER_1, response);
+
+        /*
+         * Check for CertificateMapper.mapCertificate() call.
+         */
+        String trace = "The custom X.509 certificate mapper returned the following mapping: " + LDAP_USER_1_DN;
+        List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
+        assertFalse("Did not find mapping result in logs.", matching.isEmpty());
+    }
+
+    /**
+     * Test that when CertificateMapNotSupportedException is thrown by multiple federated repositories,
+     * that the CertificateMapNotSupportedException is returned.
+     *
+     * This is not really specifically a custom certificate mapper test, but they make it easy to verify
+     * this behavior.
+     *
+     * @throws Exception If the test failed for some reason.
+     */
+    @Test
+    @ExpectedFFDC({ "com.ibm.ws.security.registry.CertificateMapNotSupportedException" })
+    public void multiple_repositories_notsupported_notsupported() throws Exception {
+        ServerConfiguration server = originalConfiguration.clone();
+
+        /*
+         * This LDAP server will throw a CertificateMapNotSupportedException.
+         */
+        LdapRegistry ldap = new LdapRegistry();
+        ldap.setRealm("LDAPRealm1");
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setBaseDN(LDAP_PARTITION_2_DN);
+        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
+        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setLdapType("Custom");
+        ldap.setCertificateMapMode("CUSTOM");
+        ldap.setCertificateMapperId(ID_MAPPER_3);
+        server.getLdapRegistries().add(ldap);
+
+        /*
+         * This LDAP server will ignore any certificate authentication requests and
+         * instead throw a CertificateMapNotSupportedException.
+         */
+        ldap = new LdapRegistry();
+        ldap.setRealm("LDAPRealm2");
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setBaseDN(LDAP_PARTITION_1_DN);
+        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
+        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setLdapType("Custom");
+        ldap.setCertificateMapMode(ConfigConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE);
+        server.getLdapRegistries().add(ldap);
+
+        /*
+         * Setup the library.
+         */
+        File file1 = new File();
+        file1.setName(PATH_LIBRARY_1);
+        Library library1 = new Library();
+        library1.setId(ID_LIBRARY_1);
+        library1.setNestedFile(file1);
+        server.getLibraries().add(library1);
+
+        /*
+         * Setup the BELL.
+         */
+        Bell bell = new Bell();
+        bell.setLibraryRef(ID_LIBRARY_1);
+        server.getBells().add(bell);
+
+        updateConfigDynamically(myServer, server);
+
+        /*******************/
+        client = setupClient(USER1_CERT_FILE, true);
+        String response = client.access("/SimpleServlet", 403);
+        assertNull("Expected null response.", response);
+
+        /*
+         * Check for the expected error message.
+         */
+        String trace = "CWIML4542E";
+        List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
+        assertFalse("Did not find CertificateMapNotSupportedException in logs.", matching.isEmpty());
+    }
+
+    /**
+     * Test that when both CertificateMapFailedException and CertificateMapNotSupportedException are
+     * thrown from separate federated repositories, that the CertificateMapFailedException is returned.
+     *
+     * This is not really specifically a custom certificate mapper test, but they make it easy to verify
+     * this behavior.
+     *
+     * @throws Exception If the test failed for some reason.
+     */
+    @Test
+    @ExpectedFFDC({ "com.ibm.wsspi.security.wim.exception.CertificateMapFailedException" })
+    public void multiple_repositories_failed_notsupported() throws Exception {
+        ServerConfiguration server = originalConfiguration.clone();
+
+        /*
+         * This LDAP server will throw a CertificateMapNotSupportedException.
+         */
+        LdapRegistry ldap = new LdapRegistry();
+        ldap.setRealm("LDAPRealm1");
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setBaseDN(LDAP_PARTITION_2_DN);
+        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
+        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setLdapType("Custom");
+        ldap.setCertificateMapMode("CUSTOM");
+        ldap.setCertificateMapperId(ID_MAPPER_3);
+        server.getLdapRegistries().add(ldap);
+
+        /*
+         * This LDAP server will throw a CertificateMapFailedException.
+         */
+        ldap = new LdapRegistry();
+        ldap.setRealm("LDAPRealm1");
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setBaseDN(LDAP_PARTITION_1_DN);
+        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
+        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setLdapType("Custom");
+        ldap.setCertificateMapMode("CUSTOM");
+        ldap.setCertificateMapperId(ID_MAPPER_4);
+        server.getLdapRegistries().add(ldap);
+
+        /*
+         * Setup the library.
+         */
+        File file1 = new File();
+        file1.setName(PATH_LIBRARY_1);
+        Library library1 = new Library();
+        library1.setId(ID_LIBRARY_1);
+        library1.setNestedFile(file1);
+        server.getLibraries().add(library1);
+
+        /*
+         * Setup the BELL.
+         */
+        Bell bell = new Bell();
+        bell.setLibraryRef(ID_LIBRARY_1);
+        server.getBells().add(bell);
+
+        updateConfigDynamically(myServer, server);
+
+        /*******************/
+        client = setupClient(USER1_CERT_FILE, true);
+        String response = client.access("/SimpleServlet", 403);
+        assertNull("Expected null response.", response);
+
+        /*
+         * Check for the expected error message.
+         */
+        String trace = "CWIML4503E";
+        List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
+        assertFalse("Did not find CertificateMapFailedException in logs.", matching.isEmpty());
     }
 }
