@@ -57,7 +57,6 @@ public class CookieProcessingTests extends CommonSecurityFat {
     public static final String ACTION_SUBMIT_LOGIN_CREDENTIALS = "submitLoginCredentials";
 
     public static final String JWT_COOKIE_NAME = "jwtToken";
-    public static final String JWT_REGEX = "[a-zA-Z0-9_=-]+\\.[a-zA-Z0-9_=-]+\\.[a-zA-Z0-9_=-]+";
 
     public static final String BASIC_REALM = "BasicRealm";
     public static final String TESTUSER = "testuser";
@@ -95,11 +94,11 @@ public class CookieProcessingTests extends CommonSecurityFat {
         wc = new WebClient();
         response = invokeUrl(wc, protectedUrl); // get back the login page
         validationUtils.validateResult(response, ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+
         expectations.addExpectations(getSuccessfulProtectedResourceExpectationsForJwtCookie(ACTION_SUBMIT_LOGIN_CREDENTIALS, protectedUrl));
         expectations.addExpectations(getJwtPrincipalExpectations(ACTION_SUBMIT_LOGIN_CREDENTIALS));
-
         response = performLogin(response);
-
+        // confirm protected resource was accessed
         validationUtils.validateResult(response, ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
     }
 
@@ -129,7 +128,12 @@ public class CookieProcessingTests extends CommonSecurityFat {
 
     }
 
-    void commonLogoutChecks(boolean lookForSecondCookie) {
+    /**
+     * check for presence of cleared cookies in the response headers
+     *
+     * @param lookForSecondCookie
+     */
+    void confirmCookiesCleared(boolean lookForSecondCookie) {
         //  look through all the headers as >1 Set-Cookie header might be sent back.
         List<NameValuePair> headerList = response.getWebResponse().getResponseHeaders();
         Iterator it = headerList.iterator();
@@ -169,7 +173,12 @@ public class CookieProcessingTests extends CommonSecurityFat {
         String responseStr = response.getWebResponse().getContentAsString();
         boolean check2 = responseStr.contains("Test Application class BaseServlet logged out");
         assertTrue("Did not get a response indicating logout was invoked", check2);
-        commonLogoutChecks(true);
+        confirmCookiesCleared(true);
+
+        // and make sure we cannot access protected resource
+        response = invokeUrl(wc, protectedUrl);
+        responseStr = response.getWebResponse().getContentAsString();
+        assertFalse("should not have been able to access protected url ", responseStr.contains("SimpleServlet"));
     }
 
     /**
@@ -185,7 +194,12 @@ public class CookieProcessingTests extends CommonSecurityFat {
         String logoutUrl = protectedUrl.replace("SimpleServlet", "ibm_security_logout");
         // now access resource a second time, force cookies to be rejoined into a single token
         response = invokeUrl(wc, logoutUrl, HttpMethod.POST);
-        commonLogoutChecks(true);
+        confirmCookiesCleared(true);
+
+        // and make sure we cannot access protected resource
+        response = invokeUrl(wc, protectedUrl);
+        String responseStr = response.getWebResponse().getContentAsString();
+        assertFalse("should not have been able to access protected url ", responseStr.contains("SimpleServlet"));
     }
 
     /**

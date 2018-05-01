@@ -56,7 +56,6 @@ public class FeatureOnlyTest extends CommonSecurityFat {
     public static final String APP_FORMLOGIN = "formlogin";
 
     public static final String JWT_COOKIE_NAME = "jwtToken";
-    public static final String JWT_REGEX = "[a-zA-Z0-9_=-]+\\.[a-zA-Z0-9_=-]+\\.[a-zA-Z0-9_=-]+";
 
     public static final String BASIC_REALM = "BasicRealm";
     public static final String TESTUSER = "testuser";
@@ -143,8 +142,6 @@ public class FeatureOnlyTest extends CommonSecurityFat {
 
     Expectations getCookieHeaderExpectationsForJwtCookie(String testAction) {
         Expectations expectations = new Expectations();
-        String jwtCookieValueRegex = "^" + JWT_COOKIE_NAME + "=" + JWT_REGEX + "; Path=/; HttpOnly$";
-        expectations.addExpectation(new ResponseHeaderExpectation(testAction, Constants.STRING_MATCHES, Constants.HEADER_SET_COOKIE, jwtCookieValueRegex, "Did not find the expected JWT cookie pattern in the response headers."));
         expectations.addExpectation(new ResponseHeaderExpectation(testAction, Constants.STRING_DOES_NOT_CONTAIN, Constants.HEADER_SET_COOKIE, Constants.LTPA_COOKIE_NAME, "Found an LTPA string in the response headers but shouldn't have."));
         expectations.addExpectation(new ResponseHeaderExpectation(testAction, Constants.STRING_DOES_NOT_CONTAIN, Constants.LTPA_COOKIE_NAME, "Found an LTPA string in the response headers but shouldn't have."));
         return expectations;
