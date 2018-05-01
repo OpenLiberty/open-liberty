@@ -52,10 +52,6 @@ import com.ibm.ws.webcontainer.security.JaspiService;
 import com.ibm.wsspi.security.registry.RegistryHelper;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
-/**
- * @author IBM Corp.
- *
- */
 public class JaspiCallbackHandler implements CallbackHandler {
 
     private static final TraceComponent tc = Tr.register(JaspiCallbackHandler.class, "Security", null);
@@ -71,16 +67,12 @@ public class JaspiCallbackHandler implements CallbackHandler {
         this.jaspiService = jaspiService;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see javax.security.auth.callback.CallbackHandler#handle(javax.security.auth.callback.Callback[])
-     */
     @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
         if (callbacks == null || callbacks.length == 0) {
-            if (tc.isDebugEnabled())
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "handle", "No Callbacks received, do nothing.");
+            }
             return;
         }
         try {
@@ -105,6 +97,150 @@ public class JaspiCallbackHandler implements CallbackHandler {
     }
 
     /*
+     * Callback for setting the container's caller (or Remote user) principal. This callback is intended to be called by
+     * a serverAuthModule during its validateRequest processing. From the JASPIC specification:
+     *
+     * getName() javadoc:
+     * "When the values returned by this method and the getPrincipal methods are null, the handler must establish the
+     * container's representation of the unauthenticated caller principal within the Subject."
+     *
+     * In CallerPrincipalCallback(Subject s, String n) ctor:
+     * "When the String argument n is null, the handler will establish the container's representation of the unauthenticated caller principal
+     * (which may or may not be equal to null, depending on the requirements of the container type). When the container type requires that
+     * a non-null principal be established as the caller principal, the value obtained by calling getName on the principal may not match the
+     * argument value."
+     *
+     * getPrincipal() javadoc:
+     * "When the values returned by this method and the getName methods are null, the handler must establish the container's
+     * representation of the unauthenticated caller principal within the Subject."
+     *
+     * In CallerPrincipalCallback(Subject s, Principal p) ctor:
+     * The CallbackHandler must establish the argument Principal as the caller principal associated with the invocation being processed by the
+     * container. When the argument Principal is null, the handler will establish the container's representation of the unauthenticated caller
+     * principal.
+     */
+    protected void handleCallerPrincipalCallback(CallerPrincipalCallback callback) throws WSSecurityException {
+        Subject clientSubject = callback.getSubject();
+        String userName = callback.getName();
+        Principal userPrincipal = callback.getPrincipal();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "handleCallerPrincipalCallback", new Object[] { "user=" + userName, "principal=" + userPrincipal });
+        }
+
+        Hashtable<String, Object> credData = null;
+        if (clientSubject != null) {
+            credData = getSubjectCustomData(clientSubject);
+            String securityName = null;
+            if (userName == null && userPrincipal == null) {
+                securityName = JaspiServiceImpl.UNAUTHENTICATED_ID;
+                credData.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, securityName);
+            } else if (userPrincipal != null) {
+                securityName = userPrincipal.getName();
+                addCommonAttributes(securityName, credData);
+                credData.put("com.ibm.wsspi.security.cred.jaspi.principal", userPrincipal);
+            } else {
+                securityName = userName;
+                addCommonAttributes(securityName, credData);
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Added securityName: " + securityName);
+            }
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "handleCallerPrincipalCallback", credData);
+        }
+    }
+
+    protected void addCommonAttributes(String securityName, Hashtable<String, Object> credData) {
+        try {
+            UserRegistry registry = getUserRegistry();
+            if (registry != null && registry.isValidUser(securityName)) {
+                credData.put(AttributeNameConstants.WSCREDENTIAL_USERID, securityName);
+                credData.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
+                List<?> groups = registry.getUniqueGroupIds(securityName);
+                credData.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groups);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Added userid: " + securityName + "  and groups: " + groups);
+                }
+            } else {
+                if (registry == null) {
+                    credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:defaultRealm/" + securityName);
+                } else {
+                    credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, registry.getRealm() + "/" + securityName);
+                }
+                credData.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, securityName);
+            }
+        } catch (Exception e) {
+            FFDCFilter.processException(e, getClass().getName() + ".handleCallerPrincipalCallback", "245");
+        }
+    }
+
+    /*
+     * Callback establishing group principals within the argument subject. This callback is intended to be called by
+     * a serverAuthModule during its validateRequest processing.
+     */
+    @SuppressWarnings("unchecked")
+    protected void handleGroupPrincipalCallback(GroupPrincipalCallback callback) throws CustomRegistryException, EntryNotFoundException, RemoteException {
+        Subject clientSubject = callback.getSubject();
+        Hashtable<String, Object> credData = null;
+        if (clientSubject != null) {
+            String[] groupsFromCallback = callback.getGroups();
+            if (groupsFromCallback != null && groupsFromCallback.length > 0) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Group names in Callback: ", Arrays.asList(groupsFromCallback));
+                }
+                credData = getSubjectCustomData(clientSubject);
+                List<String> groupsFromSubject = (List<String>) credData.get(AttributeNameConstants.WSCREDENTIAL_GROUPS);
+                if (groupsFromSubject == null) {
+                    groupsFromSubject = new ArrayList<String>();
+                    credData.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groupsFromSubject);
+                }
+
+                for (int i = 0; i < groupsFromCallback.length; i++) {
+                    String groupFromCallback = groupsFromCallback[i];
+                    if (groupFromCallback == null || groupFromCallback.isEmpty()) {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Group is null or an empty string, it has been ignored.");
+                        }
+                        continue;
+                    }
+
+                    String group = mapGroup(groupFromCallback);
+
+                    if (!groupsFromSubject.contains(group)) {
+                        groupsFromSubject.add(group);
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Added groupId: " + group);
+                        }
+                    } else {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, group + " already exists in custom credential data, avoid duplicates.");
+                        }
+                    }
+                }
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Callback has no groups.");
+                }
+            }
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "handleGroupPrincipalCallback", credData);
+        }
+    }
+
+    protected String mapGroup(String groupFromCallback) throws CustomRegistryException, EntryNotFoundException, RemoteException {
+        String group = null;
+        UserRegistry registry = getUserRegistry();
+        if (registry != null && registry.isValidGroup(groupFromCallback)) {
+            group = registry.getUniqueGroupId(groupFromCallback);
+        } else {
+            group = groupFromCallback;
+        }
+        return group;
+    }
+
+    /*
      * Callback for PasswordValidation. This callback may be used by an authentication module to employ the password
      * validation facilities of its containing runtime. This Callback would typically be called by a ServerAuthModule
      * during validateRequest processing.
@@ -113,12 +249,13 @@ public class JaspiCallbackHandler implements CallbackHandler {
      * with custom data that is used later by JaspiAuthenticator to create a WAS subject.
      */
     protected void handlePasswordValidationCallback(PasswordValidationCallback callback) throws RemoteException, EntryNotFoundException, CustomRegistryException {
-
         Subject clientSubject = callback.getSubject();
         String userName = callback.getUsername();
         String password = new String(callback.getPassword());
-        if (tc.isDebugEnabled())
+        if (tc.isDebugEnabled()) {
             Tr.debug(tc, "handlePasswordValidationCallback", new Object[] { callback, userName });
+        }
+
         if (clientSubject != null) {
             UserRegistry registry = getUserRegistry();
             if (registry != null) {
@@ -133,132 +270,8 @@ public class JaspiCallbackHandler implements CallbackHandler {
                 }
             }
         }
-        if (tc.isDebugEnabled())
+        if (tc.isDebugEnabled()) {
             Tr.debug(tc, "handlePasswordValidationCallback", "valid password? " + callback.getResult());
-    }
-
-    /*
-     * Callback for setting the container's caller (or Remote user) principal. This callback is intended to be called by
-     * a serverAuthModule during its validateRequest processing.
-     */
-    protected void handleCallerPrincipalCallback(CallerPrincipalCallback callback) throws WSSecurityException {
-
-        Subject clientSubject = callback.getSubject();
-        String userName = callback.getName();
-        Principal userPrincipal = callback.getPrincipal();
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "handleCallerPrincipalCallback", new Object[] { "user=" + userName, "principal=" + userPrincipal });
-        /*
-         * getName() javadoc:
-         * "When the values returned by this method and the getPrincipal methods are null, the handler must establish the
-         * container's representation of the unauthenticated caller principal within the Subject."
-         *
-         * In CallerPrincipalCallback(Subject s, String n) ctor:
-         * "When the String argument n is null, the handler will establish the container's representation of the unauthenticated caller principal
-         * (which may or may not be equal to null, depending on the requirements of the container type). When the container type requires that
-         * a non-null principal be established as the caller principal, the value obtained by calling getName on the principal may not match the
-         * argument value."
-         *
-         * getPrincipal() javadoc:
-         * "When the values returned by this method and the getName methods are null, the handler must establish the container's
-         * representation of the unauthenticated caller principal within the Subject."
-         *
-         * In CallerPrincipalCallback(Subject s, Principal p) ctor:
-         * The CallbackHandler must establish the argument Principal as the caller principal associated with the invocation being processed by the
-         * container. When the argument Principal is null, the handler will establish the container's representation of the unauthenticated caller
-         * principal.
-         */
-        Hashtable<String, Object> credData = null;
-        if (clientSubject != null) {
-            credData = getSubjectCustomData(clientSubject);
-            String securityName = null;
-            if (userName == null && userPrincipal == null) {
-                securityName = JaspiServiceImpl.UNAUTHENTICATED_ID;
-                credData.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, securityName);
-            } else if (userPrincipal != null) {
-                securityName = userPrincipal.getName();
-                addUseridAndGroupsKeys(securityName, credData);
-                credData.put("com.ibm.wsspi.security.cred.jaspi.principal", userPrincipal);
-            } else {
-                securityName = userName;
-                addUseridAndGroupsKeys(securityName, credData);
-            }
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Added securityName: " + securityName);
-        }
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "handleCallerPrincipalCallback", credData);
-    }
-
-    /*
-     * Callback establishing group principals within the argument subject. This callback is intended to be called by
-     * a serverAuthModule during its validateRequest processing.
-     */
-    protected void handleGroupPrincipalCallback(GroupPrincipalCallback callback) throws CustomRegistryException, EntryNotFoundException, RemoteException {
-        Subject clientSubject = callback.getSubject();
-        Hashtable<String, Object> credData = null;
-        if (clientSubject != null) {
-            String[] groups = callback.getGroups();
-            if (groups != null && groups.length > 0) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Group names in Callback: ", Arrays.asList(groups));
-                credData = getSubjectCustomData(clientSubject);
-                List<String> groupNames = (List<String>) credData.get(AttributeNameConstants.WSCREDENTIAL_GROUPS);
-                if (groupNames == null) {
-                    groupNames = new ArrayList<String>();
-                    credData.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groupNames);
-                }
-                UserRegistry registry = getUserRegistry();
-                for (int i = 0; i < groups.length; i++) {
-                    String group = groups[i];
-                    if (group == null || group.isEmpty()) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Group is null or an empty string, it has been ignored.");
-                        continue;
-                    }
-                    String groupName = null;
-                    if (registry != null && registry.isValidGroup(group)) {
-                        groupName = registry.getUniqueGroupId(group);
-                    } else {
-                        groupName = group;
-                    }
-                    if (!groupNames.contains(groupName)) {
-                        groupNames.add(groupName);
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Added groupId: " + groupName);
-                    } else {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, groupName + " already exists in custom credential data, avoid duplicates.");
-                    }
-                }
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Callback has no groups.");
-            }
-        }
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "handleGroupPrincipalCallback", credData);
-    }
-
-    protected void addUseridAndGroupsKeys(String securityName, Hashtable<String, Object> credData) {
-        try {
-            UserRegistry registry = getUserRegistry();
-            if (registry != null && registry.isValidUser(securityName)) {
-                credData.put(AttributeNameConstants.WSCREDENTIAL_USERID, securityName);
-                credData.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
-                List<?> groups = registry.getUniqueGroupIds(securityName);
-                credData.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groups);
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Added userid: " + securityName + "  and groups: " + groups);
-            } else {
-                if (registry == null)
-                    credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:defaultRealm/" + securityName);
-                else
-                    credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, registry.getRealm() + "/" + securityName);
-                credData.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, securityName);
-            }
-        } catch (Exception e) {
-            FFDCFilter.processException(e, getClass().getName() + ".handleCallerPrincipalCallback", "245");
         }
     }
 
@@ -276,12 +289,14 @@ public class JaspiCallbackHandler implements CallbackHandler {
                 }
             newCustomCredential(clientSubject, realmName, userSecurityName, uniqueGroups);
         } catch (PasswordCheckFailedException e) {
-            if (tc.isDebugEnabled())
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "checkUserPassword - password is not valid.");
+            }
             return false;
         } catch (Exception e) {
-            if (tc.isDebugEnabled())
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "checkUserPassword - registry exception: " + e);
+            }
             return false;
         }
         return true;
@@ -293,8 +308,9 @@ public class JaspiCallbackHandler implements CallbackHandler {
         credData.put(AttributeNameConstants.WSCREDENTIAL_USERID, securityName);
         credData.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
         if (groupList != null && !groupList.isEmpty()) {
-            if (tc.isDebugEnabled())
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Adding groups found in registry", groupList);
+            }
             credData.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groupList);
         } else {
             credData.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, new ArrayList<String>());
@@ -311,17 +327,14 @@ public class JaspiCallbackHandler implements CallbackHandler {
         return cred;
     }
 
-    /**
-     * @return
-     */
     UserRegistry getUserRegistry() {
         UserRegistry registry = null;
         try {
             registry = RegistryHelper.getUserRegistry(null);
         } catch (WSSecurityException e) {
-            // TODO message i guess?
-            if (tc.isDebugEnabled())
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Internal error getting the user registry", e);
+            }
         }
         return registry;
     }

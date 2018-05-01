@@ -12,16 +12,12 @@
 package com.ibm.ws.security.javaeesec;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.security.auth.message.config.AuthConfigProvider;
 import javax.security.auth.message.config.RegistrationListener;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
-import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.ComponentContext;
@@ -32,7 +28,6 @@ import org.osgi.service.component.annotations.Deactivate;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jaspi.BridgeBuilderService;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 
@@ -65,8 +60,8 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
             // Create AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule bridge.
             Map<String, String> props = new ConcurrentHashMap<String, String>();
             authConfigProvider = new AuthProvider(props, providerFactory);
-            providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, "Built-in JSR-375 Bridge Provider");
-        } else{
+            providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, PROVIDER_DESCRIPTION);
+        } else {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpAuthenticationMechanism bean is not identified. JSR375 BridgeProvider is not enabled.");
             }
