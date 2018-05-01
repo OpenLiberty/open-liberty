@@ -136,7 +136,7 @@ public class LDAPRegistryDynamicUpdateTest {
         LdapRegistry ldap1 = createTDSLdapRegistry(clone, "LDAP_TDS", "SampleLdapIDSRealm");
         LdapRegistry ldap2 = createADLdapRegistry(clone, "LDAP_AD", "SampleLdapADRealm");
         createFederatedRepository(clone, "TwoLDAPRealm", new String[] { ldap1.getBaseDN(), ldap2.getBaseDN() });
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         assertNull("Authentication should not succeed.", servlet.checkPassword(USERNAME, USER_PASSWORD));
         assertEquals("TwoLDAPRealm", servlet.getRealm());
@@ -154,7 +154,7 @@ public class LDAPRegistryDynamicUpdateTest {
         federatedRepository.getPrimaryRealm().setUniqueGroupIdMapping(new RealmPropertyMapping("uniqueName", "uniqueName"));
         federatedRepository.getPrimaryRealm().setGroupSecurityNameMapping(new RealmPropertyMapping("cn", "cn"));
         federatedRepository.getPrimaryRealm().setGroupDisplayNameMapping(new RealmPropertyMapping("cn", "cn"));
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         assertEquals("Authentication should succeed.", USERNAME, servlet.checkPassword(USERNAME, USER_PASSWORD));
         assertEquals("OneLDAPRealm", servlet.getRealm());
@@ -173,7 +173,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ServerConfiguration clone = emptyConfiguration.clone();
         LdapRegistry ldap = createTDSLdapRegistry(clone, "LDAP", "SampleLdapIDSRealm");
         createFederatedRepository(clone, "TDSRealm", new String[] { ldap.getBaseDN() });
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Verify checkPassord and getRealm calls are successful
@@ -188,7 +188,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ldap = createSunLdapRegistry(clone, "LDAP", null, "o=vmm");
         createFederatedRepository(clone, "vmmldaprealm", new String[] { ldap.getName() });
 
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         assertDNsEqual("Authentication should succeed.", "uid=vmmtestuser,ou=users,o=vmm", servlet.checkPassword(USERNAME, USER_PASSWORD));
         assertDNsEqual("Authentication should succeed.", "uid=persona1,ou=users,o=vmm", servlet.checkPassword("persona1", "ppersona1"));
@@ -224,7 +224,7 @@ public class LDAPRegistryDynamicUpdateTest {
 
         FederatedRepository federatedRepository = createFederatedRepository(clone, "vmmldaprealm", new String[] { ldap.getName() });
         federatedRepository.getPrimaryRealm().setUserDisplayNameMapping(new RealmPropertyMapping("principalName", "cn"));
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * call checkPassword
@@ -261,7 +261,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ServerConfiguration clone = emptyConfiguration.clone();
         createSunLdapRegistry(clone, "LDAP", null, null);
         createADLdapRegistry(clone, "LDAP_AD", "SampleLdapADRealm");
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * call checkPassword
@@ -280,7 +280,7 @@ public class LDAPRegistryDynamicUpdateTest {
          */
         clone = emptyConfiguration.clone();
         createTDSLdapRegistry(clone, null, null);
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * call checkPassword
@@ -348,7 +348,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ldap = createTDSLdapRegistry(clone, "LDAP", "SampleLdapIDSRealm");
         ldap.setIdsFilters(new LdapFilters("(&(mail=%v)(objectclass=ePerson))", "(&(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))", "*:uid", "*:cn", "groupOfNames:member;groupOfUniqueNames:uniqueMember"));
         createFederatedRepository(clone, "TDSRealm", new String[] { ldap.getBaseDN() });
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Login should be successful with input as mail
@@ -384,7 +384,7 @@ public class LDAPRegistryDynamicUpdateTest {
         LdapRegistry ldap = createTDSLdapRegistry(clone, "LDAP", "SampleLdapIDSRealm");
         ldap.setIdsFilters(new LdapFilters("(&(|(sn=%v)(mail=%v))(objectclass=ePerson))", "(&(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))", "*:uid", "*:cn", "groupOfNames:member;groupOfUniqueNames:uniqueMember"));
         createFederatedRepository(clone, "TDSRealm", new String[] { ldap.getBaseDN() });
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Login should be successful with input as sn
@@ -426,7 +426,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ServerConfiguration clone = emptyConfiguration.clone();
         LdapRegistry ldap = createTDSLdapRegistry(clone, "LDAP", "SampleLdapIDSRealm");
         createFederatedRepository(clone, "TDSRealm", new String[] { ldap.getBaseDN() });
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Verify that getUserDisplayName, getUniqueUserId, getUserSecurityName to get pricipalName,
@@ -452,7 +452,7 @@ public class LDAPRegistryDynamicUpdateTest {
         federatedRepository.getPrimaryRealm().setUserDisplayNameMapping(new RealmPropertyMapping("photoURL", "photoURL"));
         federatedRepository.getPrimaryRealm().setUniqueUserIdMapping(new RealmPropertyMapping("photoURLThumbnail", "photoURLThumbnail"));
         federatedRepository.getPrimaryRealm().setUserSecurityNameMapping(new RealmPropertyMapping("cn", "cn"));
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * getUserDisplayName --> photoURL (mapped to telephoneNumber)
@@ -486,7 +486,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ServerConfiguration clone = emptyConfiguration.clone();
         LdapRegistry ldap = createTDSLdapRegistry(clone, "LDAP", "SampleLdapIDSRealm");
         createFederatedRepository(clone, "TDSRealm", new String[] { ldap.getBaseDN() });
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Verify that getUserDisplayName, getUniqueUserId, getUserSecurityName to get pricipalName, uniqueName and uniqueName respectively
@@ -515,7 +515,7 @@ public class LDAPRegistryDynamicUpdateTest {
 
         FederatedRepository federatedRepository = createFederatedRepository(clone, "TDSRealm", new String[] { ldap.getBaseDN() });
         federatedRepository.getPrimaryRealm().setUserDisplayNameMapping(new RealmPropertyMapping("principalName", "photoURL"));
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Call checkpassword with input as postOfficeBox and password to get postOfficeBox as return from it and getUserDisplayName to get postOfficeBox
@@ -537,7 +537,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ServerConfiguration clone = emptyConfiguration.clone();
         LdapRegistry ldap = createTDSLdapRegistry(clone, "LDAP", "SampleLdapIDSRealm");
         createFederatedRepository(clone, "TDSRealm", new String[] { ldap.getBaseDN() });
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Verify checkPassord call is successful
@@ -549,7 +549,7 @@ public class LDAPRegistryDynamicUpdateTest {
          */
         clone = clone.clone();
         clone.getLdapRegistries().get(0).setIgnoreCase(false);
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Verify checkPassord call is successful
@@ -571,7 +571,7 @@ public class LDAPRegistryDynamicUpdateTest {
          */
         ServerConfiguration clone = emptyConfiguration.clone();
         createSunLdapRegistry(clone, "LDAP", null, null);
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Verify checkPassord call is successful
@@ -588,7 +588,7 @@ public class LDAPRegistryDynamicUpdateTest {
         FederatedRepository federatedRepository = createFederatedRepository(clone, "SampleLdapSUNRealm", new String[] { "dc=rtp,dc=raleigh,dc=ibm,dc=com" });
         federatedRepository.getPrimaryRealm().setUserSecurityNameMapping(new RealmPropertyMapping("principalName", "uniqueId"));
 
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Verify checkPassord call is successful
@@ -610,7 +610,7 @@ public class LDAPRegistryDynamicUpdateTest {
         LdapRegistry ldap = createTDSLdapRegistry(clone, "LDAP", "SampleLdapIDSRealm");
         ldap.setBaseDN("");
         ldap.setRecursiveSearch(true);
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Validate the new configuration.
@@ -647,7 +647,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ldap.setBaseDN("");
         ldap.setRecursiveSearch(true);
         createFederatedRepository(clone, "FederatedRealm", new String[] { "" });
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         /*
          * Validate the new configuration.
@@ -680,7 +680,7 @@ public class LDAPRegistryDynamicUpdateTest {
         ldap.setContextPool(new ContextPool(true, 17, 19, 18, "1700ms", "1600ms"));
         ldap.setLdapCache(new LdapCache(new AttributesCache(true, 4444, 2222, "700s", "ttl1"), new SearchResultsCache(true, 5555, 3333, "777s")));
         createFederatedRepository(clone, "OneLDAPRealm", new String[] { ldap.getBaseDN() });
-        updateConfigDynamically(server, clone);
+        updateConfigDynamically(server, clone, shouldWaitForAppToStart(clone));
 
         assertEquals("OneLDAPRealm", servlet.getRealm());
 
@@ -740,5 +740,18 @@ public class LDAPRegistryDynamicUpdateTest {
         tr = "CacheResultSizeLimit: 3333";
         errMsgs = server.findStringsInLogsAndTrace(tr);
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());
+    }
+
+    /**
+     * Determine whether we should wait for the user registry servlet to start. Some of the tests remove the
+     * servlet feature and we need to wait for it to reload or we will fail.
+     *
+     * @param updated The new configuration for the server.
+     * @return True if we should wait for the user registry servlet to start.
+     * @throws Exception If we failed to get the current server configuration.
+     */
+    private static boolean shouldWaitForAppToStart(ServerConfiguration updated) throws Exception {
+        return !server.getServerConfiguration().getFeatureManager().getFeatures().contains("servlet-3.1") &&
+               updated.getFeatureManager().getFeatures().contains("servlet-3.1");
     }
 }
