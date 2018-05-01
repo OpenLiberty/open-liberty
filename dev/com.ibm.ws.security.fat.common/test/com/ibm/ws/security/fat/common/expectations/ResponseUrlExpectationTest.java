@@ -117,6 +117,18 @@ public class ResponseUrlExpectationTest extends CommonSpecificExpectationTest {
     }
 
     @Test
+    public void test_validate_nullAction() {
+        try {
+            Expectation exp = new ResponseUrlExpectation(null, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = "Some " + SEARCH_FOR_VAL + " content";
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_validate_nullResponseUrl() {
         try {
             Expectation exp = createBasicExpectation();
@@ -275,6 +287,11 @@ public class ResponseUrlExpectationTest extends CommonSpecificExpectationTest {
     @Override
     protected Expectation createBasicExpectation() {
         return new ResponseUrlExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+    }
+
+    @Override
+    protected Expectation createBasicExpectationWithNoAction() {
+        return new ResponseUrlExpectation(null, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
     }
 
     protected void setValidateTestExpectations(Object responseObject, final Object content) {
