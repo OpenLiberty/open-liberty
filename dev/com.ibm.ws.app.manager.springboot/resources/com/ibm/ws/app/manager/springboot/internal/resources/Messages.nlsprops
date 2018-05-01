@@ -50,3 +50,11 @@ error.missing.servlet.useraction=A Servlet feature needs to be configured in the
 error.multiple.applications.not.allowed=CWWKC0255E: Spring Boot application {0} cannot be started because application {1} is already active. You cannot configure multiple Spring Boot applications in the same server configuration.
 error.multiple.applications.not.allowed.explanation=Configuring multiple Spring Boot applications in the same server configuration is not supported.
 error.multiple.applications.not.allowed.useraction=Configure only one Spring Boot application per server configuration.
+
+error.no.manifest.found=CWWKC0256E: No META-INF/MANIFEST.MF file found for the Spring Boot application {0}.
+error.no.manifest.found.explanation=Spring Boot applications must contain a META-INF/MANIFEST.MF file.
+error.no.manifest.found.useraction=Configure a valid Spring Boot application with the server.
+
+error.no.spring.class.found=CWWKC0257E: The Spring Boot application META-INF/MANIFEST.MF file must specify a Start-Class header.
+error.no.spring.class.found.explanation=Spring Boot applications must contain a main class specified by the Start-Class manifest header.
+error.no.spring.class.found.useraction=Configure a valid Spring Boot application with the server.

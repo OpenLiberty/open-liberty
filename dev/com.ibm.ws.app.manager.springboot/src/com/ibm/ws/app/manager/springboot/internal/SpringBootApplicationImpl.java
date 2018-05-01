@@ -455,7 +455,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
         try {
             newContainer = storeLibs(applicationInformation, getRawContainer(applicationInformation), manifest, factory);
-            manifest = getSpringBootManifest(applicationInformation.getContainer());
+            manifest = getSpringBootManifest(applicationInformation);
             infos = getContainerInfos(applicationInformation.getContainer(), factory, manifest);
             String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(applicationInformation.getLocation());
             mci = new SpringModuleContainerInfo(factory.getSpringBootSupport(), factory.getModuleHandler(), factory.getModuleMetaDataExtenders().get("web"), factory.getNestedModuleMetaDataFactories().get("web"), applicationInformation.getContainer(), null, moduleURI, moduleClassesInfo, infos);
@@ -476,10 +476,17 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
     }
 
-    private static SpringBootManifest getSpringBootManifest(Container container) throws UnableToAdaptException {
-        Entry manifestEntry = container.getEntry(JarFile.MANIFEST_NAME);
+    private static SpringBootManifest getSpringBootManifest(ApplicationInformation<DeployedAppInfo> appInfo) throws UnableToAdaptException {
+        Entry manifestEntry = appInfo.getContainer().getEntry(JarFile.MANIFEST_NAME);
+        if (manifestEntry == null) {
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "error.no.manifest.found", appInfo.getName()));
+        }
         try (InputStream mfIn = manifestEntry.adapt(InputStream.class)) {
-            return new SpringBootManifest(new Manifest(mfIn));
+            SpringBootManifest sbm = new SpringBootManifest(new Manifest(mfIn));
+            if (sbm.getSpringStartClass() == null) {
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "error.no.spring.class.found"));
+            }
+            return sbm;
         } catch (IOException e) {
             throw new UnableToAdaptException(e);
         }

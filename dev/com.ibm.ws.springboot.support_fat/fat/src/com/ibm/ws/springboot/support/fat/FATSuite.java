@@ -42,6 +42,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 MultipleApplicationsNotSupported.class,
                 NeedSpringBoot15FeatureTests.class,
                 NeedSpringBoot20FeatureTests.class,
+                InvalidAppTests.class,
                 NoServletRequiredAppTests15.class,
                 SpringBootUtilityThinTest.class,
                 WebAnnotationTests.class,
