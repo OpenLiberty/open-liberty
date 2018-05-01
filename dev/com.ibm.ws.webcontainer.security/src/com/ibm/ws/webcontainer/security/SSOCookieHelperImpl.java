@@ -48,7 +48,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected static final ConcurrentMap<ByteArray, String> cookieByteStringCache = new ConcurrentHashMap<ByteArray, String>(20);
     private static int MAX_COOKIE_STRING_ENTRIES = 100;
     private String cookieName = null;
-    protected boolean isJwtCookie = false;
 
     protected final WebAppSecurityConfig config;
 
@@ -76,7 +75,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         if (!allowToAddCookieToResponse(req))
             return;
 
-        addJwtSsoCookiesToResponse(subject, req, resp);
+        boolean jwtCookiesAdded = addJwtSsoCookiesToResponse(subject, req, resp);
 
         if (!JwtSSOTokenHelper.shouldAlsoIncludeLtpaCookie()) {
             return;
@@ -101,6 +100,18 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
         Cookie ssoCookie = createCookie(req, cookieByteString);
         resp.addCookie(ssoCookie);
+        if (jwtCookiesAdded) {
+            checkInconsistentExpirationTimes(ssoToken.getExpiration());
+        }
+
+    }
+
+    /**
+     * Emit a warning message if both LTPA and JWT cookies are sent
+     * and they have differing expiration times
+     */
+    protected void checkInconsistentExpirationTimes(long ssoTokenExpirationTime) {
+        JwtSSOTokenHelper.
 
     }
 
@@ -108,24 +119,31 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * @param subject
      * @param req
      * @param resp
+     * @return true if cookies were added
      */
     @Override
-    public void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+    public boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+        boolean result = false;
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         if (cookieByteString != null) {
-            addJwtCookies(cookieByteString, req, resp);
-            isJwtCookie = true;
+            String testString = getJwtSsoTokenFromCookies(req, getJwtCookieName());
+            boolean cookieAlreadySent = testString != null && testString.equals(cookieByteString);
+            if (!cookieAlreadySent) {
+                result = addJwtCookies(cookieByteString, req, resp);
+            }
         }
-
+        return result;
     }
 
-    /*
-     * add the cookie or cookies as needed, depending on size of token
+    /**
+     * Add the cookie or cookies as needed, depending on size of token.
+     * Return true if any cookies were added
      */
-    protected void addJwtCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp) {
+    protected boolean addJwtCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp) {
+
         String baseName = getJwtCookieName();
         if (baseName == null) {
-            return;
+            return false;
         }
         if ((!req.isSecure()) && getJwtCookieSecure()) {
             Tr.warning(tc, "JWT_COOKIE_SECURITY_MISMATCH", new Object[] {}); // CWWKS9127W
@@ -142,6 +160,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             resp.addCookie(ssoCookie);
             cookieName = baseName + (i + 2 < 10 ? "0" : "") + (i + 2); //name02... name99
         }
+        return true;
     }
 
     protected String getJwtCookieName() {
@@ -286,9 +305,11 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected void logoutJwtCookies(HttpServletRequest req, Cookie[] cookies, java.util.ArrayList<Cookie> logoutCookieList) {
         String jwtCookieName = getJwtCookieName();
         if (jwtCookieName != null) { // jwtsso is active, expire it's cookies too
-            if (config.isTrackLoggedOutSSOCookiesEnabled()) {
-                LoggedOutJwtSsoCookieCache.put(getJwtSsoTokenFromCookies(req, jwtCookieName));
+            String jwtTokenStr = getJwtSsoTokenFromCookies(req, jwtCookieName);
+            if (jwtTokenStr != null) {
+                LoggedOutJwtSsoCookieCache.put(jwtTokenStr);
             }
+
             for (int i = 0; i < cookies.length; i++) {
                 if (isJwtCookie(jwtCookieName, cookies[i].getName())) {
                     cookies[i].setValue(null);
