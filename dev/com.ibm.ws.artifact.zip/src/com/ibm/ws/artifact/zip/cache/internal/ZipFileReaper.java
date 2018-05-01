@@ -120,16 +120,6 @@ public class ZipFileReaper {
 
     //
 
-    public void validate() {
-        synchronized ( reaperLock ) {
-            pendingQuickStorage.validate();
-            pendingSlowStorage.validate();
-            if ( !debugState ) {
-                completedStorage.validate();
-            }
-        }
-    }
-
     @Trivial
     private static String toCount(int count) {
         return ZipCachingProperties.toCount(count);
@@ -143,6 +133,19 @@ public class ZipFileReaper {
     @Trivial
     private static String toAbsSec(long durationNS) {
         return ZipCachingProperties.toAbsSec(durationNS);
+    }
+
+    //
+
+    @Trivial
+    public void validate() {
+        synchronized ( reaperLock ) {
+            pendingQuickStorage.validate();
+            pendingSlowStorage.validate();
+            if ( !debugState ) {
+                completedStorage.validate();
+            }
+        }
     }
 
     //
@@ -172,55 +175,80 @@ public class ZipFileReaper {
             }
 
             synchronized ( reaper.reaperLock ) {
-                boolean isInterrupted = false;
-                while ( !isInterrupted ) {
+                long reapDelay = REAP_DELAY_INDEFINITE;
+
+                // CAUTION CAUTION CAUTION CAUTION
+                //
+                // The notification which occurs when a pending close is added does not
+                // necessarily resume the reaper thread before any other thread blocked
+                // by the reaper lock.  In particular, any number of 'enactOpen()' and
+                // 'enactClose()' may occur before 'reap()' resumes.  'reap()' cannot
+                // assume that there will necessarily be a pending close when it
+                // resumes.
+                //
+                // CAUTION CAUTION CAUTION CAUTION
+
+                while ( true ) {
+                	// Condition:
+                	// Start an indefinite wait if and only if there are no pending closes.
+                	// Upon waking up, at least one pending close is expected, but
+                	// is not guaranteed.
+
                     try {
-                        if ( reaper.pendingQuickStorage.isEmpty() && reaper.pendingSlowStorage.isEmpty() ) {
-                            reaper.reaperLock.wait(methodName, "new pending close"); // 'wait' throws InterruptedException
-
-                            // Wait for the single pending close which is known to be present.
-
-                            long reapAt = SystemUtils.getNanoTime();
-
-                            ZipFileData ripestPending = reaper.getRipest();
-
-                            long lastPendAt = ripestPending.lastPendAt;
-                            long consumedPend = ( reapAt - lastPendAt );
-
-                            long PendMax = ( ripestPending.expireQuickly ? reaper.getQuickPendMin() : reaper.getSlowPendMax() );
-
-                            if ( consumedPend < PendMax ) {
-                                long remainingPend = PendMax - consumedPend;
-                                reaper.reaperLock.waitNS(remainingPend, methodName, "new pending close"); // throws InterruptedException
-                            } else {
-                                // Can happen if the reaper wakes up a long time after the notification
-                                // was provided from posting the close request.
-                                if ( tc.isDebugEnabled() ) {
-                                    Tr.debug(tc, methodName + " Already waited [ " + toAbsSec(consumedPend) + " ]");
-                                }
-                            }
-
+                        if ( reapDelay < 0L ) {
+                            reaper.reaperLock.wait(methodName, "new pending close"); // throws InterruptedException
                         } else {
-                            long reapAt = SystemUtils.getNanoTime();
-
-                            long reapDelay = reaper.reap(reapAt, ZipFileReaper.IS_NOT_SHUTDOWN_REAP);
-
-                            if ( reapDelay < 0 ) {
-                                if ( tc.isDebugEnabled() ) {
-                                    Tr.debug(tc, methodName + " Reaped; next delay [ indefinite ]");
-                                }
-                            } else {
-                                reaper.reaperLock.waitNS(reapDelay, methodName, "current pending close"); // throws InterruptedException
-                            }
+                            reaper.reaperLock.waitNS(reapDelay, methodName, "active pending close"); // throws InterruptedException
                         }
-
                     } catch ( InterruptedException e ) {
                         if ( tc.isDebugEnabled() ) {
                             Tr.debug(tc, methodName + " Interrupted!");
                         }
-                        isInterrupted = true;
+                        break;
+                    }
+
+                    ZipFileData ripestPending = reaper.getRipest();
+                    if ( ripestPending == null ) {
+                        if ( tc.isDebugEnabled() ) {
+                            Tr.debug(tc, methodName + " No pending!");
+                        }
+
+                        // Condition:
+                        // No ripest means there are no pending closes, and because
+                        // this code holds the reaper lock, none can be added before
+                        // the next wait.
+
+                        reapDelay = REAP_DELAY_INDEFINITE;
+                        continue;
+                    }
+
+                    long reapAt = SystemUtils.getNanoTime();
+
+                    long lastPendAt = ripestPending.lastPendAt;
+                    long consumedPend = ( reapAt - lastPendAt );
+                    long pendMax = ( ripestPending.expireQuickly ? reaper.getQuickPendMin() : reaper.getSlowPendMax() );
+
+                    if ( consumedPend < pendMax ) {
+                        // The ripest still has time left before it is fully closed.
+                        // That is the amount of time to wait to the next reap. 
+                        reapDelay = pendMax - consumedPend;
+                        if ( tc.isDebugEnabled() ) {
+                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " ] remaining [ " + reapDelay + " ]");
+                        }
+                    } else {
+                        // The ripest is ready to fully close.  Fully close the ripest, and any
+                        // other pending closes which are fully ripe, and set the next reap delay
+                        // according to the ripest but not fully ripe pending close. 
+                        if ( tc.isDebugEnabled() ) {
+                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " ]");
+                        }
+                        reapDelay = reaper.reap(reapAt, ZipFileReaper.IS_NOT_SHUTDOWN_REAP);
                     }
                 }
+            }
+
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + " Shutting down");
             }
 
             // Maybe, move this to the shutdown thread.
@@ -928,12 +956,17 @@ public class ZipFileReaper {
         return nextReapDelay;
     }
 
+    @Trivial
     public ZipFile open(String path) throws IOException, ZipException {
         return open( path, SystemUtils.getNanoTime() );
     }
 
+    @Trivial
     public ZipFile open(String path, long openAt) throws IOException, ZipException {
         String methodName = "open";
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, methodName + " Path [ " + path + " ] at [ " + toRelSec(initialAt, openAt) + " ]");
+        }
 
         // Open could try to turn off the reaper thread if the last pending close
         // is removed.  Instead, the reaper allowed to run, and is coded to handle
@@ -1005,7 +1038,10 @@ public class ZipFileReaper {
             }
 
             data.enactOpen(openAt);
-            
+
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + " Path [ " + path + " ] [ " + zipFile + " ]");
+            }
             return zipFile;
         }
     }
@@ -1121,6 +1157,16 @@ public class ZipFileReaper {
                             // wait already set for the reaper remains correct.
                             wakeReason = null; // Added slow while quick or slow are present.
                         }
+
+                        // CAUTION CAUTION CAUTION CAUTION
+                        //
+                        // This notification does not ensure that reap() is continued
+                        // before any other reaper operation is performed.  This notification
+                        // simply unblocks the reap() thread and puts it in the pool of threads
+                        // available to be run.  This has a strong implication on how 'reap()'
+                        // must work.
+                        //
+                        // CAUTION CAUTION CAUTION CAUTION
 
                         if ( wakeReason != null ) {
                             reaperLock.notify(methodName, wakeReason);

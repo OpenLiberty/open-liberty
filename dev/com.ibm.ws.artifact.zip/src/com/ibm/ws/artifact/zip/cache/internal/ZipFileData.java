@@ -169,6 +169,7 @@ public class ZipFileData {
     //
     // PENDING -> FULLY_CLOSED
 
+    @Trivial
     public void enactOpen(long openAt) {
         String methodName = "enactOpen";
         if ( tc.isDebugEnabled() ) {
@@ -217,6 +218,7 @@ public class ZipFileData {
     public static final boolean CLOSE_ONCE = false;
     public static final boolean CLOSE_ALL = true;
 
+    @Trivial
     public boolean enactClose(long closeAt, boolean closeAll) {
         String methodName = "enactClose";
         if ( tc.isDebugEnabled() ) {
@@ -259,6 +261,7 @@ public class ZipFileData {
         }
     }
     
+    @Trivial
     public void enactFullClose(long fullCloseAt) {
         String methodName = "enactFullClose";
         if ( tc.isDebugEnabled() ) {
@@ -288,10 +291,12 @@ public class ZipFileData {
         }
     }
 
+    @Trivial
     protected IllegalStateException unknownState() {
         return new IllegalStateException("Unknown zip file state [ " + path + " ] [ " + zipFileState + " ]");
     }
 
+    @Trivial
     protected IllegalStateException illegalTransition(ZipFileAction zipFileAction) {
         return new IllegalStateException("Action [ " + zipFileAction + " ] is not valid from zip file state [ " + path + " ] [ " + zipFileState + " ]");
     }
