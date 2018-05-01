@@ -88,10 +88,8 @@ public class JaspiCallbackHandler implements CallbackHandler {
                 }
             }
         } catch (UnsupportedCallbackException e) {
-            FFDCFilter.processException(e, getClass().getName() + ".handle", "97");
             throw e;
         } catch (Exception t) {
-            FFDCFilter.processException(t, getClass().getName() + ".handle", "100");
             throw new IOException(t);
         }
     }
@@ -171,7 +169,7 @@ public class JaspiCallbackHandler implements CallbackHandler {
                 credData.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, securityName);
             }
         } catch (Exception e) {
-            FFDCFilter.processException(e, getClass().getName() + ".handleCallerPrincipalCallback", "245");
+            // FFDC record added automatically.
         }
     }
 
