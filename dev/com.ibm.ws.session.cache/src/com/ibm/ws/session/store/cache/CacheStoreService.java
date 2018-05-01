@@ -407,7 +407,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                                     if (entry != null) {
                                         // deserialization of the value might require the application's class loader, which is not available during introspection
                                         byte[] bytes = (byte[]) entry.getValue();
-                                        out.println(INDENT + INDENT + "session " + entry.getKey() + ": " + (bytes == null ? null : ("byte[" + bytes.length + "]")));
+                                        out.println(INDENT + INDENT + "session attribute " + entry.getKey() + ": " + (bytes == null ? null : ("byte[" + bytes.length + "]")));
                                     }
                                 }
                             } else if (isMetaCache) {
