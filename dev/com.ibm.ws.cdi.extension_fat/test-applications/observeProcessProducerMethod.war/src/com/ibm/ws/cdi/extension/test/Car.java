@@ -8,26 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.cdi.extension.test;
 
-def thisProject = project(':wlp-bndPlugins')
+/**
+ *
+ */
+public class Car {
 
-jar {
-  /* After building, we need to refresh the bnd Projects to pickup the bnd plugins built here. */
-  doLast {
-    println 'Refresh bnd Projects after building bnd plugins in ' + project.name
-    bnd.project.refresh()
-    bnd.project.clear()
-    parent.subprojects {
-      if (project != thisProject) {
-        bnd.project.refresh()
-        bnd.project.clear()
-      }
-    }
-  }
-}
-
-clean {
-  doLast {
-    println 'Not removing wlp-bndPlugins.jar during gradle clean task'
-  }
 }

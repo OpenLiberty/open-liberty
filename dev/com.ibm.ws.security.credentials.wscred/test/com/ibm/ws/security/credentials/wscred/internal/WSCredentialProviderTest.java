@@ -124,7 +124,7 @@ public class WSCredentialProviderTest {
 
     /**
      * Creates and sets a WSPrincipal into the subject.
-     * 
+     *
      * @param subject
      * @param realm
      * @param securityName
@@ -244,7 +244,7 @@ public class WSCredentialProviderTest {
     /**
      * Test method for {@link com.ibm.ws.security.credentials.internal.WSCredentialProvider#setCredential(javax.security.auth.Subject, java.lang.String)}.
      */
-    @Test
+    @Test(expected = CredentialException.class)
     public void setCredential_nonMatchingRealm() throws Exception {
         mock.checking(new Expectations() {
             {
@@ -252,7 +252,7 @@ public class WSCredentialProviderTest {
                 will(returnValue(UNAUTHENTICATED));
                 one(userRegistryService).isUserRegistryConfigured();
                 will(returnValue(true));
-                one(userRegistry).getRealm();
+                exactly(2).of(userRegistry).getRealm();
                 will(returnValue("BasicRealm"));
                 one(userRegistryService).getUserRegistryType();
                 will(returnValue(urType));
@@ -262,13 +262,6 @@ public class WSCredentialProviderTest {
         Subject subject = new Subject();
         setWSPrincipal(subject, "InvalidRealm", "name", "uniqueUserId");
         provider.setCredential(subject);
-
-        assertEquals("Principals should not be altered by the method",
-                     1, subject.getPrincipals().size());
-        assertTrue("Public credentials should be empty",
-                   subject.getPublicCredentials().isEmpty());
-        assertTrue("Private credentials should be empty",
-                   subject.getPrivateCredentials().isEmpty());
     }
 
     /**

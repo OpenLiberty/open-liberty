@@ -47,7 +47,7 @@ public class CommonExpectationTestClass extends CommonTestClass {
 
         assertEquals("Expectation action did not match expected value. Expectation was: " + expectation, testAction, expectation.getAction());
         assertEquals("Expectation search location did not match expected value. Expectation was: " + expectation, Constants.RESPONSE_STATUS, expectation.getSearchLocation());
-        assertEquals("Expectation check type did not match expected value. Expectation was: " + expectation, Constants.STRING_CONTAINS, expectation.getCheckType());
+        assertEquals("Expectation check type did not match expected value. Expectation was: " + expectation, Constants.STRING_EQUALS, expectation.getCheckType());
         assertEquals("Key to search for wasn't null but should have been.", null, expectation.getValidationKey());
         assertEquals("Value to search for did not match expected value. Expectation was: " + expectation, expectedStatus, expectation.getValidationValue());
         assertEquals("Expectation failure message did not match expected value. Expectation was: " + expectation, defaultMsg, expectation.getFailureMsg());

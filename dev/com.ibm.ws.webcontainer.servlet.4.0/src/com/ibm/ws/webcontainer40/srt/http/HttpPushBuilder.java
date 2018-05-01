@@ -333,6 +333,11 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         return _cookies;
     }
 
+    @Override
+    public String getPathQueryString() {
+        return _pathQueryString;
+    }
+
     // Reset the "state" of this PushBuilder before next push
     private void reset() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

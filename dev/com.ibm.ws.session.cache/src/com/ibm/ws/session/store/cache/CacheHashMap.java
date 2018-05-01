@@ -350,8 +350,14 @@ public class CacheHashMap extends BackedHashMap {
      * Loads all the session attributes.
      * Copied from DatabaseHashMapMR.
      */
+    @Trivial // return value contains customer data
     Object getAllValues(BackedSession sess) {
+        @SuppressWarnings("static-access")
+        final boolean hideValues = _smc.isHideSessionValues();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getAllValues", sess);
 
         String id = sess.getId();
 
@@ -402,12 +408,15 @@ public class CacheHashMap extends BackedHashMap {
                             readSize += b.length;
 
                             if (trace && tc.isDebugEnabled())
-                                tcReturn(tcSessionAttrCache, "get", b, obj);
+                                if (hideValues)
+                                    tcReturn(tcSessionAttrCache, "get", "byte[" + b.length + "]");
+                                else
+                                    tcReturn(tcSessionAttrCache, "get", b, obj);
                         } catch (ClassNotFoundException x) {
                             if (trace && tc.isDebugEnabled())
-                                tcReturn(tcSessionAttrCache, "get", b);
+                                tcReturn(tcSessionAttrCache, "get", hideValues ? ("byte[" + b.length + "]") : b);
 
-                            FFDCFilter.processException(x, getClass().getName(), "91", sess, new Object[] { Arrays.toString(b) });
+                            FFDCFilter.processException(x, getClass().getName(), "91", sess, new Object[] { hideValues ? "byte[" + b.length + "]" : Arrays.toString(b) });
                             throw new RuntimeException(x);
                         }
 
@@ -427,8 +436,13 @@ public class CacheHashMap extends BackedHashMap {
             }
         } catch (IOException e) {
             FFDCFilter.processException(e, getClass().getName(), "319", sess);
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "getAllValues", e);
             throw new RuntimeException(e);
         }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getAllValues", hideValues ? h.keySet() : h);
         return h;
     }
 
@@ -507,8 +521,14 @@ public class CacheHashMap extends BackedHashMap {
                         oos.close();
                         baos.close();
 
-                        if (trace && tc.isDebugEnabled())
-                            tcInvoke(tcSessionAttrCache, "put", key, objbuf, value);
+                        if (trace && tc.isDebugEnabled()) {
+                            @SuppressWarnings("static-access")
+                            boolean hideValues = _smc.isHideSessionValues();
+                            if (hideValues)
+                                tcInvoke(tcSessionAttrCache, "put", key, "byte[" + objbuf.length + "]");
+                            else
+                                tcInvoke(tcSessionAttrCache, "put", key, objbuf, value);
+                        }
 
                         sessionAttributeCache.put(key, objbuf);
 
@@ -702,8 +722,14 @@ public class CacheHashMap extends BackedHashMap {
      * @see com.ibm.ws.session.store.common.BackedHashMap#loadOneValue(java.lang.String, com.ibm.ws.session.store.common.BackedSession)
      */
     @Override
+    @Trivial // return value contains customer data
     protected Object loadOneValue(String attrName, BackedSession sess) {
+        @SuppressWarnings("static-access")
+        final boolean hideValues = _smc.isHideSessionValues();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "loadOneValue", attrName, sess);
 
         Object value = null;
         if (!((CacheSession) sess).getPopulatedAppData()) {
@@ -728,14 +754,17 @@ public class CacheHashMap extends BackedHashMap {
                         value = ((CacheStore) getIStore()).getLoader().loadObject(in);
 
                         if (trace && tc.isDebugEnabled())
-                            tcReturn(tcSessionAttrCache, "get", bytes, value);
+                            if (hideValues)
+                                tcReturn(tcSessionAttrCache, "get", "byte[" + bytes.length + "]");
+                            else
+                                tcReturn(tcSessionAttrCache, "get", bytes, value);
                     } finally {
                         in.close();
                     }
                 } catch (ClassNotFoundException | IOException x) {
                     if (trace && tc.isDebugEnabled())
-                        tcReturn(tcSessionAttrCache, "get", bytes);
-                    FFDCFilter.processException(x, getClass().getName(), "197", sess, new Object[] { Arrays.toString(bytes) });
+                        tcReturn(tcSessionAttrCache, "get", hideValues ? "byte[" + bytes.length + "]" : bytes);
+                    FFDCFilter.processException(x, getClass().getName(), "197", sess, new Object[] { hideValues ? bytes.length : Arrays.toString(bytes) });
                     throw new RuntimeException(x);
                 }
 
@@ -758,6 +787,9 @@ public class CacheHashMap extends BackedHashMap {
                 value = null;
             }
         }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "loadOneValue", hideValues ? (value == null ? null : "not null") : value);
         return value;
     }
 
@@ -778,15 +810,21 @@ public class CacheHashMap extends BackedHashMap {
         if (trace && tc.isDebugEnabled())
             tcInvoke(tcSessionMetaCache, "get", id);
 
-        ArrayList<?> oldValue = sessionMetaCache.get(id);
-
-        if (trace && tc.isDebugEnabled())
-            tcReturn(tcSessionMetaCache, "get", oldValue);
-
-        SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
         synchronized (sess) {
-            if (sessionInfo == null || sessionInfo.getLastAccess() != sess.getCurrentAccessTime() || sessionInfo.getLastAccess() == nowTime) {
+            ArrayList<?> oldValue = sessionMetaCache.get(id);
+
+            if (trace && tc.isDebugEnabled())
+                tcReturn(tcSessionMetaCache, "get", oldValue);
+
+            SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
+
+            long curAccessTime = sess.getCurrentAccessTime();
+            if (sessionInfo == null || sessionInfo.getLastAccess() != curAccessTime) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "session current access time: " + curAccessTime);
                 updateCount = 0;
+            } else if (sessionInfo.getLastAccess() >= nowTime) { // avoid setting last access when the cache already has a later time
+                updateCount = 1; // be consistent with Statement.executeUpdate which returns 1 when the row matches but no changes are made
             } else {
                 sessionInfo.setLastAccess(nowTime);
                 ArrayList<?> newValue = sessionInfo.getArrayList();

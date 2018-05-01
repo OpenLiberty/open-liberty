@@ -94,7 +94,7 @@ public class LoginToContinueInterceptor {
                 _useGlobalLogin = Boolean.FALSE;
             }
         } else {
-            Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
+            Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST");
         }
     }
 
@@ -129,7 +129,7 @@ public class LoginToContinueInterceptor {
                     }
                 }
             } else {
-                Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
+                Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST");
                 result = AuthenticationStatus.SEND_FAILURE;
             }
         } else {

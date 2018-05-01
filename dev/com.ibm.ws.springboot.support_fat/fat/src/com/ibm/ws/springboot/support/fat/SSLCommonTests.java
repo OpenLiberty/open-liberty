@@ -68,7 +68,11 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
         assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
     }
 
-    protected String sendHttpsGet(String url, LibertyServer server, String ksPath, String ksPassword, String tsPath, String tsPassword) throws Exception {
+    public static String sendHttpsGet(String url, LibertyServer server) throws Exception {
+        return sendHttpsGet(url, server, null, null, null, null);
+    }
+
+    public static String sendHttpsGet(String url, LibertyServer server, String ksPath, String ksPassword, String tsPath, String tsPassword) throws Exception {
 
         String result = null;
         SSLContext sslcontext = SSLContext.getInstance("SSL");
@@ -100,7 +104,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
         return result;
     }
 
-    private void establishSSLcontext(SSLContext sslcontext, LibertyServer server, String ksPath, String ksPassword, String tsPath, String tsPassword) throws Exception {
+    private static void establishSSLcontext(SSLContext sslcontext, LibertyServer server, String ksPath, String ksPassword, String tsPath, String tsPassword) throws Exception {
         InputStream ksStream = null;
         InputStream tsStream = null;
 
@@ -146,7 +150,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
         }
     }
 
-    private TrustManager[] getTrustManager() {
+    private static TrustManager[] getTrustManager() {
         TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
             @Override
             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
@@ -165,7 +169,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
         return trustAllCerts;
     }
 
-    private URL getURL(String path, LibertyServer server) throws MalformedURLException {
+    private static URL getURL(String path, LibertyServer server) throws MalformedURLException {
         return new URL("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + path);
 
     }

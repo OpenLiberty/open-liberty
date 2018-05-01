@@ -106,16 +106,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
         configurationProperties = new HashMap<String, Object>(props);
-    }
-
-    /**
-     * Performs deferred activation/initialization.
-     */
-    synchronized void activateLazily() {
-        if (cacheManager != null)
-            return; // lazy initialization has already completed
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
         Object scheduleInvalidationSecondHour = configurationProperties.get("scheduleInvalidationSecondHour");
@@ -134,6 +124,16 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         configurationProperties.put("sessionPersistenceMode", "JCACHE");
         configurationProperties.put("useInvalidatedId", false);
         configurationProperties.put("useMultiRowSchema", true);
+    }
+
+    /**
+     * Performs deferred activation/initialization.
+     */
+    synchronized void activateLazily() {
+        if (cacheManager != null)
+            return; // lazy initialization has already completed
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
         
         Properties vendorProperties = new Properties();
         

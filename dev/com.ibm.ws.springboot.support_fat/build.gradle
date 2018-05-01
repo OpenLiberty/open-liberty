@@ -61,5 +61,9 @@ autoFVT.doLast {
       from new File('../com.ibm.ws.springboot.support.version15.test.websocket.app/build/libs/','com.ibm.ws.springboot.support.version15.test.websocket.app.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
+    copy {
+      from new File('../com.ibm.ws.springboot.support.version15.test.actuator.app/build/libs/','com.ibm.ws.springboot.support.version15.test.actuator.app.jar')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
   }
 }

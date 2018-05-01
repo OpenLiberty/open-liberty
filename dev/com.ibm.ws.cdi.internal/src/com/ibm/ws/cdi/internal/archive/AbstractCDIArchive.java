@@ -12,6 +12,7 @@ package com.ibm.ws.cdi.internal.archive;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -133,9 +134,16 @@ public abstract class AbstractCDIArchive implements CDIArchive {
     @Override
     public Set<String> getExtensionClasses() {
 
+        Set<String> serviceClazzes = new HashSet<>();
+
+        if (getType() == ArchiveType.WEB_MODULE) {
+            Resource webInfClassesMetaInfServicesEntry = getResource(CDIUtils.WEB_INF_CLASSES_META_INF_SERVICES_CDI_EXTENSION);
+            serviceClazzes.addAll(CDIUtils.parseServiceSPIExtensionFile(webInfClassesMetaInfServicesEntry));
+        }
+
         Resource metaInfServicesEntry = getResource(CDIUtils.META_INF_SERVICES_CDI_EXTENSION);
-        Set<String> serviceClazz = CDIUtils.parseServiceSPIExtensionFile(metaInfServicesEntry);
-        return serviceClazz;
+        serviceClazzes.addAll(CDIUtils.parseServiceSPIExtensionFile(metaInfServicesEntry));
+        return serviceClazzes;
     }
 
     @Override

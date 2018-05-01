@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,9 @@
 package com.ibm.ws.webcontainer.security;
 
 import java.io.IOException;
+import java.security.AccessController;
 import java.security.Principal;
+import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.Set;
 
@@ -454,8 +456,24 @@ public class AuthenticateApi {
      * @param resp
      * @param authResult
      */
-    public void postProgrammaticAuthenticate(HttpServletRequest req, HttpServletResponse resp, AuthenticationResult authResult, boolean alwaysSetCallerSubject,
-                                             boolean addSSOCookie) {
+    public void postProgrammaticAuthenticate(final HttpServletRequest req, final HttpServletResponse resp, final AuthenticationResult authResult,
+                                             final boolean alwaysSetCallerSubject, final boolean addSSOCookie) {
+        if (System.getSecurityManager() == null) {
+            setSubjectAndCookies(req, resp, authResult, alwaysSetCallerSubject, addSSOCookie);
+        } else {
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+                @Override
+                public Object run() {
+                    setSubjectAndCookies(req, resp, authResult, alwaysSetCallerSubject, addSSOCookie);
+                    return null;
+                }
+            });
+        }
+    }
+
+    private void setSubjectAndCookies(HttpServletRequest req, HttpServletResponse resp, final AuthenticationResult authResult, boolean alwaysSetCallerSubject,
+                                      boolean addSSOCookie) {
         Subject subject = authResult.getSubject();
         if (alwaysSetCallerSubject || new SubjectHelper().isUnauthenticated(subjectManager.getCallerSubject())) {
             subjectManager.setCallerSubject(subject);

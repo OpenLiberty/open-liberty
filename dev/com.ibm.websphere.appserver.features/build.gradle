@@ -140,6 +140,77 @@ def generateFeatureForEdition = {
   props.store(propsFile.newWriter(), null)
 }
 
+task createFeatureResources {
+  dependsOn parent.subprojects.minus(project).assemble
+
+  def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
+  inputs.files(featureFiles).skipWhenEmpty()
+  outputs.dir buildImage.file('wlp/lib/features')
+  doFirst {
+    buildImage.mkdir('wlp/lib/features')
+  }
+  doLast {
+    featureBndTaskdef(ant)
+    repositoryContentTaskdef(ant)
+
+    generateFeatureForEdition()
+
+    featureFiles.each { featureFile ->
+      File featureFolder = featureFile.getParentFile()
+
+      Properties props = new Properties()
+      props.load(new FileInputStream(featureFile))
+
+      String symbolicName = props['symbolicName']
+      String kind = props['kind']
+      if (kind == null) {
+        throw new GradleException('Feature ' + symbolicName + ' does not contain a kind property')
+      }
+      String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
+
+      String relPath = featureFile.getPath().replace(projectDir.getPath() + '/visibility/', '')
+      def pathParts = relPath.split('/')
+      String visibility = pathParts[0]
+      if (pathParts.length == 3) {
+        copy {
+          from new File(featureFolder, 'resources/l10n')
+          into buildImage.file('wlp/lib/features/l10n')
+        }
+      }
+
+      ant.featureBnd(bnd: featureFile.getPath(),
+              workspaceDir: bndWorkspace.getBase(),
+              createESA: "false",
+              dir: buildImage.file('wlp'),
+              esaDir: new File(project.buildDir, 'tmp'),
+              createFor: kind,
+              buildType: kind,
+              junit: new File(project.buildDir, 'report/featureChecks.xml')) {
+        defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
+                licensePath: buildImage.file('lafiles/featureTerms'),
+                version: version,
+                licenseType: "EPL",
+                displayVersion: "OpenLiberty")
+        edition(baseEdition: "beta")
+        edition(baseEdition: "core",
+                validEditions: "")
+        edition(baseEdition: "base",
+                validEditions: "BASE,BASE_ILAN,DEVELOPERS,EXPRESS,ND,zOS")
+        edition(baseEdition: "nd",
+                validEditions: "BASE_ILAN,DEVELOPERS,ND,zOS")
+        edition(baseEdition: "zos",
+                validEditions: "zOS")
+        edition(baseEdition: "bluemix",
+                validEditions: "BLUEMIX")
+        edition(baseEdition: "full")
+        edition(baseEdition: "unsupported")
+      }
+    }
+  }
+}
+
+assemble.dependsOn createFeatureResources
+
 task publishFeatureResources {
   dependsOn parent.subprojects.assemble
 
@@ -197,15 +268,8 @@ task publishFeatureResources {
         edition(baseEdition: "core",
                 validEditions: "")
         edition(baseEdition: "base",
-                validEditions: "BASE,BASE_ILAN,DEVELOPERS,EXPRESS,ND,zOS")
-        edition(baseEdition: "nd",
-                validEditions: "BASE_ILAN,DEVELOPERS,ND,zOS")
-        edition(baseEdition: "zos",
-                validEditions: "zOS")
-        edition(baseEdition: "bluemix",
-                validEditions: "BLUEMIX")
+                validEditions: "Open")
         edition(baseEdition: "full")
-        edition(baseEdition: "unsupported")
       }
 
       delete "${buildDir}/repo/description.html"
@@ -296,12 +360,12 @@ task generateMavenArtifact {
 }
 
 task zipOpenLibertyMavenRepo(type: Zip) {
-    dependsOn generateMavenArtifact
-    from project.file('build/temp')
-    include "mavenArtifact/**"
-    archiveName 'openliberty-mavenArtifact.zip'
-    destinationDir distsDir
-}
+     dependsOn generateMavenArtifact
+     from project.file('build/temp/mavenArtifact')
+     include "io/**"
+     archiveName 'openliberty-mavenArtifact.zip'
+     destinationDir distsDir
+ }
 
 publishing {
   publications {

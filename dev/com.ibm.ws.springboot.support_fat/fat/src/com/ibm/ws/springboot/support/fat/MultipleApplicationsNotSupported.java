@@ -12,15 +12,13 @@ package com.ibm.ws.springboot.support.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,85 +52,74 @@ public class MultipleApplicationsNotSupported extends AbstractSpringTests {
         return AppConfigType.DROPINS_ROOT;
     }
 
+    @Override
+    public int getDropinCopyNum() {
+        return 3;
+    }
+
     @Test
     public void testMultipleApplicationsNotSupported() throws Exception {
-        // First stop the server so we can configure two spring boot applications
-        server.stopServer(false);
-
-        String applicationCopy = null;
-
-        //Make a copy of configured application and place it in the same folder
-        RemoteFile dropins = server.getFileFromLibertyServerRoot("dropins");
-
-        RemoteFile[] dropinApps = dropins.list(true);
-        for (RemoteFile dropinApp : dropinApps) {
-            if (dropinApp.isFile()) {
-                int dot = dropinApp.getName().lastIndexOf(".");
-                applicationCopy = getApplicationName(dropinApp.getName()) + ".copy" + dropinApp.getName().substring(dot);
-                RemoteFile copyFile = new RemoteFile(dropins, applicationCopy);
-                dropinApp.copyToDest(copyFile);
-                dropinFiles.add(copyFile);
-            }
-        }
-
-        // start server
-        server.startServer(false);
-
-        // Make sure we get Error message indicating multiple spring boot applications cannot be configured in the same server configuration
-        assertNotNull("Expected error message not found for not supporting multiple spring boot applications", server.waitForStringInLog("CWWKC0255E:.*"));
-
-        //Get the message indicating web application is available on a particular virtual host
-        String message1 = server.waitForStringInLog("CWWKT0016I:.*");
-        assertNotNull("Web application not available", message1);
-        String virtualHost1 = getVirtualHost(message1);
 
         //Get the name of the application installed so that we can remove it later
-        Set<String> installedApps = server.getInstalledAppNames(getApplicationName(SPRING_BOOT_15_APP_BASE),
-                                                                getApplicationName(applicationCopy));
-        assertEquals("Expected number of applications not installed", 1, installedApps.size());
-        String installedApp = installedApps.iterator().next();
+        Collection<String> appNames = new ArrayList<>();
+        String baseName = getApplicationName(SPRING_BOOT_15_APP_BASE);
+        appNames.add(baseName);
+        appNames.add("app.copy0");
+        appNames.add("app.copy1");
+        appNames.add("app.copy2");
 
-        HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
+        checkOneInsetalledApp(appNames);
 
-        //Remove and restore the installed application from dropins
-        String virtualHost2 = removeAndRestoreApplication(virtualHost1, installedApp);
-
-        //Repeat the process to ensure it behaves consistently
-        String virtualHost3 = removeAndRestoreApplication(virtualHost2, installedApp);
-
-        stopServer(true, "CWWKC0255E", "CWWKZ0002E", "CWWKZ0014W");
-    }
-
-    private String getVirtualHost(String message) {
-        Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(message);
-        while (m.find()) {
-            return m.group(1);
-        }
-        return null;
-    }
-
-    private String removeAndRestoreApplication(String virtualHost1, String installedApp) throws Exception, IOException {
-        //Remove the installed application from dropins
-        server.removeDropinsApplications(installedApp + "." + SPRING_APP_TYPE);
-        assertNotNull("Web application not removed", server.waitForStringInLog("CWWKT0017I:.*"));
+        removeDropinApps(appNames);
 
         //Set mark to end so we can test the messages after we add the dropins app back
         server.setMarkToEndOfLog();
 
-        //Restore the deleted application back to dropins
-        server.restoreDropinsApplications(installedApp + "." + SPRING_APP_TYPE);
+        restoreDropinApps(appNames);
 
-        //Get the message indicating web application is available on a particular virtual host
-        String message2 = server.waitForStringInLog("CWWKT0016I:.*");
-        assertNotNull("Web application not available", message2);
+        checkOneInsetalledApp(appNames);
 
-        String virtualHost2 = getVirtualHost(message2);
+        stopServer(true, "CWWKC0255E", "CWWKZ0002E", "CWWKZ0014W");
+    }
+
+    private void checkOneInsetalledApp(Collection<String> appNames) throws Exception {
+        Set<String> installedApps = server.getInstalledAppNames(appNames.toArray(new String[0]));
+        assertEquals("Expected number of applications not installed", 1, installedApps.size());
+        String installedApp = installedApps.iterator().next();
+
+        for (String dropinApp : appNames) {
+            if (!dropinApp.equals(installedApp)) {
+                // Make sure we get Error messages indicating multiple spring boot applications cannot be configured in the same server configuration
+                assertNotNull("Expected error message not found for not supporting multiple spring boot applications",
+                              server.waitForStringInLog("CWWKC0255E:.*" + dropinApp + ".*"));
+            }
+        }
 
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
 
-        //The application should start on different virtual hosts
-        assertFalse("Application should start on a different virtual host", virtualHost1.equals(virtualHost2));
-        return virtualHost2;
+    }
+
+    private void removeDropinApps(Collection<String> appNames) throws Exception {
+        RemoteFile dropins = server.getFileFromLibertyServerRoot("dropins");
+        for (String appName : appNames) {
+            String appFileName = appName + '.' + SPRING_APP_TYPE;
+            RemoteFile appFile = new RemoteFile(dropins, appFileName);
+            appFile.rename(new RemoteFile(server.getFileFromLibertyServerRoot(""), appFileName));
+        }
+        assertNotNull("Web application not removed", server.waitForStringInLog("CWWKT0017I:.*"));
+    }
+
+    private void restoreDropinApps(Collection<String> appNames) throws Exception {
+        RemoteFile dropins = server.getFileFromLibertyServerRoot("dropins");
+        for (String appName : appNames) {
+            String appFileName = appName + '.' + SPRING_APP_TYPE;
+            RemoteFile appFile = new RemoteFile(server.getFileFromLibertyServerRoot(""), appFileName);
+            RemoteFile restoreDest = new RemoteFile(dropins, "restore." + appFileName);
+            appFile.rename(restoreDest);
+            dropinFiles.add(restoreDest);
+        }
+        assertNotNull("The application was not installed", server
+                        .waitForStringInLog("CWWKZ0001I:.*"));
     }
 
     private String getApplicationName(String application) {

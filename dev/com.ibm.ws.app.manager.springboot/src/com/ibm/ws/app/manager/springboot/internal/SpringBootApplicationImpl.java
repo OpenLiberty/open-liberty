@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.internal;
 
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_HTTP_ENDPOINT;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_SSL;
+import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.ID_VIRTUAL_HOST;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_APP_TYPE;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_BUNDLE_PREFIX;
 import static com.ibm.ws.app.manager.springboot.internal.SpringConstants.SPRING_BOOT_CONFIG_NAMESPACE;
@@ -52,8 +55,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.startlevel.BundleStartLevel;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -66,7 +72,10 @@ import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfig;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
+import com.ibm.ws.app.manager.springboot.container.config.ConfigElement;
+import com.ibm.ws.app.manager.springboot.container.config.KeyStore;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
+import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instance;
 import com.ibm.ws.app.manager.springboot.support.SpringBootApplication;
@@ -181,8 +190,15 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (!serverConfig.compareAndSet(null, config)) {
                 throw new IllegalStateException("Server configuration already set.");
             }
+
+            String virtualHostId = "default_host";
+            List<VirtualHost> virtualHosts = config.getVirtualHosts();
+            if (!virtualHosts.isEmpty()) {
+                virtualHostId = config.getVirtualHosts().iterator().next().getId();
+            }
+
             try {
-                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, helperParam))) {
+                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, virtualHostId, helperParam))) {
                     throw new IllegalStateException("Config instance already created.");
                 }
             } catch (IOException | UnableToAdaptException | MetaDataException e) {
@@ -200,7 +216,11 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (instance == null) {
                 throw new IllegalStateException("No Config instance set.");
             }
-            virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
+            checkExistingConfig(config);
+            if (!config.getVirtualHosts().isEmpty()) {
+                // only install a virtual host config if we are not using the default-host
+                virtualHostConfig.updateAndGet((b) -> installVirtualHostBundle(b, config));
+            }
             instance.start();
         }
 
@@ -265,13 +285,125 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             return b;
         }
 
+        private void checkExistingConfig(ServerConfiguration libertyConfig) {
+            List<VirtualHost> hosts = libertyConfig.getVirtualHosts();
+            if (hosts.isEmpty()) {
+                return;
+            }
+            String requestedPort = hosts.get(0).getId().substring(ID_VIRTUAL_HOST.length());
+
+            // Checks ConfigurationAdmin to see if the ID for the following
+            // exist.  This is done in priority order because if a higher
+            // priority configuration is found then we remove all the lower
+            // priority elements as well as the element with the matching ID
+            // 1. <virtualHost/> - highest priority
+            if (checkVirtualHost(libertyConfig, requestedPort)) {
+                // found matching ID for <virtualHost/> return because we cleared out the rest
+                return;
+            }
+            // 2. <httpEndpoint/> - second priority
+            if (checkHttpEndpoint(libertyConfig, requestedPort)) {
+                // found matching ID for <httpEndpoint/> return because we cleared out the other
+                // lower priority elements
+                return;
+            }
+            // 3. <ssl/> - third priority
+            if (checkSsl(libertyConfig, requestedPort)) {
+                // found matching ID for <ssl/> return because we cleared out the other
+                // lower priority elements
+                return;
+            }
+            // 4. <keyStore/> - forth priority, this checks for both the KeyStore and TrustStore
+            checkKeyStores(libertyConfig);
+        }
+
+        private boolean checkVirtualHost(ServerConfiguration sc, String requestedPort) {
+            String virtualHostFilter = createFilter("com.ibm.ws.http.virtualhost", ID_VIRTUAL_HOST + requestedPort);
+            return checkConfigElement(sc, virtualHostFilter, sc.getVirtualHosts(), sc.getHttpEndpoints(), sc.getSsls(), sc.getKeyStores());
+        }
+
+        private boolean checkHttpEndpoint(ServerConfiguration sc, String requestedPort) {
+            String endpointFilter = createFilter("com.ibm.ws.http", ID_HTTP_ENDPOINT + requestedPort);
+            return checkConfigElement(sc, endpointFilter, sc.getHttpEndpoints(), sc.getSsls(), sc.getKeyStores());
+        }
+
+        private boolean checkSsl(ServerConfiguration sc, String requestedPort) {
+            String sslFilter = createFilter("com.ibm.ws.ssl.repertoire", ID_SSL + requestedPort);
+            return checkConfigElement(sc, sslFilter, sc.getSsls(), sc.getKeyStores());
+        }
+
+        private boolean checkConfigElement(ServerConfiguration libertyConfig, String filter, List<? extends ConfigElement> toCheck,
+                                           @SuppressWarnings("rawtypes") List... lowerPriority) {
+            boolean result = false;
+            try {
+                if (toCheck.isEmpty()) {
+                    return result = true;
+                }
+                Configuration[] existing = factory.getConfigurationAdmin().listConfigurations(filter);
+                return result = existing != null && existing.length > 0;
+            } catch (IOException | InvalidSyntaxException e) {
+                // Auto FFDC here, this will happen because of a defect
+                throw new RuntimeException(e);
+            } finally {
+                if (result) {
+                    // no toCheck elements, or found match; clear everything out
+                    toCheck.clear();
+                    for (List<?> toClear : lowerPriority) {
+                        toClear.clear();
+                    }
+                }
+            }
+        }
+
+        private String createFilter(String factoryPid, String id) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("(&");
+            sb.append('(').append(ConfigurationAdmin.SERVICE_FACTORYPID).append('=').append(factoryPid).append(')');
+            sb.append('(').append("id=").append(id).append(')');
+            sb.append(')');
+            return sb.toString();
+        }
+
+        private boolean checkKeyStores(ServerConfiguration sc) {
+            boolean result = false;
+            List<KeyStore> keyStores = sc.getKeyStores();
+            for (Iterator<KeyStore> iKeyStores = keyStores.iterator(); iKeyStores.hasNext();) {
+                KeyStore keyStore = iKeyStores.next();
+                if (checkKeyStore(keyStore)) {
+                    iKeyStores.remove();
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+
+        /**
+         * @param keyStore
+         * @return
+         */
+        private boolean checkKeyStore(KeyStore keyStore) {
+            try {
+                String filter = createFilter("com.ibm.ws.ssl.keystore", keyStore.getId());
+                Configuration[] existing = factory.getConfigurationAdmin().listConfigurations(filter);
+                return existing != null && existing.length > 0;
+            } catch (IOException | InvalidSyntaxException e) {
+                // Auto FFDC here, this will happen because of a defect
+                throw new RuntimeException(e);
+            }
+
+        }
+
         @FFDCIgnore(IOException.class)
         private String getDefaultInstances(ServerConfiguration libertyConfig, String configId) {
-            if (libertyConfig.getHttpEndpoints().size() != 1) {
+            if (libertyConfig.getVirtualHosts().size() > 1) {
+                throw new IllegalStateException("Only one virtualHost is allowed: " + libertyConfig.getVirtualHosts());
+            }
+            if (libertyConfig.getHttpEndpoints().size() > 1) {
                 throw new IllegalStateException("Only one httpEndpoint is allowed: " + libertyConfig.getHttpEndpoints());
             }
-            if (libertyConfig.getVirtualHosts().size() != 1) {
-                throw new IllegalStateException("Only one virtualHost is allowed: " + libertyConfig.getVirtualHosts());
+            if (libertyConfig.getSsls().size() > 1) {
+                throw new IllegalStateException("Only one ssl is allowed: " + libertyConfig.getSsls());
             }
             StringWriter result = new StringWriter();
             try {
@@ -508,9 +640,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
     }
 
-    private String getVirtualHostConfig(String start, String id, String end) {
+    private String getVirtualHostConfig(String start, String virtualHostId, String end) {
         StringBuilder builder = new StringBuilder(start);
-        builder.append("springVirtualHost-" + id);
+        builder.append(virtualHostId);
         builder.append(end);
         return builder.toString();
     }
