@@ -18,8 +18,9 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.io.ObjectStreamConstants;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -80,6 +81,14 @@ public class CacheHashMap extends BackedHashMap {
      * Key in the session info cache that is reserved for coordinating invalidation
      */
     private static final String INVAL_KEY = ".inval";
+    
+    /**
+     * Stream header for objects written using normal serialization process
+     */
+    static final byte[] OBJECT_OUTPUT_STREAM_HEADER = new byte[] {
+                                                                  (byte) (ObjectStreamConstants.STREAM_MAGIC >>> 8),
+                                                                  (byte) (ObjectStreamConstants.STREAM_MAGIC >>> 0)
+    };
 
     // this is set to true for multirow if additional conditions are satisfied
     private final boolean appDataTablesPerThread;
@@ -400,31 +409,25 @@ public class CacheHashMap extends BackedHashMap {
                         if (trace && tc.isDebugEnabled())
                             tcReturn(tcSessionAttrCache, "get", "null");
                     } else {
-                        ByteArrayInputStream bais = new ByteArrayInputStream(b);
-                        BufferedInputStream bis = new BufferedInputStream(bais);
-                        Object obj;
+                        Object value;
                         try {
-                            obj = ((CacheStore) getIStore()).getLoader().loadObject(bis);
+                            value = deserialize(b);
                             readSize += b.length;
-
+                            
                             if (trace && tc.isDebugEnabled())
                                 if (hideValues)
                                     tcReturn(tcSessionAttrCache, "get", "byte[" + b.length + "]");
                                 else
-                                    tcReturn(tcSessionAttrCache, "get", b, obj);
+                                    tcReturn(tcSessionAttrCache, "get", b, value);
                         } catch (ClassNotFoundException x) {
                             if (trace && tc.isDebugEnabled())
                                 tcReturn(tcSessionAttrCache, "get", hideValues ? ("byte[" + b.length + "]") : b);
 
-                            FFDCFilter.processException(x, getClass().getName(), "91", sess, new Object[] { hideValues ? "byte[" + b.length + "]" : Arrays.toString(b) });
+                            FFDCFilter.processException(x, getClass().getName(), "91", sess, new Object[] { hideValues ? "byte[" + b.length + "]" : TypeConversion.limitedBytesToString(b) });
                             throw new RuntimeException(x);
-                        }
-
-                        bis.close();
-                        bais.close();
-
-                        if (obj != null) {
-                            h.put(propId, obj);
+                        }                   
+                        if (value != null) {
+                            h.put(propId, value);
                         }
                     }
                 }
@@ -510,16 +513,7 @@ public class CacheHashMap extends BackedHashMap {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "ignoring " + propid + " because it is no longer found");
                     } else {
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-                        ObjectOutputStream oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
-                        oos.writeObject(value);
-                        oos.flush();
-
-                        byte[] objbuf = baos.toByteArray();
-
-                        oos.close();
-                        baos.close();
+                        byte[] objbuf = serialize(value);
 
                         if (trace && tc.isDebugEnabled()) {
                             @SuppressWarnings("static-access")
@@ -747,24 +741,17 @@ public class CacheHashMap extends BackedHashMap {
                     tcReturn(tcSessionAttrCache, "get", bytes);
             } else {
                 long startTime = System.nanoTime();
-
-                BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(bytes));
                 try {
-                    try {
-                        value = ((CacheStore) getIStore()).getLoader().loadObject(in);
-
-                        if (trace && tc.isDebugEnabled())
-                            if (hideValues)
-                                tcReturn(tcSessionAttrCache, "get", "byte[" + bytes.length + "]");
-                            else
-                                tcReturn(tcSessionAttrCache, "get", bytes, value);
-                    } finally {
-                        in.close();
-                    }
+                    value = deserialize(bytes);
+                    if (trace && tc.isDebugEnabled())
+                        if (hideValues)
+                            tcReturn(tcSessionAttrCache, "get", "byte[" + bytes.length + "]");
+                        else
+                            tcReturn(tcSessionAttrCache, "get", bytes, value);
                 } catch (ClassNotFoundException | IOException x) {
                     if (trace && tc.isDebugEnabled())
                         tcReturn(tcSessionAttrCache, "get", hideValues ? "byte[" + bytes.length + "]" : bytes);
-                    FFDCFilter.processException(x, getClass().getName(), "197", sess, new Object[] { hideValues ? bytes.length : Arrays.toString(bytes) });
+                    FFDCFilter.processException(x, getClass().getName(), "197", sess, new Object[] { hideValues ? bytes.length : TypeConversion.limitedBytesToString(bytes) });
                     throw new RuntimeException(x);
                 }
 
@@ -1407,4 +1394,64 @@ public class CacheHashMap extends BackedHashMap {
     private void writeObject(ObjectOutputStream out) throws IOException {
         throw new UnsupportedOperationException();
     }
+
+    //Converts an object to a byte array, using enhancements when possible to reduce size
+    public byte[] serialize(Object value) throws IOException {
+        BuiltinSerializationInfo<?> info = SerializationInfoCache.lookupByClass(value.getClass());
+
+        byte[] objbuf = null;
+
+        if(info != null) {
+            //This is a value that can be written directly to bytes
+            //TODO handle exceptions that occur when converting to bytes
+            objbuf = info.objectToBytes(value);
+        } else {
+            //Go through normal serialization process
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
+            try {
+                oos.writeObject(value);
+                oos.flush();
+
+                objbuf = baos.toByteArray();
+            } finally {
+                oos.close();
+                baos.close();
+            }
+        }   
+        return objbuf;
+    }
+
+    public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException{
+        Object obj = null;
+        
+        if (bytes.length >= 4 
+                && bytes[0] == OBJECT_OUTPUT_STREAM_HEADER[0]
+                && bytes[1] == OBJECT_OUTPUT_STREAM_HEADER[1]) {    
+            //This was serialized using the standard method, deserialize with readObject
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            BufferedInputStream in = new BufferedInputStream(bais);
+            try {
+                obj = ((CacheStore) getIStore()).getLoader().loadObject(in);
+            } finally {
+                in.close();
+                bais.close();
+            }
+        } else if(bytes[0] == SerializationInfoCache.BUILTIN_SERIALIZATION) {
+            //This was written directly to bytes, so read directly from bytes
+                           
+            BuiltinSerializationInfo<?> info = SerializationInfoCache.lookupByIndex(bytes[1]);
+            if(info == null) {
+                //Stream is not in the normal serializaton or built-in format
+                //TODO improve this exception/add NLS
+                throw new StreamCorruptedException("invalid stream header: " + bytes[0] + " " + bytes[1]);
+            }
+            //TODO handle exceptions that occur when converting to object
+            obj = info.bytesToObject(bytes);       
+        } else {
+            //TODO improve this exception/add NLS
+            throw new StreamCorruptedException("invalid stream header: " + bytes[0] + " " + bytes[1]);
+        }
+        return obj;
+}
 }
