@@ -195,61 +195,6 @@ task createESALists {
     }
 }
 
-task createGeneratedReplacementProjects {
-    dependsOn everythingElseHasBeenReleased
-    doLast {
-        File templateDir = new File(projectDir, 'gradle/replacement.project.templates')
-        def excludeList = []
-        gradleBndProjects.each { projectName ->
-            def bndProject = bndWorkspace.getProject(projectName)
-            String relativePath = bndProject.getName()
-            boolean testProject = 'true'.equals(bndProject.get('test.project', bndProject.get('fat.project', 'false')))
-            boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', testProject ? 'false' : 'true'))
-            if (!generateReplacement) {
-                return
-            }
-            String org
-            if (testProject) {
-                org = 'test'
-            } else {
-                org = 'dev'
-            }
-            List bsns = bndProject.getBsns()
-            int bsnCount = bndProject.isNoBundles() ? 0 : bsns.size()
-            if (bsnCount > 0) {
-                String classpathEntries = ""
-                String suffix = ""
-                for (String bsn : bsns) {
-                    String version = getVersionFromReleaseRepo(org, bsn)
-                    String artifact = bsn + '-' + version + '.jar'
-                    classpathEntries = '<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>' + suffix + classpathEntries
-                    suffix = '\n	'
-                }
-                if (relativePath.equals('com.ibm.ws.logging')) {
-                    classpathEntries = classpathEntries + '\n	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.kernel.boot"/>'
-                }
-                excludeList.add('dev/' + relativePath + '/')
-                File targetDir = new File(buildDir, 'replacements/' + relativePath)
-                targetDir.mkdirs()
-                copy {
-                    from templateDir
-                    into targetDir
-                    include '*.template'
-                    rename { String fileName ->
-                        fileName.replace('.template', '')
-                    }
-                    filter(ReplaceTokens, tokens: [PROJECT_NAME: relativePath, CLASSPATH_ENTRIES: classpathEntries])
-                }
-            }
-        }
-        File excludeFile = new File(project.buildDir, 'excludeList.txt')
-        excludeFile.createNewFile()
-        String text = ""
-        excludeList.sort().each { text += it + '\n' }
-        excludeFile.text = text
-    }
-}
-
 def releaserepo = file(bnd('releaserepo', 'release')) /* Release repository. */
 
 task ('createIndex') {
@@ -323,17 +268,14 @@ task ('createIndex') {
 
 task zipGradleBootstrap(type: Zip) {
     dependsOn createGradleBootstrap
-    dependsOn createGeneratedReplacementProjects
     dependsOn createESALists
     dependsOn createIndex
     baseName 'gradle-bootstrap'
     into 'prereq.published', {
         from new File(project.buildDir, 'dependencies.gradle'),
              new File(project.buildDir, 'gaFeatures.txt'),
-             new File(project.buildDir, 'betaFeatures.txt'),
-             new File(project.buildDir, 'excludeList.txt')
+             new File(project.buildDir, 'betaFeatures.txt')
     }
-    from new File(project.buildDir, 'replacements')
     into 'com.ibm.websphere.features.internal.openliberty', {
         from rootProject.fileTree(dir: 'com.ibm.websphere.appserver.features', include: 'visibility/**/*.feature').collect {
             if (!it.isDirectory()) {
