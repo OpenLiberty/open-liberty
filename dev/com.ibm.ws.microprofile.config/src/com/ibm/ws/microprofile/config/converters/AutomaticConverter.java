@@ -14,7 +14,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -28,42 +27,30 @@ import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 public class AutomaticConverter extends BuiltInConverter {
 
     private static final TraceComponent tc = Tr.register(AutomaticConverter.class);
-    private Method valueOfMethod;
+    private final Method valueOfMethod;
     private Constructor<?> ctor;
     private Method parseMethod;
-    private final boolean useCtorFirst;
 
     @Trivial
-    public AutomaticConverter(Class<?> type) {
-        this(type, type);
-    }
-
-    @Trivial
-    public AutomaticConverter(Type converterType, Class<?> reflectionClass) {
-        this(converterType, reflectionClass, false); //by default valueOf(String) is preferred to the Ctor(String)
-    }
-
-    @Trivial
-    public AutomaticConverter(Type converterType, Class<?> reflectionClass, boolean useCtorFirst) {
+    /**
+     *
+     * @param converterType The class to convert using
+     */
+    public AutomaticConverter(Class<?> converterType) {
         super(converterType);
-        this.useCtorFirst = useCtorFirst;
-        if (useCtorFirst) {
-            this.ctor = getConstructor(reflectionClass);
-            if (this.ctor == null) {
-                this.valueOfMethod = getValueOfMethod(reflectionClass);
-            }
-        } else {
-            this.valueOfMethod = getValueOfMethod(reflectionClass);
-            if (this.valueOfMethod == null) {
-                this.ctor = getConstructor(reflectionClass);
-            }
+
+        //in version 1.1 we always look for valueOf before a String constructor
+        this.valueOfMethod = getValueOfMethod(converterType);
+        if (this.valueOfMethod == null) {
+            this.ctor = getConstructor(converterType);
         }
+
         if (this.ctor == null && this.valueOfMethod == null) {
-            this.parseMethod = getParse(reflectionClass);
+            this.parseMethod = getParse(converterType);
         }
 
         if (this.ctor == null && this.valueOfMethod == null && this.parseMethod == null) {
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", reflectionClass));
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", converterType));
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 if (this.ctor != null) {
@@ -97,7 +84,7 @@ public class AutomaticConverter extends BuiltInConverter {
             method = reflectionClass.getMethod("valueOf", String.class);
             if ((method.getModifiers() & Modifier.STATIC) == 0) {
                 method = null;
-            } else if (method.getReturnType() == Void.TYPE) {
+            } else if (!reflectionClass.equals(method.getReturnType())) {
                 method = null;
             }
         } catch (NoSuchMethodException e) {
@@ -115,7 +102,7 @@ public class AutomaticConverter extends BuiltInConverter {
             method = reflectionClass.getMethod("parse", CharSequence.class);
             if ((method.getModifiers() & Modifier.STATIC) == 0) {
                 method = null;
-            } else if (method.getReturnType() == Void.TYPE) {
+            } else if (!reflectionClass.equals(method.getReturnType())) {
                 method = null;
             }
         } catch (NoSuchMethodException e) {
@@ -130,22 +117,13 @@ public class AutomaticConverter extends BuiltInConverter {
         Object converted = null;
         if (value != null) { //if the value is null then we always return null
             try {
-                if (this.useCtorFirst) {
-                    if (this.ctor != null) {
-                        converted = this.ctor.newInstance(value);
-                    } else if (this.valueOfMethod != null) {
-                        converted = this.valueOfMethod.invoke(null, value);
-                    } else if (this.parseMethod != null) {
-                        converted = this.parseMethod.invoke(null, value);
-                    }
-                } else {
-                    if (this.valueOfMethod != null) {
-                        converted = this.valueOfMethod.invoke(null, value);
-                    } else if (this.ctor != null) {
-                        converted = this.ctor.newInstance(value);
-                    } else if (this.parseMethod != null) {
-                        converted = this.parseMethod.invoke(null, value);
-                    }
+                //in version 1.1 we always look for valueOf before a String constructor
+                if (this.valueOfMethod != null) {
+                    converted = this.valueOfMethod.invoke(null, value);
+                } else if (this.ctor != null) {
+                    converted = this.ctor.newInstance(value);
+                } else if (this.parseMethod != null) {
+                    converted = this.parseMethod.invoke(null, value);
                 }
             } catch (InvocationTargetException e) {
                 Throwable cause = e.getCause();

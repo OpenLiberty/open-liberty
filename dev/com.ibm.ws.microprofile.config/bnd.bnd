@@ -36,9 +36,6 @@ Import-Package: \
 
 WS-TraceGroup: APPCONFIG
 
-Include-Resource: \
-  META-INF/services=resources/META-INF/services
-
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \

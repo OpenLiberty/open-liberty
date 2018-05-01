@@ -31,12 +31,12 @@ no.application.name.CWMCG0201E=CWMCG0201E: Unable to determine application name.
 no.application.name.CWMCG0201E.explanation=It was not possible to determine which application is in use.
 no.application.name.CWMCG0201E.useraction=Review the server message.log and FFDC logs to identify the problem.
 
-More than one application found with name {0}
+# More than one application found with name {0}
 duplicate.application.name.CWMCG0202E=CWMCG0202E: More than one application found with name {0}.
 duplicate.application.name.CWMCG0202E.explanation=The application name must be unique.
-duplicate.application.name.CWMCG0202E.useraction=Review the server.xml file to unsure each application name is unique.
+duplicate.application.name.CWMCG0202E.useraction=Review the server.xml file to ensure each application name is unique.
 
-More than one configuration found for application with name {0}
+# More than one configuration found for application with name {0}
 duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: More than one configuration found for application with name {0}.
 duplicate.application.configuration.name.CWMCG0203E.explanation=The application configuration must be unique.
 duplicate.application.configuration.name.CWMCG0203E.useraction=Review the server message.log and FFDC logs to identify the problem.
