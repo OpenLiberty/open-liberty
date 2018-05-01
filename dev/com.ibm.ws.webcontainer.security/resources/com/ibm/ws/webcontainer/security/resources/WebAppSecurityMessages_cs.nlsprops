@@ -133,3 +133,7 @@ SEC_JACC_AUTHZ_FAILED.useraction=Pokud se jedn\u00e1 o neo\u010dek\u00e1van\u00e
 SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: Adresu URL dodanou na vlastn\u00ed str\u00e1nce logoutExitPage slu\u017eby Form-Logout nelze zobrazit, requestURL={0}, logoutExitPage={1}. Odhl\u00e1\u0161en\u00ed bylo \u00fasp\u011b\u0161n\u00e9 a zobrazila se v\u00fdchoz\u00ed str\u00e1nka Form-Logout.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Slu\u017ebu Form-Logout se nezda\u0159ilo \u00fasp\u011b\u0161n\u011b p\u0159esm\u011brovat na str\u00e1nku ur\u010denou v parametru servletu logoutExitPage. Ur\u010den\u00e1 adresa URL je bu\u010f neplatn\u011b zformovanou adresou URL, nebo nen\u00ed ur\u010den n\u00e1zev hostitele ve vlastnosti com.ibm.websphere.security.logoutExitPageDomainList.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Opravte adresu URL ur\u010denou v parametru logoutExitPage.
+
+JWT_ALREADY_LOGGED_OUT=CWWKS9126E: P\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed tokenu JSON Web Token se nezda\u0159ilo, proto\u017ee token byl p\u0159edt\u00edm odhl\u00e1\u0161en.
+JWT_ALREADY_LOGGED_OUT.explanation=Token JSON Web Token (JWT), kter\u00fd byl p\u0159edt\u00edm odhl\u00e1\u0161en, byl znovu odesl\u00e1n pro ov\u011b\u0159en\u00ed p\u0159ihl\u00e1\u0161en\u00ed.
+JWT_ALREADY_LOGGED_OUT.useraction=Z\u00edskejte nov\u00fd token JSON Web Token, nebo nastavte atribut konfigurace trackLoggedOutSSOCookiesEnabled na hodnotu false, co\u017e je m\u00e9n\u011b bezpe\u010dn\u00e9.

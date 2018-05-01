@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Errore: {0}
+error.inputConsoleNotAvailable=La console di input non \u00e8 disponibile.
+error.missingIO=Errore; manca l''unit\u00e0 I/O: {0}.
+
+usage=Utilizzo:  {0}
+task.unknown=Attivit\u00e0 sconosciuta: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+insufficientArgs=Argomenti insufficienti.
+invalidArg=Argomento non valido {0}.
+missingArg=Argomento mancante {0}.
+missingArg2=\u00c8 necessario fornire l''argomento {0} o l''argomento {1}.
+exclusiveArg=\u00c8 necessario fornire l''argomento {0} o l''argomento {1}, ma non entrambi.
+missingValue=Valore mancante per l''argomento {0}.
+
+thin.abort=Interruzione attivit\u00e0 thin applicazione:
+thin.appNotFound=Non \u00e8 stato possibile trovare l''applicazione specificata nell''ubicazione {0}
+thin.appTargetIsDirectory=La destinazione dell''applicazione specificata \u00e8 una directory {0}
+thin.libCacheIsFile=La destinazione cache libreria specificata \u00e8 un file {0}
+thin.creating=Creazione di un''applicazione thin da: {0}
+thin.libraryCache=Cache libreria: {0}
+thin.applicationLoc=Applicazione thin: {0}
+
+file.requiredDirNotCreated=Impossibile creare la struttura directory richiesta per {0}
+file.failedDirCreate=Impossibile creare la directory {0}
+
+

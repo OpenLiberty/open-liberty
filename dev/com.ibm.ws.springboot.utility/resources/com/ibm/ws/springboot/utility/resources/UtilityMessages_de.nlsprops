@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Fehler: {0}
+error.inputConsoleNotAvailable=Die Eingabekonsole ist nicht verf\u00fcgbar.
+error.missingIO=Fehler. E/A-Einheit fehlt: {0}
+
+usage=Syntax: {0}
+task.unknown=Unbekannte Task: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+insufficientArgs=Zu wenige Argumente.
+invalidArg=Das Argument {0} ist ung\u00fcltig.
+missingArg=Das Argument {0} fehlt.
+missingArg2=Sie m\u00fcssen das Argument {0} oder das Argument {1} angeben.
+exclusiveArg=Sie m\u00fcssen entweder das Argument {0} oder das Argument {1} angeben, aber nicht beide.
+missingValue=Der Wert f\u00fcr das Argument {0} fehlt.
+
+thin.abort=Thin-Task der Anwendung wird abgebrochen:
+thin.appNotFound=Die angegebene Anwendung wurde nicht an der Position {0} gefunden.
+thin.appTargetIsDirectory=Das angegebene Anwendungsziel ist ein Verzeichnis: {0}
+thin.libCacheIsFile=Das angegebene Bibliothekscacheziel ist eine Datei: {0}
+thin.creating=Thin-Anwendung wird aus {0} erstellt.
+thin.libraryCache=Bibliothekscache: {0}
+thin.applicationLoc=Thin-Anwendung: {0}
+
+file.requiredDirNotCreated=Die erforderliche Verzeichnisstruktur f\u00fcr {0} konnte nicht erstellt werden.
+file.failedDirCreate=Fehler beim Erstellen des Verzeichnisses {0}
+
+
