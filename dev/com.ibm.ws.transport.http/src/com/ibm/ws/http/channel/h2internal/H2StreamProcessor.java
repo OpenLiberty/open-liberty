@@ -13,8 +13,6 @@ package com.ibm.ws.http.channel.h2internal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -108,13 +106,10 @@ public class H2StreamProcessor {
     private long streamWindowUpdateWriteInitialSize;
     private long streamWindowUpdateWriteLimit;
 
+    private final int MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS = 5000;
+
     // the local window, which we're keeping track of as a receiver
     private long streamReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
-
-    // flag used to signal that we don't want to queue any data frames, as the flow control window has not been exceeded
-    private boolean waitingForWindowUpdate = false;
-    // keep track of any DATA frames that cannot be sent until the client updates the window
-    Queue<FrameData> dataWaitingForWindowUpdate;
 
     // a list of buffers to be read in by the WebContainer
     private final ArrayList<WsByteBuffer> streamReadReady = new ArrayList<WsByteBuffer>();
@@ -152,7 +147,6 @@ public class H2StreamProcessor {
         updateStreamState(state);
         streamWindowUpdateWriteInitialSize = muxLink.getInitialWindowSize();
         streamWindowUpdateWriteLimit = muxLink.getInitialWindowSize();
-        this.dataWaitingForWindowUpdate = new ConcurrentLinkedQueue<FrameData>();
     }
 
     /**
@@ -194,21 +188,6 @@ public class H2StreamProcessor {
      * @throws StreamClosedException
      */
     public synchronized void processNextFrame(Frame frame, Constants.Direction direction) throws ProtocolException, StreamClosedException {
-        processNextFrame(frame, direction, false);
-    }
-
-    public synchronized void processNextFrame(Frame frame, Constants.Direction direction, boolean drainData) throws ProtocolException, StreamClosedException {
-
-        // try to write out any data frames that have been queued
-        if (drainData) {
-            if (waitingForWindowUpdate && isDataQueued()
-                && !isWindowLimitExceeded(dataWaitingForWindowUpdate.peek())) {
-                frame = dequeueData();
-                waitingForWindowUpdate = false;
-            } else {
-                return;
-            }
-        }
 
         // Make it easy to follow frame processing in the trace by searching for "processNextFrame-" to see all frame processing
         boolean doDebugWhile = false;
@@ -450,14 +429,8 @@ public class H2StreamProcessor {
                 try {
                     if (frameType == FrameTypes.WINDOW_UPDATE) {
                         processWindowUpdateFrame();
-                        // check to see if there is data waiting for this update
-                        if (isDataQueued()) {
-                            if (!this.isWindowLimitExceeded(dataWaitingForWindowUpdate.peek())) {
-                                // there is data waiting; signal that we need to stop queuing data
-                                waitingForWindowUpdate = false;
-                            }
-                        } else {
-                            return;
+                        synchronized (this) {
+                            this.notifyAll();
                         }
                     }
                 } catch (Http2Exception e) {
@@ -548,23 +521,7 @@ public class H2StreamProcessor {
                     continue;
                 }
             }
-            // check to see if there's a queued data frame that should be written out
-            if (!waitingForWindowUpdate) {
-                if (isDataQueued()) {
-                    if (!this.isWindowLimitExceeded(dataWaitingForWindowUpdate.peek())) {
-                        addFrame = ADDITIONAL_FRAME.DATA;
-                        frame = dequeueData();
-                        direction = Constants.Direction.WRITING_OUT;
-                    } else {
-                        addFrame = ADDITIONAL_FRAME.NO;
-                        waitingForWindowUpdate = true;
-                    }
-                } else {
-                    addFrame = ADDITIONAL_FRAME.NO;
-                }
-            } else {
-                addFrame = ADDITIONAL_FRAME.NO;
-            }
+            addFrame = ADDITIONAL_FRAME.NO;
         }
     }
 
@@ -688,6 +645,7 @@ public class H2StreamProcessor {
 
             // update the SETTINGS for this connection
             muxLink.getConnectionSettings().updateSettings((FrameSettings) currentFrame);
+            muxLink.getVirtualConnection().getStateMap().put("h2_frame_size", muxLink.getConnectionSettings().maxFrameSize);
 
             // immediately send out ACK (an empty SETTINGS frame with the ACK flag set)
             currentFrame = new FrameSettings();
@@ -805,40 +763,11 @@ public class H2StreamProcessor {
     }
 
     /**
-     * @return true if any data frames are waiting for the window size to be increased by the peer
-     */
-    private boolean isDataQueued() {
-        return !dataWaitingForWindowUpdate.isEmpty();
-    }
-
-    /**
-     * Add a data frame to the queue, to be written out when the flow control window increases
-     *
-     * @param FrameData to queue
-     * @param boolean true if frame should be put at the head of the queue
-     */
-    private void queueData(FrameData dataFrame) {
-        waitingForWindowUpdate = true;
-        dataWaitingForWindowUpdate.add(dataFrame);
-    }
-
-    /**
-     * @return FrameData at the head of the queue, or null if the queue is empty
-     */
-    private FrameData dequeueData() {
-        return dataWaitingForWindowUpdate.poll();
-    }
-
-    /**
-     * Tell this stream to attempt to start writing out any queued data frames
+     * Tell this stream to attempt to start writing out data frames
      */
     private void flushDataWaitingForWindowUpdate() {
-        if (this.waitingForWindowUpdate) {
-            try {
-                processNextFrame(null, Constants.Direction.WRITING_OUT, true);
-            } catch (Http2Exception h2e) {
-                this.muxLink.close(this.muxLink.initialVC, h2e);
-            }
+        synchronized (this) {
+            this.notifyAll();
         }
     }
 
@@ -1196,11 +1125,7 @@ public class H2StreamProcessor {
             }
         } else {
             // Make the headers frame look like it just came in
-            WsByteBufferPoolManager bufManager = HttpDispatcher.getBufferManager();
-            WsByteBuffer buf = bufManager.allocate(frame.buildFrameForWrite().length);
-            byte[] ba = frame.buildFrameForWrite();
-            buf.put(ba);
-            buf.flip();
+            WsByteBuffer buf = frame.buildFrameForWrite();
             TCPReadRequestContext readi = h2HttpInboundLinkWrap.getConnectionContext().getReadInterface();
             readi.setBuffer(buf);
 
@@ -1792,44 +1717,65 @@ public class H2StreamProcessor {
             return false;
         }
         if (currentFrame.isWriteFrame() && currentFrame.getInitialized()) {
-            WsByteBuffer writeFrame = null;
+            WsByteBuffer writeFrameBuffer = null;
             try {
-                // We need to check to see if the write window is large enough to write this data.
-                // If it's not, we'll queue it up and wait for the client to update the window
                 if (currentFrame.getFrameType() == FrameTypes.DATA) {
-                    if (!waitingForWindowUpdate && !isWindowLimitExceeded((FrameData) currentFrame)) {
+                    WsByteBuffer[] writeFrameBuffers = null;
+                    FrameData data = (FrameData) currentFrame;
+                    boolean timedOut = false;
+
+                    // Check to see if the write window is large enough to write this data.
+                    if (isWindowLimitExceeded((FrameData) currentFrame)) {
+                        // the connection or stream window is too small to write this data frame.  This thread will wait for a max of
+                        // 5 seconds for a window update that's large enough to allow the data frame to be written out
+                        long startTime = System.currentTimeMillis();
+                        while (isWindowLimitExceeded((FrameData) currentFrame) && !timedOut) {
+                            synchronized (this) {
+                                this.wait(MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS);
+                            }
+                            if (System.currentTimeMillis() - startTime > MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS) {
+                                timedOut = true;
+                            }
+                        }
+                    }
+                    // the flow control window is large enough to write the data frame
+                    if (!timedOut) {
+                        writeFrameBuffers = data.buildFrameArrayForWrite();
+                        muxLink.writeSync(null, writeFrameBuffers, data.getWriteFrameLength(), TCPRequestContext.NO_TIMEOUT,
+                                          data.getFrameType(), data.getPayloadLength(), myID);
+
                         streamWindowUpdateWriteLimit -= currentFrame.getPayloadLength();
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "stream: " + myID + " Data payload written - new streamWindowUpdateWriteLimit: " + streamWindowUpdateWriteLimit);
                         }
 
                     } else {
-                        // the write window is too small: save this frame off until the peer sends a WINDOW_UPDATE
-                        queueData((FrameData) currentFrame);
+                        // timed out waiting for a window update, so this stream will be reset.
+                        currentFrame = new FrameRstStream(myID, Constants.FLOW_CONTROL_ERROR, false);
+                        writeFrameBuffer = currentFrame.buildFrameForWrite();
+                        muxLink.writeSync(writeFrameBuffer, null, currentFrame.getWriteFrameLength(), TCPRequestContext.NO_TIMEOUT,
+                                          currentFrame.getFrameType(), currentFrame.getPayloadLength(), myID);
 
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "writeFrameSync the write window is too small, so the current DATA frame will be queued on stream " + myID);
-                        }
-                        return false;
                     }
+
+                } else {
+                    // this frame is not a data frame, and so it's not subject to flow control and we can write immediately
+                    writeFrameBuffer = currentFrame.buildFrameForWrite();
+                    muxLink.writeSync(writeFrameBuffer, null, currentFrame.getWriteFrameLength(), TCPRequestContext.NO_TIMEOUT,
+                                      currentFrame.getFrameType(), currentFrame.getPayloadLength(), myID);
                 }
-
-                byte[] writeFrameBytes = currentFrame.buildFrameForWrite();
-                WsByteBufferPoolManager mgr = HttpDispatcher.getBufferManager();
-                writeFrame = mgr.allocate(writeFrameBytes.length);
-
-                writeFrame.put(writeFrameBytes);
-                writeFrame.flip();
-
-                muxLink.writeSync(writeFrame, null, writeFrame.limit(), TCPRequestContext.NO_TIMEOUT,
-                                  currentFrame.getFrameType(), currentFrame.getPayloadLength(), myID);
-
             } catch (IOException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "writeFrameSync caught an IOException: " + e);
                 }
                 // release buffer used to synchronously write the frame
-                writeFrame.release();
+                if (writeFrameBuffer != null) {
+                    writeFrameBuffer.release();
+                }
+            } catch (InterruptedException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "writeFrameSync interrupted: " + e);
+                }
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

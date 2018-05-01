@@ -83,10 +83,169 @@ public class ResponseStatusExpectationTest extends CommonSpecificExpectationTest
         }
     }
 
+    /************************************** validate **************************************/
+
+    @Override
+    @Test
+    public void test_validate_nullContentObject() {
+        try {
+            Expectation exp = createBasicExpectation();
+            runNegativeValidateTestForCheckType_contains(exp, null, "-1");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_unknownCheckType() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(TEST_ACTION, "check type", SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = htmlunitWebResponse;
+            setValidateTestExpectations(content, 200);
+
+            runNegativeValidateTestForCheckType_unknown(exp, content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_unsupportedResponseType() {
+        try {
+            Expectation exp = createBasicExpectation();
+            Object content = "Some content";
+
+            runNegativeValidateTestForUnsupportedResponseType(exp, content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeContains_fails() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = htmlunitTextPage;
+            int statusCode = 200;
+            setValidateTestExpectations(content, statusCode);
+
+            runNegativeValidateTestForCheckType_contains(exp, content, Integer.toString(statusCode));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeContains_passes() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_CONTAINS, "200", FAILURE_MESSAGE);
+            Object content = htmlunitXmlPage;
+            int statusCode = 200;
+            setValidateTestExpectations(content, statusCode);
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeDoesNotContain_fails() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_DOES_NOT_CONTAIN, "403", FAILURE_MESSAGE);
+            Object content = 403;
+
+            runNegativeValidateTestForCheckType_doesNotContain(exp, content, "403");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeDoesNotContain_passes() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_DOES_NOT_CONTAIN, "200", FAILURE_MESSAGE);
+            Object content = htmlunitHtmlPage;
+            int statusCode = 401;
+            setValidateTestExpectations(content, statusCode);
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeMatches_fails() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_MATCHES, "[0-9]{4}", FAILURE_MESSAGE);
+            Object content = htmlunitTextPage;
+            int statusCode = 200;
+            setValidateTestExpectations(content, statusCode);
+
+            runNegativeValidateTestForCheckType_matches(exp, content, Integer.toString(statusCode));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeMatches_passes() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_MATCHES, "[0-9]{3}", FAILURE_MESSAGE);
+            Object content = htmlunitXmlPage;
+            int statusCode = 403;
+            setValidateTestExpectations(content, statusCode);
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeDoesNotMatch_fails() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_DOES_NOT_MATCH, "[0-9]{3}", FAILURE_MESSAGE);
+            Object content = htmlunitWebResponse;
+            int statusCode = 200;
+            setValidateTestExpectations(content, statusCode);
+
+            runNegativeValidateTestForCheckType_doesNotMatch(exp, content, Integer.toString(statusCode));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeDoesNotMatch_passes() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_DOES_NOT_MATCH, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = htmlunitHtmlPage;
+            int statusCode = 999;
+            setValidateTestExpectations(content, statusCode);
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /************************************** Helper methods **************************************/
 
+    @Override
     protected Expectation createBasicExpectation() {
         return new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+    }
+
+    protected void setValidateTestExpectations(Object responseObject, final Object content) {
+        setWebResponseExpectation(responseObject);
+        mockery.checking(new org.jmock.Expectations() {
+            {
+                one(htmlunitWebResponse).getStatusCode();
+                will(returnValue((int) content));
+            }
+        });
     }
 
 }

@@ -83,10 +83,187 @@ public class ResponseFullExpectationTest extends CommonSpecificExpectationTest {
         }
     }
 
+    /************************************** validate **************************************/
+
+    @Test
+    public void test_validate_unknownCheckType() {
+        try {
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, "check type", SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = "Some content";
+
+            runNegativeValidateTestForCheckType_unknown(exp, content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_unsupportedResponseType() {
+        try {
+            Expectation exp = createBasicExpectation();
+            Object content = new Integer(0);
+
+            runNegativeValidateTestForUnsupportedResponseType(exp, content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_nullResponseText() {
+        try {
+            Expectation exp = createBasicExpectation();
+            Object content = htmlunitWebResponse;
+            setValidateTestExpectations(content, null);
+
+            runNegativeValidateTestForNullContent(exp, content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeContains_fails() {
+        try {
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = "missing search value";
+
+            runNegativeValidateTestForCheckType_contains(exp, content, content.toString());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeContains_passes() {
+        try {
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = htmlunitHtmlPage;
+            String responseBody = "<html>\n\r<head>\n\r<title>Hello</title>\n\r</head>\n\r<body>Hello, " + SEARCH_FOR_VAL + "!\n\r</body>\n\r</html>";
+            setValidateTestExpectations(content, responseBody);
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeDoesNotContain_fails() {
+        try {
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, Constants.STRING_DOES_NOT_CONTAIN, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = htmlunitTextPage;
+            String responseBody = "<html>\n\r<head>\n\r<title>Hello</title>\n\r</head>\n\r<body>Hello, " + SEARCH_FOR_VAL + "!\n\r</body>\n\r</html>";
+            setValidateTestExpectations(content, responseBody);
+
+            runNegativeValidateTestForCheckType_doesNotContain(exp, content, responseBody);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeDoesNotContain_passes() {
+        try {
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, Constants.STRING_DOES_NOT_CONTAIN, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = htmlunitXmlPage;
+            String responseBody = "Hello, world!";
+            setValidateTestExpectations(content, responseBody);
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeMatches_fails() {
+        try {
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, Constants.STRING_MATCHES, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = htmlunitWebResponse;
+            String responseBody = "Hello, world!";
+            setValidateTestExpectations(content, responseBody);
+
+            runNegativeValidateTestForCheckType_matches(exp, content, responseBody);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeMatches_matchSpansMultipleLines() {
+        try {
+            String searchForRegex = "<html>.+</html>";
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, Constants.STRING_MATCHES, searchForRegex, FAILURE_MESSAGE);
+            Object content = htmlunitTextPage;
+            String responseBody = "<html>\n\r<head>\n\r<title>Hello</title>\n\r</head>\n\r<body>Hello, world!\n\r</body>\n\r</html>";
+            setValidateTestExpectations(content, responseBody);
+
+            runNegativeValidateTestForCheckType_matches(exp, content, responseBody);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeMatches_passes() {
+        try {
+            String searchForRegex = "<html>.+</html>";
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, Constants.STRING_MATCHES, searchForRegex, FAILURE_MESSAGE);
+            Object content = htmlunitWebResponse;
+            String responseBody = "<html><head><title>Hello</title></head><body>Hello, world!</body></html>";
+            setValidateTestExpectations(content, responseBody);
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeDoesNotMatch_fails() {
+        try {
+            String searchForRegex = "<html>.+</html>";
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, Constants.STRING_DOES_NOT_MATCH, searchForRegex, FAILURE_MESSAGE);
+            Object content = htmlunitXmlPage;
+            String responseBody = "<html><head><title>Hello</title></head><body>Hello, world!</body></html>";
+            setValidateTestExpectations(content, responseBody);
+
+            runNegativeValidateTestForCheckType_doesNotMatch(exp, content, responseBody);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_checkTypeDoesNotMatch_passes() {
+        try {
+            Expectation exp = new ResponseFullExpectation(TEST_ACTION, Constants.STRING_DOES_NOT_MATCH, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = htmlunitHtmlPage;
+            String responseBody = "Hello, world!";
+            setValidateTestExpectations(content, responseBody);
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /************************************** Helper methods **************************************/
 
+    @Override
     protected Expectation createBasicExpectation() {
         return new ResponseFullExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+    }
+
+    protected void setValidateTestExpectations(Object responseObject, final Object content) {
+        setWebResponseExpectation(responseObject);
+        mockery.checking(new org.jmock.Expectations() {
+            {
+                one(htmlunitWebResponse).getContentAsString();
+                will(returnValue((String) content));
+            }
+        });
     }
 
 }

@@ -302,7 +302,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
                                                       ur.getUniqueUserId(username));
         setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE);
         setCredentials(temporarySubject, securityName, username);
-        setPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
+        setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_CERTIFICATE, null);
     }
 
     /** {@inheritDoc} */

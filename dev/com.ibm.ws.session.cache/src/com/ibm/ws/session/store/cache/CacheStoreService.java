@@ -106,16 +106,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
         configurationProperties = new HashMap<String, Object>(props);
-    }
-
-    /**
-     * Performs deferred activation/initialization.
-     */
-    synchronized void activateLazily() {
-        if (cacheManager != null)
-            return; // lazy initialization has already completed
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
         Object scheduleInvalidationSecondHour = configurationProperties.get("scheduleInvalidationSecondHour");
@@ -134,17 +124,29 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         configurationProperties.put("sessionPersistenceMode", "JCACHE");
         configurationProperties.put("useInvalidatedId", false);
         configurationProperties.put("useMultiRowSchema", true);
+    }
+
+    /**
+     * Performs deferred activation/initialization.
+     */
+    synchronized void activateLazily() {
+        if (cacheManager != null)
+            return; // lazy initialization has already completed
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
         
         Properties vendorProperties = new Properties();
         
         String uriValue = (String) configurationProperties.get("uri");
-        URI uri = null;
-        if(uriValue != null)
+        final URI uri;
+        if (uriValue != null)
             try {
                 uri = new URI(uriValue);
             } catch (URISyntaxException e) {
                 throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
             }
+        else
+            uri = null;
         
         for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
             String key = entry.getKey();
@@ -161,23 +163,27 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         // load JCache provider from configured library, which is either specified as a libraryRef or via a bell
         final ClassLoader cl = library.getClassLoader();
 
-        ClassLoader loader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new CachingProviderClassLoader(cl));
-
-        if (trace && tc.isDebugEnabled())
-            CacheHashMap.tcInvoke("Caching", "getCachingProvider", loader);
-
-        cachingProvider = Caching.getCachingProvider(loader);
-
         try {
-            tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                ClassLoader loader = new CachingProviderClassLoader(cl);
 
-            if (trace && tc.isDebugEnabled()) {
-                CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
-                Tr.debug(this, tc, "caching provider class is " + cachingProvider.getClass().getName());
-                CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
-            }
+                if (trace && tc.isDebugEnabled())
+                    CacheHashMap.tcInvoke("Caching", "getCachingProvider", loader);
 
-            cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
+                cachingProvider = Caching.getCachingProvider(loader);
+
+                tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
+
+                if (trace && tc.isDebugEnabled()) {
+                    CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
+                    Tr.debug(this, tc, "caching provider class is " + cachingProvider.getClass().getName());
+                    CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
+                }
+
+                cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
+
+                return null;
+            });
 
             tcCacheManager = "CacheManager" + Integer.toHexString(System.identityHashCode(cacheManager));
 
@@ -192,10 +198,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 CacheHashMap.tcReturn(tcCachingProvider, "isSupported", supportsStoreByReference);
         } catch (Error | RuntimeException x) {
             // deactivate will not be invoked if activate fails, so ensure CachingProvider is closed on error paths
-            CacheHashMap.tcInvoke(tcCachingProvider, "close");
-            cachingProvider.close();
-            CacheHashMap.tcReturn(tcCachingProvider, "close");
-            throw x;
+            if (cachingProvider != null) {
+                CacheHashMap.tcInvoke(tcCachingProvider, "close");
+                cachingProvider.close();
+                CacheHashMap.tcReturn(tcCachingProvider, "close");
+                throw x;
+            }
         }
     }
 

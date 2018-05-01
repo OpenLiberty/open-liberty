@@ -25,12 +25,14 @@ import org.junit.Test;
 
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
+import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseHeaderExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseTitleExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
+import com.ibm.ws.security.fat.common.test.UnitTestUtils;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
@@ -38,14 +40,6 @@ import test.common.SharedOutputManager;
 public class TestValidationUtilsTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.fat.common.*=all");
-
-    private static final String CONTENT_TO_VALIDATE_NULL = "Content to validate is null";
-    private static final String STRING_TO_SEARCH_FOR_NULL = "String to search for is null";
-    private static final String ERR_COMPARISON_TYPE_UNKNOWN = "comparison type.+" + "%s" + ".+unknown";
-    private static final String ERR_STRING_NOT_FOUND = ".*Was expecting .*" + "%s" + ".+received.+\\[" + "%s" + "\\]";
-    private static final String ERR_STRING_FOUND = ".*Was not expecting .*" + "%s" + ".+received.+\\[" + "%s" + "\\]";
-    private static final String ERR_REGEX_NOT_FOUND = ".*Did not find.* regex.+" + "%s" + ".+ content.+\\[" + "%s" + "\\]";
-    private static final String ERR_REGEX_FOUND = ".+unexpected regex.+" + "%s" + ".+ content.+\\[" + "%s" + "\\]";
 
     private final String action = "some test action";
     private final String checkType = "check type";
@@ -379,6 +373,154 @@ public class TestValidationUtilsTest extends CommonTestClass {
         }
     }
 
+    /************************************** validateResult **************************************/
+
+    /**
+     * Tests:
+     * - Provided Expectation object is null
+     * Expects:
+     * - Message saying the expectations are null should be logged; nothing else should happen
+     */
+    @Test
+    public void test_validateResult_nullExpectations() {
+        try {
+            Object contentToValidate = null;
+            Expectations expectations = null;
+
+            utils.validateResult(contentToValidate, action, expectations);
+
+            assertRegexInTrace(outputMgr, "Expectations.+null");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Provided Expectation object is empty
+     * Expects:
+     * - Nothing should happen
+     */
+    @Test
+    public void test_validateResult_emptyExpectations() {
+        try {
+            Object contentToValidate = null;
+            Expectations expectations = new Expectations();
+
+            utils.validateResult(contentToValidate, action, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+            assertRegexNotInTrace(outputMgr, "Expectations.+null");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - One expectation provided
+     * - Action for expectation does not match the action provided to the validateResult method
+     * Expects:
+     * - Nothing should happen
+     */
+    @Test
+    public void test_validateResult_oneExpectation_doesNotMatchAction() {
+        try {
+            Object contentToValidate = null;
+            Expectations expectations = new Expectations();
+            expectations.addSuccessStatusCodesForActions(new String[] { "expectation action does not match" });
+
+            utils.validateResult(contentToValidate, action, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+            assertRegexNotInTrace(outputMgr, "Expectations.+null");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - One expectation provided
+     * - Expectation validation fails
+     * Expects:
+     * - Validation error should be logged and exception should be re-thrown
+     */
+    @Test
+    public void test_validateResult_oneExpectation_expectationFailsValidation() {
+        try {
+            Object contentToValidate = null;
+            Expectations expectations = new Expectations();
+            expectations.addSuccessStatusCodesForActions(new String[] { action });
+
+            try {
+                utils.validateResult(contentToValidate, action, expectations);
+                fail("Should have thrown an exception because of a validation failing for an expectation, but did not.");
+            } catch (Exception e) {
+                verifyException(e, "Failed to validate response status.+" + String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, "200", "-1"));
+            }
+
+            assertStringInTrace(outputMgr, "Error validating response");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Multiple expectations provided for various test actions
+     * - Expectations for the action being validated all pass, other expectations for other actions would fail
+     * Expects:
+     * - Validation should succeed and no errors should be logged
+     */
+    @Test
+    public void test_validateResult_multipleExpectationsForDifferentActions_allPassValidationForGivenStep() {
+        try {
+            Object contentToValidate = "This is some response content";
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(Expectation.createResponseExpectation(action, "some", "Should have found \"some\" in full response."));
+            expectations.addExpectation(Expectation.createResponseExpectation("some other action", "DO NOT FIND", failureMsg));
+            expectations.addExpectation(Expectation.createResponseExpectation(action, "response content", "Did not find expected string in full response."));
+            expectations.addExpectation(Expectation.createResponseStatusExpectation("yet another action", 403));
+
+            utils.validateResult(contentToValidate, action, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Multiple expectations provided for various test actions
+     * - One expectation will fail for the specified test action
+     * Expects:
+     * - Validation should stop at the first expectation that fails validation and an error should be logged
+     */
+    @Test
+    public void test_validateResult_multipleExpectations_oneFails() {
+        try {
+            Object contentToValidate = "This is some response content";
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(Expectation.createResponseExpectation(action, "some", "Should have found \"some\" in full response."));
+            expectations.addExpectation(Expectation.createResponseExpectation(action, "DO NOT FIND", failureMsg));
+            expectations.addExpectation(Expectation.createResponseExpectation("another action", "response content", "Did not find expected string in full response."));
+            expectations.addExpectation(Expectation.createResponseStatusExpectation(action, 403));
+
+            try {
+                utils.validateResult(contentToValidate, action, expectations);
+                fail("Should have thrown an exception because of a validation failing for an expectation, but did not.");
+            } catch (Exception e) {
+                verifyException(e, "Failed to validate response text.+" + String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, "DO NOT FIND", contentToValidate.toString()));
+            }
+
+            assertStringNotInTrace(outputMgr, "Failed to validate response status");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /************************************** validateStringContent **************************************/
 
     /**
@@ -417,7 +559,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateStringContent(expectation, contentToValidate);
                 fail("Should have thrown an exception but did not.");
             } catch (Exception e) {
-                verifyException(e, String.format(ERR_COMPARISON_TYPE_UNKNOWN, "null"));
+                verifyException(e, String.format(UnitTestUtils.ERR_COMPARISON_TYPE_UNKNOWN, "null"));
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -439,7 +581,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateStringContent(expectation, contentToValidate);
                 fail("Should have thrown an exception but did not.");
             } catch (Exception e) {
-                verifyException(e, String.format(ERR_COMPARISON_TYPE_UNKNOWN, Pattern.quote(checkType)));
+                verifyException(e, String.format(UnitTestUtils.ERR_COMPARISON_TYPE_UNKNOWN, Pattern.quote(checkType)));
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -459,7 +601,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             Expectation expectation = new ResponseTitleExpectation(action, Constants.STRING_CONTAINS, searchFor, failureMsg);
             String contentToValidate = "some content";
 
-            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(ERR_STRING_NOT_FOUND, searchFor, contentToValidate);
+            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, searchFor, contentToValidate);
             runNegativeValidateStringContentTest(expectation, contentToValidate, expectedFailureMsg);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -497,7 +639,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             Expectation expectation = new ResponseFullExpectation(action, Constants.STRING_DOES_NOT_CONTAIN, searchFor, failureMsg);
             String contentToValidate = "some " + searchFor + " content";
 
-            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(ERR_STRING_FOUND, searchFor, contentToValidate);
+            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_FOUND, searchFor, contentToValidate);
             runNegativeValidateStringContentTest(expectation, contentToValidate, expectedFailureMsg);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -535,7 +677,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             Expectation expectation = new ResponseHeaderExpectation(action, Constants.STRING_MATCHES, searchFor, failureMsg);
             String contentToValidate = "some content";
 
-            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(ERR_REGEX_NOT_FOUND, Pattern.quote(searchFor), contentToValidate);
+            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_REGEX_NOT_FOUND, Pattern.quote(searchFor), contentToValidate);
             runNegativeValidateStringContentTest(expectation, contentToValidate, expectedFailureMsg);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -573,7 +715,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             Expectation expectation = new ResponseMessageExpectation(action, Constants.STRING_DOES_NOT_MATCH, searchFor, failureMsg);
             String contentToValidate = "some " + searchFor + " content";
 
-            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(ERR_REGEX_FOUND, searchFor, contentToValidate);
+            String expectedFailureMsg = Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_REGEX_FOUND, searchFor, contentToValidate);
             runNegativeValidateStringContentTest(expectation, contentToValidate, expectedFailureMsg);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -616,7 +758,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateStringContains(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), STRING_TO_SEARCH_FOR_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.STRING_TO_SEARCH_FOR_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -639,7 +781,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateStringContains(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), STRING_TO_SEARCH_FOR_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.STRING_TO_SEARCH_FOR_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -662,7 +804,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateStringContains(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), CONTENT_TO_VALIDATE_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.CONTENT_TO_VALIDATE_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -795,7 +937,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateStringDoesNotContain(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), STRING_TO_SEARCH_FOR_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.STRING_TO_SEARCH_FOR_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -818,7 +960,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateStringDoesNotContain(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), STRING_TO_SEARCH_FOR_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.STRING_TO_SEARCH_FOR_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -841,7 +983,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateStringDoesNotContain(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), CONTENT_TO_VALIDATE_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.CONTENT_TO_VALIDATE_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -974,7 +1116,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateRegexFound(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), STRING_TO_SEARCH_FOR_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.STRING_TO_SEARCH_FOR_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -997,7 +1139,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateRegexFound(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), STRING_TO_SEARCH_FOR_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.STRING_TO_SEARCH_FOR_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1020,7 +1162,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateRegexFound(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), CONTENT_TO_VALIDATE_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.CONTENT_TO_VALIDATE_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1195,7 +1337,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateRegexNotFound(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), STRING_TO_SEARCH_FOR_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.STRING_TO_SEARCH_FOR_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1218,7 +1360,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateRegexNotFound(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), STRING_TO_SEARCH_FOR_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.STRING_TO_SEARCH_FOR_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1241,7 +1383,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
                 utils.validateRegexNotFound(expectation, contentToValidate);
                 fail("Should have thrown an assertion error but did not.");
             } catch (AssertionError e) {
-                verifyPattern(e.getMessage(), CONTENT_TO_VALIDATE_NULL);
+                verifyPattern(e.getMessage(), UnitTestUtils.CONTENT_TO_VALIDATE_NULL);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1428,7 +1570,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             utils.validateStringContains(expectation, contentToValidate);
             fail("Should have thrown an assertion error but did not.");
         } catch (AssertionError e) {
-            String expectedFailureMsg = Pattern.quote(expectation.getFailureMsg()) + String.format(ERR_STRING_NOT_FOUND, expectation.getValidationValue(), contentToValidate);
+            String expectedFailureMsg = Pattern.quote(expectation.getFailureMsg()) + String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, expectation.getValidationValue(), contentToValidate);
             verifyPattern(e.getMessage(), expectedFailureMsg);
         }
     }
@@ -1438,7 +1580,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             utils.validateStringDoesNotContain(expectation, contentToValidate);
             fail("Should have thrown an assertion error but did not.");
         } catch (AssertionError e) {
-            String expectedFailureMsg = Pattern.quote(expectation.getFailureMsg()) + String.format(ERR_STRING_FOUND, expectation.getValidationValue(), contentToValidate);
+            String expectedFailureMsg = Pattern.quote(expectation.getFailureMsg()) + String.format(UnitTestUtils.ERR_STRING_FOUND, expectation.getValidationValue(), contentToValidate);
             verifyPattern(e.getMessage(), expectedFailureMsg);
         }
     }
@@ -1448,7 +1590,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             utils.validateRegexFound(expectation, contentToValidate);
             fail("Should have thrown an assertion error but did not.");
         } catch (AssertionError e) {
-            verifyPattern(e.getMessage(), Pattern.quote(expectation.getFailureMsg()) + String.format(ERR_REGEX_NOT_FOUND, Pattern.quote(expectation.getValidationValue()), contentToValidate));
+            verifyPattern(e.getMessage(), Pattern.quote(expectation.getFailureMsg()) + String.format(UnitTestUtils.ERR_REGEX_NOT_FOUND, Pattern.quote(expectation.getValidationValue()), contentToValidate));
         }
     }
 
@@ -1457,7 +1599,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             utils.validateRegexNotFound(expectation, contentToValidate);
             fail("Should have thrown an assertion error but did not.");
         } catch (AssertionError e) {
-            verifyPattern(e.getMessage(), Pattern.quote(expectation.getFailureMsg()) + String.format(ERR_REGEX_FOUND, Pattern.quote(expectation.getValidationValue()), contentToValidate));
+            verifyPattern(e.getMessage(), Pattern.quote(expectation.getFailureMsg()) + String.format(UnitTestUtils.ERR_REGEX_FOUND, Pattern.quote(expectation.getValidationValue()), contentToValidate));
         }
     }
 

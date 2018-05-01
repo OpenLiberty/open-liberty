@@ -11,9 +11,7 @@
 package com.ibm.ws.security.fat.common.logging;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
@@ -197,8 +195,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printMethodName(methodName);
 
             String checkForString = CommonFatLoggingUtils.PRINT_DELIMITER_METHOD_NAME + " " + methodName;
-            assertStringInTrace(checkForString);
-            assertStringNotInStandardOut(checkForString);
+            assertStringInTrace(outputMgr, checkForString);
+            assertStringNotInStandardOut(outputMgr, checkForString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -218,8 +216,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printMethodName(methodName);
 
             String checkForString = CommonFatLoggingUtils.PRINT_DELIMITER_METHOD_NAME + " " + methodName;
-            assertStringInTrace(checkForString);
-            assertStringNotInStandardOut(checkForString);
+            assertStringInTrace(outputMgr, checkForString);
+            assertStringNotInStandardOut(outputMgr, checkForString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -239,8 +237,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printMethodName(methodName);
 
             String checkForString = CommonFatLoggingUtils.PRINT_DELIMITER_METHOD_NAME + " " + methodName;
-            assertStringInTrace(checkForString);
-            assertStringNotInStandardOut(checkForString);
+            assertStringInTrace(outputMgr, checkForString);
+            assertStringNotInStandardOut(outputMgr, checkForString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -262,8 +260,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printMethodName(methodName, task);
 
             String checkForString = CommonFatLoggingUtils.PRINT_DELIMITER_METHOD_NAME + " " + task + " " + methodName;
-            assertStringInTrace(checkForString);
-            assertStringNotInStandardOut(checkForString);
+            assertStringInTrace(outputMgr, checkForString);
+            assertStringNotInStandardOut(outputMgr, checkForString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -285,8 +283,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printMethodName(methodName, task);
 
             String checkForString = CommonFatLoggingUtils.PRINT_DELIMITER_METHOD_NAME + " " + task + " " + methodName;
-            assertStringInTrace(checkForString);
-            assertStringNotInStandardOut(checkForString);
+            assertStringInTrace(outputMgr, checkForString);
+            assertStringNotInStandardOut(outputMgr, checkForString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -308,8 +306,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printMethodName(methodName, task);
 
             String checkForString = CommonFatLoggingUtils.PRINT_DELIMITER_METHOD_NAME + " " + task + " " + methodName;
-            assertStringInTrace(checkForString);
-            assertStringNotInStandardOut(checkForString);
+            assertStringInTrace(outputMgr, checkForString);
+            assertStringNotInStandardOut(outputMgr, checkForString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -503,8 +501,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printAllCookies(webClient);
 
-            assertStringNotInStandardOut(LOG_STRING_COOKIE);
-            assertStringNotInTrace(LOG_STRING_COOKIE);
+            assertStringNotInStandardOut(outputMgr, LOG_STRING_COOKIE);
+            assertStringNotInTrace(outputMgr, LOG_STRING_COOKIE);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -530,8 +528,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printAllCookies(webClient);
 
-            assertStringNotInStandardOut(LOG_STRING_COOKIE);
-            assertStringNotInTrace(LOG_STRING_COOKIE);
+            assertStringNotInStandardOut(outputMgr, LOG_STRING_COOKIE);
+            assertStringNotInTrace(outputMgr, LOG_STRING_COOKIE);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -558,8 +556,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printAllCookies(webClient);
 
-            assertStringNotInStandardOut(LOG_STRING_COOKIE);
-            assertStringNotInTrace(LOG_STRING_COOKIE);
+            assertStringNotInStandardOut(outputMgr, LOG_STRING_COOKIE);
+            assertStringNotInTrace(outputMgr, LOG_STRING_COOKIE);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -593,8 +591,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printAllCookies(webClient);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_COOKIE) + cookieName + ".+: " + cookieValue);
-            assertStringNotInStandardOut(LOG_STRING_COOKIE);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_COOKIE) + cookieName + ".+: " + cookieValue);
+            assertStringNotInStandardOut(outputMgr, LOG_STRING_COOKIE);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -642,10 +640,10 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printAllCookies(webClient);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_COOKIE) + cookieName + ".+: " + cookieValueNull);
-            assertRegexInTrace(Pattern.quote(LOG_STRING_COOKIE) + cookieNameWithSpace + ".+: " + cookieValueEmpty);
-            assertRegexInTrace(Pattern.quote(LOG_STRING_COOKIE) + cookieNameWhitespace + ".+: " + cookieValueNonEmpty);
-            assertStringNotInStandardOut(LOG_STRING_COOKIE);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_COOKIE) + cookieName + ".+: " + cookieValueNull);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_COOKIE) + cookieNameWithSpace + ".+: " + cookieValueEmpty);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_COOKIE) + cookieNameWhitespace + ".+: " + cookieValueNonEmpty);
+            assertStringNotInStandardOut(outputMgr, LOG_STRING_COOKIE);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -674,7 +672,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printRequestHeaders(webRequest, test);
 
-            assertStringNotInTrace(LOG_STRING_REQUEST_PARAMETER);
+            assertStringNotInTrace(outputMgr, LOG_STRING_REQUEST_PARAMETER);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -701,7 +699,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printRequestHeaders(webRequest, test);
 
-            assertStringNotInTrace(LOG_STRING_REQUEST_PARAMETER);
+            assertStringNotInTrace(outputMgr, LOG_STRING_REQUEST_PARAMETER);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -729,7 +727,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printRequestHeaders(webRequest, test);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_REQUEST_HEADER) + "name" + ".+: " + "value");
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_REQUEST_HEADER) + "name" + ".+: " + "value");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -764,7 +762,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             for (Entry<String, String> header : requestHeaders.entrySet()) {
                 String key = (header.getKey() == null) ? null : Pattern.quote(header.getKey());
                 String value = (header.getValue() == null) ? null : Pattern.quote(header.getValue());
-                assertRegexInTrace(Pattern.quote(LOG_STRING_REQUEST_HEADER) + key + ".+: " + value);
+                assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_REQUEST_HEADER) + key + ".+: " + value);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -794,7 +792,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printRequestParameters(webRequest, test);
 
-            assertStringNotInTrace(LOG_STRING_REQUEST_PARAMETER);
+            assertStringNotInTrace(outputMgr, LOG_STRING_REQUEST_PARAMETER);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -821,7 +819,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printRequestParameters(webRequest, test);
 
-            assertStringNotInTrace(LOG_STRING_REQUEST_PARAMETER);
+            assertStringNotInTrace(outputMgr, LOG_STRING_REQUEST_PARAMETER);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -849,7 +847,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printRequestParameters(webRequest, test);
 
-            assertRegexInTrace(LOG_STRING_REQUEST_PARAMETER + "name" + ".+: " + "value");
+            assertRegexInTrace(outputMgr, LOG_STRING_REQUEST_PARAMETER + "name" + ".+: " + "value");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -884,7 +882,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             for (NameValuePair pair : requestParams) {
                 String name = (pair.getName() == null) ? null : Pattern.quote(pair.getName());
                 String value = (pair.getValue() == null) ? null : Pattern.quote(pair.getValue());
-                assertRegexInTrace(LOG_STRING_REQUEST_PARAMETER + name + ".+: " + value);
+                assertRegexInTrace(outputMgr, LOG_STRING_REQUEST_PARAMETER + name + ".+: " + value);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -910,7 +908,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printResponseParts(response, testName);
 
             assertStartResponseContentLogged();
-            assertStringInTrace("nothing to print");
+            assertStringInTrace(outputMgr, "nothing to print");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -932,7 +930,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printResponseParts(response, testName.getMethodName());
 
             assertStartResponseContentLogged();
-            assertStringInTrace("nothing to print");
+            assertStringInTrace(outputMgr, "nothing to print");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -955,7 +953,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             assertResponseContentStartAndClassAreLogged(String.class.getName());
             assertErrorPrintingResponseContent();
-            assertStringInTrace("Unknown response type");
+            assertStringInTrace(outputMgr, "Unknown response type");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -983,12 +981,12 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printResponseParts(htmlunitWebResponse, testName.getMethodName());
 
             assertResponseContentStartAndClassAreLogged(htmlunitWebResponse.getClass().getName());
-            assertStringInTrace(LOG_STRING_RESPONSE_STATUS_CODE + statusCode);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_STATUS_CODE + statusCode);
             assertErrorPrintingResponseContent();
-            assertStringInTrace("get Title not supported");
+            assertStringInTrace(outputMgr, "Getting title not supported");
 
-            assertStringNotInTrace(LOG_STRING_RESPONSE_TITLE);
-            assertStringNotInTrace(LOG_STRING_RESPONSE_HEADER);
+            assertStringNotInTrace(outputMgr, LOG_STRING_RESPONSE_TITLE);
+            assertStringNotInTrace(outputMgr, LOG_STRING_RESPONSE_HEADER);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1030,14 +1028,14 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printResponseParts(htmlunitHtmlPage, testName.getMethodName());
 
             assertResponseContentStartAndClassAreLogged(htmlunitHtmlPage.getClass().getName());
-            assertStringInTrace(LOG_STRING_RESPONSE_STATUS_CODE + statusCode);
-            assertStringInTrace(LOG_STRING_RESPONSE_URL + SIMPLE_URL);
-            assertStringInTrace(LOG_STRING_RESPONSE_MESSAGE + null);
-            assertStringInTrace(LOG_STRING_RESPONSE_FULL + null);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_STATUS_CODE + statusCode);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_URL + SIMPLE_URL);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_MESSAGE + null);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_FULL + null);
 
-            assertStringNotInTrace(LOG_STRING_RESPONSE_TITLE);
-            assertStringNotInTrace(LOG_STRING_RESPONSE_HEADER);
-            assertStringNotInTrace("Error printing response");
+            assertStringNotInTrace(outputMgr, LOG_STRING_RESPONSE_TITLE);
+            assertStringNotInTrace(outputMgr, LOG_STRING_RESPONSE_HEADER);
+            assertStringNotInTrace(outputMgr, "Error printing response");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1084,14 +1082,14 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printResponseParts(htmlunitHtmlPage, testName.getMethodName());
 
             assertResponseContentStartAndClassAreLogged(htmlunitHtmlPage.getClass().getName());
-            assertStringInTrace(LOG_STRING_RESPONSE_STATUS_CODE + statusCode);
-            assertStringInTrace(LOG_STRING_RESPONSE_TITLE + TITLE);
-            assertStringInTrace(LOG_STRING_RESPONSE_URL + SIMPLE_URL);
-            assertRegexInTrace(Pattern.quote(LOG_STRING_RESPONSE_HEADER) + ".+" + HEADER_NAME + ".+" + HEADER_VALUE);
-            assertStringInTrace(LOG_STRING_RESPONSE_MESSAGE + STATUS_MESSAGE);
-            assertStringInTrace(LOG_STRING_RESPONSE_FULL + FULL_RESPONSE);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_STATUS_CODE + statusCode);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_TITLE + TITLE);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_URL + SIMPLE_URL);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_RESPONSE_HEADER) + ".+" + HEADER_NAME + ".+" + HEADER_VALUE);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_MESSAGE + STATUS_MESSAGE);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_FULL + FULL_RESPONSE);
 
-            assertStringNotInTrace("Error printing response");
+            assertStringNotInTrace(outputMgr, "Error printing response");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1140,20 +1138,18 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printResponseParts(htmlunitHtmlPage, testName.getMethodName(), extraMsg);
 
             assertResponseContentStartAndClassAreLogged(htmlunitHtmlPage.getClass().getName());
-            assertStringInTrace(extraMsg);
-            assertStringInTrace(LOG_STRING_RESPONSE_STATUS_CODE + statusCode);
-            assertStringInTrace(LOG_STRING_RESPONSE_TITLE + TITLE);
-            assertStringInTrace(LOG_STRING_RESPONSE_URL + SIMPLE_URL);
-            assertStringInTrace(LOG_STRING_RESPONSE_MESSAGE + STATUS_MESSAGE);
-            assertStringInTrace(LOG_STRING_RESPONSE_FULL + line1 + "\r\n" + line2 + "\r\n" + line3);
+            assertStringInTrace(outputMgr, extraMsg);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_STATUS_CODE + statusCode);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_TITLE + TITLE);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_URL + SIMPLE_URL);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_MESSAGE + STATUS_MESSAGE);
+            assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_FULL + line1 + "\r\n" + line2 + "\r\n" + line3);
 
-            assertStringNotInTrace("Error printing response");
+            assertStringNotInTrace(outputMgr, "Error printing response");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
-
-    // TODO
 
     /************************************** stripBlankLines **************************************/
 
@@ -1416,7 +1412,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             } catch (Exception e) {
                 verifyException(e, "NO expectations");
             }
-            assertStringNotInTrace(LOG_STRING_ACTIONS);
+            assertStringNotInTrace(outputMgr, LOG_STRING_ACTIONS);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1474,7 +1470,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printExpectations(expectations, actions);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
             assertLoggedSuccessfulResponseStatusExpectationInfo(ACTION1);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1498,10 +1494,10 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printExpectations(expectations, actions);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
-            assertRegexInTrace(Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION2);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION2);
             assertLoggedSuccessfulResponseStatusExpectationInfo(ACTION2);
-            assertRegexNotInTrace(Pattern.quote(LOG_STRING_ACTION) + ACTION1);
+            assertRegexNotInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTION) + ACTION1);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1524,7 +1520,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printExpectations(expectations, actions);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
             assertLoggedExpectationInfo(expectation);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1549,9 +1545,9 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printExpectations(expectations, actions);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
-            assertRegexNotInTrace(Pattern.quote(LOG_STRING_ACTIONS) + ".+" + ACTION2);
-            assertRegexInTrace(Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION2);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
+            assertRegexNotInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTIONS) + ".+" + ACTION2);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION2);
             assertLoggedExpectationInfo(expectation);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1575,10 +1571,10 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printExpectations(expectations, actions);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
             assertLoggedExpectationInfo(expectation);
-            assertRegexNotInTrace(Pattern.quote(LOG_STRING_ACTION) + ACTION1);
-            assertRegexNotInTrace(Pattern.quote(LOG_STRING_ACTION) + ACTION3);
+            assertRegexNotInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTION) + ACTION1);
+            assertRegexNotInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTION) + ACTION3);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1608,10 +1604,10 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printExpectations(expectations, actions);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
             assertLoggedExpectationInfo(expectation1);
             assertLoggedExpectationInfo(expectation2);
-            assertRegexInTrace(Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION2);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION2);
             assertLoggedExpectationInfo(expectationDifferentAction);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1639,8 +1635,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printExpectations(expectations, actions);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
-            assertRegexInTrace(Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION2);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION2);
             assertLoggedExpectationInfo(expectation1);
             assertLoggedExpectationInfo(expectation2);
         } catch (Throwable t) {
@@ -1673,11 +1669,11 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printExpectations(expectations, actions);
 
-            assertRegexInTrace(Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTIONS) + ".+" + Arrays.toString(actions));
             assertLoggedExpectationInfo(expectation1);
             assertLoggedExpectationInfo(expectation2);
             assertLoggedExpectationInfo(expectation3);
-            assertRegexInTrace(Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION4);
+            assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_EXPECTATION_WILL_NEVER_BE_PROCESSED) + ".+" + ACTION4);
             assertLoggedExpectationInfo(expectation4);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1810,7 +1806,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printToLogAndSystemOut(method, printString);
 
             assertStringInTraceAndStandardOut(printString);
-            assertStringNotInTrace(method + " " + printString);
+            assertStringNotInTrace(outputMgr, method + " " + printString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1833,7 +1829,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             utils.printToLogAndSystemOut(method, printString);
 
             assertStringInTraceAndStandardOut(printString);
-            assertStringNotInTrace(method + " " + printString);
+            assertStringNotInTrace(outputMgr, method + " " + printString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1855,8 +1851,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printToLogAndSystemOut(method, printString);
 
-            assertStringInStandardOut(printString);
-            assertStringInTrace(method + " " + printString);
+            assertStringInStandardOut(outputMgr, printString);
+            assertStringInTrace(outputMgr, method + " " + printString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1878,8 +1874,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printToLogAndSystemOut(method, printString);
 
-            assertStringInStandardOut(printString);
-            assertStringInTrace(method + " " + printString);
+            assertStringInStandardOut(outputMgr, printString);
+            assertStringInTrace(outputMgr, method + " " + printString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1901,8 +1897,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printToLogAndSystemOut(method, printString);
 
-            assertStringInStandardOut(printString);
-            assertStringInTrace(method + " " + printString);
+            assertStringInStandardOut(outputMgr, printString);
+            assertStringInTrace(outputMgr, method + " " + printString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1924,8 +1920,8 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
             utils.printToLogAndSystemOut(method, printString);
 
-            assertStringInStandardOut(printString);
-            assertStringInTrace(method + " " + printString);
+            assertStringInStandardOut(outputMgr, printString);
+            assertStringInTrace(outputMgr, method + " " + printString);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -1941,45 +1937,15 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
             verifyException(e, "NO expectations");
         }
         if (actions != null) {
-            assertStringInTrace(LOG_STRING_ACTIONS);
+            assertStringInTrace(outputMgr, LOG_STRING_ACTIONS);
         } else {
-            assertStringNotInTrace(LOG_STRING_ACTIONS);
+            assertStringNotInTrace(outputMgr, LOG_STRING_ACTIONS);
         }
     }
 
     private void assertStringInTraceAndStandardOut(String checkForString) {
-        assertStringInTrace(checkForString);
-        assertStringInStandardOut(checkForString);
-    }
-
-    private void assertStringInTrace(String checkForString) {
-        checkForString = (checkForString == null) ? "null" : checkForString;
-        assertTrue("Did not find expected value [" + checkForString + "] in trace.", outputMgr.checkForLiteralTrace(checkForString));
-    }
-
-    private void assertStringNotInTrace(String checkForString) {
-        checkForString = (checkForString == null) ? "null" : checkForString;
-        assertFalse("Found value [" + checkForString + "] in trace but should not have.", outputMgr.checkForLiteralTrace(checkForString));
-    }
-
-    private void assertRegexInTrace(String checkForRegex) {
-        checkForRegex = (checkForRegex == null) ? "null" : checkForRegex;
-        assertTrue("Did not find expected regular expression [" + checkForRegex + "] in trace.", outputMgr.checkForTrace(checkForRegex));
-    }
-
-    private void assertRegexNotInTrace(String checkForRegex) {
-        checkForRegex = (checkForRegex == null) ? "null" : checkForRegex;
-        assertFalse("Found regular expression [" + checkForRegex + "] in trace but should not have.", outputMgr.checkForTrace(checkForRegex));
-    }
-
-    private void assertStringInStandardOut(String checkForString) {
-        checkForString = (checkForString == null) ? "null" : checkForString;
-        assertTrue("Did not find expected value [" + checkForString + "] in standard out.", outputMgr.checkForLiteralStandardOut(checkForString));
-    }
-
-    private void assertStringNotInStandardOut(String checkForString) {
-        checkForString = (checkForString == null) ? "null" : checkForString;
-        assertFalse("Found value [" + checkForString + "] in standard out but should not have.", outputMgr.checkForLiteralStandardOut(checkForString));
+        assertStringInTrace(outputMgr, checkForString);
+        assertStringInStandardOut(outputMgr, checkForString);
     }
 
     void simpleRequestUrlHeaderAndParameterExpectations() throws MalformedURLException {
@@ -1994,7 +1960,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
     }
 
     private void printRequestPartsExpectations(String cookieName, String url, String headerName, String parameterName) {
-        assertStringInTrace(LOG_STRING_START_REQUEST_PARTS);
+        assertStringInTrace(outputMgr, LOG_STRING_START_REQUEST_PARTS);
 
         assertCookieNameLoggedIfPresent(cookieName);
         assertUrlLoggedIfPresent(url);
@@ -2002,9 +1968,9 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
         assertParameterNameLoggedIfPresent(parameterName);
 
         if (url == null) {
-            assertStringNotInTrace(LOG_STRING_END_REQUEST_PARTS);
+            assertStringNotInTrace(outputMgr, LOG_STRING_END_REQUEST_PARTS);
         } else {
-            assertStringInTrace(LOG_STRING_END_REQUEST_PARTS);
+            assertStringInTrace(outputMgr, LOG_STRING_END_REQUEST_PARTS);
         }
     }
 
@@ -2026,45 +1992,36 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
 
     void assertStringWithValueLoggedIfValueIsPresent(String stringPrefix, String expectedValue) {
         if (expectedValue == null) {
-            assertStringNotInTrace(stringPrefix);
+            assertStringNotInTrace(outputMgr, stringPrefix);
         } else {
-            assertStringInTrace(stringPrefix + expectedValue);
+            assertStringInTrace(outputMgr, stringPrefix + expectedValue);
         }
     }
 
     private void assertStartResponseContentLogged() {
-        assertStringInTrace(CommonFatLoggingUtils.PRINT_DELIMITER_REQUEST_PARTS + " " + "Start Response Content");
+        assertStringInTrace(outputMgr, CommonFatLoggingUtils.PRINT_DELIMITER_REQUEST_PARTS + " " + "Start Response Content");
     }
 
     private void assertResponseContentStartAndClassAreLogged(String className) {
         assertStartResponseContentLogged();
-        assertStringInTrace(LOG_STRING_RESPONSE_CLASS + className);
-    }
-
-    private void assertLoggedResponseContent(String className, int statusCode, String title, String url, List<NameValuePair> headers, String statusMessage, String fullText) {
-        assertResponseContentStartAndClassAreLogged(className);
-        assertStringInTrace(LOG_STRING_RESPONSE_STATUS_CODE + statusCode);
-        assertStringWithValueLoggedIfValueIsPresent(LOG_STRING_RESPONSE_URL, url);
-        assertStringWithValueLoggedIfValueIsPresent(LOG_STRING_RESPONSE_MESSAGE, statusMessage);
-        assertStringWithValueLoggedIfValueIsPresent(LOG_STRING_RESPONSE_FULL, fullText);
-        // TODO headers
+        assertStringInTrace(outputMgr, LOG_STRING_RESPONSE_CLASS + className);
     }
 
     private void assertErrorPrintingResponseContent() {
-        assertStringInTrace("Error printing response");
+        assertStringInTrace(outputMgr, "Error printing response");
     }
 
     private void assertLoggedSuccessfulResponseStatusExpectationInfo(String action) {
-        assertRegexInTrace(Pattern.quote(LOG_STRING_ACTION) + action + ".+200 response");
-        assertStringNotInTrace(LOG_STRING_VALIDATE_AGAINST);
+        assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTION) + action + ".+200 response");
+        assertStringNotInTrace(outputMgr, LOG_STRING_VALIDATE_AGAINST);
     }
 
     private void assertLoggedExpectationInfo(Expectation expectation) {
-        assertRegexInTrace(Pattern.quote(LOG_STRING_ACTION) + expectation.getAction());
-        assertRegexInTrace(Pattern.quote(LOG_STRING_VALIDATE_AGAINST) + expectation.getSearchLocation());
-        assertRegexInTrace(Pattern.quote(expectation.getCheckType()));
-        assertRegexInTrace(Pattern.quote(expectation.getValidationValue()));
-        assertRegexInTrace(Pattern.quote(expectation.getFailureMsg()));
+        assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_ACTION) + expectation.getAction());
+        assertRegexInTrace(outputMgr, Pattern.quote(LOG_STRING_VALIDATE_AGAINST) + expectation.getSearchLocation());
+        assertRegexInTrace(outputMgr, Pattern.quote(expectation.getCheckType()));
+        assertRegexInTrace(outputMgr, Pattern.quote(expectation.getValidationValue()));
+        assertRegexInTrace(outputMgr, Pattern.quote(expectation.getFailureMsg()));
     }
 
 }

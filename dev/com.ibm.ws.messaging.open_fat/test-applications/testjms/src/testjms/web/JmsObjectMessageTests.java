@@ -13,4 +13,5 @@ package testjms.web;
 
 public interface JmsObjectMessageTests {
     void testObjectMessage_setObject_String() throws Exception;
+    void testObjectMessage_toString() throws Exception;
 }

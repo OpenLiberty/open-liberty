@@ -251,7 +251,7 @@ unableToUpdateFingerprint=Unable to update service fingerprint due to {0}, fix h
 patchingNotApplicableNoChange=No content has been extracted because there are no matching features in the runtime {0}
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
-patchingSkippedSupersededFix=The {0} fix is superseded by {1}, which is already installed.\n\The installation of {0} has been skipped.
+patchingSkippedSupersededFix=The {0} fix is superseded by {1}, which is already installed.\nThe installation of {0} was skipped.
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=An error occurred when reading the iFix information for the current installation. The exception message is: {0}.

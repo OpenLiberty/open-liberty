@@ -38,6 +38,7 @@ import com.ibm.ws.http2.test.exceptions.UnableToSendFrameException;
 import com.ibm.ws.http2.test.frames.FrameSettingsClient;
 import com.ibm.ws.http2.test.helpers.HTTPUtils;
 import com.ibm.ws.http2.test.listeners.FramesListener;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 /**
  *
@@ -166,6 +167,14 @@ public class Http2Client {
         }
     }
 
+    public void sendBytes(WsByteBuffer bytes) {
+        long bytesWritten = h2Connection.sendBytes(bytes);
+
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes", "Sending bytes (size: " + bytes.limit() + " bytes written)= " + bytesWritten);
+        }
+    }
+
     /**
      * Send client preface only if the server sent the 101 response before the timeout.
      *
@@ -250,9 +259,15 @@ public class Http2Client {
     public long sendFrame(Frame writableFrame, boolean forced) throws UnableToSendFrameException {
         if (!forced)
             return sendFrame(writableFrame, defaultTimeOutToSendFrame, false);
-        else
-            return h2Connection.sendBytes(writableFrame.buildFrameForWrite());
+        else {
+            if (writableFrame instanceof FrameData) {
+                WsByteBuffer[] bufferArray = ((FrameData) writableFrame).buildFrameArrayForWrite();
+                return h2Connection.sendBytes(bufferArray);
+            } else {
 
+            }
+            return h2Connection.sendBytes(writableFrame.buildFrameForWrite());
+        }
     }
 
     /**

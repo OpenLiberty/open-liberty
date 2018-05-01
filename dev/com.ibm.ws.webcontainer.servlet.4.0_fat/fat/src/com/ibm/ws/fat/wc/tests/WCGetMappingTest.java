@@ -346,4 +346,34 @@ public class WCGetMappingTest extends LoggingTest {
                                      "ServletMapping values: mappingMatch: EXACT matchValue: pathAsyncMatch pattern: /pathAsyncMatch servletName: GetMappingAsyncServlet");
     }
 
+    /**
+     * Test to ensure that a request that uses named dispatcher has the
+     * correct values returned from a call to the
+     * HttpServletRequest.getMapping() API.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void test_HttpServletRequestGetMapping_NamedDispatcher_Forward() throws Exception {
+        SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(),
+                                     "/TestGetMapping/pathNamedDispatcherFwdMatch",
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathNamedDispatcherFwdMatch pattern: /pathNamedDispatcherFwdMatch servletName: GetMappingNamedDispatcherFwdServlet");
+    }
+
+    /**
+     * Test to ensure that a request that uses named dispatcher has the
+     * correct values returned from a call to the
+     * HttpServletRequest.getMapping() API.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void test_HttpServletRequestGetMapping_NamedDispatcher_Include() throws Exception {
+        SHARED_SERVER.verifyResponse(createWebBrowserForTestCase(),
+                                     "/TestGetMapping/pathNamedDispatcherIncMatch",
+                                     "ServletMapping values: mappingMatch: EXACT matchValue: pathNamedDispatcherIncMatch pattern: /pathNamedDispatcherIncMatch servletName: GetMappingNamedDispatcherIncServlet");
+    }
+
 }

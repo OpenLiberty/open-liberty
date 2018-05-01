@@ -8,10 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.httpcomponents:httpclient;4.3.1}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.httpcomponents:httpclient;4.3.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.httpcomponents:httpclient;4.3.1}!/org/apache/http/*
+   @${repo;org.apache.httpcomponents:httpclient;4.3.1;EXACT}!/org/apache/http/*
 
 -buildpath: \
     org.apache.httpcomponents:httpclient;version=4.3.1, \

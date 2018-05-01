@@ -31,9 +31,11 @@ public interface JwtSSOTokenProxy {
 
     void addCustomCacheKeyToJwtSSOToken(Subject subject, String cacheKeyValue);
 
-    boolean isJwtSSOTokenValid(Subject subject);
+    boolean isSubjectValid(Subject subject);
 
     String getJwtCookieName();
+
+    boolean isCookieSecured();
 
     boolean shouldSetJwtCookiePathToWebAppContext();
 

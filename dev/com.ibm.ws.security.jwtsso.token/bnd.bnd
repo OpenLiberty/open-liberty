@@ -26,7 +26,8 @@ Import-Package: !*.internal.*, \
   *
    
 -dsannotations: \
-  com.ibm.ws.security.jwtsso.token.JwtSSOTokenImpl
+  com.ibm.ws.security.jwtsso.token.JwtSSOTokenImpl, \
+  com.ibm.ws.security.jwtsso.token.JwtSSOTokenCredentialProvider
   
 -buildpath: \
 	com.ibm.ws.logging.core;version=latest, \

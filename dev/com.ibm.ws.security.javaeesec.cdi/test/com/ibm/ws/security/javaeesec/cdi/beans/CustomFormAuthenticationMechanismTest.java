@@ -250,7 +250,6 @@ public class CustomFormAuthenticationMechanismTest {
             cfam.validateRequest(request, res, hmc);
             fail("AuthenticationException should be thrown.");
         } catch (AuthenticationException e) {
-            assertTrue("CWWKS1930W  message was not logged", outputMgr.checkForStandardOut("CWWKS1930W:"));
             assertTrue("The message does not match with the expectation", e.getMessage().contains(msg));
         }
     }

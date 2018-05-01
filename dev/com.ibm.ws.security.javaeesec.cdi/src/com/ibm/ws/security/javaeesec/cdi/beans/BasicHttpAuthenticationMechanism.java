@@ -45,7 +45,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
-    private String realmName = null;
+    private String realmName = "";
 
     private final Utils utils;
 
@@ -104,10 +104,6 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             if (props != null) {
                 realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
             }
-        }
-        if (realmName == null || realmName.trim().isEmpty()) {
-            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_REALM_NAME");
-            realmName = JavaEESecConstants.DEFAULT_REALM;
         }
     }
 

@@ -597,12 +597,8 @@ public class CacheHashMap extends BackedHashMap {
                 ArrayList<?> oldValue, newValue;
                 long backoff = 20; // allows first two attempts without delay, then a delay of 160-319ms, then a delay of 320-639 ms, ...
                 for (boolean replaced = false; !replaced; ) {
-                    if ((backoff *= 2) > 100)
+                    if (backoff > 500 || (backoff *= 2) > 100)
                         try {
-                            // TODO remove this error and switch to enforce a maximum on backoff time
-                            // This error is temporarily here to identify how often this is reached
-                            if (backoff > 500)
-                                throw new RuntimeException("Giving up on retries"); 
                             TimeUnit.MILLISECONDS.sleep(backoff + (long) Math.random() * backoff);
                         } catch (InterruptedException x) {
                             FFDCFilter.processException(x, getClass().getName(), "324", new Object[] { id, backoff, propsToWrite, propsToRemove });
@@ -648,7 +644,6 @@ public class CacheHashMap extends BackedHashMap {
     protected void insertSession(BackedSession session) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        // TODO rewrite this. For now, it is copied based on DatabaseHashMap.insertSession
         String id = session.getId();
 
         listenerFlagUpdate(session);
@@ -713,7 +708,6 @@ public class CacheHashMap extends BackedHashMap {
         Object value = null;
         if (!((CacheSession) sess).getPopulatedAppData()) {
             String id = sess.getId();
-            String appName = getIStore().getId();
 
             String key = createSessionAttributeKey(id, attrName);
 
@@ -784,15 +778,21 @@ public class CacheHashMap extends BackedHashMap {
         if (trace && tc.isDebugEnabled())
             tcInvoke(tcSessionMetaCache, "get", id);
 
-        ArrayList<?> oldValue = sessionMetaCache.get(id);
-
-        if (trace && tc.isDebugEnabled())
-            tcReturn(tcSessionMetaCache, "get", oldValue);
-
-        SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
         synchronized (sess) {
-            if (sessionInfo == null || sessionInfo.getLastAccess() != sess.getCurrentAccessTime() || sessionInfo.getLastAccess() == nowTime) {
+            ArrayList<?> oldValue = sessionMetaCache.get(id);
+
+            if (trace && tc.isDebugEnabled())
+                tcReturn(tcSessionMetaCache, "get", oldValue);
+
+            SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
+
+            long curAccessTime = sess.getCurrentAccessTime();
+            if (sessionInfo == null || sessionInfo.getLastAccess() != curAccessTime) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "session current access time: " + curAccessTime);
                 updateCount = 0;
+            } else if (sessionInfo.getLastAccess() == nowTime) {
+                updateCount = 1; // be consistent with Statement.executeUpdate which returns 1 the when row matches but no changes are made
             } else {
                 sessionInfo.setLastAccess(nowTime);
                 ArrayList<?> newValue = sessionInfo.getArrayList();
@@ -904,8 +904,6 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
-     * // TODO rewrite this. For now, it is copied based on DatabaseHashMap.insertSession
-     *
      * @see com.ibm.ws.session.store.common.BackedHashMap#persistSession(com.ibm.ws.session.store.common.BackedSession, boolean)
      */
     @FFDCIgnore(Exception.class) // FFDC logged manually with extra info

@@ -44,8 +44,6 @@ public class LoggedOutJwtSsoCookieCache {
         initialized = true;
     }
 
-    static String lastResult = null;
-
     // store as digests to save space
     static String toDigest(String input) {
         md.reset();
@@ -77,7 +75,6 @@ public class LoggedOutJwtSsoCookieCache {
             lastPosition = 0;
             atCapacity = true;
         }
-
     }
 
     static int getSetSize() { // unit testing
@@ -88,7 +85,6 @@ public class LoggedOutJwtSsoCookieCache {
         if (!initialized)
             return false;
         return tokenString == null ? false : cSet.contains(toDigest(tokenString));
-
     }
 
 }

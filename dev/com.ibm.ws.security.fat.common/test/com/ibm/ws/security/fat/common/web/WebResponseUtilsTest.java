@@ -631,7 +631,7 @@ public class WebResponseUtilsTest extends CommonTestClass {
     public void test_getResponseTitle_htmlunitTextPage() {
         try {
             String result = WebResponseUtils.getResponseTitle(htmlunitTextPage);
-            assertEquals("Result did not match expected value.", "TextPage has no title", result);
+            assertEquals("Result did not match expected value.", htmlunitTextPage.getClass().getName() + " has no title", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -647,7 +647,7 @@ public class WebResponseUtilsTest extends CommonTestClass {
     public void test_getResponseTitle_htmlunitXmlPage() {
         try {
             String result = WebResponseUtils.getResponseTitle(htmlunitXmlPage);
-            assertEquals("Result did not match expected value.", "XmlPage has no title", result);
+            assertEquals("Result did not match expected value.", htmlunitXmlPage.getClass().getName() + " has no title", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

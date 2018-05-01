@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -451,7 +454,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretFromUrl9() {
+    public void testStripSecretFromUrl_secretFirst() {
         String input = "http://localhost:8010/path?client_secret=password";
         String expected = "http://localhost:8010/path?client_secret=*****";
         String secret = "client_secret";
@@ -460,7 +463,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretFromUrlA() {
+    public void testStripSecretFromUrl_secretLast() {
         String input = "http://localhost:8010/path?something=what&client_secret=password";
         String expected = "http://localhost:8010/path?something=what&client_secret=*****";
         String secret = "client_secret";
@@ -469,7 +472,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretFromUrlB() {
+    public void testStripSecretFromUrl_secretMiddle() {
         String input = "http://localhost:8010/path?something=what&client_secret=password&a=b";
         String expected = "http://localhost:8010/path?something=what&client_secret=*****&a=b";
         String secret = "client_secret";
@@ -478,7 +481,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretFromUrlC() {
+    public void testStripSecretFromUrl_nonNormativeFirst() {
         String input = "client_secret=x";
         String expected = "client_secret=*****";
         String secret = "client_secret";
@@ -487,7 +490,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretFromUrlD() {
+    public void testStripSecretFromUrl_nonNormativeAlternative() {
         String input = "abc=x";
         String expected = "abc=*****";
         String secret = "abc";
@@ -496,7 +499,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretFromUrlE() {
+    public void testStripSecretFromUrl_secretSubsetOfNonSecret() {
         String input = "abc=x&abcd=password";
         String expected = "abc=*****&abcd=password";
         String secret = "abc";
@@ -505,7 +508,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretFromUrlF() {
+    public void testStripSecretFromUrl_secretStringIsNonSecretValue() {
         String input = "abc=x&cde=abc";
         String expected = "abc=*****&cde=abc";
         String secret = "abc";
@@ -597,7 +600,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretsFromUrl1() {
+    public void testStripSecretsFromUrl_twoSecretsOneHitFirst() {
         String input = "&client_secret=x";
         String expected = "&client_secret=*****";
         String [] secrets = new String [] {"client_secret","secret1"};
@@ -606,7 +609,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretsFromUrl2() {
+    public void testStripSecretsFromUrl_twoSecretsOneHitSecond() {
         String input = "&secret1=x";
         String expected = "&secret1=*****";
         String [] secrets = new String [] {"client_secret","secret1"};
@@ -615,7 +618,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretsFromUrl3() {
+    public void testStripSecretsFromUrl_twoSecretsTwoHits() {
         String input = "&secret1=x&client_secret=x";
         String expected = "&secret1=*****&client_secret=*****";
         String [] secrets = new String [] {"client_secret","secret1"};
@@ -624,7 +627,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretsFromUrl4() {
+    public void testStripSecretsFromUrl_twoSecretsMultipleHits() {
         String input = "secret1=x&client_secret=x&client_secret=x&secret1=x&abc=secret1&client_secret=secret1";
         String expected = "secret1=*****&client_secret=*****&client_secret=*****&secret1=*****&abc=secret1&client_secret=*****";
         String [] secrets = new String [] {"client_secret","secret1"};
@@ -633,7 +636,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretsFromUrl5() {
+    public void testStripSecretsFromUrl_twoSecretsFirstHitsAfterQuery() {
         String input = "http://localhost:8010/path?client_secret=password";
         String expected = "http://localhost:8010/path?client_secret=*****";
         String [] secrets = new String [] {"client_secret","secret1"};
@@ -642,7 +645,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretsFromUrl6() {
+    public void testStripSecretsFromUrl_twoSecretsSecondHitsAfterQuery() {
         String input = "http://localhost:8010/path?secret1=password";
         String expected = "http://localhost:8010/path?secret1=*****";
         String [] secrets = new String [] {"client_secret","secret1"};
@@ -651,7 +654,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretsFromUrl7() {
+    public void testStripSecretsFromUrl_twoSecretsBothHitAfterQuery() {
         String input = "http://localhost:8010/path?secret1=password&client_secret=123";
         String expected = "http://localhost:8010/path?secret1=*****&client_secret=*****";
         String [] secrets = new String [] {"client_secret","secret1"};
@@ -660,7 +663,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testStripSecretsFromUrl8() {
+    public void testStripSecretsFromUrl_specialChars() {
         String input = "&client_secret=&client_secret=password&secret1=x&client_secret=123&abc=secret1&client_secret=abc&secret1=xxxx&client_secret=xx&something-!@#%^*()askldfjghhljkshhh&abc=xxx";
         String expected = "&client_secret=&client_secret=*****&secret1=*****&client_secret=*****&abc=secret1&client_secret=*****&secret1=*****&client_secret=*****&something-!@#%^*()askldfjghhljkshhh&abc=xxx";
         String [] secrets = new String [] {"client_secret","secret1"};
@@ -669,7 +672,7 @@ public class WebUtilsTest {
     }
 
     @Test
-    public void testGetRequestStringForTrace1() {
+    public void testGetRequestStringForTrace_NullRequest() {
         String value = WebUtils.getRequestStringForTrace(null, (String)null);
         assertEquals("[]",value);
     }
@@ -678,7 +681,7 @@ public class WebUtilsTest {
     //format. Just cursory checks are being done.  The heavy lifting is done by the stripSecretFromUrl
     //tests because that can be hemmed in.
     @Test
-    public void testGetRequestStringForTrace2() {
+    public void testGetRequestStringForTrace_simple() {
         final String secret = "client_secret";
         final String pass = "password";
         final String url = "https://localhost:9080/target";
@@ -688,19 +691,20 @@ public class WebUtilsTest {
                 {
                     allowing(request).getRequestURL();
                     will(returnValue(urlValue));
-                    allowing(request).getQueryString
-                        ();
+                    allowing(request).getQueryString();
+                    will(returnValue(null));
+                    allowing(request).getParameterMap();
                     will(returnValue(null));
                 }
             });
         String output = WebUtils.getRequestStringForTrace(request,secret);
         assertNotNull(output);
-        assertFalse(output.contains("password"));
-        assertTrue(output.contains(url));
+        assertFalse("Output string ["+output+"] contains secret info [password]", output.contains("password"));
+        assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url)); 
     }
 
     @Test
-    public void testGetRequestStringForTrace3() {
+    public void testGetRequestStringForTrace_secretInQuery() {
         final String secret = "client_secret";
         final String pass = "password";
         final String queryValue = secret+"="+pass;
@@ -711,19 +715,20 @@ public class WebUtilsTest {
                 {
                     allowing(request).getRequestURL();
                     will(returnValue(urlValue));
-                    allowing(request).getQueryString
-                        ();
+                    allowing(request).getQueryString();
                     will(returnValue(queryValue));
+                    allowing(request).getParameterMap();
+                    will(returnValue(null));
                 }
             });
         String output = WebUtils.getRequestStringForTrace(request,secret);
         assertNotNull(output);
-        assertFalse(output.contains(pass));
-        assertTrue(output.contains(url));
+        assertFalse("Output string ["+output+"] contains secret info ["+pass+"]", output.contains(pass));
+        assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url));
     }
 
     @Test
-    public void testGetRequestStringForTrace4() {
+    public void testGetRequestStringForTrace_noSecretInQuery() {
         final String secret = "client_secret";
         final String queryValue = "aParameter";
         final String url = "https://localhost:9080/target";
@@ -733,19 +738,20 @@ public class WebUtilsTest {
                 {
                     allowing(request).getRequestURL();
                     will(returnValue(urlValue));
-                    allowing(request).getQueryString
-                        ();
+                    allowing(request).getQueryString();
                     will(returnValue(queryValue));
+                    allowing(request).getParameterMap();
+                    will(returnValue(null));
                 }
             });
         String output = WebUtils.getRequestStringForTrace(request,secret);
         assertNotNull(output);
-        assertTrue(output.contains(queryValue));
-        assertTrue(output.contains(url));
+        assertTrue("Output string ["+output+"] does not contain the query value", output.contains(queryValue));
+        assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url));
     }
 
     @Test
-    public void testGetRequestStringForTrace5() {
+    public void testGetRequestStringForTrace_oneSecretInQuery() {
         final String secret = "client_secret";
         final String pass = "password";
         final String q1 = "aParameter=a";
@@ -759,22 +765,23 @@ public class WebUtilsTest {
                 {
                     allowing(request).getRequestURL();
                     will(returnValue(urlValue));
-                    allowing(request).getQueryString
-                        ();
+                    allowing(request).getQueryString();
                     will(returnValue(queryValue));
+                    allowing(request).getParameterMap();
+                    will(returnValue(null));
                 }
             });
         String output = WebUtils.getRequestStringForTrace(request,secret);
         assertNotNull(output);
-        assertFalse(output.contains(pass));
-        assertTrue(output.contains(url));
-        assertTrue(output.contains(q1));
-        assertTrue(output.contains(q3));
-        assertTrue(output.contains(secret));
+        assertFalse("Output string ["+output+"] contains secret info ["+pass+"]", output.contains(pass));
+        assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url));
+        assertTrue("Output string ["+output+"] does not contain the query value ["+q1+"]", output.contains(q1));
+        assertTrue("Output string ["+output+"] does not contain the query value ["+q3+"]", output.contains(q3));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret+"]", output.contains(secret));
     }
 
     @Test
-    public void testGetRequestStringForTrace6() {
+    public void testGetRequestStringForTrace_simpleSecretOneMiddle() {
         final String secret = "client_secret";
         final String pass = "password";
         final String q1 = "aParameter=a";
@@ -787,22 +794,23 @@ public class WebUtilsTest {
                 {
                     allowing(request).getRequestURL();
                     will(returnValue(urlValue));
-                    allowing(request).getQueryString
-                        ();
+                    allowing(request).getQueryString();
+                    will(returnValue(null));
+                    allowing(request).getParameterMap();
                     will(returnValue(null));
                 }
             });
         String output = WebUtils.getRequestStringForTrace(request,secret);
         assertNotNull(output);
-        assertFalse(output.contains(pass));
-        assertTrue(output.contains(url));
-        assertTrue(output.contains(q1));
-        assertTrue(output.contains(q3));
-        assertTrue(output.contains(secret));
+        assertFalse("Output string ["+output+"] contains secret info ["+pass+"]", output.contains(pass));
+        assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url));
+        assertTrue("Output string ["+output+"] does not contain the query value ["+q1+"]", output.contains(q1));
+        assertTrue("Output string ["+output+"] does not contain the query value ["+q3+"]", output.contains(q3));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret+"]", output.contains(secret));
     }
 
     @Test
-    public void testGetRequestStringForTrace7() {
+    public void testGetRequestStringForTrace_simpleTwoSecrets() {
         final String secret1 = "client_secret";
         final String secret2 = "secret1";
         final String pass1 = "password";
@@ -818,19 +826,500 @@ public class WebUtilsTest {
                 {
                     allowing(request).getRequestURL();
                     will(returnValue(urlValue));
-                    allowing(request).getQueryString
-                        ();
+                    allowing(request).getQueryString();
+                    will(returnValue(null));
+                    allowing(request).getParameterMap();
                     will(returnValue(null));
                 }
             });
         String output = WebUtils.getRequestStringForTrace(request,new String[]{secret1,secret2});
         assertNotNull(output);
-        assertFalse(output.contains(pass1));
-        assertFalse(output.contains(pass2));
-        assertTrue(output.contains(url));
-        assertTrue(output.contains(q1));
-        assertTrue(output.contains(q3));
-        assertTrue(output.contains(secret1));
-        assertTrue(output.contains(secret2));
+        assertFalse("Output string ["+output+"] contains secret info ["+pass1+"]", output.contains(pass1));
+        assertFalse("Output string ["+output+"] contains secret info ["+pass2+"]", output.contains(pass2));
+        assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url));
+        assertTrue("Output string ["+output+"] does not contain the query value ["+q1+"]", output.contains(q1));
+        assertTrue("Output string ["+output+"] does not contain the query value ["+q3+"]", output.contains(q3));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
     }
+
+    //pick up the query string
+    @Test
+    public void testGetRequestStringForTrace_twoSecretsInQuery() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret1";
+        final String pass1 = "password";
+        final String pass2 = "garbage";
+        final String q1 = "aParameter=a";
+        final String q2 = "&"+secret1+"="+pass1;
+        final String q3 = "&bParameter=b";
+        final String q4 = "&"+secret2+"="+pass2;
+        final StringBuffer url = new StringBuffer("https://localhost:9080/target");
+        final String queryString = q1+q2+q3+q4;
+
+        mock.checking(new Expectations() {
+                {
+                    allowing(request).getRequestURL();
+                    will(returnValue(url));
+                    allowing(request).getQueryString();
+                    will(returnValue(queryString));
+                    allowing(request).getParameterMap();
+                    will(returnValue(null));
+                }
+            });
+        String output = WebUtils.getRequestStringForTrace(request,new String[]{secret1,secret2});
+        assertNotNull(output);
+        assertFalse("Output string ["+output+"] contains secret info ["+pass1+"]", output.contains(pass1));
+        assertFalse("Output string ["+output+"] contains secret info ["+pass2+"]", output.contains(pass2));
+        assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url));
+        assertTrue("Output string ["+output+"] does not contain the query value ["+q1+"]", output.contains(q1));
+        assertTrue("Output string ["+output+"] does not contain the query value ["+q3+"]", output.contains(q3));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+    }
+
+    //pick up the parametermap since there's no query string
+    @Test
+    public void testGetRequestStringForTrace_twoSecretsInParameters() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret1";
+        final String pass1 = "password";
+        final String pass2 = "garbage";
+        final StringBuffer url = new StringBuffer("https://localhost:9080/target");
+
+        final Map<String, String[]> pMap = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pass1});
+            put(secret2, new String[]{pass2});
+        }};
+
+        mock.checking(new Expectations() {
+                {
+                    allowing(request).getRequestURL();
+                    will(returnValue(url));
+                    allowing(request).getQueryString();
+                    will(returnValue(null));
+                    allowing(request).getParameterMap();
+                    will(returnValue(pMap));
+                }
+            });
+        String output = WebUtils.getRequestStringForTrace(request,new String[]{secret1,secret2});
+        assertNotNull(output);
+        assertFalse("Output string ["+output+"] contains secret info ["+pass1+"]", output.contains(pass1));
+        assertFalse("Output string ["+output+"] contains secret info ["+pass2+"]", output.contains(pass2));
+        assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+    }
+
+    //the parameter map shouldn't be processed if a querystring is present (because they'll be the
+    //same and its redundant, but for the purposes of this test, I had to make them different)
+    @Test
+    public void testGetRequestStringForTrace_doNotProcessParameterMap() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret1";
+        final String pass1 = "password";
+        final String pass2 = "garbage";
+        final String q1 = "aParameter=a";
+        final String q2 = "&"+secret1+"="+pass1;
+        final String q3 = "&bParameter=b";
+        final String q4 = "&"+secret2+"="+pass2;
+        final StringBuffer url = new StringBuffer("https://localhost:9080/target");
+        final String queryString = q1+q2+q3+q4;
+
+        final Map<String, String[]> pMap = new HashMap<String, String[]>() {{
+            put("param_client_secret1", new String[]{pass1});
+            put("param_client_secret2", new String[]{pass2});
+        }};
+
+        mock.checking(new Expectations() {
+                {
+                    allowing(request).getRequestURL();
+                    will(returnValue(url));
+                    allowing(request).getQueryString();
+                    will(returnValue(queryString));
+                    allowing(request).getParameterMap();
+                    will(returnValue(pMap));
+                }
+            });
+        String output = WebUtils.getRequestStringForTrace(request,new String[]{secret1,secret2});
+        assertNotNull(output);
+        assertFalse("Output string ["+output+"] contains secret info ["+pass1+"]", output.contains(pass1));
+        assertFalse("Output string ["+output+"] contains secret info ["+pass2+"]", output.contains(pass2));
+        assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+        assertFalse("Output string ["+output+"] contains secret info [param_client_secret1]", output.contains("param_client_secret1"));
+        assertFalse("Output string ["+output+"] contains secret info [param_client_secret2]", output.contains("param_client_secret2"));
+    }
+
+    //null input
+    @Test
+    public void testStripSecretsFromParameters_nullInput() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        String output = WebUtils.stripSecretsFromParameters(null, secrets);
+        assertNull(output);
+    }
+
+    //empty input
+    @Test
+    public void testStripSecretsFromParameters_emptyInput() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        Map<String, String[]> input = new HashMap<String, String[]>();
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertNull(output);
+    }
+
+    //null secret list
+    @Test
+    public void testStripSecretsFromParameters_nullSecretList() {
+        final String secret1 = "client_secret";
+
+        final String pwdStr = "password";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, null);
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the string ["+pwdStr+"] (it wasn't marked secret so it should be there)", output.contains(pwdStr));
+    }
+
+    //empty secret list
+    @Test
+    public void testStripSecretsFromParameters_emptySecretList() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String [] secrets = new String [] {};
+
+        final String pwdStr = "password";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the string ["+pwdStr+"] (it wasn't marked secret so it should be there)", output.contains(pwdStr));
+    }
+
+    //one parameter, matches first secret
+    @Test
+    public void testStripSecretsFromParameters_oneParameterMatchesFirstSecret() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+    }
+
+    //one parameter, matches second secret
+    @Test
+    public void testStripSecretsFromParameters_oneParameterMatchesSecondSecret() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret2, new String[]{pwdStr});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+    }
+
+    //two parameters, matches both secrets
+    @Test
+    public void testStripSecretsFromParameters_twoParametersAreBothSecrets() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+            put(secret2, new String[]{pwdStr});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+    }
+
+    //add a non-secret
+    @Test
+    public void testStripSecretsFromParameters_threeParametersOneNotSecret() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String notSecret = "notSecretParameter";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        final String notSecretValue = "notSecretValue";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+            put(secret2, new String[]{pwdStr});
+            put(notSecret, new String[]{notSecretValue});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret+"]", output.contains(notSecret));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue+"], (its parameter was not marked secret)", output.contains(notSecretValue));
+    }
+
+    //add a non-secret parameter with special characters in value
+    @Test
+    public void testStripSecretsFromParameters_specialCharsInNotSecretValue() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String notSecret = "notSecretParameter";
+        final String notSecret2 = "abcParam";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        final String notSecretValue = "notSecretValue";
+        final String notSecretValue2 = "!@#$%^&*()";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+            put(secret2, new String[]{pwdStr});
+            put(notSecret, new String[]{notSecretValue});
+            put(notSecret2, new String[]{notSecretValue2});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret+"]", output.contains(notSecret));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue+"], (its parameter was not marked secret)", output.contains(notSecretValue));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret2+"]", output.contains(notSecret2));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue2+"], (its parameter was not marked secret)", output.contains(notSecretValue2));
+    }
+
+    //add a non-secret parameter with special characters in name
+    @Test
+    public void testStripSecretsFromParameters_specialCharsInNotSecretName() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String notSecret = "notSecretParameter";
+        final String notSecret2 = "abcParam";
+        final String notSecret3 = "(*&^%$#@";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        final String notSecretValue = "notSecretValue";
+        final String notSecretValue2 = "!@#$%^&*()";
+        final String notSecretValue3 = "thisisvalue3";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+            put(secret2, new String[]{pwdStr});
+            put(notSecret, new String[]{notSecretValue});
+            put(notSecret2, new String[]{notSecretValue2});
+            put(notSecret3, new String[]{notSecretValue3});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret+"]", output.contains(notSecret));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue+"], (its parameter was not marked secret)", output.contains(notSecretValue));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret2+"]", output.contains(notSecret2));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue2+"], (its parameter was not marked secret)", output.contains(notSecretValue2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret3+"]", output.contains(notSecret3));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue3+"], (its parameter was not marked secret)", output.contains(notSecretValue3));
+    }
+
+    //add a non-secret parameter with a name that is a 
+    //super-set of one of the secrets
+    @Test
+    public void testStripSecretsFromParameters_notSecretNameIsSupersetofSecret() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String notSecret = "notSecretParameter";
+        final String notSecret2 = "abcParam";
+        final String notSecret3 = secret1+"1";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        final String notSecretValue = "notSecretValue";
+        final String notSecretValue2 = "!@#$%^&*()";
+        final String notSecretValue3 = "thisisvalue3";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+            put(secret2, new String[]{pwdStr});
+            put(notSecret, new String[]{notSecretValue});
+            put(notSecret2, new String[]{notSecretValue2});
+            put(notSecret3, new String[]{notSecretValue3});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret+"]", output.contains(notSecret));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue+"], (its parameter was not marked secret)", output.contains(notSecretValue));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret2+"]", output.contains(notSecret2));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue2+"], (its parameter was not marked secret)", output.contains(notSecretValue2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret3+"]", output.contains(notSecret3));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue3+"], (its parameter was not marked secret)", output.contains(notSecretValue3));
+    }
+
+    //add a non-secret parameter with a name that is a different 
+    //case than of one of the secrets
+    @Test
+    public void testStripSecretsFromParameters_secretWrongCase() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String notSecret = "notSecretParameter";
+        final String notSecret2 = "abcParam";
+        final String notSecret3 = secret1.toUpperCase();
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        final String notSecretValue = "notSecretValue";
+        final String notSecretValue2 = "!@#$%^&*()";
+        final String notSecretValue3 = "thisisvalue3";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+            put(secret2, new String[]{pwdStr});
+            put(notSecret, new String[]{notSecretValue});
+            put(notSecret2, new String[]{notSecretValue2});
+            put(notSecret3, new String[]{notSecretValue3});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret+"]", output.contains(notSecret));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue+"], (its parameter was not marked secret)", output.contains(notSecretValue));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret2+"]", output.contains(notSecret2));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue2+"], (its parameter was not marked secret)", output.contains(notSecretValue2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret3+"]", output.contains(notSecret3));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue3+"], (its parameter was not marked secret)", output.contains(notSecretValue3));
+    }
+
+    //non-secret parameter has more than one value
+    @Test
+    public void testStripSecretsFromParameters_notSecretMultiValue() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String notSecret = "notSecretParameter";
+        final String notSecret2 = "abcParam";
+        final String notSecret3 = "123Param";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        final String notSecretValue = "notSecretValue";
+        final String notSecretValue2 = "!@#$%^&*()";
+        final String notSecretValue3a = "value1";
+        final String notSecretValue3b = "value2";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+            put(secret2, new String[]{pwdStr});
+            put(notSecret, new String[]{notSecretValue});
+            put(notSecret2, new String[]{notSecretValue2});
+            put(notSecret3, new String[]{notSecretValue3a,notSecretValue3b});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret+"]", output.contains(notSecret));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue+"], (its parameter was not marked secret)", output.contains(notSecretValue));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret2+"]", output.contains(notSecret2));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue2+"], (its parameter was not marked secret)", output.contains(notSecretValue2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret3+"]", output.contains(notSecret3));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue3a+"], (its parameter was not marked secret)", output.contains(notSecretValue3a));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue3b+"], (its parameter was not marked secret)", output.contains(notSecretValue3b));
+    }
+
+    //secret parameter has more than one value
+    @Test
+    public void testStripSecretsFromParameters_secretMultiValue() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String notSecret = "notSecretParameter";
+        final String notSecret2 = "abcParam";
+        final String secret3 = "secret3";
+        final String [] secrets = new String [] {secret1,secret2,secret3};
+
+        final String pwdStr = "password";
+        final String notSecretValue = "notSecretValue";
+        final String notSecretValue2 = "!@#$%^&*()";
+        final String secretValue3a = "value1";
+        final String secretValue3b = "value2";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(secret1, new String[]{pwdStr});
+            put(secret2, new String[]{pwdStr});
+            put(notSecret, new String[]{notSecretValue});
+            put(notSecret2, new String[]{notSecretValue2});
+            put(secret3, new String[]{secretValue3a,secretValue3b});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertFalse("Output string ["+output+"] contains secret info ["+pwdStr+"]", output.contains(pwdStr));
+        assertFalse("Output string ["+output+"] contains secret info ["+secretValue3a+"]", output.contains(secretValue3a));
+        assertFalse("Output string ["+output+"] contains secret info ["+secretValue3b+"]", output.contains(secretValue3b));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret1+"]", output.contains(secret1));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret2+"]", output.contains(secret2));
+        assertTrue("Output string ["+output+"] does not contain the secret parameter ["+secret3+"]", output.contains(secret3));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret+"]", output.contains(notSecret));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue+"], (its parameter was not marked secret)", output.contains(notSecretValue));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret2+"]", output.contains(notSecret2));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue2+"], (its parameter was not marked secret)", output.contains(notSecretValue2));
+    }
+
+
+    //no secretes in parameters
+    @Test
+    public void testStripSecretsFromParameters_noSecrets() {
+        final String secret1 = "client_secret";
+        final String secret2 = "secret2";
+        final String notSecret = "notSecretParameter";
+        final String notSecret2 = "abcParam";
+        final String notSecret3 = "123Param";
+        final String [] secrets = new String [] {secret1,secret2};
+
+        final String pwdStr = "password";
+        final String notSecretValue = "notSecretValue";
+        final String notSecretValue2 = "!@#$%^&*()";
+        final String notSecretValue3a = "value1";
+        final String notSecretValue3b = "value2";
+        Map<String, String[]> input = new HashMap<String, String[]>() {{
+            put(notSecret, new String[]{notSecretValue});
+            put(notSecret2, new String[]{notSecretValue2});
+            put(notSecret3, new String[]{notSecretValue3a,notSecretValue3b});
+        }};
+
+        String output = WebUtils.stripSecretsFromParameters(input, secrets);
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret+"]", output.contains(notSecret));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue+"], (its parameter was not marked secret)", output.contains(notSecretValue));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret2+"]", output.contains(notSecret2));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue2+"], (its parameter was not marked secret)", output.contains(notSecretValue2));
+        assertTrue("Output string ["+output+"] does not contain the parameter ["+notSecret3+"]", output.contains(notSecret3));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue3a+"], (its parameter was not marked secret)", output.contains(notSecretValue3a));
+        assertTrue("Output string ["+output+"] does not contain the value ["+notSecretValue3b+"], (its parameter was not marked secret)", output.contains(notSecretValue3b));
+    }
+
 }

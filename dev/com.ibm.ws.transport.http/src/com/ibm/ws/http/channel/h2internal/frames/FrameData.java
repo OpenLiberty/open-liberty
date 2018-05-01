@@ -19,6 +19,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameData extends Frame {
 
@@ -38,6 +39,7 @@ public class FrameData extends Frame {
 
     private int paddingLength = 0;
     private byte[] data;
+    WsByteBuffer dataBuffer;
 
     /**
      * Read frame constructor
@@ -53,6 +55,9 @@ public class FrameData extends Frame {
     public FrameData(int streamId, byte[] data, int paddingLength, boolean endStream, boolean padded, boolean reserveBit) {
         super(streamId, data.length, (byte) 0x00, reserveBit, FrameDirection.WRITE);
         this.data = data;
+        if (data != null) {
+            this.dataBuffer = getBuffer(data.length).put(data).flip();
+        }
         this.paddingLength = paddingLength;
         this.PADDED_FLAG = padded;
         this.END_STREAM_FLAG = endStream;
@@ -71,9 +76,30 @@ public class FrameData extends Frame {
     public FrameData(int streamId, byte[] data, boolean endStream) {
         super(streamId, data.length, (byte) 0x00, false, FrameDirection.WRITE);
         this.data = data;
+        if (data != null) {
+            this.dataBuffer = getBuffer(data.length).put(data).flip();
+        }
         this.PADDED_FLAG = false;
         this.END_STREAM_FLAG = endStream;
         frameType = FrameTypes.DATA;
+        if (data != null) {
+            writeFrameLength += data.length;
+        }
+        setInitialized(); // we should have everything we need to write out, now
+    }
+
+    /**
+     * Write frame constructor
+     */
+    public FrameData(int streamId, WsByteBuffer data, int length, boolean endStream) {
+        super(streamId, length, (byte) 0x00, false, FrameDirection.WRITE);
+        this.dataBuffer = data;
+        this.PADDED_FLAG = false;
+        this.END_STREAM_FLAG = endStream;
+        frameType = FrameTypes.DATA;
+        if (data != null) {
+            writeFrameLength += data.remaining();
+        }
         setInitialized(); // we should have everything we need to write out, now
     }
 
@@ -117,9 +143,47 @@ public class FrameData extends Frame {
         }
     }
 
+    /**
+     * The test code expects a single buffer instead of an array of buffers, as returned by buildFrameArrayForWrite
+     */
     @Override
-    public byte[] buildFrameForWrite() {
-        byte[] frame = super.buildFrameForWrite();
+    public WsByteBuffer buildFrameForWrite() {
+
+        WsByteBuffer[] output = buildFrameArrayForWrite();
+        int size = 0;
+        for (WsByteBuffer b : output) {
+            if (b != null) {
+                size += b.remaining();
+            }
+        }
+        WsByteBuffer singleBuffer = this.getBuffer(size);
+        singleBuffer.put(output);
+        singleBuffer.flip();
+        return singleBuffer;
+    }
+
+    /**
+     * Builds an array of buffers representing this http2 data frame
+     * output[0] = http2 frame header data
+     * output[1] = payload data
+     * output[2] ?= padding
+     *
+     * @return WsByteBuffer[]
+     */
+    public WsByteBuffer[] buildFrameArrayForWrite() {
+        WsByteBuffer[] output;
+
+        int headerSize = SIZE_FRAME_BEFORE_PAYLOAD;
+        if (PADDED_FLAG) {
+            headerSize = SIZE_FRAME_BEFORE_PAYLOAD + 1;
+        }
+        WsByteBuffer frameHeaders = getBuffer(headerSize);
+        byte[] frame;
+        if (frameHeaders.hasArray()) {
+            frame = frameHeaders.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_DATA);
@@ -132,19 +196,28 @@ public class FrameData extends Frame {
             utils.Move8BitstoByteArray(paddingLength, frame, frameIndex);
             frameIndex++;
         }
+        frameHeaders.put(frame, 0, headerSize);
+        frameHeaders.flip();
 
-        // copy data payload
-        for (int i = 0; i < data.length; i++) {
-            frame[frameIndex] = data[i];
-            frameIndex++;
+        // create padding and put in return buffer array
+        if (PADDED_FLAG) {
+            WsByteBuffer padding = getBuffer(paddingLength);
+            for (int i = 0; i < paddingLength; i++) {
+                padding.put((byte) 0);
+            }
+            padding.flip();
+            output = new WsByteBuffer[3];
+            output[0] = frameHeaders;
+            output[1] = dataBuffer;
+            output[2] = padding;
         }
-
-        // copy padding
-        for (int i = 0; i < paddingLength; i++) {
-            frame[frameIndex] = 0x00;
-            frameIndex++;
+        // create the output buffer array
+        else {
+            output = new WsByteBuffer[2];
+            output[0] = frameHeaders;
+            output[1] = dataBuffer;
         }
-        return frame;
+        return output;
     }
 
     @Override

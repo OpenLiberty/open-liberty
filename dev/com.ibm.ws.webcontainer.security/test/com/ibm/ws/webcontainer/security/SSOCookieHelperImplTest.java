@@ -533,8 +533,10 @@ public class SSOCookieHelperImplTest {
             super(config);
         }
 
+        boolean secure = true;
+
         @Override
-        public Cookie createJwtCookie(HttpServletRequest req, String cookieName, String cookieValue) {
+        public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue, boolean secure) {
             return new Cookie(cookieName, cookieValue); //skip hard-to-mock ssodomain stuff.
         }
 
@@ -556,8 +558,14 @@ public class SSOCookieHelperImplTest {
         String bigStr = sb.toString();
         mock.checking(new Expectations() {
             {
+                allowing(req).isSecure();
                 one(resp).addCookie(with(any(Cookie.class)));
                 one(resp).addCookie(with(any(Cookie.class)));
+//                allowing(config).getSSORequiresSSL();
+//                allowing(config).getHttpOnlyCookies();
+//                allowing(config).getSSODomainList();
+//                allowing(config).getSSOUseDomainFromURL();
+//                allowing(req).getRequestURI();
             }
         });
 
