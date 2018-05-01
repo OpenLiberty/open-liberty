@@ -32,7 +32,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     private boolean isTraceStdout = false;
 
     private String format = LoggingConstants.DEFAULT_MESSAGE_FORMAT;
-    private BaseTraceFormatter formatter = null;
+    private BaseTraceFormatter basicFormatter = null;
     private Integer consoleLogLevel = null;
 
     private boolean copySystemStreams = false;
@@ -125,7 +125,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 }
             }
 
-        } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && formatter != null) {
+        } else if (format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && basicFormatter != null) {
             //if traceFilename=stdout write everything to console.log in trace format
             String logLevel = ((LogTraceData) event).getLoglevel();
             if (isTraceStdout) {
@@ -133,7 +133,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
                     isStderr = true;
                 }
-                messageOutput = formatter.traceFormatGenData(genData);
+                messageOutput = basicFormatter.traceFormatGenData(genData);
             } // copySystemStream and stderr/stdout (i.e WsLevel.CONFIG)
             else if (copySystemStreams && (levelVal == WsLevel.CONFIG.intValue())) {
                 if (logLevel != null) {
@@ -141,7 +141,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                         isStderr = true;
                     }
                 }
-                messageOutput = formatter.formatStreamOutput(genData);
+                messageOutput = basicFormatter.formatStreamOutput(genData);
 
                 //Null return values means we are suppressing a stack trace.. and we don't want to write a 'null' so we return.
                 if (messageOutput == null)
@@ -153,7 +153,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                 if (levelVal == WsLevel.ERROR.intValue() || levelVal == WsLevel.FATAL.intValue()) {
                     isStderr = true;
                 }
-                messageOutput = formatter.consoleLogFormat(genData);
+                messageOutput = basicFormatter.consoleLogFormat(genData);
             }
         }
 
@@ -190,7 +190,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     }
 
     /**
-     * Set copySystemStreams value that was determined from config by BasegTraceService
+     * Set copySystemStreams value that was determined from config by BaseTraceService
      *
      * @param copySystemStreams value to determine whether to copysystemstreams or not
      */
@@ -200,11 +200,13 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     /**
      * Set BaseTraceFormatter passed from BaseTraceService
+     * This Formatter is used to format the BASIC log events
+     * that pass through
      *
      * @param formatter the BaseTraceFormatter to use
      */
-    public void setFormatter(BaseTraceFormatter formatter) {
-        this.formatter = formatter;
+    public void setBasicFormatter(BaseTraceFormatter formatter) {
+        this.basicFormatter = formatter;
     }
 
     /**

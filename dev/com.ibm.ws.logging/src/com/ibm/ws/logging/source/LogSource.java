@@ -22,7 +22,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
@@ -168,11 +167,21 @@ public class LogSource implements Source, WsLogHandler {
             logData.setOrg(wsLogRecord.getOrganization());
             logData.setProduct(wsLogRecord.getProduct());
             logData.setComponent(wsLogRecord.getComponent());
+
+            if (wsLogRecord.getExtensions() != null) {
+                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
+                Map<String, String> extMap = wsLogRecord.getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
+                }
+                logData.setExtensions(extensions);
+            }
         } else {
             logData.setCorrelationId(null);
             logData.setOrg(null);
             logData.setProduct(null);
             logData.setComponent(null);
+            logData.setExtensions(null);
         }
 
         logData.setSequence(sequenceNumber.next(dateVal));
@@ -208,19 +217,6 @@ public class LogSource implements Source, WsLogHandler {
             logData.setFormattedMsg(null);
         }
 
-        if (logRecord instanceof WsLogRecord) {
-            if (((WsLogRecord) logRecord).getExtensions() != null) {
-                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
-                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
-                for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
-                }
-                logData.setExtensions(extensions);
-            }
-        } else {
-            logData.setExtensions(null);
-        }
-
         // cannot pass null to traceData.setObjectId(int i)
 
         logData.setSourceType(sourceName);
@@ -239,12 +235,7 @@ public class LogSource implements Source, WsLogHandler {
         return messageId;
     }
 
-    @FFDCIgnore(value = { ClassCastException.class })
     private WsLogRecord getWsLogRecord(LogRecord logRecord) {
-        try {
-            return (WsLogRecord) logRecord;
-        } catch (ClassCastException ex) {
-            return null;
-        }
+        return (logRecord instanceof WsLogRecord) ? (WsLogRecord) logRecord : null;
     }
 }

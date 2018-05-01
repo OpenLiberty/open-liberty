@@ -137,18 +137,23 @@ public class BaseTraceFormatter extends Formatter {
         if (level != null) {
             int l = level.intValue();
 
-            if (l == WsLevel.FATAL.intValue())
+            //WSLevel.FATAl -> int value of 1100
+            if (l == 1100)
                 return N_FATAL;
-            if (l == WsLevel.ERROR.intValue())
+            //WSLevel.ERROR -> int value of 1000
+            if (l == 1000)
                 return N_ERROR;
-            if (l == Level.WARNING.intValue())
+            //WSLevel.WARNING -> int value of 900
+            if (l == 900)
                 return N_WARN;
-            if (l == WsLevel.AUDIT.intValue())
+            //WSLevel.AUDIT -> int value of 850
+            if (l == 850)
                 return N_AUDIT;
-            if (l == Level.INFO.intValue())
+            //WSLevel.INFO -> int value of 800
+            if (l == 800)
                 return N_INFO;
-
-            if (level == WsLevel.EVENT.intValue())
+            //WSLevel.EVENT -> int value of 500
+            if (level == 500)
                 return N_EVENT;
         }
         return "";
@@ -851,22 +856,7 @@ public class BaseTraceFormatter extends Formatter {
     }
 
     private final String generateObjectId(Object id, boolean fixedWidth) {
-        String objId;
-
-        if (id != null) {
-            objId = Integer.toHexString(System.identityHashCode(id));
-            if (objId.length() < 8) {
-                StringBuilder builder = new StringBuilder();
-                builder.append("00000000");
-                builder.append(objId);
-                objId = builder.substring(builder.length() - 8);
-            }
-        } else if (fixedWidth) {
-            objId = pad8;
-        } else {
-            objId = emptyString;
-        }
-        return objId;
+        return generateObjectId(System.identityHashCode(id), fixedWidth);
     }
 
     /**
@@ -1072,13 +1062,8 @@ public class BaseTraceFormatter extends Formatter {
      *
      * @return
      */
-    //change to public
     public WsLogRecord getWsLogRecord(LogRecord logRecord) {
-        try {
-            return (WsLogRecord) logRecord;
-        } catch (ClassCastException ex) {
-            return null;
-        }
+        return (logRecord instanceof WsLogRecord) ? (WsLogRecord) logRecord : null;
     }
 
     /**
@@ -1106,7 +1091,7 @@ public class BaseTraceFormatter extends Formatter {
             }
         }
 
-        String message = filterStackTraces(txt);
+        String message = BaseTraceService.filterStackTraces(txt);
         if (message != null) {
             if (loglevel.equals("SystemErr")) {
                 message = "[err] " + message;
