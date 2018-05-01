@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import com.ibm.ws.kernel.boot.Debug;
+
 class IBMLegacyJavaDumperImpl extends JavaDumper {
     private static final Pattern HEAPDUMP_PATTERN = createPattern("heapdump", "phd");
     private static final Pattern JAVACORE_PATTERN = createPattern("javacore", "txt");
@@ -34,6 +36,8 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
 
     @Override
     public File dump(JavaDumpAction action, File outputDir, String nameToken, int maximum) {
+        Debug.traceEntry(IBMLegacyJavaDumperImpl.class, "dump", action, outputDir, nameToken, maximum);
+
         Pattern pattern;
         String dumpDirVar;
         String methodName;
@@ -105,13 +109,16 @@ class IBMLegacyJavaDumperImpl extends JavaDumper {
 
             for (String fileName : fileNames) {
                 if (!existingDumps.contains(fileName) && pattern.matcher(fileName).matches()) {
-                    return moveDump(addNameToken(new File(dumpDir, fileName), nameToken), outputDir);
+                    File result = moveDump(addNameToken(new File(dumpDir, fileName), nameToken), outputDir);
+                    Debug.traceExit(IBMLegacyJavaDumperImpl.class, "dump", result);
+                    return result;
                 }
             }
         }
 
         if (ServerDumpUtil.isZos() && (JavaDumpAction.SYSTEM == action)) {
             // We dont get a core*.dmp file as it goes to a dataset
+            Debug.traceExit(IBMLegacyJavaDumperImpl.class, "dump", "z/OS core dump");
             return null;
         } else {
             throw new IllegalStateException("failed to find generated dump file");

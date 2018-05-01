@@ -24,6 +24,7 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
+import com.ibm.ws.kernel.boot.Debug;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
 public abstract class JavaDumper {
@@ -33,6 +34,11 @@ public abstract class JavaDumper {
      * Create a dumper for the current JVM.
      */
     private static JavaDumper createInstance() {
+
+        Debug.traceEntry(JavaDumper.class, "createInstance");
+
+        JavaDumper result;
+
         try {
             // Try to find IBM Java dumper class.
             Class<?> dumpClass = Class.forName("com.ibm.jvm.Dump");
@@ -42,9 +48,9 @@ public abstract class JavaDumper {
                 Method javaDumpToFileMethod = dumpClass.getMethod("javaDumpToFile", paramTypes);
                 Method heapDumpToFileMethod = dumpClass.getMethod("heapDumpToFile", paramTypes);
                 Method systemDumpToFileMethod = dumpClass.getMethod("systemDumpToFile", paramTypes);
-                return new IBMJavaDumperImpl(javaDumpToFileMethod, heapDumpToFileMethod, systemDumpToFileMethod);
+                result = new IBMJavaDumperImpl(javaDumpToFileMethod, heapDumpToFileMethod, systemDumpToFileMethod);
             } catch (NoSuchMethodException e) {
-                return new IBMLegacyJavaDumperImpl(dumpClass);
+                result = new IBMLegacyJavaDumperImpl(dumpClass);
             }
         } catch (ClassNotFoundException ex) {
             // Try to find HotSpot MBeans.
@@ -65,8 +71,12 @@ public abstract class JavaDumper {
                 diagCommandName = null;
             }
 
-            return new HotSpotJavaDumperImpl(mbeanServer, diagName, diagCommandName);
+            result = new HotSpotJavaDumperImpl(mbeanServer, diagName, diagCommandName);
         }
+
+        Debug.traceExit(JavaDumper.class, "createInstance", result);
+
+        return result;
     }
 
     /**
@@ -109,23 +119,34 @@ public abstract class JavaDumper {
      * @return If the file is renamed, the new file; otherise, {@code createdFile}.
      */
     protected File addNameToken(File createdFile, String nameToken) {
+        Debug.traceEntry(JavaDumper.class, "addNameToken", createdFile, nameToken);
+
         if (nameToken != null && nameToken.length() > 0) {
             String fileName = createdFile.getName();
             int i = fileName.lastIndexOf('.');
+
+            Debug.trace(JavaDumper.class, "pruneFiles", "Searching for extension", fileName, i);
+
             if (i != -1) {
                 String extension = fileName.substring(i);
                 fileName = fileName.substring(0, i);
 
                 File newFile = new File(createdFile.getParent(), fileName + nameToken + extension);
 
+                Debug.trace(JavaDumper.class, "pruneFiles", "Renaming", newFile, extension, fileName);
+
                 if (createdFile.renameTo(newFile)) {
                     createdFile = newFile;
                 } else {
+                    Debug.trace(JavaDumper.class, "pruneFiles", "Rename returned false");
                     throw new RuntimeException(MessageFormat.format(BootstrapConstants.messages.getString("error.dump.rename.fail"), createdFile.getAbsolutePath(),
                                                                     newFile.getAbsolutePath()));
                 }
             }
         }
+
+        Debug.traceExit(JavaDumper.class, "addNameToken", createdFile);
+
         return createdFile;
     }
 
@@ -141,26 +162,36 @@ public abstract class JavaDumper {
      * @return The number of files deleted
      */
     protected int pruneFiles(final int maximum, File targetDirectory, final String uniqueFilePrefix, final String extension, final String nameToken) {
+        Debug.traceEntry(JavaDumper.class, "pruneFiles", maximum, targetDirectory, uniqueFilePrefix, extension, nameToken);
+
         int filesDeleted = 0;
         if (maximum > 0) {
             if (targetDirectory == null) {
                 // Get the current directory
                 targetDirectory = new File(System.getProperty("user.dir"));
+
+                Debug.trace(JavaDumper.class, "pruneFiles", "Current working directory", targetDirectory.getAbsolutePath());
             }
 
             File[] filteredFiles = targetDirectory.listFiles(new java.io.FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
 
+                    Debug.trace(JavaDumper.class, "pruneFiles", "Checking", dir.getAbsolutePath(), name);
+
                     if (name.contains(uniqueFilePrefix) && name.endsWith(extension)) {
                         if (nameToken == null) {
+                            Debug.trace(JavaDumper.class, "pruneFiles", "Return first true");
                             return true;
                         } else {
                             if (name.contains(nameToken)) {
+                                Debug.trace(JavaDumper.class, "pruneFiles", "Return second true");
                                 return true;
                             }
                         }
                     }
+
+                    Debug.trace(JavaDumper.class, "pruneFiles", "Return false");
 
                     return false;
                 }
@@ -175,17 +206,24 @@ public abstract class JavaDumper {
                 }
             });
 
+            Debug.trace(JavaDumper.class, "pruneFiles", "Sorted files", filteredFilesList.size(), filteredFilesList);
+
             // Use >= because we need to make room for the one file we're going to create
             while (filteredFilesList.size() >= maximum) {
                 File existingFile = filteredFilesList.remove(0);
+                Debug.trace(JavaDumper.class, "pruneFiles", "Deleting", existingFile.getAbsolutePath());
                 if (existingFile.delete()) {
                     filesDeleted++;
                 } else {
+                    Debug.trace(JavaDumper.class, "pruneFiles", "Delete returned false");
                     throw new RuntimeException(MessageFormat.format(BootstrapConstants.messages.getString("error.dump.delete.fail"), existingFile.getAbsolutePath(),
                                                                     filteredFilesList.size()));
                 }
             }
         }
+
+        Debug.traceExit(JavaDumper.class, "pruneFiles", filesDeleted);
+
         return filesDeleted;
     }
 
@@ -197,15 +235,24 @@ public abstract class JavaDumper {
      * @return The {@code dump} or the new path if it is moved.
      */
     protected File moveDump(File dump, File outputDir) {
+        Debug.traceEntry(JavaDumper.class, "moveDump", dump, outputDir);
+
         if (dump != null && outputDir != null && outputDir.exists() && outputDir.isDirectory() && !dump.getParentFile().equals(outputDir)) {
             File target = new File(outputDir, dump.getName());
+
+            Debug.trace(JavaDumper.class, "moveDump", "Renaming", target);
+
             if (dump.renameTo(target)) {
                 dump = target;
             } else {
+                Debug.trace(JavaDumper.class, "moveDump", "Rename returned false");
                 throw new RuntimeException(MessageFormat.format(BootstrapConstants.messages.getString("error.dump.rename.fail"), dump.getAbsolutePath(),
                                                                 target.getAbsolutePath()));
             }
         }
+
+        Debug.traceExit(JavaDumper.class, "moveDump", dump);
+
         return dump;
     }
 }

@@ -46,7 +46,7 @@ public class ServerActionsMXBeanServlet extends FATServlet {
 
     @Test
     public void testThreadDumps() throws Exception {
-        dumpTests(".txt", new DumpCaller() {
+        dumpTests(new String[] { ".txt" }, new DumpCaller() {
             @Override
             public String call(ServerActionsMXBean serverActions) {
                 return serverActions.threadDump();
@@ -72,7 +72,7 @@ public class ServerActionsMXBeanServlet extends FATServlet {
     @Test
     @Mode(TestMode.FULL)
     public void testHeapDumps() throws Exception {
-        dumpTests(".phd", new DumpCaller() {
+        dumpTests(new String[] { ".phd", ".hprof" }, new DumpCaller() {
             @Override
             public String call(ServerActionsMXBean serverActions) {
                 return serverActions.heapDump();
@@ -98,7 +98,7 @@ public class ServerActionsMXBeanServlet extends FATServlet {
     @Test
     @Mode(TestMode.FULL)
     public void testSystemDumps() throws Exception {
-        dumpTests(".dmp", new DumpCaller() {
+        dumpTests(new String[] { ".dmp" }, new DumpCaller() {
             @Override
             public String call(ServerActionsMXBean serverActions) {
                 return serverActions.systemDump();
@@ -124,7 +124,7 @@ public class ServerActionsMXBeanServlet extends FATServlet {
     /**
      * @throws MalformedObjectNameException
      */
-    private void dumpTests(String expectedExtension, DumpCaller caller) throws MalformedObjectNameException {
+    private void dumpTests(String[] expectedExtensions, DumpCaller caller) throws MalformedObjectNameException {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
         ServerActionsMXBean serverActions = JMX.newMXBeanProxy(mbs, new ObjectName(ServerActionsMXBean.OBJECT_NAME), ServerActionsMXBean.class);
@@ -133,7 +133,14 @@ public class ServerActionsMXBeanServlet extends FATServlet {
 
         if (dumpFile != null) {
 
-            Assert.assertTrue("Expected extension " + expectedExtension + " for " + dumpFile, dumpFile.endsWith(expectedExtension));
+            boolean hasExpectedExtension = false;
+            for (String expectedExtension : expectedExtensions) {
+                if (dumpFile.endsWith(expectedExtension)) {
+                    hasExpectedExtension = true;
+                    break;
+                }
+            }
+            Assert.assertTrue("Expected one of the extensions " + expectedExtensions + " for " + dumpFile, hasExpectedExtension);
 
             File file = new File(dumpFile);
 

@@ -13,6 +13,8 @@ package com.ibm.ws.kernel.boot.internal.commands;
 import java.io.File;
 import java.lang.reflect.Method;
 
+import com.ibm.ws.kernel.boot.Debug;
+
 class IBMJavaDumperImpl extends JavaDumper {
     private final Method javaDumpToFileMethod;
     private final Method heapDumpToFileMethod;
@@ -26,6 +28,8 @@ class IBMJavaDumperImpl extends JavaDumper {
 
     @Override
     public File dump(JavaDumpAction action, File outputDir, String nameToken, int maximum) {
+        Debug.traceEntry(IBMJavaDumperImpl.class, "dump", action, outputDir, nameToken, maximum);
+
         Method method;
 
         switch (action) {
@@ -64,9 +68,12 @@ class IBMJavaDumperImpl extends JavaDumper {
         // returned to the user.
         if (ServerDumpUtil.isZos() && (JavaDumpAction.SYSTEM == action)) {
             // We dont get a core*.dmp file as it goes to a dataset
+            Debug.traceExit(IBMJavaDumperImpl.class, "dump", "z/OS core dump");
             return null;
         } else {
-            return moveDump(addNameToken(new File(resultPath), nameToken), outputDir);
+            File result = moveDump(addNameToken(new File(resultPath), nameToken), outputDir);
+            Debug.traceExit(IBMJavaDumperImpl.class, "dump", result);
+            return result;
         }
     }
 }

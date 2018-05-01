@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import com.ibm.ws.kernel.boot.Debug;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 class HotSpotJavaDumperImpl extends JavaDumper {
@@ -93,18 +94,28 @@ class HotSpotJavaDumperImpl extends JavaDumper {
 
     @Override
     public File dump(JavaDumpAction action, File outputDir, String nameToken, int maximum) {
+        Debug.traceEntry(HotSpotJavaDumperImpl.class, "dump", action, outputDir, nameToken, maximum);
+
+        File result = null;
+
         switch (action) {
             case HEAP:
                 pruneFiles(maximum, outputDir, "java", "hprof", nameToken);
-                return addNameToken(createHeapDump(outputDir), nameToken);
+                result = addNameToken(createHeapDump(outputDir), nameToken);
+                break;
 
             case THREAD:
                 pruneFiles(maximum, outputDir, "javadump", "txt", nameToken);
-                return addNameToken(createThreadDump(outputDir), nameToken);
+                result = addNameToken(createThreadDump(outputDir), nameToken);
+                break;
 
             default:
-                return null;
+                break;
         }
+
+        Debug.traceExit(HotSpotJavaDumperImpl.class, "dump", result);
+
+        return result;
     }
 
     /**
