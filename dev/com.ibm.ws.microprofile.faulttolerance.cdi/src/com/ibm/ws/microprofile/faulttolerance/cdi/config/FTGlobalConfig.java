@@ -10,10 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.cdi.config;
 
+import java.lang.Class;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -42,6 +48,80 @@ public class FTGlobalConfig {
     private final static Set<Class<?>> ALL_ANNOTATIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Asynchronous.class, CircuitBreaker.class,
                                                                                                                  Retry.class, Timeout.class, Bulkhead.class, Fallback.class)));
     private final static String CONFIG_NONFALLBACK_ENABLED = "MP_Fault_Tolerance_NonFallback_Enabled";
+
+    /**
+     * Checks if an annotation is enabled or disabled via configuration options. Annotations can be disabled with the following syntax: 
+     *
+     * Disable on the class-level: com.acme.test.MyClient/serviceA/CircuitBreaker/enabled=false
+     * Disable at the method-level: com.acme.test.MyClient/serviceA/methodA/CircuitBreaker/enabled=false
+     * Disable globally: CircuitBreaker/enabled=false
+     *
+     * Method-level properties takes precedence over class-level properties, which in turn has precedence over global properties. 
+     *
+     * @param ann The annotation
+     * @param clazz The class containing the annotation.
+     * @return Is the annotation enabled 
+     */
+    public static boolean isAnnotationEnabled(Annotation ann, Class clazz) {
+        return isAnnotationEnabled(ann, clazz, null);
+    }
+
+    /**
+     * Checks if an annotation is enabled or disabled via configuration options. Annotations can be disabled with the following syntax: 
+     *
+     * Disable on the class-level: com.acme.test.MyClient/serviceA/CircuitBreaker/enabled=false
+     * Disable at the method-level: com.acme.test.MyClient/serviceA/methodA/CircuitBreaker/enabled=false
+     * Disable globally: CircuitBreaker/enabled=false
+     *
+     * Method-level properties takes precedence over class-level properties, which in turn has precedence over global properties. 
+     *
+     * @param ann The annotation
+     * @param clazz The class containing the annotation.
+     * @param method The method annotated with the annotation. If null only class and global scope properties will be checked.
+     * @return Is the annotation enabled 
+     */
+    public static boolean isAnnotationEnabled(Annotation ann, Class clazz, Method method) {
+        ClassLoader cl = FTUtils.getClassLoader(clazz);
+        Config mpConfig = ConfigProvider.getConfig(cl);
+        boolean isDisabled = false;
+
+        if (method != null) { 
+            String methodKey = clazz.getCanonicalName() + "/" + method.getName() + "/" + ann.annotationType().getSimpleName() + "/enabled";
+            Optional<Boolean> methodEnabled = getOptionalWithLock(methodKey, mpConfig);
+            if (methodEnabled.isPresent()) {
+                return methodEnabled.get(); //Method scoped properties take precedence. We can return, otherwise move on to class scope. 
+            }
+        } 
+
+        String clazzKey = clazz.getCanonicalName() + "/" + ann.annotationType().getSimpleName() + "/enabled";
+        Optional<Boolean> classEnabled = getOptionalWithLock(clazzKey, mpConfig);
+        if (classEnabled.isPresent()) {
+            return classEnabled.get();
+        }
+
+        String annKey = ann.annotationType().getSimpleName() + "/enabled";  
+        Optional<Boolean> globalEnabled = getOptionalWithLock(annKey, mpConfig);
+        if (globalEnabled.isPresent()) {
+            return globalEnabled.get();
+        }        
+        
+        return true; //The default is enabled.
+    }
+
+    private static Optional<Boolean> getOptionalWithLock(String key, Config mpConfig) {
+        Optional<Boolean> optional = null;
+        lock.writeLock().lock();
+        try {
+            if (optional == null) {
+                //read the config
+                optional = mpConfig.getOptionalValue(key, boolean.class);
+            }
+        } finally {
+            //release the write lock
+            lock.writeLock().unlock();
+        }
+        return optional;
+    }
 
     public static Set<Class<?>> getActiveAnnotations(Class<?> clazz) {
         ClassLoader cl = FTUtils.getClassLoader(clazz);
