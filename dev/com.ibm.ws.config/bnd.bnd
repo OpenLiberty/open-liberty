@@ -25,7 +25,8 @@ WS-TraceGroup: config
 Export-Package: com.ibm.websphere.config;provide:=true, \
   com.ibm.websphere.metatype;provide:=true, \
   com.ibm.websphere.config.mbeans;provide:=true, \
-  org.osgi.service.cm;provide:=true
+  org.osgi.service.cm;provide:=true, \
+  com.ibm.ws.config.xml
 
 Private-Package: com.ibm.ws.config.admin, \
    com.ibm.ws.config*.internal*
