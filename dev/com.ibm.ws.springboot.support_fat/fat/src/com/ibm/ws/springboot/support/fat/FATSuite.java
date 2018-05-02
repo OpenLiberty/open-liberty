@@ -36,6 +36,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 SSLTests20.class,
                 SSLMutualAuthTests15.class,
                 SSLMutualAuthTests20.class,
+                SpringSecurityTests.class,
                 JSPTests15.class,
                 MissingServletTests15.class,
                 MissingServletTests20.class,
@@ -48,6 +49,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 WebAnnotationTests.class,
                 ExtractedAppTests.class,
                 WebSocketTests15.class
+
 })
 
 public class FATSuite {
