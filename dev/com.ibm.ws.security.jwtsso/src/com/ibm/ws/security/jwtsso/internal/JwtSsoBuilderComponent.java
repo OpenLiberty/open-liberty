@@ -23,7 +23,6 @@ import java.util.Map;
 
 import javax.management.DynamicMBean;
 
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -127,6 +126,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
         return jwtConsumerRef;
     }
 
+    // we track the builder config so we can get the token expiration time
     @org.osgi.service.component.annotations.Reference(service = JwtConfig.class, name = KEY_JWT_SERVICE, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.RELUCTANT)
     protected void setJwtConfig(org.osgi.framework.ServiceReference<JwtConfig> ref) {
         synchronized (initlock) {
@@ -217,8 +217,6 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
         }
         jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
         cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
-        // we track the builder config so we can get the token expiration time
-        ServiceReference<JwtConfig> ref = jwtServiceMapRef.getReference(jwtBuilderRef);
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "process");
         }
