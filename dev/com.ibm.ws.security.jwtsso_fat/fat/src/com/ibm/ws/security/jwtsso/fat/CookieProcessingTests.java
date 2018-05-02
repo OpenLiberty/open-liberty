@@ -211,23 +211,18 @@ public class CookieProcessingTests extends CommonSecurityFat {
     public void test_CookieReplay() throws Exception {
         reconfigServer("server.xml");
         doHappyPath();
-        String cookieHeader = response.getWebResponse().getResponseHeaderValue("Set-Cookie");
-        Log.info(thisClass, "", "value of cookie header: " + cookieHeader);
-        assertTrue("did not find expected  cookie", cookieHeader != null);
-        assertTrue("cookie name is wrong", cookieHeader.contains("jwtToken"));
-
-        // extract the token to attempt replay.
-        String replayString = cookieHeader.replace("Set-Cookie: ", "")
-                        .replaceAll(" Path=/", "")
-                        .replaceAll(" Secure;", "")
-                        .replaceAll("HttpOnly", "")
-                        .replaceAll(";", "");
-        // is ; allowed in token body?  I hope not.
+        String responseStr = response.getWebResponse().getContentAsString();
+        String beginStr = "cookie: jwtToken value: ";
+        int begin = responseStr.indexOf(beginStr) + beginStr.length();
+        int end = responseStr.indexOf("\n", begin);
+        String token = responseStr.substring(begin, end);
+        Log.info(thisClass, "", "value of cookie from response text " + token);
+        assertTrue("did not find expected  cookie", token != null);
 
         // perform logout
         String logoutUrl = protectedUrl + "?logout=true";
         response = invokeUrl(wc, logoutUrl);
-        String responseStr = response.getWebResponse().getContentAsString();
+        responseStr = response.getWebResponse().getContentAsString();
         boolean check2 = responseStr.contains("Test Application class BaseServlet logged out");
         assertTrue("Did not get a response indicating logout was invoked", check2);
 
@@ -236,8 +231,8 @@ public class CookieProcessingTests extends CommonSecurityFat {
         loggingUtils.printMethodName(thisMethod);
 
         WebRequest request = new WebRequest(new URL(protectedUrl), HttpMethod.GET);
-        Log.info(thisClass, "", "setting cookie for replay:" + replayString);
-        request.setAdditionalHeader("Cookie", replayString);
+        Log.info(thisClass, "", "setting cookie for replay:" + token);
+        request.setAdditionalHeader("Cookie", token);
         loggingUtils.printRequestParts(wc, request, testName.getMethodName());
 
         Page response = wc.getPage(request); // should get bounced to login page
