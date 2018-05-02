@@ -232,7 +232,7 @@ public class CookieProcessingTests extends CommonSecurityFat {
 
         WebRequest request = new WebRequest(new URL(protectedUrl), HttpMethod.GET);
         Log.info(thisClass, "", "setting cookie for replay:" + token);
-        request.setAdditionalHeader("Cookie", token);
+        request.setAdditionalHeader("Cookie", "jwtToken=" + token);
         loggingUtils.printRequestParts(wc, request, testName.getMethodName());
 
         Page response = wc.getPage(request); // should get bounced to login page
