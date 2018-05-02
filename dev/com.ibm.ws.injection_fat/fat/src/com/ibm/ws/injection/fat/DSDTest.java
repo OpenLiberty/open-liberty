@@ -51,17 +51,17 @@ public class DSDTest extends FATServletClient {
         JavaArchive DSDAnnEJB = ShrinkHelper.buildJavaArchive("DSDAnnEJB.jar", "com.ibm.ws.injection.dsdann.ejb.");
         WebArchive DSDAnnWeb = ShrinkHelper.buildDefaultApp("DSDAnnWeb.war", "com.ibm.ws.injection.dsdann.web.");
         EnterpriseArchive DSDAnnTest = ShrinkWrap.create(EnterpriseArchive.class, "DSDAnnTest.ear");
-		DSDAnnTest.addAsModule(DSDAnnEJB).addAsModule(DSDAnnWeb);
+        DSDAnnTest.addAsModule(DSDAnnEJB).addAsModule(DSDAnnWeb);
 
         JavaArchive DSDMixEJB = ShrinkHelper.buildJavaArchive("DSDMixEJB.jar", "com.ibm.ws.injection.dsdmix.ejb.");
         WebArchive DSDMixWeb = ShrinkHelper.buildDefaultApp("DSDMixWeb.war", "com.ibm.ws.injection.dsdmix.web.");
         EnterpriseArchive DSDMixTest = ShrinkWrap.create(EnterpriseArchive.class, "DSDMixTest.ear");
-		DSDMixTest.addAsModule(DSDMixEJB).addAsModule(DSDMixWeb);
+        DSDMixTest.addAsModule(DSDMixEJB).addAsModule(DSDMixWeb);
 
         JavaArchive DSDXMLEJB = ShrinkHelper.buildJavaArchive("DSDXMLEJB.jar", "com.ibm.ws.injection.dsdxml.ejb.");
         WebArchive DSDXMLWeb = ShrinkHelper.buildDefaultApp("DSDXMLWeb.war", "com.ibm.ws.injection.dsdxml.web.");
         EnterpriseArchive DSDXMLTest = ShrinkWrap.create(EnterpriseArchive.class, "DSDXMLTest.ear");
-		DSDXMLTest.addAsModule(DSDXMLEJB).addAsModule(DSDXMLWeb);
+        DSDXMLTest.addAsModule(DSDXMLEJB).addAsModule(DSDXMLWeb);
 
         ShrinkHelper.exportAppToServer(server, DSDAnnTest);
         ShrinkHelper.exportAppToServer(server, DSDMixTest);

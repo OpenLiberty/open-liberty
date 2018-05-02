@@ -23,20 +23,20 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-// NOTE: this is an XML only test and the following DS's are here 
-// to validate that when metadata-complete=true these annotations 
+// NOTE: this is an XML only test and the following DS's are here
+// to validate that when metadata-complete=true these annotations
 // are ignored.
 @DataSourceDefinitions({
-                        @DataSourceDefinition(name = "java:module/MetaDataCompleteValidDS",
-                                              className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                                              loginTimeout = 29,
-                                              isolationLevel = TRANSACTION_SERIALIZABLE),
-                        @DataSourceDefinition(name = "java:module/AnnotationOnlyToBeIgnored",
-                                              className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                                              databaseName = "dsdXMLTestMDCAnnOnly",
-                                              loginTimeout = 86,
-                                              isolationLevel = TRANSACTION_SERIALIZABLE,
-                                              properties = { "createDatabase=create" })
+                         @DataSourceDefinition(name = "java:module/MetaDataCompleteValidDS",
+                                               className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
+                                               loginTimeout = 29,
+                                               isolationLevel = TRANSACTION_SERIALIZABLE),
+                         @DataSourceDefinition(name = "java:module/AnnotationOnlyToBeIgnored",
+                                               className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
+                                               databaseName = "dsdXMLTestMDCAnnOnly",
+                                               loginTimeout = 86,
+                                               isolationLevel = TRANSACTION_SERIALIZABLE,
+                                               properties = { "createDatabase=create" })
 })
 public class DSDStatelessBean {
     private static String CLASSNAME = DSDStatelessBean.class.getName();

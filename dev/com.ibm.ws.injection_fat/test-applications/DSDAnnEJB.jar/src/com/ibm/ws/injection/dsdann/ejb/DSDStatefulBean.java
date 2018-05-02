@@ -21,26 +21,26 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 @DataSourceDefinitions({
-                        @DataSourceDefinition(name = "java:module/ann_BasicModLevelDS",
-                                              className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                                              databaseName = "dsdAnnTest",
-                                              loginTimeout = 14,
-                                              properties = { "createDatabase=create" }),
-                        @DataSourceDefinition(name = "java:app/ann_BasicAppLevelDS",
-                                              className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                                              databaseName = "dsdAnnTest",
-                                              loginTimeout = 19,
-                                              properties = { "createDatabase=create" }),
-                        @DataSourceDefinition(name = "java:global/ann_BasicGlobalLevelDS", // change to java:global per RTC86337
-                                              className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                                              databaseName = "dsdAnnTest",
-                                              loginTimeout = 6,
-                                              properties = { "createDatabase=create" }),
-                        @DataSourceDefinition(name = "ann_BasicCompLevelDS",
-                                              className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                                              databaseName = "dsdAnnTest",
-                                              loginTimeout = 15,
-                                              properties = { "createDatabase=create" })
+                         @DataSourceDefinition(name = "java:module/ann_BasicModLevelDS",
+                                               className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
+                                               databaseName = "dsdAnnTest",
+                                               loginTimeout = 14,
+                                               properties = { "createDatabase=create" }),
+                         @DataSourceDefinition(name = "java:app/ann_BasicAppLevelDS",
+                                               className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
+                                               databaseName = "dsdAnnTest",
+                                               loginTimeout = 19,
+                                               properties = { "createDatabase=create" }),
+                         @DataSourceDefinition(name = "java:global/ann_BasicGlobalLevelDS", // change to java:global per RTC86337
+                                               className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
+                                               databaseName = "dsdAnnTest",
+                                               loginTimeout = 6,
+                                               properties = { "createDatabase=create" }),
+                         @DataSourceDefinition(name = "ann_BasicCompLevelDS",
+                                               className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
+                                               databaseName = "dsdAnnTest",
+                                               loginTimeout = 15,
+                                               properties = { "createDatabase=create" })
 })
 @Stateful
 public class DSDStatefulBean {

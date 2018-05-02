@@ -16,12 +16,12 @@ import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 
-import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
-
 import org.junit.Test;
 
-import componenttest.app.FATServlet;
+import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 import com.ibm.ws.injection.dsdmix.ejb.DSDMixedBean;
+
+import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/BasicDSDMixServlet")
@@ -59,7 +59,7 @@ public class BasicDSDMixServlet extends FATServlet {
      * @throws Exception
      *
      */
-	@Test
+    @Test
     public void testDSDMerge() throws Exception {
         getAndVerifyResult("java:module/mix_MergeSLSBModLevelDS", 126, 1, "dsdTesterMerge");
     }
@@ -73,7 +73,7 @@ public class BasicDSDMixServlet extends FATServlet {
      * @throws Exception
      *
      */
-	@Test
+    @Test
     public void testDSDOverride() throws Exception {
         getAndVerifyResult("java:module/mix_XMLOverrideSLSBModLevelDS", 128, 4, "dsdTesterXMLKing");
     }
@@ -86,7 +86,7 @@ public class BasicDSDMixServlet extends FATServlet {
      * @throws Exception
      *
      */
-	@Test
+    @Test
     public void testDSDAnnOnly() throws Exception {
         getAndVerifyResult("java:module/mix_AnnOnlySLSBModLevelDS", 129, 8, "dsdTesterAnn");
     }
@@ -99,7 +99,7 @@ public class BasicDSDMixServlet extends FATServlet {
      * @throws Exception
      *
      */
-	@Test
+    @Test
     public void testDSDXMLOnly() throws Exception {
         getAndVerifyResult("java:module/mix_XMLOnlySLSBModLevelDS", 130, 2, "dsdTesterXML");
     }

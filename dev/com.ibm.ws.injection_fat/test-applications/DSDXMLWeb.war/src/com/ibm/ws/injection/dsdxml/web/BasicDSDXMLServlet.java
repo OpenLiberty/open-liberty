@@ -16,12 +16,12 @@ import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 
-import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
-
 import org.junit.Test;
 
-import componenttest.app.FATServlet;
+import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 import com.ibm.ws.injection.dsdxml.ejb.DSDStatelessBean;
+
+import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/BasicDSDXMLServlet")
@@ -56,7 +56,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      * @throws Exception
      *
      */
-	@Test
+    @Test
     public void testDSDModLevel() throws Exception {
         getAndVerifyResult("java:module/BasicModLevelDS", 142, 8);
     }
@@ -68,7 +68,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      * @throws Exception
      *
      */
-	@Test
+    @Test
     public void testDSDAppLevel() throws Exception {
         getAndVerifyResult("java:app/BasicAppLevelDS", 122, 8);
     }
@@ -80,7 +80,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      * @throws Exception
      *
      */
-	@Test
+    @Test
     public void testDSDGlobalLevel() throws Exception {
         getAndVerifyResult("java:global/BasicGlobalLevelDS", 132, 8);
     }
@@ -91,7 +91,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      *
      * @throws Exception
      */
-	@Test
+    @Test
     public void testDSDCompLevel() throws Exception {
         getAndVerifyResult("java:comp/env/BasicCompLevelDS", 113, 8);
     }
@@ -103,7 +103,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      * level properties which are 0 and 4 respectively.
      *
      */
-	@Test
+    @Test
     public void testDSDMetaDataCompleteValid() throws Exception {
         getAndVerifyResult("java:module/MetaDataCompleteValidDS", 0, 4);
     }
@@ -112,7 +112,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      * Verify that a DS defined ONLY via annotation will not be created when
      * metadata-complete = true.
      */
-	@Test
+    @Test
     public void testDSMetaDataCompleteAnnOnly() throws Exception {
         svLogger.info("--> Looking up bean...");
         DSDStatelessBean bean = (DSDStatelessBean) FATHelper.lookupDefaultBindingEJBJavaApp(DSDStatelessBean.class.getName(), "DSDXMLEJB", "DSDStatelessBean");

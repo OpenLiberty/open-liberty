@@ -16,12 +16,12 @@ import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 
-import com.ibm.ws.injection.dsdann.ejb.DSDSingletonBean;
-import com.ibm.ws.injection.dsdann.ejb.DSDStatefulBean;
-
 import org.junit.Test;
 
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
+import com.ibm.ws.injection.dsdann.ejb.DSDSingletonBean;
+import com.ibm.ws.injection.dsdann.ejb.DSDStatefulBean;
+
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -34,7 +34,7 @@ public class BasicDSDAnnServlet extends FATServlet {
      * Lookup the bean and call the testDS method with the jndi name provided by
      * the test method and verify it returns the expected loginTimeout value of
      * the defined DataSource
-     * 
+     *
      * @param jndi
      * @param loginTO
      * @throws Exception
@@ -54,11 +54,11 @@ public class BasicDSDAnnServlet extends FATServlet {
      * Verify that a DS defined in a SFSB using the DataSourceDefinition
      * annotation can be successfully looked up from the SFSB using the
      * java:module namespace
-     * 
+     *
      * @throws Exception
-     * 
+     *
      */
-	@Test
+    @Test
     public void testDSDModLevel() throws Exception {
         getAndVerifyResult("java:module/ann_BasicModLevelDS", 14);
     }
@@ -67,11 +67,11 @@ public class BasicDSDAnnServlet extends FATServlet {
      * Verify that a DS defined in a SFSB using the DataSourceDefinition
      * annotation can be successfully looked up from the SFSB using the java:app
      * namespace
-     * 
+     *
      * @throws Exception
-     * 
+     *
      */
-	@Test
+    @Test
     public void testDSDAppLevel() throws Exception {
         getAndVerifyResult("java:app/ann_BasicAppLevelDS", 19);
     }
@@ -80,11 +80,11 @@ public class BasicDSDAnnServlet extends FATServlet {
      * Verify that a DS defined in a SFSB using the DataSourceDefinition
      * annotation can be successfully looked up from the SFSB using the
      * java:global namespace
-     * 
+     *
      * @throws Exception
-     * 
+     *
      */
-	@Test
+    @Test
     public void testDSDGlobalLevel() throws Exception {
         getAndVerifyResult("java:global/ann_BasicGlobalLevelDS", 6);
     }
@@ -93,10 +93,10 @@ public class BasicDSDAnnServlet extends FATServlet {
      * Verify that a DS defined in a SFSB using the DataSourceDefinition
      * annotation can be successfully looked up from the SFSB using the java:comp
      * namespace
-     * 
+     *
      * @throws Exception
      */
-	@Test
+    @Test
     public void testDSDCompLevel() throws Exception {
         getAndVerifyResult("java:comp/env/ann_BasicCompLevelDS", 15);
     }
@@ -106,11 +106,11 @@ public class BasicDSDAnnServlet extends FATServlet {
      * annotation can be successfully looked up from the SFSB using the
      * java:module
      * namespace
-     * 
+     *
      * @throws Exception
-     * 
+     *
      */
-	@Test
+    @Test
     public void testSingletonDSDModLevel() throws Exception {
         svLogger.info("--> Looking up the Singleton bean...");
         DSDSingletonBean bean = (DSDSingletonBean) FATHelper.lookupDefaultBindingEJBJavaApp(DSDSingletonBean.class.getName(), "DSDAnnEJB", "DSDSingletonBean");
