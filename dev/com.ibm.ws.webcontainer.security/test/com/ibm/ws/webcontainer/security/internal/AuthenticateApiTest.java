@@ -17,13 +17,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
+import test.common.SharedOutputManager;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.jmock.Expectations;
@@ -32,7 +32,10 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Test;
-
+import org.junit.rules.TestRule;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.AfterClass;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationService;
@@ -50,6 +53,8 @@ import com.ibm.ws.webcontainer.security.UnprotectedResourceService;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 public class AuthenticateApiTest {
 
@@ -58,6 +63,7 @@ public class AuthenticateApiTest {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.*=all");
     private final HttpServletRequest req = mock.mock(HttpServletRequest.class);
     private final HttpServletResponse resp = mock.mock(HttpServletResponse.class);
     private final HttpSession session = mock.mock(HttpSession.class);
@@ -73,11 +79,15 @@ public class AuthenticateApiTest {
     private final String password = "user1pwd";
     private final SubjectManager subjectManager = new SubjectManager();
 
+    @Rule
+    public TestRule outputRule = outputMgr;
+    
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        
         mock.assertIsSatisfied();
     }
-
+    
     @Factory
     private static Matcher<AuthenticationData> matchingAuthenticationData(AuthenticationData authData) {
         return new AuthenticationDataMatcher(authData);
@@ -221,6 +231,7 @@ public class AuthenticateApiTest {
                 allowing(req).getUserPrincipal();
                 allowing(ssoCookieHelper).getSSOCookiename();
                 allowing(req).getCookies();
+                
             }
         });
 
@@ -373,11 +384,11 @@ public class AuthenticateApiTest {
         authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
         assertNull(subjectManager.getCallerSubject());
     }
-
     /**
      */
     @Test
     public void testLoginSuccess() throws Exception {
+       
         final String jaasEntryName = JaasLoginConfigConstants.SYSTEM_WEB_INBOUND;
         subjectManager.clearSubjects();
         final Subject subject = createAuthenticatedSubject();
@@ -413,6 +424,70 @@ public class AuthenticateApiTest {
         BasicAuthAuthenticator basicAuthAuthenticator = new BasicAuthAuthenticator(authnService, userRegistry, ssoCookieHelper, config);
         authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
         assertEquals(subject, subjectManager.getCallerSubject());
+    }
+    /**
+     */
+    @Test
+    public void passwordExpired () throws Exception {
+        System.out.println("Password Expired Testcase running!");
+        FileOutputStream fs = new FileOutputStream("C:/logs/testcases.txt");
+        PrintWriter pw = new PrintWriter(fs);
+        try {
+            
+        final CollaboratorUtils cu = mock.mock(CollaboratorUtils.class);
+        
+        final String jaasEntryName = JaasLoginConfigConstants.SYSTEM_WEB_INBOUND;
+        subjectManager.clearSubjects();
+        final Subject subject = createAuthenticatedSubject();
+        final AuthenticationData authenticationData = createAuthenticationData(user, password);
+        mock.checking(new Expectations() {
+            {
+                one(config).getLogoutOnHttpSessionExpire();
+                will(returnValue(false));
+                one(req).getRequestedSessionId();
+                will(returnValue("abc"));
+                one(req).isRequestedSessionIdValid();
+                will(returnValue(false));
+                allowing(authnService).authenticate(with(equal(jaasEntryName)), with(matchingAuthenticationData(authenticationData)), with(equal((Subject) null)));
+                will(throwException(new com.ibm.ws.security.authentication.PasswordExpiredException("authn failed")));
+                //one(ssoCookieHelper).addSSOCookiesToResponse(subject, req, resp);
+                one(cu).getUserRegistryRealm(securityServiceRef);
+                will(returnValue("joe"));
+                allowing(securityServiceRef).getService();
+                will(returnValue(securityService));
+                allowing(securityService).getAuthenticationService();
+                will(returnValue(authnService));
+                allowing(authnService).getAuthCacheService();
+                allowing(req).getRemoteUser();
+                allowing(req).getUserPrincipal();
+                allowing(ssoCookieHelper).getSSOCookiename();
+                allowing(req).getCookies();
+                allowing(req).getServletContext();
+                will(returnValue(mockServletContext));
+                allowing(mockServletContext).getAttribute(with(any(String.class)));
+                will(returnValue(null));
+                
+            }
+        });
+        pw.println("Right above the try");
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, cu, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"));
+        BasicAuthAuthenticator basicAuthAuthenticator = new BasicAuthAuthenticator(authnService, userRegistry, ssoCookieHelper, config);
+        try {
+            pw.println("about to log in");
+            authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
+        } catch (Exception e) {
+            pw.println("Exceptoin HIT");
+            pw.println(e.toString());
+            e.printStackTrace(pw);
+            pw.println(e.getMessage());
+            
+            assertEquals(e.getMessage(), true, e.getMessage().contains("[PWEXPIRED]"));
+        }
+        }
+        finally {
+            pw.flush();
+            pw.close();
+        }
     }
 
     private AuthenticationData createAuthenticationData(String username, String password) {

@@ -14,8 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.security.auth.Subject;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+
+import javax.servlet.http.Cookie;
 
 /**
  * An AuthenticationResult is returned by WebAuthenticator as a result of a
@@ -37,6 +38,37 @@ public class AuthenticationResult {
     public String certdn = null;
     private Subject subject = null;
     private String targetRealm = null;
+
+    public boolean passwordExpired = false;
+    /**
+     * @return the passwordExpired
+     */
+    public boolean getPasswordExpired() {
+        return passwordExpired;
+    }
+
+    /**
+     * @param passwordExpired the passwordExpired to set
+     */
+    public void setPasswordExpired(boolean passwordExpired) {
+        this.passwordExpired = passwordExpired;
+    }
+
+    /**
+     * @return the userRevoked
+     */
+    public boolean getUserRevoked() {
+        return userRevoked;
+    }
+
+    /**
+     * @param userRevoked the userRevoked to set
+     */
+    public void setUserRevoked(boolean userRevoked) {
+        this.userRevoked = userRevoked;
+    }
+
+    public boolean userRevoked = false;
 
     // Credentials-related variables
     private String reason;

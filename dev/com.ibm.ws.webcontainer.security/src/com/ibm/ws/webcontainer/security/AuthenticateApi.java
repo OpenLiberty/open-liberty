@@ -18,10 +18,11 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import  javax.servlet.http.Cookie;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -137,8 +138,20 @@ public class AuthenticateApi {
             reply = createReplyForAuthnFailure(authResult, realm);
 
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_01, req, authResult, Integer.valueOf(reply.getStatusCode()));
-
-            throw new ServletException(authResult.getReason());
+            System.err.println(authResult.getReason());
+            
+            String extraInfoText = "";
+            if (authResult.passwordExpired == true) {
+                extraInfoText = extraInfoText + " [PWEXPIRED]";
+            }
+            if (authResult.userRevoked == true) {
+                extraInfoText = extraInfoText + "[IDREVOKED]";
+            }
+            
+            System.out.println("Auth Result" + authResult.password);
+            System.out.println("Auth Result" + authResult.userRevoked);
+            
+            throw new ServletException(authResult.getReason() + "joe " + extraInfoText);
         } else {
 
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_01, req, authResult, Integer.valueOf(HttpServletResponse.SC_OK));
@@ -443,7 +456,8 @@ public class AuthenticateApi {
      * @param resp
      * @param authResult
      */
-    public void postProgrammaticAuthenticate(HttpServletRequest req, HttpServletResponse resp, AuthenticationResult authResult, boolean alwaysSetCallerSubject, boolean addSSOCookie) {
+    public void postProgrammaticAuthenticate(HttpServletRequest req, HttpServletResponse resp, AuthenticationResult authResult, boolean alwaysSetCallerSubject,
+                                             boolean addSSOCookie) {
         Subject subject = authResult.getSubject();
         if (alwaysSetCallerSubject || new SubjectHelper().isUnauthenticated(subjectManager.getCallerSubject())) {
             subjectManager.setCallerSubject(subject);

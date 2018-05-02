@@ -126,7 +126,14 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
             Subject authenticatedSubject = authenticationService.authenticate(thisAuthMech, authenticationData, null);
             authResult = new AuthenticationResult(AuthResult.SUCCESS, authenticatedSubject, AuditEvent.CRED_TYPE_BASIC, username, AuditEvent.OUTCOME_SUCCESS);
         } catch (AuthenticationException e) {
+            
             authResult = new AuthenticationResult(AuthResult.SEND_401, e.getMessage(), AuditEvent.CRED_TYPE_BASIC, username, AuditEvent.OUTCOME_DENIED);
+
+            if (e instanceof com.ibm.ws.security.authentication.PasswordExpiredException) {  
+                authResult.passwordExpired = true;
+            } else if (e instanceof com.ibm.ws.security.authentication.UserRevokedException) {
+                authResult.userRevoked = true;
+            }
         }
         authResult.realm = realm;
         authResult.username = username;
