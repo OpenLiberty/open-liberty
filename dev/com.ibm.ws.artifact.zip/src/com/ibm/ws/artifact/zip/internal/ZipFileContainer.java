@@ -719,27 +719,55 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     }
     private final ZipEntryDataLock zipEntryDataLock = new ZipEntryDataLock();
     private volatile ZipEntryData[] zipEntryData;
+    private volatile Map<String, ZipEntryData> zipEntryDataMap;
 
     @Trivial
-    public ZipEntryData[] getZipEntryData() {
+    private void setZipEntryData() {
         if ( zipEntryData == null ) {
             synchronized( zipEntryDataLock ) {
                 if ( zipEntryData == null ) {
                     zipEntryData = createZipEntryData();
+                    zipEntryDataMap = ZipFileContainerUtils.setLocations(zipEntryData);
                 }
             }
         }
+    }
+    
+    @Trivial
+    public ZipEntryData[] getZipEntryData() {
+    	setZipEntryData();
         return zipEntryData;
     }
 
     @Trivial
+    public Map<String, ZipEntryData> getZipEntryDataMap() {
+    	setZipEntryData();
+    	return zipEntryDataMap;
+    }
+
+    public ZipEntryData getZipEntryData(String r_path) {
+    	return getZipEntryDataMap().get(r_path);
+    }
+    
+    @Trivial
     public int locatePath(String r_path) {
-        return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
+    	ZipEntryData entryData = getZipEntryData(r_path);
+    	if ( entryData == null ) {
+    		return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
+    	} else {
+    		return entryData.getOffset();
+    	}
     }
     
     @Trivial
     public int locatePath(ZipEntryData[] useZipEntryData, String r_path) {
-        return ZipFileContainerUtils.locatePath(useZipEntryData, r_path);
+    	ZipEntryData entryData = getZipEntryData(r_path);
+    	if ( entryData == null ) {
+    		return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
+    	} else {
+    		return entryData.getOffset();
+    	}
+        // return ZipFileContainerUtils.locatePath(useZipEntryData, r_path);
     }
 
     @Trivial
@@ -854,7 +882,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
 
         String r_entryPath = a_entryPath.substring(1);
-        int location = locatePath(useZipEntries, r_entryPath);
+        int location = locatePath(r_entryPath);
 
         ZipEntryData entryData;
         if ( location < 0 ) {
@@ -924,7 +952,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             r_entryPath = entryPath; // The path is already relative.
         }
 
-        int location = locatePath(useEntryData, r_entryPath);
+        int location = locatePath(r_entryPath);
 
         if ( (location < 0) && !normalized ) {
             // Try again after forcing the path to be normalized.
@@ -948,7 +976,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 r_entryPath = entryPath; // The path is already relative.
             }
 
-            location = locatePath(useEntryData, r_entryPath);
+            location = locatePath(r_entryPath);
         }
 
         ZipEntryData zipEntryData;

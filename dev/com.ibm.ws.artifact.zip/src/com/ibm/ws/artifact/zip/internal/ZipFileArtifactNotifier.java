@@ -798,7 +798,7 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
             String r_path = a_path.substring(1);
             int r_pathLen = r_path.length();
 
-            int location = rootContainer.locatePath(allEntryData, r_path);
+            int location = rootContainer.locatePath(r_path);
             boolean isExact;
             if ( location < 0 ) {
                 location = (location + 1) * -1; // Inexact

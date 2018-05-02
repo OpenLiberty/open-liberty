@@ -210,25 +210,25 @@ public class ZipFileContainerUtils {
 
     private static final List<Integer> EMPTY_OFFSETS = null;
 
-	private static final int[] EMPTY_OFFSETS_ARRAY = new int[0];
+    private static final int[] EMPTY_OFFSETS_ARRAY = new int[0];
 
-	/**
-	 * Allocate an offsets list.
-	 * 
-	 * If no discarded list is available, allocate a new list.
-	 * 
-	 * Otherwise, use one of the discarded lists.
-	 * 
-	 * @param offsetsStorage Storage of discarded offset lists.
-	 * 
-	 * @return An allocated offsets list.
-	 */
+    /**
+     * Allocate an offsets list.
+     * 
+     * If no discarded list is available, allocate a new list.
+     * 
+     * Otherwise, use one of the discarded lists.
+     * 
+     * @param offsetsStorage Storage of discarded offset lists.
+     * 
+     * @return An allocated offsets list.
+     */
     private static List<Integer> allocateOffsets(List<List<Integer>> offsetsStorage) {
-    	if ( offsetsStorage.isEmpty() ) {
-    		return new ArrayList<Integer>();
-    	} else {
-    		return ( offsetsStorage.remove(0) );
-    	}
+        if ( offsetsStorage.isEmpty() ) {
+            return new ArrayList<Integer>();
+        } else {
+            return ( offsetsStorage.remove(0) );
+        }
     }
     
     /**
@@ -242,25 +242,25 @@ public class ZipFileContainerUtils {
      * 
      * @return The offset list converted to a raw list of integers.
      */
-    private static int[] releaseOffsets(List<List<Integer>> offsetsStorage, List<Integer> offsets) {    	
-    	int numValues = offsets.size();
-    	
-    	int[] extractedValues;
-    	
-    	if ( numValues == 0 ) {
-    		extractedValues = EMPTY_OFFSETS_ARRAY;
-    	} else {
-    		extractedValues = new int[numValues];
-    		for ( int valueNo = 0; valueNo < numValues; valueNo++ ) {
-    			extractedValues[valueNo] = offsets.get(valueNo).intValue();
-    		}
-    	}
+    private static int[] releaseOffsets(List<List<Integer>> offsetsStorage, List<Integer> offsets) {        
+        int numValues = offsets.size();
+        
+        int[] extractedValues;
+        
+        if ( numValues == 0 ) {
+            extractedValues = EMPTY_OFFSETS_ARRAY;
+        } else {
+            extractedValues = new int[numValues];
+            for ( int valueNo = 0; valueNo < numValues; valueNo++ ) {
+                extractedValues[valueNo] = offsets.get(valueNo).intValue();
+            }
+        }
 
-    	offsets.clear();
-    	offsetsStorage.add(offsets);
+        offsets.clear();
+        offsetsStorage.add(offsets);
 
-    	return extractedValues;
-	}
+        return extractedValues;
+    }
 
     /**
      * Collect the iterator data for a collection of zip entries.
@@ -310,8 +310,8 @@ public class ZipFileContainerUtils {
             while ( !isChildOf(r_nextPath, r_nextPathLen, r_lastPath, r_lastPathLen) ) {
                 if ( offsets != EMPTY_OFFSETS ) {
                     allNestingData.put(
-                    	r_lastPath,
-                    	new IteratorData( r_lastPath, releaseOffsets(offsetsStorage, offsets) ) );
+                        r_lastPath,
+                        new IteratorData( r_lastPath, releaseOffsets(offsetsStorage, offsets) ) );
                 }
 
                 nestingDepth--;
@@ -371,8 +371,8 @@ public class ZipFileContainerUtils {
         while ( nestingDepth > 0 ) {
             if ( offsets != EMPTY_OFFSETS ) {
                 allNestingData.put(
-                	r_lastPath,
-                	new IteratorData( r_lastPath, releaseOffsets(offsetsStorage, offsets) ) );
+                    r_lastPath,
+                    new IteratorData( r_lastPath, releaseOffsets(offsetsStorage, offsets) ) );
             }
             nestingDepth--;
             r_lastPath = r_pathStack.remove(nestingDepth);
@@ -383,8 +383,8 @@ public class ZipFileContainerUtils {
 
         if ( offsets != EMPTY_OFFSETS ) {
             allNestingData.put(
-            	r_lastPath,
-            	new IteratorData( r_lastPath, releaseOffsets(offsetsStorage, offsets) ) );
+                r_lastPath,
+                new IteratorData( r_lastPath, releaseOffsets(offsetsStorage, offsets) ) );
         }
 
         return allNestingData;
@@ -410,62 +410,78 @@ public class ZipFileContainerUtils {
     //
 
     public static class ZipEntryData {
-    	/**
-    	 * Create zip entry data with only the relative path
-    	 * set.  This is for use in array searching operations.
-    	 * 
-    	 * @param r_path The relative path for the new data.
-    	 */
-    	@Trivial
-    	public ZipEntryData(String r_path) {
-    		this.path = null;
-    		this.r_path = r_path;
-    		this.size = -1L;
-    		this.time = -1L;
-    	}
-    	
-    	@Trivial    	
-    	public ZipEntryData(ZipEntry zipEntry) {
-    		this.path = zipEntry.getName();
-    		this.r_path = stripPath(this.path);
-    		this.size = zipEntry.getSize();
-    		this.time = zipEntry.getTime();
-    	}
+        /**
+         * Create zip entry data with only the relative path
+         * set.  This is for use in array searching operations.
+         * 
+         * @param r_path The relative path for the new data.
+         */
+        @Trivial
+        public ZipEntryData(String r_path) {
+            this.path = null;
+            this.r_path = r_path;
+            this.size = -1L;
+            this.time = -1L;
+            
+            this.offset = -1;
+        }
+        
+        @Trivial        
+        public ZipEntryData(ZipEntry zipEntry) {
+            this.path = zipEntry.getName();
+            this.r_path = stripPath(this.path);
+            this.size = zipEntry.getSize();
+            this.time = zipEntry.getTime();
+            
+            this.offset = -1;
+        }
 
-    	//
+        //
 
-    	private final String path;
-    	private final String r_path;
+        private int offset;
 
-    	@Trivial
-    	public String getPath() {
-    		return path;
-    	}    	    
+        public void setOffset(int offset) {
+            this.offset = offset;
+        }
 
-    	@Trivial
-    	public boolean isDirectory() {
-    		return ( path.charAt( path.length() - 1 ) == '/' ); 
-    	}
+        public int getOffset() {
+            return offset;
+        }
 
-    	@Trivial
-    	public String r_getPath() {
-    		return r_path;
-    	}
+        //
 
-    	//
-    	
-    	private final long size;
-    	private final long time;
+        private final String path;
+        private final String r_path;
 
-    	@Trivial
-    	public long getSize() {
-    		return size;
-    	}
-    	
-    	@Trivial
-    	public long getTime() {
-    		return time;
-    	}
+        @Trivial
+        public String getPath() {
+            return path;
+        }            
+
+        @Trivial
+        public boolean isDirectory() {
+            return ( path.charAt( path.length() - 1 ) == '/' ); 
+        }
+
+        @Trivial
+        public String r_getPath() {
+            return r_path;
+        }
+
+        //
+        
+        private final long size;
+        private final long time;
+
+        @Trivial
+        public long getSize() {
+            return size;
+        }
+        
+        @Trivial
+        public long getTime() {
+            return time;
+        }
     }
     
     public static class ZipEntryDataComparator implements Comparator<ZipEntryData> {
@@ -506,6 +522,28 @@ public class ZipFileContainerUtils {
     }
 
     /**
+     * Create a table of entry data using the relative paths of the entries as
+     * keys.  As a side effect, set the offset of each entry data to its location
+     * int he entry data array.
+     * 
+     * @param entryData The array of entry data to place in a table.
+     * 
+     * @return The table of entry data.
+     */
+    @Trivial
+    public static Map<String, ZipEntryData> setLocations(ZipEntryData[] entryData) {
+    	Map<String, ZipEntryData> entryDataMap = new HashMap<String, ZipEntryData>(entryData.length);
+    	
+    	for ( int entryNo = 0; entryNo < entryData.length; entryNo++ ) {
+    		ZipEntryData entry = entryData[entryNo];
+    		entry.setOffset(entryNo);
+    		entryDataMap.put(entry.r_path, entry);
+    	}
+    	
+    	return entryDataMap;
+    }
+
+    /**
      * Locate a path in a collection of entries.
      *
      * Answer the offset of the entry which has the specified path.  If the
@@ -519,7 +557,7 @@ public class ZipFileContainerUtils {
      */
     @Trivial
     public static int locatePath(ZipEntryData[] entryData, final String r_path) {
-    	ZipEntryData targetData = new ZipEntryData(r_path);
+        ZipEntryData targetData = new ZipEntryData(r_path);
 
         // Given:
         //
@@ -535,9 +573,9 @@ public class ZipFileContainerUtils {
         // A search for "z"        answers "-5" (inexact; insertion point is 4)
 
         return Arrays.binarySearch(
-        	entryData,
-        	targetData,
-        	ZipFileContainerUtils.ZIP_ENTRY_DATA_COMPARATOR);
+            entryData,
+            targetData,
+            ZipFileContainerUtils.ZIP_ENTRY_DATA_COMPARATOR);
     }
     
     //
