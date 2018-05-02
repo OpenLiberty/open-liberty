@@ -142,7 +142,7 @@ public class ZipFileReaperTest {
             File zipFileParent = zipFile.getParentFile();
 
             if ( !zipFileParent.exists() ) {
-            	zipFileParent.mkdirs();
+                zipFileParent.mkdirs();
             }
 
             if ( !zipFile.exists() ) {
@@ -241,11 +241,65 @@ public class ZipFileReaperTest {
                 testOps5[pairNo5] = new ZipTestOp(zipPaths[5 + pairNo5], openAt5, DO_OPEN);
             }
 
+            // Burst operations exercise the reaper synchronization
+            // very differently than spaced operations.  Burst operations
+            // typically do not allow the reaper to run after posting a
+            // pending close.
+            //
+            // See the CAUTION comments on ZipFileReaper.ReaperRunnable.run()
+            // and on ZipFileReaper.close().
+
+            // Test of burst operations.
+            // Five times:
+            // Every <long> seconds:
+            //   Burst (no-delay) open/close of the same zip.
+            // Every <long> seconds + <medium> seconds:
+            //   Burst open/close of different zips.
+            // Duration: 5 * (long + medium)
+
+            int packetCount = 5;
+            int sameBurstCount = 5;
+            int diffBurstCount = 5;
+
+            int samePairs = (sameBurstCount * 2);
+            int diffPairs = (diffBurstCount * 2);
+            int burstPairs = (samePairs + diffPairs);
+
+            ZipTestOp[] testOps6 = new ZipTestOp[packetCount * burstPairs];
+
+            for ( int packetNo = 0; packetNo < packetCount; packetNo++ ) {
+                long sameAt = packetNo * longOpen;
+
+                int sameBase = packetNo * burstPairs;
+                int sameCap = sameBase + samePairs;
+
+                for ( int pairNo = 0; pairNo < sameBurstCount; pairNo++ ) {
+                    testOps6[sameBase + (pairNo * 2)] =
+                        new ZipTestOp(zipPaths[0], sameAt, DO_OPEN);
+                    testOps6[sameBase + (pairNo * 2) + 1] =
+                        new ZipTestOp(zipPaths[0], sameAt, DO_CLOSE);
+                }
+
+                long diffAt = sameAt + mediumOpen;
+
+                int diffBase = sameCap;
+                @SuppressWarnings("unused")
+                int diffCap = diffBase + diffPairs;
+
+                for ( int pairNo = 0; pairNo < diffBurstCount; pairNo++ ) {
+                    testOps6[diffBase + (pairNo * 2)] =
+                        new ZipTestOp(zipPaths[packetNo], diffAt, DO_OPEN);
+                    testOps6[sameBase + (pairNo * 2) + 1] =
+                        new ZipTestOp(zipPaths[packetNo], diffAt, DO_CLOSE);
+                }
+            }
+
             //
 
             return new ZipTestOp[][] {
                 testOps0,  testOps1,  testOps2,  testOps3, testOps4,
-                testOps5 };  
+                testOps5,
+                testOps6 };  
         }
 
         public void displayParameters() {
@@ -450,10 +504,13 @@ public class ZipFileReaperTest {
 
             for ( ZipTestOp nextOp : operations ) {
                 long nextActAt = nextOp.actAt;
-                try {
-                    Thread.sleep((nextActAt - lastActAt) / ZipCachingProperties.ONE_MILLI_SEC_IN_NANO_SEC);
-                } catch ( InterruptedException e ) {
-                    // Ignore
+                long nextDelay = nextActAt - lastActAt;
+                if ( nextDelay != 0 ) {
+                    try {
+                        Thread.sleep((nextActAt - lastActAt) / ZipCachingProperties.ONE_MILLI_SEC_IN_NANO_SEC);
+                    } catch ( InterruptedException e ) {
+                        // Ignore
+                    }
                 }
                 nextOp.perform(reaper);
 
