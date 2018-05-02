@@ -28,6 +28,7 @@ import javax.security.auth.spi.LoginModule;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationService;
@@ -344,7 +345,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
         }
     }
 
-    private void addJsonWebToken(Subject subject, Hashtable<String, ?> customProperties) {
+    private void addJsonWebToken(Subject subject, Hashtable<String, ?> customProperties) throws WSSecurityException {
         String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
         if (customProperties != null && customProperties.get(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN) != null) {
             MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
