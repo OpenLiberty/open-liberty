@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface BridgeBuilderService {
 
+    public static final String PROVIDER_DESCRIPTION = "Bridge Provider for JSR-375 Java EE Security API";
+
     /**
      * @param appContext
      * @param providerFactory
@@ -26,14 +28,15 @@ public interface BridgeBuilderService {
     void buildBridgeIfNeeded(String appContext, AuthConfigFactory providerFactory);
 
     /**
-     * returns true if JSR-375 HttpAuthenticationMechansim is avaiable and newAuthentication attribute is set as true in AuthenticationParameters.
+     * returns true if JSR-375 HttpAuthenticationMechansim is available and newAuthentication attribute is set as true in AuthenticationParameters.
+     *
      * @param HttpServletRequest
      *
      */
     boolean isProcessingNewAuthentication(HttpServletRequest req);
 
     /**
-     * returns true if JSR-375 HttpAuthenticationMechansim is avaiable and credential object is set in AuthenticationParameters.
+     * returns true if JSR-375 HttpAuthenticationMechansim is available and credential object is set in AuthenticationParameters.
      * otherwise return false;
      */
     boolean isCredentialPresent(HttpServletRequest req);
