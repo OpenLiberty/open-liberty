@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
+# Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
+# Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine application name.
+no.application.name.CWMCG0201E=CWMCG0201E: Der Anwendungsname kann nicht bestimmt werden.
+no.application.name.CWMCG0201E.explanation=Die verwendete Anwendung kann nicht bestimmt werden.
+no.application.name.CWMCG0201E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# More than one application found with name {0}
+duplicate.application.name.CWMCG0202E=CWMCG0202E: Es wurden mehrere Anwendungen mit dem Namen {0} gefunden.
+duplicate.application.name.CWMCG0202E.explanation=Der Anwendungsname muss eindeutig sein.
+duplicate.application.name.CWMCG0202E.useraction=\u00dcberpr\u00fcfen Sie die Datei server.xml, um sicherzustellen, dass jeder Anwendungsname eindeutig ist.
+
+# More than one configuration found for application with name {0}
+duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: Es wurden mehrere Konfigurationen f\u00fcr die Anwendung mit dem Namen {0} gefunden.
+duplicate.application.configuration.name.CWMCG0203E.explanation=Die Anwendungskonfiguration muss eindeutig sein.
+duplicate.application.configuration.name.CWMCG0203E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# Server XML Application Properties Config Source
+server.xml.appproperties.config.source=Konfigurationsquelle f\u00fcr Anwendungseigenschaften in der Server-XML
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config 1.3 error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG9997E=CWMCG9997E: Es ist ein Fehler in der Config-API aufgetreten: {0}.
+temporary.CWMCG9997E.explanation=Es ist ein Fehler in der Config-API aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+temporary.CWMCG9997E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.

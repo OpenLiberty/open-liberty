@@ -66,25 +66,13 @@ OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: La invocaci\u00f3n del m\u00e9to
 OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=La caracter\u00edstica crea implementaciones de Tracer con el m\u00e9todo OpentracingTracerFactory proporcionado por el usuario. El m\u00e9todo OpentracingTracerFactory.newInstance devuelve una excepci\u00f3n.
 OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Determine por qu\u00e9 el m\u00e9todo OpentracingTracerFactory newInstance proporcionado por el usuario ha devuelto una excepci\u00f3n.
 
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: No hay ning\u00fan elemento Tracer disponible para una solicitud de entrada. La solicitud de entrada no se correlacionar\u00e1 con el servicio en sentido ascendente.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=No hab\u00eda una implementaci\u00f3n de Tracer disponible cuando lleg\u00f3 una solicitud al punto final de la aplicaci\u00f3n. Esta solicitud de entrada no proporcionar\u00e1 ninguna informaci\u00f3n al servicio Opentracing.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Examine los errores anteriores para determinar por qu\u00e9 un elemento Tracer no est\u00e1 disponible.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: El elemento Span creado para una solicitud de entrada no est\u00e1 disponible para la respuesta a la solicitud. La solicitud de entrada no se correlacionar\u00e1 con el servicio en sentido ascendente.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=El elemento Span creado al llegar la solicitud no est\u00e1 disponible al devolverse la respuesta. No se proporcionar\u00e1 ninguna informaci\u00f3n sobre Span al servicio Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Examine los errores anteriores para determinar por qu\u00e9 un elemento Span no est\u00e1 disponible.
-
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: No se ha encontrado un elemento Tracer para una solicitud de salida. La solicitud de salida no se correlacionar\u00e1 con la solicitud de entrada.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=No hab\u00eda una implementaci\u00f3n Tracer disponible al enviar una solicitud desde la aplicaci\u00f3n. Esta solicitud de salida no proporcionar\u00e1 ninguna informaci\u00f3n al servicio Opentracing.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Examine los errores anteriores para determinar por qu\u00e9 un elemento Tracer no est\u00e1 disponible.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: El elemento Span creado para una solicitud de salida no est\u00e1 disponible para la respuesta a la solicitud. La solicitud de salida no se correlacionar\u00e1 con la solicitud de entrada.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=El elemento Span creado al enviar la solicitud no est\u00e1 disponible al devolverse la respuesta. No se proporcionar\u00e1 ninguna informaci\u00f3n sobre Span al servicio Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Examine los errores anteriores para determinar por qu\u00e9 un elemento Span no est\u00e1 disponible.
-
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: La invocaci\u00f3n del m\u00e9todo OpentracingTracerFactory.newInstance(...) proporcionado por el usuario ha devuelto un valor nulo.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=La caracter\u00edstica crea implementaciones de Tracer con un m\u00e9todo OpentracingTracerFactory proporcionado por el usuario. El m\u00e9todo OpentracingTracerFactory.newInstance ha devuelto un valor nulo.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determine por qu\u00e9 el m\u00e9todo OpentracingTracerFactory newInstance proporcionado por el usuario ha devuelto un valor nulo.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing no puede realizar un seguimiento de las solicitudes JAX-RS porque no se ha proporcionado una clase OpentracingTracerFactory.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing no funcionar\u00e1 correctamente porque no se ha proporcionado una clase OpentracingTracerFactory. Las solicitudes JAX-RS se ejecutar\u00e1n como de costumbre, pero no se realizar\u00e1 un seguimiento de ellas.
+OPENTRACING_NO_TRACERFACTORY.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte la documentaci\u00f3n sobre c\u00f3mo habilitar el rastreo distribuido de OpenTracing.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

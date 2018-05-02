@@ -237,6 +237,10 @@ unableToUpdateFingerprint=Nelze aktualizovat otisk prstu slu\u017eby kv\u016fli 
 #Updated not applicable message stating no files have been written.
 patchingNotApplicableNoChange=Nebyl extrahov\u00e1n \u017e\u00e1dn\u00fd obsah, proto\u017ee v b\u011bhov\u00e9m prost\u0159ed\u00ed {0} nejsou \u017e\u00e1dn\u00e9 vyhovuj\u00edc\u00ed vlastnosti
 
+# {0} is the name of the superseded fix and {1} is the name of the superseding fix.
+patchingSkippedSupersededFix=Oprava {0} je nahrazena {1}, kter\u00e1 je ji\u017e nainstalov\u00e1na. \n\
+\Instalace {0} byla p\u0159esko\u010dena.
+
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=P\u0159i \u010dten\u00ed informac\u00ed o oprav\u00e1ch iFix pro aktu\u00e1ln\u00ed instalaci do\u0161lo k chyb\u011b. Zpr\u00e1va v\u00fdjimky: {0}.
 # {0} is the path to a file that could not be parsed
