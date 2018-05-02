@@ -202,7 +202,10 @@ public abstract class JavaDumper {
             Collections.sort(filteredFilesList, new Comparator<File>() {
                 @Override
                 public int compare(File x, File y) {
-                    return Long.compare(x.lastModified(), y.lastModified());
+                    // Tried using lastModified but for some reason sometimes files created later would
+                    // have an older lastModified time and thus the wrong file could be deleted,
+                    // so given that the date is in the file name, we can just sort by name.
+                    return x.getName().compareTo(y.getName());
                 }
             });
 
