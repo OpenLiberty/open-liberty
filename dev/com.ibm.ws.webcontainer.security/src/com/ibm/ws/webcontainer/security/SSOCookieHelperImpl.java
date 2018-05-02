@@ -101,7 +101,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         Cookie ssoCookie = createCookie(req, cookieByteString);
         resp.addCookie(ssoCookie);
         if (jwtCookiesAdded) {
-            checkInconsistentExpirationTimes(ssoToken.getExpiration());
+            checkInconsistentExpirationTimes();
         }
 
     }
@@ -110,8 +110,8 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * Emit a warning message if both LTPA and JWT cookies are sent
      * and they have differing expiration times
      */
-    protected void checkInconsistentExpirationTimes(long ssoTokenExpirationTime) {
-        JwtSSOTokenHelper.
+    protected void checkInconsistentExpirationTimes() {
+        // JwtSSOTokenHelper.
 
     }
 
