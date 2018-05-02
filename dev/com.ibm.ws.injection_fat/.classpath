@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/DSDAnnEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/DSDAnnWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/DSDMixEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/DSDMixWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/DSDXMLEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/DSDXMLWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/EnvEntryAnnWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/EnvEntryMixWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/EnvEntryXMLWeb.war/src"/>

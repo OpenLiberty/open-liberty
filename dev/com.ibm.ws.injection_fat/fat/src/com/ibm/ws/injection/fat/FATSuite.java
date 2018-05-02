@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                DSDTest.class,
                 EnvEntryTest.class,
                 JPATest.class,
                 RepeatableEnvEntryTest.class,

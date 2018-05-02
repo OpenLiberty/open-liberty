@@ -28,16 +28,7 @@ dependencies {
 
 task addEJBTools(type: Copy) {
   from configurations.ejbTools
-  into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.EnvEntryServer/lib/global"
-
-  from configurations.ejbTools
-  into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.JPAServer/lib/global"
-
-  from configurations.ejbTools
-  into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.ResRefServer/lib/global"
-
-  from configurations.ejbTools
-  into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.TranServer/lib/global"
+  into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.DSDServer/lib/global"
 }
 
 addRequiredLibraries {
