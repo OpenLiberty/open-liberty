@@ -225,6 +225,41 @@ public class UsernameAndPasswordLoginModuleTest extends LoginModuleTester {
         assertTrue(module.login());
     }
 
+    @Test(expected = com.ibm.ws.security.authentication.PasswordExpiredException.class)
+    public void checkPasswordExpiredLogin() throws Exception {
+
+        Map<String, Object> sharedState = createSharedState();
+        CallbackHandler callbackHandler = new CallbackHandlerDouble(USER_NAME, USER_PWD);
+        final UsernameAndPasswordLoginModule module = new UsernameAndPasswordLoginModule();
+        module.initialize(null, callbackHandler, sharedState, null);
+
+        mock.checking(new Expectations() {
+            {
+                one(userRegistry).checkPassword(USER_NAME, USER_PWD);
+                will(throwException(new com.ibm.ws.security.registry.PasswordExpiredException("test")));
+            }
+        });
+
+        module.login();
+    }
+
+    @Test(expected = com.ibm.ws.security.authentication.UserRevokedException.class)
+    public void checkUserRevokedLogin() throws Exception {
+        Map<String, Object> sharedState = createSharedState();
+        CallbackHandler callbackHandler = new CallbackHandlerDouble(USER_NAME, USER_PWD);
+        final UsernameAndPasswordLoginModule module = new UsernameAndPasswordLoginModule();
+        module.initialize(null, callbackHandler, sharedState, null);
+
+        mock.checking(new Expectations() {
+            {
+                one(userRegistry).checkPassword(USER_NAME, USER_PWD);
+                will(throwException(new com.ibm.ws.security.registry.UserRevokedException("test")));
+            }
+        });
+
+        module.login();
+    }
+
     @Override
     protected UsernameAndPasswordLoginModule createInitializedModule(Subject subject, Map<String, Object> sharedState) throws Exception {
         CallbackHandler callbackHandler = new CallbackHandlerDouble(USER_NAME, USER_PWD);
