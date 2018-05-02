@@ -84,6 +84,8 @@ public class BufferManagerImpl extends BufferManager {
 				}
 			} else {
 				earlyMessageQueue = new SimpleRotatingQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+//				earlyMessageQueue = null; // don't need earlyMessageQueue
+//				ringBuffer = new Buffer<Object>(capacity);
 			}
 		}
 	}
@@ -244,7 +246,9 @@ public class BufferManagerImpl extends BufferManager {
 		if (earlyMessageQueue != null && earlyMessageQueue.size() != 0
 				&& !synchronousHandlerSet.contains(syncHandler)) {
 			for (Object message : earlyMessageQueue.toArray()) {
-				syncHandler.synchronousWrite(message);
+				if (message != null){
+					syncHandler.synchronousWrite(message);
+				}
 			}
 		}
 

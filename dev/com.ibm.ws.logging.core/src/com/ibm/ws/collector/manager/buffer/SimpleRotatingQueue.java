@@ -151,7 +151,7 @@ public class SimpleRotatingQueue<T> implements Queue<T> {
 
     @Override
     public Object[] toArray() {
-        throw new UnsupportedOperationException();
+    	return this.toArray(new Object[0]);
     }
 
     @Override
