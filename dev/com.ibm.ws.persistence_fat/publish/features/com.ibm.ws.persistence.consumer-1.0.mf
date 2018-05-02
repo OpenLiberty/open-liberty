@@ -4,7 +4,7 @@ Subsystem-Version: 1.0.0
 Subsystem-Content: com.ibm.ws.persistence.consumer; version="[1,1.0.100)",
   com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
   com.ibm.ws.persistence-1.0; type="osgi.subsystem.feature",
-  com.ibm.ws.org.apache.commons.io.1.4; version="[1.0.0,1.0.200)",
+  com.ibm.ws.org.apache.commons.io; version="[1.0.0,1.0.200)",
   com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.0, 4.2"; type="osgi.subsystem.feature"
 IBM-Feature-Version: 2
 Subsystem-Type: osgi.subsystem.feature
