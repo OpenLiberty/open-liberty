@@ -149,3 +149,7 @@ JWT_ALREADY_LOGGED_OUT.useraction=Obtain a new JSON Web Token.
 JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: The jwtSso feature is setting a secure cookie on an insecure HTTP request.  This might be a configuration error.  Use the HTTPS protocol or set the jwtSso configuration attribute setCookieSecureFlag to false.
 JWT_COOKIE_SECURITY_MISMATCH.explanation=A cookie is marked as secure but the protocol is HTTP, so the cookie will never be returned, this might cause subsequent requests to fail.
 JWT_COOKIE_SECURITY_MISMATCH.useraction=Use the HTTPS protocol or set the jwtSso configuration attribute setCookieSecureFlag to false.
+
+TOKEN_EXPIRATION_MISMATCH=CWWKS9128W: JWT and LTPA cookies are both being set on a response, with differing expiration times in minutes of {0} and {1}. This might be a configuration error. Change the Ltpa configuration or JwtSso jwtBuilderRef configuration so both types of tokens have the same expiration time.
+TOKEN_EXPIRATION_MISMATCH.explanation=Tokens with differing expiration times might cause subsequent requests to fail unexpectedly. 
+TOKEN_EXPIRATION_MISMATCH.useraction=Change the Ltpa configuration or JwtSso jwtBuilderRef configuration so both types of tokens have the same expiration time.  

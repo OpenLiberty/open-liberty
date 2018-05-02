@@ -37,6 +37,8 @@ public interface JwtSSOTokenProxy {
 
     boolean isCookieSecured();
 
+    long getValidTimeInMinutes();
+
     boolean shouldSetJwtCookiePathToWebAppContext();
 
     boolean shouldAlsoIncludeLtpaCookie();

@@ -188,4 +188,12 @@ public class JwtSSOTokenHelper {
         return true;
 
     }
+
+    public static long getValidTimeInMinutes() {
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().getValidTimeInMinutes();
+        }
+        return 0;
+
+    }
 }

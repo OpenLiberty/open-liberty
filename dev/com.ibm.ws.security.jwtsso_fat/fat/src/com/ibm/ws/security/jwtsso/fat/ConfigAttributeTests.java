@@ -140,13 +140,17 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     }
 
     /**
-     * Test the jwtBuilderRef attribute. Specify an existing and valid jwtBuilderRef,
-     * authenticate, examine the token contents in the
-     * output of the test application to confirm the ref was used to create the token.
-     * Authcache must be disabled in server.xml for this test.
+     * Test the jwtBuilderRef attribute. Specify an existing and valid jwtBuilderRef.
+     * Authentication will fail because the issuer mismatches the consumer, but we should
+     * see evidence in the logs that the customized issuer was presented.
      *
      * @throws Exception
      */
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException",
+                   "com.ibm.websphere.security.jwt.InvalidTokenException",
+                   "com.ibm.ws.security.jwt.internal.JwtTokenException",
+                   "com.ibm.websphere.security.WSSecurityException",
+                   "com.ibm.ws.security.authentication.AuthenticationException" })
     @Mode(TestMode.LITE)
     @Test
     public void test_validBuilderRef() throws Exception {
@@ -159,11 +163,11 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         Page response = invokeUrl(new WebClient(), protectedUrl); // get back the login page
         validationUtils.validateResult(response, ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
 
-        response = performLogin(response); // get back the servlet, we hope.
+        response = performLogin(response);
 
-        String responseStr = response.getWebResponse().getContentAsString();
-        boolean check = responseStr.contains("\"iss\":\"https://flintstone:19443/jwt/defaultJWT\"");
-        assertTrue("Issuer in token did not match the one configured in the builder", check);
+        String errorMsg = server.waitForStringInLogUsingMark(".*CWWKS6022E: The issuer \\[https://flintstone:19443/jwt/defaultJWT\\]", 100);
+        // CWWKS6022E - issuer not trusted.
+        assertTrue("Did not find expected error message CWWKS6022E in the log", errorMsg != null);
 
     }
 
@@ -175,12 +179,18 @@ public class ConfigAttributeTests extends CommonSecurityFat {
      * the second access will cause the token to be checked by the consumer.
      * If the jwtConsumerRef is in use as it should be, then the second access will succeed.
      *
+     * While we are it it we will change the expiration time of the builder to a non-default
+     * value and verify the expected warning message is emitted.
+     *
      *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
     @Test
     public void test_validConsumerRef() throws Exception {
+        ArrayList<String> ignoredErrors = new ArrayList<String>();
+        ignoredErrors.add("CWWKS9128W");
+        server.addIgnoredErrors(ignoredErrors);
         reconfigServer("server_testgoodconsumer.xml");
         Expectations expectations = new Expectations();
         expectations.addExpectations(getSuccessfulLoginPageExpectations(ACTION_INVOKE_PROTECTED_RESOURCE));
@@ -202,6 +212,10 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         responseStr = response.getWebResponse().getContentAsString();
         boolean check2 = responseStr.contains("SimpleServlet");
         assertTrue("Did not access protected resource with custom consumer", check2);
+
+        String errorMsg = server.waitForStringInLogUsingMark("CWWKS9128W", 100);
+        // CWWKS9128W - lpta/jwt cookie expiration mismatch
+        assertTrue("Did not find expected CWWKS9128W message in the log", errorMsg != null);
 
     }
 

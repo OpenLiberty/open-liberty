@@ -8,6 +8,12 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
+/*
+ * This class handles the builder objects, the JwtSsoComponent class handles the
+ * consumer objects. This class functions as both a jwtsso component and as the
+ * default builder entity for jwtsso, which has different settings than the
+ * default builder entity for jwt.
+ */
 package com.ibm.ws.security.jwtsso.internal;
 
 import java.security.PrivateKey;
@@ -294,7 +300,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
     public long getValidTime() {
         long result = 0;
         if (isDefaultBuilder) {
-            result = 1; // hour, for now
+            result = 2; // hour, for now
         } else {
             boolean haveNull = jwtServiceMapRef.getReference(jwtBuilderRef) == null ||
                     jwtServiceMapRef.getReference(jwtBuilderRef).getProperty(JwtUtils.CFG_KEY_VALID) == null;
@@ -323,7 +329,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
     @Override
     public boolean getJti() {
         // TODO Auto-generated method stub
-        return true;
+        return false;
     }
 
     /** {@inheritDoc} */

@@ -101,7 +101,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         Cookie ssoCookie = createCookie(req, cookieByteString);
         resp.addCookie(ssoCookie);
         if (jwtCookiesAdded) {
-            checkInconsistentExpirationTimes();
+            checkInconsistentExpirationTimes(ssoToken.getExpiration());
         }
 
     }
@@ -110,8 +110,15 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * Emit a warning message if both LTPA and JWT cookies are sent
      * and they have differing expiration times
      */
-    protected void checkInconsistentExpirationTimes() {
-        // JwtSSOTokenHelper.
+    protected void checkInconsistentExpirationTimes(long ssoTokenExpiration) {
+        long now = System.currentTimeMillis();
+        long ssoRelativeExpirationTime = (ssoTokenExpiration - now) / 60000;
+        long jwtRelativeExpirationTime = JwtSSOTokenHelper.getValidTimeInMinutes();
+        if (jwtRelativeExpirationTime != (ssoRelativeExpirationTime)) {
+            Long je = new Long(jwtRelativeExpirationTime);
+            Long se = new Long(ssoRelativeExpirationTime);
+            Tr.warning(tc, "TOKEN_EXPIRATION_MISMATCH", new Object[] { je, se }); //CWWKS9128W
+        }
 
     }
 
