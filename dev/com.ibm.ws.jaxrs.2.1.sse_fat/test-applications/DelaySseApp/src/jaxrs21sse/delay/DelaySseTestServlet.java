@@ -59,7 +59,7 @@ public class DelaySseTestServlet extends FATServlet {
 
         final List<String> receivedEvents = new ArrayList<String>();
         final List<String> eventSourceTimes = new ArrayList<String>();
-        final CountDownLatch executionLatch = new CountDownLatch(1);
+        final CountDownLatch executionLatch = new CountDownLatch(4);
 
         Client client = ClientBuilder.newClient();
         int port = req.getServerPort();
