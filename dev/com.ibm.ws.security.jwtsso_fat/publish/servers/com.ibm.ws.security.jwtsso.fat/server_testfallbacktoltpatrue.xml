@@ -16,7 +16,7 @@
         <feature>jwtSso-1.0</feature>
     </featureManager>
      <authentication cacheEnabled="false"/>
-    <jwtSso  includeLtpaCookie="true" fallbackToLtpa="true" jwtBuilderRef="bogus" setCookieSecureFlag="false"/>
+    <jwtSso  includeLtpaCookie="true" useLtpaIfJwtAbsent="true" jwtBuilderRef="bogus" setCookieSecureFlag="false"/>
     <include location="../fatTestPorts.xml"/>
      
 

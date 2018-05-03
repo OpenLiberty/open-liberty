@@ -76,6 +76,10 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         ShrinkHelper.exportAppToServer(server, CommonFatApplications.getFormLoginApp());
         serverTracker.addServer(server);
         server.startServer();
+        ArrayList<String> ignoredErrors = new ArrayList<String>();
+        ignoredErrors.add("CWWKS9128W"); // jwt -ltpa expiration time mismatch
+        server.addIgnoredErrors(ignoredErrors);
+
     }
 
     /**
@@ -239,7 +243,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     }
 
     /**
-     * Test the fallbackToLtpa attribute.
+     * Test the useLtpaIfJwtAbsent attribute, formerly known as the fallbackToLtpa attribute.
      * Specify an invalid builder, includeLtpa, and fallBackToLtpa. There should be no jwt cookie present,
      * there should be an ltpa cookie present, and because fallback is enabled, we should be able to access
      * the resource.
