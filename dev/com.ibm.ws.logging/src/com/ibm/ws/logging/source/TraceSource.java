@@ -120,25 +120,26 @@ public class TraceSource implements Source, WsTraceHandler {
         traceData.setThreadName(threadName);
 
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+        //Extensions KVP calculated below, but needs to bet set in the correct 'order' further below
+        KeyValuePairList extensions = null;
         if (wsLogRecord != null) {
             traceData.setCorrelationId(wsLogRecord.getCorrelationId());
             traceData.setOrg(wsLogRecord.getOrganization());
             traceData.setProduct(wsLogRecord.getProduct());
             traceData.setComponent(wsLogRecord.getComponent());
             if (wsLogRecord.getExtensions() != null) {
-                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
+                extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = wsLogRecord.getExtensions();
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
-                traceData.setExtensions(extensions);
             }
         } else {
             traceData.setCorrelationId(null);
             traceData.setOrg(null);
             traceData.setProduct(null);
             traceData.setComponent(null);
-            traceData.setExtensions(null);
+            extensions = null;
         }
 
         String sequenceNum = sequenceNumber.next(datetimeValue);
@@ -155,6 +156,8 @@ public class TraceSource implements Source, WsTraceHandler {
         }
 
         traceData.setFormattedMsg(null);
+
+        traceData.setExtensions(extensions);
 
         if (id != null) {
             int objid = System.identityHashCode(id);

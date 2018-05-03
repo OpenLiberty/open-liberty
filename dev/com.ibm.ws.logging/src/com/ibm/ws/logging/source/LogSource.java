@@ -162,6 +162,8 @@ public class LogSource implements Source, WsLogHandler {
         logData.setThreadName(threadName);
 
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+        //Extensions KVP calculated below, but needs to bet set in the correct 'order' further below
+        KeyValuePairList extensions = null;
         if (wsLogRecord != null) {
             logData.setCorrelationId(wsLogRecord.getCorrelationId());
             logData.setOrg(wsLogRecord.getOrganization());
@@ -169,19 +171,18 @@ public class LogSource implements Source, WsLogHandler {
             logData.setComponent(wsLogRecord.getComponent());
 
             if (wsLogRecord.getExtensions() != null) {
-                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
+                extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = wsLogRecord.getExtensions();
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
-                logData.setExtensions(extensions);
             }
         } else {
             logData.setCorrelationId(null);
             logData.setOrg(null);
             logData.setProduct(null);
             logData.setComponent(null);
-            logData.setExtensions(null);
+            extensions = null;
         }
 
         logData.setSequence(sequenceNumber.next(dateVal));
@@ -218,6 +219,8 @@ public class LogSource implements Source, WsLogHandler {
         }
 
         // cannot pass null to traceData.setObjectId(int i)
+
+        logData.setExtensions(extensions);
 
         logData.setSourceType(sourceName);
 
