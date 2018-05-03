@@ -719,54 +719,55 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     }
     private final ZipEntryDataLock zipEntryDataLock = new ZipEntryDataLock();
     private volatile ZipEntryData[] zipEntryData;
-    private volatile Map<String, ZipEntryData> zipEntryDataMap;
+    private Map<String, ZipEntryData> zipEntryDataMap;
 
     @Trivial
     private void setZipEntryData() {
         if ( zipEntryData == null ) {
             synchronized( zipEntryDataLock ) {
                 if ( zipEntryData == null ) {
-                    zipEntryData = createZipEntryData();
-                    zipEntryDataMap = ZipFileContainerUtils.setLocations(zipEntryData);
+                    ZipEntryData[] useZipEntryData = createZipEntryData();
+                    zipEntryDataMap = ZipFileContainerUtils.setLocations(useZipEntryData);
+                    zipEntryData = useZipEntryData; 
                 }
             }
         }
     }
-    
+
     @Trivial
     public ZipEntryData[] getZipEntryData() {
-    	setZipEntryData();
+        setZipEntryData();
         return zipEntryData;
     }
 
     @Trivial
     public Map<String, ZipEntryData> getZipEntryDataMap() {
-    	setZipEntryData();
-    	return zipEntryDataMap;
+        setZipEntryData();
+        return zipEntryDataMap;
     }
 
     public ZipEntryData getZipEntryData(String r_path) {
-    	return getZipEntryDataMap().get(r_path);
+        return getZipEntryDataMap().get(r_path);
     }
-    
+
     @Trivial
     public int locatePath(String r_path) {
-    	ZipEntryData entryData = getZipEntryData(r_path);
-    	if ( entryData == null ) {
-    		return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
-    	} else {
-    		return entryData.getOffset();
-    	}
+        ZipEntryData entryData = getZipEntryData(r_path);
+        if ( entryData == null ) {
+            return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
+        } else {
+            return entryData.getOffset();
+        }
     }
-    
+
     @Trivial
     public int locatePath(ZipEntryData[] useZipEntryData, String r_path) {
-    	ZipEntryData entryData = getZipEntryData(r_path);
-    	if ( entryData == null ) {
-    		return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
-    	} else {
-    		return entryData.getOffset();
-    	}
+        ZipEntryData entryData = getZipEntryData(r_path);
+        if ( entryData == null ) {
+            return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
+        } else {
+            return entryData.getOffset();
+        }
         // return ZipFileContainerUtils.locatePath(useZipEntryData, r_path);
     }
 
