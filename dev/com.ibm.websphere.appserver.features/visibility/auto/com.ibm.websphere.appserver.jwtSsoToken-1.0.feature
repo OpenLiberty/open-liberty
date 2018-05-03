@@ -6,8 +6,7 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jwtSso-1.0))"
 IBM-Install-Policy: when-satisfied
 Subsystem-Name: JwtSsoToken
- -features=com.ibm.websphere.appserver.appSecurity-2.0, \
-  com.ibm.websphere.appserver.servlet-4.0
+ -features=com.ibm.websphere.appserver.appSecurity-2.0
 -bundles=com.ibm.ws.security.jwtsso,\
   com.ibm.websphere.org.eclipse.microprofile.jwt.1.0; location:="dev/api/stable/,lib/",\
   com.ibm.ws.security.jwtsso.token
