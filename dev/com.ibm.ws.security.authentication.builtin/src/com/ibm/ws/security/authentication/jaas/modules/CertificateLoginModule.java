@@ -270,10 +270,8 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
      * @throws Exception
      */
     private void handleUserLogin(X509Certificate certChain[]) throws RegistryException, CertificateMapNotSupportedException, CertificateMapFailedException, EntryNotFoundException, Exception {
-        X509Certificate cert = certChain[0];
-
         UserRegistry userRegistry = getUserRegistry();
-        username = userRegistry.mapCertificate(cert);
+        username = userRegistry.mapCertificate(certChain);
         authenticatedId = userRegistry.getUniqueUserId(username);
         securityName = userRegistry.getUserSecurityName(authenticatedId);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

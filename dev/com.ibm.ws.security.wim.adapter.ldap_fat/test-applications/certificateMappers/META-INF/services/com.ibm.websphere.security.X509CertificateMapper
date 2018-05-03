@@ -17,3 +17,7 @@ test.cert.mappers.CertificateMapper4
 # x509.certificate.mapper.id=mapper5
 # service.vendor=IBM
 test.cert.mappers.CertificateMapper5
+
+# x509.certificate.mapper.id=mapper6
+# service.vendor=IBM
+test.cert.mappers.CertificateMapper6

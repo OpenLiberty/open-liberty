@@ -9,3 +9,7 @@ test.cert.mappers.CertificateMapper2
 # x509.certificate.mapper.id=mapper3
 # service.vendor=IBM
 test.cert.mappers.CertificateMapper3
+
+# x509.certificate.mapper.id=mapper4
+# service.vendor=IBM
+test.cert.mappers.CertificateMapper4

@@ -307,7 +307,7 @@ public class UserRegistryServletConnection implements UserRegistry {
 
     /** {@inheritDoc} */
     @Override
-    public String mapCertificate(X509Certificate cert) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
+    public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
         throw new CertificateMapNotSupportedException("UserRegistry servlet does not support mapCertificate right now.");
     }
 
