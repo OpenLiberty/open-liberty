@@ -393,6 +393,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("usemaxrequestsizeformultipart", "com.ibm.ws.webcontainer.usemaxrequestsizeformultipart"); //PI75528
         WCCustomProperties.FullyQualifiedPropertiesMap.put("enablemultireadofpostdata", "com.ibm.ws.webcontainer.enablemultireadofpostdata");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("useoriginalqsinforwardifnull", "com.ibm.ws.webcontainer.useoriginalqsinforwardifnull"); //PI81569
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("servletdestroywaittime", "com.ibm.ws.webcontainer.servletdestroywaittime");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
