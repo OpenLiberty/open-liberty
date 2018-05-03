@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Zmie\u0144 kwalifikator Claim punkt
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: Nie mo\u017cna wstrzykn\u0105\u0107 roszczenia do punktu wstrzykiwania {0} dla zasi\u0119gu ApplicationScoped lub SessionScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Punkt wstrzykiwania z adnotacj\u0105 w postaci kwalifikatora Claim dla typu surowego musi nale\u017ce\u0107 do klasy z adnotacj\u0105 zasi\u0119gu RequestScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Dodaj punkt wstrzykiwania jako sk\u0142adow\u0105 klasy w zasi\u0119gu RequestScoped dla roszczenia, kt\u00f3re chcesz wstrzykn\u0105\u0107.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: Nie mo\u017cna wstrzykn\u0105\u0107 nazwy u\u017cytkownika JsonWebToken, poniewa\u017c jest ona niedost\u0119pna. Zabezpiecz \u017c\u0105daj\u0105cy zas\u00f3b w taki spos\u00f3b, aby uwierzytelnianie by\u0142o przeprowadzane przed uzyskaniem dost\u0119pu do zasobu.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=Za\u017c\u0105dano wstrzykni\u0119cia znacznika JsonWebToken, ale nie jest on dost\u0119pny.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Upewnij si\u0119, \u017ce uwierzytelnianie u\u017cytkownika jest przeprowadzane przed uzyskaniem dost\u0119pu do zasobu, kt\u00f3ry \u017c\u0105da wykonania wstrzykni\u0119cia.

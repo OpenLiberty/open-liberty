@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.Subject;
+import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.message.AuthException;
 import javax.security.auth.message.AuthStatus;
 import javax.security.auth.message.MessageInfo;
@@ -522,21 +523,6 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         return msgInfo;
     }
 
-    protected ServerAuthContext getAuthContextFromProvider(JaspiRequest jaspiRequest, AuthConfigProvider provider) throws AuthException, SecurityException {
-        ServerAuthContext authContext = null;
-        String appContext = jaspiRequest.getAppContext();
-        if (provider != null) {
-            ServerAuthConfig authConfig = provider.getServerAuthConfig("HttpServlet", appContext, new JaspiCallbackHandler(this));
-            MessageInfo msgInfo = newMessageInfo(jaspiRequest);
-            jaspiRequest.setMessageInfo(msgInfo);
-            String authContextID = authConfig.getAuthContextID(msgInfo);
-            Map<String, String> props = getAuthContextProps(jaspiRequest);
-            Subject serviceSubject = null;
-            authContext = authConfig.getAuthContext(authContextID, serviceSubject, props);
-        }
-        return authContext;
-    }
-
     protected ServerAuthContext getServerAuthContext(JaspiRequest jaspiRequest, AuthConfigProvider provider) throws AuthenticationException {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getServerAuthContext", new Object[] { jaspiRequest.getWebSecurityContext(), provider });
@@ -555,6 +541,60 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             }
         }
         return authContext;
+    }
+
+    protected ServerAuthContext getAuthContextFromProvider(JaspiRequest jaspiRequest, AuthConfigProvider provider) throws AuthException, SecurityException {
+        ServerAuthContext authContext = null;
+        String appContext = jaspiRequest.getAppContext();
+        if (provider != null) {
+            CallbackHandler jaspiCallbackHandler = getCallbackHandler(provider);
+            ServerAuthConfig authConfig = provider.getServerAuthConfig("HttpServlet", appContext, jaspiCallbackHandler);
+            MessageInfo msgInfo = newMessageInfo(jaspiRequest);
+            jaspiRequest.setMessageInfo(msgInfo);
+            String authContextID = authConfig.getAuthContextID(msgInfo);
+            Map<String, String> props = getAuthContextProps(jaspiRequest);
+            Subject serviceSubject = null;
+            authContext = authConfig.getAuthContext(authContextID, serviceSubject, props);
+        }
+        return authContext;
+    }
+
+    private CallbackHandler getCallbackHandler(final AuthConfigProvider provider) {
+        CallbackHandler callbackHandler;
+
+        if (isJsr375BridgeProvider(provider)) {
+            callbackHandler = new NonMappingCallbackHandler(this);
+        } else {
+            callbackHandler = new JaspiCallbackHandler(this);
+        }
+
+        return callbackHandler;
+    }
+
+    private boolean isJsr375BridgeProvider(AuthConfigProvider provider) {
+        return BridgeBuilderService.PROVIDER_DESCRIPTION == getProviderDescription(provider);
+    }
+
+    private String getProviderDescription(final AuthConfigProvider provider) {
+        String description;
+        if (System.getSecurityManager() == null) {
+            description = getDescription(provider);
+        } else {
+            description = AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+                @Override
+                public String run() {
+                    return getDescription(provider);
+                }
+            });
+        }
+        return description;
+    }
+
+    private String getDescription(AuthConfigProvider provider) {
+        AuthConfigFactory factory = AuthConfigFactory.getFactory();
+        String id = factory.getRegistrationIDs(provider)[0];
+        return factory.getRegistrationContext(id).getDescription();
     }
 
     /*

@@ -92,9 +92,6 @@ public class SSOAuthenticator implements WebAuthenticator {
         return authResult;
     }
 
-    //TODO Need a new design to improve performance when we have multiple cookie with the same name.
-    //TODO:  multi-cookies are in now, but we need to add removing them when logging out.
-
     /**
      * @param req
      * @param res
@@ -116,7 +113,9 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         authResult = handleJwtSSO(req, res);
-        if ((authResult != null && authResult.getStatus().equals(AuthResult.SUCCESS)) || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie()) {
+        // If there is a jwtSSOToken in a request, fallback to LTPA will not be allowed.
+        // If there is NO jwtSSOToken in a request and shouldFallbackToLtpaCookie is true, fall back to LTPA will be allowed
+        if (authResult != null || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie()) {
             return authResult;
         }
 
@@ -158,6 +157,8 @@ public class SSOAuthenticator implements WebAuthenticator {
     }
 
     /**
+     * If there is no jwtSSOToken, we will return null. Otherwise, we will AuthenticationResult.
+     * 
      * @param cookies
      * @return
      */

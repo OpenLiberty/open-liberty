@@ -21,8 +21,9 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.config.TestUtils;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
-public class DynamicSourceTest {
+public class DynamicSourceTest extends AbstractConfigTest {
 
     @Test
     public void testDynamicSource() {

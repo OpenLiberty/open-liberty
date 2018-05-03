@@ -498,7 +498,7 @@ ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=\u5982\u9700\u76f8\u95dc\u8
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The target convertion type
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION=CWWKC0075W: [ {0} ]: \u6b64\u985e\u5225\u539f\u59cb\u6a94\u7684\u5132\u5b58\u5668\u672a\u80fd\u8f49\u63db\u6210 [{1}]\u3002\u932f\u8aa4\u8a0a\u606f\uff1a{2}
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION=CWWKC0075W: [ {0} ]: \u7121\u6cd5\u5c07\u6b64\u985e\u5225\u7684\u5132\u5b58\u5668\u8f49\u63db\u6210 [{1}]\u3002\u932f\u8aa4\u8a0a\u606f\uff1a{2}
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.explanation=\u6a94\u6848\u7121\u6cd5\u8f49\u63db\u70ba\u65b0\u7684\u985e\u578b\u7269\u4ef6\u3002
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.useraction=\u6c92\u6709\u53ef\u7528\u7684\u4f7f\u7528\u8005\u52d5\u4f5c\u3002
 
@@ -551,3 +551,14 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=\u5982\u9700\u76f8\u95dc\
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: \u767c\u751f\u985e\u5225\u6383\u63cf\u5167\u90e8\u932f\u8aa4\uff1aJandex \u8655\u7406\u7a0b\u5e8f\u91cd\u8907\u8655\u7406\u4e86 [ {0} ] \u6b04\u4f4d\u3002
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} A number
+# # {3} A number
+# # {4} The name of a file or the name of a directory
+# # Read - Past tense. 
+ANNO_JANDEX_USAGE=CWWKC0092I: \u8b80\u53d6 {4} \u4e2d\u4e4b {0} \u500b\u4fdd\u5b58\u6a94\uff08\u5171\u6709 {1} \u500b\u4fdd\u5b58\u6a94\uff09\u548c {2} \u500b\u985e\u5225\uff08\u5171\u6709 {3} \u500b\u985e\u5225\uff09\u7684 Jandex \u7d22\u5f15\u3002
+ANNO_JANDEX_USAGE.explanation=\u9019\u986f\u793a\u6a21\u7d44\u4e2d\u85c9\u7531\u8b80\u53d6 Jandex \u7d22\u5f15\uff08\u800c\u975e\u6383\u63cf\u5be6\u969b\u985e\u5225\u6a94\uff09\u4f86\u8655\u7406\u7684\u4fdd\u5b58\u6a94\u6578\u76ee\u3002\u6b64\u5916\uff0c\u4e5f\u6703\u986f\u793a\u61c9\u7528\u7a0b\u5f0f\u4e2d\u85c9\u7531\u8b80\u53d6 Jandex \u7d22\u5f15\u6240\u8655\u7406\u7684\u985e\u5225\u7e3d\u6578\u3002
+ANNO_JANDEX_USAGE.useraction=\u5982\u679c\u6253\u7b97\u8b80\u53d6\u61c9\u7528\u7a0b\u5f0f\u7684 Jandex \u7d22\u5f15\uff0c\u5247\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002\u5982\u679c\u4e0d\u6703\u8b80\u53d6\u61c9\u7528\u7a0b\u5f0f\u7684 Jandex \u7d22\u5f15\uff0c\u8acb\u5728 server.xml \u7684 application \u5143\u7d20\u4e2d\uff0c\u8a2d\u5b9a useJandex="false" \u5c6c\u6027\u3002\u6216\u8005\uff0c\u5728 server.xml \u7684 applicationManger \u5143\u7d20\u4e2d\u8a2d\u5b9a useJandex="false"\uff0c\u4ee5\u5ffd\u7565\u6240\u6709\u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684 Jandex \u7d22\u5f15\u3002
+

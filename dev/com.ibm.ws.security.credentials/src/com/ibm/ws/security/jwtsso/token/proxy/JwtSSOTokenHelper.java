@@ -91,7 +91,7 @@ public class JwtSSOTokenHelper {
                 jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
             } catch (WSSecurityException e) {
                 String msg = Tr.formatMessage(tc, "WARN_JWT_SSO_TOKEN_SERVICE_ERROR");
-                Tr.error(tc, msg);
+                Tr.warning(tc, msg);
             }
         }
 

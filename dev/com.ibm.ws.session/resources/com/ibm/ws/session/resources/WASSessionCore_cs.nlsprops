@@ -14,6 +14,11 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+
+# Note:
+# SESN0300 - SESN0350 has been reserved for use in: 
+# com.ibm.ws.session.cache/resources/com/ibm/ws/session/store/cache/resources/WASSessionCache.nlsprops
+
 SessionContext.createWhenStop=SESN0006E: Do\u0161lo k pokusu o vytvo\u0159en\u00ed relace ve chv\u00edli, kdy prob\u00edhalo zastavov\u00e1n\u00ed aplika\u010dn\u00edho serveru.
 SessionContext.createWhenStop.explanation=K t\u00e9to chyb\u011b doch\u00e1z\u00ed v situaci, kdy je p\u0159ijat po\u017eadavek na relaci b\u011bhem zastavov\u00e1n\u00ed serveru.
 SessionContext.createWhenStop.useraction=Restartujte server.

@@ -98,11 +98,14 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
 		// Looks like the session wasn't obtained during the preinvoke
 		// call.  Should only happen if session doesn't exist at preinvoke.
 		//
-		session = webapp.getSessionContext().getIHttpSession(localrequest, (HttpServletResponse) request.getResponse(), create);
+		IHttpSessionContext ctx = webapp.getSessionContext();
+		if (ctx != null) {
+		    session = ctx.getIHttpSession(localrequest, (HttpServletResponse) request.getResponse(), create);
+		}
 		if ( session == null) {
 		    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
-	            logger.exiting(CLASS_NAME,"getSession", "null");
-	        }
+	                logger.exiting(CLASS_NAME,"getSession", "null");
+	            }
 		    return null;
 		}
 		else  {

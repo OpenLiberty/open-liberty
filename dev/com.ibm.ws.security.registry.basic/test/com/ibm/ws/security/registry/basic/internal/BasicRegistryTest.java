@@ -218,6 +218,11 @@ public class BasicRegistryTest {
             public String certificateMapperId() {
                 return null;
             }
+
+            @Override
+            public String CertificateMapper_target() {
+                return null;
+            }
         };
         BasicRegistry reg = new BasicRegistry();
         reg.activate(brc);
@@ -259,6 +264,11 @@ public class BasicRegistryTest {
 
             @Override
             public String certificateMapperId() {
+                return null;
+            }
+
+            @Override
+            public String CertificateMapper_target() {
                 return null;
             }
         };

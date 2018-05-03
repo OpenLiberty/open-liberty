@@ -14,6 +14,11 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+
+# Note:
+# SESN0300 - SESN0350 has been reserved for use in: 
+# com.ibm.ws.session.cache/resources/com/ibm/ws/session/store/cache/resources/WASSessionCache.nlsprops
+
 SessionContext.createWhenStop=SESN0006E: Podj\u0119to pr\u00f3b\u0119 utworzenia sesji w czasie zatrzymywania serwera aplikacji.
 SessionContext.createWhenStop.explanation=Ten b\u0142\u0105d wyst\u0119puje, je\u015bli \u017c\u0105danie dotycz\u0105ce sesji zostanie odebrane w trakcie zatrzymywania serwera.
 SessionContext.createWhenStop.useraction=Zrestartuj serwer.

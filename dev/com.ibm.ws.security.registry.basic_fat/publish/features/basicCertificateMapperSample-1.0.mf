@@ -1,0 +1,7 @@
+Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
+Subsystem-SymbolicName: basicCertificateMapperSample-1.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.ws.security.registry.basic.certificate.mapper.sample; version="[1,2)" 
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

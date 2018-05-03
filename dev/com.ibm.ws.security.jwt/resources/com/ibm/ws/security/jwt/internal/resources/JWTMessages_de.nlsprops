@@ -272,12 +272,12 @@ JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Es kann kein Signierschl\u00fcssel aus
 JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=Der \u00fcber die JWT-Konsumentenkonfiguration angegebene Truststore enth\u00e4lt keine Unterzeichnerzertifikate. Ein Unterzeichnerzertifikat ist f\u00fcr die Validierung des JWT-Token erforderlich.
 JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=\u00dcberpr\u00fcfen Sie, dass der in der JWT-Konsumentenkonfiguration verwendete Truststore mindestens ein Unterzeichnerzertifikat enth\u00e4lt. Der Truststore kann \u00fcber das Attribut 'trustStoreRef' in der JWT-Konsumentenkonfiguration konfiguriert werden oder im Rahmen der allgemeinen Server-SSL-Konfiguration erfolgen.
 
-# Do not translate "JWT", "trustedAlias"
+# Do not translate "JWT", "trustedAlias", "keyName"
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
-JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Es kann kein Signierschl\u00fcssel aus dem Truststore abgerufen werden. Das Attribut 'trustedAlias' wurde nicht in der JWT-Konsumentenkonfiguration angegeben und im Truststore sind mehrere Unterzeichnerzertifikate vorhanden.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=Es wurden mehrere Unterzeichnerzertifikate im konfigurierten Truststore gefunden. Wenn mehrere Zertifikate im Truststore vorhanden sind, muss das Attribut 'trustedAlias' in der JWT-Konsumentenkonfiguration angegeben werden, um festzulegen, welches der Zertifikate verwendet werden soll.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Geben Sie in der JWT-Konsumentenkonfiguration das Attribut 'trustedAlias' mit dem Alias f\u00fcr das entsprechende Unterzeichnerzertifikat an.
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Es kann nicht festgestellt werden, welches Unterzeichnerzertifikat im Truststore verwendet werden soll. F\u00fcgen Sie der JWT-Konsumentenkonfiguration das Attribut 'trustedAlias' bzw. der MP-JWT-Konfiguration das Attribut 'keyName' hinzu.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Es wurden mehrere Unterzeichnerzertifikate im konfigurierten Truststore gefunden. Wenn mehrere Zertifikate im Truststore vorhanden sind, muss das Attribut 'trustedAlias' in der JWT-Konsumentenkonfiguration bzw. das Attribut 'keyName' in der MP-JWT-Konfiguration angegeben werden, um festzulegen, welches der Zertifikate verwendet werden soll.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Geben Sie an, welches Zertifikat im Truststore verwendet werden soll, indem Sie den Alias des entsprechenden Unterzeichnerzertifikats im Attribut 'trustedAlias' der JWT-Konsumentenkonfiguration bzw. das Attribut 'keyName' der MP-JWT-Konfiguration hinzuf\u00fcgen.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: Die Filter-API f\u00fcr Clientanforderungen hat das JSON Web Token (JWT) nicht weitergegeben.

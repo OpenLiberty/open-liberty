@@ -1,0 +1,48 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKC0251 to CWWKC0300
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.thin.application=CWWKC0251W: N\u00e3o foi poss\u00edvel converter o aplicativo {0} em um aplicativo thin devido \u00e0 exce\u00e7\u00e3o {1}.
+warning.could.not.thin.application.explanation=O aplicativo n\u00e3o p\u00f4de ser convertido em um aplicativo thin. O aplicativo continuar\u00e1 a ser executado a partir do JAR original. 
+warning.could.not.thin.application.useraction=Tente resolver o problema na mensagem de exce\u00e7\u00e3o e reinicie o servidor ou atualize o aplicativo. 
+
+error.need.springboot.version.15=CWWKC0252E: N\u00e3o foi poss\u00edvel executar o aplicativo, porque a vers\u00e3o errada do recurso Inicializa\u00e7\u00e3o de Spring est\u00e1 configurada em server.xml. O aplicativo requer que o recurso springBoot-1.5 seja configurado.
+error.need.springboot.version.15.explanation= O aplicativo requer a Inicializa\u00e7\u00e3o de Spring vers\u00e3o 1.5, mas uma vers\u00e3o errada do recurso Inicializa\u00e7\u00e3o de Spring est\u00e1 configurada no server.xml.  
+error.need.springboot.version.15.useraction= O recurso springBoot-1.5 precisa ser configurado no server.xml.
+
+error.need.springboot.version.20=CWWKC0253E: N\u00e3o foi poss\u00edvel executar o aplicativo, porque a vers\u00e3o errada do recurso Inicializa\u00e7\u00e3o de Spring est\u00e1 configurada em server.xml. O aplicativo requer a configura\u00e7\u00e3o do recurso springBoot-2.0.
+error.need.springboot.version.20.explanation= O aplicativo requer a Inicializa\u00e7\u00e3o de Spring vers\u00e3o 2.0, mas uma vers\u00e3o errada do recurso Inicializa\u00e7\u00e3o de Spring est\u00e1 configurada no server.xml.  
+error.need.springboot.version.20.useraction= O recurso springBoot-2.0 precisa ser configurado no server.xml.
+
+error.missing.servlet=CWWKC0254E: N\u00e3o foi poss\u00edvel executar o aplicativo porque ele requer a configura\u00e7\u00e3o de um recurso Servlet no server.xml. \u00c9 necess\u00e1rio configurar o servlet-3.1 ou o servlet-4.0.
+error.missing.servlet.explanation= O aplicativo \u00e9 um aplicativo da web e requer a configura\u00e7\u00e3o de um recurso Servlet no server.xml.
+error.missing.servlet.useraction= \u00c9 necess\u00e1rio configurar o servlet-3.1 ou o servlet-4.0 no server.xml.

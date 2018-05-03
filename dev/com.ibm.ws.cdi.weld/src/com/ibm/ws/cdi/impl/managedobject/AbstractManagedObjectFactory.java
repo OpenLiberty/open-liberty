@@ -176,7 +176,7 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
 
             InjectionTargetFactory<T> itFactory = beanManager.getInjectionTargetFactory(annotatedType);
 
-            Bean<T> bean = getBean();
+            Bean<T> bean = nonContextual ? null : getBean();
             injectionTarget = itFactory.createInjectionTarget(bean);
 
             //if the bda is null then the class is not known in the CDI deployment, so we won't fire CDI events
@@ -207,6 +207,12 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
 
     protected abstract WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext);
 
+    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext, boolean nonContextual)
+    {
+       //The nonContextual flag is only relevant in CDIManagedObjectFactoryImpl.
+       return getCreationalContext(invocationContext);
+    }
+
     @Override
     public ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws Exception {
 
@@ -219,7 +225,7 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
             final InjectionTarget<T> injectionTarget = getInjectionTarget(nonContextual);
 
             // Get the CreationalContext
-            final WeldCreationalContext<T> creationalContext = getCreationalContext(invocationContext);
+            final WeldCreationalContext<T> creationalContext = getCreationalContext(invocationContext, nonContextual);
 
             // Instantiate the component by calling the InjectionTarget produce method.
             T instance = AccessController.doPrivileged(new PrivilegedAction<T>() {

@@ -67,9 +67,9 @@ public class UserRegistryWrapper implements com.ibm.websphere.security.UserRegis
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore(com.ibm.ws.security.registry.CertificateMapFailedException.class)
-    public String mapCertificate(X509Certificate[] cert) throws CertificateMapNotSupportedException, CertificateMapFailedException, CustomRegistryException, RemoteException {
+    public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, CustomRegistryException, RemoteException {
         try {
-            return wrappedUr.mapCertificate(cert[0]);
+            return wrappedUr.mapCertificate(chain);
         } catch (RegistryException e) {
             throw new CustomRegistryException(e.getMessage(), e);
         } catch (com.ibm.ws.security.registry.CertificateMapNotSupportedException e) {

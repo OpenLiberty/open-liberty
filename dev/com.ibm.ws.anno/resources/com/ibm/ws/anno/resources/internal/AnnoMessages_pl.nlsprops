@@ -553,3 +553,14 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Wi\u0119cej informacji zn
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: przetwarzanie duplikatu klasy [{0}] w ramach przetwarzania Jandex.
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} A number
+# # {3} A number
+# # {4} The name of a file or the name of a directory
+# # Read - Past tense. 
+ANNO_JANDEX_USAGE=CWWKC0092I: Odczytano indeksy Jandex dla {0} z {1} archiw\u00f3w ({2} z {3} klas) w pliku lub katalogu {4}. 
+ANNO_JANDEX_USAGE.explanation=Podaje liczb\u0119 archiw\u00f3w w module, kt\u00f3re zosta\u0142y przetworzone poprzez odczyt indeks\u00f3w Jandex, a nie poprzez skanowanie rzeczywistych plik\u00f3w klas. Podaje tak\u017ce \u0142\u0105czn\u0105 liczb\u0119 klas w aplikacji, kt\u00f3re zosta\u0142y przetworzone poprzez odczyt indeks\u00f3w Jandex.
+ANNO_JANDEX_USAGE.useraction=Je\u015bli w przypadku aplikacji maj\u0105 by\u0107 odczytywane indeksy Jandex, nie trzeba wykonywa\u0107 \u017cadnej czynno\u015bci. Je\u015bli w przypadku aplikacji nie maj\u0105 by\u0107 odczytywane indeksy Jandex, ustaw atrybut useJandex="false" w elemencie aplikacji w pliku server.xml. Mo\u017cna r\u00f3wnie\u017c ustawi\u0107 parametr useJandex="false" w elemencie applicationManger w pliku server.xml, aby ignorowa\u0107 indeksy Jandex we wszystkich aplikacjach.
+

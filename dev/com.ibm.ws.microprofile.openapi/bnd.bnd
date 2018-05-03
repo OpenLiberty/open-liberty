@@ -24,7 +24,6 @@ IBM-Web-Extension-Processing-Disabled: true
 Web-ContextPath: /openapi
 
 Import-Package: \
-	org.apache.commons.io*;version=1.4;packageType=was_internal,\
 	org.eclipse.microprofile.config.*;version="[1.0,2)",\
 	*
     
@@ -79,7 +78,7 @@ instrument.classesExcludes: \
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.websphere.appserver.spi.artifact;version=latest,\
-	com.ibm.ws.org.apache.commons.io.2.4;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3.3.5;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
 	com.fasterxml.jackson.core.jackson-core;version=2.9.1,\

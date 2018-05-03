@@ -609,6 +609,6 @@ ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E=CWPKI0818E: The default SSL confi
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.explanation=The default SSL configuration expects a keystore element, which does not exist.
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=Review the configuration and either change the configuration to reference an existing keystore, or define the referenced keystore.
 #--------------------------------------------------------------------------------------------------
-ssl.defaultKeyStore.not.created.CWPKI0819I=CWPKI0819I: The default keystore will not be created because no password is configured on <keyStore id="defaultKeyStore"/> and no 'keystore_password' environment variable is set. 
-ssl.defaultKeyStore.not.created.CWPKI0819I.explanation=The default keystore will not be created because no password is configured on <keyStore id="defaultKeyStore"/> and no 'keystore_password' environment variable is set.
+ssl.defaultKeyStore.not.created.CWPKI0819I=CWPKI0819I: The default keystore is not created because a password is not configured on the <keyStore id="defaultKeyStore"/> element, and the 'keystore_password' environment variable is not set. 
+ssl.defaultKeyStore.not.created.CWPKI0819I.explanation=The default keystore is not created because a password is not configured on the <keyStore id="defaultKeyStore"/> element, and the 'keystore_password' environment variable is not set.
 ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=No action is required.

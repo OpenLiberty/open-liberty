@@ -138,6 +138,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             if (!cookieAlreadySent) {
                 result = addJwtCookies(cookieByteString, req, resp);
             }
+            isJwtCookie = true;
         }
         return result;
     }

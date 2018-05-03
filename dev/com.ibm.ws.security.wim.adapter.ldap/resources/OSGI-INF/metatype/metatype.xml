@@ -78,11 +78,14 @@
 			<Option label="%certificateMapMode.exact_dn" value="EXACT_DN" />
 			<Option label="%certificateMapMode.certificate_filter" value="CERTIFICATE_FILTER" />
 			<Option label="%certificateMapMode.custom" value="CUSTOM" />
+			<Option label="%certificateMapMode.not.supported" value="NOT_SUPPORTED" />
 		</AD>
 		<AD id="certificateFilter" name="%certificateFilter" description="%certificateFilter.desc"
 		    required="false" type="String"/>
 		<AD id="certificateMapperId" name="%certificateMapperId" description="%certificateMapperId.desc"
 		    required="false" type="String"/>
+        <AD id="CertificateMapper.target" name="internal" description="internal use only"
+            type="String" default="(x509.certificate.mapper.id=${certificateMapperId})"/>
             
         <!-- 
              LDAP filters by server type.

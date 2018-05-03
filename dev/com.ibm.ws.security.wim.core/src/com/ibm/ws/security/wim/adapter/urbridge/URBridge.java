@@ -1006,7 +1006,7 @@ public class URBridge implements Repository {
                             }
                         }
                         try {
-                            securityName = userRegistry.mapCertificate(certs[0]);
+                            securityName = userRegistry.mapCertificate(certs);
                         } catch (CertificateMapNotSupportedException e) {
                             throw new com.ibm.wsspi.security.wim.exception.CertificateMapNotSupportedException(e);
                         } catch (CertificateMapFailedException e) {

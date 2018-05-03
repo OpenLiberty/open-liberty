@@ -399,7 +399,18 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                             } catch (MalformedObjectNameException x) {
                                 // Internal error on diagnostics path, allow to continue after auto-logging FFDC
                             }
-                            if (isMetaCache) {
+                            if (isAttrCache) {
+                                out.println(INDENT + "First 100 entries:");
+                                int i = 0;
+                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); ) {
+                                    Entry<?, ?> entry = (Entry<?, ?>) it.next();
+                                    if (entry != null) {
+                                        // deserialization of the value might require the application's class loader, which is not available during introspection
+                                        byte[] bytes = (byte[]) entry.getValue();
+                                        out.println(INDENT + INDENT + "session attribute " + entry.getKey() + ": " + (bytes == null ? null : ("byte[" + bytes.length + "]")));
+                                    }
+                                }
+                            } else if (isMetaCache) {
                                 out.println(INDENT + "First 50 entries:");
                                 int i = 0;
                                 for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); ) {

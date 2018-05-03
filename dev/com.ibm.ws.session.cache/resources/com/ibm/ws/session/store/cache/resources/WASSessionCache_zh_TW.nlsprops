@@ -15,3 +15,8 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
+# The range SESN0300 - SESN0350 has been reserved for use in this file
+
+INCORRECT_URI_SYNTAX=SESN0300E: httpSessionCache URI \u4e2d\u7684\u8a9e\u6cd5\u7121\u6548\u7684\u3002\u539f\u56e0\u662f {0}\u3002
+INCORRECT_URI_SYNTAX.explanation=\u6307\u5b9a httpSessionCache JCache \u914d\u7f6e URI \u7684\u8a9e\u6cd5\u7121\u6548\u3002
+INCORRECT_URI_SYNTAX.useraction=\u8acb\u66f4\u6b63\u6307\u5b9a httpSessionCache \u914d\u7f6e URI \u7684\u8a9e\u6cd5\u3002

@@ -183,9 +183,9 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore(Exception.class)
-    public String mapCertificate(X509Certificate inputCertificate) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
+    public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
         try {
-            String returnValue = loginBridge.mapCertificate(inputCertificate);
+            String returnValue = loginBridge.mapCertificate(chain);
             return returnValue;
         } catch (Exception excp) {
             if (excp instanceof CertificateMapFailedException) {

@@ -66,25 +66,13 @@ OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Vyvol\u00e1n\u00ed u\u017eivatel
 OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=Funkce vytv\u00e1\u0159\u00ed implementace modulu trasov\u00e1n\u00ed s u\u017eivatelem, kter\u00fd je dod\u00e1n metodou OpentracingTracerFactory. Metoda OpentracingTracerFactory.newInstance vr\u00e1tila v\u00fdjimku.
 OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Ur\u010dete, pro\u010d se pro u\u017eivatele dodan\u00e9ho metodou OpentracingTracerFactory newInstance vr\u00e1tila v\u00fdjimka.
 
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: Pro p\u0159\u00edchoz\u00ed po\u017eadavek nen\u00ed k dispozici \u017e\u00e1dn\u00fd modul trasov\u00e1n\u00ed. P\u0159\u00edchoz\u00ed po\u017eadavek nebude korelov\u00e1n s p\u0159edchoz\u00ed slu\u017ebou.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=Implementace modulu trasov\u00e1n\u00ed nebyla k dispozici, kdy\u017e po\u017eadavek dorazil do koncov\u00e9ho bodu aplikace. Tento p\u0159\u00edchoz\u00ed po\u017eadavek neposkytne \u017e\u00e1dn\u00e9 informace slu\u017eb\u011b Opentracing.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Prozkoumejte p\u0159edchoz\u00ed chyby a ur\u010dete, pro\u010d nen\u00ed modul trasov\u00e1n\u00ed k dispozici.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: \u00dasek vytvo\u0159en\u00fd pro p\u0159\u00edchoz\u00ed po\u017eadavek nen\u00ed pro odpov\u011b\u010f na po\u017eadavek k dispozici. P\u0159\u00edchoz\u00ed po\u017eadavek nebude korelov\u00e1n s p\u0159edchoz\u00ed slu\u017ebou.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=\u00dasek vytvo\u0159en\u00fd p\u0159i p\u0159ijet\u00ed po\u017eadavku nen\u00ed k dispozici, kdy\u017e se vr\u00e1t\u00ed odezva. Nebudou slu\u017eb\u011b Opentracing dod\u00e1ny \u017e\u00e1dn\u00e9 informace o \u00faseku.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Prozkoumejte p\u0159edchoz\u00ed chyby a ur\u010dete, pro\u010d nen\u00ed \u00fasek k dispozici.
-
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: Pro p\u0159\u00edchoz\u00ed po\u017eadavek nebyl nalezen \u017e\u00e1dn\u00fd modul trasov\u00e1n\u00ed. Odchoz\u00ed po\u017eadavek nebude korelov\u00e1n s p\u0159\u00edchoz\u00edm po\u017eadavkem.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=Implementace modulu trasov\u00e1n\u00ed nebyla k dispozici, kdy\u017e byl po\u017eadavek odesl\u00e1n z aplikace. Tento odchoz\u00ed po\u017eadavek neposkytne \u017e\u00e1dn\u00e9 informace slu\u017eb\u011b Opentracing.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Prozkoumejte p\u0159edchoz\u00ed chyby a ur\u010dete, pro\u010d nen\u00ed modul trasov\u00e1n\u00ed k dispozici.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: \u00dasek vytvo\u0159en\u00fd pro odchoz\u00ed po\u017eadavek nen\u00ed pro odpov\u011b\u010f na po\u017eadavek k dispozici. Odchoz\u00ed po\u017eadavek nebude korelov\u00e1n s p\u0159\u00edchoz\u00edm po\u017eadavkem.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=\u00dasek vytvo\u0159en\u00fd p\u0159i odesl\u00e1n\u00ed po\u017eadavku nen\u00ed k dispozici, kdy\u017e se vr\u00e1t\u00ed odezva. Nebudou slu\u017eb\u011b Opentracing dod\u00e1ny \u017e\u00e1dn\u00e9 informace o \u00faseku.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Prozkoumejte p\u0159edchoz\u00ed chyby a ur\u010dete, pro\u010d nen\u00ed \u00fasek k dispozici.
-
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Vyvol\u00e1n\u00ed u\u017eivatele, kter\u00fd byl dod\u00e1n metodou OpentracingTracerFactory.newInstance(...), vr\u00e1tilo null
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Funkce vytv\u00e1\u0159\u00ed implementace modulu trasov\u00e1n\u00ed s u\u017eivatelem, kter\u00fd je dod\u00e1n metodou OpentracingTracerFactory. Metoda OpentracingTracerFactory.newInstance vr\u00e1tila null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Ur\u010dete, pro\u010d se pro u\u017eivatele dodan\u00e9ho metodou OpentracingTracerFactory newInstance vr\u00e1tila hodnota null.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: Metoda OpenTracing nem\u016f\u017ee sledovat po\u017eadavky JAX-RS, proto\u017ee nen\u00ed dod\u00e1na t\u0159\u00edda OpentracingTracerFactory.
+OPENTRACING_NO_TRACERFACTORY.explanation=Metoda OpenTracing nebude spr\u00e1vn\u011b pracovat, proto\u017ee nebyla dod\u00e1na t\u0159\u00edda OpentracingTracerFactory. Po\u017eadavky JAX-RS se provedou norm\u00e1ln\u011b, ale nebudou sledov\u00e1ny.
+OPENTRACING_NO_TRACERFACTORY.useraction=Dal\u0161\u00ed informace najdete v dokumentaci, jak povolit distribuovan\u00e9 trasov\u00e1n\u00ed OpenTracing.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
