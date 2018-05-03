@@ -47,6 +47,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.xml.bind.JAXBException;
 
@@ -683,9 +685,10 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         Entry libEntry = moduleContainer.getEntry(manifest.getSpringBootLib());
         if (libEntry != null) {
             Container libContainer = libEntry.adapt(Container.class);
+            final SpringBootThinUtil.StarterFilter starterFilter = SpringBootThinUtil.getStarterFilter(stringStream(libContainer));
             if (libContainer != null) {
                 for (Entry entry : libContainer) {
-                    if (!SpringBootThinUtil.isEmbeddedContainerImpl(entry.getName())) {
+                    if (!starterFilter.apply(entry.getName())) {
                         String jarEntryName = entry.getName();
                         Container jarContainer = entry.adapt(Container.class);
                         if (jarContainer != null) {
@@ -698,6 +701,11 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             }
         }
         return result;
+    }
+
+    public static Stream<String> stringStream(Container container) {
+        Stream<String> stream = StreamSupport.stream(container.spliterator(), false).map(entry -> entry.getName());
+        return stream;
     }
 
     private static List<ContainerInfo> getStoredIndexClassesInfos(Entry indexFile, LibIndexCache libIndexCache) throws UnableToAdaptException {
