@@ -19,7 +19,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 
-@Component(service = GlobalClassloadingConfiguration.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.classloading.global", property = "service.vendor=IBM")
+@Component(service = GlobalClassloadingConfiguration.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
+           configurationPid = "com.ibm.ws.classloading.global", property = "service.vendor=IBM")
 public class GlobalClassloadingConfiguration {
 
     private Map<String, Object> properties;
@@ -44,7 +45,7 @@ public class GlobalClassloadingConfiguration {
      * @return
      */
     public boolean useJarUrls() {
-        return (Boolean) properties.get("useJarUrls");
+        return properties == null || (Boolean) properties.get("useJarUrls");
     }
 
 }
