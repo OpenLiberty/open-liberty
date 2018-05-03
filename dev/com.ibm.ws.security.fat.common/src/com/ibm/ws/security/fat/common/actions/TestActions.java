@@ -12,6 +12,7 @@ package com.ibm.ws.security.fat.common.actions;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.Page;
@@ -19,6 +20,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.ws.security.fat.common.exceptions.TestActionException;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.web.WebFormUtils;
@@ -100,6 +102,21 @@ public class TestActions {
     }
 
     /**
+     * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
+     */
+    public Page invokeUrlWithParameters(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
+        String thisMethod = "invokeUrlWithParameters";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createGetRequest(url);
+            request.setRequestParameters(requestParams);
+            return submitRequest(currentTest, wc, request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+    }
+
+    /**
      * Submits the specified WebRequest and returns the Page object that represents the response.
      */
     public Page submitRequest(String currentTest, WebRequest request) throws Exception {
@@ -175,7 +192,9 @@ public class TestActions {
     }
 
     WebClient createWebClient() {
-        return new WebClient();
+        WebClient webClient = new WebClient();
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        return webClient;
     }
 
     WebRequest createGetRequest(String url) throws MalformedURLException {

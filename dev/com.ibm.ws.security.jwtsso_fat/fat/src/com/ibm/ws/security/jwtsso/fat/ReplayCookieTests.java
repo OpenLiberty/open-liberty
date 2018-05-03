@@ -10,18 +10,37 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.fat;
 
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.servlet.http.HttpServletResponse;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.fat.common.actions.TestActions;
+import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
+import com.ibm.ws.security.fat.common.apps.jwtbuilder.ProtectedServlet;
+import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
+import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
@@ -46,14 +65,20 @@ public class ReplayCookieTests extends CommonJwtFat {
     private JwtFatActions actions = new JwtFatActions();
     private TestValidationUtils validationUtils = new TestValidationUtils();
 
+    static final String DEFAULT_CONFIG = JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp.xml";
+    static final String APP_NAME_JWT_BUILDER = "jwtbuilder";
+
     String httpUrlBase = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
+    String httpsUrlBase = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
     String protectedUrl = httpUrlBase + JwtFatConstants.SIMPLE_SERVLET_PATH;
     String defaultUser = JwtFatConstants.TESTUSER;
     String defaultPassword = JwtFatConstants.TESTUSERPWD;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        buildAndDeployApp(server, APP_NAME_JWT_BUILDER, "com.ibm.ws.security.fat.common.apps.jwtbuilder.*");
+
+        setUpAndStartServer(server, DEFAULT_CONFIG);
     }
 
     /**
@@ -65,7 +90,7 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_reaccessResource_useSameWebConversation_includeJwtCookie() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         String user = JwtFatConstants.USER_1;
         String password = JwtFatConstants.USER_1_PWD;
@@ -96,7 +121,7 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_reaccessResource_useSameWebConversation_deleteJwtCookie() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         WebClient webClient = new WebClient();
         actions.logInAndObtainJwtCookie(testName.getMethodName(), webClient, protectedUrl, defaultUser, defaultPassword);
@@ -122,7 +147,7 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_reaccessResource_newConversationWithoutJwtCookie() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
@@ -145,7 +170,7 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_reaccessResource_newConversationWithValidJwtCookie() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
@@ -173,7 +198,7 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_reaccessResource_jwtCookieWithEmptySignature() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
@@ -212,7 +237,7 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_reaccessResource_signatureRemovedFromJwtCookie() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
@@ -249,11 +274,13 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie() throws Exception {
+        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
 
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -278,6 +305,7 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie_fallbackToLtpa() throws Exception {
+        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
 
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
@@ -298,6 +326,8 @@ public class ReplayCookieTests extends CommonJwtFat {
 
         Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, ltpaCookie);
         validationUtils.validateResult(response, currentAction, expectations);
+
+        server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
     }
 
     /**
@@ -310,10 +340,11 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_obtainJwt_reconfigureToDisableJwtSso_reaccessResourceWithJwtCookie() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
+        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
 
         // Access the protected again using a new conversation with the JWT SSO cookie included
@@ -324,6 +355,8 @@ public class ReplayCookieTests extends CommonJwtFat {
 
         Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
+
+        server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
     }
 
     /**
@@ -331,20 +364,20 @@ public class ReplayCookieTests extends CommonJwtFat {
      * - Logs into the protected resource with the JWT SSO feature configured
      * - Access a different protected resource in a new web conversation without the JWT SSO cookie
      * Expects:
-     * - Should receive the login page because a cookie is not present
+     * - Should receive a 401 because a cookie is not present
      */
     @Test
     public void test_obtainJwt_accessNewProtectedResource_withoutJwtCookie() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
         // Access a different protected resource without the JWT cookie
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
-        String newProtectedUrl = httpUrlBase + JwtFatConstants.ALL_ROLE_SERVLET_PATH;
+        String newProtectedUrl = httpUrlBase + JwtFatConstants.JWT_BUILDER_CONTEXT_ROOT + "/protected";
 
         Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectation(Expectation.createResponseStatusExpectation(currentAction, HttpServletResponse.SC_UNAUTHORIZED));
 
         Page response = actions.invokeUrl(testName.getMethodName(), newProtectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -359,19 +392,137 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_obtainJwt_accessNewProtectedResource_withJwtCookie() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.reconfigureServer(DEFAULT_CONFIG);
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
         // Access a different protected resource with the JWT cookie
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
-        String newProtectedUrl = httpUrlBase + JwtFatConstants.ALL_ROLE_SERVLET_PATH;
+        String newProtectedUrl = httpUrlBase + JwtFatConstants.JWT_BUILDER_CONTEXT_ROOT + "/protected";
 
         Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, newProtectedUrl, defaultUser));
-        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+        expectations.addExpectation(Expectation.createResponseStatusExpectation(currentAction, HttpServletResponse.SC_OK));
+        expectations.addExpectation(new ResponseUrlExpectation(currentAction, JwtFatConstants.STRING_EQUALS, newProtectedUrl, "Did not reach the expected URL."));
+        expectations.addExpectation(Expectation.createResponseExpectation(currentAction, String.format(ProtectedServlet.SUCCESS_MESSAGE, defaultUser),
+                                                                          "Did not find the expected success message in the servlet response."));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
 
         Page response = actions.invokeUrlWithCookie(testName.getMethodName(), newProtectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - Manually build a JWT that's missing some required claims
+     * - Access a protected resource with the JWT included
+     * - Configured MP-JWT consumer trusts all issuers
+     * Expects:
+     * - Should receive the login page because the token does not contain all of the required claims
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException", "com.ibm.ws.security.authentication.AuthenticationException" })
+    @Test
+    public void test_buildJwt_missingClaims_accessProtectedResource() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp_consumerTrustsAllIssuers.xml");
+
+        String builderId = "builder_defaults";
+        Cookie jwtCookie = buildThirdPartyJwtCookieUsingBuilderApp(builderId);
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5519E_PRINCIPAL_MAPPING_MISSING_ATTR + ".+" + "upn"));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5506E_USERNAME_NOT_FOUND));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5508E_ERROR_CREATING_RESULT));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - Obtain a JWT from the token endpoint of a builder configured separately from JWT SSO
+     * - Access a protected resource with the JWT included
+     * - No explicit jwtSso configuration, so the default MP-JWT consumer will be used
+     * Expects:
+     * - Should receive the login page because the issuer in the token is not trusted
+     */
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+                    "com.ibm.ws.security.authentication.AuthenticationException" })
+    @Test
+    public void test_buildJwt_accessProtectedResource_defaultMpJwtConsumer() throws Exception {
+        server.reconfigureServer(DEFAULT_CONFIG);
+
+        String builderId = "builder_defaults";
+        Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        String issuerRegex = "https://[^/]+/jwt/" + builderId;
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6022E_JWT_ISSUER_NOT_TRUSTED + ".+" + issuerRegex));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - Obtain a JWT from the token endpoint of a builder configured separately from JWT SSO
+     * - Access a protected resource with the JWT included
+     * - Configured MP-JWT consumer trusts all issuers
+     * Expects:
+     * - Should successfully reach the protected resource
+     */
+    @Test
+    public void test_buildJwt_accessProtectedResource_issuerTrusted() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp_consumerTrustsAllIssuers.xml");
+
+        String builderId = "builder_defaults";
+        Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        String expectedIssuer = "https://[^/]+/jwt/" + builderId;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser, expectedIssuer));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - Obtain a JWT from the token endpoint of a builder configured to use a signing key in a different keystore than the server default
+     * - Access a protected resource with the JWT included
+     * Expects:
+     * - Should receive the login page because the token signature cannot be validated
+     */
+    @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+                    "com.ibm.ws.security.authentication.AuthenticationException" })
+    @Test
+    public void test_buildJwt_signedWithNonDefaultKey_accessProtectedResource() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp_consumerTrustsAllIssuers.xml");
+
+        String builderId = "builder_signWithUniqueKey";
+        Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6041E_JWT_INVALID_SIGNATURE));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -379,6 +530,72 @@ public class ReplayCookieTests extends CommonJwtFat {
 
     private Cookie createIdenticalCookieWithNewValue(Cookie cookieToDuplicate, String newCookieValue) {
         return new Cookie(cookieToDuplicate.getDomain(), cookieToDuplicate.getName(), newCookieValue, cookieToDuplicate.getPath(), cookieToDuplicate.getExpires(), cookieToDuplicate.isSecure(), cookieToDuplicate.isHttpOnly());
+    }
+
+    /**
+     * Invokes the jwtbuilder web application configured in the server that's used for building JWTs outside of the context of
+     * the JWT SSO feature. A JWT is built using the jwtBuilder configuration with the provided ID and returned as a cookie in
+     * the response.
+     */
+    private Cookie buildThirdPartyJwtCookieUsingBuilderApp(String builderId) throws Exception {
+        String jwtBuilderUrl = httpUrlBase + JwtFatConstants.JWT_BUILDER_CONTEXT_ROOT + "/build";
+
+        List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
+        requestParams.add(new NameValuePair(JwtBuilderServlet.PARAM_BUILDER_ID, builderId));
+
+        WebClient webClient = new WebClient();
+        Page response = actions.invokeUrlWithParameters(testName.getMethodName(), webClient, jwtBuilderUrl, requestParams);
+        Log.info(thisClass, testName.getMethodName(), "JWT builder app response: " + WebResponseUtils.getResponseText(response));
+
+        Cookie jwtCookie = webClient.getCookieManager().getCookie(JwtFatConstants.JWT_COOKIE_NAME);
+        Log.info(thisClass, testName.getMethodName(), "Built JWT cookie: " + jwtCookie);
+
+        return jwtCookie;
+    }
+
+    /**
+     * Invokes the {@code /token} endpoint of the JWT builder with the provided ID in order to obtain a JWT. The JWT returned from
+     * the {@code /token} endpoint will be used as the value for a new JWT SSO cookie that is created and returned by this method.
+     */
+    private Cookie buildThirdPartyJwtCookie(String builderId) throws Exception {
+        String jwtString = getJwtFromTokenEndpoint(builderId);
+        Log.info(thisClass, testName.getMethodName(), "Received JWT string : " + jwtString);
+
+        Cookie jwtCookie = new Cookie("*", JwtFatConstants.JWT_COOKIE_NAME, jwtString);
+        Log.info(thisClass, testName.getMethodName(), "Built JWT cookie: " + jwtCookie);
+
+        return jwtCookie;
+    }
+
+    private String getJwtFromTokenEndpoint(String builderId) throws MalformedURLException, Exception {
+        WebRequest request = buildJwtTokenEndpointRequest(builderId);
+
+        WebClient wc = new WebClient();
+        wc.getOptions().setUseInsecureSSL(true);
+
+        Page response = actions.submitRequest(testName.getMethodName(), wc, request);
+        Log.info(thisClass, testName.getMethodName(), "Response: " + WebResponseUtils.getResponseText(response));
+
+        return extractJwtFromTokenEndpointResponse(response);
+    }
+
+    private WebRequest buildJwtTokenEndpointRequest(String builderId) throws MalformedURLException {
+        String jwtTokenEndpoint = "/jwt/ibm/api/" + "%s" + "/token";
+        String jwtBuilderUrl = httpsUrlBase + String.format(jwtTokenEndpoint, builderId);
+
+        WebRequest request = new WebRequest(new URL(jwtBuilderUrl));
+        // Token endpoint requires authentication, so provide credentials
+        request.setAdditionalHeader("Authorization", "Basic " + Base64Coder.base64Encode(defaultUser + ":" + defaultPassword));
+        return request;
+    }
+
+    /**
+     * JWT /token endpoint should return a JSON object whose only key, "token", stores the JWT built by the builder.
+     */
+    private String extractJwtFromTokenEndpointResponse(Page response) throws Exception {
+        JsonReader reader = Json.createReader(new StringReader(WebResponseUtils.getResponseText(response)));
+        JsonObject jsonResponse = reader.readObject();
+        return jsonResponse.getString("token");
     }
 
 }

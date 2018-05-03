@@ -19,6 +19,11 @@ public class MessageConstants extends Constants {
     public static final String CWWKS5524E_ERROR_CREATING_JWT = "CWWKS5524E";
 
     public static final String CWWKS6031E_JWT_ERROR_PROCESSING_JWT = "CWWKS6031E";
+    public static final String CWWKS6041E_JWT_INVALID_SIGNATURE = "CWWKS6041E";
+
+    public static final String CWWKS5506E_USERNAME_NOT_FOUND = "CWWKS5506E";
+    public static final String CWWKS5508E_ERROR_CREATING_RESULT = "CWWKS5508E";
+    public static final String CWWKS5519E_PRINCIPAL_MAPPING_MISSING_ATTR = "CWWKS5519E";
 
     public static final String CWWKS6201W_JWT_SSO_TOKEN_SERVICE_ERROR = "CWWKS6201W";
     public static final String CWWKS6022E_JWT_ISSUER_NOT_TRUSTED = "CWWKS6022E";
@@ -27,5 +32,7 @@ public class MessageConstants extends Constants {
     public static final String CWWKS6301E_MANY_JWT_CONSUMER_CONFIGS = "CWWKS6301E";
 
     public static final String CWWKS9127W_JWT_COOKIE_SECURITY_MISMATCH = "CWWKS9127W";
+
+    public static final String CWWKT0016I_WEB_APP_AVAILABLE = "CWWKT0016I";
 
 }

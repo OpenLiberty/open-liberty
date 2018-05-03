@@ -14,15 +14,13 @@
     <include location="${shared.config.dir}/basicRegistry.xml" />
     <include location="${shared.config.dir}/ssl.xml" />
     <include location="${shared.config.dir}/formloginApp.xml" />
+    <include location="${shared.config.dir}/jwtbuilderApp.xml" />
     <include location="../fatTestPorts.xml"/>
 
     <authentication cacheEnabled="false"/>
 
-    <jwtSso id="jwt_shortLifetime" setCookieSecureFlag="false" jwtBuilderRef="builder_shortLifetime" />
+    <jwtBuilder id="builder_defaults" />
 
-    <jwtBuilder id="builder_shortLifetime"
-        expiresInSeconds="3" />
-
-    <mpJwt id="mpJwt_trustAllIssuers" issuer="ALL_ISSUERS" />
+    <jwtSso setCookieSecureFlag="false" />
 
 </server>
