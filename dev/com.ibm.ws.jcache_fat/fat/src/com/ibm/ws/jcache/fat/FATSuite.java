@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 JCacheTest.class,
+                JCacheBellTest.class,
 })
 public class FATSuite {
 
