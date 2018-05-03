@@ -59,11 +59,14 @@ public class CustomCertificateMapperInBellTest {
     private final static String AUTH_TYPE_CERT = "CLIENT_CERT";
     private final static String BASIC_USER_1_CERT_FILE = "BasicUser1.jks";
     private final static String BASIC_USER_2_CERT_FILE = "BasicUser2.jks";
+    private final static String BASIC_USER_3_CERT_FILE = "BasicUser3.jks";
     private final static String BASIC_USER_1 = "BasicUser1";
+    private final static String BASIC_USER_3 = "BasicUser3";
 
     private static final String ID_MAPPER_1 = "mapper1";
     private static final String ID_MAPPER_2 = "mapper2";
     private static final String ID_MAPPER_3 = "mapper3";
+    private static final String ID_MAPPER_4 = "mapper4";
 
     private static final String ID_LIBRARY_1 = "library1";
     private static final String PATH_LIBRARY_1 = "${wlp.user.dir}/shared/com.ibm.ws.security.registry.basic.certificate.mapper.sample_1.0.jar";
@@ -119,6 +122,11 @@ public class CustomCertificateMapperInBellTest {
         user1.setName(BASIC_USER_1);
         user1.setPassword("password");
         basic.getUsers().add(user1);
+
+        User user3 = new User();
+        user3.setName(BASIC_USER_3);
+        user3.setPassword("password");
+        basic.getUsers().add(user3);
 
         File file1 = new File();
         file1.setName(PATH_LIBRARY_1);
@@ -359,5 +367,27 @@ public class CustomCertificateMapperInBellTest {
 //             trace = "CWWKS1101W: CLIENT-CERT Authentication did not succeed for the client certificate with dn CN=BasicUser2,O=IBM,C=US. The dn does not map to a user in the registry.";
 //             matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
 //             assertFalse("Did not find expected CWWKS1101W error in logs.", matching.isEmpty());
+    }
+
+    /**
+     * Test mapping a certificate that is part of a certificate chain. The mapper checks for some properties
+     * on both the subject's certificate and the CA's certificate.
+     *
+     * @throws Exception If the test failed for an unforeseen reason.
+     */
+    @Test
+    public void map_certificate_chain() throws Exception {
+        updateLibertyServer(ID_MAPPER_4);
+
+        client = setupClient(BASIC_USER_3_CERT_FILE, true);
+        String response = client.access("/SimpleServlet", 200);
+        verifyProgrammaticAPIValues(BASIC_USER_3, response);
+
+        /*
+         * Check for CertificateMapper.mapCertificate() call.
+         */
+        String trace = "The custom X.509 certificate mapper returned the following mapping: " + BASIC_USER_3;
+        List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
+        assertFalse("Did not find mapping result in logs.", matching.isEmpty());
     }
 }

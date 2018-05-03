@@ -58,8 +58,10 @@ public class CustomCertificateMapperInFeatureTest {
     private final static String AUTH_TYPE_CERT = "CLIENT_CERT";
     private final static String USER1_CERT_FILE = "LDAPUser1.jks";
     private final static String USER2_CERT_FILE = "LDAPUser2.jks";
+    private final static String USER3_CERT_FILE = "LDAPUser3.jks";
     private final static String LDAP_USER_1 = "LDAPUser1";
     private final static String LDAP_USER_2 = "LDAPUser2";
+    private final static String LDAP_USER_3 = "LDAPUser3";
 
     private static ServerConfiguration originalConfiguration = null;
     private static EmbeddedApacheDS ldapServer = null;
@@ -68,12 +70,14 @@ public class CustomCertificateMapperInFeatureTest {
     private static final String LDAP_PARTITION_2_DN = "O=IBM,C=UK";
     private static final String LDAP_USER_1_DN = "CN=" + LDAP_USER_1 + "," + LDAP_PARTITION_1_DN;
     private static final String LDAP_USER_2_DN = "CN=" + LDAP_USER_2;
+    private static final String LDAP_USER_3_DN = "CN=" + LDAP_USER_3 + "," + LDAP_PARTITION_1_DN;
 
     private static final String ID_MAPPER_1 = "mapper1";
     private static final String ID_MAPPER_2 = "mapper2";
     private static final String ID_MAPPER_3 = "mapper3";
     private static final String ID_MAPPER_4 = "mapper4";
     private static final String ID_MAPPER_5 = "mapper5";
+    private static final String ID_MAPPER_6 = "mapper6";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -160,9 +164,16 @@ public class CustomCertificateMapperInFeatureTest {
          */
         entry = ldapServer.newEntry(LDAP_USER_1_DN);
         entry.add("objectclass", "inetorgperson");
-        entry.add("uid", "LDAPUser1");
-        entry.add("sn", "LDAPUser1");
-        entry.add("cn", "LDAPUser1");
+        entry.add("uid", LDAP_USER_1);
+        entry.add("sn", LDAP_USER_1);
+        entry.add("cn", LDAP_USER_1);
+        ldapServer.add(entry);
+
+        entry = ldapServer.newEntry(LDAP_USER_3_DN);
+        entry.add("objectclass", "inetorgperson");
+        entry.add("uid", LDAP_USER_3);
+        entry.add("sn", LDAP_USER_3);
+        entry.add("cn", LDAP_USER_3);
         ldapServer.add(entry);
     }
 
@@ -694,5 +705,35 @@ public class CustomCertificateMapperInFeatureTest {
         String trace = "CWIML4503E";
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find CertificateMapFailedException in logs.", matching.isEmpty());
+    }
+
+    /**
+     * Test mapping a certificate that is part of a certificate chain. The mapper checks for some properties
+     * on both the subject's certificate and the CA's certificate.
+     *
+     * @throws Exception If the test failed for an unforeseen reason.
+     */
+    @Test
+    public void map_certificate_chain() throws Exception {
+
+        updateLibertyServer(ID_MAPPER_6);
+
+        client = setupClient(USER3_CERT_FILE, true);
+        String response = client.access("/SimpleServlet", 200);
+        verifyProgrammaticAPIValues(LDAP_USER_3, response);
+
+        /*
+         * Check for CertificateMapper.mapCertificate() call.
+         */
+        String trace = "The custom X.509 certificate mapper returned the following mapping: " + LDAP_USER_3_DN;
+        List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
+        assertFalse("Did not find mapping result in logs.", matching.isEmpty());
+
+        /*
+         * Check for the CWWKS1101W error message.
+         */
+        trace = "CWWKS1101W: CLIENT-CERT Authentication did not succeed for the client certificate with dn " + LDAP_USER_3_DN + ". The dn does not map to a user in the registry.";
+        matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
+        assertTrue("Found unexpected CWWKS1101W error in logs.", matching.isEmpty());
     }
 }

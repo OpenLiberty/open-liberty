@@ -81,21 +81,21 @@ public class UserRegistryProxy implements UserRegistry {
 
     /** {@inheritDoc} */
     @Override
-    public String mapCertificate(X509Certificate cert) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
+    public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
         for (UserRegistry registry : delegates) {
             try {
-                return registry.mapCertificate(cert);
+                return registry.mapCertificate(chain);
             } catch (CertificateMapNotSupportedException cmnse) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "CertificateMapNotSupportedException caught on mapCertificate", registry, cert, cmnse);
+                    Tr.debug(tc, "CertificateMapNotSupportedException caught on mapCertificate", registry, chain, cmnse);
                 }
             } catch (CertificateMapFailedException cmfe) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "CertificateMapFailedException caught on mapCertificate", registry, cert, cmfe);
+                    Tr.debug(tc, "CertificateMapFailedException caught on mapCertificate", registry, chain, cmfe);
                 }
             }
         }
-        throw new CertificateMapFailedException("Unable to map certificate: " + cert);
+        throw new CertificateMapFailedException("Unable to map certificate: " + chain);
     }
 
     /** {@inheritDoc} */
@@ -353,7 +353,7 @@ public class UserRegistryProxy implements UserRegistry {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.security.registry.UserRegistry#getType()
      */
     @Override

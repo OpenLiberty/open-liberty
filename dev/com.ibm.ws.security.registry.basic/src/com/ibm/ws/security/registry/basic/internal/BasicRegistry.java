@@ -353,18 +353,21 @@ public class BasicRegistry implements UserRegistry {
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore({ com.ibm.websphere.security.CertificateMapNotSupportedException.class, com.ibm.websphere.security.CertificateMapFailedException.class })
-    public String mapCertificate(X509Certificate cert) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
-        if (cert == null) {
-            throw new IllegalArgumentException("cert is null");
-        }
+    public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
 
         if (BasicRegistryConfig.MAP_MODE_NOT_SUPPORTED.equalsIgnoreCase(certificateMapMode)) {
+
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Certificate authentication has been disabled for this basic registry.");
             }
             String msg = Tr.formatMessage(tc, "BASIC_REGISTRY_CERT_IGNORED");
             throw new CertificateMapNotSupportedException(msg);
+
         } else if (BasicRegistryConfig.MAP_MODE_CUSTOM.equalsIgnoreCase(certificateMapMode)) {
+
+            if (chain == null || chain.length == 0) {
+                throw new IllegalArgumentException("cert is null");
+            }
 
             /*
              * Use the custom certificate mapper.
@@ -380,7 +383,7 @@ public class BasicRegistry implements UserRegistry {
                     Tr.debug(tc, "Using custom X.509 certificate mapper: " + mapper.getClass());
                 }
 
-                String name = mapper.mapCertificate(new X509Certificate[] { cert });
+                String name = mapper.mapCertificate(chain);
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "The custom X.509 certificate mapper returned the following mapping: " + name);
                 }
@@ -401,8 +404,12 @@ public class BasicRegistry implements UserRegistry {
 
         } else {
 
+            if (chain == null || chain.length == 0 || chain[0] == null) {
+                throw new IllegalArgumentException("cert is null");
+            }
+
             // getSubjectDN is denigrated
-            String dn = cert.getSubjectX500Principal().getName();
+            String dn = chain[0].getSubjectX500Principal().getName();
             String name = LDAPUtils.getCNFromDN(dn);
             if (name == null || !isValidUser(name)) {
                 String msg = Tr.formatMessage(tc, "BASIC_REGISTRY_NAME_NOT_FOUND", dn);
