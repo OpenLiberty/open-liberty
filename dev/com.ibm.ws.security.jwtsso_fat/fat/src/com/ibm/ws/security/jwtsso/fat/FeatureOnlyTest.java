@@ -34,7 +34,6 @@ import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseHeaderExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseTitleExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
@@ -56,7 +55,6 @@ public class FeatureOnlyTest extends CommonSecurityFat {
     public static final String APP_FORMLOGIN = "formlogin";
 
     public static final String JWT_COOKIE_NAME = "jwtToken";
-    public static final String JWT_REGEX = "[a-zA-Z0-9_=-]+\\.[a-zA-Z0-9_=-]+\\.[a-zA-Z0-9_=-]+";
 
     public static final String BASIC_REALM = "BasicRealm";
     public static final String TESTUSER = "testuser";
@@ -136,17 +134,9 @@ public class FeatureOnlyTest extends CommonSecurityFat {
         expectations.addSuccessStatusCodesForActions(new String[] { testAction });
         expectations.addExpectation(new ResponseUrlExpectation(testAction, Constants.STRING_MATCHES, "^" + Pattern.quote(protectedUrl)
                                                                                                      + "$", "Did not reach the expected protected resource URL."));
-        expectations.addExpectations(getCookieHeaderExpectationsForJwtCookie(testAction));
+        // cookies are now only present in j_security_check page response,
+        //expectations.addExpectations(getCookieHeaderExpectationsForJwtCookie(testAction));
         expectations.addExpectations(getResponseTextExpectationsForJwtCookie(testAction));
-        return expectations;
-    }
-
-    Expectations getCookieHeaderExpectationsForJwtCookie(String testAction) {
-        Expectations expectations = new Expectations();
-        String jwtCookieValueRegex = "^" + JWT_COOKIE_NAME + "=" + JWT_REGEX + "; Path=/; HttpOnly$";
-        expectations.addExpectation(new ResponseHeaderExpectation(testAction, Constants.STRING_MATCHES, Constants.HEADER_SET_COOKIE, jwtCookieValueRegex, "Did not find the expected JWT cookie pattern in the response headers."));
-        expectations.addExpectation(new ResponseHeaderExpectation(testAction, Constants.STRING_DOES_NOT_CONTAIN, Constants.HEADER_SET_COOKIE, Constants.LTPA_COOKIE_NAME, "Found an LTPA string in the response headers but shouldn't have."));
-        expectations.addExpectation(new ResponseHeaderExpectation(testAction, Constants.STRING_DOES_NOT_CONTAIN, Constants.LTPA_COOKIE_NAME, "Found an LTPA string in the response headers but shouldn't have."));
         return expectations;
     }
 
