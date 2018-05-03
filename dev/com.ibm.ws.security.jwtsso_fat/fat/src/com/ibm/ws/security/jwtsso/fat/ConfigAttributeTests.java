@@ -179,18 +179,11 @@ public class ConfigAttributeTests extends CommonSecurityFat {
      * the second access will cause the token to be checked by the consumer.
      * If the jwtConsumerRef is in use as it should be, then the second access will succeed.
      *
-     * While we are it it we will change the expiration time of the builder to a non-default
-     * value and verify the expected warning message is emitted.
-     *
-     *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
     @Test
     public void test_validConsumerRef() throws Exception {
-        ArrayList<String> ignoredErrors = new ArrayList<String>();
-        ignoredErrors.add("CWWKS9128W");
-        server.addIgnoredErrors(ignoredErrors);
         reconfigServer("server_testgoodconsumer.xml");
         Expectations expectations = new Expectations();
         expectations.addExpectations(getSuccessfulLoginPageExpectations(ACTION_INVOKE_PROTECTED_RESOURCE));
