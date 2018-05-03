@@ -212,11 +212,6 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         responseStr = response.getWebResponse().getContentAsString();
         boolean check2 = responseStr.contains("SimpleServlet");
         assertTrue("Did not access protected resource with custom consumer", check2);
-
-        String errorMsg = server.waitForStringInLogUsingMark("CWWKS9128W", 100);
-        // CWWKS9128W - lpta/jwt cookie expiration mismatch
-        assertTrue("Did not find expected CWWKS9128W message in the log", errorMsg != null);
-
     }
 
     /**
