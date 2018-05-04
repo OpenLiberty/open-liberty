@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
@@ -37,8 +40,18 @@ public class ConfigSpringBootApplicationTagTests extends AbstractSpringTests {
         return AppConfigType.SPRING_BOOT_APP_TAG;
     }
 
+    @Override
+    public void modifyAppConfiguration(SpringBootApplication appConfig) {
+        appConfig.getApplicationArguments().add("--server.context-parameters.context_parameter_test_key=PASSED");
+    }
+
     @Test
     public void testSpringBootApplicationTag() throws Exception {
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
+    }
+
+    @Test
+    public void testContextParams() throws IOException {
+        HttpUtils.findStringInUrl(server, "/testContextParams", "PASSED");
     }
 }
