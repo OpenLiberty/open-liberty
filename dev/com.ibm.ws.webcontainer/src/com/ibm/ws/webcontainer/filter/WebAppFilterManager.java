@@ -1036,7 +1036,9 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         boolean checkDefaultMethodAttributeSet = false;                         
         String attributeTargetClass = null;                                             
         //PI08268
-        
+
+        boolean h2InUse = false;
+
         try {
             if (requestProcessor != null) {
 
@@ -1135,56 +1137,81 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                 boolean handled = false;
 
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### no more filters defined");
+                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "no more filters defined");
 
                 if (requestProcessor != null) {
-                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-                        logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### requestProcessor is not null");
-
                     if (!RegisterRequestInterceptor.notifyRequestInterceptors("AfterFilters", httpServletReq, httpServletRes)) {
 
                         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-                            logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### looking at WSOC upgrade handlers");
+                            logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at WSOC upgrade handlers");
 
                         WsocHandler wsocHandler = ((com.ibm.ws.webcontainer.osgi.webapp.WebApp) webApp).getWebSocketHandler();
                         if (wsocHandler != null) {
                             //Should WebSocket handle this request?
                             if (wsocHandler.isWsocRequest(request)) {
                                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-                                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### upgrade to WSOC");
+                                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "upgrade to WSOC");
                                 HttpServletRequest httpRequest = (HttpServletRequest) ServletUtil.unwrapRequest(request, HttpServletRequest.class);
                                 HttpServletResponse httpResponse = (HttpServletResponse) ServletUtil.unwrapResponse(response, HttpServletResponse.class);
                                 wsocHandler.handleRequest(httpRequest, httpResponse);
                                 handled = true;
-                            } //else {
-                              //  requestProcessor.handleRequest(request, response);
-                            //}
+                            } 
                         }
 
                         if (!handled) {
                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### looking at H2 upgrade");
+                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at H2 upgrade");
                             // Check if this is an HTTP2 upgrade request
                             if (httpInboundConnection != null && request instanceof HttpServletRequest) {
                                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-                                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### looking at H2 handler");
+                                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at H2 handler");
                                 H2Handler h2Handler = ((com.ibm.ws.webcontainer.osgi.webapp.WebApp) webApp).getH2Handler();
                                 if (h2Handler != null) {
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-                                        logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### looking at isH2Request");
+                                        logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at isH2Request");
                                     if (h2Handler.isH2Request(httpInboundConnection, request)) {
                                         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-                                            logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### upgrading to H2");
+                                            logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "upgrading to H2");
                                         HttpServletRequest httpRequest = (HttpServletRequest) ServletUtil.unwrapRequest(request, HttpServletRequest.class);                                
                                         HttpServletResponse httpResponse = (HttpServletResponse) ServletUtil.unwrapResponse(response, HttpServletResponse.class);
-                                        h2Handler.handleRequest(httpInboundConnection, httpRequest, httpResponse);
+                                        
+                                        try {
+                                            h2InUse = true;
+                                            h2Handler.handleRequest(httpInboundConnection, httpRequest, httpResponse);
+                                        } catch (Exception x) {
+                                            // need to change these to IOExceptions, since the cause could be the
+                                            // H2 code closing down the connection while it is in app code.
+                                            
+                                            if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "H2 caught exception: " + x);
+                                            
+                                            IOException ioe = new IOException("Http2 received internal exception while handling request");
+                                            throw ioe;
+                                        }
+
                                         webApp.setUpgraded();
                                     }
                                 }
                             }
                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### calling requestProcessor.handleRequest");
-                            requestProcessor.handleRequest(request, response);
+                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "in H2 processing calling requestProcessor.handleRequest");
+
+                            try {
+                                requestProcessor.handleRequest(request, response);
+                            }  catch (Exception x) {
+                                if (h2InUse) {
+                                    // need to change these to IOExceptions, since the cause could be the
+                                    // H2 code closing down the connection while it is being handled.
+
+                                    if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                                        logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "H2 caught exception:: " + x);
+
+                                    IOException ioe = new IOException("Http2 detected internal exception");
+                                    throw ioe;
+                                } else {
+                                    throw x;
+                                }
+                            }    
                         }
                     }
                 } else {
@@ -1192,25 +1219,27 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                 }
             }
         } catch (IOException ioe) {
-            if(DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR){
-                WebContainerRequestState reqState = WebContainerRequestState.getInstance(true); //PI26908
-                reqState.setAttribute("invokeFiltersException", "IOE"); //PI26908
-            }
-            if (isRethrowOriginalException(request, isInclude, isForward)) {
+            if (!h2InUse) {
+                if (DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR) {
+                    WebContainerRequestState reqState = WebContainerRequestState.getInstance(true); //PI26908
+                    reqState.setAttribute("invokeFiltersException", "IOE"); //PI26908
+                }
+                if (isRethrowOriginalException(request, isInclude, isForward)) {
+                    dispatchContext.pushException(ioe);
+                    throw ioe;
+                }
+                if ((com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= 31)
+                    && ioe.getMessage() != null
+                    && ioe.getMessage().contains("SRVE0918E")) {
+                    throw ioe;
+                }
+                // LIBERTY: TODO send error when not include or forward
+                ServletErrorReport errorReport = WebAppErrorReport.constructErrorReport(ioe, requestProcessor);
                 dispatchContext.pushException(ioe);
-                throw ioe;
-            }            
-            if((com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= 31) 
-                            && ioe.getMessage()!=null 
-                            && ioe.getMessage().contains("SRVE0918E")){
-                throw ioe;
+                //61464 don't log a FFDC for a FileNotFound IOException
+                //com.ibm.ws.ffdc.FFDCFilter.processException(ioe, "com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters", "1038");
+                throw errorReport;
             }
-            // LIBERTY: TODO send error when not include or forward
-            ServletErrorReport errorReport = WebAppErrorReport.constructErrorReport(ioe, requestProcessor);
-            dispatchContext.pushException(ioe);
-            //61464 don't log a FFDC for a FileNotFound IOException
-            //com.ibm.ws.ffdc.FFDCFilter.processException(ioe, "com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters", "1038");
-            throw errorReport;
         } catch (ServletErrorReport ser) {
             if(DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR){
                 WebContainerRequestState reqState = WebContainerRequestState.getInstance(true); //PI26908

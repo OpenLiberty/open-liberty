@@ -11,6 +11,7 @@
 package com.ibm.ws.http.channel.h2internal;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -47,8 +48,49 @@ public class H2MuxTCPReadCallback implements TCPReadCompletedCallback {
         }
 
         if (connLink != null) {
+
+            // if there was a timeout, and write activity occurred, then go back to reading if we are not closing already
+            if (exception instanceof SocketTimeoutException) {
+
+                int rTimeout = connLink.getconfiguredInactivityTimeout();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "H2MuxTCPReadCallback error: configured readTimeout: " + rTimeout);
+                }
+
+                if ((rTimeout != 0) && connLink.checkIfGoAwaySendingOrClosing() == false) {
+                    long wLastTime = connLink.getLastWriteTime();
+                    long diff = System.nanoTime() - wLastTime;
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "H2MuxTCPReadCallback error: last write time: " + wLastTime + " diff: " + diff);
+                    }
+
+                    if (diff < rTimeout) {
+                        // write occurred while the read got a timeout, so don't close the connection
+                        int nextTimeout = rTimeout - (int) diff;
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "H2MuxTCPReadCallback error: continuing reading, setting nextTimeout to: " + nextTimeout);
+                        }
+
+                        connLink.setReadLinkStatusToNotReadingAndNotify();
+                        connLink.processRead(vc, rrc, nextTimeout);
+                        return;
+                    }
+                }
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "H2MuxTCPReadCallback error: closing connection");
+            }
+
             connLink.setReadLinkStatusToNotReadingAndNotify();
-            connLink.closeConnectionLink(exception);
+
+            if (exception instanceof SocketTimeoutException) {
+                //should send goaway on timeout exception
+                connLink.closeConnectionLink(exception, true);
+            } else {
+                connLink.closeConnectionLink(exception, false);
+            }
         }
     }
 
