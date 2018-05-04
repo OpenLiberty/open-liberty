@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+
+<h:head>
+    <title>JSF 2.3 WebSocket test</title>
+    
+    <script type="text/javascript" src="websocketListeners.js"></script>   
+</h:head>
+<h:body>
+    JSF 2.3 WebSocket - Test that onopen and onclose listener can be triggered manually, that is, when connected attribute is set to false
+    <br/>
+    <h:form id="form1">
+        <h:commandButton id="openButton" value="Click here to open channel" onclick="jsf.push.open('websocketId')">
+            <f:ajax/>
+        </h:commandButton>
+        <h:commandButton id="closeButton" value="Click here to close channel" onclick="jsf.push.close('websocketId')">
+            <f:ajax/>
+        </h:commandButton>
+    </h:form>
+    
+    <f:websocket id="websocketId" channel="myChannel" onmessage="websocketMessageListener" onopen="websocketOpenListener" onclose="websocketCloseListener" connected="false"/>
+    
+    <div id="messageId"></div>
+</h:body>
+</html>
