@@ -59,7 +59,7 @@ public class DefaultCachingProviderSupport {
         registration.unregister();
     }
 
-    @Reference(service = CachingProvider.class)
+    @Reference(service = CachingProvider.class, target="(exported.from=*)")
     protected void setCachingProvider(ServiceReference<CachingProvider> ref) {
         libraryId = (String) ref.getProperty("exported.from");
     }
