@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.injection.dsdxml.web;
+package com.ibm.ws.injection.repeatable.dsdxml.web;
 
 import static org.junit.Assert.assertTrue;
 
@@ -19,14 +19,14 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
-import com.ibm.ws.injection.dsdxml.ejb.DSDStatelessBean;
+import com.ibm.ws.injection.repeatable.dsdxml.ejb.RepeatableDSDStatelessBean;
 
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/BasicDSDXMLServlet")
-public class BasicDSDXMLServlet extends FATServlet {
-    private static final String CLASSNAME = BasicDSDXMLServlet.class.getName();
+@WebServlet("/BasicRepeatableDSDXMLServlet")
+public class BasicRepeatableDSDXMLServlet extends FATServlet {
+    private static final String CLASSNAME = BasicRepeatableDSDXMLServlet.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASSNAME);
 
     /**
@@ -41,7 +41,8 @@ public class BasicDSDXMLServlet extends FATServlet {
      */
     public void getAndVerifyResult(String jndi, int expectedLTO, int expectedIso) throws Exception {
         svLogger.info("--> Looking up bean...");
-        DSDStatelessBean bean = (DSDStatelessBean) FATHelper.lookupDefaultBindingEJBJavaApp(DSDStatelessBean.class.getName(), "DSDXMLEJB", "DSDStatelessBean");
+        RepeatableDSDStatelessBean bean = (RepeatableDSDStatelessBean) FATHelper.lookupDefaultBindingEJBJavaApp(RepeatableDSDStatelessBean.class.getName(), "RepeatableDSDXMLEJB",
+                                                                                                                "RepeatableDSDStatelessBean");
         svLogger.info("--> Calling test method on the bean that defines the DS...");
         boolean result = bean.testDS(jndi, expectedLTO, expectedIso);
         svLogger.info("--> result = " + result);
@@ -57,7 +58,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      *
      */
     @Test
-    public void testDSDModLevel() throws Exception {
+    public void testRepeatableDSDModLevel() throws Exception {
         getAndVerifyResult("java:module/BasicModLevelDS", 142, 8);
     }
 
@@ -69,7 +70,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      *
      */
     @Test
-    public void testDSDAppLevel() throws Exception {
+    public void testRepeatableDSDAppLevel() throws Exception {
         getAndVerifyResult("java:app/BasicAppLevelDS", 122, 8);
     }
 
@@ -81,7 +82,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      *
      */
     @Test
-    public void testDSDGlobalLevel() throws Exception {
+    public void testRepeatableDSDGlobalLevel() throws Exception {
         getAndVerifyResult("java:global/BasicGlobalLevelDS", 132, 8);
     }
 
@@ -92,7 +93,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testDSDCompLevel() throws Exception {
+    public void testRepeatableDSDCompLevel() throws Exception {
         getAndVerifyResult("java:comp/env/BasicCompLevelDS", 113, 8);
     }
 
@@ -104,7 +105,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      *
      */
     @Test
-    public void testDSDMetaDataCompleteValid() throws Exception {
+    public void testRepeatableDSDMetaDataCompleteValid() throws Exception {
         getAndVerifyResult("java:module/MetaDataCompleteValidDS", 0, 4);
     }
 
@@ -113,9 +114,10 @@ public class BasicDSDXMLServlet extends FATServlet {
      * metadata-complete = true.
      */
     @Test
-    public void testDSDMetaDataCompleteAnnOnly() throws Exception {
+    public void testRepeatableDSDMetaDataCompleteAnnOnly() throws Exception {
         svLogger.info("--> Looking up bean...");
-        DSDStatelessBean bean = (DSDStatelessBean) FATHelper.lookupDefaultBindingEJBJavaApp(DSDStatelessBean.class.getName(), "DSDXMLEJB", "DSDStatelessBean");
+        RepeatableDSDStatelessBean bean = (RepeatableDSDStatelessBean) FATHelper.lookupDefaultBindingEJBJavaApp(RepeatableDSDStatelessBean.class.getName(), "RepeatableDSDXMLEJB",
+                                                                                                                "RepeatableDSDStatelessBean");
         assertTrue("--> Expected to receive result = true, actual value of result = " + bean.testInvalidDS(), bean.testInvalidDS());
     }
 }

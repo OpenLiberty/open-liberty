@@ -26,9 +26,16 @@ dependencies {
   ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
 }
 
-task addEJBTools(type: Copy) {
-  from configurations.ejbTools
-  into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.DSDServer/lib/global"
+task addEJBTools << {
+  copy {
+    from configurations.ejbTools
+    into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.DSDServer/lib/global"
+  }
+
+  copy {
+    from configurations.ejbTools
+    into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.injection.fat.RepeatableDSDServer/lib/global"
+  }
 }
 
 addRequiredLibraries {
