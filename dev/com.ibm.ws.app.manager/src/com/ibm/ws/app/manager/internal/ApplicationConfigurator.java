@@ -1076,7 +1076,8 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 processUpdateWithNameConflict(pid, newAppConfig, appFromPid, appFromName);
                 return;
             }
-            // the last update we received for this pid had the same name
+            // the last update we received for this pid had the same name, so proceed with updating
+
             app = appFromPid;
             app.setConfig(newAppConfig);
             if (app.getStateMachine() != null) {

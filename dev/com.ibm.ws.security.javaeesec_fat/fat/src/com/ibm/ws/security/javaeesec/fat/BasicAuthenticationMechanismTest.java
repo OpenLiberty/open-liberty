@@ -36,6 +36,7 @@ import com.ibm.ws.security.javaeesec.fat_helper.ServerHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -113,6 +114,7 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
+    @AllowedFFDC(value = { "com.ibm.ws.security.registry.RegistryException" })
     @Test
     public void testBasicAuthValidUserInRole_AllowedAccess() throws Exception {
         String response = executeGetRequestBasicAuthCreds(httpclient, urlHttp + queryString, Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd,
@@ -134,6 +136,7 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
+    @AllowedFFDC(value = { "com.ibm.ws.security.registry.RegistryException" })
     @Test
     public void testAnnotatedBasicAuthValidUserInRole_AllowedAccess() throws Exception {
         String response = executeGetRequestBasicAuthCreds(httpclient, urlHttp + "/JavaEESecAnnotatedBasicAuthServlet/JavaEESecAnnotatedBasic",

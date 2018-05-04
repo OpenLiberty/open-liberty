@@ -66,25 +66,13 @@ OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Der Aufruf der vom Benutzer bere
 OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=Das Feature erstellt Tracer-Implementierungen mit einer vom Benutzer bereitgestellten OpentracingTracerFactory. Die Methode OpentracingTracerFactory.newInstance hat eine Ausnahme zur\u00fcckgegeben.
 OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Stellen Sie fest, warum die vom Benutzer bereitgestellte Methode OpentracingTracerFactory.newInstance eine Ausnahme zur\u00fcckgegeben hat.
 
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: Es ist kein Tracer f\u00fcr die eingehende Anforderung verf\u00fcgbar. Die eingehende Anforderung wird nicht mit dem vorgelagerten Service korreliert.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=Es war keine Tracer-Implementierung verf\u00fcgbar, als eine Anforderung am Anwendungsendpunkt eingegangen ist. Diese eingehende Anforderung stellt dem Opentracing-Service keine Informationen bereit.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Untersuchen Sie anhand vorheriger Fehler, warum kein Tracer verf\u00fcgbar ist.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: Der f\u00fcr eine eingehende Anforderung erstellte Span ist f\u00fcr die Antwort auf die Anforderung nicht verf\u00fcgbar. Die eingehende Anforderung wird nicht mit dem vorgelagerten Service korreliert.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=Der beim Eingang der Anforderung erstellte Span war bei der R\u00fcckgabe der Antwort nicht verf\u00fcgbar. Es werden keine Span-Informationen f\u00fcr den Opentracing-Service bereitgestellt.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Untersuchen Sie anhand vorheriger Fehler, warum kein Span verf\u00fcgbar ist.
-
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: Es wurde kein Tracer f\u00fcr die abgehende Anforderung gefunden. Die abgehende Anforderung wird nicht mit der eingehenden Anforderung korreliert.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=Es war keine Tracer-Implementierung verf\u00fcgbar, als eine Anforderung von der Anwendung gesendet wurde. Diese abgehende Anforderung stellt dem Opentracing-Service keine Informationen bereit.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Untersuchen Sie anhand vorheriger Fehler, warum kein Tracer verf\u00fcgbar ist.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: Der f\u00fcr eine abgehende Anforderung erstellte Span ist f\u00fcr die Antwort auf die Anforderung nicht verf\u00fcgbar. Die abgehende Anforderung wird nicht mit der eingehenden Anforderung korreliert.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=Der beim Senden der Anforderung erstellte Span war bei der R\u00fcckgabe der Antwort nicht verf\u00fcgbar. Es werden keine Span-Informationen f\u00fcr den Opentracing-Service bereitgestellt.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Untersuchen Sie anhand vorheriger Fehler, warum kein Span verf\u00fcgbar ist.
-
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Der Aufruf der von der Benutzer bereitgestellten Methode OpentracingTracerFactory.newInstance(...) hat null zur\u00fcckgegeben.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Das Feature erstellt Tracer-Implementierungen mit einer vom Benutzer bereitgestellten OpentracingTracerFactory. Die Methode OpentracingTracerFactory.newInstance hat null zur\u00fcckgegeben.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Stellen Sie fest, warum die vom Benutzer bereitgestellte Methode OpentracingTracerFactory.newInstance null zur\u00fcckgegeben hat.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing kann JAX-RS-Anforderungen nicht verfolgen, weil keine OpentracingTracerFactory-Klasse angegeben wurde.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing funktioniert nicht ordnungsgem\u00e4\u00df, weil keine OpentracingTracerFactory-Klasse angegeben wurde. JAX-RS-Anforderungen werden zwar normal ausgef\u00fchrt, aber sie werden nicht verfolgt.
+OPENTRACING_NO_TRACERFACTORY.useraction=Weitere Informationen finden Sie in der Dokumentation zur Aktivierung des verteilten OpenTracing-Tracings.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

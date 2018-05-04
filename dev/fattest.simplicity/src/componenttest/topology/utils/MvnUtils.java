@@ -121,7 +121,7 @@ public class MvnUtils {
                                    "-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT,
                                    "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/tck" };
 
-        mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliEnvVars(server, jarsFromWlp));
+        mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliProperties(server, jarsFromWlp));
 
         // The cmd below is a base for running the TCK as a whole for this project.
         // It is possible to use other Testng control xml files (and even generate them
@@ -203,7 +203,7 @@ public class MvnUtils {
      * @param nonVersionedJars
      * @return an array of string that can be added to a ProcessRunner command
      */
-    private static String[] getJarCliEnvVars(LibertyServer server, List<String> nonVersionedJars) {
+    private static String[] getJarCliProperties(LibertyServer server, List<String> nonVersionedJars) {
 
         Map<String, String> actualJarFiles = resolveJarPaths(nonVersionedJars, server);
         String[] addon = new String[] {};
@@ -280,11 +280,18 @@ public class MvnUtils {
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      */
     public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName) throws Exception {
+        return runTCKMvnCmd(server, bucketName, testName, null);
+    }
+
+    /**
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     */
+    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Map<String, String> environmentVariables) throws Exception {
         if (!init) {
             init(server);
         }
         // Everything under autoFVT/results is collected from the child build machine
-        int rc = runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
+        int rc = runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput, environmentVariables);
         String failingTestsList = postProcessTestNgResults();
         // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
         // the TCK regression
@@ -342,10 +349,36 @@ public class MvnUtils {
      * @throws Exception
      */
     public static int runCmd(String[] cmd, File workingDirectory, File outputFile) throws Exception {
+        return runCmd(cmd, workingDirectory, outputFile, null);
+    }
+
+    /**
+     * Run a command using a ProcessBuilder.
+     *
+     * @param cmd
+     * @param workingDirectory
+     * @param outputFile
+     * @param environmentVariables
+     * @return The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
+     * @throws Exception
+     */
+    public static int runCmd(String[] cmd, File workingDirectory, File outputFile, Map<String, String> environmentVariables) throws Exception {
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
         pb.redirectErrorStream(true);
+
+        pb.environment().put("my_int_property", "45");
+        pb.environment().put("MY_BOOLEAN_PROPERTY", "true");
+        pb.environment().put("my_string_property", "haha");
+        pb.environment().put("MY_STRING_PROPERTY", "woohoo");
+
+        log("Environment: " + pb.environment());
+
+//        if (environmentVariables != null) {
+//            Map<String, String> env = pb.environment();
+//            env.putAll(environmentVariables);
+//        }
         log("Running command " + Arrays.asList(cmd));
         Process p = pb.start();
         int exitCode = p.waitFor();

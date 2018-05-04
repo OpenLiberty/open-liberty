@@ -50,7 +50,13 @@ publish.wlp.jar.disabled: true
     httpunit:httpunit;version=1.7, \
     com.ibm.ws.org.apache.commons.lang3.3.5;version=latest, \
     com.ibm.websphere.security;version=latest, \
-    com.ibm.ws.security.token;version=latest
+    com.ibm.ws.security.token;version=latest, \
+    org.apache.httpcomponents:httpmime;version=4.3.1, \
+    net.sourceforge.cssparser:cssparser;version=0.9.23, \
+    org.eclipse.jetty.websocket:websocket-api;version=9.4.5.v20170502, \
+    org.eclipse.jetty.websocket:websocket-client;version=9.4.5.v20170502, \
+    org.eclipse.jetty.websocket:websocket-common;version=9.4.5.v20170502, \
+    org.eclipse.jetty:jetty-util;version=9.4.7.RC0
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

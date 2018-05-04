@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
@@ -43,7 +44,7 @@ public class DefaultSources {
         sources.add(new SystemConfigSource());
         sources.add(new EnvConfigSource());
 
-        getPropertyConfigSources(classloader, sources);
+        sources.addAll(getPropertiesFileConfigSources(classloader));
 
         return sources;
     }
@@ -55,8 +56,8 @@ public class DefaultSources {
      * @param classloader
      * @param sources
      */
-    public static void getPropertyConfigSources(ClassLoader classloader, ArrayList<ConfigSource> sources) {
-
+    public static List<ConfigSource> getPropertiesFileConfigSources(ClassLoader classloader) {
+        ArrayList<ConfigSource> sources = new ArrayList<>();
         try {
             Enumeration<URL> propsResources = classloader.getResources(ConfigConstants.CONFIG_PROPERTIES);
             if (propsResources != null) {
@@ -68,8 +69,10 @@ public class DefaultSources {
             }
         } catch (IOException e) {
             //TODO maybe we should just output a warning and continue??
+            //TODO NLS
             throw new ConfigException("Could not load " + ConfigConstants.CONFIG_PROPERTIES, e);
         }
+        return sources;
     }
 
     /**

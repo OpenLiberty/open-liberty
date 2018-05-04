@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/DSDAnnEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/DSDAnnWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/DSDMixEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/DSDMixWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/DSDXMLEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/DSDXMLWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/EnvEntryAnnWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/EnvEntryMixWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/EnvEntryXMLWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/JPAInjectionWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/RepeatableDSDAnnEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/RepeatableDSDAnnWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/RepeatableDSDMixEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/RepeatableDSDMixWeb.war/src"/>
+	<classpathentry kind="src" path="test-applications/RepeatableDSDXMLEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/RepeatableDSDXMLWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/RepeatableEnvEntryMixWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/RepeatableTransactionWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/ResourceRefWeb.war/src"/>

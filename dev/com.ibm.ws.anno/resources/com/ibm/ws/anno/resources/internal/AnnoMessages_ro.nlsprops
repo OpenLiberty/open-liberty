@@ -553,3 +553,14 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Vede\u0163i excep\u0163ia
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Eroare intern\u0103 de scanare clas\u0103: procesarea duplicatelor de procesare Jandex a clasei [ {0} ].
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} A number
+# # {3} A number
+# # {4} The name of a file or the name of a directory
+# # Read - Past tense. 
+ANNO_JANDEX_USAGE=CWWKC0092I: Citi\u0163i indexurile Jandex pentru {0} din {1} arhive ({2} din {3} clase) \u00een {4}. 
+ANNO_JANDEX_USAGE.explanation=Acesta afi\u015feaz\u0103 num\u0103rul de arhive \u00een modulul \u00een care au fost procesate prin citirea indexurilor Jandex, mai degrab\u0103 dec\u00e2t prin scanarea fi\u015fierelor reale de clas\u0103.  Afi\u015feaz\u0103, de asemenea, num\u0103rul total de clase din aplica\u0163ia care a fost procesat\u0103 prin citirea indexurilor Jandex.
+ANNO_JANDEX_USAGE.useraction=Dac\u0103 indexurile Jandex sunt destinate s\u0103 fie citite pentru aplica\u0163ie, atunci nu exist\u0103 nicio ac\u0163iune.  Dac\u0103 indexurile Jandex nu sunt destinate s\u0103 fie citite pentru aplica\u0163ie, atunci seta\u0163i atributul useJandex="false" \u00een elementul de aplica\u0163ie \u00een server.xml. Sau, seta\u0163i useJandex="false" \u00een elementul applicationManger \u00een server.xml pentru a ignora indexurile \u00een toate aplica\u0163iile.
+

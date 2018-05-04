@@ -1,0 +1,48 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKC0251 to CWWKC0300
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.thin.application=CWWKC0251W: Nu s-a putut converti aplica\u0163ia {0} la o aplica\u0163ie sub\u0163ire din cauza excep\u0163iei {1}.
+warning.could.not.thin.application.explanation=Aplica\u0163ia nu a putut fi convertit\u0103 la o aplica\u0163ie sub\u0163ire. Aplica\u0163ia va continua s\u0103 ruleze din JAR-ul original. 
+warning.could.not.thin.application.useraction=\u00cencerca\u0163i s\u0103 rezolva\u0163i problema din mesajul excep\u0163iei \u015fi fie reporni\u0163i serverul, fie actualiza\u0163i aplica\u0163ia. 
+
+error.need.springboot.version.15=CWWKC0252E: Nu s-a putut rula aplica\u0163ia deoarece este configurat\u0103 versiunea gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml. Aplica\u0163ia cere s\u0103 fie configurat\u0103 caracteristica springBoot-1.5.
+error.need.springboot.version.15.explanation= Aplica\u0163ia necesit\u0103 Spring Boot versiunea 1.5 dar este configurat\u0103 o versiune gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml.  
+error.need.springboot.version.15.useraction= Caracteristica springBoot-1.5 trebuie s\u0103 fie configurat\u0103 \u00een server.xml.
+
+error.need.springboot.version.20=CWWKC0253E: Nu s-a putut rula aplica\u0163ia deoarece este configurat\u0103 versiunea gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml. Aplica\u0163ia cere s\u0103 fie configurat\u0103 caracteristica springBoot-2.0.
+error.need.springboot.version.20.explanation= Aplica\u0163ia necesit\u0103 Spring Boot versiunea 2.0 dar este configurat\u0103 o versiune gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml.  
+error.need.springboot.version.20.useraction= Caracteristica springBoot-2.0 trebuie s\u0103 fie configurat\u0103 \u00een server.xml.
+
+error.missing.servlet=CWWKC0254E: Nu s-a putut rula aplica\u0163ia deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml. Trebuie s\u0103 fie configurat fie servlet-3.1 fie servlet-4.0.
+error.missing.servlet.explanation= Aplica\u0163ia este o aplica\u0163ie web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml.
+error.missing.servlet.useraction= Trebuie s\u0103 fie configurat fie servlet-3.1 fie servlet-4.0 \u00een server.xml.

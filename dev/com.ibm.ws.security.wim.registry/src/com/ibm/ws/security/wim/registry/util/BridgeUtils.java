@@ -161,17 +161,21 @@ public class BridgeUtils implements WIMUserRegistryDefines {
     /**
      * Validate an X509 certificate array.
      *
-     * @param inputCertificates Certificate array to validate.
+     * @param chain Certificate chain to validate.
      *
-     * @throws com.ibm.wsspi.security.wim.exception.CertificateMapFailedException The certificate array is invalid because it is null.
-     *
-     * @pre inputCertificates != null
-     * @pre inputCertificates[0] != null
+     * @throws com.ibm.wsspi.security.wim.exception.CertificateMapFailedException The certificate array is invalid because it is null,
+     *             empty or contains an null certificate.
      */
-    protected void validateCertificate(X509Certificate inputCertificate) throws com.ibm.wsspi.security.wim.exception.CertificateMapFailedException {
+    protected void validateCertificate(X509Certificate[] chain) throws com.ibm.wsspi.security.wim.exception.CertificateMapFailedException {
         // validate the certificate array
-        if ((inputCertificate == null)) {
+        if (chain == null || chain.length == 0) {
             throw new com.ibm.wsspi.security.wim.exception.CertificateMapFailedException();
+        }
+
+        for (X509Certificate cert : chain) {
+            if (cert == null) {
+                throw new com.ibm.wsspi.security.wim.exception.CertificateMapFailedException();
+            }
         }
     }
 

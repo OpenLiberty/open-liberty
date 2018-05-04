@@ -13,22 +13,15 @@ package test.cert.mappers;
 
 import java.security.cert.X509Certificate;
 
-import com.ibm.websphere.security.CertificateMapFailedException;
-import com.ibm.websphere.security.CertificateMapNotSupportedException;
-import com.ibm.websphere.security.CertificateMapper;
+import com.ibm.websphere.security.X509CertificateMapper;
 
 /**
- * LDAP CertificateMapper that returns a null ID.
+ * CertificateMapper that returns a null result.
  */
-public class CertificateMapper5 implements CertificateMapper {
+public class CertificateMapper5 implements X509CertificateMapper {
 
     @Override
-    public String getId() {
+    public String mapCertificate(X509Certificate[] certificates) {
         return null;
-    }
-
-    @Override
-    public String mapCertificate(X509Certificate certificate) throws CertificateMapNotSupportedException, CertificateMapFailedException {
-        throw new CertificateMapFailedException("The mapCertificate() method should not be called because getId() returns null.");
     }
 }

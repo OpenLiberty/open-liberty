@@ -26,7 +26,6 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.security.wim.adapter.file.FileAdapter;
@@ -45,6 +44,7 @@ import test.common.SharedOutputManager;
  * TODO:: Certificate Login related test cases
  * TODO:: Multiple Principal Found related test cases
  */
+@SuppressWarnings("restriction")
 public class ProfileManagerLoginTest {
     private static final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
@@ -52,12 +52,7 @@ public class ProfileManagerLoginTest {
     private final ConfigManager configManager = new ConfigManager();
 
     private final Mockery mock = new JUnit4Mockery();
-    private final ConfiguredRepository repository = mock.mock(ConfiguredRepository.class);
     private final ComponentContext cc = mock.mock(ComponentContext.class);
-
-    private final Configuration defaultRealmConfig = mock.mock(Configuration.class, "defaultRealmConfig");
-
-    private final Configuration baseEntryConfig = mock.mock(Configuration.class, "baseEntryConfig");
 
     private static class FA extends FileAdapter {
 
@@ -116,7 +111,7 @@ public class ProfileManagerLoginTest {
             vmmService.login(root);
             assertEquals("Call completed successfully", false, true);
         } catch (WIMException e) {
-            String errorMessage = e.getMessage();
+//            String errorMessage = e.getMessage();
             assertEquals("Incorrect exception thrown", EntityNotFoundException.class, e.getClass());
             // assertEquals("The error code for EntityNotFoundException", "CWIML1030E", errorMessage.substring(0, 10));
         }
@@ -140,7 +135,7 @@ public class ProfileManagerLoginTest {
             vmmService.login(root);
             assertEquals("Call completed successfully", false, true);
         } catch (WIMException e) {
-            String errorMessage = e.getMessage();
+//            String errorMessage = e.getMessage();
             assertEquals("Incorrect exception thrown", OperationNotSupportedException.class, e.getClass());
             // assertEquals("The error code for OperationNotSupportedException", "CWIML1016E", errorMessage.substring(0, 10));
         }
@@ -158,7 +153,7 @@ public class ProfileManagerLoginTest {
             vmmService.login(root);
             assertEquals("Call completed successfully", false, true);
         } catch (WIMException e) {
-            String errorMessage = e.getMessage();
+//            String errorMessage = e.getMessage();
             assertEquals("Incorrect exception thrown", PasswordCheckFailedException.class, e.getClass());
             // assertEquals("The error code for PasswordCheckFailedException", "CWIML4536E", errorMessage.substring(0, 10));
         }
@@ -197,7 +192,7 @@ public class ProfileManagerLoginTest {
             vmmService.login(root);
             assertEquals("Call completed successfully", false, true);
         } catch (WIMException e) {
-            String errorMessage = e.getMessage();
+//            String errorMessage = e.getMessage();
             assertEquals("Incorrect exception thrown", PasswordCheckFailedException.class, e.getClass());
             // assertEquals("The error code for PasswordCheckFailedException", "CWIML4536E", errorMessage.substring(0, 10));
         }
@@ -216,7 +211,7 @@ public class ProfileManagerLoginTest {
             vmmService.login(root);
             assertEquals("Call completed successfully", false, true);
         } catch (WIMException e) {
-            String errorMessage = e.getMessage();
+//            String errorMessage = e.getMessage();
             assertEquals("Incorrect exception thrown", PasswordCheckFailedException.class, e.getClass());
             // assertEquals("The error code for PasswordCheckFailedException", "CWIML4537E", errorMessage.substring(0, 10));
         }

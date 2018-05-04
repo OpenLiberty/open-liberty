@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jcache.fat;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -43,9 +42,7 @@ public class JCacheTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "jcache.web");
 
-        String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
-        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
-                                           "-Dhazelcast.config=" + configLocation));
+        server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         server.startServer();
     }

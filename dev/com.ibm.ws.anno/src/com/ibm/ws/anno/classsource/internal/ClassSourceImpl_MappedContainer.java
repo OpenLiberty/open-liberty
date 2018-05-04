@@ -290,6 +290,12 @@ public class ClassSourceImpl_MappedContainer
                     // version in the first class source.
 
                     String nextClassName = getClassNameFromResourceName(nextPrefix);
+                    if ( !isValidPackageName(nextClassName) ) {
+                        Tr.debug(tc, MessageFormat.format("[ {0} ] Invalid class name [ {1} ]", 
+                                                          new Object[] { getHashText(), nextClassName }));
+                        continue;
+                    }
+                    
                     String i_nextClassName = internClassName(nextClassName);
 
                     boolean didAdd = i_maybeAdd(i_nextClassName, i_seedClassNames);

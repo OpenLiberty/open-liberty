@@ -274,12 +274,12 @@ JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Nu se poate extrage o cheie de semn\u0
 JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=Depozitul de \u00eencrederi specificat de configura\u0163ia de consumator JWT nu con\u0163ine niciun certificat de semnatar. Este necesar un certificat de semnatar pentru a valida jetonul JWT.
 JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Verifica\u0163i c\u0103 depozitul de \u00eencrederi utilizat de configura\u0163ia de consumator JWT con\u0163ine cel pu\u0163in un certificat de semnatar. Depozitul de \u00eencrederi poate fi configurat utiliz\u00e2nd atributul 'trustStoreRef' \u00een configura\u0163ia de consumator JWT sau ca parte a configura\u0163iei generale SSL a serverului.
 
-# Do not translate "JWT", "trustedAlias"
+# Do not translate "JWT", "trustedAlias", "keyName"
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
-JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Nu se poate extrage o cheie de semn\u0103tur\u0103 din depozitul de \u00eencrederi. Atributul 'trustedAlias' nu a fost specificat \u00een configura\u0163ia de consumator JWT \u015fi exist\u0103 multiple certificate de semnatar \u00een depozitul de \u00eencrederi.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=Au fost g\u0103site mai multe certificate de semnatar \u00een depozitul de \u00eencrederi configurat. C\u00e2nd exist\u0103 multiple certificate de semnatar \u00een depozitul de \u00eencrederi, atributul 'trustedAlias' trebuie s\u0103 fie specificat \u00een configura\u0163ia de consumator JWT pentru a stabili ce certificate s\u0103 se utilizeze.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Specifica\u0163i atributul 'trustedAlias' al configura\u0163iei de consumator JWT cu aliasul certificatului de semnatar corespunz\u0103tor.
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Nu se poate determina ce certificat de semnatar din depozitul de \u00eencrederi s\u0103 utiliza\u0163i. Ad\u0103uga\u0163i atributul 'trustedAlias' la configura\u0163ia de consumator JWT sau atributul 'keyName' la configura\u0163ia MP-JWT.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Au fost g\u0103site mai multe certificate de semnatar \u00een depozitul de \u00eencrederi configurat. C\u00e2nd exist\u0103 mai multe certificate \u00een depozitul de \u00eencrederi, trebuie s\u0103 fie specificat atributul 'trustedAlias' \u00een configura\u0163ia de consumator JWT sau trebuie s\u0103 fie specificat atributul 'keyName' \u00een configura\u0163ia MP-JWT pentru a stabili ce certificat se utilizeaz\u0103.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Specifica\u0163i certificatul de utilizat \u00een depozitul de \u00eencrederi prin ad\u0103ugarea aliasului certificatului de semnatar corespunz\u0103tor, fie la atributul configura\u0163iei de consumator 'trustedAlias' JWT, fie la atributul de configura\u0163ie 'keyName' MP-JWT.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: API-ul filtrului de cereri de client nu propag\u0103 Jetonul web JSON (JWT).

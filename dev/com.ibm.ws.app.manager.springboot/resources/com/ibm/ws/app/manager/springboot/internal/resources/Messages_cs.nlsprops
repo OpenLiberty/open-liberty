@@ -1,0 +1,48 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKC0251 to CWWKC0300
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.thin.application=CWWKC0251W: Aplikaci {0} nelze p\u0159ev\u00e9st na tenkou aplikaci, proto\u017ee do\u0161lo k v\u00fdjimce {1}.
+warning.could.not.thin.application.explanation=Aplikaci se nepoda\u0159ilo p\u0159ev\u00e9st na tenkou aplikaci. Aplikace bude pokra\u010dovat v b\u011bhu z p\u016fvodn\u00edho souboru JAR. 
+warning.could.not.thin.application.useraction=Pokuste se vy\u0159e\u0161it probl\u00e9m popsan\u00fd v zpr\u00e1v\u011b v\u00fdjimky a restartujte server nebo aktualizujte aplikaci. 
+
+error.need.springboot.version.15=CWWKC0252E: Aplikaci se nepoda\u0159ilo spustit, proto\u017ee v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-1.5.
+error.need.springboot.version.15.explanation= Aplikace vy\u017eaduje verzi Spring Boot 1.5, ale v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. 
+error.need.springboot.version.15.useraction= V souboru server.xml mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-1.5.
+
+error.need.springboot.version.20=CWWKC0253E: Aplikaci se nepoda\u0159ilo spustit, proto\u017ee v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-2.0.
+error.need.springboot.version.20.explanation= Aplikace vy\u017eaduje verzi Spring Boot 2.0, ale v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. 
+error.need.springboot.version.20.useraction= V souboru server.xml mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-2.0.
+
+error.missing.servlet=CWWKC0254E: Nelze spustit aplikaci, proto\u017ee vy\u017eaduje funkci servletu, kter\u00fd m\u00e1 b\u00fdt nakonfigurov\u00e1n v souboru server.xml. Je zapot\u0159eb\u00ed nakonfigurovat bu\u010f servlet-3.1, nebo servlet-4.0.
+error.missing.servlet.explanation= Aplikace je webov\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce servletu v souboru server.xml.
+error.missing.servlet.useraction= Je zapot\u0159eb\u00ed nakonfigurovat bu\u010f servlet-3.1, nebo servlet-4.0 v souboru server.xml.

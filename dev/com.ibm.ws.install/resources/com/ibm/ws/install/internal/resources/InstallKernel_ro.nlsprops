@@ -130,7 +130,8 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Programul de instalare nu a
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul con\u0163ine caracteristica \u015fi re\u00eencerca\u0163i opera\u0163ia.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Nu se poate localiza executabilul {0} dup\u0103 verificarea urm\u0103toarelor loca\u0163ii: {1}
-ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Programul de instalare nu a localizat fi\u015fierul executabil." sau "Programul de instalare nu poate localiza fi\u015fierul executabil.
+
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Programul de instalare nu a putut localiza fi\u015fierul executabil.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul executabil exist\u0103 \u00eentr-una dintre loca\u0163iile specificate.
 
 ERROR_EXECUTING_COMMAND=CWWKF1229E: A existat o eroare la executarea comenzii: {0}  Comanda a fost returnat\u0103 cu codul de ie\u015fire {1} \u015fi mesajul de eroare: {2}
@@ -254,7 +255,7 @@ ERROR_ASSET_MISSING_DEPENDENT.explanation=Asetul nu poate fi desc\u0103rcat sau 
 ERROR_ASSET_MISSING_DEPENDENT.useraction=Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Alternativ, desc\u0103rca\u0163i wlp-featureRepo-<version>.zip de pe site-ul web IBM Fix Central \u015fi configura\u0163i folderul extras ca magazie bazat\u0103 pe director. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103. Pentru informa\u0163ii suplimentare despre instalarea aseturilor, consulta\u0163i documenta\u0163ia installUtility \u00een IBM Knowledge Center. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Nu se pot ob\u0163ine urm\u0103toarele aseturi: {0}. Asigura\u0163i-v\u0103 c\u0103 aseturile specificate sunt valide. Pentru a g\u0103si ID-urile aseturilor aplicabile, rula\u0163i comanda installUtility find.
-ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Programul de instalare nu poate extrage aseturile specificate din magazii.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Programul de instalare nu a putut extrage aseturile specificate din magazii.
 ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt valide aseturile specificate, c\u0103 sunt furnizate un ID valid de utilizator \u015fi o parol\u0103 \u015fi c\u0103 magaziile sunt accesibile.
 
 ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: Asetul {0} nu este aplicabil instal\u0103rii produsului {1}.  {2}

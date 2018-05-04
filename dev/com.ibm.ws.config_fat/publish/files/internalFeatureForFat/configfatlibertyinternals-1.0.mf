@@ -7,6 +7,7 @@ IBM-API-Package: org.osgi.service.cm; type="internal",
  org.osgi.framework; type="internal",
  org.osgi.util.tracker; type="internal",
  com.ibm.websphere.config; type="internal",
+ com.ibm.ws.config.variables; type="internal",
  com.ibm.wsspi.kernel.service.utils; type="internal",
  com.ibm.wsspi.kernel.service.location; type="internal"
 IBM-Feature-Version: 2

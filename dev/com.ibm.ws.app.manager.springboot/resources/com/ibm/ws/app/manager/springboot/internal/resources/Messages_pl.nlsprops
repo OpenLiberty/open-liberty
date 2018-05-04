@@ -1,0 +1,48 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKC0251 to CWWKC0300
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.thin.application=CWWKC0251W: Nie mo\u017cna przekszta\u0142ci\u0107 aplikacji {0} w aplikacj\u0119 uproszczon\u0105 z powodu nast\u0119puj\u0105cego wyj\u0105tku: {1}.
+warning.could.not.thin.application.explanation=Nie mo\u017cna przekszta\u0142ci\u0107 aplikacji w aplikacj\u0119 uproszczon\u0105. Aplikacja b\u0119dzie kontynuowa\u0107 dzia\u0142anie z oryginalnego pliku JAR. 
+warning.could.not.thin.application.useraction=Spr\u00f3buj rozwi\u0105za\u0107 problem zg\u0142oszony w komunikacie o wyj\u0105tku i zrestartuj serwer lub zaktualizuj aplikacj\u0119. 
+
+error.need.springboot.version.15=CWWKC0252E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. Aplikacja wymaga skonfigurowania sk\u0142adnika springBoot-1.5.
+error.need.springboot.version.15.explanation= Aplikacja wymaga sk\u0142adnika Spring Boot 1.5, ale w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. 
+error.need.springboot.version.15.useraction= W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik springBoot-1.5.
+
+error.need.springboot.version.20=CWWKC0253E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. Aplikacja wymaga skonfigurowania sk\u0142adnika springBoot-2.0.
+error.need.springboot.version.20.explanation= Aplikacja wymaga sk\u0142adnika Spring Boot 2.0, ale w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. 
+error.need.springboot.version.20.useraction= W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik springBoot-2.0.
+
+error.missing.servlet=CWWKC0254E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c wymaga ona skonfigurowania sk\u0142adnika Servlet w pliku server.xml. Konieczne jest skonfigurowanie sk\u0142adnika servlet-3.1 lub servlet-4.0.
+error.missing.servlet.explanation= Aplikacja jest aplikacj\u0105 WWW i wymaga skonfigurowania sk\u0142adnika Servlet w pliku server.xml.
+error.missing.servlet.useraction= W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik servlet-3.1 lub servlet-4.0.

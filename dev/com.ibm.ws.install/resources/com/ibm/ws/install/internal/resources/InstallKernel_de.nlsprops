@@ -130,6 +130,7 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Das Installationsprogramm k
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Stellen Sie sicher, dass das Verzeichnis das Feature enth\u00e4lt, und wiederholen Sie dann die Operation.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Die ausf\u00fchrbare Datei {0} wurde nicht an den folgenden Positionen gefunden: {1}
+
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Das Installationsprogramm hat die ausf\u00fchrbare Datei nicht gefunden.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Stellen Sie sicher, dass die ausf\u00fchrbare Datei an einer der angegebenen Positionen vorhanden ist.
 
@@ -254,7 +255,7 @@ ERROR_ASSET_MISSING_DEPENDENT.explanation=Das Asset kann nicht heruntergeladen b
 ERROR_ASSET_MISSING_DEPENDENT.useraction=Konfigurieren Sie installUtility so, dass eine Verbindung zu IBM WebSphere Liberty Repository hergestellt wird, um das Asset herunterzuladen bzw. zu installieren. Alternativ k\u00f6nnen Sie die Datei wlp-featureRepo-<Version>.zip von der IBM Fix Central-Website herunterladen und den entpackten Ordner als verzeichnisbasiertes Repository konfigurieren. Wenn Sie keinen Internetzugang haben, bitten Sie Ihren Administrator, das fehlende Asset und alle Abh\u00e4ngigkeiten herunterzuladen und diese einem konfigurierten Repository hinzuzuf\u00fcgen. Weitere Informationen zum Installieren von Assets finden Sie in der Dokumentation zu installUtility im IBM Knowledge Center. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
 
 ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Die folgenden Assets k\u00f6nnen nicht abgerufen werden: {0}. Stellen Sie sicher, dass die angegebenen Assets g\u00fcltig sind. F\u00fchren Sie den installUtility-Befehl find aus, um die IDs der g\u00fcltigen Assets zu ermitteln.
-ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Das Installationsprogramm kann die angegebenen Assets nicht aus den Repositorys abrufen.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Das Installationsprogramm konnte die angegebenen Assets nicht aus den Repositorys abrufen.
 ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Stellen Sie sicher, dass die angegebenen Assets g\u00fcltig sind, dass eine g\u00fcltige Benutzer-ID und ein g\u00fcltiges Kennwort angegeben wurden und dass die Repositorys zug\u00e4nglich sind.
 
 ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: Das Asset {0} ist f\u00fcr die Produktinstallation {1} nicht zutreffend. {2}

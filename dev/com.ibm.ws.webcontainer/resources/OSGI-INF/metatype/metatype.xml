@@ -297,6 +297,12 @@
             description="%useSemiColonAsDelimiterInURI.desc" 
             required="false" type="Boolean" default="false" />  
             
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="servletDestroyWaitTime"
+            name="%servletDestroyWaitTime.name" 
+            description="%servletDestroyWaitTime.desc" 
+            required="false" type="Integer" default="60" />
+            
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
             ibm:type="pid" ibm:reference="com.ibm.wsspi.webcontainer.extension.ExtensionFactory" default="*" ibm:final="true"/> 

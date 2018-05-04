@@ -22,6 +22,15 @@ import static com.ibm.ws.security.wim.adapter.ldap.LdapConstants.LDAP_ATTR_USER_
 import static com.ibm.ws.security.wim.adapter.ldap.LdapConstants.LDAP_ATTR_USER_PASSWORD;
 import static com.ibm.ws.security.wim.adapter.ldap.LdapConstants.LDAP_DIRECT_GROUP_MEMBERSHIP;
 import static com.ibm.ws.security.wim.adapter.ldap.LdapConstants.LDAP_DN;
+import static com.ibm.wsspi.security.wim.SchemaConstants.DATA_TYPE_BASE_64_BINARY;
+import static com.ibm.wsspi.security.wim.SchemaConstants.DATA_TYPE_BOOLEAN;
+import static com.ibm.wsspi.security.wim.SchemaConstants.DATA_TYPE_DATE;
+import static com.ibm.wsspi.security.wim.SchemaConstants.DATA_TYPE_DATE_TIME;
+import static com.ibm.wsspi.security.wim.SchemaConstants.DATA_TYPE_IDENTIFIER_TYPE;
+import static com.ibm.wsspi.security.wim.SchemaConstants.DATA_TYPE_INT;
+import static com.ibm.wsspi.security.wim.SchemaConstants.DATA_TYPE_LANG_TYPE;
+import static com.ibm.wsspi.security.wim.SchemaConstants.DATA_TYPE_LONG;
+import static com.ibm.wsspi.security.wim.SchemaConstants.DATA_TYPE_STRING;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.naming.InvalidNameException;
 import javax.naming.NameAlreadyBoundException;
@@ -71,12 +81,11 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.websphere.security.CertificateMapper;
+import com.ibm.websphere.security.X509CertificateMapper;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.websphere.security.wim.ConfigConstants;
@@ -153,7 +162,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     private final static TraceComponent tc = Tr.register(LdapAdapter.class);
 
     /**
-     * The ID for the Ldap Repository.
+     * The ID for the LDAP Repository.
      */
     private String reposId = null;
 
@@ -183,24 +192,6 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      */
     private LdapConfigManager iLdapConfigMgr = null;
 
-    private static final Object DATA_TYPE_STRING = "String";
-
-    private static final Object DATA_TYPE_DATE_TIME = "DateTime";
-
-    private static final Object DATA_TYPE_DATE_OBJECT = "Date";
-
-    private static final Object DATA_TYPE_INT = "Int";
-
-    private static final Object DATA_TYPE_IDENTIFIER_TYPE = "IdentifierType";
-
-    private static final Object DATA_TYPE_BASE_64_BINARY = "Base64Binary";
-
-    private static final Object DATA_TYPE_LANG_TYPE = "LangType";
-
-    private static final Object DATA_TYPE_BOOLEAN = "Boolean";
-
-    private static final Object DATA_TYPE_LONG = "Long";
-
     /**
      * Change Handler
      */
@@ -212,9 +203,9 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     private boolean isActiveDirectory = false;
 
     /**
-     * Map of IDs to registered {@link CertificateMapper} services.
+     * The {@link X509CertificateMapper} reference.
      */
-    private final Map<String, CertificateMapper> iCertificateMappers = new HashMap<String, CertificateMapper>();
+    private final AtomicReference<X509CertificateMapper> iCertificateMapperRef = new AtomicReference<X509CertificateMapper>();
 
     @Activate
     protected void activated(Map<String, Object> properties, ComponentContext cc) throws WIMException {
@@ -517,32 +508,25 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                     bais.close();
                 }
             } catch (IOException e) {
-                throw new CertificateMapFailedException(WIMMessageKey.CERTIFICATE_MAP_FAILED, Tr.formatMessage(
-                                                                                                               tc,
-                                                                                                               WIMMessageKey.CERTIFICATE_MAP_FAILED,
-                                                                                                               null));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.CERTIFICATE_MAP_FAILED, (Object) null);
+                throw new CertificateMapFailedException(WIMMessageKey.CERTIFICATE_MAP_FAILED, msg);
             } catch (CertificateException e) {
-                throw new CertificateMapFailedException(WIMMessageKey.CERTIFICATE_MAP_FAILED, Tr.formatMessage(
-                                                                                                               tc,
-                                                                                                               WIMMessageKey.CERTIFICATE_MAP_FAILED,
-                                                                                                               null));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.CERTIFICATE_MAP_FAILED, (Object) null);
+                throw new CertificateMapFailedException(WIMMessageKey.CERTIFICATE_MAP_FAILED, msg);
             }
             srchCtrl = getLdapSearchControl(loginCtrl, false, false);
             acctEntry = mapCertificate(certs, srchCtrl);
             if (acctEntry == null)
                 return outRoot;
         } else {
-            if (principalName == null || principalName.trim().length() == 0) {
-                throw new PasswordCheckFailedException(WIMMessageKey.MISSING_OR_EMPTY_PRINCIPAL_NAME, Tr.formatMessage(
-                                                                                                                       tc,
-                                                                                                                       WIMMessageKey.MISSING_OR_EMPTY_PRINCIPAL_NAME,
-                                                                                                                       null));
+            if (principalName == null || principalName.trim().isEmpty()) {
+                String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_OR_EMPTY_PRINCIPAL_NAME, (Object) null);
+                throw new PasswordCheckFailedException(WIMMessageKey.MISSING_OR_EMPTY_PRINCIPAL_NAME, msg);
             }
-            if (pwd == null || pwd.length == 0)
-                throw new PasswordCheckFailedException(WIMMessageKey.MISSING_OR_EMPTY_PASSWORD, Tr.formatMessage(
-                                                                                                                 tc,
-                                                                                                                 WIMMessageKey.MISSING_OR_EMPTY_PASSWORD,
-                                                                                                                 null));
+            if (pwd == null || pwd.length == 0) {
+                String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_OR_EMPTY_PASSWORD, (Object) null);
+                throw new PasswordCheckFailedException(WIMMessageKey.MISSING_OR_EMPTY_PASSWORD, msg);
+            }
 
             String quote = "'";
             if (principalName.indexOf("'") != -1) {
@@ -1288,7 +1272,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             return getString(octet, ldapValue);
         } else if (DATA_TYPE_DATE_TIME.equals(dataType)) {
             return getDateString(ldapValue);
-        } else if (DATA_TYPE_DATE_OBJECT.equals(dataType)) {
+        } else if (DATA_TYPE_DATE.equals(dataType)) {
             return getDateObject(ldapValue);
         } else if (DATA_TYPE_INT.equals(dataType)) {
             return Integer.parseInt(ldapValue.toString());
@@ -1612,18 +1596,18 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 if (!LdapHelper.isUnderBases(dn, bases)) {
                     continue;
                 }
-                List grpTypes = iLdapConfigMgr.getGroupTypes();
-                Set entityType = new HashSet(groupTypes);
+                List<String> grpTypes = iLdapConfigMgr.getGroupTypes();
+                Set<String> entityType = new HashSet<String>(groupTypes);
                 String entityTypeFilter = iLdapConfigMgr.getEntityTypesFilter(entityType);
                 LdapEntry grpEntry = null;
-                Set grpEntries = null;
+                Set<LdapEntry> grpEntries = null;
                 try {
                     grpEntries = iLdapConn.searchEntities(dn, entityTypeFilter, null, SearchControls.OBJECT_SCOPE, grpTypes,
                                                           supportedProps, true, false);
                     if (grpEntries != null) {
-                        Iterator itr = grpEntries.iterator();
+                        Iterator<LdapEntry> itr = grpEntries.iterator();
                         while (itr.hasNext())
-                            grpEntry = (LdapEntry) itr.next();
+                            grpEntry = itr.next();
                     }
                     //grpEntry = iLdapConn.getEntityByIdentifier(dn, null, null, groupTypes, supportedProps, nested, false);
                 } catch (EntityNotFoundException e) {
@@ -1719,17 +1703,17 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                                     continue;
                                 }
                                 LdapEntry grpEntry = null;
-                                Set grpEntries = null;
-                                List grpTypes = iLdapConfigMgr.getGroupTypes();
-                                Set entityType = new HashSet(groupTypes);
+                                Set<LdapEntry> grpEntries = null;
+                                List<String> grpTypes = iLdapConfigMgr.getGroupTypes();
+                                Set<String> entityType = new HashSet<String>(groupTypes);
                                 String entityTypeFilter = iLdapConfigMgr.getEntityTypesFilter(entityType);
                                 try {
                                     grpEntries = iLdapConn.searchEntities(grpDn, entityTypeFilter, null, SearchControls.OBJECT_SCOPE, grpTypes,
                                                                           supportedProps, true, false);
                                     if (grpEntries != null) {
-                                        Iterator itr = grpEntries.iterator();
+                                        Iterator<LdapEntry> itr = grpEntries.iterator();
                                         while (itr.hasNext())
-                                            grpEntry = (LdapEntry) itr.next();
+                                            grpEntry = itr.next();
                                     }
                                     //grpEntry = iLdapConn.getEntityByIdentifier(grpDn, null, null, groupTypes, supportedProps,nested, false);
                                 } catch (EntityNotFoundException e) {
@@ -2200,10 +2184,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 mbrTypesWithGroup.add(SchemaConstants.DO_GROUP);
         }
         String entityTypeFilter = null;
-        HashSet entityType = null;
+        HashSet<String> entityType = null;
 
         if (mbrTypes != null) {
-            entityType = new HashSet(mbrTypesWithGroup);
+            entityType = new HashSet<String>(mbrTypesWithGroup);
             entityTypeFilter = iLdapConfigMgr.getEntityTypesFilter(entityType);
         }
 
@@ -2223,14 +2207,14 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                             continue;
                         }
                         LdapEntry mbrEntity = null;
-                        Set mbrEntries = null;
+                        Set<LdapEntry> mbrEntries = null;
                         try {
                             mbrEntries = iLdapConn.searchEntities(dn, entityTypeFilter, null, SearchControls.OBJECT_SCOPE, mbrTypesWithGroup,
                                                                   supportedProps, false, true);
                             if (mbrEntries != null && mbrEntries.size() > 0) {
-                                Iterator itr = mbrEntries.iterator();
+                                Iterator<LdapEntry> itr = mbrEntries.iterator();
                                 while (itr.hasNext())
-                                    mbrEntity = (LdapEntry) itr.next();
+                                    mbrEntity = itr.next();
                             }
                             //mbrEntity = iLdapConn.getEntityByIdentifier(dn, null, null, mbrTypesWithGroup, propNames, false, nested);
                         } catch (EntityNotFoundException e) {
@@ -2295,14 +2279,14 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                                     continue;
                                 }
                                 LdapEntry mbrEntity = null;
-                                Set mbrEntries = null;
+                                Set<LdapEntry> mbrEntries = null;
                                 try {
                                     mbrEntries = iLdapConn.searchEntities(dn, entityTypeFilter, null, SearchControls.OBJECT_SCOPE, mbrTypesWithGroup,
                                                                           supportedProps, false, true);
                                     if (mbrEntries != null && mbrEntries.size() > 0) {
-                                        Iterator itr = mbrEntries.iterator();
+                                        Iterator<LdapEntry> itr = mbrEntries.iterator();
                                         while (itr.hasNext())
-                                            mbrEntity = (LdapEntry) itr.next();
+                                            mbrEntity = itr.next();
                                     }
 
                                     /*
@@ -2745,10 +2729,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                         String propName = pNode.getName();
                         if (propName.equals(SchemaConstants.PROP_PRINCIPAL_NAME)) {
                             if (propNodeMap.size() > 1) {
-                                throw new SearchControlException(WIMMessageKey.CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS, Tr.formatMessage(
-                                                                                                                                               tc,
-                                                                                                                                               WIMMessageKey.CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS,
-                                                                                                                                               null));
+                                String msg = Tr.formatMessage(tc, WIMMessageKey.CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS, (Object) null);
+                                throw new SearchControlException(WIMMessageKey.CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS, msg);
                             } else {
                                 pNameSearch = true;
                                 break;
@@ -2758,10 +2740,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 }
                 if (pNameSearch) {
                     if (node.getNodeType() != XPathNode.NODE_PROPERTY) {
-                        throw new SearchControlException(WIMMessageKey.CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS, Tr.formatMessage(
-                                                                                                                                       tc,
-                                                                                                                                       WIMMessageKey.CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS,
-                                                                                                                                       null));
+                        String msg = Tr.formatMessage(tc, WIMMessageKey.CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS, (Object) null);
+                        throw new SearchControlException(WIMMessageKey.CANNOT_SEARCH_PRINCIPAL_NAME_WITH_OTHER_PROPS, msg);
                     }
                     PropertyNode pNameNode = (PropertyNode) node;
                     String value = (String) pNameNode.getValue();
@@ -2914,42 +2894,45 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
         String dn = null;
         String filter = null;
+        String certMapMode = iLdapConfigMgr.getCertificateMapMode();
 
-        if (ConfigConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(iLdapConfigMgr.getCertificateMapMode())) {
+        if (ConfigConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE.equalsIgnoreCase(certMapMode)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Certificate authentication has been disabled for this LDAP registry.");
+            }
+            String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_REGISTRY_CERT_IGNORED);
+            throw new CertificateMapNotSupportedException(WIMMessageKey.LDAP_REGISTRY_CERT_IGNORED, msg);
+        } else if (ConfigConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(certMapMode)) {
             String mapping;
-            String mapperId = iLdapConfigMgr.getCertificateMapperId();
             try {
-                if (iCertificateMappers == null || iCertificateMappers.isEmpty()) {
-                    throw new CertificateMapFailedException(null, "No certificate mappers were registered.");
-                }
-
-                if (mapperId == null || mapperId.isEmpty()) {
-                    throw new CertificateMapFailedException(null, "No certificate mapper ID was provided.");
-                }
-
-                CertificateMapper mapper = iCertificateMappers.get(mapperId);
+                X509CertificateMapper mapper = iCertificateMapperRef.get();
                 if (mapper == null) {
-                    throw new CertificateMapFailedException(null, "A CertificateMapper with ID '" + mapperId + "' was not found.");
-                }
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Using custom CertificateMapper: " + mapper.getClass());
+                    String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_REGISTRY_MAPPER_NOT_BOUND);
+                    throw new CertificateMapFailedException(WIMMessageKey.LDAP_REGISTRY_MAPPER_NOT_BOUND, msg);
                 }
 
-                mapping = mapper.mapCertificate(certs[0]);
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "The custom CertificateMapper returned the following mapping: " + mapping);
+                    Tr.debug(tc, "Using custom X.509 certificate mapper: " + mapper.getClass());
+                }
+
+                mapping = mapper.mapCertificate(certs);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The custom X.509 certificate mapper returned the following mapping: " + mapping);
                 }
             } catch (com.ibm.websphere.security.CertificateMapNotSupportedException e) {
-                throw new CertificateMapNotSupportedException(null, "The custom CertificateMapper '" + mapperId + "' threw a CertificateMapNotSupportedException.", e);
+                String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED);
+                throw new CertificateMapNotSupportedException(WIMMessageKey.LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED, msg, e);
             } catch (com.ibm.websphere.security.CertificateMapFailedException e) {
-                throw new CertificateMapFailedException(null, "The custom CertificateMapper '" + mapperId + "' threw a CertificateMapFailedException.", e);
+                String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_REGISTRY_CUSTOM_MAPPER_FAILED);
+                throw new CertificateMapFailedException(WIMMessageKey.LDAP_REGISTRY_CUSTOM_MAPPER_FAILED, msg, e);
             }
 
             /*
              * The mapper should return some value.
              */
             if (mapping == null || mapping.trim().isEmpty()) {
-                throw new CertificateMapFailedException(null, "The custom CertificateMapper implementation returned a null or empty value.");
+                String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_REGISTRY_INVALID_MAPPING);
+                throw new CertificateMapFailedException(WIMMessageKey.LDAP_REGISTRY_INVALID_MAPPING, msg);
             }
 
             /*
@@ -2959,7 +2942,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             if (dn == null) {
                 filter = mapping;
             }
-        } else if (ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE.equalsIgnoreCase(iLdapConfigMgr.getCertificateMapMode())) {
+        } else if (ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE.equalsIgnoreCase(certMapMode)) {
             filter = iLdapConfigMgr.getCertificateLDAPFilter(certs[0]).trim();
         } else {
             dn = LdapHelper.getValidDN(certs[0].getSubjectX500Principal().getName());
@@ -3271,11 +3254,6 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.security.wim.Repository#create(com.ibm.wsspi.security.wim.model.Root)
-     */
     @Override
     public Root create(Root root) throws WIMException {
         // Only create first entity
@@ -3667,11 +3645,6 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.security.wim.Repository#update(com.ibm.wsspi.security.wim.model.Root)
-     */
     @Override
     public Root update(Root root) throws WIMException {
         final String METHODNAME = "update";
@@ -3959,7 +3932,6 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         while (sFilter.indexOf("~=", index) > -1 ||
                sFilter.indexOf(">=", index) > -1 ||
                sFilter.indexOf("<=", index) > -1 ||
-               //               sFilter.indexOf(":=", index) > -1 ||
                sFilter.indexOf("=", index) > -1) {
 
             if (sFilter.indexOf("~=", index) > -1) {
@@ -3968,8 +3940,6 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 index = sFilter.indexOf(">=", index);
             } else if (sFilter.indexOf("<=", index) > -1) {
                 index = sFilter.indexOf("<=", index);
-//            } else if (sFilter.indexOf(":=", index) > -1) {
-//                index = sFilter.indexOf(":=", index);
             } else if (sFilter.indexOf("=", index) > -1) {
                 index = sFilter.indexOf("=", index);
             }
@@ -4008,26 +3978,12 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         return false;
     }
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setCertificateMapper(CertificateMapper mapper) {
-        String mapperId = mapper.getId();
-        if (mapperId == null) {
-            Tr.error(tc, "CertificateMapper of class '" + mapper.getClass().getName() + "' returned 'null' from the getId() method."); // TODO Localize
-            return;
-        }
-        if (iCertificateMappers.containsKey(mapperId)) {
-            Tr.warning(tc, "CertificateMapper with ID '" + mapperId + "' is already registered. Ignoring."); // TODO Localize
-            return;
-        }
-        iCertificateMappers.put(mapperId, mapper);
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
+    protected void setCertificateMapper(X509CertificateMapper mapper) {
+        iCertificateMapperRef.set(mapper);
     }
 
-    protected void unsetCertificateMapper(CertificateMapper mapper) {
-        String mapperId = mapper.getId();
-        if (mapperId == null) {
-            Tr.error(tc, "CertificateMapper of class '" + mapper.getClass().getName() + "' returned 'null' from the getId() method."); // TODO Localize
-            return;
-        }
-        iCertificateMappers.remove(mapperId);
+    protected void unsetCertificateMapper(X509CertificateMapper mapper) {
+        iCertificateMapperRef.compareAndSet(mapper, null);
     }
 }

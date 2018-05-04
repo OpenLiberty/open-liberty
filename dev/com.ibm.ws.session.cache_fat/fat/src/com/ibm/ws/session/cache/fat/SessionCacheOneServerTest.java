@@ -271,10 +271,9 @@ public class SessionCacheOneServerTest extends FATServletClient {
             app.invokeServlet("testSessionPropertyCache&sessionId=" + sessionId + "&type=java.lang.Integer&key=testConcurrentSetGetAndRemove-key&values=" + expectedValues,
                               session);
 
-            // The following fails intermittently and is being investigated. // TODO re-enable
             // verify the property name is present in the session info cache
-            //if (!"null".equals(value))
-            //    app.invokeServlet("testSessionInfoCache&sessionId=" + sessionId + "&attributes=testConcurrentSetGetAndRemove-key", session);
+            if (!"null".equals(value))
+                app.invokeServlet("testSessionInfoCache&sessionId=" + sessionId + "&attributes=testConcurrentSetGetAndRemove-key", session);
         } finally {
             app.invalidateSession(session);
         }

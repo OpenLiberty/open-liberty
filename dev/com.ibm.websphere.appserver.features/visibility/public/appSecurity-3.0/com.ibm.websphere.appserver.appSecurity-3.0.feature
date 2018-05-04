@@ -7,7 +7,6 @@ IBM-API-Package: javax.security.enterprise; type="spec", \
  javax.security.enterprise.identitystore; type="spec"
 
 IBM-ShortName: appSecurity-3.0
-#IBM-SPI-Package:
 Subsystem-Name: Application Security 3.0
 -features=com.ibm.websphere.appserver.cdi-2.0, \
  com.ibm.websphere.appserver.el-3.0, \
@@ -16,7 +15,5 @@ Subsystem-Name: Application Security 3.0
 -bundles=com.ibm.websphere.javaee.security.1.0; location:=dev/api/spec/, \
  com.ibm.ws.security.javaeesec.1.0, \
  com.ibm.ws.security.javaeesec.cdi
-kind=beta
+kind=ga
 edition=core
-#-jars=xyz; location:=dev/spi/ibm/
-#-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.javaee.security_1.0-javadoc.zip

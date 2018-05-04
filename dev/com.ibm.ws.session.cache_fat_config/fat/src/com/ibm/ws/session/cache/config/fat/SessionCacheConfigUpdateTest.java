@@ -44,9 +44,9 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class SessionCacheConfigUpdateTest extends FATServletClient {
 
-    private static final String APP_NAME = "sessionCacheConfigApp";
-    private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME); // jcacheApp not included because it isn't normally configured
-    private static final String[] APP_RECYCLE_LIST = new String[] { "CWWKZ0009I.*" + APP_NAME, "CWWKZ000[13]I.*" + APP_NAME };
+    private static final String APP_DEFAULT = "sessionCacheConfigApp";
+    private static final String APP_JCACHE = "jcacheApp";
+    private static final Set<String> APP_NAMES = Collections.singleton(APP_DEFAULT); // jcacheApp not included because it isn't normally configured
     private static final String[] EMPTY_RECYCLE_LIST = new String[0];
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
 
@@ -71,9 +71,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.web");
-        ShrinkHelper.defaultApp(server, "jcacheApp", "test.cache.web");
-        server.removeInstalledAppForValidation("jcacheApp"); // This application is available for tests to add but not configured by default.
+        ShrinkHelper.defaultApp(server, APP_DEFAULT, "session.cache.web");
+        ShrinkHelper.defaultApp(server, APP_JCACHE, "test.cache.web");
+        server.removeInstalledAppForValidation(APP_JCACHE); // This application is available for tests to add but not configured by default.
 
         String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
         server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
@@ -81,6 +81,13 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
         savedConfig = server.getServerConfiguration().clone();
         server.startServer();
+
+        // In addition to starting the application, must also wait for asynchronous web module initialization to complete,
+        // otherwise tests which attempt a configuration update could end up triggering a deactivate and close of the CachingProvider
+        // while the servlet initialization code is still attempting to use the CachingProvider and/or the CacheManager and Caches that it creates.
+        List<String> session = new ArrayList<>();
+        run("getSessionId", session);
+        run("invalidateSession", session);
     }
 
     @AfterClass
@@ -99,23 +106,23 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         ClassloaderElement jcacheApp_classloader = new ClassloaderElement();
         jcacheApp_classloader.getCommonLibraryRefs().add("HazelcastLib");
         jcacheApp.getClassloaders().add(jcacheApp_classloader);
-        jcacheApp.setLocation("jcacheApp.war");
+        jcacheApp.setLocation(APP_JCACHE + ".war");
         config.getApplications().add(jcacheApp);
 
         Set<String> appNames = new TreeSet<String>(APP_NAMES);
-        appNames.add("jcacheApp");
+        appNames.add(APP_JCACHE);
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_RECYCLE_LIST);
 
         // Application obtains the CachingProvider for the same configured library and closes the provider
-        FATSuite.run(server, "jcacheApp/JCacheConfigTestServlet", "testCloseCachingProvider", null);
+        FATSuite.run(server, APP_JCACHE + "/JCacheConfigTestServlet", "testCloseCachingProvider", null);
 
         // Access a session - this will only work if sessionCache feature has used a different CachingProvider instance
         List<String> session = new ArrayList<>();
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "getSessionId", session);
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+        run("getSessionId", session);
+        run("invalidateSession", session);
     }
 
     /**
@@ -123,7 +130,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
      */
     @Test
     public void testMonitoring() throws Exception {
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+        run("testMXBeansNotEnabled", new ArrayList<>());
 
         // add monitor-1.0 feature
         ServerConfiguration config = server.getServerConfiguration();
@@ -133,7 +140,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansEnabled", new ArrayList<>());
+        run("testMXBeansEnabled", new ArrayList<>());
 
         // add monitor configuration that doesn't include Session
         Monitor monitor = new Monitor();
@@ -144,7 +151,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+        run("testMXBeansNotEnabled", new ArrayList<>());
 
         // switch to monitor configuration that includes Session
         monitor.setFilter("ThreadPool,WebContainer,Session");
@@ -153,14 +160,14 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansEnabled", new ArrayList<>());
+        run("testMXBeansEnabled", new ArrayList<>());
 
         // remove monitor-1.0 feature (and monitor config)
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(savedConfig);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testMXBeansNotEnabled", new ArrayList<>());
+        run("testMXBeansNotEnabled", new ArrayList<>());
     }
 
     @Test
@@ -181,8 +188,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
         ArrayList<String> session = new ArrayList<>();
-        String response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testScheduleInvalidation&value=si1&maxInactiveInterval=1",
-                                       session);
+        String response = run("testSetAttributeWithTimeout&attribute=testScheduleInvalidation&value=si1&maxInactiveInterval=1",
+                              session);
         int start = response.indexOf("session id: [") + 13;
         String sessionId = response.substring(start, response.indexOf(']', start));
 
@@ -190,11 +197,11 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         TimeUnit.SECONDS.sleep(35);
 
         // confirm that invalidated data remains in the cache
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testScheduleInvalidation&value=si1&sessionId=" + sessionId, null);
+        run("testCacheContains&attribute=testScheduleInvalidation&value=si1&sessionId=" + sessionId, null);
 
         // Add another attribute, but don't wait for it to be written
-        response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttributeWithTimeout&attribute=testTimeBasedWriteNoSync&value=si2&maxInactiveInterval=60",
-                                session);
+        response = run("testSetAttributeWithTimeout&attribute=testTimeBasedWriteNoSync&value=si2&maxInactiveInterval=60",
+                       session);
         start = response.indexOf("session id: [") + 13;
         sessionId = response.substring(start, response.indexOf(']', start));
     }
@@ -205,7 +212,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     @Test
     public void testWriteContents() throws Exception {
         // Verify default behavior: writeContents=ONLY_SET_ATTRIBUTES
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_ONLY_SET_ATTRIBUTES", new ArrayList<>());
+        run("testWriteContents_ONLY_SET_ATTRIBUTES", new ArrayList<>());
 
         // Reconfigure writeContents=GET_AND_SET_ATTRIBUTES
         ServerConfiguration config = server.getServerConfiguration();
@@ -215,7 +222,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_GET_AND_SET_ATTRIBUTES", new ArrayList<>());
+        run("testWriteContents_GET_AND_SET_ATTRIBUTES", new ArrayList<>());
 
         // Reconfigure writeContents=ALL_SESSION_ATTRIBUTES
         httpSessionCache.setWriteContents("ALL_SESSION_ATTRIBUTES");
@@ -223,7 +230,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testWriteContents_ALL_SESSION_ATTRIBUTES", new ArrayList<>());
+        run("testWriteContents_ALL_SESSION_ATTRIBUTES", new ArrayList<>());
     }
 
     /**
@@ -235,8 +242,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     public void testWriteFrequency() throws Exception {
         // Verify default behavior: writeFrequency=END_OF_SERVLET_SERVICE
         List<String> session = new ArrayList<>();
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+        run("testSetAttribute&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+        run("testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
 
         // Reconfigure writeFrequency=MANUAL_UPDATE
         ServerConfiguration config = server.getServerConfiguration();
@@ -247,16 +254,16 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
         // Set a new attribute value without performing a manual sync, the value in the cache should not be updated
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+        run("testSetAttribute&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
+        run("testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
 
         // TODO enable if manual sync is supported across same session spanning multiple servlet requests:
         // Perform a manual sync under a subsequent servlet request and verify the previously set value is updated
         // FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualSync&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
 
         // Perform a manual update within the same servlet request
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualUpdate&attribute=testWriteFrequency&value=3_MANUAL_UPDATE", session);
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+        run("testManualUpdate&attribute=testWriteFrequency&value=3_MANUAL_UPDATE", session);
+        run("invalidateSession", session);
     }
 
     /**
@@ -266,8 +273,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     public void testWriteInterval() throws Exception {
         // Verify default behavior: writeFrequency=END_OF_SERVLET_SERVICE, writeInterval ignored
         List<String> session = new ArrayList<>();
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteInterval&value=0_END_OF_SERVLET_SERVICE", session);
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testCacheContains&attribute=testWriteInterval&value=0_END_OF_SERVLET_SERVICE", session);
+        run("testSetAttribute&attribute=testWriteInterval&value=0_END_OF_SERVLET_SERVICE", session);
+        run("testCacheContains&attribute=testWriteInterval&value=0_END_OF_SERVLET_SERVICE", session);
 
         // Reconfigure writeFrequency=TIME_BASED_WRITE and writeInterval=5s
         ServerConfiguration config = server.getServerConfiguration();
@@ -284,9 +291,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         String newValue = null;
         for (int numAttempts = 1; numAttempts < 20; numAttempts++) {
             newValue = numAttempts + "_TIME_BASED_WRITE";
-            FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testSetAttribute&attribute=testWriteFrequency&value=" + newValue, session);
+            run("testSetAttribute&attribute=testWriteFrequency&value=" + newValue, session);
 
-            String response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "getValueFromCache&attribute=testWriteFrequency", session);
+            String response = run("getValueFromCache&attribute=testWriteFrequency", session);
             int start = response.indexOf("value from cache: [") + 19;
             String cachedValue = response.substring(start, response.indexOf(']', start));
 
@@ -300,15 +307,18 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
                     "having the time based write align with servlet request completion",
                     previousValue.equals(newValue));
 
-        String response = FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "getSessionId", session);
+        String response = run("getSessionId", session);
         int start = response.indexOf("session id: [") + 13;
         String sessionId = response.substring(start, response.indexOf(']', start));
 
         // Due to TIME_BASED_WRITE, the value should be written to cache some time within the next 5 seconds. Poll for it,
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME,
-                     "testPollCache&attribute=testWriteFrequency&value=" + newValue + "&sessionId=" + sessionId,
-                     null); // Avoid having the servlet access the session here because this will block 5 cycles of the time based write.
+        run("testPollCache&attribute=testWriteFrequency&value=" + newValue + "&sessionId=" + sessionId,
+            null); // Avoid having the servlet access the session here because this will block 5 cycles of the time based write.
 
-        FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "invalidateSession", session);
+        run("invalidateSession", session);
+    }
+
+    private static String run(String testMethod, List<String> session) throws Exception {
+        return FATSuite.run(server, APP_DEFAULT + '/' + SERVLET_NAME, testMethod, session);
     }
 }

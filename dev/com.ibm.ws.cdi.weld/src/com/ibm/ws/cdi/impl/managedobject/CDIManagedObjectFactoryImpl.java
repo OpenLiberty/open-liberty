@@ -64,6 +64,14 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
      */
     @Override
     protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext) {
+        return getCreationalContext(invocationContext, false);
+    }
+
+    /**
+     * Create a new non-Contextual CreationalContext
+     */
+    @Override
+    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext, boolean nonContextual) {
 
         ManagedObjectContext moc;
         // for managed bean case, if invocation context is not null, use that
@@ -72,7 +80,7 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
 
         } else {
             //otherwise, use the one created when creating this object(annotated with scope)
-            moc = createContext();
+            moc = createContext(nonContextual);
         }
         @SuppressWarnings("unchecked")
         WeldCreationalContext<T> creationalContext = moc.getContextData(WeldCreationalContext.class);
@@ -81,15 +89,19 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
 
     @Override
     public ManagedObjectContext createContext() {
+        return createContext(false);
+    }
 
-        Bean<T> bean = getBean();
+    public ManagedObjectContext createContext(boolean nonContextual) {
+
+        Bean<T> bean = nonContextual ? null : getBean();
         //A ManagedBean may or may not be a CDI bean.
         //If it is a CDI bean then the creational context should be contextual
         //If not the creational context will be non-contextual
 
         WeldManager beanManager = getBeanManager();
-        WeldCreationalContext<T> creationalContext = beanManager.createCreationalContext(bean);
-
+        WeldCreationalContext<T> creationalContext;
+        creationalContext = beanManager.createCreationalContext(bean);
         CDIManagedObjectState managedObjectState = new CDIManagedObjectState(creationalContext);
         return managedObjectState;
 

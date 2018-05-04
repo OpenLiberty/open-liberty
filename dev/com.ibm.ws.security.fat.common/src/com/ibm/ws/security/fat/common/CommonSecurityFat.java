@@ -19,6 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerTracker;
 
@@ -61,6 +62,11 @@ public class CommonSecurityFat {
         Set<LibertyServer> testServers = serverTracker.getServers();
         for (LibertyServer server : testServers) {
             loggingUtils.logTestCaseInServerLog(server, testName.getMethodName(), actionToLog);
+            try {
+                server.setMarkToEndOfLog(server.getDefaultLogFile());
+            } catch (Exception e) {
+                Log.error(thisClass, "Failed to set mark to end of default log file for server " + server.getServerName(), e);
+            }
         }
     }
 
