@@ -10,16 +10,12 @@
  -->
 <server>
 
-    <featureManager>
-        <feature>jsp-2.3</feature>        
-        <feature>componenttest-1.0</feature>
-        <feature>jwtSso-1.0</feature>
-    </featureManager>
-    <jwtSso  setCookieSecureFlag="false"/>
+    <include location="${shared.config.dir}/jwtSsoFeatures.xml" />
+    <include location="${shared.config.dir}/ssl.xml" />
+    <include location="${shared.config.dir}/formloginApp.xml" />
     <include location="../fatTestPorts.xml"/>
-     
 
-    <keyStore id="defaultKeyStore" password="Liberty" />
+    <jwtSso  setCookieSecureFlag="false"/>
 
     <basicRegistry realm="BasicRealm">
         <user name="testuser" password="testuserpwd"/>
@@ -39,19 +35,5 @@
              <member name="testuser"/>
          </group>
     </basicRegistry>
-
-    <application type="war" id="formlogin" name="formlogin" location="${server.config.dir}/apps/formlogin.war" >
-        <application-bnd>
-            <security-role name="Employee">
-                <special-subject type="ALL_AUTHENTICATED_USERS" />
-            </security-role>
-            <security-role name="Manager">
-                <special-subject type="ALL_AUTHENTICATED_USERS" />
-            </security-role>
-            <security-role name="AllAuthenticated">
-                <special-subject type="ALL_AUTHENTICATED_USERS" />
-            </security-role>
-        </application-bnd>
-    </application>
 
 </server>
