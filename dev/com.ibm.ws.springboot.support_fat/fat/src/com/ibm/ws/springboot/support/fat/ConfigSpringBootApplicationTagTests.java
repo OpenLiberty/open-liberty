@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,6 +46,7 @@ public class ConfigSpringBootApplicationTagTests extends AbstractSpringTests {
     @Override
     public void modifyAppConfiguration(SpringBootApplication appConfig) {
         appConfig.getApplicationArguments().add("--server.context-parameters.context_parameter_test_key=PASSED");
+        appConfig.getApplicationArguments().add("--server.server-header=SpringServerHeaderTest");
     }
 
     @Test
@@ -53,5 +57,14 @@ public class ConfigSpringBootApplicationTagTests extends AbstractSpringTests {
     @Test
     public void testContextParams() throws IOException {
         HttpUtils.findStringInUrl(server, "/testContextParams", "PASSED");
+    }
+
+    @Test
+    public void testServerHeader() throws IOException {
+        HttpURLConnection conn = HttpUtils.getHttpConnection(server, "");
+        conn.connect();
+        String serverHeader = conn.getHeaderField("Server");
+        conn.disconnect();
+        assertEquals("Wrong server header.", "SpringServerHeaderTest", serverHeader);
     }
 }
