@@ -366,7 +366,7 @@ public class BasicRegistryTest {
                 will(returnValue(principal));
             }
         });
-        fullBasicRegistry().mapCertificate(cert);
+        fullBasicRegistry().mapCertificate(new X509Certificate[] { cert });
     }
 
     /**
@@ -382,7 +382,7 @@ public class BasicRegistryTest {
                 will(returnValue(principal));
             }
         });
-        fullBasicRegistry().mapCertificate(cert);
+        fullBasicRegistry().mapCertificate(new X509Certificate[] { cert });
     }
 
     /**
@@ -398,7 +398,7 @@ public class BasicRegistryTest {
                 will(returnValue(principal));
             }
         });
-        assertEquals("user1", fullBasicRegistry().mapCertificate(cert));
+        assertEquals("user1", fullBasicRegistry().mapCertificate(new X509Certificate[] { cert }));
     }
 
     /**
