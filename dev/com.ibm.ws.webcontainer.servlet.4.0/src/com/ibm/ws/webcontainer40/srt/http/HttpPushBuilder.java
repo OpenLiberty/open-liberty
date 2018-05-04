@@ -110,6 +110,13 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
             _cookies = null;
         }
 
+        // set the REFERER header
+        String referer = _inboundRequest.getRequestURI();
+        if (_inboundRequest.getQueryString() != null) {
+            referer += "?" + _inboundRequest.getQueryString();
+        }
+        this.setHeader(HDR_REFERER, referer);
+
     }
 
     @Override
@@ -231,12 +238,6 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
             }
             throw new IllegalStateException();
         }
-
-        String referer = _inboundRequest.getRequestURI();
-        if (_inboundRequest.getQueryString() != null) {
-            referer += "?" + _inboundRequest.getQueryString();
-        }
-        this.setHeader(HDR_REFERER, referer);
 
         if (_queryString != null) {
             if (_pathQueryString != null) {
