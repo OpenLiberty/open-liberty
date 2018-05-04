@@ -154,7 +154,7 @@ public class QuickStartSecurityRegistryTest {
                 will(returnValue(principal));
             }
         });
-        reg.mapCertificate(cert);
+        reg.mapCertificate(new X509Certificate[] { cert });
     }
 
     /**
@@ -170,7 +170,7 @@ public class QuickStartSecurityRegistryTest {
                 will(returnValue(principal));
             }
         });
-        reg.mapCertificate(cert);
+        reg.mapCertificate(new X509Certificate[] { cert });
     }
 
     /**
@@ -186,7 +186,7 @@ public class QuickStartSecurityRegistryTest {
                 will(returnValue(principal));
             }
         });
-        assertEquals(DEFAULT_ADMIN_USER, reg.mapCertificate(cert));
+        assertEquals(DEFAULT_ADMIN_USER, reg.mapCertificate(new X509Certificate[] { cert }));
     }
 
     /**
