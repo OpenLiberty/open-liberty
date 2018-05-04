@@ -29,7 +29,7 @@ IBM-API-Package: \
 -bundles=\
   com.ibm.ws.javamail.1.6,\
   com.ibm.ws.javamail.config
--jars=com.ibm.websphere.javaee.mail.1.6; location:=dev/api/spec/, \
+-jars=com.ibm.websphere.javaee.mail.1.6; location:=dev/api/spec/; mavenCoordinates="javax.mail:javax.mail-api:1.6.1", \
  com.ibm.websphere.appserver.thirdparty.mail-1.6; location:=dev/api/third-party/
 kind=ga
 edition=core

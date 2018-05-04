@@ -4,6 +4,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jacc-1.5))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.security.authorization.jacc.web, \
- com.ibm.websphere.javaee.jacc.1.5; location:="dev/api/spec/,lib"
+ com.ibm.websphere.javaee.jacc.1.5; location:="dev/api/spec/,lib"; mavenCoordinates="javax.security.jacc:javax.security.jacc-api:1.5"
 kind=ga
 edition=core
