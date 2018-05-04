@@ -66,6 +66,8 @@
             required="false" type="Integer"/>
         <AD id="connectTimeout" name="%connectTimeout" description="%connectTimeout.desc"
             required="false" type="String" ibm:type="duration" default="1m"/>
+        <AD id="readTimeout" name="%readTimeout" description="%readTimeout.desc"
+            required="false" type="String" ibm:type="duration" default="0m"/>
         <AD id="failoverServers" name="%ldap.failoverServers" description="%ldap.failoverServers.desc"
             ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.config.failoverServers"
             required="false" type="String" cardinality="2147483647" />

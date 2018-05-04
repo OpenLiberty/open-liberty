@@ -18,6 +18,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.ServerSocket;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ import javax.naming.Context;
 import javax.naming.ContextNotEmptyException;
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 import javax.naming.NoPermissionException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
@@ -677,6 +679,7 @@ public class ContextManagerTest {
         cm.setSSLAlias("sslAlias");
         cm.setSSLEnabled(true);
         cm.setConnectTimeout(12345l);
+        cm.setReadTimeout(12345l);
         cm.addFailoverServer("localhost", failoverLdapServer.getLdapServer().getPort());
         cm.setContextPool(true, 0, 1, 3, 1000l, 2000l);
         cm.setWriteToSecondary(true);
@@ -692,6 +695,7 @@ public class ContextManagerTest {
         assertTrue("Did not find SSL Alias in toString: " + toString, toString.contains("iSSLAlias=sslAlias"));
         assertTrue("Did not find SSL Enabled in toString: " + toString, toString.contains("iSSLEnabled=true"));
         assertTrue("Did not find Connect Timeout in toString: " + toString, toString.contains("iConnectTimeout=12345"));
+        assertTrue("Did not find Read Timeout in toString: " + toString, toString.contains("iReadTimeout=12345"));
         assertTrue("Did not find Primary Server in toString: " + toString, toString.contains("iPrimaryServer=localhost:" + primaryLdapServer.getLdapServer().getPort()));
         assertTrue("Did not find Failover Servers in toString: " + toString,
                    toString.contains("iFailoverServers=[localhost:" + failoverLdapServer.getLdapServer().getPort() + "]"));
@@ -705,5 +709,109 @@ public class ContextManagerTest {
         assertTrue("Did not find Query Interval in toString: " + toString, toString.contains("iQueryInterval=3000"));
         assertTrue("Did not find Referral in toString: " + toString, toString.contains("iReferral=ignore"));
         assertTrue("Did not find Return to Primary in toString: " + toString, toString.contains("iReturnToPrimary=true"));
+    }
+
+    /**
+     * Test setting the connection timeout. For JNDI this appears to cover the entire amount of time it
+     * takes to bind (open connection and read the bind response), not just connect. Notice that the
+     * error message mentions read timeout, but that we did not set it. It must be setting the read timeout
+     * from the connect timeout when doing a bind (which creates a new connection to the LDAP server).
+     *
+     * I did try to get a root cause of SocketTimeoutException by using a non-routable IP, but it was flaky and
+     * sometimes the network returned no route to host before the timeout could occur.
+     *
+     * @throws Exception If the test fails for some reason.
+     */
+    @Test
+    public void connectTimeout() throws Exception {
+
+        ServerSocket serverSocket = new ServerSocket(0);
+
+        try {
+            /*
+             * Configure the context manager with a 100 ms connect timeout.
+             */
+            long expectedTimeout = 100L;
+            ContextManager cm = new ContextManager();
+            cm.setPrimaryServer("localhost", serverSocket.getLocalPort());
+            cm.setContextPool(false, null, null, null, null, null);
+            cm.setConnectTimeout(expectedTimeout);
+            cm.initialize();
+
+            long time = System.currentTimeMillis();
+            try {
+                cm.createDirContext(USER_DN, "password".getBytes());
+                fail("Expected NamingException.");
+            } catch (NamingException e) {
+                // javax.naming.NamingException: LDAP response read timed out, timeout used:100ms.
+                time = System.currentTimeMillis() - time;
+                assertTrue("Expected connect timeout to be " + expectedTimeout + " ms.", time >= expectedTimeout && time <= (expectedTimeout + 100));
+            }
+
+            /*
+             * Configure the context manager with a 500 ms connect timeout.
+             */
+            expectedTimeout = 500L;
+            cm.setConnectTimeout(expectedTimeout);
+            cm.initialize();
+
+            time = System.currentTimeMillis();
+            try {
+                cm.createDirContext(USER_DN, "password".getBytes());
+                fail("Expected NamingException.");
+            } catch (NamingException e) {
+                // javax.naming.NamingException: LDAP response read timed out, timeout used:500ms.
+                time = System.currentTimeMillis() - time;
+                assertTrue("Expected connect timeout to be " + expectedTimeout + " millisecond.", time >= expectedTimeout && time <= (expectedTimeout + 100));
+            }
+        } finally {
+            serverSocket.close();
+        }
+    }
+
+    /**
+     * Test setting the read timeout.
+     *
+     * @throws Exception If the test fails for some reason.
+     */
+    @Test
+    public void readTimeout() throws Exception {
+
+        /*
+         * Configure the context manager with a 100 ms read timeout.
+         */
+        long expectedTimeout = 100L;
+        ContextManager cm = new ContextManager();
+        cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
+        cm.setContextPool(false, null, null, null, null, null);
+        cm.setReadTimeout(expectedTimeout);
+        cm.initialize();
+
+        TimedDirContext ctx = cm.createDirContext(USER_DN, "password".getBytes());
+
+        long time = System.currentTimeMillis();
+        try {
+            ctx.search(BASE_ENTRY, "objectclass=*", null);
+        } catch (NamingException e) {
+            time = System.currentTimeMillis() - time;
+            assertTrue("Expected connect timeout to be " + expectedTimeout + " millisecond.", time >= expectedTimeout && time <= (expectedTimeout + 100));
+        }
+        ctx.close();
+
+        /*
+         * Configure the context manager with a 500 ms read timeout.
+         */
+        expectedTimeout = 500L;
+        cm.setReadTimeout(expectedTimeout);
+        cm.initialize();
+
+        ctx = cm.createDirContext(USER_DN, "password".getBytes());
+        time = System.currentTimeMillis();
+        try {
+            ctx.search(BASE_ENTRY, "objectclass=*", null);
+        } catch (NamingException e) {
+            time = System.currentTimeMillis() - time;
+            assertTrue("Expected connect timeout to be " + expectedTimeout + " millisecond.", time >= expectedTimeout && time <= (expectedTimeout + 100));
+        }
     }
 }
