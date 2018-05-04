@@ -13,8 +13,6 @@ package com.ibm.ws.security.jwtsso.fat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.regex.Pattern;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -125,7 +123,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      * Test the jwtBuilderRef attribute. Specify an existing and valid jwtBuilderRef.
      * Authentication will fail because the issuer mismatches the consumer, but we should
      * see evidence in the logs that the customized issuer was presented.
-     * That's all we care about. 
+     * That's all we care about.
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException",
                    "com.ibm.websphere.security.jwt.InvalidTokenException",
@@ -139,9 +137,16 @@ public class ConfigAttributeTests extends CommonJwtFat {
 
         String issuer = "https://flintstone:19443/jwt/defaultJWT";
 
+        Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl); // get back the login page
+
+        // now confirm we got the login page
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
-        response = performLogin(response);
+        validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+
+        // log in, which should drive building a token.
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+
         String errorMsg = server.waitForStringInLogUsingMark(".*CWWKS6022E: The issuer \\[https://flintstone:19443/jwt/defaultJWT\\]", 100);
         // CWWKS6022E - issuer not trusted.
         assertTrue("Did not find expected error message CWWKS6022E in the log", errorMsg != null);
