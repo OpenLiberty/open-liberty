@@ -9,5 +9,5 @@ visibility=private
  com.ibm.websphere.appserver.javax.cdi-2.0,\
  com.ibm.websphere.appserver.javaeeCompatible-8.0
 -bundles=com.ibm.websphere.javaee.jsonb.1.0; location:="dev/api/spec/,lib/"
-kind=beta
+kind=ga
 edition=core
