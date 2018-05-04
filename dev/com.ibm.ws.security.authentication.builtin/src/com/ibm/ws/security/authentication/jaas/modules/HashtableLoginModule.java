@@ -338,7 +338,8 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                     ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
                 }
             }
-            JwtSSOTokenHelper.addCustomCacheKeyToJwtSSOToken(subject, (String) customCacheKey);
+            //Recreate the jwtSSOToken with customCacheKey and customRealm
+            JwtSSOTokenHelper.addCustomStuffsToJwtSSOToken(subject);
         }
 
         return true;

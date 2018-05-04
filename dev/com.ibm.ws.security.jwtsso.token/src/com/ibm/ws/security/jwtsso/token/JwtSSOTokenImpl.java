@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.Subject;
+import javax.security.auth.login.LoginException;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 //import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -30,7 +31,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.common.crypto.HashUtils;
@@ -110,7 +110,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * auth.Subject)
 	 */
 	@Override
-	public void createJwtSSOToken(Subject subject) throws WSSecurityException {
+	public void createJwtSSOToken(Subject subject) throws LoginException {
 		// TODO Auto-generated method stub
 		if (subject != null) {
 			if (isSubjectUnauthenticated(subject) || subjectHasJwtPrincipal(subject)) {
@@ -123,13 +123,13 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 					ssotoken = tokenUtil.buildTokenFromSecuritySubject(subject);
 				} catch (Exception e) {
 					// TODO ffdc
-					throw new WSSecurityException(e);
+					throw new LoginException(e.getMessage());
 				}
 				updateSubject(subject, ssotoken);
 			} else {
 				// TODO : nls
 				String msg = "jwtsso configuration is not valid";
-				throw new WSSecurityException(msg);
+				throw new LoginException(msg);
 			}
 		}
 	}
@@ -324,7 +324,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * java.lang.String)
 	 */
 	@Override
-	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws WSSecurityException {
+	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws LoginException {
 		// TODO Auto-generated method stub
 		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
 		if (tokenUtil != null && encodedjwt != null) {
@@ -332,20 +332,20 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 				try {
 					return tokenUtil.handleJwtSsoTokenValidationWithSubject(subject, encodedjwt);
 				} catch (Exception e) {
-					throw new WSSecurityException(e);
+					throw new LoginException(e.getMessage());
 				}
 			} else {
 				try {
 					return tokenUtil.handleJwtSsoTokenValidation(encodedjwt);
 				} catch (Exception e) {
-					throw new WSSecurityException(e);
+					throw new LoginException(e.getMessage());
 
 				}
 			}
 		} else {
 			// TODO : nls
 			String msg = "jwtsso configuration is not valid or token is not valid";
-			throw new WSSecurityException(msg);
+			throw new LoginException(msg);
 		}
 		// authenticateWithJwt(subject);
 
@@ -396,9 +396,16 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addCustomCacheKeyToJwtSSOToken(Subject subject, String cacheKeyValue) {
-		// TODO Auto-generated method stub
-
+	public void addCustomStuffsToJwtSSOToken(Subject subject) throws LoginException {
+		Set<JsonWebToken> jsonWebTokenPrincipals = getJwtPrincipals(subject);
+		if (!jsonWebTokenPrincipals.isEmpty()) {
+			// Set<Principal> principals = subject.getPrincipals();
+			// subject.getPrincipals().removeAll(principals);
+			// principals.removeAll(jsonWebTokenPrincipalSet);
+			// subject.getPrincipals().addAll(principals);
+			subject.getPrincipals().removeAll(jsonWebTokenPrincipals);
+		}
+		createJwtSSOToken(subject);
 	}
 
 	/*

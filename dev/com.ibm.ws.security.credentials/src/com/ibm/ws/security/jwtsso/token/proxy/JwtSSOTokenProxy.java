@@ -11,25 +11,24 @@
 package com.ibm.ws.security.jwtsso.token.proxy;
 
 import javax.security.auth.Subject;
-
-import com.ibm.websphere.security.WSSecurityException;
+import javax.security.auth.login.LoginException;
 
 /**
  *
  */
 public interface JwtSSOTokenProxy {
 
-    void createJwtSSOToken(Subject subject) throws WSSecurityException;
+    void createJwtSSOToken(Subject subject) throws LoginException;
 
     String getJwtSSOToken(Subject subject);
 
-    Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws WSSecurityException;
+    Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws LoginException;
 
     String getCustomCacheKeyFromJwtSSOToken(String encodedjwt);
 
     String getCacheKeyForJwtSSOToken(Subject subject, String encodedjwt);
 
-    void addCustomCacheKeyToJwtSSOToken(Subject subject, String cacheKeyValue);
+    void addCustomStuffsToJwtSSOToken(Subject subject) throws LoginException;
 
     boolean isSubjectValid(Subject subject);
 
