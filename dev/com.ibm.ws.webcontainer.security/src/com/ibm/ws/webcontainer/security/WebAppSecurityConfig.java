@@ -11,6 +11,7 @@
 package com.ibm.ws.webcontainer.security;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Encapsulate the web application security settings.
@@ -75,6 +76,17 @@ public interface WebAppSecurityConfig {
      *         properties that are different between this WebAppSecurityConfig and the specified one
      */
     String getChangedProperties(WebAppSecurityConfig original);
+
+    /**
+     * Calculates the delta between this WebAppSecurityConfig and the provided
+     * WebAppSecurityConfig. The values returned are the values from this Object.
+     * If no properties were changed, an empty Map should be returned.
+     *
+     * @param webAppSecConfig WebAppSecurityConfig object to compare settings against
+     * @return Map of modified attributes. key is the name of modified attributes, and value is this object.
+     *         if the value is not set, the empty string is set.
+     */
+    Map<String, String> getChangedPropertiesMap(WebAppSecurityConfig original);
 
     String getLoginFormURL();
 

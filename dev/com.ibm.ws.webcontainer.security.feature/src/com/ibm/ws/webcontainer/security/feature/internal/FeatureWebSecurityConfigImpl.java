@@ -254,6 +254,15 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     public String getChangedProperties(WebAppSecurityConfig original) {
         return "";
     }
+    /**
+     * {@inheritDoc}<p>
+     * This does not need an implemented as these properties never change.
+     * @return {@code null}
+     */
+    @Override
+    public Map<String, String> getChangedPropertiesMap(WebAppSecurityConfig original) {
+        return null;
+    }
 
     /** {@inheritDoc} */
     @Override

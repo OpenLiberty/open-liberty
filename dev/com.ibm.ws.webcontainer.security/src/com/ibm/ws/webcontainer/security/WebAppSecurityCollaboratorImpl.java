@@ -70,6 +70,7 @@ import com.ibm.ws.webcontainer.security.internal.PermitReply;
 import com.ibm.ws.webcontainer.security.internal.ReturnReply;
 import com.ibm.ws.webcontainer.security.internal.SRTServletRequestUtils;
 import com.ibm.ws.webcontainer.security.internal.URLHandler;
+import com.ibm.ws.webcontainer.security.internal.WebAppSecurityConfigChangeEventImpl;
 import com.ibm.ws.webcontainer.security.internal.WebReply;
 import com.ibm.ws.webcontainer.security.internal.WebSecurityCollaboratorException;
 import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
@@ -85,6 +86,7 @@ import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
+import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
@@ -110,6 +112,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     static final String JASPI_SERVICE_COMPONENT_NAME = "com.ibm.ws.security.jaspi";
     public static final String KEY_WEB_AUTHENTICATOR = "webAuthenticator";
     public static final String KEY_UNPROTECTED_RESOURCE_SERVICE = "unprotectedResourceService";
+    static final String KEY_CONFIG_CHANGE_LISTENER = "webAppSecurityConfigChangeListener";
+
     static final String DELEGATION_USERS_LIST = "DELEGATION_USERS_LIST";
     protected final ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef = new ConcurrentServiceReferenceMap<String, WebAuthenticator>(KEY_WEB_AUTHENTICATOR);
     protected final ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef = new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>(KEY_UNPROTECTED_RESOURCE_SERVICE);
@@ -118,6 +122,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     protected final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(KEY_INTERCEPTOR_SERVICE);
     protected final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     protected final AtomicServiceReference<JaccService> jaccServiceRef = new AtomicServiceReference<JaccService>(KEY_JACC_SERVICE);
+    protected final ConcurrentServiceReferenceSet<WebAppSecurityConfigChangeListener> webAppSecurityConfigchangeListenerRef = new ConcurrentServiceReferenceSet<WebAppSecurityConfigChangeListener>(KEY_CONFIG_CHANGE_LISTENER);
 
     private static final String KEY_LOCATION_ADMIN = "locationAdmin";
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_ADMIN);
@@ -308,6 +313,14 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         this.provisionerService = null;
     }
 
+    protected void setWebAppSecurityConfigChangeListener(ServiceReference<WebAppSecurityConfigChangeListener> ref) {
+        webAppSecurityConfigchangeListenerRef.addReference(ref);
+    }
+
+    protected void unsetWebAppSecurityConfigChangeListener(ServiceReference<WebAppSecurityConfigChangeListener> ref) {
+        webAppSecurityConfigchangeListenerRef.removeReference(ref);
+    }
+
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         isActive = true;
         locationAdminRef.activate(cc);
@@ -317,6 +330,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         jaccServiceRef.activate(cc);
         webAuthenticatorRef.activate(cc);
         unprotectedResourceServiceRef.activate(cc);
+        webAppSecurityConfigchangeListenerRef.activate(cc);
         currentProps.clear();
         if (props != null) {
             currentProps.putAll(props);
@@ -330,9 +344,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     protected void updateComponents() {
-        updateComponents(null);
-    }
-    protected void updateComponents(String delta) {
         WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
         SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
         authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
@@ -340,19 +351,21 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
                                                                                               webAuthenticatorRef);
         authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
-        updateJASPIC(delta);
     }
 
     protected void modified(Map<String, Object> newProperties) {
         WebAppSecurityConfig newWebAppSecConfig = authenticatorFactory.createWebAppSecurityConfigImpl(newProperties, locationAdminRef, securityServiceRef);
         // Capture the properties that were changed for our audit record
-        String deltaString = newWebAppSecConfig.getChangedProperties(webAppSecConfig);
+        Map<String, String> deltaMap = newWebAppSecConfig.getChangedPropertiesMap(webAppSecConfig);
+        String deltaString = toStringFormChangedPropertiesMap(deltaMap);
+
         currentProps.clear();
         if (newProperties != null) {
             currentProps.putAll(newProperties);
         }
         webAppSecConfig = newWebAppSecConfig;
-        updateComponents(deltaString);
+        updateComponents();
+        notifyWebAppSecurityConfigChangeListeners(new ArrayList(deltaMap.keySet()));
         Tr.audit(tc, "WEB_APP_SECURITY_CONFIGURATION_UPDATED", deltaString);
     }
 
@@ -365,6 +378,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         jaccServiceRef.deactivate(cc);
         webAuthenticatorRef.deactivate(cc);
         unprotectedResourceServiceRef.deactivate(cc);
+        webAppSecurityConfigchangeListenerRef.deactivate(cc);
         WebSecurityHelperImpl.setWebAppSecurityConfig(null);
     }
 
@@ -1631,12 +1645,34 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     /**
-     * When global login config is changed, JSR375 applications need to be restarted
-     * in order to pick the new global login configuration.
+     * Notify the registered listeners of the change to the UserRegistry
+     * configuration.
      */
-    private void updateJASPIC(String delta) {
-        if (delta != null && isJaspiEnabled) {
-            ((JaspiService)webAuthenticatorRef.getService(JASPI_SERVICE_COMPONENT_NAME)).notifyConfigChanged(delta);
+    private void notifyWebAppSecurityConfigChangeListeners(List<String> delta) {
+        WebAppSecurityConfigChangeEvent event = new WebAppSecurityConfigChangeEventImpl(delta);
+        for (WebAppSecurityConfigChangeListener listener : webAppSecurityConfigchangeListenerRef.services()) {
+            listener.notifyWebAppSecurityConfigChanged(event);
         }
+    }
+
+    /**
+     * Format the map of config change attributes for the audit function. The output format would be the
+     * same as original WebAppSecurityConfig.getChangedProperties method.
+     *
+     * @return String in the format of "name=value, name=value, ..." encapsulating the
+     *         properties that are different between this WebAppSecurityConfig and the specified one
+     */
+    private String toStringFormChangedPropertiesMap(Map<String, String> delta) {
+        if (delta == null || delta.isEmpty()) {
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, String> entry : delta.entrySet()) {
+            if (sb.length() > 0) {
+                sb.append(",");
+            }
+            sb.append(entry.getKey()).append("=").append(entry.getValue());
+        }
+        return sb.toString();
     }
 }

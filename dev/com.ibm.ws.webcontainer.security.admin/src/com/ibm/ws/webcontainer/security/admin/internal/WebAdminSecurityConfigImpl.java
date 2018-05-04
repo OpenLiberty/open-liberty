@@ -191,6 +191,18 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     }
 
     /**
+     * {@inheritDoc}<p>
+     * This does not need an implemented as the Admin Application security
+     * configuration properties never change.
+     *
+     * @return {@code null}
+     */
+    @Override
+    public Map<String, String> getChangedPropertiesMap(WebAppSecurityConfig original) {
+        return null;
+    }
+
+    /**
      * {@inheritDoc} Admin Applications do not have a default Form Login URL.
      *
      * @return {@code null}
