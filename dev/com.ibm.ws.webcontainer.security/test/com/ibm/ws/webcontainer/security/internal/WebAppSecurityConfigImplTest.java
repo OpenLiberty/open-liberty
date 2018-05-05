@@ -168,7 +168,7 @@ public class WebAppSecurityConfigImplTest {
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(createMapChanged(), locationAdminRef, securityServiceRef);
 
         assertEquals("When all settings have changed, all should be listed",
-                     "allowFailOverToBasicAuth=false,autoGenSsoCookieName=true,basicAuthenticationMechanismRealmName=newRealm,contextRootForFormAuthenticationMechanism=/modified,displayAuthenticationRealm=true,jaspicSessionCookieName=myJaspicSession,jaspicSessionForMechanismsEnabled=false,loginErrorURL=modifiedLoginError,overrideHttpAuthMethod=modified,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false",
+                     "allowFailOverToBasicAuth=false,autoGenSsoCookieName=true,basicAuthenticationMechanismRealmName=newRealm,contextRootForFormAuthenticationMechanism=/modified,displayAuthenticationRealm=true,jaspicSessionCookieName=myJaspicSession,jaspicSessionForMechanismsEnabled=false,loginErrorURL=modifiedLoginError,overrideHttpAuthenticationMechanism=modified,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false",
                      webCfg.getChangedProperties(webCfgOld));
     }
 
@@ -196,7 +196,7 @@ public class WebAppSecurityConfigImplTest {
                 put("loginErrorURL", "originalLoginError");
                 put("contextRootForFormAuthenticationMechanism", "/original");
                 put("basicAuthenticationMechanismRealmName", "realm");
-                put("overrideHttpAuthMethod", "original");
+                put("overrideHttpAuthenticationMechanism", "original");
             }
         };
         return cfg;
@@ -216,7 +216,7 @@ public class WebAppSecurityConfigImplTest {
                 put("loginErrorURL", "modifiedLoginError");
                 put("contextRootForFormAuthenticationMechanism", "/modified");
                 put("basicAuthenticationMechanismRealmName", "newRealm");
-                put("overrideHttpAuthMethod", "modified");
+                put("overrideHttpAuthenticationMechanism", "modified");
             }
         };
         return cfg;
@@ -370,8 +370,8 @@ public class WebAppSecurityConfigImplTest {
     }
 
     @Test
-    public void getChangedProperties_overrideHttpAuthMethod() {
-        driveSingleAttributeTest("overrideHttpAuthMethod",
+    public void getChangedProperties_overrideHttpAuthenticationMechanism() {
+        driveSingleAttributeTest("overrideHttpAuthenticationMechanism",
                                  "BASIC", "FORM");
     }
 

@@ -126,7 +126,7 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(true));
                 allowing(webAppSecConfig).getHttpOnlyCookies();
                 will(returnValue(true));
-                allowing(webAppSecConfig).getOverrideHttpAuthMethod();
+                allowing(webAppSecConfig).getOverrideHttpAuthenticationMechanism();
                 will(returnValue(null));
             }
         });
@@ -274,7 +274,7 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(sbReqURL));
                 allowing(extReq).getContextPath();
                 will(returnValue(""));
-                allowing(webAppSecConfig).getOverrideHttpAuthMethod();
+                allowing(webAppSecConfig).getOverrideHttpAuthenticationMechanism();
                 will(returnValue(null));
 
                 // This reflects flow in savePostParams
@@ -379,7 +379,7 @@ public class FormLoginAuthenticatorTest {
                 will(returnValue(sbReqURL));
                 allowing(extReq).getContextPath();
                 will(returnValue(""));
-                allowing(webAppSecConfig).getOverrideHttpAuthMethod();
+                allowing(webAppSecConfig).getOverrideHttpAuthenticationMechanism();
                 will(returnValue(null));
 
                 // This reflects flow in savePostParams

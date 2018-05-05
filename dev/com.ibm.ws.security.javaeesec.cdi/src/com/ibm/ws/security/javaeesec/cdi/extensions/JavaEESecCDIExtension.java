@@ -1047,13 +1047,13 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      * This method validates whether the authentication mechanism needs to be overridden by the global
      * login setting in webAppSecurityConfig element.
      * There are two condtions when the global login setting needs to be used:
-     * 1. when overrideHttpAuthMethod attribute is set to FORM or BASIC.
-     * 2. when overrideHttpAuthMethod attribute is set to CLIENT_CERT, and allowAuthenticationFailOverToAuthMethod
+     * 1. when overrideHttpAuthenticationMechanism attribute is set to FORM or BASIC.
+     * 2. when overrideHttpAuthenticationMechanism attribute is set to CLIENT_CERT, and allowAuthenticationFailOverToAuthMethod
      *    attribute is set to BASIC or FORM.
      */
     private boolean isAuthMechOverridden() {
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
-        String value = webAppSecConfig.getOverrideHttpAuthMethod();
+        String value = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
         if (value != null) {
             if ((value.equals(LoginConfiguration.FORM) || value.equals(LoginConfiguration.BASIC))) {
                 return true;
@@ -1069,7 +1069,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     private boolean isAuthMechOverriddenByForm() {
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
-        String value = webAppSecConfig.getOverrideHttpAuthMethod();
+        String value = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
         if (value != null) {
             if (value.equals(LoginConfiguration.FORM)) {
                 return true;

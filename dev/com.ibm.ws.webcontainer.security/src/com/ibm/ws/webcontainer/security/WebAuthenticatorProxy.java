@@ -186,7 +186,7 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
      * @return The correct WebAuthenticator to handle the webRequest, or {@code null} if it could not be created.
      */
     public WebAuthenticator getWebAuthenticator(WebRequest webRequest) {
-        String authMech = webAppSecurityConfig.getOverrideHttpAuthMethod();
+        String authMech = webAppSecurityConfig.getOverrideHttpAuthenticationMechanism();
         if (authMech != null && authMech.equals("CLIENT_CERT")) {
             return createCertificateLoginAuthenticator();
         }

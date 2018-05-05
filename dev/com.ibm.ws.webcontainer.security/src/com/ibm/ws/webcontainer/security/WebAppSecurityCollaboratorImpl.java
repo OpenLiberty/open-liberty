@@ -670,7 +670,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
         if (webReply == null) {
             // check global cert login.
-            String authMech = webAppSecConfig.getOverrideHttpAuthMethod();
+            String authMech = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
             AuthenticationResult authResult = null;
             if (authMech != null && authMech.equals("CLIENT_CERT")) {
                 // process client cert auth first.

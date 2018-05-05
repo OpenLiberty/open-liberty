@@ -135,9 +135,9 @@ public interface WebAppSecurityConfig {
     WebAuthenticatorProxy createWebAuthenticatorProxy();
 
     /**
-     * Returns the value of overrideHttpAuthMethod
+     * Returns the value of overrideHttpAuthenticationMechanism
      */
-    String getOverrideHttpAuthMethod();
+    String getOverrideHttpAuthenticationMechanism();
 
     /**
      * Returns the value of loginFormContextRoot
