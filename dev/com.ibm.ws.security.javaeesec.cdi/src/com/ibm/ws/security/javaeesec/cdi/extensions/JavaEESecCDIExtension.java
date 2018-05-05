@@ -113,7 +113,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             Tr.debug(tc, "processAnnotatedType : annotation : " + annotatedType);
 
         Class<?> javaClass = annotatedType.getJavaClass();
-        boolean useGlobalLogin = isGlobalLoginEnabled();
+        boolean useGlobalLogin = isAuthMechOverridden();
         if (isApplicationAuthMech(javaClass)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Found an application specific HttpAuthenticationMechanism : " + javaClass);
@@ -311,7 +311,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             Properties props;
             Class implClass;
 
-            if (isGlobalLoginFormEnabled()) {
+            if (isAuthMechOverriddenByForm()) {
                 props = getGlobalLoginFormProps();
                 implClass = FormAuthenticationMechanism.class;
             } else {
@@ -1043,9 +1043,17 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return props;
     }
 
-    private boolean isGlobalLoginEnabled() {
+    /**
+     * This method validates whether the authentication mechanism needs to be overridden by the global
+     * login setting in webAppSecurityConfig element.
+     * There are two condtions when the global login setting needs to be used:
+     * 1. when overrideHttpAuthMethod attribute is set to FORM or BASIC.
+     * 2. when overrideHttpAuthMethod attribute is set to CLIENT_CERT, and allowAuthenticationFailOverToAuthMethod
+     *    attribute is set to BASIC or FORM.
+     */
+    private boolean isAuthMechOverridden() {
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
-        String value = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
+        String value = webAppSecConfig.getOverrideHttpAuthMethod();
         if (value != null) {
             if ((value.equals(LoginConfiguration.FORM) || value.equals(LoginConfiguration.BASIC))) {
                 return true;
@@ -1059,9 +1067,9 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return false;
     }
 
-    private boolean isGlobalLoginFormEnabled() {
+    private boolean isAuthMechOverriddenByForm() {
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
-        String value = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
+        String value = webAppSecConfig.getOverrideHttpAuthMethod();
         if (value != null) {
             if (value.equals(LoginConfiguration.FORM)) {
                 return true;
