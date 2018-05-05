@@ -357,10 +357,10 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
-    public String getOverrideHttpAuthenticationMechanism() {
+    public String getOverrideHttpAuthMethod() {
         WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
         if (globalConfig != null)
-            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getOverrideHttpAuthMethod();
         else
             return null;
     }
