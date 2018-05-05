@@ -15,9 +15,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfigChangeEvent;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -47,6 +50,7 @@ public class ApplicationUtilsTest {
     private J2EEName j2eename1, j2eename2;
     private ComponentContext cc; 
     private ApplicationRecycleCoordinator arc;
+    private WebAppSecurityConfigChangeEvent changeevent1;
 
     private static final String APP1 = "application1";
     private static final String APP2 = "application2";
@@ -63,6 +67,7 @@ public class ApplicationUtilsTest {
         j2eename2 = mockery.mock(J2EEName.class, "name2");
         cc = mockery.mock(ComponentContext.class, "cc");
         arc = mockery.mock(ApplicationRecycleCoordinator.class, "arc");
+        changeevent1 = mockery.mock(WebAppSecurityConfigChangeEvent.class, "ce1");
     }
 
     @After
@@ -113,41 +118,53 @@ public class ApplicationUtilsTest {
     }
 
     @Test
-    public void testNotifyConfigChangedRecycle() throws Exception {
+    public void testNotifyWebAppSecurityConfigChangedRecycle() throws Exception {
+        List<String> list = new ArrayList<String>() {
+            {
+                add("loginFormURL");
+            }
+        };
         mockery.checking(new Expectations() {
             {
                 one(cc).locateService("appCoord");
                 will(returnValue(arc));
                 one(arc).recycleApplications(with(any(Set.class)));
+                one(changeevent1).getModifiedAttributeList();
+                will(returnValue(list));
             }
         });
 
-        String delta = "loginFormURL=/newValue";
         ApplicationUtils au = new ApplicationUtils();
         au.registerApplication(APP1);
         au.registerApplication(APP3);
      
         au.activate(cc);
-        au.notifyConfigChanged(delta);
+        au.notifyWebAppSecurityConfigChanged(changeevent1);
         assertEquals("The number of applications should be 0 after recycle.", 0, au.numberOfApplications());
         au.clearApplications();
     }
 
     @Test
-    public void testNotifyConfigChangedNotRecycle() throws Exception {
+    public void testNotifyWebAppSecurityConfigChangedNotRecycle() throws Exception {
+        List<String> list = new ArrayList<String>() {
+            {
+                add("unrelated");
+            }
+        };
         mockery.checking(new Expectations() {
             {
                 never(cc).locateService("appCoord");
+                one(changeevent1).getModifiedAttributeList();
+                will(returnValue(list));
             }
         });
 
-        String delta = "notHit=/newValue";
         ApplicationUtils au = new ApplicationUtils();
         au.registerApplication(APP1);
         au.registerApplication(APP3);
      
         au.activate(cc);
-        au.notifyConfigChanged(delta);
+        au.notifyWebAppSecurityConfigChanged(changeevent1);
         assertEquals("The number of applications should be 2.", 2, au.numberOfApplications());
         au.clearApplications();
     }
@@ -164,13 +181,22 @@ public class ApplicationUtilsTest {
         String[] positiveList = {CFG_KEY_FAIL_OVER_TO_BASICAUTH, CFG_KEY_LOGIN_FORM_URL, CFG_KEY_LOGIN_ERROR_URL, CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD, CFG_KEY_OVERRIDE_HAM, CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, CFG_KEY_BASIC_AUTH_REALM_NAME};
 
         for (String value : positiveList) {
-            assertTrue("true should be returned. data : " + value, ApplicationUtils.isAppRestartRequired(value));
+            List<String> list = new ArrayList<String>() {
+                {
+                    add(value);
+                }
+            };
+            assertTrue("true should be returned. data : " + value, ApplicationUtils.isAppRestartRequired(list));
         }
 
-        String CFG_NOT_RELATED = "webAlwaysLogin";
-        assertFalse("false should be returned. data : " + CFG_NOT_RELATED, ApplicationUtils.isAppRestartRequired(CFG_NOT_RELATED));
+        List<String> list = new ArrayList<String>() {
+            {
+                add("webAlwaysLogin");
+            }
+        };
+        assertFalse("false should be returned. data : webAlwaysLogin", ApplicationUtils.isAppRestartRequired(list));
         assertFalse("false should be returned. data : null", ApplicationUtils.isAppRestartRequired(null));
-        assertFalse("false should be returned. data : emptyString", ApplicationUtils.isAppRestartRequired(""));
+        assertFalse("false should be returned. data : emptyString", ApplicationUtils.isAppRestartRequired(new ArrayList<String>()));
 
     }
 
