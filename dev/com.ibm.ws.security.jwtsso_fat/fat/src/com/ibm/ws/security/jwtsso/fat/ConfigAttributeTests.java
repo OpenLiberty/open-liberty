@@ -13,8 +13,6 @@ package com.ibm.ws.security.jwtsso.fat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.regex.Pattern;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -122,11 +120,16 @@ public class ConfigAttributeTests extends CommonJwtFat {
     }
 
     /**
-     * Test the jwtBuilderRef attribute. Specify an existing and valid jwtBuilderRef,
-     * authenticate, examine the token contents in the
-     * output of the test application to confirm the ref was used to create the token.
-     * Authcache must be disabled in server.xml for this test.
+     * Test the jwtBuilderRef attribute. Specify an existing and valid jwtBuilderRef.
+     * Authentication will fail because the issuer mismatches the consumer, but we should
+     * see evidence in the logs that the customized issuer was presented.
+     * That's all we care about.
      */
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException",
+                   "com.ibm.websphere.security.jwt.InvalidTokenException",
+                   "com.ibm.ws.security.jwt.internal.JwtTokenException",
+                   "com.ibm.websphere.security.WSSecurityException",
+                   "com.ibm.ws.security.authentication.AuthenticationException" })
     @Mode(TestMode.LITE)
     @Test
     public void test_validBuilderRef() throws Exception {
@@ -134,21 +137,20 @@ public class ConfigAttributeTests extends CommonJwtFat {
 
         String issuer = "https://flintstone:19443/jwt/defaultJWT";
 
+        Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl); // get back the login page
+
+        // now confirm we got the login page
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
-
-        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl); // get back the login page
         validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
 
-        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, protectedUrl));
-        expectations.addExpectations(CommonExpectations.jwtCookieExists(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, webClient, JwtFatConstants.JWT_COOKIE_NAME));
-        expectations.addExpectations(CommonExpectations.getResponseTextExpectationsForJwtCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.JWT_COOKIE_NAME,
-                                                                                                defaultUser, Pattern.quote(issuer)));
-        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, defaultUser, Pattern.quote(issuer)));
-        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.LTPA_COOKIE_NAME));
+        // log in, which should drive building a token.
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
 
-        response = actions.doFormLogin(response, defaultUser, defaultPassword); // get back the servlet, we hope.
-        validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
+        String errorMsg = server.waitForStringInLogUsingMark(".*CWWKS6022E: The issuer \\[https://flintstone:19443/jwt/defaultJWT\\]", 100);
+        // CWWKS6022E - issuer not trusted.
+        assertTrue("Did not find expected error message CWWKS6022E in the log", errorMsg != null);
+
     }
 
     /**
