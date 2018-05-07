@@ -24,5 +24,5 @@ Subsystem-Name: Java EE Web Profile 8.0
   com.ibm.websphere.appserver.servlet-4.0,\
   com.ibm.websphere.appserver.transaction-1.2,\
   com.ibm.websphere.appserver.websocket-1.1
-kind=beta
+kind=ga
 edition=core

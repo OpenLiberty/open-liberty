@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <title>JSF 2.3 SelectOneRadio Group Multiple Groups</title> 
+    </h:head>
+    <h:body>
+        <H2>JSF 2.3 SelectOneRadio Group Attribute: MultipleGroups</H2>
+        <br/>
+        <h:form id="form1" prependId="false">
+            Group: testGroup
+            <br/>
+            <h:selectOneRadio id="radio0" group="testGroup" value="#{selectOneRadioGroupBean.selectedValue}">
+                <f:selectItem itemValue="Value1"/>
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio1" group="testGroup" value="#{selectOneRadioGroupBean.selectedValue}">
+                <f:selectItem itemValue="Value2"/>
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio2" group="testGroup" value="#{selectOneRadioGroupBean.selectedValue}">
+                <f:selectItem itemValue="Value3"/>
+            </h:selectOneRadio>
+            <br/>
+            Group: testGroup1
+            <br/>
+            <h:selectOneRadio id="radio3" group="testGroup1" value="#{selectOneRadioGroupBean.selectedValue2}">
+                <f:selectItem itemValue="Value4"/>
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio4" group="testGroup1" value="#{selectOneRadioGroupBean.selectedValue2}">
+                <f:selectItem itemValue="Value5"/>
+            </h:selectOneRadio>
+            <h:selectOneRadio id="radio5" group="testGroup1" value="#{selectOneRadioGroupBean.selectedValue2}">
+                <f:selectItem itemValue="Value6"/>
+            </h:selectOneRadio>
+            <br/>
+            <h:commandButton id="submitButton" value="Submit"/>
+        </h:form>
+        <br/>
+        Selected Value testGroup: #{selectOneRadioGroupBean.selectedValue}
+        <br/>
+        Selected Value testGroup1: #{selectOneRadioGroupBean.selectedValue2}
+    </h:body>
+</html>

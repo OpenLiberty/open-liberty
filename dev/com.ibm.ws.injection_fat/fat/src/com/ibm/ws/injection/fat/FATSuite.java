@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 DSDTest.class,
                 EnvEntryTest.class,
                 JPATest.class,
+                RepeatableDSDTest.class,
                 RepeatableEnvEntryTest.class,
                 RepeatableTranTest.class,
                 ResRefTest.class,

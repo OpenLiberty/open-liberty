@@ -113,7 +113,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      * metadata-complete = true.
      */
     @Test
-    public void testDSMetaDataCompleteAnnOnly() throws Exception {
+    public void testDSDMetaDataCompleteAnnOnly() throws Exception {
         svLogger.info("--> Looking up bean...");
         DSDStatelessBean bean = (DSDStatelessBean) FATHelper.lookupDefaultBindingEJBJavaApp(DSDStatelessBean.class.getName(), "DSDXMLEJB", "DSDStatelessBean");
         assertTrue("--> Expected to receive result = true, actual value of result = " + bean.testInvalidDS(), bean.testInvalidDS());
