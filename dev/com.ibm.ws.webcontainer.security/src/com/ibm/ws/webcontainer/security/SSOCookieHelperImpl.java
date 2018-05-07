@@ -48,7 +48,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected static final ConcurrentMap<ByteArray, String> cookieByteStringCache = new ConcurrentHashMap<ByteArray, String>(20);
     private static int MAX_COOKIE_STRING_ENTRIES = 100;
     private String cookieName = null;
-    protected boolean isJwtCookie = false;
 
     protected final WebAppSecurityConfig config;
 
@@ -101,35 +100,37 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
         Cookie ssoCookie = createCookie(req, cookieByteString);
         resp.addCookie(ssoCookie);
-
     }
 
     /**
      * @param subject
      * @param req
      * @param resp
+     * @return true if cookies were added
      */
     @Override
-    public void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+    public boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+        boolean result = false;
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         if (cookieByteString != null) {
             String testString = getJwtSsoTokenFromCookies(req, getJwtCookieName());
             boolean cookieAlreadySent = testString != null && testString.equals(cookieByteString);
             if (!cookieAlreadySent) {
-                addJwtCookies(cookieByteString, req, resp);
+                result = addJwtCookies(cookieByteString, req, resp);
             }
-            isJwtCookie = true;
         }
-
+        return result;
     }
 
-    /*
-     * add the cookie or cookies as needed, depending on size of token
+    /**
+     * Add the cookie or cookies as needed, depending on size of token.
+     * Return true if any cookies were added
      */
-    protected void addJwtCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp) {
+    protected boolean addJwtCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp) {
+
         String baseName = getJwtCookieName();
         if (baseName == null) {
-            return;
+            return false;
         }
         if ((!req.isSecure()) && getJwtCookieSecure()) {
             Tr.warning(tc, "JWT_COOKIE_SECURITY_MISMATCH", new Object[] {}); // CWWKS9127W
@@ -146,6 +147,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             resp.addCookie(ssoCookie);
             cookieName = baseName + (i + 2 < 10 ? "0" : "") + (i + 2); //name02... name99
         }
+        return true;
     }
 
     protected String getJwtCookieName() {

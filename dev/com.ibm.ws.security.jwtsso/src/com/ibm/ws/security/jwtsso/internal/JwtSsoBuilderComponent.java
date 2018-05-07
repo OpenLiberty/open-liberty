@@ -8,6 +8,12 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
+/*
+ * This class handles the builder objects, the JwtSsoComponent class handles the
+ * consumer objects. This class functions as both a jwtsso component and as the
+ * default builder entity for jwtsso, which has different settings than the
+ * default builder entity for jwt.
+ */
 package com.ibm.ws.security.jwtsso.internal;
 
 import java.security.PrivateKey;
@@ -38,6 +44,7 @@ import com.ibm.ws.security.jwtsso.utils.IssuerUtil;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
+import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
 // This class handles the builder objects, the JwtSsoComponent class handles the consumer objects.
 @Component(service = { JwtSsoBuilderConfig.class,
@@ -61,11 +68,15 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
     private String cookieName;
     private WebAppSecurityConfig webAppSecConfig;
     private String signatureAlgorithm = "RS256";
-
+    private final static String KEY_JWT_SERVICE = "jwtConfig";
+    private final static String CFG_KEY_ID = "id";
+    private final JwtConfig builderConfig = null;
+    private final Object initlock = new Object();
+    ConcurrentServiceReferenceMap<String, JwtConfig> jwtServiceMapRef = new ConcurrentServiceReferenceMap<String, JwtConfig>(KEY_JWT_SERVICE);
     protected static final String KEY_UNIQUE_ID = "id";
     protected String uniqueId = null;
-
     private IssuerUtil issuerUtil;
+    private boolean isDefaultBuilder = false;
 
     @Override
     public boolean isHttpOnlyCookies() {
@@ -111,6 +122,20 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
     @Override
     public String getJwtConsumerRef() {
         return jwtConsumerRef;
+    }
+
+    // we track the builder config so we can get the token expiration time
+    @org.osgi.service.component.annotations.Reference(service = JwtConfig.class, name = KEY_JWT_SERVICE, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.RELUCTANT)
+    protected void setJwtConfig(org.osgi.framework.ServiceReference<JwtConfig> ref) {
+        synchronized (initlock) {
+            jwtServiceMapRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
+        }
+    }
+
+    protected void unsetJwtConfig(org.osgi.framework.ServiceReference<JwtConfig> ref) {
+        synchronized (initlock) {
+            jwtServiceMapRef.removeReference((String) ref.getProperty(CFG_KEY_ID), ref);
+        }
     }
 
     // todo: remove if not needed
@@ -183,8 +208,10 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
         fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_KEY_FALLBACKTOLTPA);
         cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
         jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
+        isDefaultBuilder = false;
         if (jwtBuilderRef == null) {
             setJwtSsoBuilderDefaults();
+            isDefaultBuilder = true;
         }
         jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
         cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
@@ -267,8 +294,16 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
     /** {@inheritDoc} */
     @Override
     public long getValidTime() {
-        // TODO Auto-generated method stub
-        return 2;
+        long result = 0;
+        if (isDefaultBuilder) {
+            result = 2; // hour, for now
+        } else {
+            boolean haveNull = jwtServiceMapRef.getReference(jwtBuilderRef) == null ||
+                    jwtServiceMapRef.getReference(jwtBuilderRef).getProperty(JwtUtils.CFG_KEY_VALID) == null;
+
+            result = (haveNull) ? 0 : ((Long) jwtServiceMapRef.getReference(jwtBuilderRef).getProperty(JwtUtils.CFG_KEY_VALID)).longValue();
+        }
+        return result;
     }
 
     /** {@inheritDoc} */

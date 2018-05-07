@@ -137,7 +137,6 @@ public class ConfigServerXMLOverrideTests extends AbstractSpringTests {
             SSLConfig ssl = new SSLConfig();
             ssls.add(ssl);
             ssl.setId(ID_SSL + REQUESTED_PORT);
-            ssl.setId("ssl-test");
             ssl.setKeyStoreRef("keystore-test");
             ssl.setTrustStoreRef("truststore-test");
 

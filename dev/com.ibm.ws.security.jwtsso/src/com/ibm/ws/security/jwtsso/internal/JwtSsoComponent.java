@@ -354,7 +354,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
     /** {@inheritDoc} */
     @Override
     public long getClockSkew() {
-        // TODO Auto-generated method stub
+        // 5 minutes, in milliseconds
         return 5 * 60 * 1000;
     }
 
