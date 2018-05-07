@@ -339,7 +339,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                 }
             }
             //Recreate the jwtSSOToken with customCacheKey and customRealm
-            JwtSSOTokenHelper.addCustomStuffsToJwtSSOToken(subject);
+            JwtSSOTokenHelper.addCustomCacheKeyAndRealmToJwtSSOToken(subject);
         }
 
         return true;

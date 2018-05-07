@@ -396,7 +396,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addCustomStuffsToJwtSSOToken(Subject subject) throws LoginException {
+	public void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws LoginException {
 		Set<JsonWebToken> jsonWebTokenPrincipals = getJwtPrincipals(subject);
 		if (!jsonWebTokenPrincipals.isEmpty()) {
 			// Set<Principal> principals = subject.getPrincipals();

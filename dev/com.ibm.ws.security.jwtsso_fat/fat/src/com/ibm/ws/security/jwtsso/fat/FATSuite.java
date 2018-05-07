@@ -17,7 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 FeatureOnlyTest.class,
-                ConfigAttributeTests.class,
-                CookieProcessingTests.class
+//                ConfigAttributeTests.class,
+//                CookieProcessingTests.class
 })
 public class FATSuite {}

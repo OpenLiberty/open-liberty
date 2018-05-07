@@ -28,7 +28,7 @@ public interface JwtSSOTokenProxy {
 
     String getCacheKeyForJwtSSOToken(Subject subject, String encodedjwt);
 
-    void addCustomStuffsToJwtSSOToken(Subject subject) throws LoginException;
+    void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws LoginException;
 
     boolean isSubjectValid(Subject subject);
 

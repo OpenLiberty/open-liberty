@@ -119,7 +119,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     @Test
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
-                   "com.ibm.websphere.security.WSSecurityException" })
+                   "com.ibm.websphere.security.LoginException" })
     public void test_invalidBuilderRef_ltpaFallbackFalse() throws Exception {
         reconfigServer("server_testbadbuilder.xml");
         ArrayList<String> ignoredErrors = new ArrayList<String>();
@@ -214,7 +214,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     @Test
     @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException",
-                   "com.ibm.websphere.security.WSSecurityException",
+                   "com.ibm.websphere.security.LoginException",
                    "com.ibm.websphere.security.jwt.InvalidConsumerException" })
     public void test_invalidConsumerRef() throws Exception {
         reconfigServer("server_testbadconsumer.xml");
@@ -250,7 +250,7 @@ public class ConfigAttributeTests extends CommonSecurityFat {
     @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
-                   "com.ibm.websphere.security.WSSecurityException" })
+                   "com.ibm.websphere.security.LoginException" })
     public void test_fallbackToLtpaTrue() throws Exception {
         reconfigServer("server_testfallbacktoltpatrue.xml");
         Expectations expectations = new Expectations();

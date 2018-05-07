@@ -138,9 +138,9 @@ public class JwtSSOTokenHelper {
         return null;
     }
 
-    public static void addCustomStuffsToJwtSSOToken(Subject subject) throws LoginException {
+    public static void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws LoginException {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            jwtSSOTokenProxyRef.getService().addCustomStuffsToJwtSSOToken(subject);
+            jwtSSOTokenProxyRef.getService().addCustomCacheKeyAndRealmToJwtSSOToken(subject);
         }
     }
 
