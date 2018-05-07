@@ -175,7 +175,7 @@ public class ApplicationUtilsTest {
         String CFG_KEY_LOGIN_FORM_URL = "loginFormURL";
         String CFG_KEY_LOGIN_ERROR_URL = "loginErrorURL";
         String CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD = "allowAuthenticationFailOverToAuthMethod";
-        String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
+        String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthMethod";
         String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
         String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
         String[] positiveList = {CFG_KEY_FAIL_OVER_TO_BASICAUTH, CFG_KEY_LOGIN_FORM_URL, CFG_KEY_LOGIN_ERROR_URL, CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD, CFG_KEY_OVERRIDE_HAM, CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, CFG_KEY_BASIC_AUTH_REALM_NAME};

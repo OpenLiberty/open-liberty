@@ -6,7 +6,7 @@
         <feature>jsf-2.3</feature>
     </featureManager>
 
-    <webAppSecurity overrideHttpAuthenticationMechanism="CLIENT_CERT" allowFailOverToBasicAuth="true" basicAuthenticationMechanismRealmName="GlobalBasic" />
+    <webAppSecurity overrideHttpAuthMethod="CLIENT_CERT" allowFailOverToBasicAuth="true" basicAuthenticationMechanismRealmName="GlobalBasic" />
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
     <keyStore id="defaultTrustStore" location="${server.config.dir}/resources/security/trust.jks" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 4/12/2038 -->

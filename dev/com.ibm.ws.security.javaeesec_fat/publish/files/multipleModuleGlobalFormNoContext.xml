@@ -6,7 +6,7 @@
     </featureManager>
 
     <webAppSecurity loginFormURL="globalLogin/globalLogin.jsp" loginErrorURL="globalLogin/globalLoginError.jsp"
-     overrideHttpAuthenticationMechanism="FORM" />
+     overrideHttpAuthMethod="FORM" />
 
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->

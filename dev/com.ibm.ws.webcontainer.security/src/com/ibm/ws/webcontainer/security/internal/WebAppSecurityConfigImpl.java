@@ -64,7 +64,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL = "includePathInWASReqURL";
     static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES = "trackLoggedOutSSOCookies";
     static final String CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME = "useOnlyCustomCookieName";
-    public static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
+    public static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthMethod";
     public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
     public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
     static final String CFG_KEY_JASPIC_SESSION_FOR_MECHANISMS_ENABLED = "jaspicSessionForMechanismsEnabled";
@@ -95,7 +95,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean includePathInWASReqURL;
     private final Boolean trackLoggedOutSSOCookies;
     private final Boolean useOnlyCustomCookieName;
-    private final String overrideHttpAuthenticationMechanism;
+    private final String overrideHttpAuthMethod;
     private final String loginFormContextRoot;
     private final String basicAuthRealmName;
     private final String jaspicSessionCookieName;
@@ -134,7 +134,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES, "trackLoggedOutSSOCookies");
             put(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME, "useOnlyCustomCookieName");
             put(CFG_KEY_WAS_REQ_URL_REDIRECT_DOMAIN_NAMES, "wasReqURLRedirectDomainNames");
-            put(CFG_KEY_OVERRIDE_HAM, "overrideHttpAuthenticationMechanism");
+            put(CFG_KEY_OVERRIDE_HAM, "overrideHttpAuthMethod");
             put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
         }
@@ -169,7 +169,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         includePathInWASReqURL = (Boolean) newProperties.get(CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL);
         trackLoggedOutSSOCookies = (Boolean) newProperties.get(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES);
         useOnlyCustomCookieName = (Boolean) newProperties.get(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME);
-        overrideHttpAuthenticationMechanism = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
+        overrideHttpAuthMethod = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         jaspicSessionCookieName = (String) newProperties.get(CFG_KEY_JASPIC_SESSION_COOKIE_NAME);
@@ -390,8 +390,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     }
 
     @Override
-    public String getOverrideHttpAuthenticationMechanism() {
-        return overrideHttpAuthenticationMechanism;
+    public String getOverrideHttpAuthMethod() {
+        return overrideHttpAuthMethod;
     }
 
     @Override

@@ -113,12 +113,12 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             Tr.debug(tc, "processAnnotatedType : annotation : " + annotatedType);
 
         Class<?> javaClass = annotatedType.getJavaClass();
-        boolean useGlobalLogin = isAuthMechOverridden();
+        boolean isAuthMechOverridden = isAuthMechOverridden();
         if (isApplicationAuthMech(javaClass)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Found an application specific HttpAuthenticationMechanism : " + javaClass);
             }
-            if (useGlobalLogin) {
+            if (isAuthMechOverridden) {
                 createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
             } else {
                 Annotation ltc = annotatedType.getAnnotation(LoginToContinue.class);
@@ -136,13 +136,13 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             // TODO: If I see my annotations, create beans by type. Add more bean types.
             Class<? extends Annotation> annotationType = annotation.annotationType();
             if (BasicAuthenticationMechanismDefinition.class.equals(annotationType)) {
-                if (useGlobalLogin) {
+                if (isAuthMechOverridden) {
                     createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
                 } else {
                     createModulePropertiesProviderBeanForBasicToAdd(beanManager, annotation, annotationType, javaClass);
                 }
             } else if (FormAuthenticationMechanismDefinition.class.equals(annotationType) || CustomFormAuthenticationMechanismDefinition.class.equals(annotationType)) {
-                if (useGlobalLogin) {
+                if (isAuthMechOverridden) {
                     createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
                 } else {
                     createModulePropertiesProviderBeanForFormToAdd(beanManager, annotation, annotationType, javaClass);
@@ -1047,13 +1047,13 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      * This method validates whether the authentication mechanism needs to be overridden by the global
      * login setting in webAppSecurityConfig element.
      * There are two condtions when the global login setting needs to be used:
-     * 1. when overrideHttpAuthenticationMechanism attribute is set to FORM or BASIC.
-     * 2. when overrideHttpAuthenticationMechanism attribute is set to CLIENT_CERT, and allowAuthenticationFailOverToAuthMethod
+     * 1. when overrideHttpAuthMethod attribute is set to FORM or BASIC.
+     * 2. when overrideHttpAuthMethod attribute is set to CLIENT_CERT, and allowAuthenticationFailOverToAuthMethod
      *    attribute is set to BASIC or FORM.
      */
     private boolean isAuthMechOverridden() {
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
-        String value = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
+        String value = webAppSecConfig.getOverrideHttpAuthMethod();
         if (value != null) {
             if ((value.equals(LoginConfiguration.FORM) || value.equals(LoginConfiguration.BASIC))) {
                 return true;
@@ -1069,7 +1069,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     private boolean isAuthMechOverriddenByForm() {
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
-        String value = webAppSecConfig.getOverrideHttpAuthenticationMechanism();
+        String value = webAppSecConfig.getOverrideHttpAuthMethod();
         if (value != null) {
             if (value.equals(LoginConfiguration.FORM)) {
                 return true;

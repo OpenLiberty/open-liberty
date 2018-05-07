@@ -111,7 +111,7 @@
             required="false" type="Boolean"
             default="false" />
 
-        <AD id="overrideHttpAuthenticationMechanism" name="%overrideHttpAuthenticationMechanism" description="%overrideHttpAuthenticationMechanism.desc"
+        <AD id="overrideHttpAuthMethod" name="%overrideHttpAuthMethod" description="%overrideHttpAuthMethod.desc"
             required="false" type="String">
                 <Option label="BASIC" value="BASIC" />
                 <Option label="FORM" value="FORM" />
