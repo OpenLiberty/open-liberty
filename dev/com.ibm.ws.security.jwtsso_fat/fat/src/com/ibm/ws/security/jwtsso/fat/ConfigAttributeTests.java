@@ -13,6 +13,8 @@ package com.ibm.ws.security.jwtsso.fat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -134,6 +136,9 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Test
     public void test_validBuilderRef() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testgoodbuilder.xml");
+        ArrayList<String> errors = new ArrayList<String>();
+        errors.add("CWWKS6022E");
+        server.addIgnoredErrors(errors);
 
         String issuer = "https://flintstone:19443/jwt/defaultJWT";
 
