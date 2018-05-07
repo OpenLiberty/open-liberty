@@ -205,3 +205,19 @@ ENTITY_ALREADY_EXIST.useraction=Retry the operation and specify a different name
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: The user registry operation could not be completed. The write operations are not allowed on secondary LDAP server {0}.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=All write operations (create, update, delete) are only allowed in primary LDAP server.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Ensure primary server has been started and retry the operation.
+
+LDAP_REGISTRY_MAPPER_NOT_BOUND=CWIML4500W: A custom X.509 certificate mapper was not bound with this LDAP registry.
+LDAP_REGISTRY_MAPPER_NOT_BOUND.explanation=The X.509 certificate mapping mode was set to CUSTOM, but no custom X.509 certificate mapper was bound to the LDAP registry. 
+LDAP_REGISTRY_MAPPER_NOT_BOUND.useraction=Ensure that the certificateMapperId attribute in the LDAP registry is configured to point to a valid custom X.509 certificate mapper.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWIML4502W: The custom X.509 certificate mapper threw a CertificateMapNotSupportedException exception.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=The custom X.509 certificate mapper threw a CertificateMapNotSupportedException exception.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=If the exception was unexpected, review the custom X.509 certificate mapper implementation and make necessary changes.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED=CWIML4503E: The custom X.509 certificate mapper threw a CertificateMapFailedException exception.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=The custom X.509 certificate mapper threw a CertificateMapFailedException exception.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=If the exception was unexpected, review the custom X.509 certificate mapper implementation and make necessary changes.
+
+LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: The custom X.509 certificate mapper returned an empty or null value. 
+LDAP_REGISTRY_INVALID_MAPPING.explanation=The custom X.509 certificate mapper must return a non-empty and non-null value or throw one of the named exceptions.
+LDAP_REGISTRY_INVALID_MAPPING.useraction=Modify the custom X.509 certificate mapper implementation so that it does not return an empty or null value. If a valid value cannot be returned, the implementation must throw a checked exception. 

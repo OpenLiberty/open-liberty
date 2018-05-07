@@ -50,8 +50,10 @@ Subsystem-Category: JavaEE8Application
 -bundles=com.ibm.ws.app.manager.war, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io.1.4, \
+ com.ibm.ws.org.apache.commons.io, \
  com.ibm.websphere.security, \
  com.ibm.ws.org.apache.commons.fileupload.1.2.1, \
+ com.ibm.ws.org.apache.commons.fileupload, \
  com.ibm.ws.webcontainer.servlet.4.0, \
  com.ibm.ws.webcontainer.servlet.4.0.factories, \
  com.ibm.ws.webcontainer.servlet.3.1, \
@@ -68,5 +70,5 @@ Subsystem-Category: JavaEE8Application
  bin/pluginUtility.bat, \
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.servlet_1.1-javadoc.zip
 Subsystem-Name: Java Servlets 4.0
-kind=beta
+kind=ga
 edition=core

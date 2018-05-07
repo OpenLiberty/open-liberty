@@ -48,11 +48,14 @@ public class DelaySseResource extends Application {
         } else if (retry == 1) {
             retry = 2;
             delayTime = System.currentTimeMillis() - startTime;
-            if (!((delayTime >= 3000) && (delayTime <= 3500))) {
-                returnMessage = "Test 1 failed.  Expected delay time (3000 to 3500), actual delay time:  " + delayTime;
+            if (!(delayTime >= 3000)) {
+                returnMessage = "Test 1 failed.  Expected delay time 3000 ms, actual delay time:  " + delayTime;
+                System.out.println("Test 1 failed.  Expected delay time 3000 ms, actual delay time:  " + delayTime);
             }
+            //reset startTime
+            startTime = System.currentTimeMillis();
             //add 10 seconds
-            long delayTime2 = System.currentTimeMillis() + 10000;
+            long delayTime2 = startTime + 10000;
             //get the Date to send
             Date testDate = new Date(delayTime2);
             SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
@@ -62,11 +65,15 @@ public class DelaySseResource extends Application {
             retry = 3;
             delayTime = System.currentTimeMillis() - startTime;
             //Since HTTP dates are in seconds we need to allow for a slightly lower result
-            if (!((delayTime >= 12500) && (delayTime <= 14000))) {
-                returnMessage = "Test 2 failed.  Expected delay time (13000 to 14000), actual delay time:  " + delayTime;
+            if (!(delayTime >= 9000)) {
+                returnMessage = "Test 2 failed.  Expected delay time (>=9000 ms), actual delay time:  " + delayTime;
+                System.out.println("Test 2 failed.  Expected delay time (>=9000 ms), actual delay time:  " + delayTime);
             } else {
                 returnMessage = "Retry Test Successful";
             }
+            //reset startTime
+            startTime = System.currentTimeMillis();
+
             try (SseEventSink s = eventSink) {
                 s.send(sse.newEventBuilder().data(returnMessage).reconnectDelay(5000L).build());
             }
@@ -76,8 +83,9 @@ public class DelaySseResource extends Application {
         } else if (retry == 3) {
             delayTime = System.currentTimeMillis() - startTime;
             //Since HTTP dates are in seconds we need to allow for a slightly lower result
-            if (!((delayTime >= 17500) && (delayTime <= 19000))) {
-                returnMessage = "Test 2 failed.  Expected delay time (13000 to 14000), actual delay time:  " + delayTime;
+            if (!(delayTime >= 4000)) {
+                returnMessage = "Test 3 failed.  Expected delay time (>=4000), actual delay time:  " + delayTime;
+                System.out.println("Test 3 failed.  Expected delay time (>=4000), actual delay time:  " + delayTime);
             } else {
                 returnMessage = "Reset Test Successful";
             }

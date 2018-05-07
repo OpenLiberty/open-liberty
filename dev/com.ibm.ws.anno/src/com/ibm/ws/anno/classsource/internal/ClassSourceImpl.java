@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Set;
 
+import javax.lang.model.SourceVersion;
+
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 
@@ -739,4 +741,41 @@ public abstract class ClassSourceImpl implements ClassSource {
 
         return true;
     }
+    
+    /**
+     * Test validity using rules for Java classes and package names.
+     * @param name - simple class name or fully qualified class name.
+     * @return
+     */
+    protected boolean isValidPackageName(String name) {
+
+        // Normal validity test.
+        if ( SourceVersion.isName(name) ) {
+            return true;
+        }
+
+        // TODO:  When Java 9 support is added, uncomment this:
+        //        if (name.equals("package-info")) {
+        //            return true;
+        //        }
+        
+        // "package-info" alone is a valid class name, but SourceVersion.isName() returns false 
+        // for the name "package-info".  Test for "package-info" separately and allow it to pass.        
+        if (name.equals("package-info")) {
+            return true;
+        }
+
+        // ".package-info" at the end of a fully qualified class name fails
+        // the SourceVersion.isName() test. However, it is valid.  Remove "package-info" 
+        // and test just the package name alone.
+        final String DOT_PACKAGE_INFO = ".package-info";
+        if (name.endsWith(DOT_PACKAGE_INFO)) {
+
+            String packageOnly = name.substring(0, name.length() - DOT_PACKAGE_INFO.length());
+            return SourceVersion.isName(packageOnly);
+        }
+
+        return false;
+    }
+    
 }

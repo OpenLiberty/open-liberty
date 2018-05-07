@@ -22,12 +22,13 @@ import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 
-class ConfigVariableRegistry implements VariableRegistry {
+class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
 
     private static final TraceComponent tc = Tr.register(ConfigVariableRegistry.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
@@ -38,7 +39,7 @@ class ConfigVariableRegistry implements VariableRegistry {
     private final File variableCacheFile;
     // variables explicitly defined in server.xml
     private Map<String, ConfigVariable> configVariables;
-    // cache of external variables 
+    // cache of external variables
     private Map<String, Object> variableCache;
     // cache of variables defined in default configurations
     private Map<String, Object> defaultVariableCache;
@@ -152,12 +153,12 @@ class ConfigVariableRegistry implements VariableRegistry {
 
     /**
      * Resolve the given variable.
-     * 
+     *
      * Formerly, this value was path-normalized (i.e, "//" is replaced
      * with "/" and any trailing "/" are removed from the value).
-     * 
+     *
      * This has changed, at least temporarily, to not do path normalization for variables.
-     * 
+     *
      * @param variableName
      * @return The resolved value or null if the variable doesn't exist
      */
@@ -276,6 +277,21 @@ class ConfigVariableRegistry implements VariableRegistry {
      */
     public void addVariableInUse(String variable) {
         addVariable(variable, IN_USE);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.config.xml.Variables#getUserDefinedVariables()
+     */
+    @Override
+    public Map<String, String> getUserDefinedVariables() {
+        HashMap<String, String> userDefinedVariables = new HashMap<String, String>();
+        for (Map.Entry<String, ConfigVariable> entry : configVariables.entrySet()) {
+            ConfigVariable var = entry.getValue();
+            userDefinedVariables.put(var.getName(), var.getValue());
+        }
+        return userDefinedVariables;
     }
 
 }

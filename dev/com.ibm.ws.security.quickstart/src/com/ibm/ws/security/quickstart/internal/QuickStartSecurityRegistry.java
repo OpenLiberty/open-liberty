@@ -99,12 +99,12 @@ class QuickStartSecurityRegistry implements UserRegistry {
 
     /** {@inheritDoc} */
     @Override
-    public String mapCertificate(X509Certificate cert) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
-        if (cert == null) {
+    public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
+        if (chain == null || chain.length == 0 || chain[0] == null) {
             throw new IllegalArgumentException("cert is null");
         }
         // getSubjectDN is denigrated
-        String dn = cert.getSubjectX500Principal().getName();
+        String dn = chain[0].getSubjectX500Principal().getName();
         String name = LDAPUtils.getCNFromDN(dn);
         if (name == null || !isValidUser(name)) {
             throw new CertificateMapFailedException("DN: " + dn + " does not map to a valid registry user");

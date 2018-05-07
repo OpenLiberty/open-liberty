@@ -66,25 +66,13 @@ OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Wywo\u0142anie metody Opentracin
 OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=Sk\u0142adnik tworzy implementacje klasy Tracer za pomoc\u0105 fabryki OpentracingTracerFactory podanej przez u\u017cytkownika. Metoda OpentracingTracerFactory.newInstance zwr\u00f3ci\u0142a wyj\u0105tek.
 OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Okre\u015bl, dlaczego podana przez u\u017cytkownika metoda OpentracingTracerFactory.newInstance zwr\u00f3ci\u0142a wyj\u0105tek.
 
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: \u017baden obiekt Tracer nie jest dost\u0119pny dla \u017c\u0105dania przychodz\u0105cego. \u017b\u0105danie przychodz\u0105ce nie zostanie skorelowane z us\u0142ug\u0105 na pocz\u0105tku przep\u0142ywu.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=Implementacja klasy Tracer nie by\u0142a dost\u0119pna, gdy \u017c\u0105danie dotar\u0142o do punktu ko\u0144cowego aplikacji. To \u017c\u0105danie przychodz\u0105ce nie udost\u0119pni \u017cadnych informacji us\u0142udze Opentracing.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Sprawd\u017a poprzednie b\u0142\u0119dy, aby okre\u015bli\u0107, dlaczego obiekt Tracer nie jest dost\u0119pny.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: Obiekt Span utworzony dla \u017c\u0105dania przychodz\u0105cego nie jest dost\u0119pny na potrzeby odpowiedzi na \u017c\u0105danie. \u017b\u0105danie przychodz\u0105ce nie zostanie skorelowane z us\u0142ug\u0105 na pocz\u0105tku przep\u0142ywu.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=Obiekt Span utworzony przy nadej\u015bciu \u017c\u0105dania nie jest dost\u0119pny przy zwracaniu odpowiedzi. \u017badne informacje obiektu Span nie zostan\u0105 udost\u0119pnione us\u0142udze Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Sprawd\u017a poprzednie b\u0142\u0119dy, aby okre\u015bli\u0107, dlaczego obiekt Span nie jest dost\u0119pny.
-
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: Nie znaleziono obiektu Tracer dla \u017c\u0105dania wychodz\u0105cego. \u017b\u0105danie wychodz\u0105ce nie zostanie skorelowane z \u017c\u0105daniem przychodz\u0105cym.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=Implementacja klasy Tracer nie by\u0142a dost\u0119pna, gdy \u017c\u0105danie by\u0142o wysy\u0142ane z aplikacji. To \u017c\u0105danie wychodz\u0105ce nie udost\u0119pni \u017cadnych informacji us\u0142udze Opentracing.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Sprawd\u017a poprzednie b\u0142\u0119dy, aby okre\u015bli\u0107, dlaczego obiekt Tracer nie jest dost\u0119pny.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: Obiekt Span utworzony dla \u017c\u0105dania wychodz\u0105cego nie jest dost\u0119pny na potrzeby odpowiedzi na \u017c\u0105danie. \u017b\u0105danie wychodz\u0105ce nie zostanie skorelowane z \u017c\u0105daniem przychodz\u0105cym.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=Obiekt Span utworzony przy wys\u0142aniu \u017c\u0105dania nie jest dost\u0119pny przy zwracaniu odpowiedzi. \u017badne informacje obiektu Span nie zostan\u0105 udost\u0119pnione us\u0142udze Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Sprawd\u017a poprzednie b\u0142\u0119dy, aby okre\u015bli\u0107, dlaczego obiekt Span nie jest dost\u0119pny.
-
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Wywo\u0142ana metoda OpentracingTracerFactory.newInstance(...) podana przez u\u017cytkownika zwr\u00f3ci\u0142a warto\u015b\u0107 NULL.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Sk\u0142adnik tworzy implementacje klasy Tracer za pomoc\u0105 fabryki OpentracingTracerFactory podanej przez u\u017cytkownika. Metoda OpentracingTracerFactory.newInstance zwr\u00f3ci\u0142a warto\u015b\u0107 NULL.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Okre\u015bl, dlaczego metoda OpentracingTracerFactory.newInstance podana przez u\u017cytkownika zwr\u00f3ci\u0142a warto\u015b\u0107 NULL.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: Interfejs OpenTracing nie mo\u017ce \u015bledzi\u0107 \u017c\u0105da\u0144 JAX-RS, poniewa\u017c nie podano klasy OpentracingTracerFactory.
+OPENTRACING_NO_TRACERFACTORY.explanation=Interfejs OpenTracing nie mo\u017ce poprawnie dzia\u0142a\u0107, poniewa\u017c nie podano klasy OpentracingTracerFactory. \u017b\u0105dania JAX-RS b\u0119d\u0105 wykonywane normalnie, ale nie b\u0119d\u0105 \u015bledzone.
+OPENTRACING_NO_TRACERFACTORY.useraction=Wi\u0119cej informacji na ten temat zawiera dokumentacja dotycz\u0105ca w\u0142\u0105czania \u015bledzenia rozproszonego OpenTracing.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

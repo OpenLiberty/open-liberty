@@ -14,8 +14,12 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 
+import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
+import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config12.archaius.Config12BuilderImpl;
+import com.ibm.ws.microprofile.config13.converters.Config13DefaultConverters;
+import com.ibm.ws.microprofile.config13.impl.Config13ConversionManager;
 import com.ibm.ws.microprofile.config13.sources.Config13DefaultSources;
 
 public class Config13BuilderImpl extends Config12BuilderImpl implements ConfigBuilder {
@@ -53,6 +57,16 @@ public class Config13BuilderImpl extends Config12BuilderImpl implements ConfigBu
         }
         sources = sources.unmodifiable();
         return sources;
+    }
+
+    @Override
+    protected PriorityConverterMap getDefaultConverters() {
+        return Config13DefaultConverters.getDefaultConverters();
+    }
+
+    @Override
+    protected ConversionManager getConversionManager(PriorityConverterMap converters, ClassLoader classLoader) {
+        return new Config13ConversionManager(converters, classLoader);
     }
 
 /////////////////////////////////////////////

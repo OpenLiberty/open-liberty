@@ -218,6 +218,11 @@ public class BasicRegistryTest {
             public String certificateMapperId() {
                 return null;
             }
+
+            @Override
+            public String CertificateMapper_target() {
+                return null;
+            }
         };
         BasicRegistry reg = new BasicRegistry();
         reg.activate(brc);
@@ -259,6 +264,11 @@ public class BasicRegistryTest {
 
             @Override
             public String certificateMapperId() {
+                return null;
+            }
+
+            @Override
+            public String CertificateMapper_target() {
                 return null;
             }
         };
@@ -356,7 +366,7 @@ public class BasicRegistryTest {
                 will(returnValue(principal));
             }
         });
-        fullBasicRegistry().mapCertificate(cert);
+        fullBasicRegistry().mapCertificate(new X509Certificate[] { cert });
     }
 
     /**
@@ -372,7 +382,7 @@ public class BasicRegistryTest {
                 will(returnValue(principal));
             }
         });
-        fullBasicRegistry().mapCertificate(cert);
+        fullBasicRegistry().mapCertificate(new X509Certificate[] { cert });
     }
 
     /**
@@ -388,7 +398,7 @@ public class BasicRegistryTest {
                 will(returnValue(principal));
             }
         });
-        assertEquals("user1", fullBasicRegistry().mapCertificate(cert));
+        assertEquals("user1", fullBasicRegistry().mapCertificate(new X509Certificate[] { cert }));
     }
 
     /**

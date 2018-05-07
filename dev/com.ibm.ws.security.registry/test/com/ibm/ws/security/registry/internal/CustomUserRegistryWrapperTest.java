@@ -751,7 +751,7 @@ public class CustomUserRegistryWrapperTest {
                 will(returnValue(NAME));
             }
         });
-        assertEquals("mapCertificate did not return expected name.", NAME, wrapper.mapCertificate(cert));
+        assertEquals("mapCertificate did not return expected name.", NAME, wrapper.mapCertificate(certChain));
     }
 
     /**
@@ -768,7 +768,7 @@ public class CustomUserRegistryWrapperTest {
         });
 
         try {
-            wrapper.mapCertificate(cert);
+            wrapper.mapCertificate(certChain);
         } catch (Exception e) {
             assertExceptionMessage(e);
             throw e;
@@ -789,7 +789,7 @@ public class CustomUserRegistryWrapperTest {
         });
 
         try {
-            wrapper.mapCertificate(cert);
+            wrapper.mapCertificate(certChain);
         } catch (Exception e) {
             assertExceptionContentsAndRethrow(certMapFailedException, e);
         }
@@ -808,7 +808,7 @@ public class CustomUserRegistryWrapperTest {
         });
 
         try {
-            wrapper.mapCertificate(cert);
+            wrapper.mapCertificate(certChain);
         } catch (Exception e) {
             assertExceptionContentsAndRethrow(customRegistryException, e);
         }

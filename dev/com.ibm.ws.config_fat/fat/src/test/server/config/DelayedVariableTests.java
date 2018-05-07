@@ -43,6 +43,11 @@ public class DelayedVariableTests extends ServletRunner {
         test(server);
     }
 
+    @Test
+    public void testConfigVariables() throws Exception {
+        test(server);
+    }
+
     @BeforeClass
     public static void setUpForMergedConfigTests() throws Exception {
         //copy the config feature into the server features location

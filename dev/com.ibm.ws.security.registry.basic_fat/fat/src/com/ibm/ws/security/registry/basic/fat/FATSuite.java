@@ -20,7 +20,8 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                CustomCertificateMapperTest.class
+                CustomCertificateMapperInBellTest.class,
+                CustomCertificateMapperInFeatureTest.class
 })
 public class FATSuite {
 

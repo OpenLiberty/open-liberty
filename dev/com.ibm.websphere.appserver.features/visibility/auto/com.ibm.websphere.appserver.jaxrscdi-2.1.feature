@@ -9,5 +9,5 @@ IBM-Provision-Capability: \
 IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.jndi-1.0
 -bundles=com.ibm.ws.jaxrs.2.0.cdi
-kind=beta
+kind=ga
 edition=core

@@ -19,8 +19,9 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.config.TestUtils;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
-public class ValueOnlyTest {
+public class ValueOnlyTest extends AbstractConfigTest {
 
     @Test
     public void testContainsKey() {

@@ -60,15 +60,19 @@ ERROR_INVALID_IFIX.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a ren
 ERROR_FEATURE_NOT_INSTALLED=CWWKF1207E: A(z) {0} szolg\u00e1ltat\u00e1s nincs telep\u00edtve.
 ERROR_FEATURE_NOT_INSTALLED.explanation=A megadott szolg\u00e1ltat\u00e1s nem l\u00e9tezik, \u00e9s nem lehet elt\u00e1vol\u00edtani. 
 ERROR_FEATURE_NOT_INSTALLED.useraction=Semmit sem kell tennie.
+
 ERROR_OTHER_FEATURE_DEPEND_ON=CWWKF1208E: Az elt\u00e1vol\u00edt\u00e1s alatt \u00e1ll\u00f3 szolg\u00e1ltat\u00e1st a k\u00f6vetkez\u0151 m\u00e1s szolg\u00e1ltat\u00e1s(ok) ig\u00e9nyli(k): {0}.
 ERROR_OTHER_FEATURE_DEPEND_ON.explanation=A megadott szolg\u00e1ltat\u00e1s nem t\u00e1vol\u00edthat\u00f3 el, am\u00edg egy m\u00e1sik szolg\u00e1ltat\u00e1s tov\u00e1bbra is megk\u00f6veteli a megl\u00e9t\u00e9t.
 ERROR_OTHER_FEATURE_DEPEND_ON.useraction=Semmit sem kell tennie.
+
 ERROR_IFIX_NOT_INSTALLED=CWWKF1209E: A(z) {0} jav\u00edt\u00e1s nincs telep\u00edtve.
 ERROR_IFIX_NOT_INSTALLED.explanation=A megadott jav\u00edt\u00e1s nem l\u00e9tezik.
 ERROR_IFIX_NOT_INSTALLED.useraction=Semmit sem kell tennie.
+
 ERROR_IFIX_UNINSTALLABLE=CWWKF1210E: A(z) {0} jav\u00edt\u00e1s nem t\u00e1vol\u00edthat\u00f3 el.
 ERROR_IFIX_UNINSTALLABLE.explanation=A megadott jav\u00edt\u00e1s nem t\u00e1vol\u00edthat\u00f3 el, am\u00edg egy m\u00e1sik jav\u00edt\u00e1s tov\u00e1bbra is megk\u00f6veteli a megl\u00e9t\u00e9t.
 ERROR_IFIX_UNINSTALLABLE.useraction=Semmit sem kell tennie.
+
 ERROR_LICENSES_NOT_ACCEPTED=CWWKF1211E: A licenc nem ker\u00fclt elfogad\u00e1sra.
 ERROR_LICENSES_NOT_ACCEPTED.explanation=A szolg\u00e1ltat\u00e1s nem telep\u00edthet\u0151 a licenc elfogad\u00e1sa n\u00e9lk\u00fcl. 
 ERROR_LICENSES_NOT_ACCEPTED.useraction=Fogadja el a licencet, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
@@ -84,6 +88,7 @@ ERROR_FAILED_TO_DOWNLOAD_IFIX.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la,
 ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE=CWWKF1214E: {0} jav\u00edt\u00e1s sz\u00fcks\u00e9ges a(z) {1} szolg\u00e1ltat\u00e1shoz. Az \u00f6sszes f\u00fcgg\u0151 szolg\u00e1ltat\u00e1s megtekint\u00e9s\u00e9hez haszn\u00e1lja a --verbose param\u00e9tert.
 ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.explanation=A jav\u00edt\u00e1s nem t\u00e1vol\u00edthat\u00f3 el, am\u00edg a(z) {1} tov\u00e1bbra is megk\u00f6veteli a megl\u00e9t\u00e9t.
 ERROR_IFIX_UNINSTALLABLE_REQUIRED_BY_FEATURE.useraction=Semmit sem kell tennie.
+
 ERROR_FAILED_TO_GET_FEATURE_LICENSE=CWWKF1215E: Nem k\u00e9rhet\u0151 le a licenc a(z) {0} szolg\u00e1ltat\u00e1shoz.
 ERROR_FAILED_TO_GET_FEATURE_LICENSE.explanation=Hiba t\u00f6rt\u00e9nt a megadott szolg\u00e1ltat\u00e1slicenc lek\u00e9r\u00e9se sor\u00e1n.
 ERROR_FAILED_TO_GET_FEATURE_LICENSE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott szolg\u00e1ltat\u00e1sn\u00e9v \u00e9rv\u00e9nyes, hogy \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s jelsz\u00f3 van megadva \u00e9s hogy az IBM WebSphere Liberty lerakat el\u00e9rhet\u0151.
@@ -91,6 +96,7 @@ ERROR_FAILED_TO_GET_FEATURE_LICENSE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u0
 ALREADY_INSTALLED=CWWKF1216I: A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok m\u00e1r l\u00e9teznek: {0}. Ezek nem ker\u00fclnek ism\u00e9t telep\u00edt\u00e9sre. Egy megl\u00e9v\u0151 szolg\u00e1ltat\u00e1s m\u00f3dos\u00edt\u00e1s\u00e1hoz el\u0151sz\u00f6r saj\u00e1t kez\u0171leg el kell t\u00e1vol\u00edtania.
 ALREADY_INSTALLED.explanation=A megadott szolg\u00e1ltat\u00e1sok m\u00e1r telep\u00edt\u00e9sre ker\u00fcltek.
 ALREADY_INSTALLED.useraction=Nincs teend\u0151.
+
 ERROR_FAILED_TO_CONNECT=CWWKF1219E: Az IBM WebSphere Liberty lerakat nem \u00e9rhet\u0151 el. Ellen\u0151rizze, hogy a sz\u00e1m\u00edt\u00f3g\u00e9pe rendelkezik h\u00e1l\u00f3zati hozz\u00e1f\u00e9r\u00e9ssel, a t\u0171zfalak megfelel\u0151en vannak be\u00e1ll\u00edtva, majd pr\u00f3b\u00e1lja ism\u00e9t v\u00e9grehajtani a m\u0171veletet. Ha tov\u00e1bbra sem siker\u00fcl csatlakozni, akkor el\u0151fordulhat, hogy a lerakatkiszolg\u00e1l\u00f3 ideiglenesen el\u00e9rhetetlen.
 ERROR_FAILED_TO_CONNECT.explanation=Hiba t\u00f6rt\u00e9nt az IBM WebSphere Liberty Repository webhelyhez csatlakoz\u00e1s k\u00f6zben.
 ERROR_FAILED_TO_CONNECT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a rendszer k\u00e9pes el\u00e9rni az Internetet \u00e9s a megfelel\u0151 lerakatot.
@@ -124,6 +130,7 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=A telep\u00edt\u0151 nem tu
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6nyvt\u00e1r tartalmazza a szolg\u00e1ltat\u00e1st, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: A(z) {0} v\u00e9grehajthat\u00f3 f\u00e1jl nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyek ellen\u0151rz\u00e9se ut\u00e1n: {1}
+
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=A telep\u00edt\u0151 nem tal\u00e1lta a v\u00e9grehajthat\u00f3 f\u00e1jlt.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a v\u00e9grehajthat\u00f3 f\u00e1jl l\u00e9tezik a megadott helyek egyik\u00e9n.
 
@@ -182,6 +189,7 @@ ERROR_INVALID_SERVER_XML.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy
 ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED=CWWKF1242E: A(z) {0} kiszolg\u00e1l\u00f3 csomagf\u00e1jl nem telep\u00edthet\u0151, mert a(z) {1} kiszolg\u00e1l\u00f3 m\u00e1r l\u00e9tezik.
 ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.explanation=A telep\u00edteni k\u00edv\u00e1nt kiszolg\u00e1l\u00f3 m\u00e1r l\u00e9tezik.
 ERROR_SERVER_PACKAGE_SERVER_ALREADY_INSTALLED.useraction=Semmit sem kell tennie.
+
 ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1243E: A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok nem ker\u00fcltek let\u00f6lt\u00e9sre, mert azok m\u00e1r telep\u00edtve vannak: {0}. A --downloadOnly param\u00e9terrel haszn\u00e1ljon m\u00e1s \u00e9rt\u00e9ket, p\u00e9ld\u00e1ul: all vagy none.
 ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=A megadott szolg\u00e1ltat\u00e1sok m\u00e1r telep\u00edtve vannak.
 ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Futtassa \u00fajra a parancsot a --downloadOnly param\u00e9ter m\u00e1s \u00e9rt\u00e9k\u00e9vel, p\u00e9ld\u00e1ul: all vagy none.
@@ -213,6 +221,7 @@ ERROR_ASSETS_LIST_INVALID.useraction=Tekintse meg a hibafelder\u00edt\u00e9si in
 ASSETS_ALREADY_INSTALLED=CWWKF1250I: A k\u00f6vetkez\u0151 eszk\u00f6z\u00f6k m\u00e1r l\u00e9teznek: {0}. Ezek nem ker\u00fclnek ism\u00e9t telep\u00edt\u00e9sre. Megl\u00e9v\u0151 szolg\u00e1ltat\u00e1s m\u00f3dos\u00edt\u00e1s\u00e1hoz el\u0151sz\u00f6r saj\u00e1t kez\u0171leg el kell t\u00e1vol\u00edtania.
 ASSETS_ALREADY_INSTALLED.explanation=A megadott eszk\u00f6z\u00f6k m\u00e1r telep\u00edtve vannak.
 ASSETS_ALREADY_INSTALLED.useraction=Nincs teend\u0151.
+
 ERROR_FAILED_TO_DOWNLOAD_SAMPLE=CWWKF1251E: Nem lehet let\u00f6lteni a(z) {0} term\u00e9kmint\u00e1t a k\u00f6vetkez\u0151be: {1}. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a rendszer el tudja \u00e9rni az internetet, valamint az ideiglenes k\u00f6nyvt\u00e1r l\u00e9tezik \u00e9s \u00edrhat\u00f3, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 ERROR_FAILED_TO_DOWNLOAD_SAMPLE.explanation=Hiba t\u00f6rt\u00e9nt a term\u00e9kminta let\u00f6lt\u00e9sekor az ideiglenes k\u00f6nyvt\u00e1rba. 
 ERROR_FAILED_TO_DOWNLOAD_SAMPLE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a rendszer el tudja \u00e9rni az internetet, valamint az ideiglenes k\u00f6nyvt\u00e1r l\u00e9tezik \u00e9s \u00edrhat\u00f3, majd pr\u00f3b\u00e1lkozzon \u00fajra.
@@ -246,7 +255,7 @@ ERROR_ASSET_MISSING_DEPENDENT.explanation=Az eszk\u00f6z nem t\u00f6lthet\u0151 
 ERROR_ASSET_MISSING_DEPENDENT.useraction=Az eszk\u00f6z let\u00f6lt\u00e9s\u00e9hez vagy telep\u00edt\u00e9s\u00e9hez konfigur\u00e1lja az installUtility parancsot az IBM WebSphere Liberty lerakathoz val\u00f3 csatlakoz\u00e1shoz. Ennek alternat\u00edv\u00e1jak\u00e9nt t\u00f6ltse le a wlp-featureRepo-<version>.zip f\u00e1jlt az IBM jav\u00edt\u00e1si k\u00f6zpont webhelyr\u0151l, \u00e9s a kibontott mapp\u00e1t k\u00f6nyvt\u00e1ralap\u00fa lerakatk\u00e9nt \u00e1ll\u00edtsa be. Ha nem rendelkezik internet-hozz\u00e1f\u00e9r\u00e9ssel, akkor a hi\u00e1nyz\u00f3 eszk\u00f6z \u00e9s b\u00e1rmely f\u00fcgg\u0151s\u00e9g let\u00f6lt\u00e9s\u00e9hez \u00e9s a be\u00e1ll\u00edtott lerakathoz val\u00f3 hozz\u00e1ad\u00e1sukhoz l\u00e9pjen kapcsolatba a rendszergazd\u00e1val. Az eszk\u00f6z\u00f6k telep\u00edt\u00e9s\u00e9vel kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az installUtility le\u00edr\u00e1st az IBM tud\u00e1sk\u00f6zpontban. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: A k\u00f6vetkez\u0151 eszk\u00f6z\u00f6k nem k\u00e9rhet\u0151k le: {0}. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott eszk\u00f6z\u00f6k \u00e9rv\u00e9nyesek. A megfelel\u0151 eszk\u00f6z\u00f6k megkeres\u00e9s\u00e9hez futtassa az installUtility find parancsot.
-ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=A telep\u00edt\u0151 nem tudja lek\u00e9rni a megadott eszk\u00f6z\u00f6ket a lerakatokb\u00f3l.
+ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=A telep\u00edt\u0151nek nem siker\u00fclt lek\u00e9rni a megadott eszk\u00f6z\u00f6ket a lerakatokb\u00f3l.
 ERROR_FAILED_TO_RESOLVE_ASSETS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott eszk\u00f6z\u00f6k \u00e9rv\u00e9nyesek, \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3 \u00e9s jelsz\u00f3 lett megadva, valamint a lerakatok el\u00e9rhet\u0151k.
 
 ERROR_ASSET_NOT_APPLICABLE=CWWKF1260E: A(z) {0} eszk\u00f6z alkalmazhat\u00f3 a(z) {1} term\u00e9ktelep\u00edt\u00e9shez.  {2}
@@ -256,9 +265,11 @@ ERROR_ASSET_NOT_APPLICABLE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, ho
 ERROR_SAMPLE_SERVER_ALREADY_INSTALLED=CWWKF1261E: A(z) {0} minta nem telep\u00edthet\u0151, mert a(z) {1} kiszolg\u00e1l\u00f3 m\u00e1r l\u00e9tezik.
 ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.explanation=A telep\u00edt\u00e9s alatt \u00e1ll\u00f3 mintakiszolg\u00e1l\u00f3 m\u00e1r l\u00e9tezik.
 ERROR_SAMPLE_SERVER_ALREADY_INSTALLED.useraction=Semmit sem kell tennie.
+
 ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED=CWWKF1262E: A(z) {0} ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3 nem telep\u00edthet\u0151, mert a(z) {1} kiszolg\u00e1l\u00f3 m\u00e1r l\u00e9tezik.
 ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.explanation=A telep\u00edt\u00e9s alatt \u00e1ll\u00f3 ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3 kiszolg\u00e1l\u00f3 m\u00e1r l\u00e9tezik.
 ERROR_OPENSOURCE_SERVER_ALREADY_INSTALLED.useraction=Semmit sem kell tennie.
+
 ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED=\nCWWKF1263E: Azokra az \u00f6sszetev\u0151kre, amelyeket megpr\u00f3b\u00e1l elt\u00e1vol\u00edtani, m\u00e9g sz\u00fcks\u00e9g\u00fck van azoknak az \u00f6sszetev\u0151knek, amelyek telep\u00edtve maradnak:\n\n
 ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.explanation=Az elt\u00e1vol\u00edt\u00e1sra megadott \u00f6sszetev\u0151kre m\u00e9g sz\u00fcks\u00e9g\u00fck van a telep\u00edtve marad\u00f3 \u00f6sszetev\u0151knek.
 ERROR_UNINSTALL_DEPENDENCY_CHECKING_FAILED.useraction=Az elt\u00e1vol\u00edt\u00e1shoz t\u00e1vol\u00edtsa el az \u00f6sszes \u00f6sszetev\u0151t a k\u00f6vetelm\u00e9nyekkel a megadott \u00f6sszetev\u0151k elt\u00e1vol\u00edt\u00e1s\u00e1nak id\u0151pontj\u00e1ban vagy el\u0151tte.
@@ -427,30 +438,39 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Futtassa \u00fajra az insta
 LOG_INSTALL_FEATURES=CWWKF1300I: A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9se: {0}.
 LOG_INSTALL_FEATURES.explanation=A megadott szolg\u00e1ltat\u00e1sok ker\u00fclnek telep\u00edt\u00e9sre.
 LOG_INSTALL_FEATURES.useraction=Semmit sem kell tennie.
+
 LOG_INSTALL_FIXES=CWWKF1301I: A k\u00f6vetkez\u0151 jav\u00edt\u00e1sok telep\u00edt\u00e9se: {0}.
 LOG_INSTALL_FIXES.explanation=A megadott jav\u00edt\u00e1sok ker\u00fclnek telep\u00edt\u00e9sre.
 LOG_INSTALL_FIXES.useraction=Semmit sem kell tennie.
+
 LOG_UNINSTALL_FEATURES=CWWKF1302I: A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok elt\u00e1vol\u00edt\u00e1sa: {0}.
 LOG_UNINSTALL_FEATURES.explanation=A megadott szolg\u00e1ltat\u00e1sok elt\u00e1vol\u00edt\u00e1sra ker\u00fclnek.
 LOG_UNINSTALL_FEATURES.useraction=Semmit sem kell tennie.
+
 LOG_UNINSTALL_FIXES=CWWKF1303I: A k\u00f6vetkez\u0151 jav\u00edt\u00e1sok elt\u00e1vol\u00edt\u00e1sa: {0}.
 LOG_UNINSTALL_FIXES.explanation=A megadott jav\u00edt\u00e1sok elt\u00e1vol\u00edt\u00e1sra ker\u00fclnek.
 LOG_UNINSTALL_FIXES.useraction=Semmit sem kell tennie.
+
 LOG_INSTALLED_FEATURE=CWWKF1304I: A(z) {0} szolg\u00e1ltat\u00e1s telep\u00edt\u00e9se siker\u00fclt.
 LOG_INSTALLED_FEATURE.explanation=A megadott szolg\u00e1ltat\u00e1s sikeresen telep\u00edt\u00e9sre ker\u00fclt.
 LOG_INSTALLED_FEATURE.useraction=Semmit sem kell tennie.
+
 LOG_INSTALLED_FIX=CWWKF1305I: A(z) {0} jav\u00edt\u00e1s telep\u00edt\u00e9se siker\u00fclt.
 LOG_INSTALLED_FIX.explanation=A megadott jav\u00edt\u00e1s sikeresen telep\u00edt\u00e9sre ker\u00fclt.
 LOG_INSTALLED_FIX.useraction=Nincs teend\u0151.
+
 LOG_UNINSTALLED_FEATURE=CWWKF1306I: A(z) {0} szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1sa siker\u00fclt.
 LOG_UNINSTALLED_FEATURE.explanation=A megadott szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt.
 LOG_UNINSTALLED_FEATURE.useraction=Nincs teend\u0151.
+
 LOG_UNINSTALLED_FIX=CWWKF1307I: A(z) {0} jav\u00edt\u00e1s elt\u00e1vol\u00edt\u00e1sa siker\u00fclt.
 LOG_UNINSTALLED_FIX.explanation=A megadott jav\u00edt\u00e1s sikeresen elt\u00e1vol\u00edt\u00e1sra ker\u00fclt.
 LOG_UNINSTALLED_FIX.useraction=Semmit sem kell tennie.
+
 LOG_INSTALL_ESA=CWWKF1308I: {0} telep\u00edt\u00e9se.
 LOG_INSTALL_ESA.explanation=A megadott v\u00e1llalati alrendszer arch\u00edvum (.esa) telep\u00edtve lesz.
 LOG_INSTALL_ESA.useraction=Semmit sem kell tennie.
+
 LOG_REINSTALL_FIXES_WARNING=Figyelmeztet\u00e9s: A k\u00f6vetkez\u0151, kor\u00e1bban telep\u00edtett jav\u00edt\u00e1sok \u00fajratelep\u00edt\u00e9se nem siker\u00fclt: {0}. A jav\u00edt\u00e1sokat telep\u00edtse \u00fajra saj\u00e1t kez\u0171leg.
 LOG_REAPPLY_FIXES_WARNING=CWWKF1309W: A k\u00f6vetkez\u0151 jav\u00edt\u00e1sok \u00fajb\u00f3li alkalmaz\u00e1sa nem siker\u00fclt: {0}.
 LOG_REAPPLY_FIXES_WARNING.explanation=A telep\u00edtett jav\u00edt\u00e1sok nem alkalmazhat\u00f3k \u00fajra.
@@ -463,9 +483,11 @@ LOG_UNABLE_TO_DETERMINE_CODEPAGE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3
 LOG_INSTALLED_SAMPLE=CWWKF1312I: A(z) {0} term\u00e9kminta sikeresen telep\u00edtve.
 LOG_INSTALLED_SAMPLE.explanation=A megadott term\u00e9kminta sikeresen telep\u00edt\u00e9sre ker\u00fclt.
 LOG_INSTALLED_SAMPLE.useraction=Semmit sem kell tennie.
+
 LOG_INSTALLED_OPENSOURCE=CWWKF1313I: A(z) {0} ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3 sikeresen telep\u00edtve.
 LOG_INSTALLED_OPENSOURCE.explanation=A megadott ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3 sikeresen telep\u00edt\u00e9sre ker\u00fclt.
 LOG_INSTALLED_OPENSOURCE.useraction=Semmit sem kell tennie.
+
 LOG_UNINSTALL_FEATURE_DEPENDENCIES=Az elt\u00e1vol\u00edtand\u00f3 \u00f6sszetev\u0151re m\u00e1s telep\u00edtett \u00f6sszetev\u0151knek sz\u00fcks\u00e9g\u00fck van:
 LOG_UNINSTALL_FEATURE_DEPENDENCIES_EXPLANATION=Az \u00f6sszetev\u0151 elt\u00e1vol\u00edt\u00e1sa a f\u00fcgg\u0151 \u00f6sszetev\u0151k helytelen m\u0171k\u00f6d\u00e9s\u00e9t eredm\u00e9nyezheti.
 
@@ -743,9 +765,11 @@ ERROR_UNKNOWN_OSLIST_VALUE.useraction=M\u00f3dos\u00edtsa vagy t\u00e1vol\u00edt
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: A szolg\u00e1ltat\u00e1s let\u00f6lt\u00e9se siker\u00fclt.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=A szolg\u00e1ltat\u00e1s le lett t\u00f6ltve.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Semmit sem kell tennie.
+
 TOOL_DOWNLOAD_FEATURES_OK=CWWKF1501I: A szolg\u00e1ltat\u00e1sok let\u00f6lt\u00e9se siker\u00fclt.
 TOOL_DOWNLOAD_FEATURES_OK.explanation=A szolg\u00e1ltat\u00e1sok le lettek t\u00f6ltve.
 TOOL_DOWNLOAD_FEATURES_OK.useraction=Semmit sem kell tennie.
+
 MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: A(z) {0} f\u00e1jl nem telep\u00edthet\u0151, mivel ez a f\u00e1jlt\u00edpus nem t\u00e1mogatott. Csak az ESA f\u00e1jlokb\u00f3l v\u00e9gzett telep\u00edt\u00e9s t\u00e1mogatott.
 MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=A f\u00e1jl nem ker\u00fclt telep\u00edt\u00e9sre, mivel nem t\u00e1mogatott f\u00e1jlt\u00edpus lett megadva.
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.

@@ -1641,7 +1641,7 @@ public class ProfileManager implements ProfileServiceLite {
         }
     }
 
-    @FFDCIgnore({ PasswordCheckFailedException.class, Exception.class })
+    @FFDCIgnore({ PasswordCheckFailedException.class, CertificateMapNotSupportedException.class, Exception.class })
     private Root loginImpl(Root inRoot) throws WIMException {
         final String METHODNAME = "loginImpl";
 
@@ -1665,15 +1665,11 @@ public class ProfileManager implements ProfileServiceLite {
         List<Entity> entities = root.getEntities();
 
         if (entities.size() == 0) {
-            throw new EntityNotFoundException(WIMMessageKey.MISSING_ENTITY_DATA_OBJECT, Tr.formatMessage(
-                                                                                                         tc,
-                                                                                                         WIMMessageKey.MISSING_ENTITY_DATA_OBJECT,
-                                                                                                         null));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_ENTITY_DATA_OBJECT, (Object) null);
+            throw new EntityNotFoundException(WIMMessageKey.MISSING_ENTITY_DATA_OBJECT, msg);
         } else if (entities.size() > 1) {
-            throw new OperationNotSupportedException(WIMMessageKey.ACTION_MULTIPLE_ENTITIES_SPECIFIED, Tr.formatMessage(
-                                                                                                                        tc,
-                                                                                                                        WIMMessageKey.ACTION_MULTIPLE_ENTITIES_SPECIFIED,
-                                                                                                                        null));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.ACTION_MULTIPLE_ENTITIES_SPECIFIED, (Object) null);
+            throw new OperationNotSupportedException(WIMMessageKey.ACTION_MULTIPLE_ENTITIES_SPECIFIED, msg);
         }
 
         LoginAccount personAccount = (LoginAccount) entities.get(0);
@@ -1681,10 +1677,8 @@ public class ProfileManager implements ProfileServiceLite {
         pwd = personAccount.getPassword();
 
         if (personAccount.getCertificate().size() == 0 && principalName == null) {
-            throw new PasswordCheckFailedException(WIMMessageKey.MISSING_OR_EMPTY_PRINCIPAL_NAME, Tr.formatMessage(
-                                                                                                                   tc,
-                                                                                                                   WIMMessageKey.MISSING_OR_EMPTY_PRINCIPAL_NAME,
-                                                                                                                   null));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_OR_EMPTY_PRINCIPAL_NAME, (Object) null);
+            throw new PasswordCheckFailedException(WIMMessageKey.MISSING_OR_EMPTY_PRINCIPAL_NAME, msg);
         }
 
         List<Context> contexts = root.getContexts();
@@ -1720,7 +1714,7 @@ public class ProfileManager implements ProfileServiceLite {
             for (int i = 0; i < reposIds.size(); i++) {
                 reposId = reposIds.get(i);
                 if (reposSearchBases != null) {
-                    List srchBases = reposSearchBases.get(reposId);
+                    List<String> srchBases = reposSearchBases.get(reposId);
                     if (srchBases != null && srchBases.size() > 0) {
                         try {
                             Root inputRoot = inRoot;
@@ -1744,10 +1738,8 @@ public class ProfileManager implements ProfileServiceLite {
                                     if (tc.isErrorEnabled()) {
                                         Tr.error(tc, WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND, WIMMessageHelper.generateMsgParms(principalName));
                                     }
-                                    throw new DuplicateLogonIdException(WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND, Tr.formatMessage(
-                                                                                                                                  tc,
-                                                                                                                                  WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND,
-                                                                                                                                  WIMMessageHelper.generateMsgParms(principalName)));
+                                    String msg = Tr.formatMessage(tc, WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND, WIMMessageHelper.generateMsgParms(principalName));
+                                    throw new DuplicateLogonIdException(WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND, msg);
                                 }
                             }
                         } catch (PasswordCheckFailedException e) {
@@ -1766,9 +1758,9 @@ public class ProfileManager implements ProfileServiceLite {
                             exp = e;
                             recordLoginException(e, exceptions);
                         } catch (CertificateMapNotSupportedException e) {
-                            exp = e;
-                            recordLoginException(e, exceptions);
+                            /* Don't record these as we will only fail if all repos threw these. */
                             certExceptionCount++;
+                            continue;
                         } catch (Exception e) {
                             exp = new WIMException(e);
 
@@ -1800,72 +1792,46 @@ public class ProfileManager implements ProfileServiceLite {
 
         // handling exceptions
         int countedException = exceptions.size();
-        if (result == null && 0 == countedException) {
-            if (exceptions.containsKey(WIMMessageKey.AUTHENTICATION_WITH_CERT_NOT_SUPPORTED)) {
-                if (certExceptionCount == getRepositoryManager().getNumberOfRepositories()) {
-                    throw new CertificateMapNotSupportedException(WIMMessageKey.AUTHENTICATE_NOT_SUPPORTED, Tr.formatMessage(
-                                                                                                                             tc,
-                                                                                                                             WIMMessageKey.AUTHENTICATE_NOT_SUPPORTED,
-                                                                                                                             WIMMessageHelper.generateMsgParms("the specified certificate")));
-                } else {
-                    throw new CertificateMapFailedException(WIMMessageKey.CERTIFICATE_MAP_FAILED, Tr.formatMessage(
-                                                                                                                   tc,
-                                                                                                                   WIMMessageKey.CERTIFICATE_MAP_FAILED,
-                                                                                                                   null));
-                }
+        if (result == null && countedException == 0) {
+            /*
+             * No user was authenticated, and there were no exceptions recorded. This can only happen if there
+             * were PasswordCheckFailedException's and / or CertificateMapNotSupportedException's.
+             */
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, METHODNAME + " result == null && countedException == 0, certExceptionCount = " + certExceptionCount);
+            }
+            if (certExceptionCount == getRepositoryManager().getNumberOfRepositories()) {
+                String msg = Tr.formatMessage(tc, WIMMessageKey.AUTHENTICATION_WITH_CERT_NOT_SUPPORTED);
+                throw new CertificateMapNotSupportedException(WIMMessageKey.AUTHENTICATION_WITH_CERT_NOT_SUPPORTED, msg);
             } else {
                 // If login was using certificate set principalName to "extracted from certificate"
-                if (personAccount.getCertificate().size() > 0 && principalName == null)
+                if (personAccount.getCertificate().size() > 0 && principalName == null) {
                     principalName = "extracted from certificate";
-                throw new PasswordCheckFailedException(WIMMessageKey.PRINCIPAL_NOT_FOUND, Tr.formatMessage(
-                                                                                                           tc,
-                                                                                                           WIMMessageKey.PRINCIPAL_NOT_FOUND,
-                                                                                                           WIMMessageHelper.generateMsgParms(principalName)));
+                }
+                String msg = Tr.formatMessage(tc, WIMMessageKey.PRINCIPAL_NOT_FOUND, WIMMessageHelper.generateMsgParms(principalName));
+                throw new PasswordCheckFailedException(WIMMessageKey.PRINCIPAL_NOT_FOUND, msg);
             }
         } else if (countedException == 1) {
-            if (exceptions.containsKey(WIMMessageKey.AUTHENTICATION_WITH_CERT_NOT_SUPPORTED) && certExceptionCount != getRepositoryManager().getNumberOfRepositories()) {
-                throw new CertificateMapFailedException(WIMMessageKey.CERTIFICATE_MAP_FAILED, Tr.formatMessage(
-                                                                                                               tc,
-                                                                                                               WIMMessageKey.CERTIFICATE_MAP_FAILED,
-                                                                                                               null));
-            } else {
-
-                throw exp;
+            /*
+             * There was a single recorded exception. Throw it up the stack.
+             */
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, METHODNAME + " countedException == 1");
             }
+
+            throw exp;
         } else if (countedException > 1) {
-            if (tc.isDebugEnabled())
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, METHODNAME + " countedException > 1 [" + countedException + "]");
-            throw new DuplicateLogonIdException(WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND, Tr.formatMessage(
-                                                                                                          tc,
-                                                                                                          WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND,
-                                                                                                          WIMMessageHelper.generateMsgParms(principalName)));
-        } else // result != null
-        {
-            if (countedException == 0) {
-                // successful
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, METHODNAME + " login successful.");
-            } else if (countedException >= 1) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, METHODNAME + " result != null && countedException >= 1");
-                if (exceptions.containsKey(WIMMessageKey.AUTHENTICATION_WITH_CERT_NOT_SUPPORTED)) {
-                    if (certExceptionCount == getRepositoryManager().getNumberOfRepositories()) {
-                        throw new CertificateMapNotSupportedException(WIMMessageKey.AUTHENTICATE_NOT_SUPPORTED, Tr.formatMessage(
-                                                                                                                                 tc,
-                                                                                                                                 WIMMessageKey.AUTHENTICATE_NOT_SUPPORTED,
-                                                                                                                                 WIMMessageHelper.generateMsgParms("the specified certificate")));
-                    } else {
-                        throw new CertificateMapFailedException(WIMMessageKey.CERTIFICATE_MAP_FAILED, Tr.formatMessage(
-                                                                                                                       tc,
-                                                                                                                       WIMMessageKey.CERTIFICATE_MAP_FAILED,
-                                                                                                                       null));
-                    }
-                } else {
-                    throw new DuplicateLogonIdException(WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND, Tr.formatMessage(
-                                                                                                                  tc,
-                                                                                                                  WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND,
-                                                                                                                  WIMMessageHelper.generateMsgParms(principalName)));
-                }
+            }
+            String msg = Tr.formatMessage(tc, WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND, WIMMessageHelper.generateMsgParms(principalName));
+            throw new DuplicateLogonIdException(WIMMessageKey.MULTIPLE_PRINCIPALS_FOUND, msg);
+        } else {
+            /*
+             * There were no recorded exceptions and we have a result.
+             */
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, METHODNAME + " login successful.");
             }
         }
 

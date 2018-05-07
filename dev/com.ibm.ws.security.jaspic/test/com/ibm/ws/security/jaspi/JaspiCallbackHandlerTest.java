@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
@@ -49,22 +50,27 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 public class JaspiCallbackHandlerTest {
 
-    private final Mockery mock = new JUnit4Mockery() {
+    protected static final String USER_NAME = "myUserName";
+    protected static final String GROUP = "mygroup";
+
+    protected final Mockery mock = new JUnit4Mockery() {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
 
+    protected final UserRegistry mockUserRegistry = mock.mock(UserRegistry.class);
+    protected final JaspiService mockJaspiService = mock.mock(JaspiService.class);
+    protected JaspiCallbackHandler callbackHandler;
+    protected Callback[] callbacks;
+    protected Subject subject;
+    protected Hashtable<String, Object> hashtable;
+
     private final WSSecurityService wsSecurityService = mock.mock(WSSecurityService.class);
-    private final UserRegistry mockUserRegistry = mock.mock(UserRegistry.class);
+    @SuppressWarnings("unchecked")
     private final ServiceReference<WSSecurityService> wsSecurityServiceRef = mock.mock(ServiceReference.class);
     private final ComponentContext cc = mock.mock(ComponentContext.class);
-    private final JaspiService mockJaspiService = mock.mock(JaspiService.class);
     private RegistryHelper registryHelper;
-    private JaspiCallbackHandler cbh;
-    private Callback[] callbacks;
-    private Subject subj;
-    private Hashtable<String, Object> ht;
     private PasswordValidationCallback pwdCB;
     private CallerPrincipalCallback cpCB;
     private GroupPrincipalCallback gpCB;
@@ -82,15 +88,15 @@ public class JaspiCallbackHandlerTest {
         registryHelper = new RegistryHelper();
         registryHelper.setWsSecurityService(wsSecurityServiceRef);
         registryHelper.activate(cc);
-        subj = new Subject();
-        ht = new Hashtable<String, Object>();
-        cbh = new JaspiCallbackHandler(mockJaspiService);
+        subject = new Subject();
+        hashtable = new Hashtable<String, Object>();
+        callbackHandler = new JaspiCallbackHandler(mockJaspiService);
     }
 
-    private void setupJaspiService(final Hashtable<String, Object> ht) {
+    protected void setupJaspiService(final Hashtable<String, Object> ht) {
         mock.checking(new Expectations() {
             {
-                allowing(mockJaspiService).getCustomCredentials(with(equal(subj)));
+                allowing(mockJaspiService).getCustomCredentials(with(equal(subject)));
                 will(returnValue(ht));
             }
         });
@@ -101,12 +107,17 @@ public class JaspiCallbackHandlerTest {
         callbacks = new Callback[] { pwdCB };
     }
 
-    private void newCallerPrincipalCB(final Subject subj, final String userName) {
+    protected void newCallerPrincipalCB(final Subject subj, final String userName) {
         cpCB = new CallerPrincipalCallback(subj, userName);
         callbacks = new Callback[] { cpCB };
     }
 
-    private void newGroupPrincipalCB(final Subject subj, final String[] groups) {
+    protected void newCallerPrincipalCB(final Subject subj, final Principal principal) {
+        cpCB = new CallerPrincipalCallback(subj, principal);
+        callbacks = new Callback[] { cpCB };
+    }
+
+    protected void newGroupPrincipalCB(final Subject subj, final String[] groups) {
         gpCB = new GroupPrincipalCallback(subj, groups);
         callbacks = new Callback[] { gpCB };
     }
@@ -176,102 +187,105 @@ public class JaspiCallbackHandlerTest {
     @Test(expected = UnsupportedCallbackException.class)
     public void testUnsupportedCallback() throws Exception {
         callbacks = new Callback[] { new NameCallback("prompt") };
-        cbh.handle(callbacks);
+        callbackHandler.handle(callbacks);
     }
 
     @Test(expected = IOException.class)
     public void testIOException() throws Exception {
-        setupJaspiService(ht);
-        newGroupPrincipalCB(subj, new String[] { "mygroup" });
+        setupJaspiService(hashtable);
+        newGroupPrincipalCB(subject, new String[] { GROUP });
         mock.checking(new Expectations() {
             {
-                allowing(mockUserRegistry).isValidGroup("mygroup");
+                allowing(mockUserRegistry).isValidGroup(GROUP);
                 will(throwException(new CustomRegistryException()));
             }
         });
-        cbh.handle(callbacks);
+        callbackHandler.handle(callbacks);
     }
 
     @Test
     public void testPasswordCheckFailure() throws Exception {
-        setupJaspiService(ht);
-        newPasswordCB(subj, "user1", "security");
+        setupJaspiService(hashtable);
+        newPasswordCB(subject, "user1", "security");
         setupRegistry(mockUserRegistry, true, "user1", "security", "userName", new String[] { "group" });
-        assertTrue(ht.isEmpty());
-        cbh.handle(callbacks);
+        assertTrue(hashtable.isEmpty());
+        callbackHandler.handle(callbacks);
         assertFalse("Password check did not fail as expected.", pwdCB.getResult());
     }
 
     @Test
     public void testPasswordCheckSuccess() throws Exception {
-        setupJaspiService(ht);
-        newPasswordCB(subj, "user1", "security");
+        setupJaspiService(hashtable);
+        newPasswordCB(subject, "user1", "security");
         setupRegistry(mockUserRegistry, false, "user1", "security", "userName", new String[] { "group" });
-        assertTrue(ht.isEmpty());
-        cbh.handle(callbacks);
+        assertTrue(hashtable.isEmpty());
+        callbackHandler.handle(callbacks);
         assertTrue("Password validation failed.", pwdCB.getResult());
-        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_REALM, ht.containsKey(AttributeNameConstants.WSCREDENTIAL_REALM));
-        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_USERID, ht.containsKey(AttributeNameConstants.WSCREDENTIAL_USERID));
-        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_GROUPS, ht.containsKey(AttributeNameConstants.WSCREDENTIAL_GROUPS));
-        assertEquals("userName", ht.get(AttributeNameConstants.WSCREDENTIAL_USERID));
+        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_REALM, hashtable.containsKey(AttributeNameConstants.WSCREDENTIAL_REALM));
+        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_USERID, hashtable.containsKey(AttributeNameConstants.WSCREDENTIAL_USERID));
+        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_GROUPS, hashtable.containsKey(AttributeNameConstants.WSCREDENTIAL_GROUPS));
+        assertEquals("userName", hashtable.get(AttributeNameConstants.WSCREDENTIAL_USERID));
     }
 
     @Test
     public void testCallerPrincipalCallback() throws Exception {
-        setupJaspiService(ht);
-        newCallerPrincipalCB(subj, "myUserName");
+        setupJaspiService(hashtable);
+        newCallerPrincipalCB(subject, USER_NAME);
         final String[] groups = new String[] { "group1" };
-        setupRegistry("myUserName", true, "myUniqueId", groups);
+        setupRegistry(USER_NAME, true, "myUniqueId", groups);
         mock.checking(new Expectations() {
             {
-                allowing(mockUserRegistry).getUniqueGroupIds("myUserName");
+                allowing(mockUserRegistry).getUniqueGroupIds(USER_NAME);
                 will(returnValue(Arrays.asList(groups)));
             }
         });
-        cbh.handle(callbacks);
-        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_USERID, ht.containsKey(AttributeNameConstants.WSCREDENTIAL_USERID));
-        assertTrue("Hashtable does not contain key: " + AuthenticationConstants.INTERNAL_ASSERTION_KEY, ht.containsKey(AuthenticationConstants.INTERNAL_ASSERTION_KEY));
-        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_GROUPS, ht.containsKey(AttributeNameConstants.WSCREDENTIAL_GROUPS));
+        callbackHandler.handle(callbacks);
+        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_USERID, hashtable.containsKey(AttributeNameConstants.WSCREDENTIAL_USERID));
+        assertTrue("Hashtable does not contain key: " + AuthenticationConstants.INTERNAL_ASSERTION_KEY, hashtable.containsKey(AuthenticationConstants.INTERNAL_ASSERTION_KEY));
+        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_GROUPS, hashtable.containsKey(AttributeNameConstants.WSCREDENTIAL_GROUPS));
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testCreateSubjectHashtable() throws Exception {
         setupJaspiService(null);
-        newCallerPrincipalCB(subj, "myUserName");
+        newCallerPrincipalCB(subject, USER_NAME);
         final String[] groups = new String[] { "group1" };
-        setupRegistry("myUserName", true, "myUniqueId", groups);
+        setupRegistry(USER_NAME, true, "myUniqueId", groups);
         mock.checking(new Expectations() {
             {
-                allowing(mockUserRegistry).getUniqueGroupIds("myUserName");
+                allowing(mockUserRegistry).getUniqueGroupIds(USER_NAME);
                 will(returnValue(Arrays.asList(groups)));
             }
         });
-        cbh.handle(callbacks);
-        Set<Hashtable> creds = subj.getPrivateCredentials(Hashtable.class);
+        callbackHandler.handle(callbacks);
+        Set<Hashtable> creds = subject.getPrivateCredentials(Hashtable.class);
         assertFalse(creds.isEmpty());
         Hashtable newHT = creds.iterator().next();
         assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_USERID, newHT.containsKey(AttributeNameConstants.WSCREDENTIAL_USERID));
         String name = (String) newHT.get(AttributeNameConstants.WSCREDENTIAL_USERID);
-        assertEquals("myUserName", name);
+        assertEquals(USER_NAME, name);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testGroupPrincipalCallback() throws Exception {
-        setupJaspiService(ht);
-        newGroupPrincipalCB(subj, new String[] { "mygroup" });
+        setupJaspiService(hashtable);
+        newGroupPrincipalCB(subject, new String[] { GROUP });
+        final String uniqueGroupId = "group:realm/cn=" + GROUP;
         mock.checking(new Expectations() {
             {
-                allowing(mockUserRegistry).isValidGroup("mygroup");
+                allowing(mockUserRegistry).isValidGroup(GROUP);
                 will(returnValue(true));
-                allowing(mockUserRegistry).getUniqueGroupId("mygroup");
-                will(returnValue("group:realm/cn=mygroup"));
+                allowing(mockUserRegistry).getUniqueGroupId(GROUP);
+                will(returnValue(uniqueGroupId));
             }
         });
-        assertTrue(ht.isEmpty());
-        cbh.handle(callbacks);
-        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_GROUPS, ht.containsKey(AttributeNameConstants.WSCREDENTIAL_GROUPS));
-        List<String> groups = (List<String>) ht.get(AttributeNameConstants.WSCREDENTIAL_GROUPS);
-        assertTrue("Hashtable does not contain mygroup", groups.contains("group:realm/cn=mygroup"));
+        assertTrue(hashtable.isEmpty());
+        callbackHandler.handle(callbacks);
+        assertTrue("Hashtable does not contain key: " + AttributeNameConstants.WSCREDENTIAL_GROUPS, hashtable.containsKey(AttributeNameConstants.WSCREDENTIAL_GROUPS));
+        List<String> groups = (List<String>) hashtable.get(AttributeNameConstants.WSCREDENTIAL_GROUPS);
+        assertTrue("Hashtable does not contain mygroup", groups.contains(uniqueGroupId));
     }
 
 }

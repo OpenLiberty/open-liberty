@@ -23,6 +23,7 @@ import com.ibm.ws.channelfw.internal.ChannelFrameworkImpl;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.tcpchannel.internal.TCPChannelMessageConstants;
 import com.ibm.wsspi.channelfw.objectpool.CircularObjectPool;
+import com.ibm.wsspi.channelfw.objectpool.ObjectDestroyer;
 
 /**
  * This class is an implementation of the IAsyncProvider interface. AsyncLibrary
@@ -105,7 +106,7 @@ public class AsyncLibrary implements IAsyncProvider {
 
     /**
      * Method which cancels an in-process asynchronous IO operation
-     * 
+     *
      * The native code should attempt to cancel the underlying IO operation, if possible.
      * Once this method has been called, the native code can assume that the Async IO Java
      * code is no longer interested in the result of the IO operation.
@@ -113,7 +114,7 @@ public class AsyncLibrary implements IAsyncProvider {
      * If done successfully, then the caller can assume that the read/write buffers
      * for this cancelled operation will NOT be accessed by the TCP Channel until
      * another read/write is requested.
-     * 
+     *
      * @param handle
      *            the handle (file descriptor) identifying the channel
      * @param identifier
@@ -128,20 +129,20 @@ public class AsyncLibrary implements IAsyncProvider {
      * asynchronous events to occur (IO Completion Ports, sys_epoll File Descriptors, etc). The
      * intent is to ensure that any threads waiting on these mechanisms are freed so that they can
      * terminate when the Async IO library is shutting down
-     * 
+     *
      */
     protected static native void aio_closeport2(long completionPort) throws AsyncException;
 
     /**
      * Dispose the file handle when async operations complete (BEFORE closing File Handle)
-     * 
+     *
      * If the native code has any local data associated with the file handle, it should free
      * the data. If the native code has wrappered the file descriptor in some way, it should
      * unwrapper the file descriptor and return the original file handle.
-     * 
+     *
      * @param handle
      *            the handle (file descriptor) identifying the channel
-     * 
+     *
      * @return
      *         the handle (file descriptor)
      */
@@ -149,7 +150,7 @@ public class AsyncLibrary implements IAsyncProvider {
 
     /**
      * Return the data for a completed asynchronous operation.
-     * 
+     *
      * This call blocks until completion data is available for an operation or the timeout occurs.
      * Multiple threads can call aio_getioev at the same time. Only one thread returns
      * with the completion data for a particular IO operation. Which thread gets the data
@@ -158,14 +159,14 @@ public class AsyncLibrary implements IAsyncProvider {
      * The call is made with an address of a DirectByte Buffer which contains a long[4] completionData
      * array.
      * Upon successful dequeueing, the completionData array contains:
-     * 
+     *
      * <pre>
      * ioev[0] - the channel identifier
      * ioev[1] - the call identifier
      * ioev[2] - the error code for a failed IO operation, or 0 if successful
      * ioev[3] - the number of bytes affected by a successful IO operation
      * </pre>
-     * 
+     *
      * @param bufferAddress
      *            the (native) address of the buffer used to retrieve the event data
      * @param timeout
@@ -181,7 +182,7 @@ public class AsyncLibrary implements IAsyncProvider {
 
     /**
      * Initialize the async natives library.
-     * 
+     *
      * @param cacheSize
      *            size of the cache (max number of entries) for internal data structures allocated in
      *            a cache. This cache concerns data structures shared between the invoking threads and the threads
@@ -196,7 +197,7 @@ public class AsyncLibrary implements IAsyncProvider {
 
     /**
      * Find a message text for a native error code.
-     * 
+     *
      * @param errorCode the numeric error code for which a text string is desired.
      * @param msg the output byte array that will contain the error code text, if
      *            text could be found for this error code.
@@ -206,12 +207,12 @@ public class AsyncLibrary implements IAsyncProvider {
 
     /**
      * Prepare the given file handle for use in async operations.
-     * 
+     *
      * The native code may need to wrapper the original file handle so that additional data can be
      * attached to the file handle to enable the native code to work well. If this is done, the
      * wrappered version of the file handle is returned by this method and is used in all subsequent
      * method calls relating to this channel.
-     * 
+     *
      * @param handle
      *            the original file descriptor for this channel
      * @return the file descriptor (wrappered if necessary)
@@ -225,12 +226,13 @@ public class AsyncLibrary implements IAsyncProvider {
      * Perform an asynchronous multi read or write operation on a specified channel, where the data involved is handled in
      * an array of buffers. The intent is that the data is spread across a set of buffers. The operations start at the
      * beginning of the first buffer and extend sequentially acorss each of the buffers in turn.
-     * 
+     *
      * The operation may complete immediately,
      * in which case the results are returned by this method. If the operation does not complete immediately, the
      * results are returned via the <code>aio_getioev</code> method when the operation does eventually complete.
-     * 
+     *
      * @param iobufaddress the address of an array of data passed to the native code:
+     *
      *            <pre>
      *            [0] - the channel identifier
      *            [1] - the call identifier
@@ -239,14 +241,16 @@ public class AsyncLibrary implements IAsyncProvider {
      *            ioev[6] - length of first buffer
      *            ioev[7...] - addresses & lengths of second and subsequent buffers
      *            </pre>
+     *
      *            Contains the following data if the operation completes immediately:
+     *
      *            <pre>
      *            [0] - the channel identifier
      *            [1] - the call identifier
      *            [2] - the error code for a failed IO operation, or 0 if successful
      *            [3] - the number of bytes affected by a successful IO operation
      *            </pre>
-     * 
+     *
      * @param position - the byte position in the file for the read/write operation to start. Not used for socket IO operations
      * @param count - the number of buffers in the ioev array. Must be >0.
      * @param isRead - true if this is a read request, otherwise it is a write request
@@ -270,21 +274,21 @@ public class AsyncLibrary implements IAsyncProvider {
 
     /**
      * Prepare a CompletionKey structure for use
-     * 
+     *
      * @param address the address of the DirectByteBuffer of the completion key
      */
     protected static native void aio_initIOCB(long address) throws AsyncException;
 
     /**
      * Clean up a CompletionKey structure after use
-     * 
+     *
      * @param address the address of the DirectByteBuffer of the completion key
      */
     protected static native void aio_termIOCB(long address) throws AsyncException;
 
     /**
      * Initialize the provider.
-     * 
+     *
      * @throws AsyncException
      */
     private static void initialize() throws AsyncException {
@@ -333,7 +337,7 @@ public class AsyncLibrary implements IAsyncProvider {
 
     /**
      * Get the singleton instance of the async library.
-     * 
+     *
      * @return IasyncProvider
      */
     public static IAsyncProvider getInstance() {
@@ -353,7 +357,7 @@ public class AsyncLibrary implements IAsyncProvider {
 
     /**
      * Find or create the AIO provider.
-     * 
+     *
      * @return IAsyncProvider
      * @throws AsyncException
      */
@@ -401,7 +405,22 @@ public class AsyncLibrary implements IAsyncProvider {
             Tr.debug(tc, "CompKeyPoolSize is: " + compKeyPoolSize);
         }
 
-        completionKeyPool = new CircularObjectPool(compKeyPoolSize);
+        // Add a destroyObject to the create of the pool...it will drive the cleanup needed on the CompletionKey objects if
+        // they are discarded from the pool.  The CompletionKeys have a direct ByteBuffer that needs to be released.
+        completionKeyPool = new CircularObjectPool(compKeyPoolSize, null, new CompletionKeyPoolDestroy());
+    }
+
+    /**
+     * inner class for cleaning up pooled CompletionKeys.
+     */
+    public class CompletionKeyPoolDestroy implements ObjectDestroyer {
+
+        @Override
+        public void destroy(Object obj) {
+            // Cleanup resources for CompletionKey (may contain a DirectByteBuffer).
+            ((CompletionKey) obj).destroy();
+        }
+
     }
 
     /*
@@ -563,8 +582,7 @@ public class AsyncLibrary implements IAsyncProvider {
      */
     @Override
     public int getCompletionData3(long[] iocbs, int size,
-                                  int timeout, long completionPort)
-                    throws AsyncException {
+                                  int timeout, long completionPort) throws AsyncException {
         int gotData = 0;
 
         if (aioInitialized == AIO_INITIALIZED) {
@@ -790,7 +808,7 @@ public class AsyncLibrary implements IAsyncProvider {
     /**
      * Get an IOException instance for the input description and native
      * AIO return coded.
-     * 
+     *
      * @param desc
      * @param code
      * @return IOException

@@ -55,7 +55,7 @@ public interface UserRegistry {
      * This is used to map the name in the certificate supplied by a browser
      * to a valid <i>userSecurityName</i> in the UserRegistry.
      *
-     * @param cert the X509 certificate.
+     * @param chain the X509 certificate chain.
      * @return the mapped name of the user. <code>null</code> is not returned.
      * @exception CertificateMapNotSupportedException if the particular
      *                certificate is not supported.
@@ -64,7 +64,7 @@ public interface UserRegistry {
      * @exception RegistryException if there is any UserRegistry specific problem
      * @exception IllegalArgumentException if cert is <code>null</code>
      **/
-    String mapCertificate(X509Certificate cert) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException;
+    String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException;
 
     /**
      * Determines if the <i>userSecurityName</i> exists in the UserRegisry.

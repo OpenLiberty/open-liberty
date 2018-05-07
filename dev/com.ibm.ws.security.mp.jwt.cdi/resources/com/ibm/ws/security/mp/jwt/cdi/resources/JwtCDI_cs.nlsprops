@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Ujist\u011bte se, \u017ee bod vlo\u
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: N\u00e1rok nelze vkl\u00e1dat do bodu vlo\u017een\u00ed {0} pro rozsahy ApplicationScoped nebo SessionScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Bod vlo\u017een\u00ed anotovan\u00fd s kvalifik\u00e1torem n\u00e1roku pro z\u00e1kladn\u00ed typ mus\u00ed pat\u0159it t\u0159\u00edd\u011b anotovan\u00e9 s anotac\u00ed rozsahu RequestScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Ujist\u011bte se, \u017ee bod vlo\u017een\u00ed je \u010dlenem t\u0159\u00eddy v rozsahu RequestScoped pro n\u00e1rok, kter\u00fd chcete vlo\u017eit.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: \u010cinitel JsonWebToken nelze vlo\u017eit, proto\u017ee nen\u00ed k dispozici. Po\u017eaduj\u00edc\u00ed prost\u0159edek ochra\u0148te, aby p\u0159ed zp\u0159\u00edstupn\u011bn\u00edm prost\u0159edku do\u0161lo k ov\u011b\u0159en\u00ed.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=Bylo po\u017eadov\u00e1no vlo\u017een\u00ed objektu JsonWebToken, nen\u00ed ale k dispozici.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Ujist\u011bte se, \u017ee do\u0161lo k ov\u011b\u0159en\u00ed u\u017eivatele p\u0159ed p\u0159\u00edstupem k prost\u0159edku, kter\u00fd po\u017eaduje vlo\u017een\u00ed. 

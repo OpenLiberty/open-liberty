@@ -113,7 +113,11 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     public void addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         if (cookieByteString != null) {
-            addJwtCookies(cookieByteString, req, resp);
+            String testString = getJwtSsoTokenFromCookies(req, getJwtCookieName());
+            boolean cookieAlreadySent = testString != null && testString.equals(cookieByteString);
+            if (!cookieAlreadySent) {
+                addJwtCookies(cookieByteString, req, resp);
+            }
             isJwtCookie = true;
         }
 
@@ -286,9 +290,11 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected void logoutJwtCookies(HttpServletRequest req, Cookie[] cookies, java.util.ArrayList<Cookie> logoutCookieList) {
         String jwtCookieName = getJwtCookieName();
         if (jwtCookieName != null) { // jwtsso is active, expire it's cookies too
-            if (config.isTrackLoggedOutSSOCookiesEnabled()) {
-                LoggedOutJwtSsoCookieCache.put(getJwtSsoTokenFromCookies(req, jwtCookieName));
+            String jwtTokenStr = getJwtSsoTokenFromCookies(req, jwtCookieName);
+            if (jwtTokenStr != null) {
+                LoggedOutJwtSsoCookieCache.put(jwtTokenStr);
             }
+
             for (int i = 0; i < cookies.length; i++) {
                 if (isJwtCookie(jwtCookieName, cookies[i].getName())) {
                     cookies[i].setValue(null);

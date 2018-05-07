@@ -553,3 +553,14 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Per ulteriori informazion
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Errore interno di scansione classe: l''elaborazione Jandex duplica l''elaborazione della classe [ {0} ].
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} A number
+# # {3} A number
+# # {4} The name of a file or the name of a directory
+# # Read - Past tense. 
+ANNO_JANDEX_USAGE=CWWKC0092I: Lettura di indici Jandex per {0} su {1} archivi ({2} su {3} classi) in {4}. 
+ANNO_JANDEX_USAGE.explanation=Questo mostra il numero di archivi nel modulo che sono stati elaborati leggendo gli indici Jandex piuttosto che eseguendo la scansione dei file di classe reali.  Inoltre mostra il numero totale di classi nell'applicazione che sono state elaborate dalla lettura degli indici Jandex.
+ANNO_JANDEX_USAGE.useraction=Se \u00e8 previsto che gli indici Jandex siano letti per l'applicazione, non c'\u00e8 alcuna azione.  Se gli indici Jandex non devono essere letti per l'applicazione, impostare l'attributo useJandex="false" nell'elemento application in server.xml. In alternativa, impostare useJandex="false" nell'elemento applicationManger in server.xml per ignorare gli indici Jandex in tutte le applicazioni.
+

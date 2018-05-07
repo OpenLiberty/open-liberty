@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Stellen Sie sicher, dass der Injekt
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: Der Anspruch kann f\u00fcr die Geltungsbereiche ApplicationScoped und SessionScoped nicht in den Injektionspunkt {0} eingef\u00fcgt werden.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Der mit dem Qualifikationsmerkmal Claim annotierte Injektionspunkt f\u00fcr einen unformatierten Typ  muss zu einer Klasse geh\u00f6ren, die mit der Geltungsbereichsannotation RequestScoped annotiert ist.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Stellen Sie sicher, dass der Injektionspunkt ein Member einer Klasse im Geltungsbereich RequestScoped f\u00fcr den Anspruch ist, den Sie einf\u00fcgen m\u00f6chten.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: Es kann kein JsonWebToken-Principal eingef\u00fcgt werden, weil keines verf\u00fcgbar ist. Sch\u00fctzen Sie die anfordernde Ressource so, dass die Authentifizierung stattfindet, bevor auf die Ressource zugegriffen wird.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=Es wurde die Injektion eines JsonWebToken angefordert, aber es ist keines verf\u00fcgbar.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Stellen Sie sicher, dass die Benutzerauthentifizierung vor dem Zugriff auf die Ressource stattfindet, die die Injection anfordert.
