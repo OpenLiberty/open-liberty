@@ -58,3 +58,7 @@ error.no.manifest.found.useraction=Configure a valid Spring Boot application, wh
 error.no.spring.class.found=CWWKC0257E: The Spring Boot application META-INF/MANIFEST.MF file must specify a Start-Class header.
 error.no.spring.class.found.explanation=Spring Boot applications must contain a main class specified by the Start-Class manifest header.
 error.no.spring.class.found.useraction=Configure a valid Spring Boot application, which contains a Start-Class manifest header, with the server.
+
+error.missing.ssl=CWWKC0258E: Could not run the application because it requires an SSL feature to be configured in the server.xml.
+error.missing.ssl.explanation=The application is a secure application and it requires an SSL feature to be configured in the server.xml.
+error.missing.ssl.useraction=The transportSecurity-1.0 feature needs to be configured in the server.xml.
