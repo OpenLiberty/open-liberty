@@ -34,6 +34,7 @@ import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.client.spec.ClientImpl;
+import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.apache.cxf.jaxrs.client.spec.TLSConfiguration;
 import org.apache.cxf.phase.Phase;
 import org.osgi.framework.Bundle;
@@ -53,7 +54,6 @@ import com.ibm.ws.jaxrs20.client.security.LibertyJaxRsClientSSLOutInterceptor;
 import com.ibm.ws.jaxrs20.client.security.ltpa.LibertyJaxRsClientLtpaInterceptor;
 import com.ibm.ws.jaxrs20.client.security.oauth.LibertyJaxRsClientOAuthInterceptor;
 import com.ibm.ws.jaxrs20.client.security.saml.PropagationHandler;
-import com.ibm.ws.jaxrs20.client.util.JaxRSClientUtil;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
@@ -201,7 +201,7 @@ public class JAXRSClientImpl extends ClientImpl {
         //202957 same url use same bus, add a lock to busCache to ensure only one bus will be created in concurrent mode.
         //ConcurrentHashMap can't ensure that.
         String moduleName = getModuleName();
-        String id = moduleName + JaxRSClientUtil.convertURItoBusId(uri.toString());
+        String id = moduleName + uri.getHost() + "-" + uri.getPort();
         synchronized (busCache) {
             bus = busCache.get(id);
             if (bus == null) {
