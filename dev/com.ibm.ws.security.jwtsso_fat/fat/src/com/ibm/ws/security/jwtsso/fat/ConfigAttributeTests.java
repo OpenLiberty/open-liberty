@@ -101,7 +101,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Test
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
-                   "com.ibm.websphere.security.LoginException" })
+                   "javax.security.auth.login.LoginException" })
     public void test_invalidBuilderRef_ltpaFallbackFalse() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testbadbuilder.xml");
 
@@ -193,7 +193,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Test
     @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException",
-                   "com.ibm.websphere.security.LoginException",
+                   "javax.security.auth.login.LoginException",
                    "com.ibm.websphere.security.jwt.InvalidConsumerException" })
     public void test_invalidConsumerRef() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testbadconsumer.xml");
@@ -222,7 +222,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
-                   "com.ibm.websphere.security.LoginException" })
+                   "javax.security.auth.login.LoginException" })
     public void test_fallbackToLtpaTrue() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testfallbacktoltpatrue.xml");
 

@@ -154,13 +154,13 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      * @param authMethod
      * @param customProperties
      */
-    protected void setOtherPrincipals(Subject subject, String securityName, String accessId, String authMethod, Hashtable<String, ?> customProperties) throws Exception {
+    protected void setOtherPrincipals(Subject temporarySubject, String securityName, String accessId, String authMethod, Hashtable<String, ?> customProperties) throws Exception {
 //        Principal principal = new WSPrincipal(securityName, accessId, authMethod);
 //        subject.getPrincipals().add(principal);
         if (customProperties != null) {
-            addJaspicPrincipal(subject, customProperties);
+            addJaspicPrincipal(temporarySubject, customProperties);
         }
-        addJsonWebToken(subject, customProperties);
+        addJsonWebToken(temporarySubject, customProperties);
 
     }
 
@@ -329,27 +329,27 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
         }
     }
 
-    private void addJaspicPrincipal(Subject subject, Hashtable<String, ?> customProperties) throws Exception {
+    private void addJaspicPrincipal(Subject temporarySubject, Hashtable<String, ?> customProperties) throws Exception {
         Principal jaspiPrincipal = (Principal) customProperties.get(AuthenticationConstants.JASPI_PRINCIPAL);
         if (jaspiPrincipal != null) {
             WSCredential wsCredential = null;
-            Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+            Set<WSCredential> wsCredentials = temporarySubject.getPublicCredentials(WSCredential.class);
             Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
             if (wsCredentialsIterator.hasNext()) {
                 wsCredential = wsCredentialsIterator.next();
                 if (wsCredential != null) // paranoid safety check (it's gm time)
                     wsCredential.set(AuthenticationConstants.JASPI_PRINCIPAL, jaspiPrincipal);
             }
-            subject.getPrincipals().add(jaspiPrincipal);
+            temporarySubject.getPrincipals().add(jaspiPrincipal);
         }
     }
 
-    private void addJsonWebToken(Subject subject, Hashtable<String, ?> customProperties) {
+    private void addJsonWebToken(Subject temporarySubject, Hashtable<String, ?> customProperties) throws Exception {
         String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
         if (customProperties != null && customProperties.get(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN) != null) {
-            MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
+            MpJwtHelper.addJsonWebToken(temporarySubject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
             removeInternalAssertionHashtable(customProperties, jsonWebTokenProperties);
         }
-        JwtSSOTokenHelper.createJwtSSOToken(subject);
+        JwtSSOTokenHelper.createJwtSSOToken(temporarySubject);
     }
 }

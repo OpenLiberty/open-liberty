@@ -85,16 +85,10 @@ public class JwtSSOTokenHelper {
         }
     }
 
-    public static void createJwtSSOToken(Subject subject) {
+    public static void createJwtSSOToken(Subject subject) throws LoginException {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            try {
-                jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
-            } catch (LoginException e) {
-                String msg = Tr.formatMessage(tc, "WARN_JWT_SSO_TOKEN_SERVICE_ERROR");
-                Tr.warning(tc, msg);
-            }
+            jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
         }
-
     }
 
     /**

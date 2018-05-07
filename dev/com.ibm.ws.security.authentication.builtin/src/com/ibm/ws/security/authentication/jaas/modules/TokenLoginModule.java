@@ -40,6 +40,7 @@ import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
+import com.ibm.wsspi.security.token.SingleSignonToken;
 
 /**
  * Handles token based authentication, such as Single Sign-on.
@@ -51,6 +52,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
     private String accessId = null;
     private Token recreatedToken;
+    private String customRealm = null;
 
     private final String[] hashtableLoginProperties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
                                                         AttributeNameConstants.WSCREDENTIAL_USERID,
@@ -164,13 +166,14 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         temporarySubject = new Subject();
         temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(jwtToken);
         SubjectHelper subjectHelper = new SubjectHelper();
-        //TODO: call JwtSSOTokenHelper to get accessId, securityname and groups
         Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(temporarySubject, hashtableLoginProperties);
+        //TODO: call a new API to retrieve the accessId, securityName and customRealm
         accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
-        setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
+        customRealm = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM);
+        setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_JWT_SSO_TOKEN);
         setCredentials(temporarySubject, securityName, securityName);
-        setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
+        setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_JWT_SSO_TOKEN, customProperties);
     }
 
     /** {@inheritDoc} */
@@ -182,7 +185,22 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
             return false;
         }
         setUpSubject();
+        if (customRealm != null) {
+            addCustomRealmToSSOToken();
+        }
         return true;
+    }
+
+    private void addCustomRealmToSSOToken() {
+        SingleSignonToken ssoToken = getSSOToken(subject);
+        if (ssoToken != null) {
+            if (customRealm != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Add custom realm into SSOToken");
+                }
+                ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
+            }
+        }
     }
 
     /** {@inheritDoc} */
