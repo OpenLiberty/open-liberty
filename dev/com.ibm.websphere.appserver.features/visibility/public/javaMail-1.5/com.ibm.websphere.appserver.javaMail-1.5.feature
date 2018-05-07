@@ -27,7 +27,7 @@ Subsystem-Name: JavaMail 1.5
 -bundles=\
   com.ibm.ws.javamail,\
   com.ibm.ws.javamail.config
--jars=com.ibm.websphere.javaee.mail.1.5; location:=dev/api/spec/, \
+-jars=com.ibm.websphere.javaee.mail.1.5; location:=dev/api/spec/; mavenCoordinates="javax.mail:javax.mail-api:1.5.6", \
  com.ibm.websphere.appserver.thirdparty.mail; location:=dev/api/third-party/
 kind=ga
 edition=core
