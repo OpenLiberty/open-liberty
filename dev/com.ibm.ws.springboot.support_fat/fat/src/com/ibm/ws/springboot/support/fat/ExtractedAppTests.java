@@ -195,6 +195,11 @@ public class ExtractedAppTests extends CommonWebServerTests {
         application = null;
     }
 
+    @Override
+    public String getLogMethodName() {
+        return "-" + testName.getMethodName();
+    }
+
     public void configureServerApp(String app) throws Exception {
         // now really configure
         application = app;

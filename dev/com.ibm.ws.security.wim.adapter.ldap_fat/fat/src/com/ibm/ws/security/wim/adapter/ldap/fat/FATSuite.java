@@ -57,7 +57,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 FATTest_SearchBase.class,
                 FATTest_EntityTypeSearchFilterForGroupMembership.class,
                 FederationCertificateLoginTest.class,
-                ContextPoolOnLDAPFailureTest.class,
                 TDSLDAP_SSLRef_NoSSLTest.class,
                 TDSLDAP_SSLRef_BadSSLTest.class,
                 LDAPRegistryNoCustomContext.class,
@@ -72,7 +71,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 SearchPagingTest.class,
                 GetUserSecurityCustomLDAP.class,
                 FATTestIDS_allIbmGroups.class,
-                CustomCertificateMapperTest.class
+                CustomCertificateMapperInBellTest.class,
+                CustomCertificateMapperInFeatureTest.class
 })
 public class FATSuite extends CommonLocalLDAPServerSuite {
 

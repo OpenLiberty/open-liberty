@@ -31,7 +31,7 @@ instrument.disabled: true
 	com.ibm.ws.crypto.ltpakeyutil;version=latest,\
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.security.utility.securityutil;version=latest,\
-	com.ibm.ws.org.apache.commons.io.1.4;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.kernel.service;version=latest
 
 -testpath: \

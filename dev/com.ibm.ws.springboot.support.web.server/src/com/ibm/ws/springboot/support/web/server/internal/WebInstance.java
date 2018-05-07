@@ -103,23 +103,21 @@ public class WebInstance implements Instance {
         }
     }
 
-    private final String m_id;
     private final WebInstanceFactory instanceFactory;
     private final SpringBootApplication app;
     private final AtomicReference<DeployedModuleInfo> deployed = new AtomicReference<>();
     private final ServiceTracker<VirtualHost, VirtualHost> tracker;
 
     public WebInstance(WebInstanceFactory instanceFactory, SpringBootApplication app, String id,
-                       WebInitializer initializer,
+                       String virtualHostId, WebInitializer initializer,
                        ServiceTracker<VirtualHost, VirtualHost> tracker) throws IOException, UnableToAdaptException, MetaDataException {
-        this.m_id = id;
         this.instanceFactory = instanceFactory;
         this.app = app;
         this.tracker = tracker;
-        installIntoWebContainer(id, initializer);
+        installIntoWebContainer(id, virtualHostId, initializer);
     }
 
-    private void installIntoWebContainer(String id, WebInitializer initializer) throws IOException, UnableToAdaptException, MetaDataException {
+    private void installIntoWebContainer(String id, String virtualHostId, WebInitializer initializer) throws IOException, UnableToAdaptException, MetaDataException {
         String contextPath = initializer.getContextPath();
         if (contextPath == null) {
             contextPath = "/";
@@ -127,7 +125,7 @@ public class WebInstance implements Instance {
             contextPath = "/" + contextPath;
         }
 
-        Container appContainer = app.createContainerFor(id);
+        Container appContainer = app.createContainerFor(virtualHostId);
         // create a classes info that reflects the spring app so that we can
         // put that into the overlay cache to supersede the JEE classes info
         WebModuleClassesInfo classesInfo = new WebModuleClassesInfo() {
@@ -198,11 +196,6 @@ public class WebInstance implements Instance {
             deployedModule.getModuleInfo().getApplicationInfo();
             app.destroyApplicationInfo((ExtendedApplicationInfo) deployedModule.getModuleInfo().getApplicationInfo());
         }
-    }
-
-    @Override
-    public String getId() {
-        return m_id;
     }
 
 }

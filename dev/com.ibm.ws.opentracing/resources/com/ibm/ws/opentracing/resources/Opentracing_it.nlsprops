@@ -66,25 +66,13 @@ OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Richiamo del metodo OpentracingT
 OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=La funzione crea implementazioni del programma di traccia con un OpentracingTracerFactory fornito dall'utente. Il metodo OpentracingTracerFactory.newInstance restituisce un'eccezione.
 OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Determinare il motivo per cui il metodo OpentracingTracerFactory newInstance fornito dall'utente restituisce un'eccezione.
 
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: Nessun programma di traccia disponibile per una richiesta in entrata. La richiesta in entrata non sar\u00e0 correlata con il servizio upstream.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=Un'implementazione del programma di traccia non era disponibile quando \u00e8 arrivata una richiesta all'endpoint dell'applicazione. Questa richiesta in entrata non fornir\u00e0 alcuna informazione al servizio Opentracing.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Esaminare gli errori precedenti per determinare perch\u00e9 il programma di traccia non \u00e8 disponibile.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: L'intervallo di tempo creato per una richiesta in entrata non \u00e8 disponibile per la risposta alla richiesta. La richiesta in entrata non sar\u00e0 correlata con il servizio upstream.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=L'intervallo di tempo creato quando \u00e8 arrivata la richiesta non \u00e8 disponibile quando \u00e8 restituita la risposta. Nessuna informazione sull'intervallo di tempo verr\u00e0 fornita al servizio Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Esaminare gli errori precedenti per determinare perch\u00e9 un intervallo di tempo non \u00e8 disponibile.
-
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: Nessun programma di traccia trovato per una richiesta in uscita. La richiesta in uscita non sar\u00e0 correlata con la richiesta in entrata.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=Un'implementazione del programma di traccia non era disponibile quando \u00e8 inviata una richiesta dall'applicazione. Questa richiesta in uscita non fornir\u00e0 alcuna informazione al servizio Opentracing.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Esaminare gli errori precedenti per determinare perch\u00e9 il programma di traccia non \u00e8 disponibile.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: L'intervallo di tempo creato per una richiesta in uscita non \u00e8 disponibile per la risposta alla richiesta. La richiesta in uscita non sar\u00e0 correlata con la richiesta in entrata.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=L'intervallo di tempo creato quando \u00e8 inviata la richiesta non \u00e8 disponibile quando \u00e8 restituita la risposta. Nessuna informazione sull'intervallo di tempo verr\u00e0 fornita al servizio Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Esaminare gli errori precedenti per determinare perch\u00e9 un intervallo di tempo non \u00e8 disponibile.
-
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Richiamo del metodo OpentracingTracerFactory.newInstance(...) fornito dall'utente ha restituito un valore null
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=La funzione crea implementazioni del programma di traccia con un OpentracingTracerFactory fornito dall'utente. Il metodo OpentracingTracerFactory.newInstance restituisce un valore null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determinare il motivo per cui il metodo OpentracingTracerFactory newInstance fornito dall'utente restituisce un valore null.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing non pu\u00f2 tenere traccia delle richieste JAX-RS perch\u00e9 non \u00e8 stata fornita una classe OpentracingTracerFactory.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing non funzioner\u00e0 correttamente perch\u00e9 non \u00e8 stata fornita una classe OpentracingTracerFactory. Le richieste JAX-RS verranno eseguite regolarmente, ma non verranno tracciate.
+OPENTRACING_NO_TRACERFACTORY.useraction=Per ulteriori informazioni, consultare la documentazione su come abilitare la traccia distribuita OpenTracing.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

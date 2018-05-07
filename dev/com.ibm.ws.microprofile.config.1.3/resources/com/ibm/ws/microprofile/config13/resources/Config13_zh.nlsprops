@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config 1.1 Impl -  range is 0000-0099, plus 9999 for the emergency message
+# Messages used by Config 1.2 Impl -  range is 0100-0199, plus 9998 for the emergency message
+# Messages used by Config 1.3 Impl -  range is 0200-0299, plus 9997 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine application name.
+no.application.name.CWMCG0201E=CWMCG0201E: \u65e0\u6cd5\u786e\u5b9a\u5e94\u7528\u7a0b\u5e8f\u540d\u79f0\u3002
+no.application.name.CWMCG0201E.explanation=\u65e0\u6cd5\u786e\u5b9a\u6b63\u5728\u4f7f\u7528\u54ea\u4e2a\u5e94\u7528\u7a0b\u5e8f\u3002
+no.application.name.CWMCG0201E.useraction=\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002
+
+# More than one application found with name {0}
+duplicate.application.name.CWMCG0202E=CWMCG0202E: \u627e\u5230\u591a\u4e2a\u540d\u79f0\u4e3a {0} \u7684\u5e94\u7528\u7a0b\u5e8f\u3002
+duplicate.application.name.CWMCG0202E.explanation=\u5e94\u7528\u7a0b\u5e8f\u540d\u79f0\u5fc5\u987b\u552f\u4e00\u3002
+duplicate.application.name.CWMCG0202E.useraction=\u8bf7\u67e5\u770b server.xml \u6587\u4ef6\uff0c\u4ee5\u786e\u4fdd\u6bcf\u4e2a\u5e94\u7528\u7a0b\u5e8f\u540d\u79f0\u90fd\u552f\u4e00\u3002
+
+# More than one configuration found for application with name {0}
+duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: \u627e\u5230\u540d\u79f0\u4e3a {0} \u7684\u5e94\u7528\u7a0b\u5e8f\u7684\u591a\u4e2a\u914d\u7f6e\u3002
+duplicate.application.configuration.name.CWMCG0203E.explanation=\u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u5fc5\u987b\u552f\u4e00\u3002
+duplicate.application.configuration.name.CWMCG0203E.useraction=\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002
+
+# Server XML Application Properties Config Source
+server.xml.appproperties.config.source=\u670d\u52a1\u5668 XML \u5e94\u7528\u7a0b\u5e8f\u5c5e\u6027\u914d\u7f6e\u6e90
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config 1.3 error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG9997E=CWMCG9997E: \u53d1\u751f\u4e86\u914d\u7f6e API \u9519\u8bef\uff1a{0}\u3002
+temporary.CWMCG9997E.explanation=\u53d1\u751f\u4e86\u914d\u7f6e API \u9519\u8bef\uff0c\u65e0\u6cd5\u6267\u884c\u6b63\u5e38\u64cd\u4f5c\u3002
+temporary.CWMCG9997E.useraction=\u67e5\u770b\u670d\u52a1\u5668 message.log \u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002

@@ -174,38 +174,48 @@ public class LoginBridge {
     }
 
     @FFDCIgnore(WIMException.class)
-    public String mapCertificate(X509Certificate inputCertificate) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
+    public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
 
         // initialize the return value
         StringBuffer returnValue = new StringBuffer();
         // bridge the APIs
         try {
             // validate the certificate
-            this.mappingUtils.validateCertificate(inputCertificate);
+            this.mappingUtils.validateCertificate(chain);
+
             // separate the user and realm from ""
             IDAndRealm idAndRealm = this.mappingUtils.separateIDAndRealm("");
+
             // create an empty root DataObject
             Root root = this.mappingUtils.getWimService().createRootObject();
+
             // add MAP(userSecurityName) to the return list of properties
             // f113366
             String outputAttrName = this.propertyMap.getOutputUserSecurityName(idAndRealm.getRealm());
             if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                 this.mappingUtils.createLoginControlDataObject(root, outputAttrName);
             }
+
             // use the root DataGraph to create a LoginAccount DataGraph
             List<Entity> entities = root.getEntities();
             LoginAccount loginAct = new LoginAccount();
             if (entities != null) {
                 entities.add(loginAct);
             }
+
             // d123655
             // set the "userCertificate" property to base64(cert[0])
             //loginAccount.getList(Service.PROP_CERTIFICATE).add(inputCertificates[0].getEncoded());
-            loginAct.getCertificate().add(inputCertificate.getEncoded());
+            for (X509Certificate cert : chain) {
+                loginAct.getCertificate().add(cert.getEncoded());
+            }
+
             // invoke ProfileService.login with the input root DataGraph
             root = this.mappingUtils.getWimService().login(root);
+
             // set the user to the value of MAP(userUniqueId) from the output DataGraph
             List<Entity> returnList = root.getEntities();
+
             // the user was not authenticated
             if (returnList.isEmpty()) {
                 throw new com.ibm.wsspi.security.wim.exception.CertificateMapFailedException();

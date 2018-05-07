@@ -36,7 +36,6 @@ import javax.naming.directory.Attributes;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.websphere.security.CertificateMapper;
 import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
@@ -59,6 +58,7 @@ import com.ibm.wsspi.security.wim.model.LangType;
 import com.ibm.wsspi.security.wim.model.Person;
 import com.ibm.wsspi.security.wim.model.PersonAccount;
 
+@SuppressWarnings("restriction")
 public class LdapConfigManager {
 
     /**  */
@@ -278,11 +278,6 @@ public class LdapConfigManager {
     private String[] iCertFilterEles = null;
 
     /**
-     * {@link CertificateMapper} ID.
-     */
-    private String iCertificateMapperId;
-
-    /**
      * Flag indicating whether user wants to use input principal name for login.
      */
     private final boolean usePrincipalNameForLogin = false;
@@ -444,12 +439,6 @@ public class LdapConfigManager {
 
             setCertificateFilter((String) configProps.get(ConfigConstants.CONFIG_PROP_CERTIFICATE_FILTER));
 
-        } else if (ConfigConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(getCertificateMapMode())) {
-
-            this.iCertificateMapperId = (String) configProps.get(ConfigConstants.CONFIG_PROP_CERTIFICATE_MAPPER_ID);
-            if (this.iCertificateMapperId == null) {
-                Tr.warning(tc, "No certificateMapperId was found for this registry."); // TODO LOCALIZE
-            }
         }
 
         List<HashMap<String, String>> baseEntries = new ArrayList<HashMap<String, String>>();
@@ -1436,12 +1425,12 @@ public class LdapConfigManager {
             }
         }
 
-        iDummyMbrMap = new HashMap();
+        iDummyMbrMap = new HashMap<String, String>();
         if (size > 0) {
-            iMbrAttrMap = new HashMap(size);
+            iMbrAttrMap = new HashMap<String, String>(size);
 
-            List attrScopes = new ArrayList(size);
-            List attrNames = new ArrayList(size);
+            List<String> attrScopes = new ArrayList<String>(size);
+            List<String> attrNames = new ArrayList<String>(size);
 
             for (Map<String, Object> mbrAttrDO : memberPropList) {
                 String name = (String) mbrAttrDO.get(ConfigConstants.CONFIG_PROP_NAME);
@@ -1483,13 +1472,13 @@ public class LdapConfigManager {
                     }
                 }
             }
-            iMbrAttrs = (String[]) attrNames.toArray(new String[0]);
+            iMbrAttrs = attrNames.toArray(new String[0]);
             iMbrAttrScope = new short[iMbrAttrs.length];
 
             iMbrAttrsAllScope = true;
             iMbrAttrsNestedScope = true;
             for (int i = 0; i < attrScopes.size(); i++) {
-                iMbrAttrScope[i] = LdapHelper.getMembershipScope((String) attrScopes.get(i));
+                iMbrAttrScope[i] = LdapHelper.getMembershipScope(attrScopes.get(i));
                 if (iMbrAttrScope[i] == LdapConstants.LDAP_DIRECT_GROUP_MEMBERSHIP) {
                     iMbrAttrsAllScope = false;
                     iMbrAttrsNestedScope = false;
@@ -1500,7 +1489,7 @@ public class LdapConfigManager {
         } else {
             // If groupMemberAttributeMap is not set, default it to "member" and "direct"
             // Get group member attribute
-            iMbrAttrMap = new HashMap(objectClasses.size());
+            iMbrAttrMap = new HashMap<String, String>(objectClasses.size());
             iMbrAttrScope = new short[objectClasses.size()];
             for (int i = 0; i < objectClasses.size(); i++) {
                 iMbrAttrMap.put(objectClasses.get(i), LdapConstants.LDAP_ATTR_MEMBER_DEFAULT);
@@ -1742,7 +1731,6 @@ public class LdapConfigManager {
      * @return
      */
     private String[] validateSearchBases(String[] searchBases, List<HashMap<String, String>> baseEntries) {
-        // TODO Auto-generated method stub
 
         final String METHODNAME = "validateSearchBases(String[], List<HashMap<String, String>>)";
         List<String> validSearchBase = new ArrayList<String>();
@@ -1754,11 +1742,11 @@ public class LdapConfigManager {
                  * HashMap<String, String> baseEntrymap = new HashMap<String, String>();
                  * baseEntrymap = baseEntries.get(i);
                  */
-                Set keys = baseEntries.get(i).keySet();
-                Iterator itr = keys.iterator();
+                Set<String> keys = baseEntries.get(i).keySet();
+                Iterator<String> itr = keys.iterator();
 
                 while (itr.hasNext()) {
-                    String key = (String) itr.next();
+                    String key = itr.next();
 
                     if (searchBases[j].trim().toLowerCase().endsWith(key.toLowerCase())) {
                         isValid = true;
@@ -2496,11 +2484,6 @@ public class LdapConfigManager {
     }
 
     @Trivial
-    public String getCertificateMapperId() {
-        return iCertificateMapperId;
-    }
-
-    @Trivial
     public String getCertificateMapMode() {
         return iCertMapMode;
     }
@@ -2568,7 +2551,7 @@ public class LdapConfigManager {
                 // TBD - filter.append (cert.getSubjectUniqueID());
             } else if (str.equals("${TBSCertificate}") || str.equals("$[TBSCertificate]")) {
                 // filter.append (cert.getTBSCertificate());
-                String msg = Tr.formatMessage(tc, WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED, null);
+                String msg = Tr.formatMessage(tc, WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED, (Object) null);
                 throw new CertificateMapperException(WIMMessageKey.TBS_CERTIFICATE_UNSUPPORTED, msg);
             } else if (str.equals("${Version}") || str.equals("$[Version]")) {
                 filter.append(cert.getVersion());
@@ -3044,6 +3027,8 @@ public class LdapConfigManager {
             iCertMapMode = ConfigConstants.CONFIG_VALUE_FILTER_DESCRIPTOR_MODE;
         } else if (ConfigConstants.CONFIG_VALUE_CUSTOM_MODE.equalsIgnoreCase(certMapMode)) {
             iCertMapMode = ConfigConstants.CONFIG_VALUE_CUSTOM_MODE;
+        } else if (ConfigConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE.equalsIgnoreCase(certMapMode)) {
+            iCertMapMode = ConfigConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE;
         } else {
             iCertMapMode = ConfigConstants.CONFIG_VALUE_EXTACT_DN_MODE;
         }
@@ -3065,7 +3050,7 @@ public class LdapConfigManager {
                 throw new InvalidInitPropertyException(WIMMessageKey.INVALID_UNIQUE_NAME_SYNTAX, Tr.formatMessage(
                                                                                                                   tc,
                                                                                                                   WIMMessageKey.INVALID_UNIQUE_NAME_SYNTAX,
-                                                                                                                  null));
+                                                                                                                  (Object) null));
             }
             String reposNodeName = entry.get(nodeName);
             if (reposNodeName == null) {
@@ -3076,7 +3061,7 @@ public class LdapConfigManager {
                     throw new InvalidInitPropertyException(WIMMessageKey.INVALID_DN_SYNTAX, Tr.formatMessage(
                                                                                                              tc,
                                                                                                              WIMMessageKey.INVALID_DN_SYNTAX,
-                                                                                                             null));
+                                                                                                             (Object) null));
                 }
             }
             // Determine if need to switch node.

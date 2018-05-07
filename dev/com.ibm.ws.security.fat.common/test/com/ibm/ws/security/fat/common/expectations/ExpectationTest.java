@@ -158,7 +158,7 @@ public class ExpectationTest extends CommonExpectationTestClass {
             Expectation exp = Expectation.createResponseStatusExpectation(testAction, statusCode);
 
             String failureMsg = "Did not receive status code [" + statusCode + "] during test action [" + testAction + "].";
-            verifyExpectationValues(exp, testAction, Constants.RESPONSE_STATUS, Constants.STRING_CONTAINS, null, Integer.toString(statusCode), failureMsg);
+            verifyExpectationValues(exp, testAction, Constants.RESPONSE_STATUS, Constants.STRING_EQUALS, null, Integer.toString(statusCode), failureMsg);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -174,7 +174,7 @@ public class ExpectationTest extends CommonExpectationTestClass {
             Expectation exp = Expectation.createResponseStatusExpectation(testAction, statusCode);
 
             String failureMsg = "Did not receive status code [" + statusCode + "] during test action [" + testAction + "].";
-            verifyExpectationValues(exp, testAction, Constants.RESPONSE_STATUS, Constants.STRING_CONTAINS, null, Integer.toString(statusCode), failureMsg);
+            verifyExpectationValues(exp, testAction, Constants.RESPONSE_STATUS, Constants.STRING_EQUALS, null, Integer.toString(statusCode), failureMsg);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

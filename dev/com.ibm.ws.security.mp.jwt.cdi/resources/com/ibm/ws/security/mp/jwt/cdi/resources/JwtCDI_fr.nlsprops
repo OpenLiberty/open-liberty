@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=V\u00e9rifiez que le point d'inject
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: La revendication ne peut pas \u00eatre inject\u00e9e dans le point d''injection {0} pour les port\u00e9es ApplicationScoped ou SessionScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Le point d'injection annot\u00e9 avec le qualificateur Claim pour un type brut doit appartenir \u00e0 une classe annot\u00e9e avec l'annotation de port\u00e9e RequestScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=V\u00e9rifiez que le point d'injection est membre d'une classe dans la port\u00e9e RequestScoped pour la revendication que vous souhaitez injecter.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: Il n'est pas possible d'injecter un principal JsonWebToken car il n'y en a pas de disponible. Prot\u00e9gez la ressource \u00e0 l'origine de la demande pour que l'authentification ait lieu avant l'acc\u00e8s \u00e0 la ressource.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=L'injection d'un jeton JsonWebToken a \u00e9t\u00e9 demand\u00e9e, mais aucun n'est disponible.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Assurez-vous que l'authentification de l'utilisateur ait lieu avant l'acc\u00e8s \u00e0 la ressource qui demande l'injection.

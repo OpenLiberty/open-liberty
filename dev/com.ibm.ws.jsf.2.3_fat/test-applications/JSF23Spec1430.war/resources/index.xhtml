@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:test="test">
+
+<h:head>
+    <title>Test JSF 2.3 Spec Issue 1430</title>
+</h:head>
+<h:body>
+    <h:form id="form1" prependId="false">
+        Test JSF 2.3 Spec Issue 1430.
+        <br/>
+        <test:testComponent id="out1" value="TEST" styleClass="input">
+            <f:validateLength minimum="3"/>
+        </test:testComponent>
+        <br/>
+        <test:testComponent id="out2" value="TEST2" styleClass="input2">
+            <f:validateLength minimum="3"/>
+        </test:testComponent>
+        <br/> 
+        #{preValidateEvent} #{postValidateEvent}
+        <br/>
+        <h:commandButton id="button" value="reload" />
+    </h:form>
+</h:body>
+</html>

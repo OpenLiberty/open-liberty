@@ -291,7 +291,7 @@ public class JspTranslatorUtil {
                         tagFileResources = tlc.getTagFileResources(tagFileResources);
                         translationResult.getTagFileDependencyList().add(tagFileResources);
         
-                        if (forceTagFileTranslation && tagFileResources.getGeneratedSourceFile().getParentFile().exists() == false) {
+                        if (forceTagFileTranslation || tagFileResources.getGeneratedSourceFile().getParentFile().exists() == false) { //get a folder if it doesn't exist
                             tagFileResources.getGeneratedSourceFile().getParentFile().mkdirs();
                         }
                         if (forceTagFileTranslation || tagFileResources.isOutdated() ) {

@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Asigura\u0163i-v\u0103 c\u0103 punc
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: Revendicarea nu poate fi injectat\u0103 \u00een punctul de injec\u0163ie {0} pentru domeniile ApplicationScoped sau SessionScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=Punctul de injec\u0163ie adnotat cu calificativul Revendicare pentru un tip brut trebuie s\u0103 apar\u0163in\u0103 unei clase adnotate cu adnotarea de domeniu RequestScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Asigura\u0163i-v\u0103 c\u0103 punctul de injec\u0163ie este un membru al unei clase din domeniul RequestScoped pentru revendicarea pe care dori\u0163i s\u0103 o injecta\u0163i.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: Un JsonWebToken Principal nu poate fi injectat deoarece nu este disponibil unul. Proteja\u0163i resursa solicitant\u0103 astfel \u00eenc\u00e2t autentificarea s\u0103 apar\u0103 \u00eenainte s\u0103 fie accesat\u0103 resursa.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=A fost cerut\u0103 injectarea unui JsonWebToken, dar nu este disponibil niciunul.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Asigura\u0163i-v\u0103 c\u0103 autentificarea utilizatorului a ap\u0103rut \u00eenainte de accesarea resursei care cere injec\u0163ia. 

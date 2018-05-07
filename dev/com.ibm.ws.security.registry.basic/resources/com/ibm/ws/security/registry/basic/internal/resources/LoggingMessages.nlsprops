@@ -53,3 +53,27 @@ BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Define only one member entry fo
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: Member entry with the name ''{0}'' for group ''{1}'' does not match a defined user.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=The name specified for the member entry does not match any defined users.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Check the spelling of the member name and ensure it matches a user defined in the registry.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: A custom X.509 certificate mapper was not bound with this basic registry.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=The X.509 certificate mapping mode was set to CUSTOM, but no custom X.509 certificate mapper was bound to the basic registry. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Ensure that the certificateMapperId attribute in the basic registry is configured to point to a valid custom X.509 certificate mapper.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: The filter or distinguished name ''{0}'' returned from the X.509 custom certificate mapper does not map to a registry user.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=The value that is returned from the custom X.509 certificate mapper does not map to a user in the basic registry.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Ensure that the user exists in the basic registry and that the mapping is valid.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: The custom X.509 certificate mapper threw a CertificateMapNotSupportedException exception.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=The custom X.509 certificate mapper threw a CertificateMapNotSupportedException exception.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=If the exception was unexpected, review the custom X.509 certificate mapper implementation and make necessary changes.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: The custom X.509 certificate mapper threw a CertificateMapFailedException exception.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=The custom X.509 certificate mapper threw a CertificateMapFailedException exception.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=If the exception was unexpected, review the custom X.509 certificate mapper implementation and make necessary changes.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: The ''{0}'' distinguished name (DN) does not map to a valid basic registry user.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=The DN of the subject principal in the X.509 certificate does not map to a valid basic registry user. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Ensure that the DN of the subject principal contains a 'cn' relative distinguished name (RDN) and that a user in the basic registry matches the value of the RDN. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: The basic registry is configured to ignore X.509 certificate authentication requests.
+BASIC_REGISTRY_CERT_IGNORED.explanation=The certificateMapMode configuration attribute for the basic registry is set to IGNORE.
+BASIC_REGISTRY_CERT_IGNORED.useraction=To enable the basic registry to process X.509 certificate authentication requests, change the certificateMapMode configuration attribute to allow processing.

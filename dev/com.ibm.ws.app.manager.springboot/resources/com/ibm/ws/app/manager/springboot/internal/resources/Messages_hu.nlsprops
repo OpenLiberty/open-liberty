@@ -1,0 +1,48 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKC0251 to CWWKC0300
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.thin.application=CWWKC0251W: Nem siker\u00fclt \u00e1talak\u00edtani a(z) {0} alkalmaz\u00e1st egy v\u00e9kony alkalmaz\u00e1sra a(z) {1} kiv\u00e9tel miatt.
+warning.could.not.thin.application.explanation=Az alkalmaz\u00e1s nem alak\u00edthat\u00f3 \u00e1t v\u00e9kony alkalmaz\u00e1ss\u00e1. Az alkalmaz\u00e1s tov\u00e1bbra is az eredeti JAR arch\u00edvumb\u00f3l fog futni. 
+warning.could.not.thin.application.useraction=Pr\u00f3b\u00e1lja meg elh\u00e1r\u00edtani a kiv\u00e9tel \u00fczenet\u00e9ben jelzett probl\u00e9m\u00e1t, \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t vagy friss\u00edtse az alkalmaz\u00e1st. 
+
+error.need.springboot.version.15=CWWKC0252E: Nem siker\u00fclt futtatni az alkalmaz\u00e1st, mert a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban. Az alkalmaz\u00e1s a springBoot-1.5 szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t ig\u00e9nyli.
+error.need.springboot.version.15.explanation= Az alkalmaz\u00e1s a Spring Boot 1.5 v\u00e1ltozatot ig\u00e9nyli, azonban a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban.  
+error.need.springboot.version.15.useraction= A springBoot-1.5 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni a server.xml f\u00e1jlban.
+
+error.need.springboot.version.20=CWWKC0253E: Nem siker\u00fclt futtatni az alkalmaz\u00e1st, mert a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban. Az alkalmaz\u00e1s a springBoot-2.0 szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t ig\u00e9nyli.
+error.need.springboot.version.20.explanation= Az alkalmaz\u00e1s a Spring Boot 2.0 v\u00e1ltozatot ig\u00e9nyli, azonban a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban.  
+error.need.springboot.version.20.useraction= A springBoot-2.0 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni a server.xml f\u00e1jlban.
+
+error.missing.servlet=CWWKC0254E: Nem siker\u00fclt futtatni az alkalmaz\u00e1st, mert az egy Servlet szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t ig\u00e9nyli a server.xml f\u00e1jlban. A servlet-3.1 vagy a servlet-4.0 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni.
+error.missing.servlet.explanation= Az alkalmaz\u00e1s egy webalkalmaz\u00e1s, \u00e9s megk\u00f6veteli egy Servlet szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t a server.xml f\u00e1jlban.
+error.missing.servlet.useraction= A servlet-3.1 vagy a servlet-4.0 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni a server.xml f\u00e1jlban.

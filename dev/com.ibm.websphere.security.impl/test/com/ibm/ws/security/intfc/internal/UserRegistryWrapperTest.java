@@ -143,15 +143,16 @@ public class UserRegistryWrapperTest {
      */
     @Test
     public void mapCertificate() throws Exception {
+        final X509Certificate[] certs = new X509Certificate[] { CERT };
+
         mock.checking(new Expectations() {
             {
-                one(wrappedUr).mapCertificate(CERT);
+                one(wrappedUr).mapCertificate(certs);
                 will(returnValue(NAME));
             }
         });
 
-        X509Certificate[] certs = new X509Certificate[] { CERT };
-        assertEquals("checkPassword did not return expected String",
+        assertEquals("mapCertificate did not return expected String",
                      NAME, wrapper.mapCertificate(certs));
     }
 
@@ -160,14 +161,15 @@ public class UserRegistryWrapperTest {
      */
     @Test(expected = CertificateMapFailedException.class)
     public void mapCertificate_failed() throws Exception {
+        final X509Certificate[] certs = new X509Certificate[] { CERT };
+
         mock.checking(new Expectations() {
             {
-                one(wrappedUr).mapCertificate(CERT);
+                one(wrappedUr).mapCertificate(certs);
                 will(throwException(new com.ibm.ws.security.registry.CertificateMapFailedException("expected")));
             }
         });
 
-        X509Certificate[] certs = new X509Certificate[] { CERT };
         wrapper.mapCertificate(certs);
     }
 
@@ -176,14 +178,15 @@ public class UserRegistryWrapperTest {
      */
     @Test(expected = CustomRegistryException.class)
     public void mapCertificate_RegistryException() throws Exception {
+        final X509Certificate[] certs = new X509Certificate[] { CERT };
+
         mock.checking(new Expectations() {
             {
-                one(wrappedUr).mapCertificate(CERT);
+                one(wrappedUr).mapCertificate(certs);
                 will(throwException(new com.ibm.ws.security.registry.RegistryException("expected")));
             }
         });
 
-        X509Certificate[] certs = new X509Certificate[] { CERT };
         wrapper.mapCertificate(certs);
     }
 
@@ -192,14 +195,15 @@ public class UserRegistryWrapperTest {
      */
     @Test(expected = CertificateMapNotSupportedException.class)
     public void mapCertificate_CertificateMapNotSupportedException() throws Exception {
+        final X509Certificate[] certs = new X509Certificate[] { CERT };
+
         mock.checking(new Expectations() {
             {
-                one(wrappedUr).mapCertificate(CERT);
+                one(wrappedUr).mapCertificate(certs);
                 will(throwException(new com.ibm.ws.security.registry.CertificateMapNotSupportedException("expected")));
             }
         });
 
-        X509Certificate[] certs = new X509Certificate[] { CERT };
         wrapper.mapCertificate(certs);
     }
 

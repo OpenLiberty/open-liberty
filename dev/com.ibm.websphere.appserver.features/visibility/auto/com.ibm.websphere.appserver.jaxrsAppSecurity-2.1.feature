@@ -8,5 +8,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:=3.0
 -bundles=com.ibm.ws.jaxrs.2.0.security
-kind=beta
+kind=ga
 edition=core

@@ -1,0 +1,48 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKC0251 to CWWKC0300
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.thin.application=CWWKC0251W: Die Anwendung {0} konnte nicht in eine Thin-Anwendung konvertiert werden, weil die Ausnahme {1} eingetreten ist.
+warning.could.not.thin.application.explanation=Die Anwendung konnte nicht in eine Thin-Anwendung konvertiert werden. Die Anwendung wird weiterhin \u00fcber die urspr\u00fcngliche JAR ausgef\u00fchrt. 
+warning.could.not.thin.application.useraction=Versuchen Sie, das in der Ausnahmenachricht angegebene Problem zu beheben, und starten Sie dann den Server erneut oder aktualisieren Sie die Anwendung. 
+
+error.need.springboot.version.15=CWWKC0252E: Die Anwendung konnte nicht ausgef\u00fchrt werden, weil die falsche Version des Features Spring Boot in der Datei server.xml konfiguriert ist. Die Anwendung setzt die Konfiguration des Features springBoot-1.5 voraus.
+error.need.springboot.version.15.explanation= Die Anwendung setzt Spring Boot Version 1.5 voraus, aber es ist eine falsche Version des Features Spring Boot in der Datei server.xml konfiguriert.  
+error.need.springboot.version.15.useraction= Das Feature springBoot-1.5 muss in der Datei server.xml konfiguriert werden.
+
+error.need.springboot.version.20=CWWKC0253E: Die Anwendung konnte nicht ausgef\u00fchrt werden, weil die falsche Version des Features Spring Boot in der Datei server.xml konfiguriert ist. Die Anwendung setzt die Konfiguration des Features springBoot-2.0 voraus.
+error.need.springboot.version.20.explanation= Die Anwendung setzt Spring Boot Version 2.0 voraus, aber es ist eine falsche Version des Features Spring Boot in der Datei server.xml konfiguriert.  
+error.need.springboot.version.20.useraction= Das Feature springBoot-2.0 muss in der Datei server.xml konfiguriert werden.
+
+error.missing.servlet=CWWKC0254E: Die Anwendung konnte nicht ausgef\u00fchrt werden, weil die Konfiguration eines Servlet-Features in der Datei server.xml vorausgesetzt wird. Es muss entweder servlet-3.1 oder servlet-4.0 konfiguriert werden.
+error.missing.servlet.explanation= Die Anwendung ist eine Webanwendung, die die Konfiguration eines Servlet-Feature in der Datei server.xml voraussetzt.
+error.missing.servlet.useraction= Es muss entweder servlet-3.1 oder servlet-4.0 in der Datei server.xml konfiguriert werden.

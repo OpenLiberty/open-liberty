@@ -553,3 +553,14 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Reportez-vous \u00e0 l'ex
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Erreur interne d''analyse de la classe : traitement Jandex en double de la classe [ {0} ].
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} A number
+# # {3} A number
+# # {4} The name of a file or the name of a directory
+# # Read - Past tense. 
+ANNO_JANDEX_USAGE=CWWKC0092I: Index Jandex lues pour {0} archives sur {1} ({2} classes sur {3}) dans {4}. 
+ANNO_JANDEX_USAGE.explanation=Affiche le nombre d'archives dans le module qui ont \u00e9t\u00e9 trait\u00e9es en lisant les index Jandex plut\u00f4t qu'en analysant les fichiers classe r\u00e9els. Affiche \u00e9galement le nombre total de classes dans l'application qui ont \u00e9t\u00e9 trait\u00e9es en lisant les index Jandex.
+ANNO_JANDEX_USAGE.useraction=S'il est pr\u00e9vu que les index Jandex soient lus pour l'application, aucune action n'est requise. Si les index Jandex ne doivent pas \u00eatre lus pour l'application, d\u00e9finissez l'attribut useJandex="false" dans l'\u00e9l\u00e9ment application dans le fichier server.xml. Vous pouvez aussi d\u00e9finir useJandex="false" dans l'\u00e9l\u00e9ment applicationManager dans le fichier server.xml afin d'ignorer les index Jandex dans toutes les applications.
+

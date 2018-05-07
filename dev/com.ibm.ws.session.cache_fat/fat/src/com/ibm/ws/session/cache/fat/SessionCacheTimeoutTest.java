@@ -141,6 +141,9 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         app.invokeServlet("sessionGetTimeoutCacheCheck&key=testCacheInvalidationAfterServletTimeout-foo", session);
     }
 
+    /**
+     * Tests that accessing a session prevents invalidation.
+     */
     @Test
     public void testRefreshInvalidation() throws Exception {
         int refreshes = TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL ? 15 : 3;

@@ -98,13 +98,13 @@ public class WSCredentialProvider implements CredentialProvider {
 
     /**
      * Gets the SSO token from the subject.
-     * 
+     *
      * @param subject {@code null} is not supported.
      * @return
      */
     private Hashtable<String, ?> getUniqueIdAndSecurityNameHashtableFromSubject(final Subject subject) {
         final String[] properties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
-                                     AttributeNameConstants.WSCREDENTIAL_SECURITYNAME };
+                                      AttributeNameConstants.WSCREDENTIAL_SECURITYNAME };
         SubjectHelper subjectHelper = new SubjectHelper();
         return subjectHelper.getHashtableFromSubject(subject, properties);
     }
@@ -119,7 +119,7 @@ public class WSCredentialProvider implements CredentialProvider {
      * Create a WSCredential for the specified accessId.
      * If this accessId came from the current UserRegistry, create a WsCredential.
      * If not, then do nothing.
-     * 
+     *
      * @throws CredentialException
      */
     private void setCredential(Subject subject, WSPrincipal principal) throws CredentialException {
@@ -187,7 +187,8 @@ public class WSCredentialProvider implements CredentialProvider {
      * @param unauthenticatedUserid
      * @throws CredentialException
      */
-    private void createUserWSCredential(Subject subject, String securityName, String accessId, String realm, String uniqueName, String unauthenticatedUserid) throws CredentialException {
+    private void createUserWSCredential(Subject subject, String securityName, String accessId, String realm, String uniqueName,
+                                        String unauthenticatedUserid) throws CredentialException {
         UserRegistryService userRegistryService = userRegistryServiceRef.getService();
         try {
             Hashtable<String, ?> customProperties = getUniqueIdAndSecurityNameHashtableFromSubject(subject);
@@ -206,8 +207,13 @@ public class WSCredentialProvider implements CredentialProvider {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Requested creation of a WSCredential for an unknown realm", userRegistry.getRealm(), realm);
                     }
+                    throw new CredentialException("Foreign realms are unsupported. The accessId's realm, " + accessId + ", doesn't match the current realm, "
+                                                  + userRegistry.getRealm() + ".");
                 }
             } else {
+                /*
+                 * Since there is no UserRegistry we may need to throw a CredentialException here. Right now there are no reported errors, so taking no action.
+                 */
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Unexpected state in WSCredentialProvider, no UserRegistry");
                 }
@@ -229,21 +235,14 @@ public class WSCredentialProvider implements CredentialProvider {
                                List<String> roles,
                                List<String> uniqueGroupAccessIds) throws CredentialException {
 
-        WSCredential cred = new WSCredentialImpl(realm,
-                        securityName,
-                        uniqueName,
-                        unauthenticatedId,
-                        primaryUniqueGroupAccessId,
-                        accessId,
-                        null,
-                        uniqueGroupAccessIds);
+        WSCredential cred = new WSCredentialImpl(realm, securityName, uniqueName, unauthenticatedId, primaryUniqueGroupAccessId, accessId, null, uniqueGroupAccessIds);
         subject.getPublicCredentials().add(cred);
     }
 
     /**
      * Get a list of all of the groups the user belongs to, formated as
      * group access IDs.
-     * 
+     *
      * @param userRegistry
      * @param realm
      * @param uniqueName
@@ -252,8 +251,7 @@ public class WSCredentialProvider implements CredentialProvider {
      * @throws RegistryException
      */
     private List<String> getUniqueGroupAccessIds(UserRegistry userRegistry,
-                                                 String realm, String uniqueName)
-                    throws EntryNotFoundException, RegistryException {
+                                                 String realm, String uniqueName) throws EntryNotFoundException, RegistryException {
         List<String> uniqueGroupAccessIds = new ArrayList<String>();
         List<String> uniqueGroupIds = userRegistry.getUniqueGroupIdsForUser(uniqueName);
         Iterator<String> groupIter = uniqueGroupIds.iterator();
@@ -267,7 +265,7 @@ public class WSCredentialProvider implements CredentialProvider {
     /**
      * Get the primary group ID. This is assumed to be the first group in the
      * group list.
-     * 
+     *
      * @param uniqueGroupIds
      * @return The first entry of the list
      */
@@ -307,7 +305,7 @@ public class WSCredentialProvider implements CredentialProvider {
 
     /**
      * Gets the WSCredential from the subject.
-     * 
+     *
      * @param subject {@code null} is not supported.
      * @return
      */
@@ -324,7 +322,7 @@ public class WSCredentialProvider implements CredentialProvider {
     /**
      * Checks if the subject is valid. Currently, a subject is REQUIRED to have
      * a WSCredential, and it is only valid if the WSCredential is not expired.
-     * 
+     *
      * @param subject The subject to validate, {@code null} is not supported.
      * @return <code>true</code> if the subject is valid.
      */

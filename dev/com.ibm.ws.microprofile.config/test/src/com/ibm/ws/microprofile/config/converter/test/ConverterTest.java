@@ -40,8 +40,9 @@ import javax.xml.bind.DatatypeConverter;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.config.converters.DefaultConverters;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
-public class ConverterTest {
+public class ConverterTest extends AbstractConfigTest {
 
     private static <T> T defaultConversion(Class<T> type, String value) {
         return (T) DefaultConverters.getDefaultConverters().getConverter(type).convert(value);

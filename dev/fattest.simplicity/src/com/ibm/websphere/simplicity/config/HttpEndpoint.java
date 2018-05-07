@@ -15,14 +15,16 @@ import javax.xml.bind.annotation.XmlElement;
 
 /**
  * Defines an HTTP endpoint (host/port mapping)
- * 
+ *
  * @author Tim Burns
- * 
+ *
  */
 public class HttpEndpoint extends ConfigElement {
 
     @XmlElement(name = "tcpOptions")
     private TcpOptions tcpOptions;
+    @XmlElement(name = "sslOptions")
+    private SslOptions sslOptions;
     private String host;
     private Integer httpPort;
     private Integer httpsPort;
@@ -35,6 +37,16 @@ public class HttpEndpoint extends ConfigElement {
             this.tcpOptions = new TcpOptions();
         }
         return this.tcpOptions;
+    }
+
+    /**
+     * @return Ssl options for this configuration
+     */
+    public SslOptions getSslOptions() {
+        if (this.sslOptions == null) {
+            this.sslOptions = new SslOptions();
+        }
+        return this.sslOptions;
     }
 
     /**
@@ -94,6 +106,8 @@ public class HttpEndpoint extends ConfigElement {
             buf.append("httpsPort=\"" + this.httpsPort + "\" ");
         if (this.tcpOptions != null)
             buf.append(tcpOptions.toString());
+        if (this.sslOptions != null)
+            buf.append(sslOptions.toString());
 
         buf.append("}");
         return buf.toString();

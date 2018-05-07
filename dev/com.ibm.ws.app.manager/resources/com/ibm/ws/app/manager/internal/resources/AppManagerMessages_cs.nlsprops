@@ -203,8 +203,8 @@ APPLICATION_UPDATED=CWWKZ0062I: Aplikace {0} byla aktualizov\u00e1na, ale nebyla
 APPLICATION_UPDATED.explanation=V uveden\u00e9 aplikace do\u0161lo k drobn\u00e9 zm\u011bn\u011b, kter\u00e1 je pova\u017eov\u00e1na za natolik malou, \u017ee nen\u00ed nutn\u00e9 aplikaci restartovat.
 APPLICATION_UPDATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Pou\u017eit\u00ed Jandex je povoleno pro v\u0161echny aplikace.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=Pro v\u0161echny aplikace a v p\u0159\u00edpad\u011b, \u017ee jsou k dispozici indexy Jandex, jsou data t\u0159\u00eddy a anotace z\u00edsk\u00e1na z index\u016f Jandex.
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: V\u00fdchoz\u00ed nastaven\u00ed pro pou\u017eit\u00ed Jandex bylo zm\u011bn\u011bno na hodnotu true pro v\u0161echny aplikace.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Pro v\u0161echny aplikace a v p\u0159\u00edpad\u011b, \u017ee jsou k dispozici indexy Jandex, jsou data t\u0159\u00eddy a anotace z\u00edsk\u00e1na z index\u016f Jandex, nen\u00ed-li pou\u017eit\u00ed Jandex pro aplikaci zak\u00e1z\u00e1no.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 #{0} is application name

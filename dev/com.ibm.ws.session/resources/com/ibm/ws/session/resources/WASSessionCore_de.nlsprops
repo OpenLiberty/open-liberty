@@ -14,6 +14,11 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+
+# Note:
+# SESN0300 - SESN0350 has been reserved for use in: 
+# com.ibm.ws.session.cache/resources/com/ibm/ws/session/store/cache/resources/WASSessionCache.nlsprops
+
 SessionContext.createWhenStop=SESN0006E: Es wurde versucht, eine Sitzung zu erstellen, als der Anwendungsserver gerade gestoppt wurde.
 SessionContext.createWhenStop.explanation=Dieser Fehler tritt auf, wenn w\u00e4hrend des Stoppens des Anwendungsservers eine Sitzungsanforderung empfangen wird.
 SessionContext.createWhenStop.useraction=Starten Sie den Server erneut.

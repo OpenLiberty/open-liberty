@@ -1,0 +1,27 @@
+<server>
+    <featureManager>
+		<feature>componenttest-1.0</feature>
+		<feature>ejbLite-3.2</feature>
+		<feature>jdbc-4.1</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <library id="DerbyLib" filesetRef="DerbyFileset"/>
+    <fileset id="DerbyFileset" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+
+	<application type="ear" id="DSDAnnTest" name="DSDAnnTest" location="${server.config.dir}/apps/DSDAnnTest.ear">
+        <classloader commonLibraryRef="DerbyLib,global"/>
+    </application>
+    
+    <application type="ear" id="DSDMixTest" name="DSDMixTest" location="${server.config.dir}/apps/DSDMixTest.ear">
+        <classloader commonLibraryRef="DerbyLib,global"/>
+    </application>
+    
+    <application type="ear" id="DSDXMLTest" name="DSDXMLTest" location="${server.config.dir}/apps/DSDXMLTest.ear">
+        <classloader commonLibraryRef="DerbyLib,global"/>
+    </application>
+	
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>

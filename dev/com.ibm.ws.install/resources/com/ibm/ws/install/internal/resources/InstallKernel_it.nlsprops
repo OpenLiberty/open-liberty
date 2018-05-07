@@ -130,7 +130,8 @@ ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.explanation=Il programma di installazio
 ERROR_FAILED_TO_RESOLVE_FEATURE_FROM_DIR.useraction=Assicurarsi che la directory contenga la funzione e ritentare l'operazione.
 
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=CWWKF1228E: Impossibile individuare l''eseguibile {0} dopo il controllo delle seguenti ubicazioni: {1}
-ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Il programma di installazione non ha individuato il file eseguibile. " o "Il programma di installazione non pu\u00f2 individuare il file eseguibile.
+
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.explanation=Il programma di installazione non \u00e8 stato in grado di individuare il file eseguibile.
 ERROR_UNABLE_TO_LOCATE_COMMAND_EXE.useraction=Assicurarsi che il file eseguibile esista in una delle ubicazioni specificate.
 
 ERROR_EXECUTING_COMMAND=CWWKF1229E: Si \u00e8 verificato un errore durante l''esecuzione del comando: {0}  Restituzione del comando con codice di uscita {1} e messaggio di errore: {2}

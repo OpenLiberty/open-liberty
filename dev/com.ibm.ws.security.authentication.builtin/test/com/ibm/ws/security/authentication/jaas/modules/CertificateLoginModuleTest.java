@@ -205,7 +205,7 @@ public class CertificateLoginModuleTest extends LoginModuleTester {
                 one(collectiveAuthenticationPlugin).isCollectiveCACertificate(certChain);
                 will(returnValue(false));
 
-                one(userRegistry).mapCertificate(cert);
+                one(userRegistry).mapCertificate(certChain);
                 will(throwException(new CertificateMapFailedException("Expected")));
 
                 one(cert).getSubjectX500Principal();
@@ -239,7 +239,7 @@ public class CertificateLoginModuleTest extends LoginModuleTester {
                 one(collectiveAuthenticationPlugin).isCollectiveCACertificate(certChain);
                 will(returnValue(false));
 
-                one(userRegistry).mapCertificate(cert);
+                one(userRegistry).mapCertificate(certChain);
                 will(throwException(new RegistryException("Expected")));
 
                 one(cert).getSubjectX500Principal();
@@ -286,7 +286,7 @@ public class CertificateLoginModuleTest extends LoginModuleTester {
                 allowing(cert).getSubjectX500Principal();
                 will(returnValue(new X500Principal("CN=userName")));
 
-                one(userRegistry).mapCertificate(cert);
+                one(userRegistry).mapCertificate(certChain);
                 will(returnValue(USER_NAME));
 
                 allowing(userRegistry).getRealm();

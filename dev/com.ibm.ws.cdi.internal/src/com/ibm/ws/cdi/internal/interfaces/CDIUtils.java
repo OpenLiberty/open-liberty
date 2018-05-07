@@ -89,6 +89,7 @@ public class CDIUtils {
     public static final String META_INF_SERVICES = META_INF + "services/";
     public static final String SPI_EXTENSION = Extension.class.getName();
     public static final String META_INF_SERVICES_CDI_EXTENSION = META_INF_SERVICES + SPI_EXTENSION;
+    public static final String WEB_INF_CLASSES_META_INF_SERVICES_CDI_EXTENSION = WEB_INF_CLASSES + META_INF_SERVICES_CDI_EXTENSION;
 
     private final static String PROXY_CLASS_SIGNATURE = "$Proxy$_$$_WeldSubclass";
 

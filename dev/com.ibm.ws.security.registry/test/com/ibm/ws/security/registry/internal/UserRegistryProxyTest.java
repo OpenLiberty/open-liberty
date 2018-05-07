@@ -29,13 +29,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.registry.CertificateMapFailedException;
 import com.ibm.ws.security.registry.CertificateMapNotSupportedException;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.UserRegistry;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -87,7 +87,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getRealm()}.
-     * 
+     *
      * Shall return the realm name specified to the constructor.
      */
     @Test
@@ -98,7 +98,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#checkPassword(java.lang.String, java.lang.String)}.
-     * 
+     *
      * checkPassword shall return false if unable to validate username / password against
      * any delegate.
      */
@@ -113,12 +113,12 @@ public class UserRegistryProxyTest {
             }
         });
         assertNull("If not defined in any delegate, return null",
-                    proxy.checkPassword(userSecurityName, password));
+                   proxy.checkPassword(userSecurityName, password));
     }
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#checkPassword(java.lang.String, java.lang.String)}.
-     * 
+     *
      * checkPassword shall return true if unable to validate username / password against
      * any delegate.
      */
@@ -138,7 +138,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#mapCertificate(java.security.cert.X509Certificate)}.
-     * 
+     *
      * If no such mapping exists in any delegate, return a CertificateMapFailedException.
      */
     @Test(expected = CertificateMapFailedException.class)
@@ -146,19 +146,19 @@ public class UserRegistryProxyTest {
         final X509Certificate cert = mock.mock(X509Certificate.class);
         mock.checking(new Expectations() {
             {
-                allowing(delegate1).mapCertificate(cert);
+                allowing(delegate1).mapCertificate(new X509Certificate[] { cert });
                 will(throwException(new CertificateMapFailedException("No such mapping")));
-                allowing(delegate2).mapCertificate(cert);
+                allowing(delegate2).mapCertificate(new X509Certificate[] { cert });
                 will(throwException(new CertificateMapFailedException("No such mapping")));
             }
         });
 
-        proxy.mapCertificate(cert);
+        proxy.mapCertificate(new X509Certificate[] { cert });
     }
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#mapCertificate(java.security.cert.X509Certificate)}.
-     * 
+     *
      * If the delegates do not support a mapCertificate, return a CertificateMapFailedException.
      */
     @Test(expected = CertificateMapFailedException.class)
@@ -166,19 +166,19 @@ public class UserRegistryProxyTest {
         final X509Certificate cert = mock.mock(X509Certificate.class);
         mock.checking(new Expectations() {
             {
-                allowing(delegate1).mapCertificate(cert);
+                allowing(delegate1).mapCertificate(new X509Certificate[] { cert });
                 will(throwException(new CertificateMapNotSupportedException("Not supported")));
-                allowing(delegate2).mapCertificate(cert);
+                allowing(delegate2).mapCertificate(new X509Certificate[] { cert });
                 will(throwException(new CertificateMapNotSupportedException("Not supported")));
             }
         });
 
-        proxy.mapCertificate(cert);
+        proxy.mapCertificate(new X509Certificate[] { cert });
     }
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#mapCertificate(java.security.cert.X509Certificate)}.
-     * 
+     *
      * If any delegate supports such a mapping, return the mapped name.
      */
     @Test
@@ -186,20 +186,20 @@ public class UserRegistryProxyTest {
         final X509Certificate cert = mock.mock(X509Certificate.class);
         mock.checking(new Expectations() {
             {
-                allowing(delegate1).mapCertificate(cert);
+                allowing(delegate1).mapCertificate(new X509Certificate[] { cert });
                 will(throwException(new CertificateMapFailedException("No such mapping")));
-                allowing(delegate2).mapCertificate(cert);
+                allowing(delegate2).mapCertificate(new X509Certificate[] { cert });
                 will(returnValue(userSecurityName));
             }
         });
 
         assertEquals("If any delegate can handle the mapping, return the mapped user name",
-                     userSecurityName, proxy.mapCertificate(cert));
+                     userSecurityName, proxy.mapCertificate(new X509Certificate[] { cert }));
     }
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#isValidUser(java.lang.String)}.
-     * 
+     *
      * If the specified name is not valid in any delegate, return false.
      */
     @Test
@@ -218,7 +218,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#isValidUser(java.lang.String)}.
-     * 
+     *
      * If the specified name is valid in at least one delegate, return true.
      */
     @Test
@@ -237,7 +237,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getUsers(java.lang.String, int)}.
-     * 
+     *
      * If no matches are found, return an empty SearchResult.
      */
     @Test
@@ -259,7 +259,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getUsers(java.lang.String, int)}.
-     * 
+     *
      * If matches are found, return an merged SearchResult.
      */
     @Test
@@ -284,7 +284,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getUsers(java.lang.String, int)}.
-     * 
+     *
      * If matches are found, return an merged SearchResult.
      */
     @Test
@@ -312,7 +312,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getUserDisplayName(java.lang.String)}.
-     * 
+     *
      * If the specified name is not defined in any delegate, throw an EntryNotFoundException.
      */
     @Test(expected = EntryNotFoundException.class)
@@ -330,7 +330,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getUserDisplayName(java.lang.String)}.
-     * 
+     *
      * If the specified name is defined in at least one delegate, return the name.
      */
     @Test
@@ -349,7 +349,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getUniqueUserId(java.lang.String)}.
-     * 
+     *
      * If the specified name is not defined in any delegate, throw an EntryNotFoundException.
      */
     @Test(expected = EntryNotFoundException.class)
@@ -367,7 +367,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getUniqueUserId(java.lang.String)}.
-     * 
+     *
      * If the specified name is defined in at least one delegate, return the name.
      */
     @Test
@@ -421,7 +421,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#isValidGroup(java.lang.String)}.
-     * 
+     *
      * If the specified name is not valid in any delegate, return false.
      */
     @Test
@@ -441,7 +441,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#isValidGroup(java.lang.String)}.
-     * 
+     *
      * If the specified name is valid in at least one delegate, return true.
      */
     @Test
@@ -456,12 +456,12 @@ public class UserRegistryProxyTest {
             }
         });
         assertTrue("If the specified name is valid in at least one delegate, return true.",
-                    proxy.isValidGroup(groupSecurityName));
+                   proxy.isValidGroup(groupSecurityName));
     }
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getGroups(java.lang.String, int)}.
-     * 
+     *
      * If no matches are found, return an empty SearchResult.
      */
     @Test
@@ -483,7 +483,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getGroups(java.lang.String, int)}.
-     * 
+     *
      * If matches are found, return an merged SearchResult.
      */
     @Test
@@ -508,7 +508,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getGroups(java.lang.String, int)}.
-     * 
+     *
      * If matches are found, return an merged SearchResult.
      */
     @Test
@@ -536,7 +536,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getGroupDisplayName(java.lang.String)}.
-     * 
+     *
      * If the specified name is not defined in any delegate, throw an EntryNotFoundException.
      */
     @Test(expected = EntryNotFoundException.class)
@@ -555,7 +555,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getGroupDisplayName(java.lang.String)}.
-     * 
+     *
      * If the specified name is defined in at least one delegate, return the name.
      */
     @Test
@@ -575,7 +575,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getUniqueGroupId(java.lang.String)}.
-     * 
+     *
      * If the specified name is not defined in any delegate, throw an EntryNotFoundException.
      */
     @Test(expected = EntryNotFoundException.class)
@@ -594,7 +594,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getUniqueGroupId(java.lang.String)}.
-     * 
+     *
      * If the specified name is defined in at least one delegate, return the name.
      */
     @Test
@@ -614,7 +614,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getGroupSecurityName(java.lang.String)}.
-     * 
+     *
      * If the specified name is not defined in any delegate, throw an EntryNotFoundException.
      */
     @Test(expected = EntryNotFoundException.class)
@@ -633,7 +633,7 @@ public class UserRegistryProxyTest {
 
     /**
      * Test method for {@link com.ibm.ws.security.registry.internal.UserRegistryProxy#getGroupSecurityName(java.lang.String)}.
-     * 
+     *
      * If the specified name is defined in at least one delegate, return the name.
      */
     @Test

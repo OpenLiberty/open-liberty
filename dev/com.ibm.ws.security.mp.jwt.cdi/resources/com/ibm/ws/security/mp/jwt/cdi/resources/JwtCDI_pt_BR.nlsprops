@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Assegure-se de que o ponto de inje\
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: A solicita\u00e7\u00e3o n\u00e3o pode ser injetada no ponto de inje\u00e7\u00e3o {0} para os escopos ApplicationScoped ou SessionScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=O ponto de inje\u00e7\u00e3o anotado com o qualificador de solicita\u00e7\u00e3o para um tipo bruto deve pertencer a uma classe anotada com a anota\u00e7\u00e3o de escopo RequestScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Assegure-se de que o ponto de inje\u00e7\u00e3o seja um membro de uma classe no escopo RequestScoped para a solicita\u00e7\u00e3o que voc\u00ea deseja injetar.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: N\u00e3o \u00e9 poss\u00edvel injetar um Principal JsonWebToken porque n\u00e3o h\u00e1 um dispon\u00edvel. Proteja o recurso solicitante para que a autentica\u00e7\u00e3o ocorra antes que o recurso seja acessado.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=A inje\u00e7\u00e3o de um JsonWebToken foi solicitada, mas n\u00e3o h\u00e1 um dispon\u00edvel.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Certifique-se de que a autentica\u00e7\u00e3o do usu\u00e1rio tenha ocorrido antes de acessar o recurso que est\u00e1 solicitando a inje\u00e7\u00e3o. 

@@ -68,7 +68,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
 
         @Override
         public J2EEName getJ2EEName() {
-            return null;
+            return ((ExtendedApplicationInfo) moduleInfo.getApplicationInfo()).getMetaData().getJ2EEName();
         }
 
     }

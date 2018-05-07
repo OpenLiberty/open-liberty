@@ -4,5 +4,5 @@ singleton=true
 IBM-Process-Types: server, \
  client
 -bundles=com.ibm.websphere.javaee.annotation.1.3; location:="dev/api/spec/,lib/"
-kind=beta
+kind=ga
 edition=core
