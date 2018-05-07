@@ -85,6 +85,9 @@ public class TAIRequestHelper {
 
         }
         if (mpJwtConfig != null) {
+            if (isJwtSsoFeatureActive(mpJwtConfig)) {
+                return false;
+            }
             ignoreAppAuthMethod = mpJwtConfig.ignoreApplicationAuthMethod(); // true by default
         }
         if (ignoreAppAuthMethod) {
@@ -97,6 +100,10 @@ public class TAIRequestHelper {
             Tr.exit(tc, methodName, result);
         }
         return result;
+    }
+
+    private boolean isJwtSsoFeatureActive(MicroProfileJwtConfig config) {
+        boolean result = config.toString().contains("com.ibm.ws.security.jwtsso.internal.JwtSsoComponent");
     }
 
     /**

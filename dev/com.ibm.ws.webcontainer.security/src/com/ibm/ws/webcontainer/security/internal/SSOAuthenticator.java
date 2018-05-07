@@ -101,7 +101,7 @@ public class SSOAuthenticator implements WebAuthenticator {
     public AuthenticationResult handleSSO(HttpServletRequest req, HttpServletResponse res) {
         AuthenticationResult authResult = null;
         Cookie[] cookies = req.getCookies();
-        if (cookies == null) {
+        if (cookies == null && getJwtBearerToken(req) == null) {
             return authResult;
         }
 
@@ -158,7 +158,7 @@ public class SSOAuthenticator implements WebAuthenticator {
 
     /**
      * If there is no jwtSSOToken, we will return null. Otherwise, we will AuthenticationResult.
-     * 
+     *
      * @param cookies
      * @return
      */
