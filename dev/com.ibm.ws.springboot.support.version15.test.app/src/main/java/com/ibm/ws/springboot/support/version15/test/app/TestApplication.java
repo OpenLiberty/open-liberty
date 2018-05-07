@@ -59,6 +59,11 @@ public class TestApplication {
 			return "FAILED";
 		}
 	}
+
+	@RequestMapping("/testContextParams")
+	public String testContextParams() {
+		return context.getInitParameter("context_parameter_test_key");
+	}
 	
 	static final String 
 			IbmApiClazzName = "com.ibm.websphere.application.ApplicationMBean",
@@ -71,14 +76,13 @@ public class TestApplication {
 	public String loadTpClass() { return loadClazz(TpClazzName); }
 
 	String loadClazz(String clazzName) {
-		Class clazz = null;
+		Class<?> clazz = null;
 		try {
 			clazz = this.getClass().getClassLoader().loadClass(clazzName);
 		} catch (Exception e) {
 			e.printStackTrace(System.out);
-		} finally {
-			return "SPRING BOOT, YOU GOT" + ((null==clazz) ? " NO " : " ") + "CLAZZ: " + clazzName;
 		}
+		return "SPRING BOOT, YOU GOT" + ((null==clazz) ? " NO " : " ") + "CLAZZ: " + clazzName;
 	}
 
 }

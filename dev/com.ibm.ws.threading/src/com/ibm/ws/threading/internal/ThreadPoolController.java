@@ -113,6 +113,44 @@ public final class ThreadPoolController {
     private final static long interval;
 
     /**
+     * Time in milliseconds between thread management actions when
+     * a hang has been detected
+     */
+    private final static long hangInterval;
+
+    /**
+     * Counter to indicate whether controller is in hang resolution mode and
+     * if so, how many more cycles it will stay in hang resolution mode
+     */
+    private int hangResolutionCountdown = 0;
+
+    /**
+     * The starting value for hangResolutionCountdown
+     */
+    private static final int hangResolutionCycles = 3;
+
+    /**
+     * The poolSize used by hang resolution to break the most recently detected hang,
+     * plus a buffer amount, used to reduce the likelihood of sending the pool back
+     * below the hang threshold.
+     */
+    private int hangBufferPoolSize = 0;
+
+    /**
+     * The number of consecutive controller cycles with no hang
+     */
+    private int controllerCyclesWithoutHang = 0;
+
+    /**
+     * When a prior hang has set hangResolutionPoolSize, if the controller runs for a
+     * number of consecutive cycles below hangResolutionPoolSize without a hang, we will
+     * gradually reduce hangResolutionPoolSize, until it reaches coreThreads. This allows
+     * the controller to return to its base/default state if the workload changes to a
+     * non-hanging config.
+     */
+    private static final int noHangCyclesThreshold = 8;
+
+    /**
      * How far from current poolSize to consider when evaluating whether to
      * grow or shrink the pool.
      */
@@ -148,21 +186,32 @@ public final class ThreadPoolController {
     private int poolDecrement = poolIncrement;
 
     /**
+     * The starting point for making poolSize adjustments. The controller defaults to changing
+     * the poolSize by increments of number of cpus (hardware threads) available, but in some
+     * special cases may need to use a different value.
+     * For example, coreThreads defaults to (NUMBER_CPUS * 2); if coreThreads is instead smaller
+     * than (NUMBER_CPUS * 2), the operator must have configured a small coreThreads value. The
+     * controller will use that configured small coreThreads value as the guide for increment
+     * and decrement sizes.
+     */
+    private final int poolChangeBasis;
+
+    /**
      * These variables set the poolSize thresholds at which poolIncrement and poolDecrement
      * values change. They default to multiples of the number of cpus available.
      */
-    private final static int poolIncrementBoundLow;
-    private final static int poolIncrementBoundMedium;
+    private final int poolIncrementBoundLow;
+    private final int poolIncrementBoundMedium;
 
     /**
      * These variable allow manual limits to be placed on the amount by which the pool will
      * be incremented and decremented. They are intended for diagnostic or triage usage. If
      * the configurable values are not set, the defaults are used.
      */
-    private final static int poolIncrementMax;
+    private final int poolIncrementMax;
     private final static int poolIncrementMin;
     private final static int POOL_INCREMENT_MIN_DEFAULT = 1;
-    private final static int POOL_INCREMENT_MAX_DEFAULT = NUMBER_CPUS * 4;
+    private final int POOL_INCREMENT_MAX_DEFAULT;
 
     /**
      * If coreThreads and maxThreads are configured to a narrow range on a system with more
@@ -170,7 +219,7 @@ public final class ThreadPoolController {
      * available, since the default poolIncrement size is NUMBER_CPUS. In this case, the
      * controller will calculate an alternate increment size, using this parameter as an input.
      */
-    private final static int MINIMUM_DESIRED_POOLSIZE_ADJUSTMENTS;
+    private final static int minimumDesiredPoolSizeAdjustments;
 
     /**
      * When the controller requests the underlying executor change the poolSize, the executor
@@ -268,7 +317,7 @@ public final class ThreadPoolController {
         resetDistroConsecutiveOutliers = (tpcResetDistroConsecutiveOutliers == null) ? 5 : Integer.parseInt(tpcResetDistroConsecutiveOutliers);
 
         String tpcMinimumDesiredPoolSizeAdjustments = getSystemProperty("tpcMinimumDesiredPoolSizeAdjustments");
-        MINIMUM_DESIRED_POOLSIZE_ADJUSTMENTS = (tpcMinimumDesiredPoolSizeAdjustments == null) ? 10 : Integer.parseInt(tpcMinimumDesiredPoolSizeAdjustments);
+        minimumDesiredPoolSizeAdjustments = (tpcMinimumDesiredPoolSizeAdjustments == null) ? 10 : Integer.parseInt(tpcMinimumDesiredPoolSizeAdjustments);
 
         String tpcTputRatioPruneLevel = getSystemProperty("tpcTputRatioPruneLevel");
         tputRatioPruneLevel = (tpcTputRatioPruneLevel == null) ? 5.0 : Double.parseDouble(tpcTputRatioPruneLevel);
@@ -291,15 +340,6 @@ public final class ThreadPoolController {
         String tpcPoolIncrementMin = getSystemProperty("tpcPoolIncrementMin");
         poolIncrementMin = (tpcPoolIncrementMin == null) ? POOL_INCREMENT_MIN_DEFAULT : Integer.parseInt(tpcPoolIncrementMin);
 
-        String tpcPoolIncrementMax = getSystemProperty("tpcPoolIncrementMax");
-        poolIncrementMax = (tpcPoolIncrementMax == null) ? POOL_INCREMENT_MAX_DEFAULT : Integer.parseInt(tpcPoolIncrementMax);
-
-        String tpcPoolIncrementBoundLow = getSystemProperty("tpcPoolIncrementBoundLow");
-        poolIncrementBoundLow = (tpcPoolIncrementBoundLow == null) ? NUMBER_CPUS * 16 : Integer.parseInt(tpcPoolIncrementBoundLow);
-
-        String tpcPoolIncrementBoundMedium = getSystemProperty("tpcPoolIncrementBoundMedium");
-        poolIncrementBoundMedium = (tpcPoolIncrementBoundMedium == null) ? NUMBER_CPUS * 64 : Integer.parseInt(tpcPoolIncrementBoundMedium);
-
         String tpcHighCpu = getSystemProperty("tpcHighCpu");
         highCpu = (tpcHighCpu == null) ? 90 : Integer.parseInt(tpcHighCpu);
 
@@ -312,37 +352,11 @@ public final class ThreadPoolController {
         String tpcInterval = getSystemProperty("tpcInterval");
         interval = (tpcInterval == null) ? 1500 : Integer.parseInt(tpcInterval);
 
+        String tpcHangInterval = getSystemProperty("tpcHangInterval");
+        hangInterval = (tpcHangInterval == null) ? 250 : Integer.parseInt(tpcHangInterval);
+
         String tpcCompareRange = getSystemProperty("tpcCompareRange");
         compareRange = (tpcCompareRange == null) ? 4 : Integer.parseInt(tpcCompareRange);
-
-        if (tc.isEventEnabled()) {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append("\n Interval: ").append(String.format("%6d", Long.valueOf(interval)));
-            sb.append(" compareRange: ").append(String.format("%6d", Integer.valueOf(compareRange)));
-            sb.append(" highCpu: ").append(String.format("%4d", Integer.valueOf(highCpu)));
-
-            sb.append("\n tputRatioPruneLevel: ").append(String.format("%2.2f", Double.valueOf(tputRatioPruneLevel)));
-            sb.append(" poolTputRatioHigh: ").append(String.format("%2.2f", Double.valueOf(poolTputRatioHigh)));
-            sb.append(" poolTputRatioLow: ").append(String.format("%2.2f", Double.valueOf(poolTputRatioLow)));
-            sb.append(" compareSpanRatioMultiplier: ").append(String.format("%3d", Integer.valueOf(compareSpanRatioMultiplier)));
-
-            sb.append("\n growScorePruneLevel: ").append(String.format("%2.2f", Double.valueOf(growScoreFilterLevel)));
-            sb.append(" shrinkScorePruneLevel: ").append(String.format("%2.2f", Double.valueOf(shrinkScoreFilterLevel)));
-            sb.append(" dataAgePruneLevel: ").append(String.format("%2.2f", Double.valueOf(dataAgePruneLevel)));
-            sb.append(" compareSpanPruneMultiplier: ").append(String.format("%3d", Integer.valueOf(compareSpanPruneMultiplier)));
-
-            sb.append("\n poolIncrementMin: ").append(String.format("%3d", Integer.valueOf(poolIncrementMin)));
-            sb.append(" poolIncrementMax: ").append(String.format("%4d", Integer.valueOf(poolIncrementMax)));
-            sb.append(" poolIncrementBoundLow: ").append(String.format("%3d", Integer.valueOf(poolIncrementBoundLow)));
-            sb.append(" poolIncrementBoundMedium: ").append(String.format("%3d", Integer.valueOf(poolIncrementBoundMedium)));
-
-            sb.append("\n resetDistroStdDevEwmaRatio: ").append(String.format("%2.2f", Double.valueOf(resetDistroStdDevEwmaRatio)));
-            sb.append(" resetDistroNewTputEwmaRatio: ").append(String.format("%2.2f", Double.valueOf(resetDistroNewTputEwmaRatio)));
-            sb.append(" resetDistroConsecutiveOutliers: ").append(String.format("%2.2f", Double.valueOf(resetDistroConsecutiveOutliers)));
-
-            Tr.event(tc, "Initial config settings:", sb);
-        }
 
     }
 
@@ -565,7 +579,33 @@ public final class ThreadPoolController {
             activeTask = new IntervalTask(this);
             timer.schedule(activeTask, interval, interval);
         }
+        /**
+         * if coreThreads has been configured to a small value, we will use the
+         * configured value as guidance for how large to make poolSize changes
+         */
+        if (coreThreads < NUMBER_CPUS * 2) {
+            poolChangeBasis = Math.max(1, coreThreads / 2);
+        } else {
+            poolChangeBasis = NUMBER_CPUS;
+        }
+        /**
+         * Now that poolChangeBasis is set, we can assign the poolIncrement limit values
+         * using poolChangeBasis, rather than NUMBER_CPUS, if the system properties are not present
+         */
+        String tpcPoolIncrementBoundLow = getSystemProperty("tpcPoolIncrementBoundLow");
+        poolIncrementBoundLow = (tpcPoolIncrementBoundLow == null) ? poolChangeBasis * 16 : Integer.parseInt(tpcPoolIncrementBoundLow);
 
+        String tpcPoolIncrementBoundMedium = getSystemProperty("tpcPoolIncrementBoundMedium");
+        poolIncrementBoundMedium = (tpcPoolIncrementBoundMedium == null) ? poolChangeBasis * 64 : Integer.parseInt(tpcPoolIncrementBoundMedium);
+
+        POOL_INCREMENT_MAX_DEFAULT = poolChangeBasis * 4;
+
+        String tpcPoolIncrementMax = getSystemProperty("tpcPoolIncrementMax");
+        poolIncrementMax = (tpcPoolIncrementMax == null) ? POOL_INCREMENT_MAX_DEFAULT : Integer.parseInt(tpcPoolIncrementMax);
+
+        if (tc.isEventEnabled()) {
+            reportSystemProperties();
+        }
     }
 
     /**
@@ -832,29 +872,42 @@ public final class ThreadPoolController {
             Integer priorKey = Integer.valueOf(poolSize);
             int smallerPools = 0;
             while (true) {
-                int distance = 0;
                 // stop if we run out of data
                 if (shrinkKey == null)
                     break;
                 priorKey = shrinkKey;
                 shrinkKey = threadStats.lowerKey(shrinkKey);
+                int distance = 0;
+                boolean pruned = false;
+                boolean inHangBuffer = true;
                 // discard invalid data (old or out-of-range) found in comparison stats
                 ThroughputDistribution priorStats = threadStats.get(priorKey);
                 distance = poolSize - priorKey.intValue();
-                if (pruneData(priorStats, forecast, distance, downwardCompareSpan)) {
-                    threadStats.remove(priorKey);
-                } else {
+                if (priorKey > hangBufferPoolSize) {
+                    inHangBuffer = false;
+                    if (pruneData(priorStats, forecast, distance, downwardCompareSpan)) {
+                        threadStats.remove(priorKey);
+                        pruned = true;
+                    }
+                }
+                if (!pruned) {
                     // found a valid smaller poolSize, so include that data in the shrinkScore
                     smallerPools++;
                     shrinkScore += priorStats.getProbabilityGreaterThan(forecast);
-                    // stop if reached/passed compareSpan
-                    if (distance >= downwardCompareSpan)
-                        break;
+                    if (inHangBuffer) {
+                        // stop when we get compareRange datapoints
+                        if (smallerPools >= compareRange)
+                            break;
+                    } else {
+                        // stop if reached/passed compareSpan
+                        if (distance >= downwardCompareSpan)
+                            break;
+                    }
                 }
             }
 
             // if we didn't find compareRange datapoints, flip a coin
-            if (smallerPools < compareRange) {
+            if ((smallerPools < compareRange) && (priorKey > coreThreads)) {
                 shrinkScore += (flipCoin()) ? 0.7 : 0.0;
                 smallerPools++;
                 flippedCoin = true;
@@ -875,7 +928,7 @@ public final class ThreadPoolController {
             }
 
             // lean toward shrinking if cpuUtil is high
-            if (shrinkScore < 0.5) {
+            if ((shrinkScore < 0.5) && (poolSize > hangBufferPoolSize) && (priorKey > coreThreads)) {
                 if (cpuHigh) {
                     shrinkScore = (flipCoin()) ? 0.7 : shrinkScore;
                 } else {
@@ -993,7 +1046,9 @@ public final class ThreadPoolController {
 
             // grow less eagerly based on no data when cpuUtil is high
             if (cpuHigh && growScore > 0.0 && flippedCoin) {
-                growScore = (flipCoin()) ? growScore : 0.0;
+                if (poolSize > hangBufferPoolSize) {
+                    growScore = (flipCoin()) ? growScore : 0.0;
+                }
             } else if (growScore == 0 && flippedCoin && (queueDepth > poolSize * 4)) {
                 // if we are not growing due to no larger pool data, and there is a lot of
                 // work waiting, lean weakly (0.5) toward growing ...
@@ -1069,7 +1124,7 @@ public final class ThreadPoolController {
             consecutiveNoAdjustment = 0;
             if (flipCoin() && poolSize + poolIncrement <= maxThreads) {
                 forcedAdjustment = poolIncrement;
-            } else if ((poolSize - poolDecrement) >= coreThreads) {
+            } else if ((poolSize - poolDecrement) >= Math.max(coreThreads, hangBufferPoolSize)) {
                 forcedAdjustment = -poolDecrement;
             }
         }
@@ -1157,7 +1212,19 @@ public final class ThreadPoolController {
                 return "monitoring paused";
             }
 
-            if (resolveHang(deltaCompleted, queueEmpty)) {
+            if (resolveHang(deltaCompleted, queueEmpty, poolSize)) {
+                /**
+                 * Sleep the controller thread briefly after increasing the poolsize
+                 * then update task count before returning to reduce the likelihood
+                 * of a false negative hang check next cycle due to a few non-hung
+                 * tasks executing on the newly created threads
+                 */
+                try {
+                    Thread.sleep(10);
+                } catch (Exception ex) {
+                    // do nothing
+                }
+                completedWork = threadPool.getCompletedTaskCount();
                 return "action take to resolve hang";
             }
 
@@ -1244,6 +1311,7 @@ public final class ThreadPoolController {
 
         sb.append("\nOutliers:  ");
         sb.append(String.format(" consecutiveOutlierAfterAdjustment = %2d", Integer.valueOf(consecutiveOutlierAfterAdjustment)));
+        sb.append(String.format(" hangResolutionPoolSize = %2d", Integer.valueOf(hangBufferPoolSize)));
 
         sb.append("\nAttraction:");
         sb.append(String.format(" shrinkScore = %.6f", Double.valueOf(shrinkScore)));
@@ -1320,15 +1388,28 @@ public final class ThreadPoolController {
     }
 
     /**
-     * Detects and resolves a hang in the underlying executor. If a hang is detected, this method
-     * will not return until it is resolved or if the pool size has reached maxThreads.
+     * Detects a hang in the underlying executor. When a hang is detected, increases the
+     * poolSize in hopes of relieving the hang, unless poolSize has reached maxThreads.
      *
      * @return true if action was taken to resolve a hang, or false otherwise
      */
-    private boolean resolveHang(long tasksCompleted, boolean queueEmpty) {
+    private boolean resolveHang(long tasksCompleted, boolean queueEmpty, int poolSize) {
         boolean actionTaken = false;
         if (tasksCompleted == 0 && !queueEmpty) {
-            int poolSize = threadPool.getPoolSize();
+            /**
+             * When a hang is detected the controller enters hang resolution mode.
+             * The controller will run on a shorter-than-usual cycle for hangResolutionCycles
+             * from the last hang detection, to resolve hang situations more quickly.
+             */
+            if (hangResolutionCountdown == 0) {
+                // cancel regular controller schedule
+                activeTask.cancel();
+                // restart with shortened interval for quicker hang resolution
+                activeTask = new IntervalTask(this);
+                timer.schedule(activeTask, hangInterval, hangInterval);
+            }
+            hangResolutionCountdown = hangResolutionCycles;
+            controllerCyclesWithoutHang = 0;
 
             // if this is the first time we detected a given deadlock, record how many threads there are
             // and print a message
@@ -1337,6 +1418,8 @@ public final class ThreadPoolController {
                 if (tc.isEventEnabled()) {
                     Tr.event(tc, "Executor hang detected at poolSize=" + poolSizeWhenHangDetected, threadPool);
                 }
+            } else if (tc.isEventEnabled()) {
+                Tr.event(tc, "Executor hang continued at poolSize=" + poolSize, threadPool);
             }
 
             setPoolIncrementDecrement(poolSize);
@@ -1344,7 +1427,13 @@ public final class ThreadPoolController {
                 poolSize += poolIncrement;
                 setPoolSize(poolSize);
                 targetPoolSize = poolSize;
+                // update the poolSize set to resolve the hang, plus a buffer amount
+                int targetSize = poolSize + (compareRange * poolIncrement);
+                if (hangBufferPoolSize < targetSize) {
+                    hangBufferPoolSize = targetSize;
+                }
                 actionTaken = true;
+
             } else {
                 // there's a hang, but we can't add any more threads...  emit a warning the first time this
                 // happens for a given hang, but otherwise just bail
@@ -1359,6 +1448,33 @@ public final class ThreadPoolController {
             // no hang exists, so reset the appropriate variables that track hangs
             poolSizeWhenHangDetected = -1;
             hangIntervalCounter = 0;
+            // manage hang resolution mode
+            if (hangResolutionCountdown > 0) {
+                hangResolutionCountdown--;
+                if (hangResolutionCountdown <= 0) {
+                    // move out of hang resolution cycle time
+                    activeTask.cancel();
+                    // restart using regular cycle time
+                    activeTask = new IntervalTask(this);
+                    timer.schedule(activeTask, interval, interval);
+                }
+            }
+            /**
+             * if controller is running below hangResolutionPoolSize marker without hanging,
+             * we can reduce that marker ... the workload must have changed, so prior hang
+             * information is no longer valid. We will reduce it gradually, to maintain a
+             * conservative stance toward avoiding hangs.
+             */
+            if (hangBufferPoolSize > coreThreads) {
+                if (hangBufferPoolSize > poolSize) {
+                    controllerCyclesWithoutHang++;
+                    if (controllerCyclesWithoutHang > noHangCyclesThreshold) {
+                        setPoolIncrementDecrement(poolSize);
+                        hangBufferPoolSize -= poolDecrement;
+                        controllerCyclesWithoutHang = 0;
+                    }
+                }
+            }
         }
         return actionTaken;
     }
@@ -1412,16 +1528,22 @@ public final class ThreadPoolController {
      * @return - smallest valid poolSize found
      */
     private Integer getSmallestValidPoolSize(Integer poolSize, Double forecast, int compareSpan) {
-        Integer smallestPoolSize = -1;
+        Integer smallestPoolSize = threadStats.firstKey();
+        Integer nextPoolSize = threadStats.higherKey(smallestPoolSize);
+        Integer pruneSize = -1;
         boolean validSmallData = false;
         int distance = 0;
         while (!validSmallData) {
-            smallestPoolSize = threadStats.firstKey();
             ThroughputDistribution smallestPoolSizeStats = getThroughputDistribution(smallestPoolSize, false);;
             distance = poolSize - smallestPoolSize;
             // prune data that is too old or outside believable range
             if (pruneData(smallestPoolSizeStats, forecast, distance, compareSpan)) {
-                threadStats.remove(smallestPoolSize);
+                pruneSize = smallestPoolSize;
+                smallestPoolSize = nextPoolSize;
+                nextPoolSize = threadStats.higherKey(smallestPoolSize);
+                if (pruneSize > hangBufferPoolSize) {
+                    threadStats.remove(pruneSize);
+                }
             } else {
                 validSmallData = true;
             }
@@ -1501,31 +1623,31 @@ public final class ThreadPoolController {
          * threadRange == (maxThreads - coreThreads)
          */
 
-        if (threadRange < (NUMBER_CPUS * MINIMUM_DESIRED_POOLSIZE_ADJUSTMENTS)) {
-            if (threadRange < MINIMUM_DESIRED_POOLSIZE_ADJUSTMENTS) {
+        if (threadRange < (poolChangeBasis * minimumDesiredPoolSizeAdjustments)) {
+            if (threadRange < minimumDesiredPoolSizeAdjustments) {
                 poolIncrement = 1;
                 poolDecrement = 1;
             } else {
-                poolIncrement = threadRange / MINIMUM_DESIRED_POOLSIZE_ADJUSTMENTS;
+                poolIncrement = threadRange / minimumDesiredPoolSizeAdjustments;
                 poolDecrement = poolIncrement;
             }
         } else {
             // set poolIncrement/poolDecrement based on current poolSize and number of cpus
             if (poolSize <= poolIncrementBoundLow) {
-                poolIncrement = NUMBER_CPUS;
+                poolIncrement = poolChangeBasis;
                 poolDecrement = poolIncrement;
             } else if (poolSize <= poolIncrementBoundMedium) {
-                poolIncrement = NUMBER_CPUS * 2;
+                poolIncrement = poolChangeBasis * 2;
                 poolDecrement = poolIncrement;
                 // special case when we are at the edge of increment size change
-                if (poolSize == (poolIncrementBoundLow + NUMBER_CPUS))
-                    poolDecrement = NUMBER_CPUS;
+                if (poolSize == (poolIncrementBoundLow + poolChangeBasis))
+                    poolDecrement = poolChangeBasis;
             } else {
-                poolIncrement = NUMBER_CPUS * 4;
+                poolIncrement = poolChangeBasis * 4;
                 poolDecrement = poolIncrement;
                 // special case when we are at the edge of increment size change
-                if (poolSize == (poolIncrementBoundMedium + NUMBER_CPUS * 2))
-                    poolDecrement = NUMBER_CPUS * 2;
+                if (poolSize == (poolIncrementBoundMedium + poolChangeBasis * 2))
+                    poolDecrement = poolChangeBasis * 2;
             }
         }
 
@@ -1603,6 +1725,40 @@ public final class ThreadPoolController {
     }
 
     /**
+     * report variable values that may be set by system property
+     */
+    private void reportSystemProperties() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("\n interval: ").append(String.format("%6d", Long.valueOf(interval)));
+        sb.append(" hangInterval: ").append(String.format("%6d", Long.valueOf(hangInterval)));
+        sb.append(" compareRange: ").append(String.format("%6d", Integer.valueOf(compareRange)));
+        sb.append(" highCpu: ").append(String.format("%4d", Integer.valueOf(highCpu)));
+
+        sb.append("\n tputRatioPruneLevel: ").append(String.format("%2.2f", Double.valueOf(tputRatioPruneLevel)));
+        sb.append(" poolTputRatioHigh: ").append(String.format("%2.2f", Double.valueOf(poolTputRatioHigh)));
+        sb.append(" poolTputRatioLow: ").append(String.format("%2.2f", Double.valueOf(poolTputRatioLow)));
+        sb.append(" compareSpanRatioMultiplier: ").append(String.format("%3d", Integer.valueOf(compareSpanRatioMultiplier)));
+
+        sb.append("\n growScoreFilterLevel: ").append(String.format("%2.2f", Double.valueOf(growScoreFilterLevel)));
+        sb.append(" shrinkScoreFilterLevel: ").append(String.format("%2.2f", Double.valueOf(shrinkScoreFilterLevel)));
+        sb.append(" dataAgePruneLevel: ").append(String.format("%2.2f", Double.valueOf(dataAgePruneLevel)));
+        sb.append(" compareSpanPruneMultiplier: ").append(String.format("%3d", Integer.valueOf(compareSpanPruneMultiplier)));
+
+        sb.append("\n poolIncrementMin: ").append(String.format("%3d", Integer.valueOf(poolIncrementMin)));
+        sb.append(" poolIncrementMax: ").append(String.format("%4d", Integer.valueOf(poolIncrementMax)));
+        sb.append(" poolIncrementBoundLow: ").append(String.format("%4d", Integer.valueOf(poolIncrementBoundLow)));
+        sb.append(" poolIncrementBoundMedium: ").append(String.format("%4d", Integer.valueOf(poolIncrementBoundMedium)));
+        sb.append(" minimumDesiredPoolSizeAdjustments : ").append(String.format("%4d", Integer.valueOf(minimumDesiredPoolSizeAdjustments)));
+
+        sb.append("\n resetDistroStdDevEwmaRatio: ").append(String.format("%2.2f", Double.valueOf(resetDistroStdDevEwmaRatio)));
+        sb.append(" resetDistroNewTputEwmaRatio: ").append(String.format("%2.2f", Double.valueOf(resetDistroNewTputEwmaRatio)));
+        sb.append(" resetDistroConsecutiveOutliers: ").append(String.format("%2.2f", Double.valueOf(resetDistroConsecutiveOutliers)));
+
+        Tr.event(tc, "Initial config settings:", sb);
+    }
+
+    /**
      * privileged access to read system properties
      *
      */
@@ -1624,6 +1780,7 @@ public final class ThreadPoolController {
         out.println(INDENT + "compareRange = " + compareRange);
         out.println(INDENT + "NUMBER_CPUS = " + NUMBER_CPUS);
         out.println(INDENT + "controllerCycle = " + controllerCycle);
+        out.println(INDENT + "poolChangeBasis = " + poolChangeBasis);
         out.println(INDENT + "poolIncrement = " + poolIncrement);
         out.println(INDENT + "poolDecrement = " + poolDecrement);
         out.println(INDENT + "poolIncrementMax = " + poolIncrementMax);

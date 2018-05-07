@@ -354,8 +354,8 @@ public class JwtSsoComponent implements JwtSsoConfig {
     /** {@inheritDoc} */
     @Override
     public long getClockSkew() {
-        // TODO Auto-generated method stub
-        return 0;
+        // 5 minutes, in milliseconds
+        return 5 * 60 * 1000;
     }
 
     /** {@inheritDoc} */
@@ -385,7 +385,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
     @Override
     public boolean isValidationRequired() {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     /** {@inheritDoc} */
@@ -413,7 +413,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
     @Override
     public boolean getTokenReuse() {
         // TODO Auto-generated method stub
-        return true; //bt: changed from false.
+        return true;
     }
 
     @Override
