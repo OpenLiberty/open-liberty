@@ -99,8 +99,7 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
                 messagingEngine = auditManager.getJMSMessagingEngine();
         }
 
-        roles = new String[] {MessagingSecurityConstants.OPERATION_TYPE_RECEIVE};
-      
+             
         if (operationType.equalsIgnoreCase(MessagingSecurityConstants.OPERATION_TYPE_BROWSE)) {
             if (checkQueueAccess(authenticatedSubject, destination, MessagingSecurityConstants.OPERATION_TYPE_RECEIVE, false)) {
                 return true;
@@ -109,6 +108,10 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
         checkIfUserIsAuthenticated(authenticatedSubject);
         String userName = null;
         String user = authenticatedSubject.getPrincipals().iterator().next().getName();
+        
+        Map<String, QueuePermission> mq = messagingSecurityService.getQueuePermissions();
+        roles = messagingSecurityService.getDestinationRoles(mq, destination, user);
+
         try {
             userName = MessagingSecurityUtility.getUniqueUserName(authenticatedSubject);
         } catch (MessagingSecurityException e) {
@@ -210,11 +213,13 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
                 messagingEngine = auditManager.getJMSMessagingEngine();
         }
         
-        roles = new String[] {operationType};
-
         checkIfUserIsAuthenticated(authenticatedSubject);
         String userName = null;
         String user = authenticatedSubject.getPrincipals().iterator().next().getName();
+        
+        Map<String, TemporaryDestinationPermission> mq = messagingSecurityService.getTemporaryDestinationPermissions();
+        roles = messagingSecurityService.getDestinationRoles(mq, destinationName, user);
+
         boolean result = false;
         try {
             userName = MessagingSecurityUtility.getUniqueUserName(authenticatedSubject);
@@ -312,13 +317,14 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
             resource = "topic";
         }
         
-      
-        roles = new String[] {operationType};
-        
         SibTr.entry(tc, CLASS_NAME + "checkTopicAccess", new Object[] { authenticatedSubject, destinationName, operationType });
         checkIfUserIsAuthenticated(authenticatedSubject);
         String userName = null;
         String user = authenticatedSubject.getPrincipals().iterator().next().getName();
+        
+        Map<String, TopicPermission> mq = messagingSecurityService.getTopicPermissions();
+        roles = messagingSecurityService.getDestinationRoles(mq, destinationName, user);
+
         try {
             userName = MessagingSecurityUtility.getUniqueUserName(authenticatedSubject);
         } catch (MessagingSecurityException e) {
