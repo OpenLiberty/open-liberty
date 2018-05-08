@@ -8,19 +8,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension.test;
+package com.ibm.ws.cdi.internal.interfaces;
 
-import javax.ejb.Local;
-import javax.enterprise.inject.spi.BeanManager;
+import com.ibm.wsspi.injectionengine.InjectionTarget;
+import com.ibm.wsspi.injectionengine.InjectionTargetContext;
 
-@Local
-public interface FactoryLocal {
+/**
+ *
+ */
+public interface WebSphereInjectionTargetListener<T> {
 
-    Car produceCar();
+    /**
+     * @param injectionTarget
+     */
+    void injectionTargetProcessed(InjectionTarget injectionTarget);
 
     /**
      * @return
      */
-    BeanManager getBeanManager();
+    InjectionTargetContext getCurrentInjectionTargetContext();
+
+    T getObject();
 
 }

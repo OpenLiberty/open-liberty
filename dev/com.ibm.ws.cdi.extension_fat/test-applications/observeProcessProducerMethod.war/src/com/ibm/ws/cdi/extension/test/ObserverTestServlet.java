@@ -12,6 +12,7 @@ package com.ibm.ws.cdi.extension.test;
 
 import static org.junit.Assert.assertNotNull;
 
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
@@ -29,6 +30,9 @@ public class ObserverTestServlet extends FATServlet {
     @Inject
     Car car;
 
+    @EJB
+    FactoryLocal factory;
+
     @Inject
     PlainExtension extension;
 
@@ -38,9 +42,13 @@ public class ObserverTestServlet extends FATServlet {
     }
 
     @Test
+    public void testBeanManager() {
+        assertNotNull(factory.getBeanManager());
+    }
+
+    @Test
     public void testExtension() {
         assertNotNull(extension);
         assertNotNull(extension.getProducerMethod());
     }
-
 }

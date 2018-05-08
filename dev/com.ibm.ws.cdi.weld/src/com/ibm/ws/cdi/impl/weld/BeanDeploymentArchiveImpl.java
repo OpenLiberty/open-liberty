@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,11 +45,7 @@ import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
-import org.jboss.weld.injection.spi.EjbInjectionServices;
 import org.jboss.weld.injection.spi.InjectionServices;
-import org.jboss.weld.injection.spi.JaxwsInjectionServices;
-import org.jboss.weld.injection.spi.JpaInjectionServices;
-import org.jboss.weld.injection.spi.ResourceInjectionServices;
 import org.jboss.weld.manager.BeanManagerImpl;
 import org.jboss.weld.manager.api.WeldInjectionTargetFactory;
 import org.jboss.weld.manager.api.WeldManager;
@@ -59,7 +55,6 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIException;
-import com.ibm.ws.cdi.impl.weld.injection.BdaInjectionServicesImpl;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
@@ -132,7 +127,6 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private Boolean isExtension = null;
 
     private final boolean extensionCanSeeApplicationBDAs;
-    private final BdaInjectionServicesImpl bdaInjectionServices;
 
     private final ResourceLoader resourceLoader;
 
@@ -188,14 +182,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         }
 
         WebSphereInjectionServices injectionServices = cdiDeployment.getInjectionServices();
-        bdaInjectionServices = new BdaInjectionServicesImpl(injectionServices, cdiRuntime, cdiDeployment, archive);
 
         EEModuleDescriptor eeModuleDescriptor = new EEModuleDescriptorImpl(this.eeModuleDescptorId, getWeldModuleType());
         this.weldServiceRegistry.add(InjectionServices.class, injectionServices);
-        this.weldServiceRegistry.add(EjbInjectionServices.class, bdaInjectionServices);
-        this.weldServiceRegistry.add(JaxwsInjectionServices.class, bdaInjectionServices);
-        this.weldServiceRegistry.add(JpaInjectionServices.class, bdaInjectionServices);
-        this.weldServiceRegistry.add(ResourceInjectionServices.class, bdaInjectionServices);
         this.weldServiceRegistry.add(ResourceLoader.class, this.resourceLoader);
         this.weldServiceRegistry.add(EEModuleDescriptor.class, eeModuleDescriptor);
     }
@@ -412,10 +401,12 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         ClassLoader classLoader = getClassLoader();
 
         List<String> jeeComponentClassNames = archive.getInjectionClassList();
-        for (String className : allClassNames) {
-            if (jeeComponentClassNames.contains(className)) {
-                Class<?> clazz = CDIUtils.loadClass(classLoader, className);
-                classes.add(clazz);
+        if (jeeComponentClassNames != null && jeeComponentClassNames.size() > 0) {
+            for (String className : allClassNames) {
+                if (jeeComponentClassNames.contains(className)) {
+                    Class<?> clazz = CDIUtils.loadClass(classLoader, className);
+                    classes.add(clazz);
+                }
             }
         }
 
@@ -858,7 +849,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
     @Override
     public void createInjectionTargetsForJEEComponentClasses() throws CDIException {
-        Set<Class<?>> jeeComponentClasses = getJEEComponentClasses();
+        Set<Class<?>> jeeComponentClasses = new HashSet<>(getJEEComponentClasses());
 
         //jeeComponentClasses is per module but we have multiple bdas per module
         //so if the class is not directly in this bda, check the descendant bdas

@@ -95,19 +95,17 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
     }
 
     private <T> ManagedObjectFactory<T> getManagedBeanManagedObjectFactory(Class<T> clazz) {
+        ManagedObjectFactory<T> factory = null;
         ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
         ManagedObjectService managedObjectService = managedObjectServiceRef.getService();
         if (managedObjectService != null) {
             try {
-                ManagedObjectFactory<T> factory = managedObjectService.createManagedObjectFactory(mmd, clazz, true);
-                if (factory.isManaged()) {
-                    return factory;
-                }
+                factory = managedObjectService.createManagedObjectFactory(mmd, clazz, true);
             } catch (ManagedObjectException e) {
                 // ffdc
             }
         }
-        return null;
+        return factory;
     }
 
     @Activate

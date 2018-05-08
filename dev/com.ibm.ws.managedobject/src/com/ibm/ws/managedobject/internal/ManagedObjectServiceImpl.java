@@ -12,7 +12,6 @@ package com.ibm.ws.managedobject.internal;
 
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.managedobject.DefaultManagedObjectService;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
@@ -45,15 +44,15 @@ public class ManagedObjectServiceImpl implements DefaultManagedObjectService {
     }
 
     @Override
-    public <T> ManagedObjectFactory<T> createInterceptorManagedObjectFactory(ModuleMetaData mmd, Class<T> klass) throws ManagedObjectException {
-        return createManagedObjectFactory(mmd, klass, false);
+    @SuppressWarnings("unchecked")
+    public <T> ManagedObject<T> createManagedObject(ModuleMetaData mmd, T instance) throws ManagedObjectException {
+        ManagedObjectFactory<T> factory = createManagedObjectFactory(mmd, (Class<T>) instance.getClass(), false);
+        ManagedObject<T> mo = factory.createManagedObject(instance, null);
+        return mo;
     }
 
     @Override
-    public <T> ManagedObject<T> createManagedObject(ModuleMetaData mmd, @Sensitive T instance) throws ManagedObjectException {
-        if (instance == null) {
-            throw new IllegalArgumentException();
-        }
-        return new ManagedObjectImpl<T>(instance);
+    public <T> ManagedObjectFactory<T> createInterceptorManagedObjectFactory(ModuleMetaData mmd, Class<T> klass) throws ManagedObjectException {
+        return createManagedObjectFactory(mmd, klass, false);
     }
 }

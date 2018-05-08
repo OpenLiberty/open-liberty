@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,14 +19,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Inject;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
-import javax.xml.ws.WebServiceRef;
 
 import org.jboss.weld.injection.spi.InjectionContext;
 import org.jboss.weld.injection.spi.InjectionServices;
@@ -34,13 +30,12 @@ import org.jboss.weld.injection.spi.InjectionServices;
 import com.ibm.ejs.util.Util;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cdi.CDIException;
-import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
-import com.ibm.wsspi.injectionengine.InjectionEngine;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionTargetListener;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.InjectionTarget;
+import com.ibm.wsspi.injectionengine.InjectionTargetContext;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 /**
@@ -67,27 +62,17 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
     // because we use a packinfo.java for trace options, just need this to register our group and message file
     static final TraceComponent tc = Tr.register(WebSphereInjectionServicesImpl.class);
 
-    @SuppressWarnings("unchecked")
     /**
      * The annotations which Weld knows about and will either handle itself, or will delegate to us through one of the specific InjectionServices interfaces
      * <p>
      * Anything Weld doesn't know about, the injection engine will handle in the aroundInject method.
      */
-    private static final Set<Class<?>> ANNOTATIONS_KNOWN_TO_WELD = new HashSet<Class<?>>(Arrays.asList(Inject.class,
-                                                                                                       EJB.class,
-                                                                                                       Resource.class,
-                                                                                                       WebServiceRef.class,
-                                                                                                       PersistenceContext.class,
-                                                                                                       PersistenceUnit.class));
-
-    private final InjectionEngine injectionEngine;
+    private static final Set<Class<?>> ANNOTATIONS_KNOWN_TO_WELD = new HashSet<Class<?>>(Arrays.asList(Inject.class));
 
     private final Map<Class<?>, ReferenceContext> referenceContextMap = new HashMap<Class<?>, ReferenceContext>();
     private final Set<ReferenceContext> referenceContexts = new HashSet<ReferenceContext>();
 
-    public WebSphereInjectionServicesImpl(CDIRuntime cdiRuntime) {
-        this.injectionEngine = cdiRuntime.getInjectionEngine();
-    }
+    private final Map<Object, WebSphereInjectionTargetListener<?>> injectionTargetListeners = new ConcurrentHashMap<>();
 
     public void addReferenceContext(ReferenceContext referenceContext) {
         referenceContexts.add(referenceContext);
@@ -97,14 +82,11 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
         }
     }
 
-    private void injectJavaEEResources(Object managedBeanInstance) {
+    private void injectJavaEEResources(final InjectionContext<?> injectionContext) {
 
-        // This is the manage bean that may need to receive injections
-        final Object mbInstance = managedBeanInstance;
-
-        if (mbInstance != null) {
+        if (injectionContext != null) {
             try {
-                Boolean hasTarget = callInject(mbInstance);
+                Boolean hasTarget = callInject(injectionContext);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "inject", "hasTarget [" + hasTarget + "]");
 
@@ -121,28 +103,33 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
         }
     }
 
-    private Boolean callInject(final Object mbInstance) throws PrivilegedActionException {
+    private Boolean callInject(final InjectionContext<?> injectionContext) throws PrivilegedActionException {
         Boolean hasTargets = AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
             @Override
             public Boolean run() throws Exception {
                 //This is EE injection without @Produces
-                Boolean hasTargets = inject(mbInstance.getClass(), mbInstance);
+                Boolean hasTargets = inject(injectionContext);
                 return hasTargets;
             }
         });
         return hasTargets;
     }
 
-    private Boolean inject(Class<?> clazz, Object toInject) throws Exception {
+    private Boolean inject(final InjectionContext<?> injectionContext) throws Exception {
+
+        Object toInject = injectionContext.getTarget();
+        Class<?> clazz = toInject.getClass();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "inject", new Object[] { Util.identity(toInject) });
+            Tr.entry(tc, "inject", new Object[] { Util.identity(injectionContext), Util.identity(toInject) });
 
         Boolean hasTargets = Boolean.FALSE;
 
         InjectionTarget[] targets = getInjectionTargets(clazz, toInject);
         if (null != targets && targets.length > 0) {
             hasTargets = Boolean.TRUE;
+
+            WebSphereInjectionTargetListener<?> listener = injectionTargetListeners.get(toInject);
             for (InjectionTarget target : targets) {
                 // for each possible giveable injection target for this manage bean class, see if the target has a binding. If
                 // it does then inject it into our manage bean object.
@@ -153,10 +140,21 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "inject", "about to inject resource --> [" + target + "]");
-
                     try {
 
-                        injectionEngine.inject(toInject, target);
+                        InjectionTargetContext ctx;
+                        if (listener != null) { //listener should never be null???
+                            ctx = listener.getCurrentInjectionTargetContext();
+                        } else {
+                            ctx = new InjectionTargetContext() {
+                                @Override
+                                public <T> T getInjectionTargetContextData(Class<T> arg0) {
+                                    return null;
+                                }
+                            };
+                        }
+
+                        target.inject(toInject, ctx);
                     } catch (Exception e) {
                         if (tc.isErrorEnabled()) {
                             Tr.error(tc, "cdi.resource.injection.error.CWOWB1000E", e.getMessage());
@@ -169,6 +167,10 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "inject", "injected resource --> [" + target + "]");
                 }
+
+                if (listener != null) {
+                    listener.injectionTargetProcessed(target);
+                }
             }
         }
 
@@ -179,11 +181,11 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
     }
 
     @Override
-    public InjectionTarget[] getInjectionTargets(Class<?> clazz) throws CDIException {
+    public InjectionTarget[] getInjectionTargets(Class<?> clazz) throws InjectionException {
         return getInjectionTargets(clazz, null);
     }
 
-    InjectionTarget[] getInjectionTargets(Class<?> clazz, Object toInject) throws CDIException {
+    InjectionTarget[] getInjectionTargets(Class<?> clazz, Object toInject) throws InjectionException {
         // clazz is the class that may receive the injection.
         // mod   is the app stuff that may give injections.
 
@@ -201,29 +203,23 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
         InjectionTarget[] targets = null;
 
         if (referenceContext != null) {
-            try {
-                targets = referenceContext.getInjectionTargets(injectionClass);
+            targets = referenceContext.getInjectionTargets(injectionClass);
+            if (targets != null && targets.length > 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getInjectionTargets", injectionClass + " injection targets found " + Arrays.asList(targets));
+                }
 
-                if (targets != null && targets.length > 0) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "getInjectionTargets", injectionClass + " injection targets found " + Arrays.asList(targets));
-                    }
-
-                    for (InjectionTarget target : targets) {
-                        Class<?> declaringClass = target.getMember().getDeclaringClass();
-                        if (declaringClass != clazz && !referenceContextMap.containsKey(declaringClass)) {
-                            referenceContextMap.put(declaringClass, referenceContext);
-                        }
-                    }
-
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "getInjectionTargets", injectionClass + " no injection targets found");
+                for (InjectionTarget target : targets) {
+                    Class<?> declaringClass = target.getMember().getDeclaringClass();
+                    if (declaringClass != clazz && !referenceContextMap.containsKey(declaringClass)) {
+                        referenceContextMap.put(declaringClass, referenceContext);
                     }
                 }
 
-            } catch (InjectionException e) {
-                throw new CDIException(e);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getInjectionTargets", injectionClass + " no injection targets found");
+                }
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -254,7 +250,7 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
      */
     @Override
     public void cleanup() {
-        //no-op
+        injectionTargetListeners.clear();
     }
 
     /**
@@ -271,7 +267,7 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Perform EE injection.");
         }
-        injectJavaEEResources(injectionContext.getTarget());
+        injectJavaEEResources(injectionContext);
 
         // perform Weld injection
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
@@ -296,5 +292,23 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
             Tr.debug(tc, "Injection Target Annotations: " + annotatedType.getAnnotations());
         }
 
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     * @throws InjectionException
+     */
+    @Override
+    public void registerInjectionTargetListener(WebSphereInjectionTargetListener<?> listener) {
+        Object instance = listener.getObject();
+        injectionTargetListeners.put(instance, listener);
+    }
+
+    @Override
+    public void deregisterInjectionTargetListener(WebSphereInjectionTargetListener<?> listener) {
+        Object instance = listener.getObject();
+        injectionTargetListeners.remove(instance);
     }
 }

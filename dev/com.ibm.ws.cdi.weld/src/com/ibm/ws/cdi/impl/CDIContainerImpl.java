@@ -135,7 +135,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 // start the bootrapping process...
                 final WeldBootstrap weldBootstrap = webSphereCDIDeployment.getBootstrap();
                 weldBootstrap.startExtensions(webSphereCDIDeployment.getExtensions());
-                weldBootstrap.startContainer(contextID, Environments.EE_INJECT, webSphereCDIDeployment);
+                weldBootstrap.startContainer(contextID, Environments.EE, webSphereCDIDeployment);
                 AccessController.doPrivileged(new PrivilegedAction<Void>() {
                     @Override
                     public Void run() {

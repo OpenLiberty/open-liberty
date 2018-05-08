@@ -28,49 +28,52 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
+import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectInvocationContext;
-import com.ibm.wsspi.injectionengine.InjectionException;
-import com.ibm.wsspi.injectionengine.InjectionTargetContext;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFactory<T> {
     private static final TraceComponent tc = Tr.register(AbstractManagedObjectFactory.class);
 
-    protected final CDIRuntime cdiRuntime;
-    protected final Class<T> _managedClass;
+    private final CDIRuntime cdiRuntime;
+    private final Class<T> managedClass;
 
-    protected Bean<T> _bean;
-    protected boolean _beanLookupComplete = false;
-    protected WeldManager _beanManager;
-    protected WebSphereBeanDeploymentArchive _bda;
-    private final boolean _requestManagingInjectionAndInterceptors;
+    private Bean<T> bean;
+    private boolean beanLookupComplete = false;
+    private WeldManager beanManager;
+    private WebSphereBeanDeploymentArchive bda;
+    private final boolean requestManagingInjectionAndInterceptors;
 
     private ReferenceContext referenceContext = null;
 
+    private WebSphereInjectionServices injectionServices;
+
     public AbstractManagedObjectFactory(Class<T> classToManage, CDIRuntime cdiRuntime, boolean requestManagingInjectionAndInterceptors) {
-        this._managedClass = classToManage;
+        this.managedClass = classToManage;
         this.cdiRuntime = cdiRuntime;
-        this._requestManagingInjectionAndInterceptors = requestManagingInjectionAndInterceptors;
+        this.requestManagingInjectionAndInterceptors = requestManagingInjectionAndInterceptors;
     }
 
     public AbstractManagedObjectFactory(Class<T> classToManage, CDIRuntime cdiRuntime, boolean requestManagingInjectionAndInterceptors, ReferenceContext referenceContext) {
-        this._managedClass = classToManage;
+        this.managedClass = classToManage;
         this.cdiRuntime = cdiRuntime;
-        this._requestManagingInjectionAndInterceptors = requestManagingInjectionAndInterceptors;
+        this.requestManagingInjectionAndInterceptors = requestManagingInjectionAndInterceptors;
         this.referenceContext = referenceContext;
     }
 
     @Override
     public boolean managesInjectionAndInterceptors() {
-        return _requestManagingInjectionAndInterceptors;
+        return this.requestManagingInjectionAndInterceptors;
     }
 
     @Override
     public Class<T> getManagedObjectClass() {
-        return _managedClass;
+        return this.managedClass;
     }
 
     @Override
@@ -79,27 +82,34 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
     }
 
     protected synchronized WeldManager getBeanManager() {
-        if (this._beanManager == null) {
-            this._beanManager = (WeldManager) cdiRuntime.getClassBeanManager(getManagedObjectClass());
+        if (this.beanManager == null) {
+            this.beanManager = (WeldManager) cdiRuntime.getClassBeanManager(getManagedObjectClass());
 
-            if (this._beanManager == null) {
-                this._beanManager = (WeldManager) cdiRuntime.getCurrentModuleBeanManager();
+            if (this.beanManager == null) {
+                this.beanManager = (WeldManager) cdiRuntime.getCurrentModuleBeanManager();
             }
         }
 
-        return this._beanManager;
+        return this.beanManager;
     }
 
     protected synchronized WebSphereBeanDeploymentArchive getCurrentBeanDeploymentArchive() {
-        if (this._bda == null) {
-            this._bda = cdiRuntime.getClassBeanDeploymentArchive(getManagedObjectClass());
+        if (this.bda == null) {
+            this.bda = cdiRuntime.getClassBeanDeploymentArchive(getManagedObjectClass());
         }
-        return this._bda;
+        return this.bda;
+    }
+
+    protected synchronized WebSphereInjectionServices getWebSphereInjectionServices() {
+        if (this.injectionServices == null) {
+            this.injectionServices = cdiRuntime.getCurrentDeployment().getInjectionServices();
+        }
+        return this.injectionServices;
     }
 
     @SuppressWarnings("unchecked")
-    protected synchronized Bean<T> getBean() {
-        if (!_beanLookupComplete) {
+    protected synchronized Bean<T> getBean() throws ManagedObjectException {
+        if (!this.beanLookupComplete) {
 
             WeldManager beanManager = getBeanManager();
 
@@ -109,27 +119,28 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
                     Tr.debug(tc, "No Beans found for managed class: " + getManagedObjectClass());
                 }
             } else {
-                _bean = (Bean<T>) beanManager.resolve(beans);
+                this.bean = (Bean<T>) beanManager.resolve(beans);
             }
 
-            _beanLookupComplete = true;
+            this.beanLookupComplete = true;
 
-            if (_bean != null) {
+            if (this.bean != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Found a bean of class : " + _bean.getBeanClass());
+                    Tr.debug(tc, "Found a bean of class : " + this.bean.getBeanClass());
                 }
-                if (!_bean.getBeanClass().equals(getManagedObjectClass())) {
+                if (!this.bean.getBeanClass().equals(getManagedObjectClass())) {
                     //this exception should never happen
-                    throw new IllegalStateException("Managed Class {" + getManagedObjectClass().getName() + "} does not match Bean Class {"
-                                                    + _bean.getBeanClass().getName() + "}");
+                    //TODO NLS?
+                    throw new ManagedObjectException("Managed Class {" + getManagedObjectClass().getName() + "} does not match Bean Class {"
+                                                     + this.bean.getBeanClass().getName() + "}");
                 }
             }
 
         }
-        return _bean;
+        return this.bean;
     }
 
-    public String getBeanScope() {
+    public String getBeanScope() throws ManagedObjectException {
         Bean<T> bean = getBean();
         String beanScope = null;
         if (bean != null) {
@@ -138,12 +149,12 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
         return beanScope;
     }
 
-    public ManagedObject<T> existingInstance(T instance) {
+    public ManagedObject<T> existingInstance(T instance) throws ManagedObjectException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ManagedObjectContext createContext() {
+    public ManagedObjectContext createContext() throws ManagedObjectException {
         throw new UnsupportedOperationException();
     }
 
@@ -152,12 +163,16 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
         throw new UnsupportedOperationException();
     }
 
+    public CDIRuntime getCDIRuntime() {
+        return this.cdiRuntime;
+    }
+
     @Override
-    public ManagedObject<T> createManagedObject() throws Exception {
+    public ManagedObject<T> createManagedObject() throws ManagedObjectException {
         throw new UnsupportedOperationException();
     }
 
-    protected InjectionTarget<T> getInjectionTarget(boolean nonContextual) {
+    protected InjectionTarget<T> getInjectionTarget(boolean nonContextual) throws ManagedObjectException {
         InjectionTarget<T> injectionTarget = null;
 
         Class<T> clazz = getManagedObjectClass();
@@ -205,85 +220,71 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
         return annotatedType;
     }
 
-    protected abstract WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext);
+    protected abstract WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException;
 
-    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext, boolean nonContextual)
-    {
-       //The nonContextual flag is only relevant in CDIManagedObjectFactoryImpl.
-       return getCreationalContext(invocationContext);
+    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext, boolean nonContextual) throws ManagedObjectException {
+        //The nonContextual flag is only relevant in CDIManagedObjectFactoryImpl.
+        return getCreationalContext(invocationContext);
     }
 
     @Override
-    public ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws Exception {
+    public final ManagedObject<T> createManagedObject(T instance, ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException {
 
         // 1.Obtain a BeanManager instance.
         WeldManager beanManager = getBeanManager();
-        if (beanManager != null) {
+        if (beanManager == null) {
+            throw new IllegalStateException("Unable to obtain BeanManager");
+        } else {
 
-            // Create an InjectionTarget instance for the ejbDescriptor.
+            // Get an InjectionTarget instance
             boolean nonContextual = invocationContext == null;
-            final InjectionTarget<T> injectionTarget = getInjectionTarget(nonContextual);
+            InjectionTarget<T> injectionTarget = getInjectionTarget(nonContextual);
 
             // Get the CreationalContext
-            final WeldCreationalContext<T> creationalContext = getCreationalContext(invocationContext, nonContextual);
-
-            // Instantiate the component by calling the InjectionTarget produce method.
-            T instance = AccessController.doPrivileged(new PrivilegedAction<T>() {
-                @Override
-                public T run() {
-                    return injectionTarget.produce(creationalContext);
-                }
-            });
+            WeldCreationalContext<T> creationalContext = getCreationalContext(invocationContext, nonContextual);
 
             // pass the injectionTarget into the MO so that preDestroy can be called during "release"
-            ManagedObject<T> mo = new CDIManagedObject<T>(instance, creationalContext, injectionTarget, getBeanScope());
-
-            if (managesInjectionAndInterceptors()) {
-                injectAndPostConstruct(injectionTarget, creationalContext, mo);
-            }
+            ManagedObject<T> mo = createManagedObject(instance, creationalContext, injectionTarget);
             return mo;
         }
-        throw new IllegalStateException("Unable to obtain BeanManager");
     }
 
-    /**
-     * Perform the field and method injection and then call post construct
-     *
-     * @param injectionTarget
-     * @param creationalContext
-     * @param instance
-     */
-    private void injectAndPostConstruct(InjectionTarget<T> injectionTarget, WeldCreationalContext<T> creationalContext, ManagedObject<T> mo) throws InjectionException {
-        //private void injectAndPostConstruct(InjectionTarget<T> injectionTarget, WeldCreationalContext<T> creationalContext, T instance) throws InjectionException {
-        // Inject the component instance by calling the InjectionTarget inject method on the instance.
-        performInjection(injectionTarget, mo, creationalContext);
-        // Invoke the PostConstruct callback, if any, by calling the InjectionTarget postConstruct method on the instance.
-        injectionTarget.postConstruct(mo.getObject());
+    @Override
+    public ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException {
+        ManagedObject<T> mo = createManagedObject(null, invocationContext);
+        return mo;
     }
 
-    private void performInjection(final InjectionTarget<T> cdiInjectionTarget, final ManagedObject<T> mo,
-                                  final WeldCreationalContext<T> creationalContext) throws InjectionException {
+    private ManagedObject<T> createManagedObject(T instance, WeldCreationalContext<T> creationalContext, InjectionTarget<T> injectionTarget) throws ManagedObjectException {
+        CDIRuntime cdiRuntime = getCDIRuntime();
+        WebSphereCDIDeployment deployment = cdiRuntime.getCurrentDeployment();
+        WebSphereInjectionServices webSphereInjectionServices = deployment.getInjectionServices();
 
-        if (referenceContext != null) {
-
-            // use WAS injection engine to perform injection
-            com.ibm.wsspi.injectionengine.InjectionTarget[] targets = referenceContext.getInjectionTargets(mo.getObject().getClass());
-            if (null != targets && targets.length > 0) {
-                final InjectionTargetContext itc = new InjectionTargetContext() {
-                    @Override
-                    public <R> R getInjectionTargetContextData(Class<R> data) {
-                        return mo.getContextData(data);
-                    }
-                };
-                for (com.ibm.wsspi.injectionengine.InjectionTarget injectionTarget : targets) {
-                    injectionTarget.inject(mo.getObject(), itc);
-                }
-            }
-
-        } else {
-            //use Weld to perform injection
-            cdiInjectionTarget.inject(mo.getObject(), creationalContext);
+        //if the instance is null then use CDI to produce one
+        if (instance == null) {
+            instance = createInstance(injectionTarget, creationalContext);
         }
+
+        // pass the injectionTarget into the MO so that preDestroy can be called during "release"
+        ManagedObject<T> mo = new CDIManagedObject<T>(instance, creationalContext, injectionTarget, getBeanScope(), webSphereInjectionServices);
+
+        if (managesInjectionAndInterceptors()) {
+            mo.inject(referenceContext);
+            // Invoke the PostConstruct callback, if any, by calling the InjectionTarget postConstruct method on the instance.
+            injectionTarget.postConstruct(mo.getObject());
+        }
+        return mo;
+    }
+
+    private T createInstance(final InjectionTarget<T> injectionTarget, final WeldCreationalContext<T> creationalContext) {
+        // Instantiate the component by calling the InjectionTarget produce method.
+        T instance = AccessController.doPrivileged(new PrivilegedAction<T>() {
+            @Override
+            public T run() {
+                return injectionTarget.produce(creationalContext);
+            }
+        });
+        return instance;
     }
 
 }

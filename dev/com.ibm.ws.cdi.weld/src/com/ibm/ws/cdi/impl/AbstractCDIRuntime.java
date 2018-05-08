@@ -121,6 +121,12 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
 
     /** {@inheritDoc} */
     @Override
+    public final WebSphereCDIDeployment getCurrentDeployment() {
+        return getCDIContainer().getCurrentDeployment();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public final BeanManager getClassBeanManager(Class<?> targetClass) {
         return getCDIContainer().getClassBeanManager(targetClass);
     }

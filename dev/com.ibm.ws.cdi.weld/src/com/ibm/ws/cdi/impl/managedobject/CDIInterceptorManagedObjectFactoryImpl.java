@@ -20,6 +20,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.utils.CreationalContextResolver;
 import com.ibm.ws.managedobject.ManagedObjectContext;
+import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectInvocationContext;
 
@@ -31,9 +32,11 @@ public class CDIInterceptorManagedObjectFactoryImpl<T> extends AbstractManagedOb
 
     /**
      * Get the CreationalContext from an existing ManagedObjectInvocationContext
+     * 
+     * @throws ManagedObjectException
      */
     @Override
-    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext) {
+    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException {
 
         ManagedObjectContext managedObjectContext = invocationContext.getManagedObjectContext();
 
@@ -74,7 +77,7 @@ public class CDIInterceptorManagedObjectFactoryImpl<T> extends AbstractManagedOb
 
     @Override
     public String toString() {
-        return "CDI Interceptor Managed Object Factory for class: " + _managedClass.getName();
+        return "CDI Interceptor Managed Object Factory for class: " + getManagedObjectClass().getName();
     }
 
 }

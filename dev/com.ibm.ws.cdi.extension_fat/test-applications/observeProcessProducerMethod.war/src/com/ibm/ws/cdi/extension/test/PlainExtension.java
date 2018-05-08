@@ -16,7 +16,9 @@ package com.ibm.ws.cdi.extension.test;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.inject.spi.ProcessProducerMethod;
 
 public class PlainExtension implements Extension {
@@ -35,6 +37,19 @@ public class PlainExtension implements Extension {
 
     public AnnotatedMethod<Car> getProducerMethod() {
         return producerMethod;
+    }
+
+    void processInjectionTarget(@Observes ProcessInjectionTarget<?> event) {
+        System.out.println("PlainExtension: processInjectionTarget: " + event.getInjectionTarget());
+        System.out.println("PlainExtension: processInjectionTarget: " + event.getInjectionTarget().getInjectionPoints());
+
+        setCustomInjectionTarget(event);
+    }
+
+    <T> void setCustomInjectionTarget(ProcessInjectionTarget<T> event) {
+        InjectionTarget<T> original = event.getInjectionTarget();
+        InjectionTarget<T> custom = new CustomInjectionTarget<T>(original);
+        event.setInjectionTarget(custom);
     }
 
 }
