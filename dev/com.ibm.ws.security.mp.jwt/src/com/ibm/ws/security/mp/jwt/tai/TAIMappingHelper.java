@@ -37,6 +37,7 @@ public class TAIMappingHelper {
     @Sensitive
     String decodedTokenPayload = null;
     String username = null;
+    String realm = null;
     JwtPrincipalMapping claimToPrincipalMapping = null;
     MicroProfileJwtConfig config = null;
     JsonWebToken jwtPrincipal = null;
@@ -52,6 +53,7 @@ public class TAIMappingHelper {
         if (decodedTokenPayload != null) {
             claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, "upn", "groups", false);
             setUsername();
+            setRealm();
         }
     }
 
@@ -69,6 +71,14 @@ public class TAIMappingHelper {
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName);
         }
+    }
+
+    /**
+     *
+     */
+    private void setRealm() {
+        this.realm = claimToPrincipalMapping.getMappedRealm();
+
     }
 
     public void createJwtPrincipalAndPopulateCustomProperties(@Sensitive JwtToken jwtToken) throws MpJwtProcessingException {
@@ -191,8 +201,10 @@ public class TAIMappingHelper {
         if (mapToUR) {
             customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_USERID, username);
-        } else if (issuer != null) {
-            String realm = getRealm(issuer);
+        } else {
+            if (realm == null && issuer != null) {
+                realm = getRealm(issuer);
+            }
             String uniqueID = getUniqueId(realm);
             List<String> groupswithrealm = getGroupsWithRealm(realm);
 

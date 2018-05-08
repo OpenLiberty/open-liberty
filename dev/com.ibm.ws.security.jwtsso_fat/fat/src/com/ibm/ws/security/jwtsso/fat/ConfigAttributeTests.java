@@ -143,7 +143,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
         expectations.addExpectations(CommonExpectations.successfullyReachedUrl(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, protectedUrl));
         expectations.addExpectations(CommonExpectations.jwtCookieExists(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, webClient, JwtFatConstants.JWT_COOKIE_NAME));
         expectations.addExpectations(CommonExpectations.getResponseTextExpectationsForJwtCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.JWT_COOKIE_NAME,
-                                                                                                defaultUser, Pattern.quote(issuer)));
+                                                                                                defaultUser, JwtFatConstants.BASIC_REALM));
         expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, defaultUser, Pattern.quote(issuer)));
         expectations.addExpectations(CommonExpectations.responseTextMissingCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.LTPA_COOKIE_NAME));
 
