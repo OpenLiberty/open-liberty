@@ -37,6 +37,8 @@ public class TokenBuilder {
 	protected static final String CCK_CLAIM = "session"; // custom cache key
 															// claim
 
+	protected static final String REALM_CLAIM = "realm"; // realm
+	// claim
 	private final static String GROUP_PREFIX = "group:";
 
 	/**
@@ -175,6 +177,11 @@ public class TokenBuilder {
 			builder.subject(user);
 			builder.claim(USER_CLAIM, user);
 
+			String realm = getRealm(subject);
+			if (realm != null) {
+				builder.claim(REALM_CLAIM, realm);
+			}
+
 			ArrayList<String> groups = getGroups(subject);
 			if (isValidList(groups)) {
 				builder.claim(GROUP_CLAIM, groups);
@@ -188,6 +195,19 @@ public class TokenBuilder {
 		} catch (Exception e) {
 			// ffdc
 			throw e;
+		}
+	}
+
+	private String getRealm(Subject subject) {
+		try {
+			WSCredential wsCred = getWSCredential(subject);
+			if (wsCred == null) {
+				wsCred = getPrivateWSCredential(subject);
+			}
+			return wsCred != null ? wsCred.getRealmName() : null;
+		} catch (Exception e) {
+			// ffdc
+			return null;
 		}
 	}
 
