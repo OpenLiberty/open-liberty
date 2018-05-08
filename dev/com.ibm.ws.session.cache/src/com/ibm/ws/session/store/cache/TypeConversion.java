@@ -11,13 +11,15 @@
 
 package com.ibm.ws.session.store.cache;
 
-import java.io.IOException;
 import java.util.Arrays;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * A utility class for converting primitives and potentially Object types.
  * 
  */
+@Trivial // reveals customer data
 public final class TypeConversion {
     /**
      * A utility method to convert the int from the byte array to an int.
@@ -198,7 +200,8 @@ public final class TypeConversion {
                                 return result;
                             }
                         }
-                        //TODO NLS
+                        //Should never happen since we wrote the varint value. If this occurs due to an internal bug
+                        //this exception is caught and wrapped further up the chain.
                         throw new IllegalStateException("Varint representation is invalid or exceeds 32-bit value");
                     }
                 }
