@@ -232,6 +232,10 @@ public class ExecutionContextImpl implements FTExecutionContext {
         }
     }
 
+    public void onFallback() {
+        metricRecorder.incrementFallbackCalls();
+    }
+
     public RetryImpl getRetry() {
         return retry;
     }

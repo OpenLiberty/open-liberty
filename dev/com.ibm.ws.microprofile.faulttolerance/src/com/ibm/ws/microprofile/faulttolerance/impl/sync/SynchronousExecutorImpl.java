@@ -121,6 +121,16 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
         executionContext.start();
     }
 
+    /**
+     * Run after execution is complete (including all fault tolerance processing)
+     *
+     * @param executionContext the execution context
+     * @param t the exception thrown, or {@code null} if no exception was thrown
+     */
+    protected void executionComplete(ExecutionContextImpl executionContext, Throwable t) {
+        executionContext.onFullExecutionComplete(t);
+    }
+
     protected void configureFailsafe(SyncFailsafe<R> failsafe, ExecutionContextImpl executionContextImpl) {
         failsafe.onRetry((t) -> {
             executionContextImpl.onRetry(t);
@@ -128,7 +138,6 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
 
         failsafe.onComplete((r, t) -> {
             executionContextImpl.onMainExecutionComplete(t);
-            executionContextImpl.onFullExecutionComplete(t);
         });
 
         if (executionContextImpl.getCircuitBreaker() != null) {
@@ -139,6 +148,7 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
             @SuppressWarnings("unchecked")
             CheckedFunction<Throwable, R> fallback = (t) -> {
                 executionContextImpl.onMainExecutionComplete(t);
+                executionContextImpl.onFallback();
                 return (R) executionContextImpl.getFallbackPolicy().getFallbackFunction().execute(executionContextImpl);
             };
             failsafe = failsafe.withFallback(fallback);
@@ -147,7 +157,7 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore({ net.jodah.failsafe.CircuitBreakerOpenException.class, net.jodah.failsafe.FailsafeException.class })
+    @FFDCIgnore({ net.jodah.failsafe.CircuitBreakerOpenException.class, net.jodah.failsafe.FailsafeException.class, java.lang.Throwable.class })
     public R execute(Callable<R> callable, ExecutionContext executionContext) {
 
         ExecutionContextImpl executionContextImpl = (ExecutionContextImpl) executionContext;
@@ -161,23 +171,30 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
         preRun(executionContextImpl);
 
         R result = null;
+        Throwable failure = null;
         try {
             result = failsafe.get(task);
         } catch (net.jodah.failsafe.CircuitBreakerOpenException e) {
+            failure = e;
             // Task was not run at all, make sure we run end of execution processing
             executionContextImpl.onMainExecutionComplete(e);
-            executionContextImpl.onFullExecutionComplete(e);
             throw new CircuitBreakerOpenException(e);
         } catch (net.jodah.failsafe.FailsafeException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Fault tolerance execution ended in failure: {0} - {1}", executionContextImpl.getMethod(), e);
             }
+            failure = e;
             Throwable cause = e.getCause();
             if (cause instanceof FaultToleranceException) {
                 throw (FaultToleranceException) cause;
             } else {
                 throw new ExecutionException(cause);
             }
+        } catch (Throwable t) {
+            failure = t;
+            throw t;
+        } finally {
+            executionComplete(executionContextImpl, failure);
         }
 
         return result;

@@ -134,4 +134,9 @@ public interface MetricRecorder {
      */
     public void recordBulkheadExecutionTime(long executionTime);
 
+    /**
+     * Called when a fallback method or handler is called
+     */
+    public void incrementFallbackCalls();
+
 }

@@ -137,6 +137,15 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    protected void executionComplete(ExecutionContextImpl executionContext, Throwable t) {
+        // Only run the execution complete logic if a failure occurred (i.e. we didn't launch the async thread)
+        if (t != null) {
+            executionContext.onFullExecutionComplete(t);
+        }
+    }
+
     @Override
     public Future<R> execute(Callable<Future<R>> callable, ExecutionContext executionContext) {
         ExecutionContextImpl context = (ExecutionContextImpl) executionContext;
@@ -172,7 +181,6 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
             if (t != null) {
                 // Only run mainExecutionComplete if an exception was thrown (implying we did not enqueue the task)
                 executionContextImpl.onMainExecutionComplete(t);
-                executionContextImpl.onFullExecutionComplete(t);
             }
         });
 

@@ -114,4 +114,8 @@ public class DummyMetricRecorder implements MetricRecorder {
     @Override
     public void setBulkheadQueuePopulationSupplier(LongSupplier concurrentExecutionCountSupplier) {}
 
+    /** {@inheritDoc} */
+    @Override
+    public void incrementFallbackCalls() {}
+
 }

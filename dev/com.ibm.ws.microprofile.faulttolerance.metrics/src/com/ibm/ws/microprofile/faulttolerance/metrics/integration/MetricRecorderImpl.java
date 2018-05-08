@@ -65,6 +65,8 @@ public class MetricRecorderImpl implements MetricRecorder {
     private final Gauge<Long> bulkheadQueuePopulation;
     private final Histogram bulkheadQueueWaitTimeHistogram;
 
+    private final Counter fallbackCalls;
+
     private long openNanos;
     private long halfOpenNanos;
     private long closedNanos;
@@ -74,7 +76,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     public MetricRecorderImpl(String metricPrefix, MetricRegistry registry, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
                               BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
 
-        if (retryPolicy != null || timeoutPolicy != null || circuitBreakerPolicy != null || bulkheadPolicy != null) {
+        if (retryPolicy != null || timeoutPolicy != null || circuitBreakerPolicy != null || bulkheadPolicy != null || fallbackPolicy != null) {
             invocationCounter = registry.counter(metricPrefix + ".invocations.total");
             invocationFailedCounter = registry.counter(metricPrefix + ".invocations.failed.total");
         } else {
@@ -140,6 +142,12 @@ public class MetricRecorderImpl implements MetricRecorder {
         } else {
             bulkheadQueuePopulation = null;
             bulkheadQueueWaitTimeHistogram = null;
+        }
+
+        if (fallbackPolicy != null) {
+            fallbackCalls = registry.counter(metricPrefix + ".fallback.calls.total");
+        } else {
+            fallbackCalls = null;
         }
 
         lastTransitionTime = System.nanoTime();
@@ -372,6 +380,12 @@ public class MetricRecorderImpl implements MetricRecorder {
         if (bulkheadExecutionDuration != null) {
             bulkheadExecutionDuration.update(executionTime);
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void incrementFallbackCalls() {
+        fallbackCalls.inc();
     }
 
 }
