@@ -3,7 +3,7 @@ symbolicName=com.ibm.websphere.appserver.jcacheContainer-1.1
 visibility=public
 IBM-ShortName: jcacheContainer-1.1
 Manifest-Version: 1.0
-Subsystem-Name: JCache via Bells
+Subsystem-Name: JCache spec API and container integration
 IBM-API-Package: \
  javax.cache; type="spec", \
  javax.cache.annotation; type="spec", \
@@ -15,7 +15,6 @@ IBM-API-Package: \
  javax.cache.processor; type="spec", \
  javax.cache.spi; type="spec"
 -features=\
- com.ibm.websphere.appserver.bells-1.0, \
  com.ibm.websphere.appserver.classloading-1.0
 -bundles=\
  com.ibm.websphere.javaee.jcache.1.1; location:="dev/api/spec/,lib/"
