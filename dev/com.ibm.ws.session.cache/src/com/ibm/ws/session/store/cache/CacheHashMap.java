@@ -1499,15 +1499,21 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     //Converts an object to a byte array, using enhancements when possible to reduce size
+    @Trivial // reveals customer data
     public byte[] serialize(Object value) throws IOException {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
         BuiltinSerializationInfo<?> info = SerializationInfoCache.lookupByClass(value.getClass());
 
         byte[] objbuf = null;
 
         if(info != null) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "serializing with custom objectToBytes");
             //This is a value that can be written directly to bytes
             objbuf = info.objectToBytes(value);
         } else {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "serializing with standard writeObject");
             //Go through normal serialization process
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
@@ -1524,12 +1530,17 @@ public class CacheHashMap extends BackedHashMap {
         return objbuf;
     }
 
+    @Trivial // reveals customer data
     public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException{
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         Object obj = null;
 
         if (bytes.length >= 4 
                         && bytes[0] == OBJECT_OUTPUT_STREAM_HEADER[0]
-                        && bytes[1] == OBJECT_OUTPUT_STREAM_HEADER[1]) {    
+                        && bytes[1] == OBJECT_OUTPUT_STREAM_HEADER[1]) {  
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "deserializing with standard readObject");
             //This was serialized using the standard method, deserialize with readObject
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             BufferedInputStream in = new BufferedInputStream(bais);
@@ -1540,6 +1551,8 @@ public class CacheHashMap extends BackedHashMap {
                 bais.close();
             }
         } else if(bytes[0] == SerializationInfoCache.BUILTIN_SERIALIZATION) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "deserializing with custom bytesToObject");
             //This was written directly to bytes, so read directly from bytes
                            
             BuiltinSerializationInfo<?> info = SerializationInfoCache.lookupByIndex(bytes[1]);
