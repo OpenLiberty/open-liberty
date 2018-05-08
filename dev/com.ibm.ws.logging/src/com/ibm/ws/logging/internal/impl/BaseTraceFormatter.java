@@ -30,7 +30,6 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.Pair;
-import com.ibm.ws.logging.internal.PackageProcessor;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
 
@@ -1098,53 +1097,5 @@ public class BaseTraceFormatter extends Formatter {
             }
         }
         return message;
-    }
-
-    private String filterStackTraces(String txt) {
-        // Check for stack traces, which we may want to trim
-        StackTraceFlags stackTraceFlags = traceFlags.get();
-        // We have a little thread-local state machine here with four states controlled by two
-        // booleans. Our triggers are { "unknown/user code", "just seen IBM code", "second line of IBM code", ">second line of IBM code"}
-        // "unknown/user code" -> stackTraceFlags.isSuppressingTraces -> false, stackTraceFlags.needsToOutputInternalPackageMarker -> false
-        // "just seen IBM code" -> stackTraceFlags.needsToOutputInternalPackageMarker->true
-        // "second line of IBM code" -> stackTraceFlags.needsToOutputInternalPackageMarker->true
-        // ">second line of IBM code" -> stackTraceFlags.isSuppressingTraces->true
-        // The final two states are optional
-
-        if (txt.startsWith("\tat ")) {
-            // This is a stack trace, do a more detailed analysis
-            PackageProcessor packageProcessor = PackageProcessor.getPackageProcessor();
-            String packageName = PackageProcessor.extractPackageFromStackTraceLine(txt);
-            // If we don't have a package processor, don't suppress anything
-            if (packageProcessor != null && packageProcessor.isIBMPackage(packageName)) {
-                // First internal package, we let through
-                // Second one, we suppress but say we did
-                // If we're still suppressing, and this is a stack trace, this is easy - we suppress
-                if (stackTraceFlags.isSuppressingTraces) {
-                    txt = null;
-                } else if (stackTraceFlags.needsToOutputInternalPackageMarker) {
-                    // Replace the stack trace with something saying we got rid of it
-                    txt = "\tat " + TruncatableThrowable.INTERNAL_CLASSES_STRING;
-                    // No need to output another marker, we've just output it
-                    stackTraceFlags.needsToOutputInternalPackageMarker = false;
-                    // Suppress any subsequent IBM frames
-                    stackTraceFlags.isSuppressingTraces = true;
-                } else {
-                    // Let the text through, but make a note not to let anything but an [internal classes] through
-                    stackTraceFlags.needsToOutputInternalPackageMarker = true;
-                }
-            } else {
-                // This is user code, third party API, or Java API, so let it through
-                // Reset the flags to ensure it gets let through
-                stackTraceFlags.isSuppressingTraces = false;
-                stackTraceFlags.needsToOutputInternalPackageMarker = false;
-            }
-
-        } else {
-            // We're no longer processing a stack, so reset all our state
-            stackTraceFlags.isSuppressingTraces = false;
-            stackTraceFlags.needsToOutputInternalPackageMarker = false;
-        }
-        return txt;
     }
 }
