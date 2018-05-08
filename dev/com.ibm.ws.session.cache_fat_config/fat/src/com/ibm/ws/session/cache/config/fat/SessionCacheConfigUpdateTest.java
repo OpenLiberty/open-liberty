@@ -257,10 +257,6 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         run("testSetAttribute&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
         run("testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
 
-        // TODO enable if manual sync is supported across same session spanning multiple servlet requests:
-        // Perform a manual sync under a subsequent servlet request and verify the previously set value is updated
-        // FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualSync&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
-
         // Perform a manual update within the same servlet request
         run("testManualUpdate&attribute=testWriteFrequency&value=3_MANUAL_UPDATE", session);
         run("invalidateSession", session);
