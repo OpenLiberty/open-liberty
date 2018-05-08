@@ -81,7 +81,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
             puts.add(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    app.sessionPut("testConcurrentPutNewAttributesAndRemove-key" + offset, (char) ('A' + offset), session, true);
+                    app.sessionPut("testConcurrentPutNewAttributesAndRemove-key" + offset + "&sync=true", (char) ('A' + offset), session, true);
                     return null;
                 }
             });
@@ -96,13 +96,13 @@ public class SessionCacheOneServerTest extends FATServletClient {
                 removes.add(new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
-                        app.invokeServlet("sessionRemoveAttribute&key=testConcurrentPutNewAttributesAndRemove-key" + offset, session);
+                        app.invokeServlet("sessionRemoveAttribute&key=testConcurrentPutNewAttributesAndRemove-key" + offset + "&sync=true", session);
                         return null;
                     }
                 });
         }
 
-        String sessionId = app.sessionPut("testConcurrentPutNewAttributesAndRemove-key0", 'A', session, true);
+        String sessionId = app.sessionPut("testConcurrentPutNewAttributesAndRemove-key0&sync=true", 'A', session, true);
         try {
             List<Future<Void>> futures = executor.invokeAll(puts);
             for (Future<Void> future : futures)
@@ -166,7 +166,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
                 puts.add(new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
-                        app.sessionPut(key, value, session, false);
+                        app.sessionPut(key + "&sync=true", value, session, false);
                         return null;
                     }
                 });
@@ -175,9 +175,9 @@ public class SessionCacheOneServerTest extends FATServletClient {
             expectedValues.put(key, sb.toString());
         }
 
-        String sessionId = app.sessionPut("testConcurrentReplaceAttributes-key1", 100, session, true);
+        String sessionId = app.sessionPut("testConcurrentReplaceAttributes-key1&sync=true", 100, session, true);
         try {
-            app.sessionPut("testConcurrentReplaceAttributes-key2", 200, session, false);
+            app.sessionPut("testConcurrentReplaceAttributes-key2&sync=true", 200, session, false);
 
             List<Future<Void>> futures = executor.invokeAll(puts);
             for (Future<Void> future : futures)
@@ -228,7 +228,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
                     requests.add(new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
-                            app.sessionPut("testConcurrentSetGetAndRemove-key", value, session, false);
+                            app.sessionPut("testConcurrentSetGetAndRemove-key&sync=true", value, session, false);
                             return null;
                         }
                     });
@@ -246,7 +246,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
                     requests.add(new Callable<Void>() {
                         @Override
                         public Void call() throws Exception {
-                            app.invokeServlet("sessionRemoveAttribute&key=testConcurrentSetGetAndRemove-key", session);
+                            app.invokeServlet("sessionRemoveAttribute&key=testConcurrentSetGetAndRemove-key&sync=true", session);
                             return null;
                         }
                     });
