@@ -249,7 +249,7 @@ public class SessionCacheTestServlet extends FATServlet {
         ((IBMSession) session).sync();
 
         long puts = attrCacheStatsMXBean.getCachePuts();
-        // TODO sometimes this assert is failing with observed value still being the initial value. Seems to be a bug in the JCache provider
+        // Sometimes this assert is failing with observed value still being the initial value. Seems to be a bug in the JCache provider
         // assertEquals(initialPuts + 1, puts);
 
         session.invalidate();
