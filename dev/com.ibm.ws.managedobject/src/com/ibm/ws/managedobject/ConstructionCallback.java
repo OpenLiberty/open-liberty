@@ -25,7 +25,7 @@ public interface ConstructionCallback<T> {
      * to obtain information about the constructor; such as a list of the
      * parameter types.
      */
-    Constructor<T> getConstructor();
+    Constructor<T> getConstructor() throws ManagedObjectException;
 
     /**
      * Proceed to the next step in construction of the component. The constructed component

@@ -14,13 +14,18 @@ package com.ibm.ws.managedobject;
  * Thrown if an error occur while creating a managed object or managed object
  * factory.
  */
-public class ManagedObjectException
-                extends Exception
-{
+public class ManagedObjectException extends Exception {
     private static final long serialVersionUID = 2189215815982016336L;
 
-    public ManagedObjectException(Throwable t)
-    {
+    public ManagedObjectException(Throwable t) {
         super(t);
+    }
+
+    public ManagedObjectException(String message, Throwable t) {
+        super(message, t);
+    }
+
+    public ManagedObjectException(String message) {
+        super(message);
     }
 }

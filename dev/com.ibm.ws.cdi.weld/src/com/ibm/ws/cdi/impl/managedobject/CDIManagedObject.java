@@ -10,17 +10,28 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.impl.managedobject;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.enterprise.inject.spi.InjectionTarget;
+import javax.inject.Inject;
 
 import org.jboss.weld.construction.api.WeldCreationalContext;
 
 import com.ibm.ejs.util.Util;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIException;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionTargetListener;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
+import com.ibm.ws.managedobject.ManagedObjectException;
+import com.ibm.wsspi.injectionengine.InjectionException;
+import com.ibm.wsspi.injectionengine.InjectionTargetContext;
+import com.ibm.wsspi.injectionengine.ReferenceContext;
 
-public class CDIManagedObject<T> implements ManagedObject<T> {
+public class CDIManagedObject<T> implements ManagedObject<T>, WebSphereInjectionTargetListener {
     private static final TraceComponent tc = Tr.register(CDIManagedObject.class);
 
     private T managedObject;
@@ -30,18 +41,26 @@ public class CDIManagedObject<T> implements ManagedObject<T> {
     private String beanScope = null;
     private final String identity;
 
-    public CDIManagedObject(T managedObject, WeldCreationalContext<T> creationalContext, String beanScope) {
+    private WebSphereInjectionServices websphereInjectionServices;
+
+    private Set<com.ibm.wsspi.injectionengine.InjectionTarget> currentInjectionTargets;
+
+    private InjectionTargetContext currentInjectionContext;
+
+    public CDIManagedObject(T managedObject, WeldCreationalContext<T> creationalContext, String beanScope, WebSphereInjectionServices websphereInjectionServices) {
         this.creationalContext = creationalContext;
         this.managedObject = managedObject;
         this.beanScope = beanScope;
+        this.websphereInjectionServices = websphereInjectionServices;
         this.identity = Util.identity(this.managedObject);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, this.identity + " creating --> " + Util.identity(this.creationalContext) + " beanscope: " + beanScope);
         }
     }
 
-    public CDIManagedObject(T managedObject, WeldCreationalContext<T> creationalContext, InjectionTarget<T> injectionTarget, String beanScope) {
-        this(managedObject, creationalContext, beanScope);
+    public CDIManagedObject(T managedObject, WeldCreationalContext<T> creationalContext, InjectionTarget<T> injectionTarget, String beanScope,
+                            WebSphereInjectionServices websphereInjectionServices) {
+        this(managedObject, creationalContext, beanScope, websphereInjectionServices);
         this.injectionTarget = injectionTarget;
         this.lifecycleManaged = (this.injectionTarget != null);
     }
@@ -102,5 +121,91 @@ public class CDIManagedObject<T> implements ManagedObject<T> {
     public String toString() {
         String released = this.creationalContext == null ? " (RELEASED)" : "";
         return "CDIManagedObject: " + this.identity + released;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws CDIException
+     */
+    @Override
+    public T inject(ReferenceContext referenceContext) throws ManagedObjectException {
+        T instance = getObject();
+        if (referenceContext == null) {
+            instance = cdiInjection(instance);
+        } else {
+            com.ibm.wsspi.injectionengine.InjectionTarget[] injectionTargets;
+            try {
+                injectionTargets = referenceContext.getInjectionTargets(instance.getClass());
+            } catch (InjectionException e) {
+                throw new ManagedObjectException(e);
+            }
+
+            InjectionTargetContext injectionContext = new InjectionTargetContext() {
+                @Override
+                public <S> S getInjectionTargetContextData(Class<S> data) {
+                    return getContextData(data);
+                }
+            };
+            instance = inject(injectionTargets, injectionContext);
+        }
+
+        return instance;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public T inject(com.ibm.wsspi.injectionengine.InjectionTarget[] targets, InjectionTargetContext injectionContext) throws ManagedObjectException {
+        T instance = getObject();
+        synchronized (this) { //we really don't want inject being called twice at the same time
+
+            try {
+                this.currentInjectionTargets = new HashSet<>();
+                this.currentInjectionContext = injectionContext;
+                this.websphereInjectionServices.registerInjectionTargetListener(this);
+
+                for (com.ibm.wsspi.injectionengine.InjectionTarget it : targets) {
+                    this.currentInjectionTargets.add(it);
+                }
+
+                //use Weld to perform injection
+                instance = cdiInjection(instance);
+
+                for (com.ibm.wsspi.injectionengine.InjectionTarget it : this.currentInjectionTargets) {
+                    if (it.getInjectionBinding().getAnnotationType() != Inject.class) {
+                        try {
+                            it.inject(instance, injectionContext);
+                        } catch (InjectionException e) {
+                            throw new ManagedObjectException(e);
+                        }
+                    }
+                }
+            } finally {
+                this.websphereInjectionServices.deregisterInjectionTargetListener(this);
+                this.currentInjectionContext = null;
+                this.currentInjectionTargets = null;
+            }
+
+        }
+
+        return instance;
+    }
+
+    T cdiInjection(T instance) {
+        //use Weld to perform injection
+        this.injectionTarget.inject(instance, this.creationalContext);
+        return instance;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void injectionTargetProcessed(com.ibm.wsspi.injectionengine.InjectionTarget injectionTarget) {
+        this.currentInjectionTargets.remove(injectionTarget);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public InjectionTargetContext getCurrentInjectionTargetContext() {
+        return this.currentInjectionContext;
     }
 }

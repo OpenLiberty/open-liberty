@@ -10,17 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.extension.test;
 
-import javax.ejb.Local;
-import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.context.RequestScoped;
 
-@Local
-public interface FactoryLocal {
-
-    Car produceCar();
-
-    /**
-     * @return
-     */
-    BeanManager getBeanManager();
+/**
+ *
+ */
+@RequestScoped
+public class Bus {
 
 }

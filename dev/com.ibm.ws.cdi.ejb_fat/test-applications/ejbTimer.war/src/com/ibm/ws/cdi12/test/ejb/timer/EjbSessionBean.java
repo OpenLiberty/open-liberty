@@ -92,8 +92,7 @@ public class EjbSessionBean implements EjbSessionBeanLocal {
     }
 
     @Override
-    public void incCountersViaTimer()
-    {
+    public void incCountersViaTimer() {
         System.out.println("CL: " + timerService.getClass().getClassLoader());
         TimerConfig config = new TimerConfig();
         config.setPersistent(false);

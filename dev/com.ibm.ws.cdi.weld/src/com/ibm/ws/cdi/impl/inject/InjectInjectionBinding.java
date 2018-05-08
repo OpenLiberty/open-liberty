@@ -71,15 +71,14 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
     @Override
     public Object getInjectionObjectInstance(Object targetObject, InjectionTargetContext targetContext) throws Exception {
 
-        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "getInjectionObjectInstance", new Object[] { Util.identity(targetObject), Util.identity(targetContext)});
+            Tr.entry(tc, "getInjectionObjectInstance", new Object[] { Util.identity(targetObject), Util.identity(targetContext) });
         }
         WeldCreationalContext<Object> cc = null;
 
         if (targetContext == null) {
             if (!(targetObject instanceof Class<?>)) {
+                System.err.println("targetObject=" + targetObject);
                 // Null target context is only valid when we're doing limited injection on an application main class
                 // where we're injecting into the static fields of the class and there is no instance.
                 throw new CDIException(Tr.formatMessage(tc, "no.injection.target.context.CWOWB1006E", targetObject));
@@ -130,43 +129,40 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
 
     /*
      * (non-Javadoc)
+     *
      * @see com.ibm.wsspi.injectionengine.InjectionBinding#getInjectionObject(java.lang.Object, com.ibm.wsspi.injectionengine.InjectionTargetContext)
-     * 
+     *
      * This method was copied from InjectionBinding.getInjectionObject() and has three differences.
-     * 
+     *
      * Firstly it does not look in the InjectionBinding.ivInjectedObject field, as InjectInjectionBinding never has that field set anyway.
-     *   
+     *
      * Secondly if the property com.ibm.ws.cdi.ignoreInjectionFailure is true it will ignore any failure except a RecursiveInjectionException
-     * The special status of RecursiveInjectionException is inherited from InjectionBinding where RecursiveInjectionException was the only 
-     * Throwable that isn't converted into an InjectionException. 
-     * 
+     * The special status of RecursiveInjectionException is inherited from InjectionBinding where RecursiveInjectionException was the only
+     * Throwable that isn't converted into an InjectionException.
+     *
      * Thirdly if getInjectionObjectInstance returns an InjectableNUll this method will turn it into a regular null after the null check.
-     * This allows us to impliment section 3.3. of the CDI spec which allows @Dependent scoped producers to return a null. 
+     * This allows us to impliment section 3.3. of the CDI spec which allows @Dependent scoped producers to return a null.
      */
     @Override
     public Object getInjectionObject(Object targetObject,
-            InjectionTargetContext targetContext)
-                    throws InjectionException {
+                                     InjectionTargetContext targetContext) throws InjectionException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "getInjectionObject", new Object[] { Util.identity(targetObject), Util.identity(targetContext)});
+            Tr.entry(tc, "getInjectionObject", new Object[] { Util.identity(targetObject), Util.identity(targetContext) });
         }
 
         Object retObj = null;
 
-        //First attempt to get the injection object, and handle any exceptions thrown in the process. 
-        try
-        {
+        //First attempt to get the injection object, and handle any exceptions thrown in the process.
+        try {
             retObj = getInjectionObjectInstance(targetObject, targetContext);
-        } catch (RecursiveInjectionException ex)
-        {
+        } catch (RecursiveInjectionException ex) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getInjectionObject: " + ex);
             throw ex;
-        } catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
 
-            if (CDIUtils.isInjectionFailureIgnored()){
+            if (CDIUtils.isInjectionFailureIgnored()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                     Tr.exit(tc, "com.ibm.ws.cdi.ignoreInjectionFailure = true, ignoring InjectionException and will return null", ex);
                 }
@@ -177,39 +173,34 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
             // be normal and the caller should decide if FFDC is needed.
             if (targetObject != null) {
                 FFDCFilter.processException(ex, CLASS_NAME + ".getInjectionObject",
-                        "408", this, (Object[]) null);
+                                            "408", this, (Object[]) null);
             }
 
             String displayName = getDisplayName();
             Object exMessage = ex.getLocalizedMessage();
-            if (exMessage == null)
-            {
+            if (exMessage == null) {
                 exMessage = ex.toString();
             }
 
             String message = Tr.formatMessage(tc,
-                                                  "FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E",
-                                                  displayName,
-                                                  exMessage);
+                                              "FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E",
+                                              displayName,
+                                              exMessage);
             InjectionException ex2 = new InjectionException(message, ex);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getInjectionObject", ex2);
             throw ex2;
         }
-        
-        //If the injection object returned was null this is illegal and an exception must be thrown. 
-        if (retObj == null) 
-        {
+
+        //If the injection object returned was null this is illegal and an exception must be thrown.
+        if (retObj == null) {
             String classTypeName, component, module, app;
-            if (ivJ2eeName != null)
-            {
+            if (ivJ2eeName != null) {
                 component = ivJ2eeName.getComponent();
                 module = ivJ2eeName.getModule();
                 app = ivJ2eeName.getApplication();
-            }
-            else
-            {
+            } else {
                 component = module = app = "UNKNOWN";
             }
 
@@ -226,14 +217,14 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
                 Tr.debug(tc, "getInjectionObject : failed");
 
             //TODO This message should be NLS. This code is shared with the superclass in injection engine, so when the
-            //NLS variant is complete it should be used there too. 
+            //NLS variant is complete it should be used there too.
             InjectionException ex = new InjectionException("The " + getDisplayName() + " reference of type " +
-                    classTypeName + " for the " +
-                    component + " component in the " +
-                    module + " module of the " +
-                    app + " application cannot be resolved."); // d502635.1
-            
-            if (CDIUtils.isInjectionFailureIgnored()){
+                                                           classTypeName + " for the " +
+                                                           component + " component in the " +
+                                                           module + " module of the " +
+                                                           app + " application cannot be resolved."); // d502635.1
+
+            if (CDIUtils.isInjectionFailureIgnored()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                     Tr.exit(tc, "com.ibm.ws.cdi.ignoreInjectionFailure = true, ignoring InjectionException and will return null", ex);
                 }
@@ -242,18 +233,17 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
                 throw ex;
             }
         }
-        
+
         //However there is an edge case where an injection object can be null if it comes from a
         //@Dependent scoped producer. See the CDI spec, section 3.3
 
         //If the injection object returned was of the type InjectableNull that means a null was returned
-        //But it fell under that edge case. Now that we have gone past the null check we can safely 
+        //But it fell under that edge case. Now that we have gone past the null check we can safely
         //Convert InjectableNull objects back into a regular null
 
         if (retObj instanceof InjectableNull) {
             retObj = null;
-        }
-        else if (retObj instanceof Object[]) {
+        } else if (retObj instanceof Object[]) {
             Object[] retObjArray = (Object[]) retObj;
             for (int i = 0; i < retObjArray.length; i++) {
                 if (retObjArray[i] instanceof InjectableNull) {
@@ -262,7 +252,7 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
             }
             retObj = retObjArray;
         }
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "getInjectionObjectInstance", Util.identity(retObj));
         }

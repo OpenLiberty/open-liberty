@@ -10,17 +10,35 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.extension.test;
 
+import static org.junit.Assert.assertNotNull;
+
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 @Stateless
 public class CarFactory implements FactoryLocal {
+
+    @Resource
+    BeanManager beanManager;
+
+    @Inject
+    Bus bus;
 
     /** {@inheritDoc} */
     @Override
     @Produces
     public Car produceCar() {
         return new Car();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public BeanManager getBeanManager() {
+        assertNotNull(bus);
+        return beanManager;
     }
 
 }

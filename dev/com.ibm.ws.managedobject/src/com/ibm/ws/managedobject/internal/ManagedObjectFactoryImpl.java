@@ -21,14 +21,11 @@ import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectInvocationContext;
 
 public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, ConstructionCallback<T> {
-    private final Constructor<T> constructor;
+    private Constructor<T> constructor;
+    private final Class<T> managedClass;
 
-    public ManagedObjectFactoryImpl(Class<T> klass) throws ManagedObjectException {
-        try {
-            this.constructor = klass.getConstructor((Class<?>[]) null);
-        } catch (NoSuchMethodException e) {
-            throw new ManagedObjectException(e);
-        }
+    public ManagedObjectFactoryImpl(Class<T> klass) {
+        this.managedClass = klass;
     }
 
     @Override
@@ -43,15 +40,24 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
 
     @Override
     public Class<T> getManagedObjectClass() {
-        return constructor.getDeclaringClass();
+        return managedClass;
     }
 
     /**
      * Returns the constructor that will be used by this factory to create the managed object.
+     *
+     * @throws ManagedObjectException
      */
     @Override
-    public Constructor<T> getConstructor() {
-        return constructor;
+    public Constructor<T> getConstructor() throws ManagedObjectException {
+        if (this.constructor == null) {
+            try {
+                this.constructor = this.managedClass.getConstructor((Class<?>[]) null);
+            } catch (NoSuchMethodException e) {
+                throw new ManagedObjectException(e);
+            }
+        }
+        return this.constructor;
     }
 
     @Override
@@ -60,19 +66,43 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
     }
 
     @Override
-    public ManagedObject<T> createManagedObject() throws Exception {
-        return new ManagedObjectImpl<T>(constructor.newInstance(new Object[0]));
+    public ManagedObject<T> createManagedObject() throws ManagedObjectException {
+        T instance = null;
+        try {
+            instance = getConstructor().newInstance(new Object[0]);
+        } catch (ManagedObjectException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ManagedObjectException(e);
+        }
+        ManagedObject<T> mo = createManagedObject(instance, null);
+        return mo;
     }
 
     @Override
-    public ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws Exception {
-        T managedObject = invocationContext.aroundConstruct(this, new Object[0], null);
+    public ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException {
+        T managedObject;
+        try {
+            managedObject = invocationContext.aroundConstruct(this, new Object[0], null);
+        } catch (Exception e) {
+            throw new ManagedObjectException(e);
+        }
         return new ManagedObjectImpl<T>(managedObject);
     }
 
     @Override
     public T proceed(Object[] parameters, Map<String, Object> data) throws Exception {
-        return constructor.newInstance(parameters);
+        return getConstructor().newInstance(parameters);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.managedobject.ManagedObjectFactory#createManagedObject(java.lang.Object, com.ibm.ws.managedobject.ManagedObjectInvocationContext)
+     */
+    @Override
+    public ManagedObject<T> createManagedObject(T existingInstance, ManagedObjectInvocationContext<T> invocationContext) {
+        return new ManagedObjectImpl<T>(existingInstance);
     }
 
 }
