@@ -475,6 +475,11 @@ warning.binding.config=CWWKG0101W: Configura\u0163ia cu identitatea persistat\u0
 warning.binding.config.explanation=O configura\u0163ie este legat\u0103 de bundle-ul apelant c\u00e2nd metoda getConfiguration a interfe\u0163ei ConfigurationAdmin este apelat\u0103 pentru prima dat\u0103. Din moment ce configura\u0163ia este legat\u0103, nu mai este vizibil\u0103 pentru alte bundle-uri.
 warning.binding.config.useraction=pentru a v\u0103 asigura c\u0103 loca\u0163ie de bundle este valoarea a\u015fteptat\u0103, utiliza\u0163i metoda getConfiguration pe interfa\u0163a ConfigurationAdmin care ia o loca\u0163ie de bundle ca al doilea parametru.
 
+# This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
+info.config.conflict=CWWKG0102I: {0}
+info.config.conflict.explanation=Sunt specificate mai multe valori pentru aceea\u015fi proprietate de configura\u0163ie. 
+info.config.conflict.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Mesajul informativ poate fi evitat prin editarea configura\u0163iei de server pentru a \u00eenl\u0103tura conflictul.
+ 
 
 # Non-TR message
 error.invalidOCDRef=EROARE: PID-ul metatipului [{0}] specific\u0103 un ID al defini\u0163iei de clas\u0103 de obiecte inexistent [{1}]

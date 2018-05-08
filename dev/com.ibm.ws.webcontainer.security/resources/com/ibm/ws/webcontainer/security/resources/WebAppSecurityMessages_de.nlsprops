@@ -134,3 +134,7 @@ SEC_JACC_AUTHZ_FAILED.useraction=Wenden Sie sich an den Sicherheitsadministrator
 SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: Die f\u00fcr die angepasste logoutExitPage angegebene URL des Service f\u00fcr formulargest\u00fctzte Abmeldung kann nicht angezeigt werden: requestURL={0}, logoutExitPage={1}. Die Abmeldung war erfolgreich und die Standardseite f\u00fcr die formulargest\u00fctzte Abmeldung wurde angezeigt.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Der Service f\u00fcr die formulargest\u00fctzte Abmeldung (Form-Logout) konnte die Umleitung zu der mit dem Servletparameter logoutExitPage angegebenen Seite nicht erfolgreich durchf\u00fchren. Entweder ist das Format der angegebenen URL nicht g\u00fcltig oder der Hostname ist nicht in der Eigenschaft com.ibm.websphere.security.logoutExitPageDomainList angegeben.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Korrigieren Sie die im Parameter logoutExitPage angegebene URL.
+
+JWT_ALREADY_LOGGED_OUT=CWWKS9126E: Die Anmeldung mit einem JSON Web Token ist fehlgeschlagen, weil das Token zuvor abgemeldet wurde.
+JWT_ALREADY_LOGGED_OUT.explanation=Ein zuvor abgemeldetes JSON Web Token (JWT) wurde erneut zur Anmeldeauthentifizierung gesendet.
+JWT_ALREADY_LOGGED_OUT.useraction=Fordern Sie ein neues JSON Web Token an oder setzen Sie das Konfigurationsattribut trackLoggedOutSSOCookiesEnabled auf false, was jedoch die Sicherheit beeintr\u00e4chtigt.

@@ -455,6 +455,11 @@ warning.binding.config=CWWKG0101W: La configurazione con il PID (persisted ident
 warning.binding.config.explanation=Una configurazione \u00e8 collegata al bundle chiamante quando il metodo getConfiguration dell'interfaccia ConfigurationAdmin \u00e8 richiamato per la prima volta. Una volta collegata la configurazione, non \u00e8 pi\u00f9 visibile per altri bundle.  
 warning.binding.config.useraction=Per assicurarsi che l'ubicazione bundle sia il valore previsto, utilizzare il metodo getConfiguration sull'interfaccia ConfigurationAdmin che acquisisce un'ubicazione bundle come secondo parametro.
 
+# This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
+info.config.conflict=CWWKG0102I: {0}
+info.config.conflict.explanation=Specificati pi\u00f9 valori per la stessa propriet\u00e0\u00a0 di configurazione. 
+info.config.conflict.useraction=Non \u00e8 richiesta alcuna azione. \u00c8 possibile evitare il messaggio informativo modificando la configurazione del server per rimuovere il conflitto.
+ 
 
 # Non-TR message
 error.invalidOCDRef=ERRORE: il PID metatipo [{0}] specifica un ID di definizione della classe oggetto inesistente [{1}]
