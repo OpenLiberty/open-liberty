@@ -73,10 +73,8 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
     private final JwtConfig builderConfig = null;
     private final Object initlock = new Object();
     ConcurrentServiceReferenceMap<String, JwtConfig> jwtServiceMapRef = new ConcurrentServiceReferenceMap<String, JwtConfig>(KEY_JWT_SERVICE);
-
     protected static final String KEY_UNIQUE_ID = "id";
     protected String uniqueId = null;
-
     private IssuerUtil issuerUtil;
     private boolean isDefaultBuilder = false;
 
@@ -306,7 +304,6 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
             result = (haveNull) ? 0 : ((Long) jwtServiceMapRef.getReference(jwtBuilderRef).getProperty(JwtUtils.CFG_KEY_VALID)).longValue();
         }
         return result;
-
     }
 
     /** {@inheritDoc} */
