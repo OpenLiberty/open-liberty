@@ -85,6 +85,7 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
     private final Map<String, String> servletNameToRunAsRole = new HashMap<String, String>();
     private boolean syncToOSThread = false;
     private boolean denyUncoveredHttpMethods = false;
+    private boolean suppressUncoveredHttpMethodsMessage = false;
 
     public SecurityServletConfiguratorHelper(ServletConfigurator configurator) {
         this.configurator = configurator;
@@ -103,10 +104,16 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
                           webApp.getSecurityRoles(),
                           webApp.getServletMappings(),
                           webApp.getEnvEntries(),
-                          webApp.isSetDenyUncoveredHttpMethods());
+                          webApp.isSetDenyUncoveredHttpMethods(),
+                          webApp.isSetSuppressDenyUncoveredHttpMethods());
         if (webApp.isSetDenyUncoveredHttpMethods()) {
             setDenyUncoveredHttpMethods(true);
         }
+
+        if (webApp.isSetSuppressDenyUncoveredHttpMethods()) {
+            setSuppressUncoveredHttpMethodsMessage(true);
+        }
+
         for (Servlet servlet : webApp.getServlets()) {
             processSecurityRoleRefs(servlet.getServletName(), servlet.getSecurityRoleRefs());
             processRunAs(servlet);
@@ -747,5 +754,17 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
     @Override
     public boolean isDenyUncoveredHttpMethods() {
         return denyUncoveredHttpMethods;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSuppressUncoveredHttpMethodsMessage(boolean suppressUncoveredHttpMethodsValue) {
+        suppressUncoveredHttpMethodsMessage = suppressUncoveredHttpMethodsValue;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isSuppressUncoveredHttpMethodsMessage() {
+        return suppressUncoveredHttpMethodsMessage;
     }
 }

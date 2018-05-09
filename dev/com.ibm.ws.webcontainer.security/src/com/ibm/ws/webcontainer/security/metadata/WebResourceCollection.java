@@ -18,6 +18,7 @@ import com.ibm.ws.webcontainer.security.metadata.CollectionMatch.MatchType;
 /**
  * Represents a web-resource-collection element in web.xml.
  * <p/>
+ *
  * <pre>
  * &lt;web-resource-collection&gt;
  * &lt;url-pattern&gt;url-pattern&lt;/url-pattern&gt;
@@ -33,11 +34,12 @@ public class WebResourceCollection {
     private final List<String> omissionMethods;
     private final boolean matchAllMethods;
     private final boolean denyUncoveredHttpMethods;
+    private final boolean suppressUncoveredHttpMethodsMessage;
 
     /**
      * Constructs a WebResourceCollection object. The user of this class guarantees that there are no null
      * urlPatterns or null methods. They are guaranteed to be empty lists if they do not contain any value.
-     * 
+     *
      * @param urlPatterns The URL patterns. Cannot be <code>null</code>.
      * @param methods The HTTP methods. Cannot be <code>null</code>.
      */
@@ -49,7 +51,7 @@ public class WebResourceCollection {
     /**
      * Constructs a WebResourceCollection object. The user of this class guarantees that there are no null
      * urlPatterns, null methods, or null omissionMethods. They are guaranteed to be empty lists if they do not contain any value.
-     * 
+     *
      * @param urlPatterns The URL patterns. Cannot be <code>null</code>.
      * @param methods The HTTP methods. Cannot be <code>null</code>.
      * @param omissionMethods The HTTP omission methods. Cannot be <code>null</code>.
@@ -61,10 +63,11 @@ public class WebResourceCollection {
     /**
      * Constructs a WebResourceCollection object. The user of this class guarantees that there are no null
      * urlPatterns, null methods, or null omissionMethods. They are guaranteed to be empty lists if they do not contain any value.
-     * 
+     *
      * @param urlPatterns The URL patterns. Cannot be <code>null</code>.
      * @param methods The HTTP methods. Cannot be <code>null</code>.
      * @param omissionMethods The HTTP omission methods. Cannot be <code>null</code>.
+     * @param denyUncoveredHttpMethods The HTTP methods that have been denied being accessed. Cannot be <code>null</code>
      */
     public WebResourceCollection(List<String> urlPatterns, List<String> methods, List<String> omissionMethods, boolean denyUncoveredHttpMethods) {
         this.urlPatterns = urlPatterns;
@@ -72,19 +75,41 @@ public class WebResourceCollection {
         this.omissionMethods = omissionMethods;
         this.matchAllMethods = methods.isEmpty() && omissionMethods.isEmpty();
         this.denyUncoveredHttpMethods = denyUncoveredHttpMethods;
+        this.suppressUncoveredHttpMethodsMessage = false;
+    }
+
+    /**
+     * Constructs a WebResourceCollection object. The user of this class guarantees that there are no null
+     * urlPatterns, null methods, or null omissionMethods. They are guaranteed to be empty lists if they do not contain any value.
+     *
+     * @param urlPatterns The URL patterns. Cannot be <code>null</code>.
+     * @param methods The HTTP methods. Cannot be <code>null</code>.
+     * @param omissionMethods The HTTP omission methods. Cannot be <code>null</code>.
+     * @param denyUncoveredHttpMethods The HTTP methods that have been denied being accessed. Cannot be <code>null</code>
+     * @param suppressUncoveredHtpMethodsMessage Suppress emitting a message indicating the HTTP methods that have been denied being accessed. Cannot be <code>null</code>
+     */
+    public WebResourceCollection(List<String> urlPatterns, List<String> methods, List<String> omissionMethods, boolean denyUncoveredHttpMethods,
+                                 boolean suppressUncoveredHttpMethodsMessage) {
+        this.urlPatterns = urlPatterns;
+        this.methods = methods;
+        this.omissionMethods = omissionMethods;
+        this.matchAllMethods = methods.isEmpty() && omissionMethods.isEmpty();
+        this.denyUncoveredHttpMethods = denyUncoveredHttpMethods;
+        this.suppressUncoveredHttpMethodsMessage = suppressUncoveredHttpMethodsMessage;
 
     }
 
     /**
      * Gets the match for the resource name.
+     *
      * <pre>
      * To perform a URL match,
      * 1. For each URL pattern determine if the resource matches it
      * 2. Construct the match object
-     * 
+     *
      * Exact match has first priority. The longest path match has second priority. The extension match has last priority.
      * </pre>
-     * 
+     *
      * @param uriName
      * @return
      */
@@ -110,7 +135,7 @@ public class WebResourceCollection {
      * Determines if the specified method is matched by this web resource collection.
      * A method is matched if all methods are allowed (empty HTTP methods and empty omission methods)
      * or if the method is listed in the HTTP methods, or not listed in the omission methods.
-     * 
+     *
      * @param method The HTTP method to match.
      * @return A boolean value of <code>true</code> if the method is matched by this web resource collection.
      */
@@ -160,10 +185,14 @@ public class WebResourceCollection {
         return denyUncoveredHttpMethods;
     }
 
+    public boolean getSuppressUncoveredHttpMethodsMessage() {
+        return suppressUncoveredHttpMethodsMessage;
+    }
+
     /**
      * Determines if the specified method is listed by this web resource collection.
      * A method is listed if it is one of the http-method entries or one of the http-method-omission entries.
-     * 
+     *
      * @param method The HTTP method.
      * @return A boolean value of <code>true</code> if the method is listed by this web resource collection.
      */

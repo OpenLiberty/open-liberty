@@ -86,6 +86,11 @@ public interface WebCommon extends DescriptionGroup, JNDIEnvironmentRefsGroup {
     JSPConfig getJSPConfig();
 
     /**
+     * @return true if &lt;deny_uncovered_http_methods> is specified
+     */
+    boolean isSetSuppressDenyUncoveredHttpMethodsMessage();
+
+    /**
      * @return &lt;deny_uncovered_http_methods, or null if unspecified
      */
     //DenyUncoveredHttpMethods getDenyUncoveredHttpMethods();

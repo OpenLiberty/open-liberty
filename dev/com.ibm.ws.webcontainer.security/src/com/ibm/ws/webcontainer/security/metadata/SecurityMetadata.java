@@ -39,17 +39,16 @@ public interface SecurityMetadata {
      * are checked.
      * <p>
      * If no matching name can be found, null is returned.
-     * 
+     *
      * @param requestUri the URI for the request
      * @param rolename the specified role name
      * @return The matched security role name, or {@code null}.
      */
     public String getSecurityRoleReferenced(String servletName, String roleName);
 
-
     /**
      * returns List of role-ref.
-     * 
+     *
      * @param requestUri the URI for the request
      * @return The list of matched security role-ref name, or {@code null}.
      */
@@ -57,21 +56,21 @@ public interface SecurityMetadata {
 
     /**
      * Gets the security constraint collection.
-     * 
+     *
      * @return The SecurityContraintCollection object. See {@link com.ibm.ws.webcontainer.security.internal.metadata.SecurityContraintCollection}
      */
     public SecurityConstraintCollection getSecurityConstraintCollection();
 
     /**
      * Sets the security constraint collection.
-     * 
+     *
      * @param constraintCollection the collection to set
      */
     public void setSecurityConstraintCollection(SecurityConstraintCollection constraintCollection);
 
     /**
      * Gets the login configuration.
-     * 
+     *
      * @return The LoginConfiguration object or <code>null</code> if not available.
      *         See {@link com.ibm.ws.webcontainer.security.metadata.LoginConfiguration}
      */
@@ -79,7 +78,7 @@ public interface SecurityMetadata {
 
     /**
      * Gets the runAs role for the given servlet
-     * 
+     *
      * @param servletName the name of the servlet to look up
      * @return the runAs role
      */
@@ -87,58 +86,72 @@ public interface SecurityMetadata {
 
     /**
      * Returns the mapping of servlet name to run-as role
-     * 
+     *
      * @return a mapping of servlet name to the runAs role
      */
     public Map<String, String> getRunAsMap();
 
     /**
      * Gets the list of roles declared in the metadata.
-     * 
+     *
      * @return list of declared roles
      */
     public List<String> getRoles();
 
     /**
      * Sets the list of roles declared in the metadata.
-     * 
+     *
      * @param roles list of roles to set
      */
     public void setRoles(List<String> roles);
 
     /**
      * Sets the login configuration in the metadata.
-     * 
+     *
      * @param loginConfiguration the login config to set
      */
     public void setLoginConfiguration(LoginConfiguration loginConfiguration);
 
     /**
      * Sets the mapping of url patterns to servlet names
-     * 
+     *
      * @param urlPatternToServletName the map to set
      */
     public void setUrlPatternToServletNameMap(Map<String, String> urlPatternToServletName);
 
     /**
      * Returns true if the application has requested SYNC-TO-OS-THREAD support.
-     * 
+     *
      * @return true if the application has requested SYNC-TO-OS-THREAD support; false otherwise.
      */
     public boolean isSyncToOSThreadRequested();
 
     /**
      * Sets the deny uncovered http method boolean value
-     * 
+     *
      * @ param denyUncoveredHttpMethods the boolean to set
      */
     public void setDenyUncoveredHttpMethods(boolean denyValue);
 
     /**
      * Returns true if the deny-uncovered-http-method element is specified in web.xml
-     * 
+     *
      * @return true if the deny-uncovered-http-method element is specified in web.xml; false otherwise.
      */
     public boolean isDenyUncoveredHttpMethods();
+
+    /**
+     * Sets suppressed the deny uncovered http method message
+     *
+     * @param suppressUncoveredHttpMethodsValue the boolean to set
+     */
+    void setSuppressUncoveredHttpMethodsMessage(boolean suppressUncoveredHttpMethodsValue);
+
+    /**
+     * Returns true if the suppressUncoveredHttpMethodWarning element is specified
+     *
+     * @return true if the suppressUncoveredHttpMethodWarning element is specified; false otherwise.
+     */
+    public boolean isSuppressUncoveredHttpMethodsMessage();
 
 }
