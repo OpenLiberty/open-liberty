@@ -609,21 +609,21 @@ public class JSF23GeneralTests {
         url = JSFUtils.createHttpUrl(jsf23Server, contextRoot, "faces/selectManyListboxSelectItems.jsp");
 
         try {
+            Log.info(c, name.getMethodName(), "Invoking JSP page");
             page = (HtmlPage) webClient.getPage(url);
         } catch (FailingHttpStatusCodeException e) {
-            // In the JSP case specifying the onSelect will result in a status code 500
-            // since the onSelect is removed from the myfaces_html.tld
-            pageXml = page.asXml();
+            String response = e.getResponse().getContentAsString();
+            int statusCode = e.getStatusCode();
 
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), pageXml);
+            Log.info(c, name.getMethodName(), "Caught FailingHttpStatusCodeException");
+            Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException response: " + response);
+            Log.info(c, name.getMethodName(), "FailingHttpStatusCodeException statusCode: " + statusCode);
 
             /*
              * com.ibm.ws.jsp.translator.JspTranslationException:
              * JSPG0123E: Unable to locate tag attribute info for tag attribute onselect.<br>
              */
-            assertTrue("The onselect attribute was rendered in a jsp.", !pageXml.contains("JSPG0123E"));
+            assertTrue("The JSP was rendered successfully and it should not have been.", response.contains("JSPG0123E") && statusCode == 500);
         }
 
         // Construct the URL for the test, in this case: faces/selectManyListboxSelectItems.jsp
