@@ -353,6 +353,26 @@ public class SessionCacheOneServerTest extends FATServletClient {
     }
 
     /**
+     * Test of IBMSessionExt.invalidateAll(true)
+     */
+    @Test
+    public void testInvalidateAll() throws Exception {
+        List<String> session = new ArrayList<>();
+        String sessionId = app.sessionPut("str&sync=true", "value1", session, true);
+
+        app.invokeServlet("testInvalidateAll", session);
+
+        app.invokeServlet("testSessionEmpty", session);
+
+        app.invokeServlet("testHttpSessionListener&listener=listener1" +
+                          "&sessionDestroyed=" + sessionId,
+                          null);
+        app.invokeServlet("testHttpSessionListener&listener=listener2" +
+                          "&sessionDestroyed=" + sessionId,
+                          null);
+    }
+
+    /**
      * Test that the last accessed time changes when accessed at different times.
      */
     @Test

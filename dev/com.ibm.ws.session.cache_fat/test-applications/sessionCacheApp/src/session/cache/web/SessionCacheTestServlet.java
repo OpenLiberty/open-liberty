@@ -24,6 +24,8 @@ import java.io.ObjectOutputStream;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -183,6 +185,17 @@ public class SessionCacheTestServlet extends FATServlet {
         if (expectNotDestroyed != null)
             for (String sessionId : expectNotDestroyed)
                 assertFalse(sessionId, destroyed.contains(sessionId));
+    }
+
+    /**
+     * Invoke IBMSessionExt.invalidateAll(true)
+     */
+    public void testInvalidateAll(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpSession session = request.getSession();
+        // IBMSessionExt is SPI, so access the public method via reflection,
+        AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> session.getClass()
+                        .getMethod("invalidateAll", boolean.class)
+                        .invoke(session, true));
     }
 
     /**

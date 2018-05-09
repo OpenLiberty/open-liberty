@@ -1192,6 +1192,45 @@ public class CacheHashMap extends BackedHashMap {
         }
     }
 
+    /*
+     * setMaxInactToZero - called to set the max inactive time to zero for remote invalidateAll.
+     * This will result in the session being invalidated by the next run of the background
+     * invalidator.
+     */
+    int setMaxInactToZero(String sessId, String appName) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        int rc = -1;
+        while (rc == -1) {
+            if (trace && tc.isDebugEnabled())
+                tcInvoke(tcSessionMetaCache, "get", sessId);
+
+            ArrayList<?> oldValue = sessionMetaCache.get(sessId);
+
+            if (trace && tc.isDebugEnabled())
+                tcReturn(tcSessionMetaCache, "get", oldValue);
+
+            SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
+            if (sessionInfo == null || sessionInfo.getMaxInactiveTime() == 0) {
+                rc = 0;
+            } else {
+                sessionInfo.setMaxInactiveTime(0);
+                ArrayList<Object> newValue = sessionInfo.getArrayList();
+
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "replace", sessId, oldValue, newValue);
+
+                if (sessionMetaCache.replace(sessId, oldValue, newValue))
+                    rc = 1;
+
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionMetaCache, "replace", rc == 1);
+            }
+        }
+
+        return rc;
+    }
+
     /**
      * Generates a trace string of the form,
      * ==> Instance12345678.methName arg0, arg1, byte[22]: DeserializedFormOfArg2Bytes
