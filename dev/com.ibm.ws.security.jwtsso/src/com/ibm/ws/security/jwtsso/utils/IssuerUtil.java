@@ -29,8 +29,7 @@ public class IssuerUtil {
 			} catch (Exception e) {
 
 			}
-		}
-		if (httpendpointInfoMBean != null) {
+		} else if (httpendpointInfoMBean != null) {
 			try {
 				String host = resolveHost((String) httpendpointInfoMBean.getAttribute("Host"), serverInfoMBean);
 				int port = (Integer) httpendpointInfoMBean.getAttribute("Port");
