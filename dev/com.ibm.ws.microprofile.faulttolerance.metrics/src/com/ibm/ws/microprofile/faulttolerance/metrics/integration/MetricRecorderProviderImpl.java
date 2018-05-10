@@ -40,8 +40,18 @@ public class MetricRecorderProviderImpl implements MetricRecorderProvider {
 
     private final static SecureAction secureAction = AccessController.doPrivileged(SecureAction.get());
 
+    /**
+     * This lock must be held before reading or writing from the {@link #metricsEnabledCache}
+     */
+    private final ReentrantReadWriteLock metricsEnabledCacheLock = new ReentrantReadWriteLock();
+
+    /**
+     * Map from Classloader to whether metrics are disabled for that classloader
+     * <p>
+     * Must hold {@link #metricsEnabledCacheLock} before reading or writing
+     */
     private final Map<ClassLoader, Boolean> metricsEnabledCache = new WeakHashMap<>();
-    private final ReentrantReadWriteLock metricsLock = new ReentrantReadWriteLock();
+
     private final static String CONFIG_METRICS_ENABLED = "MP_Fault_Tolerance_Metrics_Enabled";
 
     @Reference
@@ -82,25 +92,30 @@ public class MetricRecorderProviderImpl implements MetricRecorderProvider {
 
         ClassLoader cl = secureAction.getClassLoader(clazz);
         Boolean metricsEnabled = null;
-        metricsLock.readLock().lock();
+        // Get the read lock before checking the cache
+        metricsEnabledCacheLock.readLock().lock();
         try {
             metricsEnabled = metricsEnabledCache.get(cl);
             if (metricsEnabled == null) {
-                metricsLock.readLock().unlock();
-                metricsLock.writeLock().lock();
+                // Classloader is not in the cache, let's add it
+                // must release the read lock before acquiring the write lock (upgrading while holding the lock is not allowed)
+                metricsEnabledCacheLock.readLock().unlock();
+                metricsEnabledCacheLock.writeLock().lock();
                 try {
+                    // Now we have the write lock, recheck whether the classloader is in the cache
                     metricsEnabled = metricsEnabledCache.get(cl);
                     if (metricsEnabled == null) {
                         Config mpConfig = ConfigProvider.getConfig(cl);
                         metricsEnabled = mpConfig.getOptionalValue(CONFIG_METRICS_ENABLED, Boolean.class).orElse(Boolean.TRUE);
                     }
-                    metricsLock.readLock().lock();
+                    // Downgrade to the read lock (this is allowed)
+                    metricsEnabledCacheLock.readLock().lock();
                 } finally {
-                    metricsLock.writeLock().unlock();
+                    metricsEnabledCacheLock.writeLock().unlock();
                 }
             }
         } finally {
-            metricsLock.readLock().unlock();
+            metricsEnabledCacheLock.readLock().unlock();
         }
 
         return metricsEnabled;

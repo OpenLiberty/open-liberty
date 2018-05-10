@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.impl.async.QueuedFuture;
+import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
@@ -26,6 +27,22 @@ import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 import net.jodah.failsafe.CircuitBreakerOpenException;
 
+/**
+ * Holds the data relating to a single execution of a FaultTolerance annotated method.
+ * <p>
+ * This class includes lots of lifecycle callback methods which are called from the Executor or from Failsafe:
+ * <ul>
+ * <li>{@link #start()} called right at the start before we do any processing</li>
+ * <li>{@link #end()} called right after the user's method returns, before we do any processing on the returned value or exception</li>
+ * <li>{@link #onRetry(Throwable)} called when we've determined that a method is going to be retried</li>
+ * <li>{@link #onMainExecutionComplete(Throwable)} called when all processing apart from fallback is complete</li>
+ * <li>{@link #onFullExecutionComplete(Throwable)} called when all processing including fallback is complete</li>
+ * <li>{@link #onQueued()} called when the execution task is added to the queue of an async bulkhead</li>
+ * <li>{@link #onUnqueued()} called when the execution task is removed from the queue of an async bulkhead</li>
+ * </ul>
+ * <p>
+ * Contrast this class with subclasses of {@link Executor} which hold data relating to an annotated method which is valid for all executions of that method.
+ */
 public class ExecutionContextImpl implements FTExecutionContext {
 
     private static final TraceComponent tc = Tr.register(ExecutionContextImpl.class);
@@ -40,8 +57,20 @@ public class ExecutionContextImpl implements FTExecutionContext {
     private final MetricRecorder metricRecorder;
 
     private volatile int retries = 0;
+
+    /**
+     * The time that we started fault tolerance processing for this execution
+     */
     private volatile long startTime;
+
+    /**
+     * The time that we started the current retry attempt
+     */
     private volatile long attemptStartTime;
+
+    /**
+     * The time that the execution task was added to the bulkhead queue
+     */
     private volatile long queueStartTime;
 
     private final String id;
@@ -135,6 +164,11 @@ public class ExecutionContextImpl implements FTExecutionContext {
         return remaining;
     }
 
+    /**
+     * Called when we have determined that this execution is going to be retried
+     *
+     * @param t the Throwable that prompted the retry
+     */
     public void onRetry(Throwable t) {
         try {
             this.retries++;

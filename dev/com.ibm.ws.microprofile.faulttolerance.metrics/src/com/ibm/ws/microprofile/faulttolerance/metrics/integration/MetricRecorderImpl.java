@@ -74,8 +74,15 @@ public class MetricRecorderImpl implements MetricRecorder {
     private long openNanos;
     private long halfOpenNanos;
     private long closedNanos;
-    private int state = 0;
-    private long lastTransitionTime;
+
+    private enum CircuitBreakerState {
+        CLOSED,
+        HALF_OPEN,
+        OPEN
+    };
+
+    private CircuitBreakerState circuitBreakerState = CircuitBreakerState.CLOSED;
+    private long lastCircuitBreakerTransitionTime;
 
     public MetricRecorderImpl(String metricPrefix, MetricRegistry registry, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
                               BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
@@ -154,7 +161,7 @@ public class MetricRecorderImpl implements MetricRecorder {
             fallbackCalls = null;
         }
 
-        lastTransitionTime = System.nanoTime();
+        lastCircuitBreakerTransitionTime = System.nanoTime();
     }
 
     @FFDCIgnore(IllegalArgumentException.class)
@@ -297,9 +304,9 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Trivial
     @Override
     public synchronized void reportCircuitOpen() {
-        if (state != 2) {
-            recordEndOfState(state);
-            state = 2;
+        if (circuitBreakerState != CircuitBreakerState.OPEN) {
+            recordEndOfCircuitBreakerState(circuitBreakerState);
+            circuitBreakerState = CircuitBreakerState.OPEN;
             circuitBreakerTimesOpenedCounter.inc();
         }
     }
@@ -308,40 +315,38 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Trivial
     @Override
     public synchronized void reportCircuitHalfOpen() {
-        if (state != 1) {
-            recordEndOfState(state);
-            state = 1;
+        if (circuitBreakerState != CircuitBreakerState.HALF_OPEN) {
+            recordEndOfCircuitBreakerState(circuitBreakerState);
+            circuitBreakerState = CircuitBreakerState.HALF_OPEN;
         }
     }
 
     @Trivial
     @Override
     public synchronized void reportCircuitClosed() {
-        if (state != 0) {
-            recordEndOfState(state);
-            state = 0;
+        if (circuitBreakerState != CircuitBreakerState.CLOSED) {
+            recordEndOfCircuitBreakerState(circuitBreakerState);
+            circuitBreakerState = CircuitBreakerState.CLOSED;
         }
     }
 
     @Trivial
-    private void recordEndOfState(int oldState) {
+    private void recordEndOfCircuitBreakerState(CircuitBreakerState oldState) {
         long now = System.nanoTime();
 
         switch (oldState) {
-            case 0:
-                closedNanos += (now - lastTransitionTime);
+            case CLOSED:
+                closedNanos += (now - lastCircuitBreakerTransitionTime);
                 break;
-            case 1:
-                halfOpenNanos += (now - lastTransitionTime);
+            case HALF_OPEN:
+                halfOpenNanos += (now - lastCircuitBreakerTransitionTime);
                 break;
-            case 2:
-                openNanos += (now - lastTransitionTime);
+            case OPEN:
+                openNanos += (now - lastCircuitBreakerTransitionTime);
                 break;
-            default:
-                throw new IllegalStateException("Invalid state: " + state);
         }
 
-        lastTransitionTime = now;
+        lastCircuitBreakerTransitionTime = now;
     }
 
     @Trivial
@@ -355,8 +360,8 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Trivial
     private synchronized long getCircuitBreakerAccumulatedOpen() {
         long computedNanos = openNanos;
-        if (state == 2) {
-            computedNanos += System.nanoTime() - lastTransitionTime;
+        if (circuitBreakerState == CircuitBreakerState.OPEN) {
+            computedNanos += System.nanoTime() - lastCircuitBreakerTransitionTime;
         }
         return computedNanos;
     }
@@ -364,8 +369,8 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Trivial
     private synchronized long getCircuitBreakerAccumulatedHalfOpen() {
         long computedNanos = halfOpenNanos;
-        if (state == 1) {
-            computedNanos += System.nanoTime() - lastTransitionTime;
+        if (circuitBreakerState == CircuitBreakerState.HALF_OPEN) {
+            computedNanos += System.nanoTime() - lastCircuitBreakerTransitionTime;
         }
         return computedNanos;
     }
@@ -373,8 +378,8 @@ public class MetricRecorderImpl implements MetricRecorder {
     @Trivial
     private synchronized long getCircuitBreakerAccumulatedClosed() {
         long computedNanos = closedNanos;
-        if (state == 0) {
-            computedNanos += System.nanoTime() - lastTransitionTime;
+        if (circuitBreakerState == CircuitBreakerState.CLOSED) {
+            computedNanos += System.nanoTime() - lastCircuitBreakerTransitionTime;
         }
         return computedNanos;
     }

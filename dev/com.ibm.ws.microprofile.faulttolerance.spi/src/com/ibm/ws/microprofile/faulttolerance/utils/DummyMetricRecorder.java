@@ -21,7 +21,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
  * For use when metrics is not enabled.
  */
 @Trivial
-public class DummyMetricRecorder implements MetricRecorder {
+public final class DummyMetricRecorder implements MetricRecorder {
 
     private static final DummyMetricRecorder instance = new DummyMetricRecorder();
 
