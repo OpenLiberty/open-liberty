@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -37,6 +38,7 @@ import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.HttpRequest;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  *
@@ -59,6 +61,19 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getRequestURI();
                 will(returnValue("/UnitTest/testAPI_method"));
@@ -74,9 +89,9 @@ public class HttpPushBuilderTest {
 
         Set<String> headerNames = pb.getHeaderNames();
 
-        // Should only contain the Referer header since that is created during
+        // Should only contain the Referer and Authorization header since that is created during
         // PushBuilder initialization.
-        assertTrue(headerNames.size() == 1);
+        assertTrue(headerNames.size() == 2);
 
         boolean caughtNullPointerException = false;
         try {
@@ -109,6 +124,19 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getRequestURI();
                 will(returnValue("/UnitTest/testAPI_queryString"));
@@ -132,6 +160,19 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getRequestURI();
                 will(returnValue("/UnitTest/testAPI_sessionId"));
@@ -147,6 +188,19 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getRequestURI();
                 will(returnValue("/UnitTest/testAPI_sessionId"));
@@ -172,6 +226,19 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getRequestURI();
                 will(returnValue("/UnitTest/testAPI_path"));
@@ -242,6 +309,19 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getRequestURI();
                 will(returnValue("/UnitTest/testAPI_Push_Error_Condition"));
@@ -328,6 +408,19 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getRequestURI();
                 will(returnValue("/UnitTest/testAPI_Headers"));
@@ -415,6 +508,19 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getRequestURI();
                 will(returnValue("/UnitTest/testAPI_pushBuilderCookies"));
@@ -484,6 +590,19 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getRequestURI();
                 will(returnValue("/UnitTest/testAPI_conditionalHeadersAfterPush"));
