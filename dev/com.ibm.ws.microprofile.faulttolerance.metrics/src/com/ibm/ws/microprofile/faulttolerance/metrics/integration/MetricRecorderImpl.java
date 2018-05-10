@@ -20,6 +20,7 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
@@ -68,6 +69,8 @@ public class MetricRecorderImpl implements MetricRecorder {
 
     private final Counter fallbackCalls;
 
+    private LongSupplier concurrentExecutionCountSupplier = null;
+    private LongSupplier queuePopulationSupplier = null;
     private long openNanos;
     private long halfOpenNanos;
     private long closedNanos;
@@ -166,6 +169,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementInvocationCount() {
         if (invocationCounter != null) {
@@ -174,6 +178,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementInvocationFailedCount() {
         if (invocationFailedCounter != null) {
@@ -182,6 +187,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementRetryCallsSuccessImmediateCount() {
         if (retryCallsSuccessImmediateCounter != null) {
@@ -190,6 +196,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementRetryCallsSuccessRetriesCount() {
         if (retryCallsSuccessRetryCounter != null) {
@@ -198,6 +205,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementRetryCallsFailureCount() {
         if (retryCallsFailureCounter != null) {
@@ -206,6 +214,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementRetriesCount() {
         if (retryRetriesCounter != null) {
@@ -214,6 +223,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void recordTimeoutExecutionTime(long executionNanos) {
         if (timeoutDurationHistogram != null) {
@@ -222,6 +232,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementTimeoutTrueCount() {
         if (timeoutTrueCalls != null) {
@@ -230,6 +241,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementTimeoutFalseCount() {
         if (timeoutFalseCalls != null) {
@@ -238,6 +250,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementCircuitBreakerCallsCircuitOpenCount() {
         if (circuitBreakerCallsOpenCounter != null) {
@@ -246,6 +259,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementCircuitBreakerCallsSuccessCount() {
         if (circuitBreakerCallsSuccessCounter != null) {
@@ -254,6 +268,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementCircuitBreakerCallsFailureCount() {
         if (circuitBreakerCallsFailureCounter != null) {
@@ -262,6 +277,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementBulkheadRejectedCount() {
         if (bulkheadRejectionsCounter != null) {
@@ -270,6 +286,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementBulkeadAcceptedCount() {
         if (bulkheadAcceptedCounter != null) {
@@ -277,6 +294,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
     }
 
+    @Trivial
     @Override
     public synchronized void reportCircuitOpen() {
         if (state != 2) {
@@ -287,6 +305,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public synchronized void reportCircuitHalfOpen() {
         if (state != 1) {
@@ -295,6 +314,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
     }
 
+    @Trivial
     @Override
     public synchronized void reportCircuitClosed() {
         if (state != 0) {
@@ -303,6 +323,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
     }
 
+    @Trivial
     private void recordEndOfState(int oldState) {
         long now = System.nanoTime();
 
@@ -323,6 +344,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         lastTransitionTime = now;
     }
 
+    @Trivial
     @Override
     public void reportQueueWaitTime(long queueWaitNanos) {
         if (bulkheadQueueWaitTimeHistogram != null) {
@@ -330,6 +352,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
     }
 
+    @Trivial
     private synchronized long getCircuitBreakerAccumulatedOpen() {
         long computedNanos = openNanos;
         if (state == 2) {
@@ -338,6 +361,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         return computedNanos;
     }
 
+    @Trivial
     private synchronized long getCircuitBreakerAccumulatedHalfOpen() {
         long computedNanos = halfOpenNanos;
         if (state == 1) {
@@ -346,6 +370,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         return computedNanos;
     }
 
+    @Trivial
     private synchronized long getCircuitBreakerAccumulatedClosed() {
         long computedNanos = closedNanos;
         if (state == 0) {
@@ -354,8 +379,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         return computedNanos;
     }
 
-    private LongSupplier concurrentExecutionCountSupplier = null;
-
+    @Trivial
     private Long getConcurrentExecutions() {
         if (concurrentExecutionCountSupplier != null) {
             return concurrentExecutionCountSupplier.getAsLong();
@@ -365,13 +389,13 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void setBulkheadConcurentExecutionCountSupplier(LongSupplier concurrentExecutionCountSupplier) {
         this.concurrentExecutionCountSupplier = concurrentExecutionCountSupplier;
     }
 
-    private LongSupplier queuePopulationSupplier = null;
-
+    @Trivial
     private Long getQueuePopulation() {
         if (queuePopulationSupplier != null) {
             return queuePopulationSupplier.getAsLong();
@@ -381,12 +405,14 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void setBulkheadQueuePopulationSupplier(LongSupplier queuePopulationSupplier) {
         this.queuePopulationSupplier = queuePopulationSupplier;
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void recordBulkheadExecutionTime(long executionTime) {
         if (bulkheadExecutionDuration != null) {
@@ -395,6 +421,7 @@ public class MetricRecorderImpl implements MetricRecorder {
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void incrementFallbackCalls() {
         fallbackCalls.inc();
