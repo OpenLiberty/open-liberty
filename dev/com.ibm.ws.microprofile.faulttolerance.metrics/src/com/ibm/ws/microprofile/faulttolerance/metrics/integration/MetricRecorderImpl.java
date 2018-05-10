@@ -20,6 +20,7 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
@@ -110,9 +111,9 @@ public class MetricRecorderImpl implements MetricRecorder {
             circuitBreakerCallsFailureCounter = registry.counter(metricPrefix + ".circuitbreaker.callsFailed.total");
             circuitBreakerCallsSuccessCounter = registry.counter(metricPrefix + ".circuitbreaker.callsSucceeded.total");
             circuitBreakerCallsOpenCounter = registry.counter(metricPrefix + ".circuitbreaker.callsPrevented.total");
-            circuitBreakerOpenTime = registry.<Gauge<Long>> register(metricPrefix + ".circuitbreaker.open.total", this::getCircuitBreakerAccumulatedOpen);
-            circuitBreakerHalfOpenTime = registry.<Gauge<Long>> register(metricPrefix + ".circuitbreaker.halfOpen.total", this::getCircuitBreakerAccumulatedHalfOpen);
-            circuitBreakerClosedTime = registry.<Gauge<Long>> register(metricPrefix + ".circuitbreaker.closed.total", this::getCircuitBreakerAccumulatedClosed);
+            circuitBreakerOpenTime = gauge(registry, metricPrefix + ".circuitbreaker.open.total", MetricUnits.NANOSECONDS, this::getCircuitBreakerAccumulatedOpen);
+            circuitBreakerHalfOpenTime = gauge(registry, metricPrefix + ".circuitbreaker.halfOpen.total", MetricUnits.NANOSECONDS, this::getCircuitBreakerAccumulatedHalfOpen);
+            circuitBreakerClosedTime = gauge(registry, metricPrefix + ".circuitbreaker.closed.total", MetricUnits.NANOSECONDS, this::getCircuitBreakerAccumulatedClosed);
             circuitBreakerTimesOpenedCounter = registry.counter(metricPrefix + ".circuitbreaker.opened.total");
         } else {
             circuitBreakerCallsFailureCounter = null;
@@ -125,7 +126,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
 
         if (bulkheadPolicy != null) {
-            bulkheadConcurrentExecutions = registry.<Gauge<Long>> register(metricPrefix + ".bulkhead.concurrentExecutions", this::getConcurrentExecutions);
+            bulkheadConcurrentExecutions = gauge(registry, metricPrefix + ".bulkhead.concurrentExecutions", MetricUnits.NONE, this::getConcurrentExecutions);
             bulkheadRejectionsCounter = registry.counter(metricPrefix + ".bulkhead.callsRejected.total");
             bulkheadAcceptedCounter = registry.counter(metricPrefix + ".bulkhead.callsAccepted.total");
             bulkheadExecutionDuration = registry.histogram(new Metadata(metricPrefix + ".bulkhead.executionDuration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS));
@@ -137,7 +138,7 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
 
         if (bulkheadPolicy != null && isAsync == AsyncType.ASYNC) {
-            bulkheadQueuePopulation = registry.<Gauge<Long>> register(metricPrefix + ".bulkhead.waitingQueue.population", this::getQueuePopulation);
+            bulkheadQueuePopulation = gauge(registry, metricPrefix + ".bulkhead.waitingQueue.population", MetricUnits.NONE, this::getQueuePopulation);
             bulkheadQueueWaitTimeHistogram = registry.histogram(metricPrefix + ".bulkhead.waiting.duration");
         } else {
             bulkheadQueuePopulation = null;
@@ -151,6 +152,17 @@ public class MetricRecorderImpl implements MetricRecorder {
         }
 
         lastTransitionTime = System.nanoTime();
+    }
+
+    @FFDCIgnore(IllegalArgumentException.class)
+    private Gauge<Long> gauge(MetricRegistry registry, String name, String units, Gauge<Long> supplier) {
+        Gauge<Long> result = null;
+        try {
+            result = registry.register(new Metadata(name, MetricType.GAUGE, units), supplier);
+        } catch (IllegalArgumentException ex) {
+            // Thrown if metric already exists
+        }
+        return result;
     }
 
     /** {@inheritDoc} */
