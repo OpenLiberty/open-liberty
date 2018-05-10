@@ -59,7 +59,7 @@ thin.optional-key.targetthinapp=\ \ \ \ --targetThinAppPath=file
 #Note to translator the word ".spring" should not be translated
 thin.optional-desc.targetthinapp=\tV\u00eda de acceso utilizada para guardar el archivo de la aplicaci\u00f3n ligera.\n\
 \tSi no se especifica esta opci\u00f3n, se crear\u00e1 un archivo nuevo con la extensi\u00f3n .spring\n\
-\ten el directorio padre de la aplicaci\u00f3n de origen.
+\ten el directorio padre de la aplicaci\u00f3n de origen. 
 
 thin.optional-key.targetlibcache=\ \ \ \ --targetLibCachePath=directory
 #Note to translator the word "lib.index.cache" should not be translated
