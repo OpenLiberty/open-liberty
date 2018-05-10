@@ -88,7 +88,6 @@
 	 	com.ibm.ws.javaee.dd.appext.ApplicationExt,
 	 	com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd,
 	 	com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd,
-	 	suppressUncoveredHttpMethodWarning, 
 	 	com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd, 
 	 	com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd, 
 	 	com.ibm.ws.javaee.dd.ejbext.EJBJarExt,

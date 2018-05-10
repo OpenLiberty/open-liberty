@@ -10,7 +10,6 @@
 		id="com.ibm.ws.app.manager.ejbappcfg" ibm:alias="ejbApplication"
 		ibm:extends="com.ibm.ws.app.manager"
 		ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter, 
-							suppressUncoveredHttpMethodWarning, 
 							com.ibm.ws.javaee.dd.webbnd.WebBnd,
 							com.ibm.ws.javaee.dd.webext.WebExt,
 							com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd,

@@ -31,8 +31,7 @@
         <AD id="context-root" name="%appmgr.contextRoot.name" description="%appmgr.contextRoot.desc" type="String" required="false"/>
         <AD id="autoStart" name="%appmgr.autoStart.name" description="%appmgr.autoStart.desc" type="Boolean" required="false" default="true"/>
         <AD id="useJandex" ibm:beta="true" name="%appmgr.useJandex.name" description="%appmgr.useJandex.desc" type="Boolean" required="false"/>
-        <AD id="suppressUncoveredHttpMethodWarning" name="%appmgr.suppressUncoveredHttpMethodWarning.name" description="%appmgr.suppressUncoveredHttpMethodWarning.desc" type="Boolean" required="false" default="false"/>     
-    </OCD>
+   </OCD>
     <Designate factoryPid="com.ibm.ws.app.manager">
         <Object ocdref="com.ibm.ws.app.manager"/>
     </Designate>
