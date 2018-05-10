@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.faulttolerance.utils;
 
 import java.util.function.LongSupplier;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 
 /**
@@ -19,6 +20,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
  * <p>
  * For use when metrics is not enabled.
  */
+@Trivial
 public class DummyMetricRecorder implements MetricRecorder {
 
     private static final DummyMetricRecorder instance = new DummyMetricRecorder();
