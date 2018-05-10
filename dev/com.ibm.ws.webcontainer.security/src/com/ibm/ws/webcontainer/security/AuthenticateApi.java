@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import  javax.servlet.http.Cookie;
+import org.apache.http.cookie.Cookie;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -141,19 +141,21 @@ public class AuthenticateApi {
 
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_01, req, authResult, Integer.valueOf(reply.getStatusCode()));
             System.err.println(authResult.getReason());
-            
+
             String extraInfoText = "";
             if (authResult.passwordExpired == true) {
+                System.err.println("Joe: The password is expired");
                 extraInfoText = extraInfoText + " [PWEXPIRED]";
             }
             if (authResult.userRevoked == true) {
+                System.err.println("Joe: The user is revoked");
                 extraInfoText = extraInfoText + "[IDREVOKED]";
             }
-            
-            System.out.println("Auth Result" + authResult.password);
+
+            System.out.println("Auth Result" + authResult.passwordExpired);
             System.out.println("Auth Result" + authResult.userRevoked);
-            
-            throw new ServletException(authResult.getReason() + "joe " + extraInfoText);
+
+            throw new ServletException(authResult.getReason() + extraInfoText);
         } else {
 
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_01, req, authResult, Integer.valueOf(HttpServletResponse.SC_OK));
