@@ -97,6 +97,8 @@ import com.ibm.ws.javaee.ddmodel.jsp.JSPConfigType;
  type="javaee:jsp-configType"/>
  <xsd:element name="deny-uncovered-http-methods"
  type="javaee:emptyType"/>
+ <xsd:element name="suppressUncoveredHttpMethodWarning"
+ type="javaee:emptyType"/>
  <xsd:element name="security-constraint"
  type="javaee:security-constraintType"/>
  <xsd:element name="login-config"
@@ -283,6 +285,14 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
     }
 
     @Override
+    //public DenyUncoveredHttpMethods getDenyUncoveredHttpMethods() {
+    //    return deny_uncovered_http_methods;
+    //}
+    public boolean isSetSuppressDenyUncoveredHttpMethodsMessage() {
+        return suppressUncoveredHttpMethodWarning != null;
+    }
+
+    @Override
     public List<SecurityRole> getSecurityRoles() {
         if (security_role != null) {
             return security_role.getList();
@@ -339,6 +349,7 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
     SecurityConstraintType.ListType security_constraint;
     //DenyUncoveredHttpMethodsType deny_uncovered_http_methods;
     EmptyType deny_uncovered_http_methods;
+    EmptyType suppressUncoveredHttpMethodWarning;
     LoginConfigType login_config;
     SecurityRoleType.ListType security_role;
     // JNDIEnvironmentRefsGroup fields appear here in sequence
@@ -703,6 +714,7 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
         diag.describeIfSet("error-page", error_page);
         diag.describeIfSet("jsp-config", jsp_config);
         diag.describeIfSet("deny-uncovered-http-methods", deny_uncovered_http_methods);
+        diag.describeIfSet("suppressUncoveredHttpMethodWarning", suppressUncoveredHttpMethodWarning);
         diag.describeIfSet("security-constraint", security_constraint);
         diag.describeIfSet("login-config", login_config);
         diag.describeIfSet("security-role", security_role);
