@@ -24,3 +24,5 @@ Subsystem-Name: Application Security 3.0
  com.ibm.ws.security.jaspic.1.1
 kind=ga
 edition=core
+-jars=com.ibm.websphere.appserver.spi.jaspic; location:=dev/spi/ibm/
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jaspic_1.1-javadoc.zip
