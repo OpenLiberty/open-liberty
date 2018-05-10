@@ -232,6 +232,9 @@ public class ExecutionContextImpl implements FTExecutionContext {
         }
     }
 
+    /**
+     * Called just before the fallback method or handler is run
+     */
     public void onFallback() {
         metricRecorder.incrementFallbackCalls();
     }

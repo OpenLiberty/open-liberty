@@ -123,6 +123,8 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
 
     /**
      * Run after execution is complete (including all fault tolerance processing)
+     * <p>
+     * Subclasses can override this if they require different end of execution behaviour
      *
      * @param executionContext the execution context
      * @param t the exception thrown, or {@code null} if no exception was thrown
@@ -131,6 +133,16 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
         executionContext.onFullExecutionComplete(t);
     }
 
+    /**
+     * Configure the failsafe executor
+     * <p>
+     * Configure any parameters and add any required callbacks.
+     * <p>
+     * Subclasses can override this if they require different behaviour
+     *
+     * @param failsafe the failsafe executor to configure
+     * @param executionContextImpl the execution context
+     */
     protected void configureFailsafe(SyncFailsafe<R> failsafe, ExecutionContextImpl executionContextImpl) {
         failsafe.onRetry((t) -> {
             executionContextImpl.onRetry(t);
