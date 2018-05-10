@@ -34,6 +34,7 @@ import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 import com.ibm.ws.webcontainer40.srt.http.HttpPushBuilder;
 import com.ibm.ws.webcontainer40.srt.http.HttpServletMappingImpl;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+import com.ibm.wsspi.http.ee8.Http2Request;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer40.WCCustomProperties40;
@@ -218,7 +219,7 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
         }
 
         IRequest40 iRequest = (IRequest40) getIRequest();
-        if (!iRequest.getHttpRequest().isPushSupported()) {
+        if (!((Http2Request) iRequest.getHttpRequest()).isPushSupported()) {
             if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
                 logger.logp(Level.FINE, CLASS_NAME, methodName, "push not supported");
             }

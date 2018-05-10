@@ -32,6 +32,7 @@ import com.ibm.websphere.servlet40.IRequest40;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
 import com.ibm.wsspi.http.HttpRequest;
+import com.ibm.wsspi.http.ee8.Http2Request;
 
 /**
  *
@@ -89,7 +90,7 @@ public class SRTServletRequest40Test {
                 oneOf(IReq40).getHttpRequest();
                 will(returnValue(hReq));
 
-                oneOf(hReq).isPushSupported();
+                ((Http2Request) oneOf(hReq)).isPushSupported();
                 will(returnValue(true));
 
                 oneOf(srtCC).getResponse();

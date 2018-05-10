@@ -37,6 +37,7 @@ import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.HttpRequest;
+import com.ibm.wsspi.http.ee8.Http2Request;
 
 /**
  *
@@ -161,7 +162,7 @@ public class HttpPushBuilderTest {
                 oneOf(IReq40).getHttpRequest();
                 will(returnValue(hReq));
 
-                oneOf(hReq).pushNewRequest(pb);
+                ((Http2Request) oneOf(hReq)).pushNewRequest(pb);
             }
         });
 
@@ -211,7 +212,7 @@ public class HttpPushBuilderTest {
                 oneOf(IReq40).getHttpRequest();
                 will(returnValue(hReq));
 
-                oneOf(hReq).pushNewRequest(pb);
+                ((Http2Request) oneOf(hReq)).pushNewRequest(pb);
             }
         });
 
@@ -415,7 +416,7 @@ public class HttpPushBuilderTest {
                 oneOf(IReq40).getHttpRequest();
                 will(returnValue(hReq));
 
-                allowing(hReq).pushNewRequest(pb);
+                ((Http2Request) allowing(hReq)).pushNewRequest(pb);
 
                 ignoring(srtReq).getQueryString();
             }

@@ -12,8 +12,6 @@ package com.ibm.wsspi.http;
 
 import java.util.List;
 
-import com.ibm.wsspi.http.ee8.Http2PushBuilder;
-
 /**
  * Representation of an HTTP request message provided by the dispatcher to any
  * HTTP container.
@@ -148,18 +146,6 @@ public interface HttpRequest {
      * @return HttpInputStream
      */
     HttpInputStream getBody();
-
-    /*
-     * Are push request supported? is push reques
-     */
-    boolean isPushSupported();
-
-    /**
-     * Initiate a Push request
-     *
-     * @return
-     */
-    void pushNewRequest(Http2PushBuilder pushBuilder);
 
     /*
      * Access the list of names for all trailer headers in the request

@@ -30,6 +30,7 @@ import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+import com.ibm.wsspi.http.ee8.Http2Request;
 
 public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http2PushBuilder {
 
@@ -250,7 +251,7 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         }
 
         IRequest40 request = (IRequest40) _inboundRequest.getIRequest();
-        request.getHttpRequest().pushNewRequest(this);
+        ((Http2Request) request.getHttpRequest()).pushNewRequest(this);
         reset();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
