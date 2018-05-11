@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.security;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.cxf.common.util.PropertyUtils;
@@ -25,7 +28,6 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.client.JAXRSClientConstants;
-import com.ibm.ws.jaxrs20.client.component.JaxRsAppSecurity;
 
 /**
  *
@@ -62,10 +64,11 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
             sslRef = (String) sslRefObj;
         }
 
-        //Allow a null sslRef to be used,  Liberty will resolve it to the default // getSSLSocketFactory will return null if either the ssl feature is not enabled
+        //Allow a null sslRef to be used,  Liberty will resolve it to the default
+        // getSocketFactory will return null if either the ssl feature is not enabled
         // or if it is enabled but there is no SSL configuration defined.  A null here
         // means to use the JDK's SSL implementation.
-        if (isSecured && JaxRsAppSecurity.getSSLSocketFactory(sslRef, null) != null) {
+        if (isSecured && getSocketFactory(sslRef) != null) {
             Object disableCNCheckObj = message.get(JAXRSClientConstants.DISABLE_CN_CHECK);
             Conduit cd = message.getExchange().getConduit(message);
             configClientSSL(cd, sslRef, PropertyUtils.isTrue(disableCNCheckObj));
@@ -104,7 +107,7 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
                 Tr.debug(tc, "Get Liberty default SSLSocketFactory.");
             }
         }
-        sslSocketFactory = JaxRsAppSecurity.getSSLSocketFactory(sslRef, null);
+        sslSocketFactory = getSocketFactory(sslRef);
 
         if (null != sslSocketFactory) {
             if (null == tlsClientParams) {
@@ -124,4 +127,25 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
         this.secConfig = secConfig;
     }
 
+    private SSLSocketFactory getSocketFactory(String sslRef) {
+        try {
+            Class<?> jaxrsSslMgrClass = Class.forName("com.ibm.ws.jaxrs20.appsecurity.security.JaxRsSSLManager");
+            if (jaxrsSslMgrClass == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getSocketFactory could not find JaxRsSSLManager class");
+                }
+                return null;
+            }
+            Object classObject = jaxrsSslMgrClass.newInstance();
+            Method m = jaxrsSslMgrClass.getDeclaredMethod("getSSLSocketFactoryBySSLRef", String.class, Map.class, boolean.class);
+            Object[] parameters = { sslRef, null, false }; //getSSLSocketFactoryBySSLRef ignores the third (boolean) parameter
+            SSLSocketFactory ssLSocketFactory = (SSLSocketFactory) m.invoke(classObject, parameters);
+            return ssLSocketFactory;
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getSocketFactory reflection failed with exception " + e.toString());
+            }
+            return null;
+        }
+    }
 }
