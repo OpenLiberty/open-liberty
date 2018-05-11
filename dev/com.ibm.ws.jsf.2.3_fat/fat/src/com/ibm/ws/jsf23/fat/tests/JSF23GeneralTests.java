@@ -39,7 +39,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -586,7 +585,6 @@ public class JSF23GeneralTests {
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC("java.security.PrivilegedActionException")
     public void testSpecIssue1113() throws Exception {
         String contextRoot = "JSF23Spec1113";
         WebClient webClient = new WebClient();
