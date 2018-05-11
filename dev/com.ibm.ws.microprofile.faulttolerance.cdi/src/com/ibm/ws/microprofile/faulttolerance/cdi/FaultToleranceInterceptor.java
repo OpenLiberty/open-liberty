@@ -116,8 +116,8 @@ public class FaultToleranceInterceptor {
                 continue;
             }
 
-            //Check that the annotation has not been disabled for this specific class. 
-            if (! FTGlobalConfig.isAnnotationEnabled(annotation, targetClass){ 
+            //Check that the annotation has not been disabled for this specific class.
+            if (!FTGlobalConfig.isAnnotationEnabled(annotation, targetClass)) {
                 continue;
             }
 
@@ -149,8 +149,8 @@ public class FaultToleranceInterceptor {
                 continue;
             }
 
-            //Check that the annotation has not been disabled for this specific method. 
-            if (! FTGlobalConfig.isAnnotationEnabled(annotation, targetClass, method){ 
+            //Check that the annotation has not been disabled for this specific method.
+            if (!FTGlobalConfig.isAnnotationEnabled(annotation, targetClass, method)) {
                 continue;
             }
 

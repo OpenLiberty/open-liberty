@@ -81,7 +81,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         //look at the class level annotations
         Set<Annotation> annotations = annotatedType.getAnnotations();
         for (Annotation annotation : annotations) {
-            if (! FTGlobalConfig.isAnnotationEnabled(annotation, clazz)) {
+            if (!FTGlobalConfig.isAnnotationEnabled(annotation, clazz)) {
                 if (tc.isWarningEnabled())
                     Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(), clazz.getCanonicalName());
                 continue;
@@ -116,7 +116,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
 
             annotations = method.getAnnotations();
             for (Annotation annotation : annotations) {
-                if (! FTGlobalConfig.isAnnotationEnabled(annotation, clazz, method.getJavaMember())) {
+                if (!FTGlobalConfig.isAnnotationEnabled(annotation, clazz, method.getJavaMember())) {
                     if (tc.isWarningEnabled())
                         Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(), clazz.getCanonicalName());
                     continue;
@@ -157,10 +157,11 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
 
         Set<Annotation> annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
-            if (! FTGlobalConfig.isAnnotationEnabled(annotation, clazz, method.getJavaMember())) {
-                    if (tc.isWarningEnabled())
-                        Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(), clazz.getCanonicalName() + "." + method.getJavaMember().getName());
-                    continue;
+            if (!FTGlobalConfig.isAnnotationEnabled(annotation, clazz, method.getJavaMember())) {
+                if (tc.isWarningEnabled())
+                    Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(),
+                               clazz.getCanonicalName() + "." + method.getJavaMember().getName());
+                continue;
             }
             if (FTGlobalConfig.getActiveAnnotations(clazz).contains(annotation.annotationType())) {
                 if (annotation.annotationType() == Asynchronous.class) {
