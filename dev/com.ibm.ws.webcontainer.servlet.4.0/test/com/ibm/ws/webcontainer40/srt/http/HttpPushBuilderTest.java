@@ -36,7 +36,6 @@ import com.ibm.websphere.servlet40.IRequest40;
 import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
-import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
 /**
@@ -53,7 +52,7 @@ public class HttpPushBuilderTest {
 
     final private IRequest40 IReq40 = context.mock(IRequest40.class);
     final private SRTServletRequest40 srtReq = context.mock(SRTServletRequest40.class);
-    final private HttpRequest hReq = context.mock(HttpRequest.class);
+    final private Http2Request hReq = context.mock(Http2Request.class);
 
     @Test
     public void testAPI_method() {
@@ -162,7 +161,7 @@ public class HttpPushBuilderTest {
                 oneOf(IReq40).getHttpRequest();
                 will(returnValue(hReq));
 
-                ((Http2Request) oneOf(hReq)).pushNewRequest(pb);
+                oneOf(hReq).pushNewRequest(pb);
             }
         });
 
@@ -212,7 +211,7 @@ public class HttpPushBuilderTest {
                 oneOf(IReq40).getHttpRequest();
                 will(returnValue(hReq));
 
-                ((Http2Request) oneOf(hReq)).pushNewRequest(pb);
+                oneOf(hReq).pushNewRequest(pb);
             }
         });
 
@@ -416,7 +415,7 @@ public class HttpPushBuilderTest {
                 oneOf(IReq40).getHttpRequest();
                 will(returnValue(hReq));
 
-                ((Http2Request) allowing(hReq)).pushNewRequest(pb);
+                allowing(hReq).pushNewRequest(pb);
 
                 ignoring(srtReq).getQueryString();
             }

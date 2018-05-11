@@ -31,7 +31,6 @@ import org.junit.Test;
 import com.ibm.websphere.servlet40.IRequest40;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
-import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
 /**
@@ -49,7 +48,7 @@ public class SRTServletRequest40Test {
     final private SRTConnectionContext40 srtCC = context.mock(SRTConnectionContext40.class);
     final private IRequest40 IReq40 = context.mock(IRequest40.class);
     final private SRTServletResponse40 srtRes = context.mock(SRTServletResponse40.class);
-    final private HttpRequest hReq = context.mock(HttpRequest.class);
+    final private Http2Request hReq = context.mock(Http2Request.class);
     final private WebAppDispatcherContext dispContext = context.mock(WebAppDispatcherContext.class);
 
     @Test
@@ -90,7 +89,7 @@ public class SRTServletRequest40Test {
                 oneOf(IReq40).getHttpRequest();
                 will(returnValue(hReq));
 
-                ((Http2Request) oneOf(hReq)).isPushSupported();
+                oneOf(hReq).isPushSupported();
                 will(returnValue(true));
 
                 oneOf(srtCC).getResponse();
