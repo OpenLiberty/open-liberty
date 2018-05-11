@@ -19,7 +19,8 @@
          <AD id="id" name="internal" description="internal use only" required="false" type="String" default="defaultJWT"/>
          <AD id="issuer" name="%issuerIdentifier" description="%issuerIdentifier.desc" required="false" type="String" />
          <AD id="jwkEnabled" name="%jwkEnabled" description="%jwkEnabled.desc" required="false" type="Boolean" default="false"/> 
-  		 <AD id="expiry" name="%valid" description="%valid.desc" required="false" type="String" default="2h" ibm:type="duration(h)"/>
+  		 <!-- deprecated --><AD id="expiry" name="%valid" description="%valid.desc" required="false" type="String" default="2h" ibm:type="duration(h)"/>
+  		 <AD id="expiresInSeconds" name="%expiresInSeconds" description= "%expiresInSeconds.desc" required="false" type="String" default="-1" ibm:type="duration(s)" />
   		 <AD id="audiences" name="%audiences" description="%audiences.desc" required="false" type="String" cardinality="400" />
   		 <AD id="claims" name="%claims" description="%claims.desc" required="false" type="String" cardinality="400" />
   		 <AD id="scope" name="%scope" description="%scope.desc" required="false" type="String" />

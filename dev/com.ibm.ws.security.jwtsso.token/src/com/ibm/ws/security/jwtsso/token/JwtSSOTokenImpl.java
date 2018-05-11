@@ -449,7 +449,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
     public long getValidTimeInMinutes() {
         JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
         if (jwtssobuilderConfig != null) {
-            return jwtssobuilderConfig.getValidTime() * 60;
+            return jwtssobuilderConfig.getValidTime() / 60;
         }
         return 0;
     }
