@@ -18,7 +18,7 @@
          name="%jwtSso" description="%jwtSso.desc">
          
          <AD id="cookieName" name="%cookieName" description="%cookieName.desc" 
-             required="false" type="String" default="jwtToken" />
+             required="false" type="String" default="MPJWT" />
              
          <!--  These next 3 will be read in from the AppSecurity 3.0 metadata and used intact 
          
@@ -57,8 +57,8 @@
          <AD id="jwtBuilderRef" name="%jwtBuilderRef" description="%jwtBuilderRef.desc"
              required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.builder" />
              
-         <AD id="jwtConsumerRef" name="%jwtConsumerRef" description="%jwtConsumerRef.desc"
-             required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.consumer" />  
+         <AD id="mpjwtConsumerRef" name="%mpjwtConsumerRef" description="%mpjwtConsumerRef.desc"
+             required="false" type="String" ibmui:uiReference="com.ibm.ws.security.mp.jwt" />   
              
           <!--  future encryption attributes go here someday  -->
          
