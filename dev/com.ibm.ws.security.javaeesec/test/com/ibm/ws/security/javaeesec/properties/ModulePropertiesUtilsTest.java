@@ -306,6 +306,7 @@ public class ModulePropertiesUtilsTest {
         List<Class> list = new ArrayList<Class>();
         withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
         mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
         // since one of multiple modules might not have a HAM configured, there is no error/warning message logged. Only a debug message.
     }
@@ -322,6 +323,7 @@ public class ModulePropertiesUtilsTest {
         list.add(String.class);
         withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
         mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
         // since CDI code checks this condition and log the error, only debug output is logged for this case.
     }
@@ -337,6 +339,7 @@ public class ModulePropertiesUtilsTest {
         list.add(String.class);
         withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImpl(String.class);
         mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
         assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
     }
 
@@ -352,6 +355,7 @@ public class ModulePropertiesUtilsTest {
         withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
         withBeanManager(bm2);
         mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
         assertTrue("CWWKS1912E  message with application and module name not logged",
                    outputMgr.checkForStandardErr("CWWKS1912E:.*" + MODULENAME + ".*" + APPLNAME + ".*"));
@@ -369,6 +373,7 @@ public class ModulePropertiesUtilsTest {
         withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, false, true);
         withBeanManager(bm2);
         mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
         assertTrue("CWWKS1912E  message with application and module name not logged",
                    outputMgr.checkForStandardErr("CWWKS1912E:.*" + MODULENAME + ".*" + APPLNAME + ".*"));
@@ -383,6 +388,22 @@ public class ModulePropertiesUtilsTest {
         withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
         withBeanManager(bm1).withModuleHAM(String.class, hams);
         mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
+        assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
+    }
+
+    @Test
+    public void testGetHttpAuthenticationMechanismOneAuthMechUnsatisfiedOneModuleHAMCacheHit() {
+        final List<Class> list = new ArrayList<Class>();
+        list.add(String.class);
+        final Set<Bean> hams = new HashSet<Bean>();
+        hams.add(bean1);
+        withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
+        withBeanManager(bm1).withModuleHAM(String.class, hams);
+        mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
+        assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
+        withCacheHit();
         assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
     }
 
@@ -396,6 +417,7 @@ public class ModulePropertiesUtilsTest {
         withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
         withBeanManager(bm1).withModuleHAM(String.class, hams);
         mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
         assertTrue("CWWKS1912E  message with application and module name not logged",
                    outputMgr.checkForStandardErr("CWWKS1912E:.*" + MODULENAME + ".*" + APPLNAME + ".*"));
@@ -411,6 +433,7 @@ public class ModulePropertiesUtilsTest {
         withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, false, true);
         withBeanManager(bm1).withModuleHAM(String.class, hams);
         mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
     }
 
@@ -575,6 +598,15 @@ public class ModulePropertiesUtilsTest {
                 one(j2n).getApplication();
                 will(returnValue(name));
                 never(cmd).getJ2EEName();
+            }
+        });
+        return this;
+    }
+
+    private ModulePropertiesUtilsTest withCacheHit() {
+        mockery.checking(new Expectations() {
+            {
+                never(cdi).getBeanManager();
             }
         });
         return this;
