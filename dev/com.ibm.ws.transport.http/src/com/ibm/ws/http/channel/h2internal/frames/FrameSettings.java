@@ -19,7 +19,6 @@ import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
-import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameSettings extends Frame {
 
@@ -100,7 +99,6 @@ public class FrameSettings extends Frame {
         }
 
         frameType = FrameTypes.SETTINGS;
-        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -155,15 +153,9 @@ public class FrameSettings extends Frame {
     }
 
     @Override
-    public WsByteBuffer buildFrameForWrite() {
+    public byte[] buildFrameForWrite() {
 
-        WsByteBuffer buffer = super.buildFrameForWrite();
-        byte[] frame;
-        if (buffer.hasArray()) {
-            frame = buffer.array();
-        } else {
-            frame = super.createFrameArray();
-        }
+        byte[] frame = super.buildFrameForWrite();
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_SETTINGS);
@@ -209,9 +201,7 @@ public class FrameSettings extends Frame {
             frameIndex += 4;
         }
 
-        buffer.put(frame, 0, writeFrameLength);
-        buffer.flip();
-        return buffer;
+        return frame;
     }
 
     @Override

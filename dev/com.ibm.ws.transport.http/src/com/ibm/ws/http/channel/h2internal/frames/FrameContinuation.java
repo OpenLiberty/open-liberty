@@ -107,7 +107,7 @@ public class FrameContinuation extends Frame {
         if (streamId == 0) {
             throw new ProtocolException("CONTINUATION frame streamID cannot be 0x0");
         }
-        if (this.getPayloadLength() > settings.maxFrameSize) {
+        if (this.getPayloadLength() > settings.getMaxFrameSize()) {
             throw new FrameSizeException("CONTINUATION payload greater than max allowed");
         }
     }

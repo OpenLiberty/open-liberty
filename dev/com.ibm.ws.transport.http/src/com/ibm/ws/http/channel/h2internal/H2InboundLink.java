@@ -110,7 +110,9 @@ public class H2InboundLink extends HttpInboundLink {
     TCPConnectionContext h2MuxTCPConnectionContext = null;
     HttpInboundServiceContextImpl h2MuxServiceContextImpl = null;
 
-    H2ConnectionSettings connectionSettings;
+    private H2ConnectionSettings localConnectionSettings;
+    private H2ConnectionSettings remoteConnectionSettings;
+
     H2WorkQInterface writeQ = null;
 
     int h2NextPromisedStreamId = 0;
@@ -159,7 +161,10 @@ public class H2InboundLink extends HttpInboundLink {
         h2MuxTCPConnectionContext = tcc;
         h2MuxTCPReadContext = tcc.getReadInterface();
         h2MuxTCPWriteContext = tcc.getWriteInterface();
-        connectionSettings = new H2ConnectionSettings();
+        localConnectionSettings = new H2ConnectionSettings();
+        localConnectionSettings.setMaxConcurrentStreams(this.config.getH2MaxConcurrentStreams());
+        localConnectionSettings.setMaxFrameSize(this.config.getH2MaxFrameSize());
+        remoteConnectionSettings = new H2ConnectionSettings();
         config = channel.getHttpConfig();
         h2MuxServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
 
@@ -176,7 +181,7 @@ public class H2InboundLink extends HttpInboundLink {
         hcDebug = this.hashCode();
 
         initialVC.getStateMap().put(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE, "true");
-        initialVC.getStateMap().put("h2_frame_size", getConnectionSettings().maxFrameSize);
+        initialVC.getStateMap().put("h2_frame_size", getRemoteConnectionSettings().getMaxFrameSize());
     }
 
     public synchronized long getInitialWindowSize() {
@@ -196,7 +201,7 @@ public class H2InboundLink extends HttpInboundLink {
         }
         if ((streamID % 2 == 0) && (streamID != 0)) {
             synchronized (pushSync) {
-                int maxPushStreams = getConnectionSettings().getMaxConcurrentStreams();
+                int maxPushStreams = getRemoteConnectionSettings().getMaxConcurrentStreams();
                 // if there are too many locally-open active streams, don't open a new one
                 if (maxPushStreams >= 0 && openPushStreams > maxPushStreams) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -348,7 +353,7 @@ public class H2InboundLink extends HttpInboundLink {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleHTTP2UpgradeRequest, processing upgrade header settings : " + settings);
             }
-            getConnectionSettings().processUpgradeHeaderSettings(settings);
+            getRemoteConnectionSettings().processUpgradeHeaderSettings(settings);
         } catch (Http2Exception e1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleHTTP2UpgradeRequest an error occurred processing the settings during connection initialization");
@@ -617,7 +622,8 @@ public class H2InboundLink extends HttpInboundLink {
         h2MuxTCPConnectionContext = null;
         h2MuxTCPReadContext = null;
         h2MuxTCPWriteContext = null;
-        connectionSettings = null;
+        localConnectionSettings = null;
+        remoteConnectionSettings = null;
         readContextTable = null;
         writeContextTable = null;
 
@@ -768,10 +774,21 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     /**
-     * @return the connectionSettings
+     * Returns the connection settings as specified by the local http endpoint
+     *
+     * @return the localConnectionSettings
      */
-    public H2ConnectionSettings getConnectionSettings() {
-        return connectionSettings;
+    public H2ConnectionSettings getLocalConnectionSettings() {
+        return localConnectionSettings;
+    }
+
+    /**
+     * Returns the connection settings as specified by the remote http endpoint
+     *
+     * @return the remoteConnectionSettings
+     */
+    public H2ConnectionSettings getRemoteConnectionSettings() {
+        return remoteConnectionSettings;
     }
 
     public void cleanupStream(int streamID) {
@@ -807,7 +824,8 @@ public class H2InboundLink extends HttpInboundLink {
         h2MuxTCPConnectionContext = null;
         h2MuxTCPReadContext = null;
         h2MuxTCPWriteContext = null;
-        connectionSettings = null;
+        localConnectionSettings = null;
+        remoteConnectionSettings = null;
         readContextTable = null;
         writeContextTable = null;
 

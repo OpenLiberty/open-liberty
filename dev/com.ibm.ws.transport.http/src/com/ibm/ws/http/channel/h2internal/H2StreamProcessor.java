@@ -164,10 +164,11 @@ public class H2StreamProcessor {
         FrameSettings settings;
         // send out a settings frame with any HTTP2 settings that the user may have changed
         if (Constants.SPEC_INITIAL_WINDOW_SIZE != this.streamReadWindowSize) {
-            settings = new FrameSettings(0, -1, -1, -1, (int) this.streamReadWindowSize, -1, -1, false);
+            settings = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), (int) this.streamReadWindowSize, this.muxLink.config.getH2MaxFrameSize(), -1, false);
         } else {
-            settings = new FrameSettings();
+            settings = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), -1, this.muxLink.config.getH2MaxFrameSize(), -1, false);
         }
+
         this.frameType = FrameTypes.SETTINGS;
         this.processNextFrame(settings, Direction.WRITING_OUT);
 
@@ -296,7 +297,14 @@ public class H2StreamProcessor {
 
             // validate the current frame.  If it's not valid, send a RESET if applicable otherwise close the connection
             try {
-                currentFrame.validate(muxLink.getConnectionSettings());
+                //If the frame is being read, validate against the server's connection settings
+                if (direction == Constants.Direction.READ_IN) {
+                    currentFrame.validate(muxLink.getLocalConnectionSettings());
+                } else {
+                    //If the frame is being written, validate against the client's connection settings
+                    currentFrame.validate(muxLink.getRemoteConnectionSettings());
+                }
+
             } catch (Http2Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processNextFrame: " + currentFrame.getFrameType() + " received on stream " + this.myID +
@@ -644,11 +652,11 @@ public class H2StreamProcessor {
             }
 
             // update the SETTINGS for this connection
-            muxLink.getConnectionSettings().updateSettings((FrameSettings) currentFrame);
-            muxLink.getVirtualConnection().getStateMap().put("h2_frame_size", muxLink.getConnectionSettings().maxFrameSize);
+            muxLink.getRemoteConnectionSettings().updateSettings((FrameSettings) currentFrame);
+            muxLink.getVirtualConnection().getStateMap().put("h2_frame_size", muxLink.getRemoteConnectionSettings().getMaxFrameSize());
 
             // immediately send out ACK (an empty SETTINGS frame with the ACK flag set)
-            currentFrame = new FrameSettings();
+            currentFrame = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), -1, this.muxLink.config.getH2MaxFrameSize(), -1, false);
             currentFrame.setAckFlag();
 
             try {
@@ -755,7 +763,7 @@ public class H2StreamProcessor {
                     writeFrameSync();
                     currentFrame = savedFrame;
                 }
-                long windowSizeIncrement = muxLink.connectionSettings.maxFrameSize;
+                long windowSizeIncrement = muxLink.getRemoteConnectionSettings().getMaxFrameSize();
                 FrameWindowUpdate wuf = new FrameWindowUpdate(0, (int) windowSizeIncrement, false);
                 this.muxLink.getStream(0).processNextFrame(wuf, Direction.WRITING_OUT);
             }
@@ -1408,7 +1416,7 @@ public class H2StreamProcessor {
             while (buf.hasRemaining()) {
                 isFirstHeaderBlock = buf.position() < firstBlockLength;
                 current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable(), isFirstHeader && isFirstHeaderBlock,
-                                                  processTrailerHeaders && !isPush, this.muxLink.getConnectionSettings()));
+                                                  processTrailerHeaders && !isPush, this.muxLink.getLocalConnectionSettings()));
                 if (current == null) {
                     // processed a dynamic table size update; go to the next header
                     continue;

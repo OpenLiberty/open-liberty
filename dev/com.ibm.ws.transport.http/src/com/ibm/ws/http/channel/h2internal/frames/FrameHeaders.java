@@ -233,7 +233,7 @@ public class FrameHeaders extends Frame {
             throw new ProtocolException("HEADERS frame streamID cannot be 0x0");
         } else if (this.getPayloadLength() <= 0) {
             throw new CompressionException("HEADERS frame must have a header block fragment");
-        } else if (this.getPayloadLength() > settings.maxFrameSize) {
+        } else if (this.getPayloadLength() > settings.getMaxFrameSize()) {
             throw new FrameSizeException("HEADERS payload greater than allowed by the max frame size");
         } else if (this.paddingLength >= this.payloadLength) {
             throw new ProtocolException("HEADERS padding length must be less than the length of the payload");
