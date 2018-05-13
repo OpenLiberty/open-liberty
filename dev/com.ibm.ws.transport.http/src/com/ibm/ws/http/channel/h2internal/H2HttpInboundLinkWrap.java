@@ -108,7 +108,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "prepareHeaders entry: stream: marked as complete: " + complete);
         }
-        int maxFrameSize = muxLink.getRemoteConnectionSettings().maxFrameSize;
+        int maxFrameSize = muxLink.getRemoteConnectionSettings().getMaxFrameSize();
         ArrayList<Frame> frameList = new ArrayList<Frame>();
         boolean endHeaders = true;
 
