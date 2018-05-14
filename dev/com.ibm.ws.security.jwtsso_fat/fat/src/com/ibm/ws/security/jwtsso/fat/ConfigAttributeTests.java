@@ -10,9 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.fat;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.junit.Before;
@@ -22,6 +24,7 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
@@ -62,6 +65,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Before
     public void beforeTest() {
         webClient = new WebClient();
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
     }
 
     /**
@@ -93,6 +97,184 @@ public class ConfigAttributeTests extends CommonJwtFat {
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
         validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - cookieName: Empty string
+     * Expects:
+     * - A CWWKS6302E message should be logged saying the specified cookie name cannot be null or empty
+     * - The default JWT SSO cookie name should be used
+     * - Should successfully reach the protected resource
+     */
+    @Test
+    public void test_cookieName_empty() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_cookieNameEmpty.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6302E_COOKIE_NAME_CANT_BE_EMPTY));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - cookieName: Includes whitespace
+     * Expects:
+     * - A CWWKS6303E message should be logged saying the specified cookie name is not valid
+     * - The default JWT SSO cookie name should be used
+     * - Should successfully reach the protected resource
+     */
+    @Test
+    public void test_cookieName_includesWhitespace() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_cookieNameIncludesWhitespace.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6303E_COOKIE_NAME_INVALID));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - cookieName: Includes invalid cookie characters (e.g. ";", "=")
+     * Expects:
+     * - A CWWKS6303E message should be logged saying the specified cookie name is not valid
+     * - The default JWT SSO cookie name should be used
+     * - Should successfully reach the protected resource
+     */
+    @Test
+    public void test_cookieName_invalidCookieCharacters() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_cookieNameInvalidCharacters.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6303E_COOKIE_NAME_INVALID));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - cookieName: Includes invalid unicode characters
+     * Expects:
+     * - A CWWKS6303E message should be logged saying the specified cookie name is not valid
+     * - The default JWT SSO cookie name should be used
+     * - Should successfully reach the protected resource
+     */
+    @Test
+    public void test_cookieName_unicodeInvalid() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_cookieNameInvalidUnicodeCharacters.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6303E_COOKIE_NAME_INVALID));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - cookieName: Includes only valid unicode characters
+     * Expects:
+     * - Should successfully reach the protected resource
+     * - JWT cookie with the updated name should be present in the response
+     */
+    @Test
+    public void test_cookieName_unicodeValid() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_cookieNameValidUnicodeCharacters.xml");
+
+        String cookieName = "MyCookie";
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, protectedUrl));
+        expectations.addExpectations(CommonExpectations.getResponseTextExpectationsForJwtCookie(currentAction, cookieName, defaultUser));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+        expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, webClient, cookieName));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - cookieName: Exceptionally long string
+     * Expects:
+     * - Should successfully reach the protected resource
+     * - JWT cookie with the updated name should be present in the response
+     * - Cookie should NOT be broken into multiple cookies, despite its size
+     */
+    @Test
+    public void test_cookieName_extremelyLong() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_cookieNameExtremelyLong.xml");
+
+        String cookieName = "ExtremelyLongCookieNamexxxxxxxx10xxxxxxxx20";
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, protectedUrl));
+        expectations.addExpectations(CommonExpectations.getResponseTextExpectationsForJwtCookie(currentAction, cookieName, defaultUser));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        // Ensure that the cookie was NOT broken into multiple cookies due to size
+        Set<Cookie> cookies = webClient.getCookieManager().getCookies();
+        int relatedCookieCount = 0;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().startsWith(cookieName)) {
+                relatedCookieCount++;
+            }
+        }
+        assertEquals("Did not find exactly one cookie that started with expected string [" + cookieName + "]. Cookies were: " + cookies, 1, relatedCookieCount);
     }
 
     /**

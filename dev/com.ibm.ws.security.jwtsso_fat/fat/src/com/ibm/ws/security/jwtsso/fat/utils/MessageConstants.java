@@ -30,6 +30,8 @@ public class MessageConstants extends Constants {
     public static final String CWWKS6025E_JWT_TOKEN_EXPIRED = "CWWKS6025E";
 
     public static final String CWWKS6301E_MANY_JWT_CONSUMER_CONFIGS = "CWWKS6301E";
+    public static final String CWWKS6302E_COOKIE_NAME_CANT_BE_EMPTY = "CWWKS6302E";
+    public static final String CWWKS6303E_COOKIE_NAME_INVALID = "CWWKS6303E";
 
     public static final String CWWKS9127W_JWT_COOKIE_SECURITY_MISMATCH = "CWWKS9127W";
 
