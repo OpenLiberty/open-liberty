@@ -2262,16 +2262,11 @@ public class ApplicationImpl extends Application
         List<ListenerFor> listenerForList = null;
         boolean isCachedList = false;
         
-        if(isProduction && _classToListenerForMap.containsKey(inspectedClass))
+        if(isProduction && (listenerForList = _classToListenerForMap.get(inspectedClass)) != null)
         {
-            listenerForList = _classToListenerForMap.get(inspectedClass);
-            if(listenerForList == null)
+            if (listenerForList.isEmpty())
             {
                 return; //class has been inspected and did not contain any listener annotations
-            }
-            else if (listenerForList.isEmpty())
-            {
-                return;
             }
             
             isCachedList = true;    // else annotations were found in the cache
@@ -2405,16 +2400,11 @@ public class ApplicationImpl extends Application
         List<ResourceDependency> dependencyList = null;
         boolean isCachedList = false;
         
-        if(isProduction && _classToResourceDependencyMap.containsKey(inspectedClass))
+        if(isProduction && (dependencyList = _classToResourceDependencyMap.get(inspectedClass)) != null)
         {
-            dependencyList = _classToResourceDependencyMap.get(inspectedClass);
-            if(dependencyList == null)
+            if (dependencyList.isEmpty())
             {
                 return; //class has been inspected and did not contain any resource dependency annotations
-            }
-            else if (dependencyList.isEmpty())
-            {
-                return;
             }
             
             isCachedList = true;    // else annotations were found in the cache

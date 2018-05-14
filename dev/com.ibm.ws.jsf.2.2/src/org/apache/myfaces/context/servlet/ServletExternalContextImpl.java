@@ -844,11 +844,17 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             }
         }        
 
+        boolean hasParams = paramMap != null && paramMap.size()>0;
+
+        if (!hasParams && fragment == null) {
+            return baseUrl;
+        }
+
         // start building the new URL
         StringBuilder newUrl = new StringBuilder(baseUrl);
 
         //now add the updated param list onto the url
-        if (paramMap != null && paramMap.size()>0)
+        if (hasParams)
         {
             boolean isFirstPair = true;
             for (Map.Entry<String, List<String>> pair : paramMap.entrySet())
@@ -884,7 +890,8 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         //add the fragment back on (if any)
         if (fragment != null)
         {
-            newUrl.append(URL_FRAGMENT_SEPERATOR + fragment);
+            newUrl.append(URL_FRAGMENT_SEPERATOR);
+            newUrl.append(fragment);
         }
 
         return newUrl.toString();
