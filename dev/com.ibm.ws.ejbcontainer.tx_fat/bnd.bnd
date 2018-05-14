@@ -19,7 +19,7 @@ src: \
 fat.project: true
 
 tested.features: \
-	servlet-3.1, ejbLite-3.2
+	servlet-3.1, servlet-4.0, ejbLite-3.2
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
