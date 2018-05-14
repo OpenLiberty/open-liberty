@@ -61,7 +61,7 @@ Provide-Capability: spring.boot.support; jars:List<String>=springBoot20Server.ja
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1
 
--dsannotations: com.ibm.ws.springboot.support.web.server.version20.osgi.SpringBoot15Support
+-dsannotations: com.ibm.ws.springboot.support.web.server.version20.osgi.SpringBoot20Support
 -dsannotations-inherit: true
 
 -make= (*).(jar); type=bnd; recipe="bnd/$1.bnd"
