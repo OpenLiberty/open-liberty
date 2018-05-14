@@ -117,7 +117,7 @@ public class TAIRequestHelper {
 
     }
 
-    private boolean isJwtSsoFeatureActive(MicroProfileJwtConfig config) {
+    public boolean isJwtSsoFeatureActive(MicroProfileJwtConfig config) {
         return config.toString().contains("com.ibm.ws.security.jwtsso.internal.JwtSsoComponent");
     }
 

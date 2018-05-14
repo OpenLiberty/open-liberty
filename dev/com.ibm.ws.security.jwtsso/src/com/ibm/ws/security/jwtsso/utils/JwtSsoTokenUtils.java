@@ -200,9 +200,14 @@ public class JwtSsoTokenUtils {
 		return jwttoken;
 	}
 
-	private MicroProfileJwtConfig getMpJwtConsumer() {
-
-		return mpjwttai.getMicroProfileJwtConfig(consumerId);
+	private MicroProfileJwtConfig getMpJwtConsumer() throws MpJwtProcessingException {
+		MicroProfileJwtConfig mpjwtconfig = mpjwttai.getMicroProfileJwtConfig(consumerId);
+		if (mpjwtconfig == null) {
+			String msg = Tr.formatMessage(tc, "MPJWT_CONSUMER_CONFIG_NOT_FOUND", new Object[] { consumerId });
+			Tr.error(tc, msg);
+			throw new MpJwtProcessingException(msg);
+		}
+		return mpjwtconfig;
 	}
 
 	public boolean isJwtValid(String tokenstr) {

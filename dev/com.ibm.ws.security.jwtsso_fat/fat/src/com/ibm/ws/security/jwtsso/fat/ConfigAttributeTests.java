@@ -13,8 +13,8 @@ package com.ibm.ws.security.jwtsso.fat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
 import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -133,7 +133,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
                    "com.ibm.websphere.security.WSSecurityException",
                    "com.ibm.ws.security.authentication.AuthenticationException" })
     @Mode(TestMode.LITE)
-    @Test
+    //@Test
     public void test_validBuilderRef() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testgoodbuilder.xml");
         ArrayList<String> errors = new ArrayList<String>();
@@ -199,7 +199,8 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException",
                    "com.ibm.websphere.security.WSSecurityException",
-                   "com.ibm.websphere.security.jwt.InvalidConsumerException" })
+                   "com.ibm.websphere.security.jwt.InvalidConsumerException",
+                   "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException" })
     public void test_invalidConsumerRef() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testbadconsumer.xml");
 
@@ -211,7 +212,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
         validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
 
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS));
-        expectations.addExpectation(new ServerMessageExpectation(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, server, MessageConstants.CWWKS6030E_JWT_CONSUMER_CONFIG_NOT_FOUND));
+        expectations.addExpectation(new ServerMessageExpectation(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, server, MessageConstants.CWWKS6300E_JWT_CONSUMER_CONFIG_NOT_FOUND));
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword); // should fail and we should get login page again
         validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
