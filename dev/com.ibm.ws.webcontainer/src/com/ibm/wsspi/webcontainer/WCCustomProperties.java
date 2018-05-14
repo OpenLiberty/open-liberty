@@ -307,6 +307,9 @@ public class WCCustomProperties {
     //18.0.0.3
     public static String SERVLET_PATH_FOR_DEFAULT_MAPPING;
 
+    //start 18.0.0.4
+    public static boolean SET_400_SC_ON_TOO_MANY_PARENT_DIRS; //PI80786
+
     static {
         setCustomPropertyVariables(); //initilizes all the variables
     }
@@ -398,6 +401,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("useoriginalqsinforwardifnull", "com.ibm.ws.webcontainer.useoriginalqsinforwardifnull"); //PI81569
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletdestroywaittime", "com.ibm.ws.webcontainer.servletdestroywaittime");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletpathfordefaultmapping", "com.ibm.ws.webcontainer.servletpathfordefaultmapping");     //4666
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("set400scontoomanyparentdirs", "com.ibm.ws.webcontainer.set400scontoomanyparentdirs"); //PI80786
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -774,9 +778,13 @@ public class WCCustomProperties {
 
         //Start 17.0.0.4
         USE_ORIGINAL_QS_IN_FORWARD_IF_NULL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.useoriginalqsinforwardifnull")).booleanValue(); //PI81569
-
+        
 	//18.0.0.3
 	SERVLET_PATH_FOR_DEFAULT_MAPPING = customProps.getProperty("com.ibm.ws.webcontainer.servletpathfordefaultmapping"); //4666
+	
+	//Start 18.0.0.4
+	SET_400_SC_ON_TOO_MANY_PARENT_DIRS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.set400scontoomanyparentdirs")).booleanValue(); //PI80786
+
 
     }
 
