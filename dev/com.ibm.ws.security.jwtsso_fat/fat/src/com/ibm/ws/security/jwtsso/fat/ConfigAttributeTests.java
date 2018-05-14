@@ -11,7 +11,6 @@
 package com.ibm.ws.security.jwtsso.fat;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -26,10 +25,13 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.ws.security.fat.common.actions.TestActions;
+import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
+import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
 
@@ -49,7 +51,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private TestActions actions = new TestActions();
+    private JwtFatActions actions = new JwtFatActions();
     private TestValidationUtils validationUtils = new TestValidationUtils();
     private WebClient webClient = new WebClient();
 
@@ -280,14 +282,12 @@ public class ConfigAttributeTests extends CommonJwtFat {
     /**
      * Test the jwtBuilderRef attribute. Specify a nonexistent builderRef,
      * login should fail and we should get a meaningful error message in the log.
-     * The ltpa cookie is included, but fallback is false, so fallback should not occur.
+     * The ltpa cookie is included, but useLtpaIfJwtAbsent is false, so fallback should not occur.
      */
     @Mode(TestMode.LITE)
-//    @Test
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
-                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
-                    "javax.security.auth.login.LoginException" })
-    public void test_invalidBuilderRef_ltpaFallbackFalse() throws Exception {
+    @Test
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException", "com.ibm.websphere.security.WSSecurityException" })
+    public void test_invalidBuilderRef_useLtpaIfJwtAbsentFalse() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testbadbuilder.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -380,10 +380,10 @@ public class ConfigAttributeTests extends CommonJwtFat {
      * Test the detection of the mpJwt server config element. Specify an extra element and try to authenticate.
      * We should get an error message about the extra element.
      */
-    @Test
+    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException", "com.ibm.ws.security.authentication.AuthenticationException",
+                    "com.ibm.websphere.security.WSSecurityException" })
     @Mode(TestMode.LITE)
-    @ExpectedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException",
-                    "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException" })
+    @Test
     public void test_invalidConsumerRef() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testbadconsumer.xml");
 
@@ -404,40 +404,85 @@ public class ConfigAttributeTests extends CommonJwtFat {
     }
 
     /**
-     * Test the useLtpaIfJwtAbsent attribute, formerly known as fallBackToLtpa
-     * Specify an invalid builder, includeLtpa, and fallBackToLtpa. There should be no jwt cookie present,
-     * there should be an ltpa cookie present, and because fallback is enabled, we should be able to access
-     * the resource.
+     * Tests:
+     * - useLtpaIfJwtAbsent: true
+     * - Obtain a JWT cookie for one user
+     * - Obtain a separate LTPA cookie for a different user
+     * - Wait until the JWT cookie has expired
+     * - Invoke the protected resource with both cookies included
+     * Expects:
+     * - Should fail to validate the JWT cookie, but should successfully fall back to use the included LTPA token and access the protected resource
      */
-//    @Test
     @Mode(TestMode.LITE)
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
-                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
-                    "javax.security.auth.login.LoginException" })
-    public void test_fallbackToLtpaTrue() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testfallbacktoltpatrue.xml");
+    @Test
+    public void test_useLtpaIfJwtAbsent_true() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
+
+        // Obtain a valid LTPA token
+        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+
+        // Enable useLtpaIfJwtAbsent
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_useLtpaIfJwtAbsent_true.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 
         Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, protectedUrl));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesExpectedRemoteUser(currentAction, defaultUser));
+        // HttpServletRequest.getUserPrincipal() should return a JWT principal (not a WSPrincipal). This verifies that the JWT SSO feature was, in fact, utilized
+        expectations.addExpectations(CommonExpectations.responseTextIncludesJwtPrincipal(currentAction));
+        // Subject principals should contain JWT principal AND WSPrincipal
+        expectations.addExpectation(new ResponseFullExpectation(currentAction, JwtFatConstants.STRING_MATCHES, "Principal: \\{.+\\}", "Should have found a JWT in the subject principals, but did not."));
+        expectations.addExpectation(Expectation.createResponseExpectation(currentAction, "Principal: WSPrincipal:" + defaultUser,
+                                                                          "Should have found a WSPrincipal in the subject principals, but did not."));
+        expectations.addExpectations(CommonExpectations.responseTextIncludesExpectedAccessId(currentAction, JwtFatConstants.BASIC_REALM, defaultUser));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.JWT_COOKIE_NAME));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl); // get back the login page
-        validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, ltpaCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
 
-        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+    /**
+     * Tests:
+     * - useLtpaIfJwtAbsent: false
+     * - Obtain a JWT cookie for one user
+     * - Obtain a separate LTPA cookie for a different user
+     * - Wait until the JWT cookie has expired
+     * - Invoke the protected resource with both cookies included
+     * Expects:
+     * - Should fail to validate the JWT cookie and be redirected to the login page
+     * - LTPA token should not be looked at by the runtime
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void test_useLtpaIfJwtAbsent_false() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
 
-        String responseStr = response.getWebResponse().getContentAsString();
-        boolean check = responseStr.contains("SimpleServlet");
-        assertTrue("did not access protected resource", check);
-        assertTrue("did not find expected ltpa cookie", responseStr.contains("cookie: LtpaToken2"));
-        assertFalse("found unexpected jwt cookie", responseStr.contains("cookie: jwtToken"));
+        // Obtain a valid LTPA token
+        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+
+        // Disable useLtpaIfJwtAbsent
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_useLtpaIfJwtAbsent_false.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, ltpaCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
     }
 
     /**
      * Test the setCookieSecureFlag attribute. Use the default setting (true),
      * and inspect cookie to see that it happened.
+     * Expects:
+     * - The JWT SSO cookie should be successfully created with the Secure flag
+     * - Nonetheless, should be redirected to the login page because the request uses HTTP and therefore won't include the JWT SSO cookie
      */
-    @Test
     @Mode(TestMode.LITE)
+    @Test
     public void test_cookieSecureTrue_httpOnlyTrue() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testcookiesecure.xml");
 
@@ -445,12 +490,12 @@ public class ConfigAttributeTests extends CommonJwtFat {
 
         Page response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl); // get back the login page
 
-        // now disable redirect so we can see the cookies in the 302
-        wc.getOptions().setRedirectEnabled(false);
         wc.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
         String currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+
         Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
         // check for warning that secure cookie is being set on http
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS9127W_JWT_COOKIE_SECURITY_MISMATCH));
         expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, wc, JwtFatConstants.JWT_COOKIE_NAME, JwtFatConstants.SECURE, JwtFatConstants.HTTPONLY));
@@ -463,8 +508,8 @@ public class ConfigAttributeTests extends CommonJwtFat {
      * Test that the jwtsso cookie respects the webAppSecurity httpOnlyCookies attribute setting.
      * Set webAppSecurity httpOnlyCookies="false" and inspect the cookie.
      */
-    @Test
     @Mode(TestMode.LITE)
+    @Test
     public void test_cookieSecureTrue_httpOnlyFalse() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testcookiesecure_httponlyfalse.xml");
 

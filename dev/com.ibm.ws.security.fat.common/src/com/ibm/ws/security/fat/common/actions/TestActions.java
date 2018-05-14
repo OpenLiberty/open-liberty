@@ -87,7 +87,8 @@ public class TestActions {
 }
 
     /**
-     * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
+     * Invokes the specified URL, including the specified cookie in the request, and returns the Page object that represents the
+     * response.
      */
     public Page invokeUrlWithCookie(String currentTest, String url, Cookie cookie) throws Exception {
         String thisMethod = "invokeUrlWithCookie";

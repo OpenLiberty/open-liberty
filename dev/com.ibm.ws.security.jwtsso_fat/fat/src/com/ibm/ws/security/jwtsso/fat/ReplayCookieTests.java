@@ -268,7 +268,7 @@ public class ReplayCookieTests extends CommonJwtFat {
      * Tests:
      * - Log into the protected resource WITHOUT the JWT SSO feature, obtaining an LTPA token/cookie
      * - Reconfigure the server to enable the JWT SSO feature
-     * - fallbackToLtpa is not set, meaning we should NOT fall back to use the LTPA token
+     * - useLtpaIfJwtAbsent is not set, meaning we should NOT fall back to use the LTPA token
      * - Re-access the protected resource with the LTPA cookie that was just obtained
      * Expects:
      * - Upon re-access, should receive the login page because the LTPA cookie should not be used for authentication
@@ -305,13 +305,13 @@ public class ReplayCookieTests extends CommonJwtFat {
      * - Subject should contain both the original WSPrincipal and a new JWT principal
      */
     @Test
-    public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie_fallbackToLtpa() throws Exception {
+    public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie_useLtpaIfJwtAbsent() throws Exception {
         server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
 
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_useLtpaIfJwtAbsent.xml");
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_useLtpaIfJwtAbsent_true.xml");
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
