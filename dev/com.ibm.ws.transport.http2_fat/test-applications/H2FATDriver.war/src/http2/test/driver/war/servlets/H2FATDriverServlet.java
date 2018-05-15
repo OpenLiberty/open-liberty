@@ -354,7 +354,8 @@ public class H2FATDriverServlet extends FATServlet {
             firstHeadersReceived.add(new H2HeaderField(":status", "200"));
             firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
             firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            firstHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+            // cannot assume language of test machine
+            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
             FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
             frameHeaders.setHeaderFields(firstHeadersReceived);
             h2Client.addExpectedFrame(frameHeaders);
@@ -364,7 +365,8 @@ public class H2FATDriverServlet extends FATServlet {
             secondHeadersReceived.add(new H2HeaderField(":status", "200"));
             secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
             secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            secondHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+            // cannot assume language of test machine
+            secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
             FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
             secondFrameHeaders.setHeaderFields(secondHeadersReceived);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
@@ -445,7 +447,8 @@ public class H2FATDriverServlet extends FATServlet {
             firstHeadersReceived.add(new H2HeaderField(":status", "200"));
             firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
             firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            firstHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+            // cannot assume language of test machine
+            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
             FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
             frameHeaders.setHeaderFields(firstHeadersReceived);
             h2Client.addExpectedFrame(frameHeaders);
@@ -455,7 +458,8 @@ public class H2FATDriverServlet extends FATServlet {
             secondHeadersReceived.add(new H2HeaderField(":status", "200"));
             secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
             secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            secondHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+            // cannot assume language of test machine
+            secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
             FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
             secondFrameHeaders.setHeaderFields(secondHeadersReceived);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
@@ -4309,7 +4313,8 @@ public class H2FATDriverServlet extends FATServlet {
             firstHeadersReceived.add(new H2HeaderField(":status", "200"));
             firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
             firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            firstHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+            // cannot assume language of test machine
+            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
             FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
             frameHeaders.setHeaderFields(firstHeadersReceived);
             h2Client.addExpectedFrame(frameHeaders);
@@ -4319,7 +4324,8 @@ public class H2FATDriverServlet extends FATServlet {
             secondHeadersReceived.add(new H2HeaderField(":status", "200"));
             secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
             secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            secondHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+            // cannot assume language of test machine
+            secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
             FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
             secondFrameHeaders.setHeaderFields(secondHeadersReceived);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
@@ -4521,7 +4527,8 @@ public class H2FATDriverServlet extends FATServlet {
         firstHeadersReceived.add(new H2HeaderField(":status", "200"));
         firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        firstHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+        // cannot assume language of test machine
+        firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
         FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeaders.setHeaderFields(firstHeadersReceived);
         h2Client.addExpectedFrame(frameHeaders);
@@ -4894,7 +4901,10 @@ public class H2FATDriverServlet extends FATServlet {
         firstHeadersReceived.add(new H2HeaderField(":status", "200"));
         firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        firstHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+
+        // use .* below, can not assume language of test machines
+        firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
+
         FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeaders.setHeaderFields(firstHeadersReceived);
 
@@ -4919,7 +4929,8 @@ public class H2FATDriverServlet extends FATServlet {
         firstHeadersReceived.add(new H2HeaderField(":status", "200"));
         firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        firstHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+        // cannot assume language of test machine
+        firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
         FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeaders.setHeaderFields(firstHeadersReceived);
         client.addExpectedFrame(frameHeaders);
@@ -4937,7 +4948,8 @@ public class H2FATDriverServlet extends FATServlet {
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
         secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        secondHeadersReceived.add(new H2HeaderField("content-language", "en-US"));
+        // cannot assume language of test machine
+        secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
         FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         client.addExpectedFrame(secondFrameHeaders);

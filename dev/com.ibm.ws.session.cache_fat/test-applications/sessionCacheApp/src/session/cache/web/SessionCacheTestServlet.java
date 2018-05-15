@@ -22,10 +22,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.lang.management.ManagementFactory;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +41,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.cache.Cache;
 import javax.cache.Caching;
@@ -278,6 +286,90 @@ public class SessionCacheTestServlet extends FATServlet {
         AppObject object = new AppObject();
         session.setAttribute("appObject", object);
         sessionMap.put("appObject", object);
+
+        //Test the serialization of performance improved primitives
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(2018, 4, 19, 9, 23, 45);
+        java.util.Date date = cal.getTime();
+        session.setAttribute("date", date);
+
+        java.sql.Date sqlDate = new java.sql.Date(1524236907331l);
+        session.setAttribute("sqlDate", sqlDate);
+
+        double d = 55901.55902;
+        session.setAttribute("double", d);
+
+        float f = 12345.6789f;
+        session.setAttribute("float", f);
+
+        byte b = Byte.parseByte("3");
+        session.setAttribute("byte", b);
+
+        Timestamp timestamp = new Timestamp(255073580786543l);
+        session.setAttribute("timestamp", timestamp);
+
+        Time time = new Time(345033920786213l);
+        session.setAttribute("time", time);
+
+        BigInteger bigint = new BigInteger("1234567891011121314151617181920");
+        session.setAttribute("BigInteger", bigint);
+
+        BigInteger negBigInt = new BigInteger("-1234567890000098765432198349834");
+        session.setAttribute("NegativeBigInteger", negBigInt);
+
+        BigDecimal bigDecimal = new BigDecimal("12345678910.11121314151617181920");
+        session.setAttribute("BigDecimal", bigDecimal);
+
+        BigDecimal negBigDecimal = new BigDecimal("-12345678900000987.65432198349834");
+        session.setAttribute("NegativeBigDecimal", negBigDecimal);
+
+        long long0 = 0l;
+        session.setAttribute("long0", long0);
+
+        long longNeg1 = -1l;
+        session.setAttribute("longNeg1", longNeg1);
+
+        long maxLong = Long.MAX_VALUE;
+        session.setAttribute("maxLong", maxLong);
+
+        long minLong = Long.MIN_VALUE;
+        session.setAttribute("minLong", minLong);
+
+        int int0 = 0;
+        session.setAttribute("int0", int0);
+
+        int intNeg1 = -1;
+        session.setAttribute("intNeg1", intNeg1);
+
+        int maxInt = Integer.MAX_VALUE;
+        session.setAttribute("maxInt", maxInt);
+
+        int minInt = Integer.MIN_VALUE;
+        session.setAttribute("minInt", minInt);
+
+        short sh = 24;
+        session.setAttribute("short", sh);
+
+        char ch = 'A';
+        session.setAttribute("char", ch);
+
+        boolean bool = true;
+        session.setAttribute("boolean", bool);
+
+        byte[] bytes = "Rochester, Minnesota, United States of America".getBytes();
+        session.setAttribute("byte array", bytes);
+
+        ArrayList<Integer> arrayList = new ArrayList<Integer>();
+        arrayList.add(1000);
+        arrayList.add(2);
+        session.setAttribute("arrayList", arrayList);
+
+        AtomicInteger atomicInt = new AtomicInteger(55901);
+        session.setAttribute("atomicInteger", atomicInt);
+
+        AtomicLong atomicLong = new AtomicLong(559015590255903l);
+        session.setAttribute("atomicLong", atomicLong);
     }
 
     /**
@@ -314,7 +406,104 @@ public class SessionCacheTestServlet extends FATServlet {
         }
         String attributeNamesString = attributeNames.toString();
         assertTrue(attributeNamesString, attributeNames.containsAll(Arrays.asList("map", "str", "appObject")));
-        assertEquals(attributeNamesString, weldCount + 3, attributeNames.size());
+        assertEquals(attributeNamesString, weldCount + 29, attributeNames.size());
+
+        //Test the serialization of performance improved primitives (that aren't tested elsewhere)
+        java.util.Date actualDate = (Date) session.getAttribute("date");
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(2018, 4, 19, 9, 23, 45);
+        java.util.Date expectedDate = cal.getTime();
+        assertEquals(expectedDate.getTime(), actualDate.getTime());
+
+        java.sql.Date expectedSqlDate = new java.sql.Date(1524236907331l);
+        java.sql.Date actualSqlDate = (java.sql.Date) session.getAttribute("sqlDate");
+        assertEquals(expectedSqlDate.getTime(), actualSqlDate.getTime());
+
+        double actualDouble = (double) session.getAttribute("double");
+        assertEquals(55901.55902, actualDouble, 0);
+
+        float actualFloat = (float) session.getAttribute("float");
+        assertEquals(12345.6789f, actualFloat, 0);
+
+        byte expectedByte = Byte.parseByte("3");
+        byte actualByte = (byte) session.getAttribute("byte");
+        assertEquals(expectedByte, actualByte);
+
+        Timestamp expectedTimestamp = new Timestamp(255073580786543l);
+        Timestamp actualTimestamp = (Timestamp) session.getAttribute("timestamp");
+        assertEquals(expectedTimestamp.getTime(), actualTimestamp.getTime());
+
+        Time expectedTime = new Time(345033920786213l);
+        Time actualTime = (Time) session.getAttribute("time");
+        assertEquals(expectedTime.getTime(), actualTime.getTime());
+
+        BigInteger expectedBigint = new BigInteger("1234567891011121314151617181920");
+        BigInteger actualBigint = (BigInteger) session.getAttribute("BigInteger");
+        assertEquals(expectedBigint.longValue(), actualBigint.longValue());
+
+        BigInteger expectedNegBigint = new BigInteger("-1234567890000098765432198349834");
+        BigInteger actualNegBigint = (BigInteger) session.getAttribute("NegativeBigInteger");
+        assertEquals(expectedNegBigint.longValue(), actualNegBigint.longValue());
+
+        BigDecimal expectedBigDecimal = new BigDecimal("12345678910.11121314151617181920");
+        BigDecimal actualBigDecimal = (BigDecimal) session.getAttribute("BigDecimal");
+        assertEquals(expectedBigDecimal.longValue(), actualBigDecimal.longValue());
+
+        BigDecimal expectedNegBigDecimal = new BigDecimal("-12345678900000987.65432198349834");
+        BigDecimal actualNegBigDecimal = (BigDecimal) session.getAttribute("NegativeBigDecimal");
+        assertEquals(expectedNegBigDecimal.longValue(), actualNegBigDecimal.longValue());
+
+        long actualLong0 = (long) session.getAttribute("long0");
+        assertEquals(0l, actualLong0);
+
+        long actualLongNeg1 = (long) session.getAttribute("longNeg1");
+        assertEquals(-1l, actualLongNeg1);
+
+        long actualMaxLong = (long) session.getAttribute("maxLong");
+        assertEquals(Long.MAX_VALUE, actualMaxLong);
+
+        long actualMinLong = (long) session.getAttribute("minLong");
+        assertEquals(Long.MIN_VALUE, actualMinLong);
+
+        long actualint0 = (int) session.getAttribute("int0");
+        assertEquals(0, actualint0);
+
+        long actualIntNeg1 = (int) session.getAttribute("intNeg1");
+        assertEquals(-1, actualIntNeg1);
+
+        long actualMaxInt = (int) session.getAttribute("maxInt");
+        assertEquals(Integer.MAX_VALUE, actualMaxInt);
+
+        long actualMinInt = (int) session.getAttribute("minInt");
+        assertEquals(Integer.MIN_VALUE, actualMinInt);
+
+        short actualShort = (short) session.getAttribute("short");
+        assertEquals(24, actualShort);
+
+        char expectedChar = 'A';
+        char actualChar = (char) session.getAttribute("char");
+        assertEquals(expectedChar, actualChar);
+
+        boolean expectedBoolean = true;
+        boolean actualBoolean = (boolean) session.getAttribute("boolean");
+        assertEquals(expectedBoolean, actualBoolean);
+
+        byte[] expectedBytes = "Rochester, Minnesota, United States of America".getBytes();
+        byte[] actualBytes = (byte[]) session.getAttribute("byte array");
+        assertTrue(Arrays.equals(expectedBytes, actualBytes));
+
+        @SuppressWarnings({ "unchecked" })
+        ArrayList<Integer> actualArrayList = (ArrayList<Integer>) session.getAttribute("arrayList");
+        assertEquals(2, actualArrayList.size());
+        assertTrue("Expected arrayList to contain 2", actualArrayList.contains(2));
+        assertTrue("Expected arrayList to contain 1000", actualArrayList.contains(1000));
+
+        AtomicInteger actualAtomicInt = (AtomicInteger) session.getAttribute("atomicInteger");
+        assertEquals(55901, actualAtomicInt.get());
+
+        AtomicLong actualAtomicLong = (AtomicLong) session.getAttribute("atomicLong");
+        assertEquals(559015590255903l, actualAtomicLong.get());
     }
 
     public void testSerializeDataSource(HttpServletRequest request, HttpServletResponse response) throws Throwable {
@@ -408,6 +597,42 @@ public class SessionCacheTestServlet extends FATServlet {
 
     private static final byte[] toBytes(Object o) throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        if (o instanceof Character) {
+            byte[] bytes = new byte[] { 0, 6, 0, 0 };
+            char value = (char) o;
+            for (int i = 2 + 1; i >= 2; --i) {
+                bytes[i] = (byte) value;
+                value = (char) ((value) >> 8);
+            }
+            return bytes;
+        } else if (o instanceof Integer) {
+            byte[] bytes = new byte[] { 0, 1, 0, 0, 0, 0, 0 };
+            int pos = 2;
+            int numWritten = 0;
+            int v = ((Integer) o).intValue();
+
+            if ((v & ~0x7F) == 0) {
+                bytes[pos++] = ((byte) v);
+                numWritten = 3;
+            } else {
+                while (true) {
+                    if ((v & ~0x7F) == 0) {
+                        bytes[pos++] = ((byte) v);
+                        numWritten = pos;
+                        break;
+                    } else {
+                        bytes[pos++] = (byte) ((v & 0x7F) | 0x80);
+                        v >>>= 7;
+                    }
+                }
+            }
+            if (numWritten < 7) {
+                byte[] smallArray = new byte[numWritten];
+                System.arraycopy(bytes, 0, smallArray, 0, numWritten);
+                return smallArray;
+            }
+            return bytes;
+        }
         try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
             oos.writeObject(o);
             return bos.toByteArray();
@@ -510,9 +735,9 @@ public class SessionCacheTestServlet extends FATServlet {
         Cache<String, byte[]> cacheA = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
         byte[] result = cacheA.get(key);
         assertEquals(value, result == null ? null : Arrays.toString(result));
-        
+
         //Validate session existence/deletion if we pass in a sessionId
-        if (sessionId != null) { 
+        if (sessionId != null) {
             @SuppressWarnings("rawtypes")
             Cache<String, ArrayList> cacheM = Caching.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp", String.class, ArrayList.class);
             assertEquals(cacheM.containsKey(sessionId), value == null ? false : true);

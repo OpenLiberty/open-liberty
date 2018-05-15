@@ -203,8 +203,8 @@ APPLICATION_UPDATED=CWWKZ0062I: Aplikacja {0} zosta\u0142a zaktualizowana, ale n
 APPLICATION_UPDATED.explanation=W okre\u015blonej aplikacji wyst\u0105pi\u0142a drugorz\u0119dna zmiana, a jej istotno\u015b\u0107 zosta\u0142a okre\u015blona jako na tyle niewielka, \u017ce nie ma potrzeby restartowania aplikacji.
 APPLICATION_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: U\u017cycie Jandex jest w\u0142\u0105czone dla wszystkich aplikacji.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=Dla wszystkich aplikacji, gdy indeksy Jandex s\u0105 dost\u0119pne, dane klasy i adnotacji s\u0105 uzyskiwane z indeks\u00f3w Jandex.
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Domy\u015blne ustawienie u\u017cycia Jandex zosta\u0142o zmienione na warto\u015b\u0107 true w przypadku wszystkich aplikacji.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=W przypadku wszystkich aplikacji, gdy indeksy Jandex s\u0105 dost\u0119pne, dane klasy i adnotacji s\u0105 uzyskiwane z indeks\u00f3w Jandex, chyba \u017ce u\u017cycie Jandex jest wy\u0142\u0105czone dla konkretnej aplikacji.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 #{0} is application name

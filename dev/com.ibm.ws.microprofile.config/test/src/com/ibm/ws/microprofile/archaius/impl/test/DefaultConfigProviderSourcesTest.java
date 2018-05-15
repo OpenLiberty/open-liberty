@@ -15,12 +15,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.Properties;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
-public class DefaultConfigProviderSourcesTest {
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
+
+public class DefaultConfigProviderSourcesTest extends AbstractConfigTest {
 
     @Test
     public void testUsersPropertiesSource() {
@@ -37,7 +38,7 @@ public class DefaultConfigProviderSourcesTest {
     public void testPropertiesSource() {
         Config config = null;
         try {
-            config = ConfigProvider.getConfig();
+            config = ConfigProviderResolver.instance().getConfig();
             String dino = config.getOptionalValue("Dimetrodon", String.class).orElse("extinct");
             assertEquals("cool", dino);
         } finally {

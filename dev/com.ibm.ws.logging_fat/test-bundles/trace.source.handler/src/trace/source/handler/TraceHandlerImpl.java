@@ -185,8 +185,7 @@ public class TraceHandlerImpl implements Handler {
             int counter = 1;
             while (counter <= 500) {
                 try {
-                    LogTraceData logTraceDataEvent = (LogTraceData) bufferMgr.getNextEvent(HANDLER_NAME);
-                    GenericData event = logTraceDataEvent.getGenData();
+                    GenericData event = (LogTraceData) bufferMgr.getNextEvent(HANDLER_NAME);
 
                     // String eventString = event.toString();
                     // if (eventString.contains("testTraceSourceForLibertyLogging") || eventString.contains("testTraceSourceForJUL")) {

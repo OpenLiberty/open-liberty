@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@ package com.ibm.ws.webcontainer.security;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.List;
 
@@ -90,8 +92,7 @@ public class ReferrerURLCookieHandler extends URLHandler {
         Cookie c = new Cookie(cookieName, value);
         if (cookieName.equals("WASReqURL")) {
             c.setPath(getPathName(req));
-        }
-        else {
+        } else {
             c.setPath("/");
         }
         c.setMaxAge(-1);
@@ -228,16 +229,32 @@ public class ReferrerURLCookieHandler extends URLHandler {
                 url = removeHostNameFromURL(url);
             }
             url = encodeURL(url);
-            Cookie c = new Cookie(REFERRER_URL_COOKIENAME, url);
-            c.setPath(getPathName(req));
-            c.setMaxAge(-1);
-            c.setSecure(webAppSecConfig.getSSORequiresSSL());
-            authResult.setCookie(c);
+            authResult.setCookie(createReferrerUrlCookie(req, url));
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "set " + REFERRER_URL_COOKIENAME + " cookie into AuthenticationResult.");
                 Tr.debug(tc, "setReferrerURLCookie", "Referrer URL cookie set " + url);
             }
         }
+    }
+
+    private Cookie createReferrerUrlCookie(HttpServletRequest req, final String url) {
+        Cookie referrerUrlCookie;
+        if (System.getSecurityManager() == null) {
+            referrerUrlCookie = new Cookie(REFERRER_URL_COOKIENAME, url);
+        } else {
+            referrerUrlCookie = AccessController.doPrivileged(new PrivilegedAction<Cookie>() {
+
+                @Override
+                public Cookie run() {
+                    return new Cookie(REFERRER_URL_COOKIENAME, url);
+                }
+            });
+        }
+
+        referrerUrlCookie.setPath(getPathName(req));
+        referrerUrlCookie.setMaxAge(-1);
+        referrerUrlCookie.setSecure(webAppSecConfig.getSSORequiresSSL());
+        return referrerUrlCookie;
     }
 
     /*

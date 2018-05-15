@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -495,6 +496,47 @@ public class ContextManagerTest {
         TimedDirContext ctx3 = cm.getDirContext();
         String host3 = (String) ctx3.getEnvironment().get(Context.PROVIDER_URL);
         assertEquals("Expected return to primary server.", host1, host3);
+    }
+
+    /**
+     * Test that when the context pool is enabled context failure handling results in
+     * expected behavior for recreating the context pool.
+     */
+    @Test
+    public void getDirContext_ContextPoolEnabled_ContextFailure() throws Exception {
+        ContextManager cm = new ContextManager();
+        cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
+        SerializableProtectedString bindPassword = new SerializableProtectedString(EmbeddedApacheDS.getBindPassword().toCharArray());
+        cm.setSimpleCredentials(EmbeddedApacheDS.getBindDN(), bindPassword);
+        cm.setContextPool(true, 1, 1, 0, 10000l, 1l);
+        cm.initialize();
+
+        /*
+         * Get a context from the pool. This will populate the pool.
+         *
+         * We will release the context so that if the next step doesn't generate
+         * a new pool, we will retrieving this one.
+         */
+        TimedDirContext ctx1 = cm.getDirContext();
+        cm.releaseDirContext(ctx1);
+        Thread.sleep(1100);
+
+        /*
+         * Simulate a failure on the first context. A new context pool will be created
+         * since it is more than 1 second after the initial context pool creation.
+         */
+        TimedDirContext ctx2 = cm.reCreateDirContext(ctx1, "some failure");
+        assertTrue("Expected new context pool with new timestamp.", ctx1.getPoolTimestamp() < ctx2.getPoolTimestamp());
+        assertNotSame("Expected new context instance.", ctx1, ctx2);
+        cm.releaseDirContext(ctx2);
+
+        /*
+         * Simulate another failure on the first context. This will NOT create a new context pool since it
+         * uses the first context (from the original context pool which has been replaced). Instead, it
+         * will grab a context from the new pool.
+         */
+        TimedDirContext ctx3 = cm.reCreateDirContext(ctx1, "some failure");
+        assertSame("Expected same context instance.", ctx2, ctx3);
     }
 
     /**

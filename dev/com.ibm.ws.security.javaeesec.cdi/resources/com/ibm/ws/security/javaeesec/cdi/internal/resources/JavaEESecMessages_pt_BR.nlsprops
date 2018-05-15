@@ -26,21 +26,13 @@ JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: O be
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=O bean LoginToContinueProperties que \u00e9 necess\u00e1rio para a autentica\u00e7\u00e3o de login do formul\u00e1rio n\u00e3o existe.
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Certifique-se de que o aplicativo esteja anotado por anota\u00e7\u00e3o LoginToContinue na anota\u00e7\u00e3o FormAuthenticationMechanismDefinition ou CustomFormAuthenticationMechanismDefinition.
 
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: A classe de credencial fornecida {0} n\u00e3o \u00e9 suportada pela classe CustomFormHttpAuthenticationMechanism. Use javax.security.enterprise.credential.UsernamePasswordCredential ou javax.security.enterprise.credential.BasicAuthenticationCredential para autentica\u00e7\u00e3o.
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=A classe de credencial fornecida para a autentica\u00e7\u00e3o n\u00e3o \u00e9 suportada pela classe CustomFormHttpAuthenticationMechanism. Use javax.security.enterprise.credential.UsernamePasswordCredential ou javax.security.enterprise.credential.BasicAuthenticationCredential para autentica\u00e7\u00e3o.
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Certifique-se de que a classe de credencial suportada seja usada para autentica\u00e7\u00e3o de formul\u00e1rio customizado.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: A classe de credencial fornecida {0} n\u00e3o \u00e9 suportada pelo registro do usu\u00e1rio. Use javax.security.enterprise.credential.UsernamePasswordCredential ou javax.security.enterprise.credential.BasicAuthenticationCredential para autentica\u00e7\u00e3o.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=A classe de credencial fornecida para a autentica\u00e7\u00e3o n\u00e3o \u00e9 suportada pelo registro do usu\u00e1rio. Use javax.security.enterprise.credential.UsernamePasswordCredential ou javax.security.enterprise.credential.BasicAuthenticationCredential para autentica\u00e7\u00e3o.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Certifique-se de que a classe de credencial suportada seja usada para autentica\u00e7\u00e3o usando o registro do usu\u00e1rio.
 
-JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: O nome do principal \u00e9 nulo ou o objeto do principal n\u00e3o existe.  Certifique-se de que CredentialValidationResult contenha o objeto do principal v\u00e1lido.
-JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=O objeto do principal no objeto fornecido CredentialValidationResult n\u00e3o \u00e9 v\u00e1lido.  Ele \u00e9 nulo ou n\u00e3o tem nome v\u00e1lido.
-JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=Se o aplicativo fornece uma IdentityStore, certifique-se de que ele retorne o objeto do principal v\u00e1lido em CredentialValidationResult.
-
-JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: O UniqueId \u00e9 nulo. Certifique-se de que CredentialValidationResult contenha UniqueId v\u00e1lido.
-JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=O UniqueId no objeto CredentialValidationResult fornecido \u00e9 nulo.
-JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Se o aplicativo fornece uma IdentityStore, certifique-se de que ele retorne um UniqueId v\u00e1lido em CredentialValidationResult.
-
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: O bean IdentityStoreHandler n\u00e3o foi encontrado. Use um registro do usu\u00e1rio que seja definido por server.xml. O bean IdentityStoreHandler ser\u00e1 criado quando houver pelo menos um bean IdentityStore. Se o aplicativo pretender usar um IdentityStore, certifique-se que ele foi configurado adequadamente. 
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=O bean IdentityStoreHandler n\u00e3o foi encontrado. Se o aplicativo pretender usar um IdentityStore, certifique-se que ele foi configurado adequadamente. O bean IdentityStoreHandler ser\u00e1 criado quando houver pelo menos um bean IdentityStore.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Se o aplicativo pretender usar um IdentityStore, certifique-se que ele foi configurado adequadamente.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE=CWWKS1930W: O objeto IdentityStore configurado n\u00e3o foi localizado. Caso haja um registro do usu\u00e1rio configurado, ele ser\u00e1 usado no lugar. Certifique-se de que o objeto IdentityStore configurado pelo aplicativo esteja dispon\u00edvel.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.explanation=O motivo pelo qual o objeto IdentityStore n\u00e3o foi encontrado varia. As mensagens de erro para o objeto IdentityStore fornecem informa\u00e7\u00f5es sobre o motivo pelo qual o objeto IdentityStore n\u00e3o foi localizado.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.useraction=Investigue quaisquer mensagens de erro do objeto IdentityStore, e fa\u00e7a as corre\u00e7\u00f5es com base nas mensagens de erro.
 
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: A implementa\u00e7\u00e3o do aplicativo falhou porque um elemento login-config foi localizado no arquivo web.xml para o m\u00f3dulo {0} no aplicativo {1}. Para ativar o bean HttpAuthenticationMechanism, remova o elemento login-config do arquivo web.xml.
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=A implementa\u00e7\u00e3o do aplicativo falhou porque ambos, o elemento login-config e o bean HttpAuthenticationMechanism, est\u00e3o definidos. Apenas um desses mecanismos de autentica\u00e7\u00e3o pode ser usado em seu aplicativo.

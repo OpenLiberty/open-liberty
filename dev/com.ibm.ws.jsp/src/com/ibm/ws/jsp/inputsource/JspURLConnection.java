@@ -64,7 +64,7 @@ public class JspURLConnection extends URLConnection {
             is = conn.getInputStream();
         }
         catch (IOException e) {
-            if (relativeUrl.endsWith(".tld") || relativeUrl.endsWith(".jar") || searchOnClasspath) {
+            if (relativeUrl.endsWith(".tag") || relativeUrl.endsWith(".tld") || relativeUrl.endsWith(".jar") || searchOnClasspath) { // .tag file will now be in WEB-INF/lib
                 String s = relativeUrl;
                 if (s.charAt(0) == '/')
                     s = s.substring(1);

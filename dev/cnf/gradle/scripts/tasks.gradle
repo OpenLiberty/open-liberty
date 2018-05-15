@@ -80,7 +80,7 @@ task apiSpiJavadoc(type: Javadoc) {
   }
   exclude "**/internal/**"
   title = bnd('Bundle-Name')
-  options.source '1.6'
+  options.source bnd('javac.source')
   options.memberLevel = 'PUBLIC'
   options.noIndex true
   options.use true

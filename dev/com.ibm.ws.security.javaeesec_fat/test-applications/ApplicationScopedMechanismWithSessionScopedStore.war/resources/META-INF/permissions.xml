@@ -26,12 +26,6 @@
       <actions>read</actions>
    </permission>
 
-   <permission>
-      <class-name>java.util.PropertyPermission</class-name>
-      <name>org.glassfish.web.rfc2109_cookie_names_enforced</name>
-      <actions>read</actions>
-   </permission>
-
 <!-- this is for java.io.PrintWriter.write in FlexibleBaseNoJavaEESecServlet.class -->
    <permission>
       <class-name>java.net.SocketPermission</class-name>

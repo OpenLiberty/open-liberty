@@ -274,12 +274,12 @@ JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Impossible d'extraire une cl\u00e9 de 
 JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=Le magasin de cl\u00e9s certifi\u00e9es sp\u00e9cifi\u00e9 par la configuration de consommateur JWT ne contient aucun certificat de signataire. Un certificat de signataire est requis pour valider le jeton JWT.
 JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=V\u00e9rifiez que le magasin de cl\u00e9s certifi\u00e9es utilis\u00e9 par la configuration de consommateur JWT contient au moins un certificat de signataire. Le magasin de cl\u00e9s certifi\u00e9es peut \u00eatre configur\u00e9 \u00e0 l'aide de l'attribut 'trustStoreRef' dans la configuration de consommateur JWT ou bien dans le cadre de la configuration SSL globale du serveur.
 
-# Do not translate "JWT", "trustedAlias"
+# Do not translate "JWT", "trustedAlias", "keyName"
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
-JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Impossible d'extraire une cl\u00e9 de signature depuis le magasin de cl\u00e9s certifi\u00e9es. L'attribut 'trustedAlias' n'a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9 dans la configuration de consommateur JWT et plusieurs certificats de signataire existent dans le magasin de cl\u00e9s certifi\u00e9es.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=Plusieurs certificats de signataire ont \u00e9t\u00e9 d\u00e9tect\u00e9s dans le magasin de cl\u00e9s certifi\u00e9es. Lorsque plusieurs certificats sont pr\u00e9sents dans le magasin de cl\u00e9s certifi\u00e9es, l'attribut 'trustedAlias' doit \u00eatre sp\u00e9cifi\u00e9 dans la configuration de consommateur JWT pour d\u00e9terminer le certificat \u00e0 utiliser.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Sp\u00e9cifiez l'attribut 'trustedAlias' dans la configuration de consommateur JWT en utilisant l'alias du certificat de signataire appropri\u00e9.
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Impossible d'identifier le certificat de signataire sp\u00e9cifi\u00e9 dans le magasin de cl\u00e9s de confiance \u00e0 utiliser. Ajoutez l'attribut 'trustedAlias' \u00e0 la configuration de consommateur JWT ou l'attribut 'keyName' \u00e0 la configuration MP-JWT.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Plusieurs certificats de signataire ont \u00e9t\u00e9 d\u00e9tect\u00e9s dans le magasin de cl\u00e9s de confiance. Lorsque le magasin de cl\u00e9s de confiance contient plusieurs certificats, l'attribut 'trustedAlias' doit \u00eatre sp\u00e9cifi\u00e9 dans la configuration de consommateur JWT ou l'attribut 'keyName' doit \u00eatre sp\u00e9cifi\u00e9 dans la configuration MP-JWT afin d'identifier le certificat \u00e0 utiliser.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Sp\u00e9cifiez le certificat \u00e0 utiliser dans le magasin de cl\u00e9s de confiance en ajoutant l'alias du certificat de signataire appropri\u00e9 dans l'attribut de configuration de consommateur JWT 'trustedAlias' ou dans l'attribut de configuration MP-JWT 'keyName'.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: L'API de filtrage des demandes des clients n'a pas propag\u00e9 le JWT (JSON Web Token).

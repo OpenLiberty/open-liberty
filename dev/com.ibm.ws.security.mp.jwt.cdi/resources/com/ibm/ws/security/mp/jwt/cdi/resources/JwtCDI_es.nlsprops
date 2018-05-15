@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Aseg\u00farese de que el punto de i
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: La reclamaci\u00f3n no se puede inyectar en el punto de inyecci\u00f3n {0} para los \u00e1mbitos ApplicationScoped o SessionScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=El punto de inyecci\u00f3n anotado con el calificador de reclamaci\u00f3n para un tipo raw debe pertenecer a una clase anotada con la anotaci\u00f3n de \u00e1mbito RequestScoped.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Aseg\u00farese de que el punto de inyecci\u00f3n es miembro de una clase en el \u00e1mbito RequestScoped para la reclamaci\u00f3n que desea inyectar.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: Un principal JsonWebToken no se puede inyectar porque hay uno no disponible. Proteja el recurso solicitante para que se produzca la autenticaci\u00f3n antes de acceder al recurso.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=Se solicit\u00f3 la inyecci\u00f3n de JsonWebToken, pero hay una que no est\u00e1 disponible.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Compruebe que la autenticaci\u00f3n de usuario se produzca antes de acceder al recurso que solicita la inyecci\u00f3n.

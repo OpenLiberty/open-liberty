@@ -13,6 +13,7 @@ package test.config.merged;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -34,6 +36,8 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+
+import com.ibm.ws.config.variables.ServerXMLVariables;
 
 /**
  *
@@ -57,7 +61,7 @@ public class DelayedVariableTestServlet extends HttpServlet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -131,6 +135,20 @@ public class DelayedVariableTestServlet extends HttpServlet {
         assertEquals(VARIABLE_STRING, properties.get(DELAYED_IBM_VAR_ATTR));
         assertEquals(EVALUATED_VARIABLE, properties.get(IMMEDIATE_VAR_ATTR));
         assertEquals(EVALUATED_VARIABLE, properties.get(IMMEDIATE_VAR_TWO));
+
+    }
+
+    // Tests method to return variables defined in server.xml
+    public void testConfigVariables() throws Exception {
+        ServiceReference<ServerXMLVariables> ref = bundleContext.getServiceReference(ServerXMLVariables.class);
+        assertNotNull("No config variable component", ref);
+        references.add(ref);
+        ServerXMLVariables cvc = bundleContext.getService(ref);
+        Map<String, String> vars = cvc.getServerXMLVariables();
+        // Check server.xml variable is present
+        assertEquals(vars.get("variableDelayTest"), "evaluated");
+        // Check that bootstrap var is not
+        assertNull(vars.get("com.ibm.ws.logging.trace.specification"));
 
     }
 

@@ -104,6 +104,14 @@ public class AuditManager {
     }
 
     /**
+     * Sets whether we are doing a local or remote JMS call
+     */
+    public void setJMSCallType(String callType) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setJMSCallType(callType);
+    }
+
+    /**
      * Sets the JMS messaging engine on the thread
      */
     public void setJMSMessagingEngine(String me) {

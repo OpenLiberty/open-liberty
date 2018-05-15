@@ -21,7 +21,9 @@ import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
-public class UserProvidedSourcesBasicTest {
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
+
+public class UserProvidedSourcesBasicTest extends AbstractConfigTest {
 
     @Test
     public void testUsersPropertiesSource() {

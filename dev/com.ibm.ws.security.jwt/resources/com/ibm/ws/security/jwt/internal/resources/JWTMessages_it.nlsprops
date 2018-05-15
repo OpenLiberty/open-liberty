@@ -274,12 +274,12 @@ JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: Impossibile richiamare una chiave di f
 JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=Il truststore specificato dalla configurazione del consumer JWT non contiene certificati del firmatario. \u00c8 necessario un certificato del firmatario per convalidare il token JWT.
 JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Verificare che il truststore utilizzato dalla configurazione del consumer JWT contenga almeno un certificato del firmatario. Il truststore pu\u00f2 essere configurato utilizzando l'attributo 'trustStoreRef' nella configurazione del consumer JWT o come parte della configurazione generale dell'SSL del server.
 
-# Do not translate "JWT", "trustedAlias"
+# Do not translate "JWT", "trustedAlias", "keyName"
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
-JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Impossibile richiamare una chiave di firma dal truststore. L'attributo 'trustedAlias' non \u00e8 stato specificato nella configurazione del consumer JWT e sono presenti pi\u00f9 certificati del firmatario nel truststore.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=Sono stati trovati pi\u00f9 certificati del firmatario nel truststore configurato. Quando esistono pi\u00f9 certificati nel truststore, deve essere specificato l'attributo 'trustedAlias' nella configurazione del consumer JWT per poter stabilire quale dei certificati utilizzare.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Specificare l'attributo di configurazione del consumer JWT 'trustedAlias' con l'alias del certificato del firmatario appropriato.
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: Impossibile determinare quale certificato firmatario nel truststore utilizzare. Aggiungere l'attributo 'trustedAlias' nella configurazione del consumer JWT o l'attributo 'keyName' nella configurazione MP-JWT.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Sono stati trovati pi\u00f9 certificati del firmatario nel truststore configurato. Quando esistono pi\u00f9 certificati nel truststore, deve essere specificato l'attributo 'trustedAlias' nella configurazione del consumer JWT o l'attributo 'keyName' nella configurazione MP-JWT per poter stabilire quale dei certificati utilizzare.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Specificare quale certificato utilizzare nel truststore aggiungendo l'alias del certificato del firmatario appropriato all'attributo di configurazione del consumer JWT 'trustedAlias' o all'attributo di configurazione MP-JWT 'keyName'.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: L'API per il filtro della richiesta client non ha propagato il JWT (JSON Web Token).

@@ -16,14 +16,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -39,6 +37,8 @@ import componenttest.topology.utils.HttpUtils;
  */
 public class PreThinnedSpringBootTests extends AbstractSpringTests {
 
+    private String application = SPRING_BOOT_15_APP_BASE;
+
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("springBoot-1.5", "servlet-3.1"));
@@ -46,7 +46,14 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_15_APP_BASE;
+        return application;
+    }
+
+    @Override
+    public void modifyAppConfiguration(SpringBootApplication appConfig) {
+        if (application != SPRING_BOOT_15_APP_BASE) {
+            appConfig.setName("testPreThinned");
+        }
     }
 
     @Override
@@ -57,7 +64,7 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
     @Test
     public void testWithSharedCache() throws Exception {
         // First stop the server which has already thinned the test application
-        server.stopServer(false);
+        stopServer(false);
 
         // locate and copy the lib.index.cache to the shared area
         RemoteFile libIndexCache = server.getFileFromLibertyServerRoot(SPRING_WORKAREA_DIR + SPRING_LIB_INDEX_CACHE);
@@ -76,17 +83,8 @@ public class PreThinnedSpringBootTests extends AbstractSpringTests {
         apps[0].copyToDest(thinnedApp);
 
         // configure the pre-thinned app jar as a spring boot app
-        ServerConfiguration sc = server.getServerConfiguration();
-        List<SpringBootApplication> configuredApps = sc.getSpringBootApplications();
-        configuredApps.clear();
-        SpringBootApplication thinnedAppConfig = new SpringBootApplication();
-        thinnedAppConfig.setLocation(thinnedApp.getName());
-        thinnedAppConfig.setName("testPreThinned");
-        configuredApps.add(thinnedAppConfig);
-
-        server.updateServerConfiguration(sc);
-
-        server.startServer();
+        application = thinnedApp.getName();
+        configureServer();
 
         assertNotNull("The application was not installed", server
                         .waitForStringInLog("CWWKZ0001I:.*testPreThinned.*"));

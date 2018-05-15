@@ -18,8 +18,9 @@ import org.junit.Test;
 
 import com.ibm.ws.microprofile.config.TestUtils;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
-public class SourcedValueTest {
+public class SourcedValueTest extends AbstractConfigTest {
 
     @Test
     public void testSourceValues() {

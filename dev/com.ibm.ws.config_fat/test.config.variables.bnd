@@ -15,6 +15,9 @@ Bundle-Name: Tests for variable behavior
 Bundle-SymbolicName: test.config.variables
 Bundle-Description: Test bundle for variable behavior, version=${bVersion}
 
-	
+-dsannotations: com.ibm.ws.config.variables.ConfigVariableComponent
+Export-Package: \
+	com.ibm.ws.config.variables
+		
 Include-Resource: \
     OSGI-INF=test-bundles/test.config.variables/resources/OSGI-INF

@@ -203,8 +203,8 @@ APPLICATION_UPDATED=CWWKZ0062I: La aplicaci\u00f3n {0} se ha actualizado, pero n
 APPLICATION_UPDATED.explanation=Se ha producido un cambio menor en la aplicaci\u00f3n especificada, y el cambio se ha considerado lo bastante menor para que no haya necesidad de reiniciar la aplicaci\u00f3n.
 APPLICATION_UPDATED.useraction=No se requiere ninguna acci\u00f3n.
 
-APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: El uso de Jandex se ha habilitado para todas las aplicaciones.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=Para todas las aplicaciones y cuando los \u00edndices de Jandex est\u00e1n disponibles, los datos de clase y anotaci\u00f3n se obtienen de los \u00edndices de Jandex.
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: El valor predeterminado de uso de Jandex se ha modificado a true para todas las aplicaciones.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Para todas las aplicaciones y cuando los \u00edndices de Jandex est\u00e1n disponibles, los datos de clase y anotaci\u00f3n se obtienen de los \u00edndices de Jandex, a menos que el uso de Jandex est\u00e9 inhabilitado espec\u00edficamente para la aplicaci\u00f3n.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=No se requiere ninguna acci\u00f3n.
 
 #{0} is application name

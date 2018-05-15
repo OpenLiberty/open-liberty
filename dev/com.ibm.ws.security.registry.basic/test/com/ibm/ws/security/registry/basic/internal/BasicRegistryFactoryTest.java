@@ -400,6 +400,11 @@ public class BasicRegistryFactoryTest extends BasicRegistryConfigAdminMock {
             public String certificateMapperId() {
                 return null;
             }
+
+            @Override
+            public String CertificateMapper_target() {
+                return null;
+            }
         });
         assertTrue("encodedUser should exist in the registry", reg.isValidUser("encodedUser"));
         assertTrue("user1 should exist in the registry", reg.isValidUser("user1"));
@@ -468,6 +473,11 @@ public class BasicRegistryFactoryTest extends BasicRegistryConfigAdminMock {
 
             @Override
             public String certificateMapperId() {
+                return null;
+            }
+
+            @Override
+            public String CertificateMapper_target() {
                 return null;
             }
         });
@@ -540,6 +550,11 @@ public class BasicRegistryFactoryTest extends BasicRegistryConfigAdminMock {
             public String certificateMapperId() {
                 return null;
             }
+
+            @Override
+            public String CertificateMapper_target() {
+                return null;
+            }
         });
         assertTrue("encodedUser should exist in the registry", reg.isValidUser("encodedUser"));
         assertFalse("user1 should NOT exist in the registry (as its duplicated)", reg.isValidUser("user1"));
@@ -610,6 +625,11 @@ public class BasicRegistryFactoryTest extends BasicRegistryConfigAdminMock {
             public String certificateMapperId() {
                 return null;
             }
+
+            @Override
+            public String CertificateMapper_target() {
+                return null;
+            }
         });
         assertTrue("'user1' should exist in the registry", reg.isValidUser("user1"));
         assertTrue("'my group 2' should exist in the registry", reg.isValidGroup("my group 2"));
@@ -669,6 +689,11 @@ public class BasicRegistryFactoryTest extends BasicRegistryConfigAdminMock {
 
             @Override
             public String certificateMapperId() {
+                return null;
+            }
+
+            @Override
+            public String CertificateMapper_target() {
                 return null;
             }
         });

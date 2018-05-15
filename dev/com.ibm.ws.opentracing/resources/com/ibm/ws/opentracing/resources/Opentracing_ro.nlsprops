@@ -66,25 +66,13 @@ OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: Invocarea metodei OpentracingTra
 OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=Caracteristica construie\u015fte implement\u0103ri Tracer cu un OpentracingTracerFactory furnizat de utilizator. Metoda OpentracingTracerFactory.newInstance a returnat o excep\u0163ie.
 OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=Determina\u0163i de ce metoda OpentracingTracerFactory newInstance furnizat\u0103 de utilizator a returnat o excep\u0163ie.
 
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: Nu este disponibil niciun Tracer pentru o cerere de intrare. Cererea de intrare nu va fi corelat\u0103 cu serviciul din amonte.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=O implementare Tracer nu a fost disponibil\u0103 c\u00e2nd a ajuns o cerere la punctul final al aplica\u0163iei. Aceast\u0103 cerere de intrare nu va furniza nicio informa\u0163ie serviciului Opentracing.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Examina\u0163i erorile anterioare pentru a determina de ce nu este disponibil un Tracer.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: Span-ul creat pentru o cerere de intrare nu este disponibil pentru r\u0103spunsul la cerere. Cererea de intrare nu va fi corelat\u0103 cu serviciul din amonte.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=Span-ul creat c\u00e2nd a ajuns o cerere nu este disponibil c\u00e2nd este returnat r\u0103spunsul. Nicio informa\u0163ie Span nu va fi furnizat\u0103 serviciului Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Examina\u0163i erorile anterioare pentru a determina de ce nu este disponibil un Span.
-
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: Nu a fost g\u0103sit niciun Tracer pentru o cerere de ie\u015fire. Cererea de ie\u015fire nu va fi corelat\u0103 cu cererea de intrare.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=O implementare Tracer nu a fost disponibil\u0103 c\u00e2nd este trimis\u0103 o cerere de la aplica\u0163ie. Aceast\u0103 cerere de ie\u015fire nu va furniza nicio informa\u0163ie serviciului Opentracing.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Examina\u0163i erorile anterioare pentru a determina de ce nu este disponibil un Tracer.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: Span-ul creat pentru o cerere de ie\u015fire nu este disponibil pentru r\u0103spunsul la cerere. Cererea de ie\u015fire nu va fi corelat\u0103 cu cererea de intrare.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=Span-ul creat c\u00e2nd cererea a fost trimis\u0103  nu este disponibil c\u00e2nd este returnat r\u0103spunsul. Nicio informa\u0163ie Span nu va fi furnizat\u0103 serviciului Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Examina\u0163i erorile anterioare pentru a determina de ce nu este disponibil un Span.
-
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: Invocarea metodei OpentracingTracerFactory.newInstance(...) furnizat\u0103 de utilizator a returnat null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=Caracteristica construie\u015fte implement\u0103ri Tracer cu un OpentracingTracerFactory furnizat de utilizator. Metoda OpentracingTracerFactory.newInstance a returnat null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=Determina\u0163i de ce metoda OpentracingTracerFactory newInstance furnizat\u0103 de utilizator a returnat null.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing nu poate urm\u0103ri cererile JAX-RS deoarece nu a fost furnizat\u0103 clasa OpentracingTracerFactory.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing nu va func\u0163iona corespunz\u0103tor deoarece nu a fost furnizat\u0103 o clas\u0103 OpentracingTracerFactory. Cererile JAX-RS se vor executa normal, dar acestea nu vor fi urm\u0103rite.
+OPENTRACING_NO_TRACERFACTORY.useraction=Pentru informa\u0163ii suplimentare, vede\u0163i documenta\u0163ia despre cum se activeaz\u0103 urm\u0103rirea distribuit\u0103 OpenTracing.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

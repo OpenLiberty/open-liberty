@@ -97,14 +97,14 @@ public class CommonTestClass {
     }
 
     public void verifyException(Exception e, String errorMsgRegex) {
-        String errorMsg = e.getLocalizedMessage();
+        String errorMsg = e.toString();
         Pattern pattern = Pattern.compile(errorMsgRegex);
         Matcher m = pattern.matcher(errorMsg);
         assertTrue("Exception message did not match expected expression. Expected: [" + errorMsgRegex + "]. Message was: [" + errorMsg + "]", m.find());
     }
 
     public void verifyExceptionWithInserts(Exception e, String msgKey, String... inserts) {
-        String errorMsg = e.getLocalizedMessage();
+        String errorMsg = e.toString();
         verifyStringWithInserts(errorMsg, msgKey, inserts);
     }
 

@@ -31,5 +31,5 @@ IBM-API-Package: \
   com.ibm.ws.javamail.config
 -jars=com.ibm.websphere.javaee.mail.1.6; location:=dev/api/spec/, \
  com.ibm.websphere.appserver.thirdparty.mail-1.6; location:=dev/api/third-party/
-kind=beta
+kind=ga
 edition=core

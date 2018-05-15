@@ -19,6 +19,7 @@ import javax.security.auth.Subject;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIIncorrectCallException;
 import com.ibm.websphere.sib.exception.SINotPossibleInCurrentConfigurationException;
@@ -148,13 +149,16 @@ final public class TrmSICoreConnectionFactoryImpl extends
         SICoreConnection sc = null;
 
         try {
+            AuditManager auditManager = new AuditManager();
 
             //if providerEndpoint(i.e remoteServerAddress) list is empty .. then try in-process
             if (cap.getProviderEPs().isEmpty()) {
+                auditManager.setJMSCallType("local");
                 sc = getConnectionToLocalME(credentialType, props, cap);
             }
             else
             {
+                auditManager.setJMSCallType("remote");
                 sc = remoteBootstrap(credentialType, cap);
             }
         } catch (Exception e) {

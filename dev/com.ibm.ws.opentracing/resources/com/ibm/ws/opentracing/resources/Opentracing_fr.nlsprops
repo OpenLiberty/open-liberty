@@ -66,25 +66,13 @@ OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: L'appel de la m\u00e9thode Opent
 OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=La fonction construit des impl\u00e9mentations Tracer avec une interface OpentracingTracerFactory utilisateur. La m\u00e9thode OpentracingTracerFactory.newInstance a renvoy\u00e9 une exception.
 OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=D\u00e9terminez pourquoi la m\u00e9thode OpentracingTracerFactory newInstance fournie par l'utilisateur a renvoy\u00e9 une exception.
 
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: Aucune impl\u00e9mentation Tracer n'est disponible pour une demande entrante. La demande entrante ne sera pas corr\u00e9l\u00e9e avec le service en amont.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=Aucune impl\u00e9mentation Tracer n'\u00e9tait disponible lors de l'arriv\u00e9e d'une demande au noeud final de l'application. Cette demande entrante ne fournira aucune information au service Opentracing.
-OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Examinez les erreurs ant\u00e9rieures pour d\u00e9terminer pourquoi aucune impl\u00e9mentation Tracer n'\u00e9tait disponible.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: L'\u00e9l\u00e9ment Span cr\u00e9\u00e9 pour une demande entrante n'\u00e9tait pas disponible pour la r\u00e9ponse \u00e0 la demande. La demande entrante ne sera pas corr\u00e9l\u00e9e avec le service en amont.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=L'\u00e9l\u00e9ment Span cr\u00e9\u00e9 lorsque la r\u00e9ponse est arriv\u00e9e n'\u00e9tait pas disponible lors du renvoi de la r\u00e9ponse. Aucune information Span ne sera fournie au service Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Examinez les erreurs ant\u00e9rieures pour d\u00e9terminer pourquoi aucun \u00e9l\u00e9ment Span n'\u00e9tait disponible.
-
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: Aucune impl\u00e9mentation Tracer n'\u00e9tait disponible pour une demande sortante. La demande sortante ne sera pas corr\u00e9l\u00e9e avec la demande entrante.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=Aucune impl\u00e9mentation Tracer n'\u00e9tait disponible lors de l'envoi d'une demande depuis l'application. Cette demande sortante ne fournira aucune information au service Opentracing.
-OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Examinez les erreurs ant\u00e9rieures pour d\u00e9terminer pourquoi aucune impl\u00e9mentation Tracer n'\u00e9tait disponible.
-
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: L'\u00e9l\u00e9ment Span cr\u00e9\u00e9 pour une demande sortante n'\u00e9tait pas disponible pour la r\u00e9ponse \u00e0 la demande. La demande sortante ne sera pas corr\u00e9l\u00e9e avec la demande entrante.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=L'\u00e9l\u00e9ment Span cr\u00e9\u00e9 lorsque la r\u00e9ponse a \u00e9t\u00e9 envoy\u00e9e n'\u00e9tait pas disponible lors du renvoi de la r\u00e9ponse. Aucune information Span ne sera fournie au service Opentracing.
-OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Examinez les erreurs ant\u00e9rieures pour d\u00e9terminer pourquoi aucun \u00e9l\u00e9ment Span n'\u00e9tait disponible.
-
 OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: L'appel de la m\u00e9thode OpentracingTracerFactory.newInstance(...) fournie par l'utilisateur a envoy\u00e9 une valeur Null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=La fonction construit des impl\u00e9mentations Tracer avec une interface OpentracingTracerFactory fournie par l'utilisateur. La m\u00e9thode OpentracingTracerFactory.newInstance a renvoy\u00e9 la valeur null.
 OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=D\u00e9terminer pourquoi la m\u00e9thode OpentracingTracerFactory newInstance fournie par l'utilisateur a renvoy\u00e9 la valeur null.
+
+OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing ne peut pas effectuer le suivi des demandes JAX-RS car vous n'avez pas fourni de classe OpentracingTracerFactory.
+OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing ne fonctionnera pas correctement car vous n'avez pas fourni de classe OpentracingTracerFactory. Les demandes JAX-RS s'ex\u00e9cuteront normalement mais ne seront pas suivies.
+OPENTRACING_NO_TRACERFACTORY.useraction=Pour plus d'informations, voir la documentation relative \u00e0 l'activation de la fonction de trace distribu\u00e9e OpenTracing.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message

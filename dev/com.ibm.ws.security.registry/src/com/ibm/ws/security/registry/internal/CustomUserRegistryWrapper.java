@@ -46,12 +46,12 @@ public class CustomUserRegistryWrapper implements UserRegistry, ExternalUserRegi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.security.registry.UserRegistry#getExternalUserRegistry()
      */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.security.registry.internal.ExternalUserRegistryWrapper#getExternalUserRegistry()
      */
     @Override
@@ -238,9 +238,9 @@ public class CustomUserRegistryWrapper implements UserRegistry, ExternalUserRegi
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore(com.ibm.websphere.security.CertificateMapFailedException.class)
-    public String mapCertificate(X509Certificate cert) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
+    public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
         try {
-            return customUserRegistry.mapCertificate(new X509Certificate[] { cert });
+            return customUserRegistry.mapCertificate(chain);
         } catch (com.ibm.websphere.security.CertificateMapNotSupportedException e) {
             throw new CertificateMapNotSupportedException(e.getMessage());
         } catch (com.ibm.websphere.security.CertificateMapFailedException e) {
@@ -273,7 +273,7 @@ public class CustomUserRegistryWrapper implements UserRegistry, ExternalUserRegi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.security.registry.UserRegistry#getType()
      */
     @Override

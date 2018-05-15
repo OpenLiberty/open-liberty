@@ -129,7 +129,7 @@ public class DummyRegistry implements UserRegistry {
     }
 
     @Override
-    public String mapCertificate(X509Certificate cert) throws com.ibm.ws.security.registry.CertificateMapNotSupportedException, com.ibm.ws.security.registry.CertificateMapFailedException, RegistryException {
+    public String mapCertificate(X509Certificate[] chain) throws com.ibm.ws.security.registry.CertificateMapNotSupportedException, com.ibm.ws.security.registry.CertificateMapFailedException, RegistryException {
         return null;
     }
 

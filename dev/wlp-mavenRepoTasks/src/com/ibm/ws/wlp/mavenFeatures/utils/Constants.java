@@ -37,6 +37,8 @@ public class Constants {
 	public static final String WEBSPHERE_LIBERTY_FEATURES_GROUP_ID = "com.ibm.websphere.appserver.features";
 	public static final String OPEN_LIBERTY_FEATURES_GROUP_ID = "io.openliberty.features";
 	public static final String JSON_ARTIFACT_ID = "features";
+	public static final String BOM_ARTIFACT_ID = "features-bom";
+
 	
 	public static final String LICENSE_DISTRIBUTION_REPO = "repo";
 	public static final String LICENSE_NAME_EPL = "Eclipse Public License";
@@ -49,6 +51,8 @@ public class Constants {
 	public static final String LICENSE_URL_MAVEN = "http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/";
 	public static final String LICENSE_COMMENTS_MAVEN = "Additional notices http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/notices.html";
 	
+
+
 	public static final String SHORT_NAME_KEY = "shortName";
 	
 	public static final String MAVEN_MODEL_VERSION = "4.0.0";

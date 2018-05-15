@@ -1932,7 +1932,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
         if (!(link instanceof H2HttpInboundLinkWrap)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Error: This is not an HTTP2 connection, push() was ignored.");
+                Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): Error: This is not an HTTP2 connection, push() was ignored.");
             }
             return false;
         }
@@ -1940,7 +1940,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         if ((((H2HttpInboundLinkWrap) link).muxLink == null) ||
             (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings() == null)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): The H2HttpInboundLinkWrap muxlink is null, push() was ignored.");
+                Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): The H2HttpInboundLinkWrap muxlink is null, push() was ignored.");
             }
             return false;
         }
@@ -1956,7 +1956,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         // Don't send the push_promise frame if the client doesn't want it
         if (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings().getEnablePush() != 1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): The client does not accept push_promise frames, push() was ignored.");
+                Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): The client does not accept push_promise frames, push() was ignored.");
             }
             return false;
         }
@@ -1999,14 +1999,21 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         ByteArrayOutputStream ppStream = new ByteArrayOutputStream();
 
         // path is equal to uri + queryString
+        String pbPath = null;
+        if (pushBuilder.getPathQueryString() != null) {
+            pbPath = pushBuilder.getURI() + pushBuilder.getPathQueryString();
+        } else {
+            pbPath = pushBuilder.getURI();
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "HTTPRequestMessageImpl.pushBuilder.getPath() is " + pushBuilder.getPath());
+            Tr.debug(tc, "HTTPRequestMessageImpl pbPath = " + pbPath);
         }
 
         try {
             // If all is well, encode the method and path
             ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, pushBuilder.getMethod(), LiteralIndexType.NOINDEXING));
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pushBuilder.getPath(), LiteralIndexType.NOINDEXING));
+            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pbPath, LiteralIndexType.NOINDEXING));
 
             // Encode the scheme
             if (isc.isSecure()) {
