@@ -44,7 +44,8 @@ public abstract class MetricsClassLoaderTest {
          * checkServlet returns either a classloader's (string) value or "null"
          * We want it to be not null.
          */
-        Assert.assertFalse("Classloader was not obtained", classLoaderBeforeUpdate.equals("null"));
+        Assert.assertFalse("Classloader was not obtained - null", classLoaderBeforeUpdate.equals("null"));
+        Assert.assertFalse("Classloader was not obtained - N/A", classLoaderBeforeUpdate.equals("N/A"));
 
         //update sever.xml to remove metrics app
         String line = setConfig(getAppRemovalConfig());
@@ -53,7 +54,7 @@ public abstract class MetricsClassLoaderTest {
         String classLoaderAfterUpdate = null;
 
         //wait 120 seconds in total if need be
-        for (int i = 0; i < 120; i++) {
+        for (int i = 0; i < 240; i++) {
 
             //force some gcs
             System.gc();
@@ -68,8 +69,13 @@ public abstract class MetricsClassLoaderTest {
          * checkServlet returns a classloader's (string) value or "null"
          * We want it to be "null" now
          */
-        Assert.assertFalse("ClassLoaderAfterupdate shouldn't be a null", classLoaderAfterUpdate == null);
+        Assert.assertFalse("var: classLoaderAfterupdate shouldn't be a null", classLoaderAfterUpdate == null);
+
+        if (!classLoaderAfterUpdate.equals("null")) {
+            getServer().javadumpThreads();
+        }
         Assert.assertTrue("ClassLoader still in memory; App not properly unloaded classLoaderAfterupdate = " + classLoaderAfterUpdate, classLoaderAfterUpdate.equals("null"));
+
     }
 
     private String getServlet(String servletPath) throws IOException {
@@ -86,6 +92,7 @@ public abstract class MetricsClassLoaderTest {
             String line = null;
             StringBuilder lines = new StringBuilder();
             BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
             while ((line = br.readLine()) != null && line.length() > 0) {
                 lines.append(line).append(sep);
             }

@@ -28,7 +28,7 @@ import com.ibm.ws.microprofile.metrics.classloader.utility.ClassLoaderUtils;
 @WebServlet("/metricServlet")
 public class MetricServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static ClassLoader cl;
+    private ClassLoader cl;
 
     @Inject
     MetricGenerator metricGenerator;

@@ -50,7 +50,7 @@ public class ClassLoaderUtils {
     public String resolveClassLoaderStateToString() {
         if (appClassLoaderWeakRef == null)
             return "ClassLoader value was never set";
-
+        requestGC();
         //Evaluate/Resolve actual reference of ClassLoader
         String classLoaderString = (appClassLoaderWeakRef.get() == null) ? null : appClassLoaderWeakRef.get().toString();
 
@@ -67,6 +67,7 @@ public class ClassLoaderUtils {
     public String resolveClassLoaderState() {
         if (appClassLoaderWeakRef == null)
             return "N/A";
+        requestGC();
         return (appClassLoaderWeakRef.get() == null) ? null : appClassLoaderWeakRef.get().toString();
     }
 
@@ -82,10 +83,18 @@ public class ClassLoaderUtils {
     public String[] resolveClassLoaderStateToArray() {
         if (appClassLoaderWeakRef == null)
             return new String[] { null, null, null };
-
+        requestGC();
         //Evaluate/Resolve actual reference of ClassLoader
         String classLoaderString = (appClassLoaderWeakRef.get() == null) ? null : appClassLoaderWeakRef.get().toString();
         return new String[] { appClassLoaderWeakRef.toString(), appClassLoaderRecordedValue, classLoaderString };
+    }
+
+    /**
+     *
+     */
+    private void requestGC() {
+        System.gc();
+        Runtime.getRuntime().gc();
     }
 
 }
