@@ -510,7 +510,7 @@ public class ClientImpl implements Client {
             return newWebTarget(getUriBuilder().resolveTemplatesFromEncoded(templatesMap));
         }
 
-        private WebTarget newWebTarget(UriBuilder newBuilder) {
+        protected WebTarget newWebTarget(UriBuilder newBuilder) { // Liberty Change
             WebClient newClient;
             if (targetClient != null) {
                 newClient = WebClient.fromClient(targetClient);
