@@ -82,6 +82,7 @@ public class InstallKernelMap implements Map {
     private static final String ACTION_RESULT = "action.result";
     private static final String ACTION_ERROR_MESSAGE = "action.error.message";
     private static final String ACTION_EXCEPTION_STACKTRACE = "action.exception.stacktrace";
+    private static final String TO_EXTENSION = "to.extension";
     private static final String FEATURES_TO_RESOLVE = "features.to.resolve";
     private static final String SINGLE_JSON_FILE = "single.json.file";
     private static final String MESSAGE_LOCALE = "message.locale";
@@ -269,6 +270,12 @@ public class InstallKernelMap implements Map {
                 data.put(USER_AGENT, value);
                 if (installKernel != null)
                     installKernel.setUserAgent((String) value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (TO_EXTENSION.equals(key)) {
+            if (value instanceof String) {
+                data.put(TO_EXTENSION, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -618,7 +625,11 @@ public class InstallKernelMap implements Map {
         try {
             InstallKernelImpl installKernel = (InstallKernelImpl) this.installKernel;
             File esaFile = (File) data.get(ACTION_INSTALL);
-            Collection<String> installedAssets = installKernel.installLocalFeature(esaFile.getAbsolutePath(), InstallConstants.TO_USER, true,
+            String toExtension = (String) data.get(TO_EXTENSION);
+            if (toExtension == null) {
+                toExtension = InstallConstants.TO_USER;
+            }
+            Collection<String> installedAssets = installKernel.installLocalFeature(esaFile.getAbsolutePath(), toExtension, true,
                                                                                    InstallConstants.ExistsAction.replace);
             data.put(ACTION_INSTALL_RESULT, installedAssets);
         } catch (InstallException e) {
