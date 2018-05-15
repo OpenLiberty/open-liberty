@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.batch.operations.NoSuchJobExecutionException;
 import javax.batch.operations.NoSuchJobInstanceException;
@@ -32,6 +34,7 @@ import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.Metric;
 import javax.batch.runtime.StepExecution;
 
+import com.ibm.jbatch.container.RASConstants;
 import com.ibm.jbatch.container.context.impl.MetricImpl;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.PersistenceException;
@@ -56,10 +59,24 @@ import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
  */
 public abstract class AbstractPersistenceManager implements IPersistenceManagerService {
 
+    private final static Logger logger = Logger.getLogger(AbstractPersistenceManager.class.getName(),
+                                                          RASConstants.BATCH_MSG_BUNDLE);
+
     public static List<BatchStatus> RUNNING_STATUSES = Collections.unmodifiableList(Arrays.asList(new BatchStatus[] { BatchStatus.STARTED, BatchStatus.STARTING,
                                                                                                                       BatchStatus.STOPPING }));
     public static List<BatchStatus> FINAL_STATUSES = Arrays.asList(new BatchStatus[] { BatchStatus.STOPPED, BatchStatus.ABANDONED, BatchStatus.FAILED, BatchStatus.COMPLETED });
-    public static Set<BatchStatus> FINAL_STATUS_SET = Collections.unmodifiableSet(new HashSet<BatchStatus>(FINAL_STATUSES));
+    private static Set<BatchStatus> FINAL_STATUS_SET = Collections.unmodifiableSet(new HashSet<BatchStatus>(FINAL_STATUSES));
+
+    public static boolean isFinalBatchStatus(BatchStatus batchStatus) {
+        return FINAL_STATUS_SET.contains(batchStatus);
+    }
+
+    public static List<InstanceState> FINAL_INSTANCE_STATES = Arrays.asList(new InstanceState[] { InstanceState.STOPPED, InstanceState.FAILED, InstanceState.COMPLETED });
+    private static Set<InstanceState> FINAL_INSTANCE_STATE_SET = Collections.unmodifiableSet(new HashSet<InstanceState>(FINAL_INSTANCE_STATES));
+
+    public static boolean isFinalInstanceState(InstanceState instanceState) {
+        return FINAL_INSTANCE_STATE_SET.contains(instanceState);
+    }
 
     @Override
     public String getDisplayId() {
@@ -118,18 +135,70 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
     //	}
 
     @Override
-	public boolean isJobInstancePurgeable(long jobInstanceId) {
-		InstanceState instanceState = getJobInstance(jobInstanceId).getInstanceState();
+    public boolean isJobInstancePurgeable(long jobInstanceId) {
+        InstanceState instanceState = getJobInstance(jobInstanceId).getInstanceState();
 
-		if (instanceState.equals(InstanceState.SUBMITTED)
-		                || instanceState.equals(InstanceState.JMS_QUEUED)
-		                || instanceState.equals(InstanceState.JMS_CONSUMED)
-		                || instanceState.equals(InstanceState.DISPATCHED)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+        if (instanceState.equals(InstanceState.SUBMITTED)
+            || instanceState.equals(InstanceState.JMS_QUEUED)
+            || instanceState.equals(InstanceState.JMS_CONSUMED)
+            || instanceState.equals(InstanceState.DISPATCHED)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public JobInstanceEntity updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException {
+        JobInstanceEntity retVal = getJobInstance(instanceId);
+
+        InstanceState currentState = retVal.getInstanceState();
+        if (FINAL_INSTANCE_STATE_SET.contains(currentState)) {
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer("Do nothing, instance = " + instanceId + " is already in final state: " + currentState);
+            }
+        } else if (currentState == InstanceState.JMS_CONSUMED) { 
+            // we want to allow re-processing the same message after a rollback 
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer("Ignore, instance = " + instanceId + " already in JMS_CONSUMED state");
+            }
+        } else if (currentState == InstanceState.JMS_QUEUED) {
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer("Transition instance = " + instanceId + " to JMS_CONSUMED state");
+            }
+            retVal = updateJobInstanceWithInstanceState(instanceId, InstanceState.JMS_CONSUMED, new Date());
+        } else {
+            String excMsg = "Illegal attempt to transition from instance state = " + currentState + " to JMS_CONSUMED.  Throwing exception.";
+            logger.fine(excMsg);
+            throw new BatchIllegalJobStatusTransitionException(excMsg);
+        }
+
+        return retVal;
+    }
+
+
+    @Override
+    public JobInstanceEntity updateJobInstanceStateOnQueued(long instanceId) throws BatchIllegalJobStatusTransitionException {
+        JobInstanceEntity retVal = getJobInstance(instanceId);
+
+        InstanceState currentState = retVal.getInstanceState();
+        if (FINAL_INSTANCE_STATE_SET.contains(currentState)) {
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer("Do nothing, instance = " + instanceId + " is already in final state: " + currentState);
+            }
+        } else if (currentState == InstanceState.SUBMITTED) {
+            if (logger.isLoggable(Level.FINER)) {
+                logger.finer("Transition instance = " + instanceId + " to JMS_QUEUED state");
+            }
+            retVal = updateJobInstanceWithInstanceState(instanceId, InstanceState.JMS_QUEUED, new Date());
+        } else {
+            String excMsg = "Illegal attempt to transition from instance state = " + currentState + " to JMS_QUEUED.  Throwing exception.";
+            logger.fine(excMsg);
+            throw new BatchIllegalJobStatusTransitionException(excMsg);
+        }
+
+        return retVal;
+    }
 
     @Override
     public JobExecutionEntity getJobExecutionMostRecent(long jobInstanceId) throws IllegalStateException, NoSuchJobInstanceException {

@@ -21,15 +21,14 @@ public class AbstractPersistenceManagerTest {
 
     @Test
     public void testIsDone() {
-        
-        
-        assertTrue( AbstractPersistenceManager.FINAL_STATUS_SET.contains(BatchStatus.ABANDONED));
-        assertTrue( AbstractPersistenceManager.FINAL_STATUS_SET.contains(BatchStatus.COMPLETED));
-        assertTrue( AbstractPersistenceManager.FINAL_STATUS_SET.contains(BatchStatus.STOPPED));
-        assertTrue( AbstractPersistenceManager.FINAL_STATUS_SET.contains(BatchStatus.FAILED));
-        assertFalse( AbstractPersistenceManager.FINAL_STATUS_SET.contains(BatchStatus.STARTING));
-        assertFalse( AbstractPersistenceManager.FINAL_STATUS_SET.contains(BatchStatus.STARTED));
-        assertFalse( AbstractPersistenceManager.FINAL_STATUS_SET.contains(BatchStatus.STOPPING));
+
+        assertTrue(AbstractPersistenceManager.isFinalBatchStatus(BatchStatus.ABANDONED));
+        assertTrue(AbstractPersistenceManager.isFinalBatchStatus(BatchStatus.COMPLETED));
+        assertTrue(AbstractPersistenceManager.isFinalBatchStatus(BatchStatus.STOPPED));
+        assertTrue(AbstractPersistenceManager.isFinalBatchStatus(BatchStatus.FAILED));
+        assertFalse(AbstractPersistenceManager.isFinalBatchStatus(BatchStatus.STARTING));
+        assertFalse(AbstractPersistenceManager.isFinalBatchStatus(BatchStatus.STARTED));
+        assertFalse(AbstractPersistenceManager.isFinalBatchStatus(BatchStatus.STOPPING));
     }
-    
+
 }

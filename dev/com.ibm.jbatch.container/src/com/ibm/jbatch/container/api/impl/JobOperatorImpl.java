@@ -663,7 +663,7 @@ public class JobOperatorImpl implements JobOperator {
         BatchStatusValidator.validateStatusAtExecutionRestart(oldExecutionId, restartParameters);
         //Set instance state to submitted to be consistent with start
         long instanceId = getPersistenceManagerService().getJobInstanceIdFromExecutionId(oldExecutionId);
-        getPersistenceManagerService().updateJobInstanceWithInstanceStateUponRestart(instanceId, InstanceState.SUBMITTED, new Date());
+        getPersistenceManagerService().updateJobInstanceOnRestart(instanceId, new Date());
 
         WSJobExecution jobExecution = getPersistenceManagerService().createJobExecution(instanceId, restartParameters, new Date());
         long newExecutionId = getBatchKernelService().restartJob(jobExecution.getExecutionId(), restartParameters).getKey();

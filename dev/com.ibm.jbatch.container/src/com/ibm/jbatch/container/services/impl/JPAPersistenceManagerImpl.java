@@ -33,9 +33,9 @@ import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.JobExecution;
 import javax.batch.runtime.JobInstance;
 import javax.batch.runtime.StepExecution;
+import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
@@ -709,12 +709,12 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public JobInstance updateJobInstanceWithInstanceState(final long jobInstanceId, final InstanceState state, final Date lastUpdated) {
+    public JobInstanceEntity updateJobInstanceWithInstanceState(final long jobInstanceId, final InstanceState state, final Date lastUpdated) {
         EntityManager em = getPsu().createEntityManager();
         try {
-            return new TranRequest<JobInstance>(em) {
+            return new TranRequest<JobInstanceEntity>(em) {
                 @Override
-                public JobInstance call() {
+                public JobInstanceEntity call() {
                     JobInstanceEntity instance = entityMgr.find(JobInstanceEntity.class, jobInstanceId);
                     if (instance == null) {
                         throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
@@ -737,7 +737,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public JobInstance updateJobInstanceWithInstanceStateUponRestart(final long jobInstanceId, final InstanceState state, final Date lastUpdated) {
+    public JobInstance updateJobInstanceOnRestart(final long jobInstanceId, final Date lastUpdated) {
         EntityManager em = getPsu().createEntityManager();
         String BASE_UPDATE = "UPDATE JobInstanceEntity x SET x.instanceState = :instanceState,x.batchStatus = :batchStatus";
         if (instanceVersion >= 2)
@@ -762,14 +762,14 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     }
 
                     try {
-                        verifyStateTransitionIsValid(instance, state);
+                        verifyStateTransitionIsValid(instance, InstanceState.SUBMITTED);
                         verifyStatusTransitionIsValid(instance, BatchStatus.STARTING);
                     } catch (BatchIllegalJobStatusTransitionException e) {
                         throw new PersistenceException(e);
                     }
 
                     Query jpaQuery = entityMgr.createQuery(FINAL_UPDATE);
-                    jpaQuery.setParameter("instanceState", state);
+                    jpaQuery.setParameter("instanceState", InstanceState.SUBMITTED);
                     jpaQuery.setParameter("instanceId", jobInstanceId);
                     if (instanceVersion >= 2)
                         jpaQuery.setParameter("lastUpdatedTime", lastUpdated);
@@ -1041,11 +1041,9 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         exec.getJobInstance().setLastUpdatedTime(endTime);
                         // set the state to be the same value as the batchstatus
                         // Note: we only want to do this is if the batchStatus is one of the "done" statuses.
-                        if (FINAL_STATUS_SET.contains(finalBatchStatus)) {
+                        if (isFinalBatchStatus(finalBatchStatus)) {
                             InstanceState newInstanceState = InstanceState.valueOf(finalBatchStatus.toString());
-
                             verifyStateTransitionIsValid(exec.getJobInstance(), newInstanceState);
-
                             exec.getJobInstance().setInstanceState(newInstanceState);
                         }
                         exec.setLastUpdatedTime(endTime);
