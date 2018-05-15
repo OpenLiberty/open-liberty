@@ -118,7 +118,7 @@ public class WebInstance implements Instance {
             }
         }
 
-        public void registerServletContainerListener(BundleContext context, Container appContainer) {
+        public void registerServletContainerListener(BundleContext context) {
             sciRegistration.set(context.registerService(ServletContainerInitializer.class, this, null));
         }
 
@@ -183,9 +183,10 @@ public class WebInstance implements Instance {
 
         ExtendedApplicationInfo appInfo = app.createApplicationInfo(id, appContainer);
         InstanceDeployedAppInfo deployedApp = new InstanceDeployedAppInfo(initializer, instanceFactory.getDeployedAppFactory(), appInfo);
-        deployedApp.registerServletContainerListener(instanceFactory.getContext(), appContainer);
         DeployedModuleInfo deployedModule = deployedApp.createDeployedModule(appContainer, id, app, cfg);
         deployed.set(deployedModule);
+
+        deployedApp.registerServletContainerListener(instanceFactory.getContext());
         Future<Boolean> appFuture = instanceFactory.getModuleHandler().deployModule(deployedModule, deployedApp);
         instanceFactory.getFutureMonitor().onCompletion(appFuture, new CompletionListener<Boolean>() {
             @Override
