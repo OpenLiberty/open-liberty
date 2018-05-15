@@ -11,7 +11,7 @@ IBM-ShortName: websocket-1.0
 Subsystem-Name: Java WebSocket 1.0
 -features=com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0
 -bundles=com.ibm.ws.wsoc, \
- com.ibm.websphere.javaee.websocket.1.0; location:="dev/api/spec/,lib/"
+ com.ibm.websphere.javaee.websocket.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.websocket:javax.websocket-api:1.0"
 -jars=com.ibm.websphere.appserver.api.wsoc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.wsoc_1.0-javadoc.zip
 kind=ga

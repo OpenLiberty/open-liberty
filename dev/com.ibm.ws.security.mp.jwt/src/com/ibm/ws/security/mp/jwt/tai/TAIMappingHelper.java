@@ -37,21 +37,24 @@ public class TAIMappingHelper {
     @Sensitive
     String decodedTokenPayload = null;
     String username = null;
+    String realm = null;
     JwtPrincipalMapping claimToPrincipalMapping = null;
     MicroProfileJwtConfig config = null;
     JsonWebToken jwtPrincipal = null;
     Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+    protected static final String CCK_CLAIM = "sid";
 
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
-    boolean addJwtPrincipalToSubject = false;
+    //boolean addJwtPrincipalToSubject = false;
 
     public TAIMappingHelper(@Sensitive String decodedPayload) throws MpJwtProcessingException {
         decodedTokenPayload = decodedPayload;
         config = null;
-        addJwtPrincipalToSubject = true;
+        //addJwtPrincipalToSubject = true;
         if (decodedTokenPayload != null) {
             claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, "upn", "groups", false);
             setUsername();
+            setRealm();
         }
     }
 
@@ -65,10 +68,19 @@ public class TAIMappingHelper {
         if (decodedTokenPayload != null) {
             claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry());
             setUsername();
+            setRealm();
         }
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName);
         }
+    }
+
+    /**
+     *
+     */
+    private void setRealm() {
+        this.realm = claimToPrincipalMapping.getMappedRealm();
+
     }
 
     public void createJwtPrincipalAndPopulateCustomProperties(@Sensitive JwtToken jwtToken) throws MpJwtProcessingException {
@@ -95,10 +107,10 @@ public class TAIMappingHelper {
         return false;
     }
 
-    public Subject createSubjectFromCustomProperties(@Sensitive JwtToken jwt) {
+    public Subject createSubjectFromCustomProperties(boolean addJwtPrincipalToSubject) {
         String methodName = "createSubjectFromCustomProperties";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, jwt);
+            Tr.entry(tc, methodName, addJwtPrincipalToSubject);
         }
         Subject subject = new Subject();
         //        if (jwt != null) {
@@ -191,8 +203,10 @@ public class TAIMappingHelper {
         if (mapToUR) {
             customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_USERID, username);
-        } else if (issuer != null) {
-            String realm = getRealm(issuer);
+        } else {
+            if (realm == null && issuer != null) {
+                realm = getRealm(issuer);
+            }
             String uniqueID = getUniqueId(realm);
             List<String> groupswithrealm = getGroupsWithRealm(realm);
 
@@ -221,9 +235,23 @@ public class TAIMappingHelper {
     private void addCustomCacheKey(Hashtable<String, Object> customProperties) {
 
         if (jwtPrincipal != null) {
-            String customCacheKey = HashUtils.digest(jwtPrincipal.toString());
+            String customCacheKey = getCustomCacheKey(jwtPrincipal);
+            if (customCacheKey == null) {
+                customCacheKey = HashUtils.digest(jwtPrincipal.toString());
+            }
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
         }
+    }
+
+    /**
+     * @param jwtPrincipal
+     */
+    private String getCustomCacheKey(JsonWebToken jwt) {
+        Object cck = jwt.getClaim(CCK_CLAIM);
+        if (cck != null) {
+            return (String) cck;
+        }
+        return null;
     }
 
     String getRealm(String issuer) {

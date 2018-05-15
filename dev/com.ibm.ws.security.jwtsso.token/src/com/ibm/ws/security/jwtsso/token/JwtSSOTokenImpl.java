@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.token;
 
@@ -17,7 +17,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-//import org.eclipse.microprofile.jwt.JsonWebToken;
+// import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -39,6 +39,7 @@ import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenProxy;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoTokenUtils;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 /*
@@ -50,21 +51,24 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 
 	public static final String JSON_WEB_TOKEN_SSO_CONFIG = "jwtSsoConfig";
 	public static final String JSON_WEB_TOKEN_SSO_BUILDER_CONFIG = "jwtSsoBuilderConfig";
+	public static final String MP_JSON_WEB_TOKEN_TAI = "microProfileJwtTAI";
 	public static final String UNAUTHENTICATED = "UNAUTHENTICATED";
 	protected final static AtomicServiceReference<JwtSsoConfig> jwtSSOConfigRef = new AtomicServiceReference<JwtSsoConfig>(
 			JSON_WEB_TOKEN_SSO_CONFIG);
 	protected final static AtomicServiceReference<JwtSsoBuilderConfig> jwtSSOBuilderConfigRef = new AtomicServiceReference<JwtSsoBuilderConfig>(
 			JSON_WEB_TOKEN_SSO_BUILDER_CONFIG);
+	protected final static AtomicServiceReference<TrustAssociationInterceptor> mpJwtTaiServiceRef = new AtomicServiceReference<TrustAssociationInterceptor>(
+			MP_JSON_WEB_TOKEN_TAI);
 	private final SubjectHelper subjectHelper = new SubjectHelper();
 	private static final String[] hashtableProperties = { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY };
 
-	@Reference(service = JwtSsoConfig.class, name = JSON_WEB_TOKEN_SSO_CONFIG, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-	protected void setJwtSsoConfig(ServiceReference<JwtSsoConfig> ref) {
-		jwtSSOConfigRef.setReference(ref);
+	@Reference(service = TrustAssociationInterceptor.class, name = MP_JSON_WEB_TOKEN_TAI, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setTrustAssociationInterceptor(ServiceReference<TrustAssociationInterceptor> ref) {
+		mpJwtTaiServiceRef.setReference(ref);
 	}
 
-	protected void unsetJwtSsoConfig(ServiceReference<JwtSsoConfig> ref) {
-		jwtSSOConfigRef.unsetReference(ref);
+	protected void unsetTrustAssociationInterceptor(ServiceReference<TrustAssociationInterceptor> ref) {
+		mpJwtTaiServiceRef.unsetReference(ref);
 	}
 
 	@Reference(service = JwtSsoBuilderConfig.class, name = JSON_WEB_TOKEN_SSO_BUILDER_CONFIG, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -76,13 +80,24 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 		jwtSSOBuilderConfigRef.unsetReference(ref);
 	}
 
+	@Reference(service = JwtSsoConfig.class, name = JSON_WEB_TOKEN_SSO_CONFIG, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setJwtSsoConfig(ServiceReference<JwtSsoConfig> ref) {
+		jwtSSOConfigRef.setReference(ref);
+	}
+
+	protected void unsetJwtSsoConfig(ServiceReference<JwtSsoConfig> ref) {
+		jwtSSOConfigRef.unsetReference(ref);
+	}
+
 	@Activate
 	protected void activate(ComponentContext cc) {
 		jwtSSOConfigRef.activate(cc);
 		jwtSSOBuilderConfigRef.activate(cc);
+		mpJwtTaiServiceRef.activate(cc);
 		if (tc.isDebugEnabled()) {
 			Tr.debug(tc, "Jwt SSO config consumer service is activated");
 			Tr.debug(tc, "Jwt SSO config builder service is activated");
+			Tr.debug(tc, "MicroProfile Jwt TAI service is activated");
 			Tr.debug(tc, "Jwt SSO token (impl) service is being activated!!");
 		}
 	}
@@ -95,9 +110,11 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	protected void deactivate(ComponentContext cc) {
 		jwtSSOConfigRef.deactivate(cc);
 		jwtSSOBuilderConfigRef.deactivate(cc);
+		mpJwtTaiServiceRef.deactivate(cc);
 		if (tc.isDebugEnabled()) {
 			Tr.debug(tc, "Jwt SSO config consumer service is deactivated");
 			Tr.debug(tc, "Jwt SSO config builder service is deactivated");
+			Tr.debug(tc, "MicroProfile Jwt TAI service is deactivated");
 			Tr.debug(tc, "Jwt SSO token (impl) service is being deactivated!!");
 		}
 	}
@@ -116,14 +133,14 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 			if (isSubjectUnauthenticated(subject) || subjectHasJwtPrincipal(subject)) {
 				return;
 			}
-			JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
+			JwtSsoTokenUtils tokenUtil = getJwtSsoTokenBuilderUtils();
 			if (tokenUtil != null) {
 				JsonWebToken ssotoken = null;
 				try {
 					ssotoken = tokenUtil.buildTokenFromSecuritySubject(subject);
 				} catch (Exception e) {
 					// TODO ffdc
-					throw new LoginException(e.getMessage());
+					throw new LoginException(e.getLocalizedMessage());
 				}
 				updateSubject(subject, ssotoken);
 			} else {
@@ -132,6 +149,21 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 				throw new LoginException(msg);
 			}
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	private JwtSsoTokenUtils getJwtSsoTokenBuilderUtils() {
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
+		String builder = null;
+		if (jwtssobuilderConfig != null) {
+			builder = getJwtBuilder(jwtssobuilderConfig);
+		}
+		if (builder != null) {
+			return new JwtSsoTokenUtils(builder);
+		}
+		return null;
 	}
 
 	/**
@@ -188,19 +220,15 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * @param builder
 	 * @param consumer
 	 */
-	private JwtSsoTokenUtils getJwtSsoTokenUtils() {
-		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
-		String builder = null;
-		if (jwtssobuilderConfig != null) {
-			builder = getJwtBuilder(jwtssobuilderConfig);
-		}
+	private JwtSsoTokenUtils getJwtSsoTokenConsumerUtils() {
+
 		JwtSsoConfig jwtssoconsumerConfig = getJwtSSOConsumerConfig();
 		String consumer = null;
 		if (jwtssoconsumerConfig != null) {
 			consumer = getJwtConsumer(jwtssoconsumerConfig);
 		}
-		if (builder != null && consumer != null) {
-			JwtSsoTokenUtils result = new JwtSsoTokenUtils(builder, consumer);
+		if (consumer != null) {
+			JwtSsoTokenUtils result = new JwtSsoTokenUtils(consumer, mpJwtTaiServiceRef);
 			return result.isValid() ? result : null;
 		}
 		return null;
@@ -326,20 +354,19 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	@Override
 	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws LoginException {
 		// TODO Auto-generated method stub
-		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
+		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenConsumerUtils();
 		if (tokenUtil != null && encodedjwt != null) {
 			if (subject != null) {
 				try {
 					return tokenUtil.handleJwtSsoTokenValidationWithSubject(subject, encodedjwt);
 				} catch (Exception e) {
-					throw new LoginException(e.getMessage());
+					throw new LoginException(e.getLocalizedMessage());
 				}
 			} else {
 				try {
 					return tokenUtil.handleJwtSsoTokenValidation(encodedjwt);
 				} catch (Exception e) {
-					throw new LoginException(e.getMessage());
-
+					throw new LoginException(e.getLocalizedMessage());
 				}
 			}
 		} else {
@@ -360,8 +387,8 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	@Override
 	public String getCustomCacheKeyFromJwtSSOToken(String encodedjwt) {
 		// TODO Auto-generated method stub
+		JwtSsoTokenUtils tokenUtil = getSimpleJwtSsoTokenUtils();
 		if (encodedjwt != null) {
-			JwtSsoTokenUtils tokenUtil = getSimpleJwtSsoTokenUtils();
 			return tokenUtil.getCustomCacheKeyFromToken(encodedjwt);
 		}
 		return null;
@@ -414,9 +441,9 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	@Override
 	public boolean isSubjectValid(Subject subject) {
 		// TODO Auto-generated method stub
-		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenUtils();
+		String encodedjwt = getJwtSSOToken(subject);
+		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenConsumerUtils();
 		if (tokenUtil != null) {
-			String encodedjwt = getJwtSSOToken(subject);
 			return tokenUtil.isJwtValid(encodedjwt);
 		}
 		return false;
@@ -446,6 +473,15 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 			return jwtssobuilderConfig.isCookieSecured();
 		}
 		return true;
+	}
+
+	@Override
+	public long getValidTimeInMinutes() {
+		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
+		if (jwtssobuilderConfig != null) {
+			return jwtssobuilderConfig.getValidTime() * 60;
+		}
+		return 0;
 	}
 
 	/*
@@ -494,18 +530,6 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 			return jwtssobuilderConfig.isFallbackToLtpa();
 		}
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenProxy#
-	 * getValidTimeInMinutes()
-	 */
-	@Override
-	public long getValidTimeInMinutes() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }

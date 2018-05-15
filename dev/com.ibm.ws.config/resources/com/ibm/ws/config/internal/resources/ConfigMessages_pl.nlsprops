@@ -656,6 +656,12 @@ warning.binding.config=CWWKG0101W: Konfiguracja z utrwalon\u0105 to\u017csamo\u0
 warning.binding.config.explanation=Konfiguracja jest powi\u0105zywana z pakunkiem wywo\u0142uj\u0105cym przy pierwszym wywo\u0142aniu metody getConfiguration interfejsu ConfigurationAdmin. Gdy konfiguracja zostanie powi\u0105zana, przestaje by\u0107 widoczna dla innych pakunk\u00f3w. 
 warning.binding.config.useraction=Aby upewni\u0107 si\u0119, \u017ce po\u0142o\u017cenie pakunku jest warto\u015bci\u0105 oczekiwan\u0105, nale\u017cy u\u017cy\u0107 metody getConfiguration w interfejsie ConfigurationAdmin, kt\u00f3ra przyjmuje po\u0142o\u017cenie pakunku jako drugi parametr.
 
+# This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
+info.config.conflict=CWWKG0102I: {0}
+info.config.conflict.explanation=W przypadku tej samej w\u0142a\u015bciwo\u015bci konfiguracyjnej podano wiele warto\u015bci. 
+info.config.conflict.useraction=Nie jest wymagana \
+\u017cadna czynno\u015b\u0107. Aby unikn\u0105\u0107 wy\u015bwietlenia komunikatu informacyjnego, zmie\u0144 konfiguracj\u0119 serwera w celu usuni\u0119cia konfliktu.
+ 
 
 # Non-TR message
 error.invalidOCDRef=B\u0141\u0104D: to\u017csamo\u015b\u0107 PID metatypu \

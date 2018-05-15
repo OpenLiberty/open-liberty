@@ -6,13 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.mp.jwt.impl.utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
+import com.ibm.ws.security.mp.jwt.tai.TAIRequestHelper;
 
 /*
  * Store the data for a httpServletRequest session
@@ -41,6 +43,8 @@ public class MicroProfileJwtTaiRequest {
     protected List<MicroProfileJwtConfig> genericConfigs = null;
     MicroProfileJwtConfig microProfileJwtConfig = null;
     MpJwtProcessingException taiException = null;
+
+    TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
 
     /**
      * Called by TAI for now
@@ -201,8 +205,16 @@ public class MicroProfileJwtTaiRequest {
         //                }
         //            } else
         if (this.genericConfigs != null) {
-            if (this.genericConfigs.size() == 1) {
-                this.microProfileJwtConfig = this.genericConfigs.get(0);
+            if (this.genericConfigs.size() <= 2) {
+                if (this.genericConfigs.size() == 2) {
+                    if (!handleTwoConfigurations()) {
+                        // if we have two jwtsso or two mpjwt configurations, then we cannot process
+                        handleTooManyConfigurations();
+                    }
+                } else {
+                    this.microProfileJwtConfig = this.genericConfigs.get(0);
+                }
+
             } else {
                 handleTooManyConfigurations();
             }
@@ -211,6 +223,26 @@ public class MicroProfileJwtTaiRequest {
             Tr.exit(tc, methodName, this.microProfileJwtConfig);
         }
         return this.microProfileJwtConfig;
+    }
+
+    /**
+     *
+     */
+    private boolean handleTwoConfigurations() {
+
+        Iterator it = this.genericConfigs.iterator();
+        boolean jwtsso = false;
+        boolean mpjwt = false;
+        while (it.hasNext()) {
+            MicroProfileJwtConfig mpJwtConfig = (MicroProfileJwtConfig) it.next();
+            if (taiRequestHelper.isJwtSsoFeatureActive(mpJwtConfig)) {
+                jwtsso = true;
+                this.microProfileJwtConfig = mpJwtConfig;
+            } else {
+                mpjwt = true;
+            }
+        }
+        return jwtsso && mpjwt;
     }
 
     void handleTooManyConfigurations() throws MpJwtProcessingException {

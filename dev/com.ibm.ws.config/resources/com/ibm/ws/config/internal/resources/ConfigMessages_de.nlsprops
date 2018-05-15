@@ -453,6 +453,11 @@ warning.binding.config=CWWKG0101W: Die Konfiguration mit der persistenten ID (PI
 warning.binding.config.explanation=Es wird eine Konfiguration an das aufrufenden Bundle gebunden, wenn die Methode getConfiguration der Schnittstelle ConfigurationAdmin zum ersten Mal aufgerufen wird. Nachdem die Konfiguration gebunden wurde, ist sie f\u00fcr andere Bundles nicht mehr sichtbar. 
 warning.binding.config.useraction=Um sicherzustellen, dass die Bundleposition den erwarteten Wert hat, verwenden Sie die Methode getConfiguration in der Schnittstelle ConfigurationAdmin, die eine Bundleposition als zweiten Parameter akzeptiert.
 
+# This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
+info.config.conflict=CWWKG0102I: {0}
+info.config.conflict.explanation=Es wurden mehrere Werte f\u00fcr dieselbe Konfigurationseigenschaft angegeben. 
+info.config.conflict.useraction=Es ist keine Aktion erforderlich. Die Informationsnachricht kann vermieden werden, indem der Konflikt in der Serverkonfiguration behoben wird.
+ 
 
 # Non-TR message
 error.invalidOCDRef=FEHLER: Die Metatyp-PID [{0}] gibt die ID einer nicht vorhandenen Objektklassendefinition [{1}] an.
