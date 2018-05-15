@@ -35,17 +35,17 @@ warning.could.not.thin.application=CWWKC0251W: Could not convert the application
 warning.could.not.thin.application.explanation=The application could not be converted to a thin application. The application will continue to run from the original JAR. 
 warning.could.not.thin.application.useraction=Attempt to resolve the issue in the exception message and either restart the server or update the application. 
 
-error.need.springboot.version.15=CWWKC0252E: Could not run the application because the wrong version of the Spring Boot feature is configured in server.xml. The application requires the feature springBoot-1.5 to be configured.
-error.need.springboot.version.15.explanation=The application requires Spring Boot version 1.5, but a wrong version of the Spring Boot feature is configured in the server.xml.  
-error.need.springboot.version.15.useraction=The springBoot-1.5 feature needs to be configured in the server.xml.
+error.need.springboot.version.15=CWWKC0252E: The application failed to start because the springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-1.5 feature to be configured.
+error.need.springboot.version.15.explanation=The application requires the springBoot-1.5 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+error.need.springboot.version.15.useraction=Configure the springBoot-1.5 feature in the server.xml file. Remove any other Spring Boot features.
 
-error.need.springboot.version.20=CWWKC0253E: Could not run the application because the wrong version of the Spring Boot feature is configured in server.xml. The application requires the feature springBoot-2.0 to be configured.
-error.need.springboot.version.20.explanation=The application requires Spring Boot version 2.0, but a wrong version of the Spring Boot feature is configured in the server.xml.  
-error.need.springboot.version.20.useraction=The springBoot-2.0 feature needs to be configured in the server.xml.
+error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
+error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
 
-error.missing.servlet=CWWKC0254E: Could not run the application because it requires a Servlet feature to be configured in the server.xml.
-error.missing.servlet.explanation=The application is a web application and it requires a Servlet feature to be configured in the server.xml.
-error.missing.servlet.useraction=A Servlet feature needs to be configured in the server.xml.
+error.missing.servlet=CWWKC0254E: The application failed to start because it requires a servlet feature to be configured in the server.xml file.
+error.missing.servlet.explanation=The application is a web application, and it requires a servlet feature to be configured in the server.xml file.
+error.missing.servlet.useraction=Configure a servlet feature in the server.xml file.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Spring Boot application {0} cannot be started because application {1} is already active. You cannot configure multiple Spring Boot applications in the same server configuration.
 error.multiple.applications.not.allowed.explanation=Configuring multiple Spring Boot applications in the same server configuration is not supported.
@@ -58,3 +58,7 @@ error.no.manifest.found.useraction=Configure a valid Spring Boot application, wh
 error.no.spring.class.found=CWWKC0257E: The Spring Boot application META-INF/MANIFEST.MF file must specify a Start-Class header.
 error.no.spring.class.found.explanation=Spring Boot applications must contain a main class specified by the Start-Class manifest header.
 error.no.spring.class.found.useraction=Configure a valid Spring Boot application, which contains a Start-Class manifest header, with the server.
+
+error.missing.ssl=CWWKC0258E: The application failed to start because it requires an SSL feature to be configured in the server.xml file.
+error.missing.ssl.explanation=The application is a secure application, and it requires an SSL feature to be configured in the server.xml file.
+error.missing.ssl.useraction=Configure the transportSecurity-1.0 feature in the server.xml file.
