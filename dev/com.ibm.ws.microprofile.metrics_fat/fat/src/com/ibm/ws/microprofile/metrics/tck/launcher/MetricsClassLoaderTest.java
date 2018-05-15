@@ -11,60 +11,29 @@
 package com.ibm.ws.microprofile.metrics.tck.launcher;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * This is a test class that runs to test if an metric app is still
  * loaded by checking if the classloader is still there
  */
-@RunWith(FATRunner.class)
-public class MetricsClassLoaderTest {
+public abstract class MetricsClassLoaderTest {
     private static Class<?> c = MetricsClassLoaderTest.class;
 
-    private static final String METRIC_SERVLET = "/metric-servlet/metricServlet";
-    private static final String CHECK_SERVLET = "/checkerServlet/checkServlet";
-    private static final String REMOVE_APP_CONFIG = "server_disableMetricApp.xml";
+    private final String METRIC_SERVLET = "/metric-servlet/metricServlet";
+    private final String CHECK_SERVLET = "/checkerServlet/checkServlet";
 
-    @Server("MetricsClassLoaderServer")
-    public static LibertyServer server;
+    public abstract LibertyServer getServer();
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-
-        //build shared Library and put it into <server>/libs
-        JavaArchive jar = ShrinkHelper.buildJavaArchive("SharedLibrary", "com.ibm.ws.microprofile.metrics.classloader.utility");
-        jar.as(ZipExporter.class).exportTo(new File("SharedLibrary.jar"), true);
-        server.copyFileToLibertyServerRoot(new File("").getAbsolutePath(), "libs", "SharedLibrary.jar");
-
-        //build and deploy checkerServlet and metric-servlet
-        ShrinkHelper.defaultApp(server, "metric-servlet", "com.ibm.ws.microprofile.metrics.fat.metric.servlet");
-        ShrinkHelper.defaultApp(server, "checkerServlet", "com.ibm.ws.microprofile.metrics.fat.checker.servlet");
-
-        server.startServer();
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        server.stopServer();
-    }
+    public abstract String getAppRemovalConfig();
 
     @Test
     public void testClassLoaderUnloads() throws Exception {
@@ -78,13 +47,13 @@ public class MetricsClassLoaderTest {
         Assert.assertFalse("Classloader was not obtained", classLoaderBeforeUpdate.equals("null"));
 
         //update sever.xml to remove metrics app
-        String line = setConfig(REMOVE_APP_CONFIG);
+        String line = setConfig(getAppRemovalConfig());
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
 
         String classLoaderAfterUpdate = null;
 
-        //wait 60 seconds in total if need be
-        for (int i = 0; i < 60; i++) {
+        //wait 120 seconds in total if need be
+        for (int i = 0; i < 120; i++) {
 
             //force some gcs
             System.gc();
@@ -92,7 +61,7 @@ public class MetricsClassLoaderTest {
 
             Thread.sleep(1000);
             classLoaderAfterUpdate = getServlet(CHECK_SERVLET).trim();
-            if (classLoaderBeforeUpdate.equals("null"))
+            if (classLoaderAfterUpdate.equals("null"))
                 break;
         }
         /*
@@ -104,7 +73,7 @@ public class MetricsClassLoaderTest {
     }
 
     private String getServlet(String servletPath) throws IOException {
-        String sURL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + servletPath;
+        String sURL = "http://" + getServer().getHostname() + ":" + getServer().getHttpDefaultPort() + servletPath;
         URL checkerServletURL = new URL(sURL);
         HttpURLConnection con = (HttpURLConnection) checkerServletURL.openConnection();
         try {
@@ -126,9 +95,8 @@ public class MetricsClassLoaderTest {
         }
     }
 
-    private static String setConfig(String fileName) throws Exception {
-        server.setServerConfigurationFile(fileName);
-        return server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+    private String setConfig(String fileName) throws Exception {
+        getServer().setServerConfigurationFile(fileName);
+        return getServer().waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
     }
-
 }
