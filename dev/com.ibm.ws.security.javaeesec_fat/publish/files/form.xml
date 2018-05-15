@@ -6,8 +6,10 @@
 	</featureManager>
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
-	
-		<application type="war" id="JavaEEsecFormAuth" name="JavaEEsecFormAuth" location="JavaEEsecFormAuth.war">
+
+	<webAppSecurity jaspicSessionForMechanismsEnabled="true" />
+
+	<application type="war" id="JavaEEsecFormAuth" name="JavaEEsecFormAuth" location="JavaEEsecFormAuth.war">
  		<application-bnd>
 			<security-role name="grantedgroup">
 				<user name="user1" access-id="user:127.0.0.1:10389/uid=user1,ou=users,o=ibm,c=us" />
