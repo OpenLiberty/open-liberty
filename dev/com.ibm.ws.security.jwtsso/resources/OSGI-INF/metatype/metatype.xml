@@ -57,9 +57,6 @@
          <AD id="jwtBuilderRef" name="%jwtBuilderRef" description="%jwtBuilderRef.desc"
              required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.builder" />
              
-         <AD id="mpjwtConsumerRef" name="%mpjwtConsumerRef" description="%mpjwtConsumerRef.desc"
-             required="false" type="String" ibmui:uiReference="com.ibm.ws.security.mp.jwt" />   
-             
           <!--  future encryption attributes go here someday  -->
          
     </OCD>

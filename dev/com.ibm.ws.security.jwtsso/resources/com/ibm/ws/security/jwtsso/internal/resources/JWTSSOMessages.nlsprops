@@ -20,4 +20,9 @@ MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: The MicroProfile JSON Web Token (JWT
 MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=An MPJWT consumer configuration with the specified identifier cannot be found in the server configuration.
 MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Make sure that there is a mpJwt element configured with the specified ID and is referenced by the jwtSso element in the server configuration.
 
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: Too many MicroProfile JWT services [{0}] are qualified to handle the request.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=The JWTSSO feature cannot select a MicroProfile JWT service to handle the request when more than one service is qualified to handle the request.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Make sure that no more than one MicroProfile JWT service in the server configuration is configured to handle the request.
+
 

@@ -14,7 +14,9 @@ import com.ibm.ws.security.fat.common.Constants;
 
 public class MessageConstants extends Constants {
 
-    public static final String CWWKS6300E_JWT_CONSUMER_CONFIG_NOT_FOUND = "CWWKS6300E";
+    public static final String CWWKS6301E_MANY_JWT_CONSUMER_CONFIGS = "CWWKS6301E";
+
+    public static final String CWWKS5521E_MANY_JWT_CONSUMER_CONFIGS = "CWWKS5521E";
 
     public static final String CWWKS6201W_JWT_SSO_TOKEN_SERVICE_ERROR = "CWWKS6201W";
 

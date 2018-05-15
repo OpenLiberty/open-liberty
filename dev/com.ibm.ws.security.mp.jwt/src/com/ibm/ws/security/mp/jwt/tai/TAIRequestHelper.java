@@ -89,11 +89,11 @@ public class TAIRequestHelper {
                 return false;
             }
             ignoreAppAuthMethod = mpJwtConfig.ignoreApplicationAuthMethod(); // true by default
-        }
-        if (ignoreAppAuthMethod) {
-            result = mpJwtTaiRequest.hasServices();
-        } else {
-            result = isMpJwtSpecifiedInLoginConfig(request);
+            if (ignoreAppAuthMethod) {
+                result = mpJwtTaiRequest.hasServices();
+            } else {
+                result = isMpJwtSpecifiedInLoginConfig(request);
+            }
         }
 
         if (tc.isDebugEnabled()) {

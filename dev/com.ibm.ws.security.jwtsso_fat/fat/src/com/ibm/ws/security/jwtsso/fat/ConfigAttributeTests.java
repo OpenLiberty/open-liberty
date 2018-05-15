@@ -206,13 +206,14 @@ public class ConfigAttributeTests extends CommonJwtFat {
 
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
+        expectations.addExpectation(new ServerMessageExpectation(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, server, MessageConstants.CWWKS5521E_MANY_JWT_CONSUMER_CONFIGS));
 
         WebClient wc = new WebClient();
         Page response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl); // get back the login page
         validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
 
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS));
-        expectations.addExpectation(new ServerMessageExpectation(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, server, MessageConstants.CWWKS6300E_JWT_CONSUMER_CONFIG_NOT_FOUND));
+        expectations.addExpectation(new ServerMessageExpectation(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, server, MessageConstants.CWWKS6301E_MANY_JWT_CONSUMER_CONFIGS));
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword); // should fail and we should get login page again
         validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);

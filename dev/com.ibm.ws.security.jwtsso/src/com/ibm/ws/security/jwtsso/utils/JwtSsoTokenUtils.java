@@ -11,6 +11,7 @@
 package com.ibm.ws.security.jwtsso.utils;
 
 import java.security.Principal;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.security.auth.Subject;
@@ -201,6 +202,29 @@ public class JwtSsoTokenUtils {
 	}
 
 	private MicroProfileJwtConfig getMpJwtConsumer() throws MpJwtProcessingException {
+
+		Iterator<MicroProfileJwtConfig> it = mpjwttai.getServices();
+		boolean mpjwt = false;
+		int mpJwtConfigs = 0;
+		String mpjwtids = "";
+		String mpJwtConfigId = null;
+		while (it.hasNext()) {
+			MicroProfileJwtConfig mpJwtConfig = it.next();
+			if (!(mpJwtConfig.toString().contains("com.ibm.ws.security.jwtsso.internal.JwtSsoComponent"))) {
+				mpjwt = true;
+				mpJwtConfigId = mpJwtConfig.getUniqueId();
+				mpjwtids = mpjwtids.concat(mpJwtConfigId).concat(" ");
+				mpJwtConfigs++;
+			}
+		}
+		if (mpJwtConfigs > 1) {
+			String msg = Tr.formatMessage(tc, "TOO_MANY_MP_JWT_PROVIDERS", new Object[] { mpjwtids });
+			Tr.error(tc, msg);
+			throw new MpJwtProcessingException(msg);
+		} else if (mpjwt) {
+			// return mpjwttai.getMicroProfileJwtConfig(mpJwtConfigId);
+			consumerId = mpJwtConfigId;
+		}
 		MicroProfileJwtConfig mpjwtconfig = mpjwttai.getMicroProfileJwtConfig(consumerId);
 		if (mpjwtconfig == null) {
 			String msg = Tr.formatMessage(tc, "MPJWT_CONSUMER_CONFIG_NOT_FOUND", new Object[] { consumerId });
