@@ -49,14 +49,14 @@ ERROR_SESSION_INIT=SESN0307E: An exception occurred when initializing the cache.
 ERROR_SESSION_INIT.explanation=An operation against the cache failed due to the specified exception.
 ERROR_SESSION_INIT.useraction=See the exception for more details. The JCache provider's configuration might need to be updated.
 
-WARN_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308W: Invalid or missing httpSessionCache configuration detected. {0}
-WARN_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=The sessionCache feature was unable to fully initialize due to a missing or invalid configuration.
-WARN_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Verify the server configuration defines a httpSessionCache that includes a libraryRef attribute.
+WARN_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308W: An invalid or missing httpSessionCache configuration was detected. {0}
+WARN_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=The sessionCache feature was unable to fully initialize due to missing or invalid configuration.
+WARN_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Verify that the server configuration defines an httpSessionCache element that includes a libraryRef attribute.
 
-ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: The session cache library {0} is empty. {1}
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: The {0} session cache library is empty. {1}
 ERROR_CONFIG_EMPTY_LIBRARY.explanation=The sessionCache feature could not find a JCache provider to load.
-ERROR_CONFIG_EMPTY_LIBRARY.useraction=Verify the library contains a JCache provider, and all paths are specified correctly.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=Verify that the library contains a JCache provider and all paths are specified correctly.
 
 INTERNAL_SERVER_ERROR=Internal Server Error
 
-SESSION_CACHE_CONFIG_MESSAGE=Verify the server configuration contains a valid httpSessionCache configuration. See the sample configuration below:{0}
+SESSION_CACHE_CONFIG_MESSAGE=Verify that the server configuration contains a valid httpSessionCache configuration. See the sample configuration. {0}
