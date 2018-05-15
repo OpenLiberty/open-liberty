@@ -12,6 +12,7 @@ package com.ibm.ws.app.manager.springboot.container.config;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.stream.Collectors;
 
 public class SpringConfiguration {
     private LinkedHashSet<SpringErrorPageData> errorPages = new LinkedHashSet<>();
@@ -26,5 +27,10 @@ public class SpringConfiguration {
 
     public void setErrorPages(LinkedHashSet<SpringErrorPageData> errorPages) {
         this.errorPages = errorPages;
+    }
+
+    @Override
+    public String toString() {
+        return errorPages.stream().map(Object::toString).collect(Collectors.joining(", "));
     }
 }

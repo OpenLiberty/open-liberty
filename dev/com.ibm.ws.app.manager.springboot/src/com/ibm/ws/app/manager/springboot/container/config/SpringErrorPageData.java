@@ -46,7 +46,6 @@ public class SpringErrorPageData {
 
     @Override
     public String toString() {
-        return "isGlobal: " + isGlobal + "; Location: " + location + "; Exception Type: " +
-               exceptionType + "; Error Code: " + errorCode;
+        return "(isGlobal=" + isGlobal + " Location=" + location + " Exception-Type=" + exceptionType + " Error-Code=" + errorCode + ")";
     }
 }

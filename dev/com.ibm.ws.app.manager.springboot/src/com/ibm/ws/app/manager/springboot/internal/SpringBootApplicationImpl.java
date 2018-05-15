@@ -171,6 +171,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     }
 
     final class SpringBootConfigImpl implements SpringBootConfig {
+
         private final String id;
         private final AtomicReference<ServerConfiguration> serverConfig = new AtomicReference<>();
         private final AtomicReference<Bundle> virtualHostConfig = new AtomicReference<>();
@@ -186,6 +187,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
         @Override
         public <T> void configure(ServerConfiguration config, T helperParam, Class<T> type, SpringConfiguration additionalConfig) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SpringConfiguration Info = " + additionalConfig);
+            }
             ContainerInstanceFactory<T> containerInstanceFactory = factory.getContainerInstanceFactory(type);
             if (containerInstanceFactory == null) {
                 throw new IllegalStateException("No configuration helper found for: " + type);
