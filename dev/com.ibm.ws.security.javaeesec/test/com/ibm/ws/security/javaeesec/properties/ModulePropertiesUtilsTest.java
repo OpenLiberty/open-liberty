@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
@@ -300,7 +302,7 @@ public class ModulePropertiesUtilsTest {
      *
      */
     @Test
-    public void testGetHttpAuthenticationMechanismZeroAuthMech() {
+    public void testGetHttpAuthenticationMechanismNoAuthMech() {
         final String APPLNAME = "ApplicationName";
         final String MODULENAME = "ModuleName";
         List<Class> list = new ArrayList<Class>();
@@ -337,7 +339,10 @@ public class ModulePropertiesUtilsTest {
         final String MODULENAME = "ModuleName";
         List<Class> list = new ArrayList<Class>();
         list.add(String.class);
-        withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImpl(String.class);
+        final Set<Bean<?>> hams = new HashSet<Bean<?>>();
+        hams.add(bean1);
+        withModulePropertiesProvider(false, false).withAuthMechClassList(list).withHAMSet(bm, String.class, hams).withScope(bean1, ApplicationScoped.class);
+
         mpu.setComponentMetaData(cmd);
         mpu.clearModuleTable();
         assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
@@ -347,13 +352,13 @@ public class ModulePropertiesUtilsTest {
      *
      */
     @Test
-    public void testGetHttpAuthenticationMechanismOneAuthMechUnsatisfiedSameBM() {
+    public void testGetHttpAuthenticationMechanismOneAuthMechNoGlobalHAMSameBM() {
         final String APPLNAME = "ApplicationName";
         final String MODULENAME = "ModuleName";
         List<Class> list = new ArrayList<Class>();
         list.add(String.class);
-        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
-        withBeanManager(bm2);
+        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(bm2, false,
+                                                                                                                        false).withAuthMechClassList(list).withNoBean(bm2);
         mpu.setComponentMetaData(cmd);
         mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
@@ -365,13 +370,18 @@ public class ModulePropertiesUtilsTest {
      *
      */
     @Test
-    public void testGetHttpAuthenticationMechanismOneAuthMechAmbiguousSameBM() {
+    public void testGetHttpAuthenticationMechanismOneAuthMechMultipleBeansSameBM() {
         final String APPLNAME = "ApplicationName";
         final String MODULENAME = "ModuleName";
         List<Class> list = new ArrayList<Class>();
         list.add(String.class);
-        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, false, true);
-        withBeanManager(bm2);
+        final Set<Bean<?>> hams = new HashSet<Bean<?>>();
+        hams.add(bean1);
+        hams.add(bean2);
+        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(bm2, false,
+                                                                                                                        false).withAuthMechClassList(list).withHAMSet(bm2,
+                                                                                                                                                                      String.class,
+                                                                                                                                                                      hams);
         mpu.setComponentMetaData(cmd);
         mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
@@ -380,26 +390,32 @@ public class ModulePropertiesUtilsTest {
     }
 
     @Test
-    public void testGetHttpAuthenticationMechanismOneAuthMechUnsatisfiedOneModuleHAM() {
+    public void testGetHttpAuthenticationMechanismOneAuthMechMultipleGlobalHAMOneModuleHAM() {
         final List<Class> list = new ArrayList<Class>();
         list.add(String.class);
-        final Set<Bean> hams = new HashSet<Bean>();
+        final Set<Bean<?>> hams = new HashSet<Bean<?>>();
         hams.add(bean1);
-        withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
-        withBeanManager(bm1).withModuleHAM(String.class, hams);
+        hams.add(bean2);
+        final Set<Bean<?>> hams2 = new HashSet<Bean<?>>();
+        hams2.add(bean1);
+        withModulePropertiesProvider(bm1, false, false).withAuthMechClassList(list).withHAMSet(bm1, String.class, hams);
+        withHAMSet(bm2, String.class, hams2).withScope(bean1, ApplicationScoped.class);
         mpu.setComponentMetaData(cmd);
         mpu.clearModuleTable();
         assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
     }
 
     @Test
-    public void testGetHttpAuthenticationMechanismOneAuthMechUnsatisfiedOneModuleHAMCacheHit() {
+    public void testGetHttpAuthenticationMechanismOneAuthMechMultipleGlobalHAMOneModuleHAMModuleToHamCacheHit() {
         final List<Class> list = new ArrayList<Class>();
         list.add(String.class);
-        final Set<Bean> hams = new HashSet<Bean>();
+        final Set<Bean<?>> hams = new HashSet<Bean<?>>();
         hams.add(bean1);
-        withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
-        withBeanManager(bm1).withModuleHAM(String.class, hams);
+        hams.add(bean2);
+        final Set<Bean<?>> hams2 = new HashSet<Bean<?>>();
+        hams2.add(bean1);
+        withModulePropertiesProvider(bm1, false, false).withAuthMechClassList(list).withHAMSet(bm1, String.class, hams);
+        withHAMSet(bm2, String.class, hams2).withScope(bean1, ApplicationScoped.class);
         mpu.setComponentMetaData(cmd);
         mpu.clearModuleTable();
         assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
@@ -407,15 +423,34 @@ public class ModulePropertiesUtilsTest {
         assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
-    public void testGetHttpAuthenticationMechanismOneAuthMechUnsatisfiedZeroModuleHAM() {
+    public void testGetHttpAuthenticationMechanismOneAuthMechMultipleGlobalHAMOneModuleHAMModuleToHamLookupCacheHit() {
+        final List<Class> list = new ArrayList<Class>();
+        list.add(String.class);
+        final Set<Bean<?>> hams = new HashSet<Bean<?>>();
+        hams.add(bean1);
+        hams.add(bean2);
+        final Set<Bean<?>> hams2 = new HashSet<Bean<?>>();
+        hams2.add(bean1);
+        withModulePropertiesProvider(bm1, false, false).withAuthMechClassList(list).withHAMSet(bm1, String.class, hams);
+        withHAMSet(bm2, String.class, hams2).withScope(bean1, RequestScoped.class);
+        mpu.setComponentMetaData(cmd);
+        mpu.clearModuleTable();
+        assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
+        withHAMSet(bm2, String.class, hams2);
+        assertEquals("HAM should be returned.", mpu.getHttpAuthenticationMechanism(), ham);
+    }
+
+    @Test
+    public void testGetHttpAuthenticationMechanismOneAuthMechNoGlobalHAMNoModuleHAM() {
         final String APPLNAME = "ApplicationName";
         final String MODULENAME = "ModuleName";
         final List<Class> list = new ArrayList<Class>();
         list.add(String.class);
-        final Set<Bean> hams = new HashSet<Bean>();
-        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, true, false);
-        withBeanManager(bm1).withModuleHAM(String.class, hams);
+        final Set<Bean<?>> hams = new HashSet<Bean<?>>();
+        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(bm1, false,
+                                                                                                                        false).withAuthMechClassList(list).withNoBean(bm1).withNoBean(bm2);
         mpu.setComponentMetaData(cmd);
         mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
@@ -423,15 +458,19 @@ public class ModulePropertiesUtilsTest {
                    outputMgr.checkForStandardErr("CWWKS1912E:.*" + MODULENAME + ".*" + APPLNAME + ".*"));
     }
 
+    @SuppressWarnings("rawtypes")
     @Test
-    public void testGetHttpAuthenticationMechanismOneAuthMechAmbiguousMultipleModuleHAM() {
+    public void testGetHttpAuthenticationMechanismOneAuthMechNoGlobalHAMMultipleModuleHAM() {
+        final String APPLNAME = "ApplicationName";
+        final String MODULENAME = "ModuleName";
         final List<Class> list = new ArrayList<Class>();
         list.add(String.class);
-        final Set<Bean> hams = new HashSet<Bean>();
+        final Set<Bean<?>> hams = new HashSet<Bean<?>>();
         hams.add(bean1);
         hams.add(bean2);
-        withModulePropertiesProvider(false, false).withAuthMechClassList(list).withAuthMechImplInstance(String.class, false, true);
-        withBeanManager(bm1).withModuleHAM(String.class, hams);
+        withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(bm1, false,
+                                                                                                                        false).withAuthMechClassList(list).withNoBean(bm1);
+        withHAMSet(bm2, String.class, hams);
         mpu.setComponentMetaData(cmd);
         mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
@@ -466,12 +505,16 @@ public class ModulePropertiesUtilsTest {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     private ModulePropertiesUtilsTest withModulePropertiesProvider(boolean isUnsatisfied, boolean isAmbiguous) {
+        return withModulePropertiesProvider(bm, isUnsatisfied, isAmbiguous);
+    }
+
+    @SuppressWarnings("unchecked")
+    private ModulePropertiesUtilsTest withModulePropertiesProvider(BeanManager beanManager, boolean isUnsatisfied, boolean isAmbiguous) {
         mockery.checking(new Expectations() {
             {
                 one(cdi).getBeanManager();
-                will(returnValue(bm));
+                will(returnValue(beanManager));
                 one(cdi).select(ModulePropertiesProvider.class);
                 will(returnValue(mppi));
                 allowing(mppi).isUnsatisfied();
@@ -483,6 +526,7 @@ public class ModulePropertiesUtilsTest {
         return this;
     }
 
+    @SuppressWarnings("rawtypes")
     private ModulePropertiesUtilsTest withAuthMechClassList(List<Class> list) {
         mockery.checking(new Expectations() {
             {
@@ -495,83 +539,32 @@ public class ModulePropertiesUtilsTest {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    private ModulePropertiesUtilsTest withAuthMechImplInstance(Class implClass, boolean isUnsatisfied, boolean isAmbiguous) {
-        mockery.checking(new Expectations() {
-            {
-                one(cdi).select(implClass);
-                will(returnValue(hami));
-                allowing(hami).isUnsatisfied();
-                will(returnValue(isUnsatisfied));
-                allowing(hami).isAmbiguous();
-                will(returnValue(isAmbiguous));
-            }
-        });
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private ModulePropertiesUtilsTest withAuthMechImpl(Class implClass) {
-        mockery.checking(new Expectations() {
-            {
-                one(cdi).select(implClass);
-                will(returnValue(hami));
-                allowing(hami).isUnsatisfied();
-                will(returnValue(false));
-                allowing(hami).isAmbiguous();
-                will(returnValue(false));
-                one(hami).get();
-                will(returnValue(ham));
-            }
-        });
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private ModulePropertiesUtilsTest withBeanManager(final BeanManager bm) {
-        mockery.checking(new Expectations() {
-            {
-                one(cdi).getBeanManager();
-                will(returnValue(bm));
-            }
-        });
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private ModulePropertiesUtilsTest withModuleHAM(Class bc, Set<Bean> hams) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private ModulePropertiesUtilsTest withHAMSet(final BeanManager bm, final Class bc, final Set<Bean<?>> hams) {
         switch (hams.size()) {
-            case 0:
-                mockery.checking(new Expectations() {
-                    {
-                        never(bm2).getReference(with(any(Bean.class)), with(any(Type.class)), with(any(CreationalContext.class)));
-                    }
-                });
-                break;
             case 1:
                 mockery.checking(new Expectations() {
                     {
-                        one(bm2).getReference(with(any(Bean.class)), with(any(Type.class)), with(any(CreationalContext.class)));
+                        one(bm).getReference(with(any(Bean.class)), with(any(Type.class)), with(any(CreationalContext.class)));
                         will(returnValue(ham));
                     }
                 });
                 break;
-            case 2:
+            default:
                 mockery.checking(new Expectations() {
                     {
-                        one(bm2).getReference(with(any(Bean.class)), with(any(Type.class)), with(any(CreationalContext.class)));
-                        will(returnValue(ham));
-                        one(bm2).getReference(with(any(Bean.class)), with(any(Type.class)), with(any(CreationalContext.class)));
-                        will(returnValue(ham2));
+                        never(bm).getReference(with(any(Bean.class)), with(any(Type.class)), with(any(CreationalContext.class)));
                     }
                 });
                 break;
         }
         mockery.checking(new Expectations() {
             {
-                one(bm2).getBeans(bc);
+                one(bm).getBeans(bc);
                 will(returnValue(hams));
-                allowing(bm2).createCreationalContext(with(any(Bean.class)));
+                allowing(bm).resolve(hams);
+                will(returnValue(hams.iterator().next()));
+                allowing(bm).createCreationalContext(with(any(Bean.class)));
                 will(returnValue(cc));
             }
         });
@@ -590,6 +583,7 @@ public class ModulePropertiesUtilsTest {
         });
         return this;
     }
+
     private ModulePropertiesUtilsTest withWebModuleMetaDataAppName(final String name) {
         mockery.checking(new Expectations() {
             {
@@ -612,10 +606,33 @@ public class ModulePropertiesUtilsTest {
         return this;
     }
 
+    @SuppressWarnings("rawtypes")
+    private ModulePropertiesUtilsTest withScope(final Bean bean, final Class scope) {
+        mockery.checking(new Expectations() {
+            {
+                one(bean).getScope();
+                will(returnValue(scope));
+            }
+        });
+        return this;
+    }
+
+    private ModulePropertiesUtilsTest withNoBean(final BeanManager bm) {
+        final Set<Bean<?>> hams = new HashSet<Bean<?>>();
+        mockery.checking(new Expectations() {
+            {
+                one(bm).getBeans(String.class);
+                will(returnValue(hams));
+            }
+        });
+        return this;
+    }
 
     class ModulePropertiesUtilsDouble extends ModulePropertiesUtils {
         ComponentMetaData cmd = null;
         WebModuleMetaData wmmd = null;
+
+        @SuppressWarnings("rawtypes")
         @Override
         protected CDI getCDI() {
             return cdi;
