@@ -319,21 +319,21 @@ public class JwtSsoComponent implements JwtSsoConfig {
     @Override
     public String getUserNameAttribute() {
         // TODO Auto-generated method stub
-        return null;
+        return "upn";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getGroupNameAttribute() {
         // TODO Auto-generated method stub
-        return null;
+        return "groups";
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean ignoreApplicationAuthMethod() {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     /** {@inheritDoc} */
@@ -413,7 +413,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
     @Override
     public boolean getTokenReuse() {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override

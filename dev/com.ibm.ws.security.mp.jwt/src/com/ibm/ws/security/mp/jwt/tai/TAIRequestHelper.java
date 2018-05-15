@@ -85,6 +85,9 @@ public class TAIRequestHelper {
 
         }
         if (mpJwtConfig != null) {
+            if (shouldDeferToJwtSso(request, mpJwtConfig)) {
+                return false;
+            }
             ignoreAppAuthMethod = mpJwtConfig.ignoreApplicationAuthMethod(); // true by default
         }
         if (ignoreAppAuthMethod) {
@@ -97,6 +100,25 @@ public class TAIRequestHelper {
             Tr.exit(tc, methodName, result);
         }
         return result;
+    }
+
+    // if we don't have a valid bearer header, and jwtsso is active, we should defer.
+    private boolean shouldDeferToJwtSso(HttpServletRequest req, MicroProfileJwtConfig config) {
+        if (!isJwtSsoFeatureActive(config)) {
+            return false;
+        }
+
+        String hdrValue = req.getHeader(Authorization_Header);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Authorization header=", hdrValue);
+        }
+        boolean haveValidBearerHeader = (hdrValue != null && hdrValue.startsWith("Bearer "));
+        return !haveValidBearerHeader;
+
+    }
+
+    private boolean isJwtSsoFeatureActive(MicroProfileJwtConfig config) {
+        return config.toString().contains("com.ibm.ws.security.jwtsso.internal.JwtSsoComponent");
     }
 
     /**
