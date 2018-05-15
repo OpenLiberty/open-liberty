@@ -273,7 +273,6 @@ public class SessionMgrCoordinator {
             }
         } catch (Throwable thrown) {
             FFDCFilter.processException(thrown, getClass().getName(), "88", this);
-            throw thrown;
         }
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_CORE.exiting(CLASS_NAME, "foundDatabaseConfig", found);

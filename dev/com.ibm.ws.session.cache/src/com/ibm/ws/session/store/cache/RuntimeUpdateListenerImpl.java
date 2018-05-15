@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2018
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.session.store.cache;
 
 import java.io.IOException;
@@ -27,6 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
@@ -45,7 +45,8 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
     volatile boolean configChecked = false;
     private ConfigurationAdmin configAdmin = null;
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
-    final static String sampleConfig = "\n\n    <httpSessionCache libraryRef=\"JCacheLib\"/>\n\n    <library id=\"JCacheLib\">\n        <file name=\"${shared.resource.dir}/jcache/JCacheProvider.jar\"/>\n    </library>\n";
+    final static String EOL = System.lineSeparator();
+    final static String sampleConfig = EOL + EOL + "    <httpSessionCache libraryRef=\"JCacheLib\"/>" + EOL +  EOL + "   <library id=\"JCacheLib\">" + EOL + "        <file name=\"${shared.resource.dir}/jcache/JCacheProvider.jar\"/>" + EOL + "    </library>" + EOL;
 
     
     @Deactivate
@@ -67,13 +68,16 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
     /**
      * Perform validation checking on the sessionCache feature's configuration.
      */
+    @Trivial  //trace is manually added.
     @Override
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isDebugEnabled())
+        if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "notificationCreated", notification.getName());
             
         if (configChecked) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "notificationCreated: early return.", notification.getName());
             return;
         }
 
@@ -132,6 +136,9 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
                 Tr.error(tc, "ERROR_SESSION_INIT", ex);
             }
         }
+        
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "notificationCreated", notification.getName());
     }
 
     /**
