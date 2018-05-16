@@ -11,7 +11,7 @@
 package com.ibm.ws.kernel.service.util;
 
 /**
- * Exception while processing memory information.
+ * Exception while performing operating system action.
  */
 public class OperatingSystemException extends Exception {
 
