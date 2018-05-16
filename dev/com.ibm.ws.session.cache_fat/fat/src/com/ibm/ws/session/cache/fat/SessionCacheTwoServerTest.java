@@ -183,23 +183,6 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                            null);
     }
 
-    // @Test // TODO still in progress
-    public void testMaxSessions() throws Exception {
-        List<String> session1 = new ArrayList<>();
-        List<String> session2 = new ArrayList<>();
-        appA.sessionPut("testMaxSessions-session1", "hello", session1, true);
-        appB.sessionGet("testMaxSessions-session1", "hello", session1);
-
-        // Starting a new session should push session1 out of the cache
-        appA.sessionPut("testMaxSessions-session2", "hello2", session2, true);
-
-        // Verify that session2 is in the server and session1 is not
-        appA.sessionGet("testMaxSessions-session2", "hello2", session2);
-        appB.sessionGet("testMaxSessions-session2", "hello2", session2);
-        appB.sessionGet("testMaxSessions-session1", null, session1);
-        appA.sessionGet("testMaxSessions-session1", null, session1);
-    }
-
     /**
      * Test httpSessionCache's writeContents configuration.
      * App B on server B uses the default of ONLY_SET_ATTRIBUTES, which means that an update made locally to an attribute
