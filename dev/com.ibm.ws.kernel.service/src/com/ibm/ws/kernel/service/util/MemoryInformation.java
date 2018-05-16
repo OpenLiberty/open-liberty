@@ -618,6 +618,12 @@ public class MemoryInformation {
     private long getTotalMemoryzOS() throws MemoryInformationException {
         // DISPLAY M=STOR could get this but this can't
         // simply be executed through something like tsocmd.
+        // Testing shows that IBM Java on z/OS calculates total
+        // RAM nearly correctly:
+        // Total Memory (bytes) = 4212011008
+        // Matching M=STOR:
+        //   ONLINE-NOT RECONFIGURABLE
+        //   0M-4096M
         return getTotalMemoryJDK();
     }
 
@@ -628,7 +634,15 @@ public class MemoryInformation {
         // USS ps doesn't have RSS. We could dynamically create a mimic
         // of IAXDMEM and execute through tsocmd. This is too complicated
         // without a native layer.
-        return getFreeMemoryJDK();
+
+        long result = getFreeMemoryJDK();
+
+        // Testing has shown that IBM Java returns -1
+        if (result <= 0) {
+            throw new MemoryInformationException("Estimate of available memory not available on z/OS");
+        }
+
+        return result;
     }
 
     private static OperatingSystemMXBean osMxBean;
