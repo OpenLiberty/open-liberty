@@ -198,125 +198,6 @@ public class MemoryInformation {
         this.useLightweightAvailableRam = useLightweightAvailableRam;
     }
 
-    private final boolean cacheTotalRam;
-    private long cachedTotalRam = -1;
-    private final boolean useLightweightAvailableRam;
-
-    private final static MemoryInformation instance = new MemoryInformation();
-
-    private MemoryInformationException getNotImplementedException() {
-        return new MemoryInformationException("Unimplemented operating system " + OperatingSystem.instance().getOperatingSystemType() +
-                                              " (" + System.getProperty("os.name") + ")");
-    }
-
-    private long getTotalMemoryLinux() throws MemoryInformationException {
-        try {
-            // https://www.kernel.org/doc/Documentation/filesystems/proc.txt
-            List<String> lines = OperatingSystem.readAllLines("/proc/meminfo");
-            for (String meminfoLine : lines) {
-                if (meminfoLine.startsWith("MemTotal:")) {
-                    // MemTotal: Total usable ram (i.e. physical ram minus a few reserved
-                    // bits and the kernel binary code)
-                    return parseLinuxMeminfoLine(meminfoLine);
-                }
-            }
-            throw new MemoryInformationException("Expected memory information missing in /proc/meminfo: " + lines);
-        } catch (IOException e) {
-            throw new MemoryInformationException(e);
-        }
-    }
-
-    private long getTotalMemoryMac() throws MemoryInformationException {
-        List<String> lines = OperatingSystem.executeProgram("/usr/sbin/sysctl", "hw.memsize");
-        if (lines.size() == 1) {
-            String line = lines.get(0);
-            int i = line.indexOf(": ");
-            if (i != -1) {
-                return Long.parseLong(line.substring(i + 2));
-            } else {
-                throw new MemoryInformationException("Unexpected output: " + line);
-            }
-        } else {
-            throw new MemoryInformationException("Unexpected response from sysctl: " + lines);
-        }
-    }
-
-    private long getTotalMemoryWindows() throws MemoryInformationException {
-        List<String> lines = OperatingSystem.executeProgram("wmic", "os", "get", "totalvisiblememorysize", "/format:list");
-        for (String line : lines) {
-            // https://msdn.microsoft.com/en-us/library/aa394239(v=vs.85).aspx
-            if (line.startsWith("TotalVisibleMemorySize=")) {
-                return processWmicLine(line) * 1024;
-            }
-        }
-        throw new MemoryInformationException("Unexpected response from wmic: " + lines);
-    }
-
-    private long processWmicLine(String line) {
-        return Long.parseLong(line.substring(line.indexOf('=') + 1));
-    }
-
-    private long getTotalMemoryAix() throws MemoryInformationException {
-        List<String> lines = OperatingSystem.executeProgram("/usr/sbin/lsattr", "-El", "sys0");
-        for (String line : lines) {
-            // https://www.ibm.com/support/knowledgecenter/en/ssw_aix_72/com.ibm.aix.cmds3/lsattr.htm
-            // "realmem [...] Amount of usable physical memory in Kbytes"
-            if (line.startsWith("realmem")) {
-                line = line.substring(7);
-                line = line.substring(0, line.indexOf("Amount"));
-                line = line.trim();
-                return Long.parseLong(line) * 1024;
-            }
-        }
-        throw new MemoryInformationException("Unexpected response from lsattr: " + lines);
-    }
-
-    private long getTotalMemoryHp() throws MemoryInformationException {
-
-        // adb requires root and dmesg rolls, so we can't use either. Approximate
-        // using vmstat.
-        //
-        // https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-c00959008
-
-        List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).trim().startsWith("r")) {
-                String[] pieces = spacePattern.split(lines.get(i + 2));
-                return (Long.parseLong(pieces[3]) + Long.parseLong(pieces[4])) * 1024;
-            }
-        }
-
-        throw new MemoryInformationException("Unexpected response from vmstat: " + lines);
-    }
-
-    private long getTotalMemoryIBMi() throws MemoryInformationException {
-        return getTotalMemoryJDK();
-    }
-
-    private long getTotalMemorySolaris() throws MemoryInformationException {
-
-        // "To find how much physical memory is installed on the system, use the prtconf
-        // command in Solaris. For example:
-        //
-        // -bash-3.00# prtconf|grep Memory
-        // Memory size: 1024 Megabytes"
-        //
-        // http://www.oracle.com/technetwork/server-storage/solaris/solaris-memory-135224.html
-
-        List<String> lines = OperatingSystem.executeProgram("prtconf");
-        for (String line : lines) {
-            if (line.toLowerCase().startsWith("memory")) {
-                line = line.substring(line.indexOf(':') + 1).trim();
-                return inferBytes(line);
-            }
-        }
-        throw new MemoryInformationException("Unexpected response from prtdiag: " + lines);
-    }
-
-    private long getTotalMemoryzOS() throws MemoryInformationException {
-        return getTotalMemoryJDK();
-    }
-
     public static final long BYTES_IN_KB = 1024L;
     public static final long BYTES_IN_MB = 1048576L;
     public static final long BYTES_IN_GB = 1073741824L;
@@ -368,6 +249,51 @@ public class MemoryInformation {
             line = line.replaceAll("bytes", "");
         }
         return Long.parseLong(line.trim()) * modifier;
+    }
+
+    private final boolean cacheTotalRam;
+    private long cachedTotalRam = -1;
+    private final boolean useLightweightAvailableRam;
+
+    private final static MemoryInformation instance = new MemoryInformation();
+    private static final Pattern spacePattern = Pattern.compile("\\s+");
+
+    private MemoryInformationException getNotImplementedException() {
+        return new MemoryInformationException("Unimplemented operating system " + OperatingSystem.instance().getOperatingSystemType() +
+                                              " (" + System.getProperty("os.name") + ")");
+    }
+
+    private long getTotalMemoryLinux() throws MemoryInformationException {
+        try {
+            // https://www.kernel.org/doc/Documentation/filesystems/proc.txt
+            List<String> lines = OperatingSystem.readAllLines("/proc/meminfo");
+            for (String meminfoLine : lines) {
+                if (meminfoLine.startsWith("MemTotal:")) {
+                    // MemTotal: Total usable ram (i.e. physical ram minus a few reserved
+                    // bits and the kernel binary code)
+                    return parseLinuxMeminfoLine(meminfoLine);
+                }
+            }
+            throw new MemoryInformationException("Expected memory information missing in /proc/meminfo: " + lines);
+        } catch (IOException e) {
+            throw new MemoryInformationException(e);
+        }
+    }
+
+    private long parseLinuxMeminfoLine(String line) throws MemoryInformationException {
+        line = line.substring(line.indexOf(':') + 1).trim();
+        int i = line.lastIndexOf(' ');
+        int modifier = 1;
+        if (i != -1) {
+            String modifierString = line.substring(i + 1);
+            line = line.substring(0, i);
+            if (modifierString.equals("kB")) {
+                modifier = 1024;
+            } else {
+                throw new MemoryInformationException("Unknown meminfo modifier " + modifierString);
+            }
+        }
+        return Long.parseLong(line) * modifier;
     }
 
     private long getAvailableMemoryLinux() throws MemoryInformationException {
@@ -483,6 +409,21 @@ public class MemoryInformation {
         return cachedSwappiness;
     }
 
+    private long getTotalMemoryMac() throws MemoryInformationException {
+        List<String> lines = OperatingSystem.executeProgram("/usr/sbin/sysctl", "hw.memsize");
+        if (lines.size() == 1) {
+            String line = lines.get(0);
+            int i = line.indexOf(": ");
+            if (i != -1) {
+                return Long.parseLong(line.substring(i + 2));
+            } else {
+                throw new MemoryInformationException("Unexpected output: " + line);
+            }
+        } else {
+            throw new MemoryInformationException("Unexpected response from sysctl: " + lines);
+        }
+    }
+
     private long getAvailableMemoryMac() throws MemoryInformationException {
         long available = 0;
         List<String> vmstatLines = OperatingSystem.executeProgram("/usr/bin/vm_stat");
@@ -522,6 +463,21 @@ public class MemoryInformation {
         return Long.parseLong(line);
     }
 
+    private long getTotalMemoryWindows() throws MemoryInformationException {
+        List<String> lines = OperatingSystem.executeProgram("wmic", "os", "get", "totalvisiblememorysize", "/format:list");
+        for (String line : lines) {
+            // https://msdn.microsoft.com/en-us/library/aa394239(v=vs.85).aspx
+            if (line.startsWith("TotalVisibleMemorySize=")) {
+                return processWmicLine(line) * 1024;
+            }
+        }
+        throw new MemoryInformationException("Unexpected response from wmic: " + lines);
+    }
+
+    private long processWmicLine(String line) {
+        return Long.parseLong(line.substring(line.indexOf('=') + 1));
+    }
+
     private long getAvailableMemoryWindows() throws MemoryInformationException {
         long available = 0;
         List<String> lines = OperatingSystem.executeProgram("wmic", "path", "Win32_PerfFormattedData_PerfOS_Memory", "get",
@@ -544,7 +500,20 @@ public class MemoryInformation {
         return available;
     }
 
-    private static final Pattern spacePattern = Pattern.compile("\\s+");
+    private long getTotalMemoryAix() throws MemoryInformationException {
+        List<String> lines = OperatingSystem.executeProgram("/usr/sbin/lsattr", "-El", "sys0");
+        for (String line : lines) {
+            // https://www.ibm.com/support/knowledgecenter/en/ssw_aix_72/com.ibm.aix.cmds3/lsattr.htm
+            // "realmem [...] Amount of usable physical memory in Kbytes"
+            if (line.startsWith("realmem")) {
+                line = line.substring(7);
+                line = line.substring(0, line.indexOf("Amount"));
+                line = line.trim();
+                return Long.parseLong(line) * 1024;
+            }
+        }
+        throw new MemoryInformationException("Unexpected response from lsattr: " + lines);
+    }
 
     private long getAvailableMemoryAix() throws MemoryInformationException {
         List<String> lines = OperatingSystem.executeProgram("/usr/bin/svmon", "-O", "summary=basic,unit=KB");
@@ -565,6 +534,24 @@ public class MemoryInformation {
         throw new MemoryInformationException("Expected memory information missing in svmon: " + lines);
     }
 
+    private long getTotalMemoryHp() throws MemoryInformationException {
+
+        // adb requires root and dmesg rolls, so we can't use either. Approximate
+        // using vmstat.
+        //
+        // https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-c00959008
+
+        List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).trim().startsWith("r")) {
+                String[] pieces = spacePattern.split(lines.get(i + 2));
+                return (Long.parseLong(pieces[3]) + Long.parseLong(pieces[4])) * 1024;
+            }
+        }
+
+        throw new MemoryInformationException("Unexpected response from vmstat: " + lines);
+    }
+
     private long getAvailableMemoryHp() throws MemoryInformationException {
         List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
         for (int i = 0; i < lines.size(); i++) {
@@ -577,8 +564,33 @@ public class MemoryInformation {
         throw new MemoryInformationException("Expected memory information missing in vmstat: " + lines);
     }
 
+    private long getTotalMemoryIBMi() throws MemoryInformationException {
+        // Available in QWCRSSTS but inaccessible without a native layer.
+        return getTotalMemoryJDK();
+    }
+
     private long getAvailableMemoryIBMi() throws MemoryInformationException {
         return getFreeMemoryJDK();
+    }
+
+    private long getTotalMemorySolaris() throws MemoryInformationException {
+
+        // "To find how much physical memory is installed on the system, use the prtconf
+        // command in Solaris. For example:
+        //
+        // -bash-3.00# prtconf|grep Memory
+        // Memory size: 1024 Megabytes"
+        //
+        // http://www.oracle.com/technetwork/server-storage/solaris/solaris-memory-135224.html
+
+        List<String> lines = OperatingSystem.executeProgram("prtconf");
+        for (String line : lines) {
+            if (line.toLowerCase().startsWith("memory")) {
+                line = line.substring(line.indexOf(':') + 1).trim();
+                return inferBytes(line);
+            }
+        }
+        throw new MemoryInformationException("Unexpected response from prtdiag: " + lines);
     }
 
     private long getAvailableMemorySolaris() throws MemoryInformationException {
@@ -603,24 +615,20 @@ public class MemoryInformation {
         throw new MemoryInformationException("Expected memory information missing in vmstat: " + lines);
     }
 
-    private long getAvailableMemoryzOS() throws MemoryInformationException {
-        return getFreeMemoryJDK();
+    private long getTotalMemoryzOS() throws MemoryInformationException {
+        // DISPLAY M=STOR could get this but this can't
+        // simply be executed through something like tsocmd.
+        return getTotalMemoryJDK();
     }
 
-    private long parseLinuxMeminfoLine(String line) throws MemoryInformationException {
-        line = line.substring(line.indexOf(':') + 1).trim();
-        int i = line.lastIndexOf(' ');
-        int modifier = 1;
-        if (i != -1) {
-            String modifierString = line.substring(i + 1);
-            line = line.substring(0, i);
-            if (modifierString.equals("kB")) {
-                modifier = 1024;
-            } else {
-                throw new MemoryInformationException("Unknown meminfo modifier " + modifierString);
-            }
-        }
-        return Long.parseLong(line) * modifier;
+    private long getAvailableMemoryzOS() throws MemoryInformationException {
+        // There are REXX programs like IAXDMEM although those don't
+        // always seem to be available. IPCS has RSMDATA SUMMARY, but
+        // it would be crazy to start IPCS just to get memory stats.
+        // USS ps doesn't have RSS. We could dynamically create a mimic
+        // of IAXDMEM and execute through tsocmd. This is too complicated
+        // without a native layer.
+        return getFreeMemoryJDK();
     }
 
     private static OperatingSystemMXBean osMxBean;
