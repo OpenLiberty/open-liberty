@@ -83,14 +83,14 @@ public class TAIMappingHelper {
 
     }
 
-    public void createJwtPrincipalAndPopulateCustomProperties(@Sensitive JwtToken jwtToken) throws MpJwtProcessingException {
+    public void createJwtPrincipalAndPopulateCustomProperties(@Sensitive JwtToken jwtToken, boolean addJwtPrincipal) throws MpJwtProcessingException {
         String methodName = "createJwtPrincipalAndPopulateCustomProperties";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, jwtToken);
         }
         jwtPrincipal = createJwtPrincipal(jwtToken);
         String issuer = getIssuer(jwtPrincipal);
-        customProperties = populateCustomProperties(issuer, getmaptoURconfig());
+        customProperties = populateCustomProperties(issuer, getmaptoURconfig(), addJwtPrincipal);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName);
         }
@@ -193,7 +193,7 @@ public class TAIMappingHelper {
         return jwtPrincipal.getIssuer();
     }
 
-    Hashtable<String, Object> populateCustomProperties(String issuer, boolean mapToUR) {
+    Hashtable<String, Object> populateCustomProperties(String issuer, boolean mapToUR, boolean addJwtPrincipal) {
         String methodName = "populateCustomProperties";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, issuer);
@@ -220,7 +220,10 @@ public class TAIMappingHelper {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, username);
 
         }
-        addCustomCacheKey(customProperties);
+        if (!addJwtPrincipal) {
+            // add this only in the mpjwt tai flow
+            addCustomCacheKey(customProperties);
+        }
 
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, customProperties);
@@ -235,10 +238,7 @@ public class TAIMappingHelper {
     private void addCustomCacheKey(Hashtable<String, Object> customProperties) {
 
         if (jwtPrincipal != null) {
-            String customCacheKey = getCustomCacheKey(jwtPrincipal);
-            if (customCacheKey == null) {
-                customCacheKey = HashUtils.digest(jwtPrincipal.toString());
-            }
+            String customCacheKey = HashUtils.digest(jwtPrincipal.getRawToken());
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
         }
     }
