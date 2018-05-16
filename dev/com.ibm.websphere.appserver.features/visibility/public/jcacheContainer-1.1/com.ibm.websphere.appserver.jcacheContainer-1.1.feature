@@ -18,5 +18,5 @@ IBM-API-Package: \
  com.ibm.websphere.appserver.classloading-1.0
 -bundles=\
  com.ibm.websphere.javaee.jcache.1.1; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.cache:cache-api:1.1.0"
-kind=beta
-edition=core
+kind=noship
+edition=full
