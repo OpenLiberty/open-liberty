@@ -105,6 +105,11 @@ public class FTGlobalConfig {
             return globalEnabled.get();
         }
 
+        //The lowest priority is a global disabling of all fault tolerence annotations. (Only check FT annotations. Fallback is exempt from this global configuration)
+        if (ALL_ANNOTATIONS.contains(ann.annotationType()) && !getActiveAnnotations(clazz).contains(ann.annotationType())){
+            return false;
+        }
+
         return true; //The default is enabled.
     }
 

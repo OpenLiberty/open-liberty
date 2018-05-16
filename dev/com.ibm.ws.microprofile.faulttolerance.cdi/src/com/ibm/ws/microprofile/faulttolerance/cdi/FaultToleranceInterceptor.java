@@ -111,10 +111,6 @@ public class FaultToleranceInterceptor {
         Class<?> targetClass = context.getTarget().getClass();
         Annotation[] annotations = targetClass.getAnnotations();
         for (Annotation annotation : annotations) {
-            // Don't process any annotations which aren't enabled
-            if (!FTGlobalConfig.getActiveAnnotations(targetClass).contains(annotation.annotationType())) {
-                continue;
-            }
 
             //Check that the annotation has not been disabled for this specific class.
             if (!FTGlobalConfig.isAnnotationEnabled(annotation, targetClass)) {
@@ -144,10 +140,6 @@ public class FaultToleranceInterceptor {
         Method method = context.getMethod();
         annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
-            // Don't process any annotations which aren't enabled
-            if (!FTGlobalConfig.getActiveAnnotations(targetClass).contains(annotation.annotationType())) {
-                continue;
-            }
 
             //Check that the annotation has not been disabled for this specific method.
             if (!FTGlobalConfig.isAnnotationEnabled(annotation, targetClass, method)) {
