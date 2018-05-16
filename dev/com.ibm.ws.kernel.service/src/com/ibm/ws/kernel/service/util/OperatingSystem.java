@@ -22,23 +22,17 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
-
 /**
- * Various operating system utilities.
+ * Various operating system utilities. This class might be used in things like
+ * FAT suites, so avoid using Tr.
  */
 public class OperatingSystem {
-    private final static TraceComponent tc = Tr.register(OperatingSystem.class);
-
     /**
      * Get the singleton for the API. By default, this caches the first total RAM
      * calculation.
      *
      * @return Singleton to access memory information.
      */
-    @Trivial
     public static OperatingSystem instance() {
         return instance;
     }
@@ -48,7 +42,6 @@ public class OperatingSystem {
      *
      * @return Operating system type.
      */
-    @Trivial
     public OperatingSystemType getOperatingSystemType() {
         return osType;
     }
@@ -59,10 +52,6 @@ public class OperatingSystem {
 
     private static OperatingSystemType parseOperatingSystemType() {
         String osName = System.getProperty("os.name");
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "os.name", osName);
-        }
 
         if (osName != null) {
             osName = osName.toLowerCase().replaceAll("/", "");

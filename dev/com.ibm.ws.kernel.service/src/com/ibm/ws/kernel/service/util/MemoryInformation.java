@@ -23,16 +23,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
-
 /**
- * Provides information about the underlying operating system.
+ * Provides information about the underlying operating system. This class might
+ * be used in things like FAT suites, so avoid using Tr.
  */
 public class MemoryInformation {
-    private final static TraceComponent tc = Tr.register(MemoryInformation.class);
-
     /**
      * Get the singleton for the API.
      * By default:
@@ -41,7 +36,6 @@ public class MemoryInformation {
      *
      * @return Singleton to access memory information.
      */
-    @Trivial
     public static MemoryInformation instance() {
         return instance;
     }
@@ -57,10 +51,6 @@ public class MemoryInformation {
     public synchronized long getTotalMemory() throws MemoryInformationException {
         if (cacheTotalRam && cachedTotalRam != -1) {
 
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Returning cached result");
-            }
-
             return cachedTotalRam;
         }
 
@@ -71,9 +61,6 @@ public class MemoryInformation {
             result = getTotalMemoryJDK();
         } catch (MemoryInformationException e) {
             // It's okay that this fails since we'll fall back to the switch below.
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Error calling getTotalMemoryJDK", e);
-            }
         }
 
         if (result == -1) {
@@ -132,9 +119,6 @@ public class MemoryInformation {
                 return getFreeMemoryJDK();
             } catch (MemoryInformationException e) {
                 // It's okay that this fails since we'll fall back to the switch below.
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Error calling getFreeMemoryJDK", e);
-                }
             }
         }
 
