@@ -140,7 +140,6 @@ public class AuthenticateApi {
             reply = createReplyForAuthnFailure(authResult, realm);
 
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_01, req, authResult, Integer.valueOf(reply.getStatusCode()));
-
             String extraInfoText = "";
             if (authResult.passwordExpired == true) {
                 extraInfoText = extraInfoText + " [PWEXPIRED]";
@@ -583,6 +582,9 @@ public class AuthenticateApi {
         WebReply reply = null;
         switch (authResult.getStatus()) {
             case FAILURE:
+                String reason = authResult.getReason();
+                if (reason != null && reason.contains("JASPIC"))
+                    return new ChallengeReply(realm, reason);
                 return DENY_AUTHN_FAILED;
 
             case SEND_401:
