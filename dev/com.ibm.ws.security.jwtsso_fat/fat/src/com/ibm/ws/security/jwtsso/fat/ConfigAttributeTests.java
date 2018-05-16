@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +24,6 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.actions.TestActions;
-import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
@@ -130,7 +130,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException",
                    "com.ibm.websphere.security.jwt.InvalidTokenException",
                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
-                   "com.ibm.websphere.security.WSSecurityException",
+                   "javax.security.auth.login.LoginException",
                    "com.ibm.ws.security.authentication.AuthenticationException" })
     @Mode(TestMode.LITE)
     //@Test
