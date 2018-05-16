@@ -50,7 +50,6 @@ public class MemoryInformation {
      */
     public synchronized long getTotalMemory() throws MemoryInformationException {
         if (cacheTotalRam && cachedTotalRam != -1) {
-
             return cachedTotalRam;
         }
 
@@ -97,6 +96,7 @@ public class MemoryInformation {
         if (cacheTotalRam) {
             cachedTotalRam = result;
         }
+
         return result;
     }
 
