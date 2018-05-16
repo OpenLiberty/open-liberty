@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.collector;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -45,6 +47,16 @@ public class CollectorJsonHelpers {
     public final static String FLOAT_SUFFIX = "_float";
     public final static String BOOL_SUFFIX = "_bool";
     public final static String LONG_SUFFIX = "_long";
+    public static final String LINE_SEPARATOR;
+
+    static {
+        LINE_SEPARATOR = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("line.separator");
+            }
+        });
+    }
 
     protected static String getEventType(String source, String location) {
         if (source.equals(CollectorConstants.GC_SOURCE) && location.equals(CollectorConstants.MEMORY)) {

@@ -263,8 +263,13 @@ public class CollectorJsonUtils1_1 {
             }
         }
 
-        String formattedValue = CollectorJsonHelpers.formatMessage(message, maxFieldLength);
-        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey1_1(), formattedValue, false, true, false, false);
+        StringBuilder formattedValue = new StringBuilder(CollectorJsonHelpers.formatMessage(message, maxFieldLength));
+        String throwable = logData.getThrowable();
+        if (throwable != null) {
+            formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(throwable);
+        }
+
+        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey1_1(), formattedValue.toString(), false, true, false, false);
         CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey1_1(), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false, false);
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
         CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey1_1(), datetime, false, true, false, false);
@@ -274,6 +279,7 @@ public class CollectorJsonUtils1_1 {
         CollectorJsonHelpers.addToJSON(sb, logData.getMethodNameKey1_1(), logData.getMethodName(), false, true, false, false);
         CollectorJsonHelpers.addToJSON(sb, logData.getClassNameKey1_1(), logData.getClassName(), false, true, false, false);
         CollectorJsonHelpers.addToJSON(sb, logData.getSequenceKey1_1(), logData.getSequence(), false, true, false, false);
+
         kvpl = logData.getExtensions();
         if (kvpl != null) {
             if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {

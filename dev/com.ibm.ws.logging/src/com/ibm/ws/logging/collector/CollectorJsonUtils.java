@@ -189,9 +189,14 @@ public class CollectorJsonUtils {
                 message = CollectorJsonHelpers.jsonRemoveSpace(message);
             }
         }
-        String formattedValue = CollectorJsonHelpers.formatMessage(logData.getMessage(), maxFieldLength);
-        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey(), formattedValue, false, true, false, false);
 
+        StringBuilder formattedValue = new StringBuilder(CollectorJsonHelpers.formatMessage(message, maxFieldLength));
+        String throwable = logData.getThrowable();
+        if (throwable != null) {
+            formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(throwable);
+        }
+
+        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey(), formattedValue.toString(), false, true, false, false);
         CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey(), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false, false);
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
         CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey(), datetime, false, true, false, false);
