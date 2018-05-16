@@ -11,7 +11,9 @@
 package com.ibm.ws.security.authentication.jaas.modules;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Hashtable;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -163,14 +165,18 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
     }
 
     private void setUpTemporaryUserSubjectForJsonWebToken(String jwtToken) throws Exception {
+        Subject jwtPartialSubject = new Subject();
+        jwtPartialSubject = JwtSSOTokenHelper.handleJwtSSOToken(jwtToken);
+        Set<Principal> jwtPrincipals = jwtPartialSubject.getPrincipals();
         temporarySubject = new Subject();
-        temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(jwtToken);
+        temporarySubject.getPrincipals().addAll(jwtPrincipals);
+
         SubjectHelper subjectHelper = new SubjectHelper();
-        Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(temporarySubject, hashtableLoginProperties);
-        //TODO: call a new API to retrieve the accessId, securityName and customRealm
+        Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(jwtPartialSubject, hashtableLoginProperties);
         accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
         customRealm = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM);
+
         setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_JWT_SSO_TOKEN);
         setCredentials(temporarySubject, securityName, securityName);
         setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_JWT_SSO_TOKEN, customProperties);
