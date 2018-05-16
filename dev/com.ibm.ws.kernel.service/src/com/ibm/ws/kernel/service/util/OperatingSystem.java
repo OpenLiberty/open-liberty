@@ -106,15 +106,15 @@ public class OperatingSystem {
      * Get the page size. Currently only works on POSIX operating systems.
      *
      * @return Page size.
-     * @throws MemoryInformationException Error computing page size.
+     * @throws OperatingSystemException Error computing page size.
      */
-    public static synchronized int getPageSize() throws MemoryInformationException {
+    public static synchronized int getPageSize() throws OperatingSystemException {
         if (cachedPageSize == -1) {
             List<String> getconfLines = executeProgram("/usr/bin/getconf", "PAGE_SIZE");
             if (getconfLines.size() == 1) {
                 cachedPageSize = Integer.parseInt(getconfLines.get(0));
             } else {
-                throw new MemoryInformationException("Unexpected response from getconf: " + getconfLines);
+                throw new OperatingSystemException("Unexpected response from getconf: " + getconfLines);
             }
         }
         return cachedPageSize;
@@ -127,10 +127,10 @@ public class OperatingSystem {
      * @param commandLine
      *            The program and any arguments.
      * @return A list of Strings for the output
-     * @throws MemoryInformationException
+     * @throws OperatingSystemException
      *             If return code is not 0.
      */
-    public static List<String> executeProgram(String... commandLine) throws MemoryInformationException {
+    public static List<String> executeProgram(String... commandLine) throws OperatingSystemException {
         return executeProgramWithInput(null, commandLine);
     }
 
@@ -143,10 +143,10 @@ public class OperatingSystem {
      * @param commandLine
      *            The program and any arguments.
      * @return A list of Strings for the output
-     * @throws MemoryInformationException
+     * @throws OperatingSystemException
      *             If return code is not 0.
      */
-    public static List<String> executeProgramWithInput(String input, String... commandLine) throws MemoryInformationException {
+    public static List<String> executeProgramWithInput(String input, String... commandLine) throws OperatingSystemException {
         try {
             ProcessBuilder builder = new ProcessBuilder();
 
@@ -180,14 +180,14 @@ public class OperatingSystem {
             try {
                 int returnCode = process.waitFor();
                 if (returnCode != 0) {
-                    throw new MemoryInformationException("Unexpected return code " + returnCode + " from " + commandLine);
+                    throw new OperatingSystemException("Unexpected return code " + returnCode + " from " + commandLine);
                 }
                 return lines;
             } catch (InterruptedException e) {
-                throw new MemoryInformationException(e);
+                throw new OperatingSystemException(e);
             }
         } catch (IOException e1) {
-            throw new MemoryInformationException(e1);
+            throw new OperatingSystemException(e1);
         }
     }
 }

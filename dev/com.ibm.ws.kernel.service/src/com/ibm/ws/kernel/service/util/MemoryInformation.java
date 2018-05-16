@@ -354,7 +354,7 @@ public class MemoryInformation {
             }
 
             throw new MemoryInformationException("Expected memory information missing in /proc/meminfo: " + lines);
-        } catch (IOException e) {
+        } catch (IOException | OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
     }
@@ -394,50 +394,58 @@ public class MemoryInformation {
     }
 
     private long getTotalMemoryMac() throws MemoryInformationException {
-        List<String> lines = OperatingSystem.executeProgram("/usr/sbin/sysctl", "hw.memsize");
-        if (lines.size() == 1) {
-            String line = lines.get(0);
-            int i = line.indexOf(": ");
-            if (i != -1) {
-                return Long.parseLong(line.substring(i + 2));
+        try {
+            List<String> lines = OperatingSystem.executeProgram("/usr/sbin/sysctl", "hw.memsize");
+            if (lines.size() == 1) {
+                String line = lines.get(0);
+                int i = line.indexOf(": ");
+                if (i != -1) {
+                    return Long.parseLong(line.substring(i + 2));
+                } else {
+                    throw new MemoryInformationException("Unexpected output: " + line);
+                }
             } else {
-                throw new MemoryInformationException("Unexpected output: " + line);
+                throw new MemoryInformationException("Unexpected response from sysctl: " + lines);
             }
-        } else {
-            throw new MemoryInformationException("Unexpected response from sysctl: " + lines);
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
         }
     }
 
     private long getAvailableMemoryMac() throws MemoryInformationException {
-        long available = 0;
-        List<String> vmstatLines = OperatingSystem.executeProgram("/usr/bin/vm_stat");
-        for (String vmstatLine : vmstatLines) {
-            if (vmstatLine.startsWith("Pages free:")) {
-                available += processMacVmStatLine(vmstatLine);
-            } else if (vmstatLine.startsWith("Pages inactive:")) {
-                available += processMacVmStatLine(vmstatLine);
-            } else if (vmstatLine.startsWith("Pages speculative:")) {
-                available += processMacVmStatLine(vmstatLine);
-            } else if (vmstatLine.startsWith("File-backed pages:")) {
-                // This maps to "Cached Files" which is:
-                // Cached Files: Memory that was recently used by apps and is now available for
-                // use by other apps. For example, if you've been using Mail and then quit Mail,
-                // the RAM that Mail was using becomes part of the memory used by cached files,
-                // which then becomes available to other apps. If you open Mail again before its
-                // cached-files memory is used (overwritten) by another app, Mail opens more
-                // quickly because that memory is quickly converted back to app memory without
-                // having to load its contents from your startup drive.
-                // https://support.apple.com/en-us/HT201464
-                available += processMacVmStatLine(vmstatLine);
+        try {
+            long available = 0;
+            List<String> vmstatLines = OperatingSystem.executeProgram("/usr/bin/vm_stat");
+            for (String vmstatLine : vmstatLines) {
+                if (vmstatLine.startsWith("Pages free:")) {
+                    available += processMacVmStatLine(vmstatLine);
+                } else if (vmstatLine.startsWith("Pages inactive:")) {
+                    available += processMacVmStatLine(vmstatLine);
+                } else if (vmstatLine.startsWith("Pages speculative:")) {
+                    available += processMacVmStatLine(vmstatLine);
+                } else if (vmstatLine.startsWith("File-backed pages:")) {
+                    // This maps to "Cached Files" which is:
+                    // Cached Files: Memory that was recently used by apps and is now available for
+                    // use by other apps. For example, if you've been using Mail and then quit Mail,
+                    // the RAM that Mail was using becomes part of the memory used by cached files,
+                    // which then becomes available to other apps. If you open Mail again before its
+                    // cached-files memory is used (overwritten) by another app, Mail opens more
+                    // quickly because that memory is quickly converted back to app memory without
+                    // having to load its contents from your startup drive.
+                    // https://support.apple.com/en-us/HT201464
+                    available += processMacVmStatLine(vmstatLine);
+                }
             }
-        }
 
-        if (available <= 0) {
-            throw new MemoryInformationException("Unexpected output of vm_stat: " + vmstatLines);
-        }
+            if (available <= 0) {
+                throw new MemoryInformationException("Unexpected output of vm_stat: " + vmstatLines);
+            }
 
-        available *= OperatingSystem.getPageSize();
-        return available;
+            available *= OperatingSystem.getPageSize();
+            return available;
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
+        }
     }
 
     private long processMacVmStatLine(String line) {
@@ -448,14 +456,18 @@ public class MemoryInformation {
     }
 
     private long getTotalMemoryWindows() throws MemoryInformationException {
-        List<String> lines = OperatingSystem.executeProgram("wmic", "os", "get", "totalvisiblememorysize", "/format:list");
-        for (String line : lines) {
-            // https://msdn.microsoft.com/en-us/library/aa394239(v=vs.85).aspx
-            if (line.startsWith("TotalVisibleMemorySize=")) {
-                return processWmicLine(line) * 1024;
+        try {
+            List<String> lines = OperatingSystem.executeProgram("wmic", "os", "get", "totalvisiblememorysize", "/format:list");
+            for (String line : lines) {
+                // https://msdn.microsoft.com/en-us/library/aa394239(v=vs.85).aspx
+                if (line.startsWith("TotalVisibleMemorySize=")) {
+                    return processWmicLine(line) * 1024;
+                }
             }
+            throw new MemoryInformationException("Unexpected response from wmic: " + lines);
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
         }
-        throw new MemoryInformationException("Unexpected response from wmic: " + lines);
     }
 
     private long processWmicLine(String line) {
@@ -463,59 +475,71 @@ public class MemoryInformation {
     }
 
     private long getAvailableMemoryWindows() throws MemoryInformationException {
-        long available = 0;
-        List<String> lines = OperatingSystem.executeProgram("wmic", "path", "Win32_PerfFormattedData_PerfOS_Memory", "get",
-                                                            "/format:list");
+        try {
+            long available = 0;
+            List<String> lines = OperatingSystem.executeProgram("wmic", "path", "Win32_PerfFormattedData_PerfOS_Memory", "get",
+                                                                "/format:list");
 
-        // https://technet.microsoft.com/en-ca/aa394268(v=vs.71)
+            // https://technet.microsoft.com/en-ca/aa394268(v=vs.71)
 
-        for (String line : lines) {
-            if (line.startsWith("AvailableBytes=")) {
-                available += processWmicLine(line);
-            } else if (line.startsWith("CacheBytes=")) {
-                available += processWmicLine(line);
+            for (String line : lines) {
+                if (line.startsWith("AvailableBytes=")) {
+                    available += processWmicLine(line);
+                } else if (line.startsWith("CacheBytes=")) {
+                    available += processWmicLine(line);
+                }
             }
-        }
 
-        if (available <= 0) {
-            throw new MemoryInformationException("Unexpected output of wmic: " + lines);
-        }
+            if (available <= 0) {
+                throw new MemoryInformationException("Unexpected output of wmic: " + lines);
+            }
 
-        return available;
+            return available;
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
+        }
     }
 
     private long getTotalMemoryAix() throws MemoryInformationException {
-        List<String> lines = OperatingSystem.executeProgram("/usr/sbin/lsattr", "-El", "sys0");
-        for (String line : lines) {
-            // https://www.ibm.com/support/knowledgecenter/en/ssw_aix_72/com.ibm.aix.cmds3/lsattr.htm
-            // "realmem [...] Amount of usable physical memory in Kbytes"
-            if (line.startsWith("realmem")) {
-                line = line.substring(7);
-                line = line.substring(0, line.indexOf("Amount"));
-                line = line.trim();
-                return Long.parseLong(line) * 1024;
+        try {
+            List<String> lines = OperatingSystem.executeProgram("/usr/sbin/lsattr", "-El", "sys0");
+            for (String line : lines) {
+                // https://www.ibm.com/support/knowledgecenter/en/ssw_aix_72/com.ibm.aix.cmds3/lsattr.htm
+                // "realmem [...] Amount of usable physical memory in Kbytes"
+                if (line.startsWith("realmem")) {
+                    line = line.substring(7);
+                    line = line.substring(0, line.indexOf("Amount"));
+                    line = line.trim();
+                    return Long.parseLong(line) * 1024;
+                }
             }
+            throw new MemoryInformationException("Unexpected response from lsattr: " + lines);
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
         }
-        throw new MemoryInformationException("Unexpected response from lsattr: " + lines);
     }
 
     private long getAvailableMemoryAix() throws MemoryInformationException {
-        List<String> lines = OperatingSystem.executeProgram("/usr/bin/svmon", "-O", "summary=basic,unit=KB");
+        try {
+            List<String> lines = OperatingSystem.executeProgram("/usr/bin/svmon", "-O", "summary=basic,unit=KB");
 
-        // https://www.ibm.com/support/knowledgecenter/ssw_aix_72/com.ibm.aix.prftools/idprftools_svmon_repd_gl.htm
+            // https://www.ibm.com/support/knowledgecenter/ssw_aix_72/com.ibm.aix.prftools/idprftools_svmon_repd_gl.htm
 
-        for (String line : lines) {
-            if (line.startsWith("memory")) {
-                String[] pieces = spacePattern.split(line);
-                if (pieces.length >= 7) {
-                    return Long.parseLong(pieces[6]) * 1024;
-                } else {
-                    throw new MemoryInformationException("Expected memory information missing in svmon: " + lines);
+            for (String line : lines) {
+                if (line.startsWith("memory")) {
+                    String[] pieces = spacePattern.split(line);
+                    if (pieces.length >= 7) {
+                        return Long.parseLong(pieces[6]) * 1024;
+                    } else {
+                        throw new MemoryInformationException("Expected memory information missing in svmon: " + lines);
+                    }
                 }
             }
-        }
 
-        throw new MemoryInformationException("Expected memory information missing in svmon: " + lines);
+            throw new MemoryInformationException("Expected memory information missing in svmon: " + lines);
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
+        }
     }
 
     private long getTotalMemoryHp() throws MemoryInformationException {
@@ -525,27 +549,35 @@ public class MemoryInformation {
         //
         // https://support.hpe.com/hpsc/doc/public/display?docId=emr_na-c00959008
 
-        List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).trim().startsWith("r")) {
-                String[] pieces = spacePattern.split(lines.get(i + 2));
-                return (Long.parseLong(pieces[3]) + Long.parseLong(pieces[4])) * 1024;
+        try {
+            List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
+            for (int i = 0; i < lines.size(); i++) {
+                if (lines.get(i).trim().startsWith("r")) {
+                    String[] pieces = spacePattern.split(lines.get(i + 2));
+                    return (Long.parseLong(pieces[3]) + Long.parseLong(pieces[4])) * 1024;
+                }
             }
-        }
 
-        throw new MemoryInformationException("Unexpected response from vmstat: " + lines);
+            throw new MemoryInformationException("Unexpected response from vmstat: " + lines);
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
+        }
     }
 
     private long getAvailableMemoryHp() throws MemoryInformationException {
-        List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).trim().startsWith("r")) {
-                String[] pieces = spacePattern.split(lines.get(i + 2));
-                return Long.parseLong(pieces[4]) * 1024;
+        try {
+            List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
+            for (int i = 0; i < lines.size(); i++) {
+                if (lines.get(i).trim().startsWith("r")) {
+                    String[] pieces = spacePattern.split(lines.get(i + 2));
+                    return Long.parseLong(pieces[4]) * 1024;
+                }
             }
-        }
 
-        throw new MemoryInformationException("Expected memory information missing in vmstat: " + lines);
+            throw new MemoryInformationException("Expected memory information missing in vmstat: " + lines);
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
+        }
     }
 
     private long getTotalMemoryIBMi() throws MemoryInformationException {
@@ -567,14 +599,18 @@ public class MemoryInformation {
         //
         // http://www.oracle.com/technetwork/server-storage/solaris/solaris-memory-135224.html
 
-        List<String> lines = OperatingSystem.executeProgram("prtconf");
-        for (String line : lines) {
-            if (line.toLowerCase().startsWith("memory")) {
-                line = line.substring(line.indexOf(':') + 1).trim();
-                return inferBytes(line);
+        try {
+            List<String> lines = OperatingSystem.executeProgram("prtconf");
+            for (String line : lines) {
+                if (line.toLowerCase().startsWith("memory")) {
+                    line = line.substring(line.indexOf(':') + 1).trim();
+                    return inferBytes(line);
+                }
             }
+            throw new MemoryInformationException("Unexpected response from prtdiag: " + lines);
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
         }
-        throw new MemoryInformationException("Unexpected response from prtdiag: " + lines);
     }
 
     private long getAvailableMemorySolaris() throws MemoryInformationException {
@@ -588,15 +624,19 @@ public class MemoryInformation {
         //
         // http://www.oracle.com/technetwork/server-storage/solaris/solaris-memory-135224.html
 
-        List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).trim().startsWith("r")) {
-                String[] pieces = spacePattern.split(lines.get(i + 2));
-                return Long.parseLong(pieces[4]) * 1024;
+        try {
+            List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
+            for (int i = 0; i < lines.size(); i++) {
+                if (lines.get(i).trim().startsWith("r")) {
+                    String[] pieces = spacePattern.split(lines.get(i + 2));
+                    return Long.parseLong(pieces[4]) * 1024;
+                }
             }
-        }
 
-        throw new MemoryInformationException("Expected memory information missing in vmstat: " + lines);
+            throw new MemoryInformationException("Expected memory information missing in vmstat: " + lines);
+        } catch (OperatingSystemException e) {
+            throw new MemoryInformationException(e);
+        }
     }
 
     private long getTotalMemoryzOS() throws MemoryInformationException {
