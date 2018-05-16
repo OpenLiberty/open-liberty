@@ -85,14 +85,16 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
                                                                                new Object[] { user },
                                                                                "CWWKS1100A: Authentication failed for the userid {0}. A bad userid and/or password was specified."));
             }
-        } catch (AuthenticationException e) {
-
-            // NO FFDC: AuthenticationExceptions are expected (bad userid/password is pretty normal)
-            throw e; // no-need to wrap
-        } catch (com.ibm.ws.security.registry.PasswordExpiredException e) {
+        } 
+        catch (com.ibm.ws.security.registry.PasswordExpiredException e) {
             throw new PasswordExpiredException(e.getLocalizedMessage(), e);
         } catch (com.ibm.ws.security.registry.UserRevokedException e) {
             throw new UserRevokedException(e.getLocalizedMessage(), e);
+        } 
+        catch (AuthenticationException e) {
+
+            // NO FFDC: AuthenticationExceptions are expected (bad userid/password is pretty normal)
+            throw e; // no-need to wrap
         } catch (IllegalArgumentException e) {
             // NO FFDC: This is normal when user and/or password are blank/null
             throw new AuthenticationException(e.getLocalizedMessage(), e);

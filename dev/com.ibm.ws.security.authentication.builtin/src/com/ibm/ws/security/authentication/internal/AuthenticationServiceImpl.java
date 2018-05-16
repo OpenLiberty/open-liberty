@@ -33,6 +33,8 @@ import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
+import com.ibm.ws.security.authentication.PasswordExpiredException;
+import com.ibm.ws.security.authentication.UserRevokedException;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider;
@@ -477,7 +479,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (jaasService != null) {
             try {
                 return jaasService.performLogin(jaasEntryName, authenticationData, subject);
-            } catch (LoginException e) {
+            }
+            catch (LoginException e) {
+                if(e instanceof PasswordExpiredException) {
+                    throw new PasswordExpiredException(e.getLocalizedMessage());
+                }
+                else if(e instanceof UserRevokedException) {
+                    throw new UserRevokedException(e.getLocalizedMessage());
+                }
                 throw new AuthenticationException(e.getLocalizedMessage());
             }
         }
