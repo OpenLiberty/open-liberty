@@ -654,6 +654,14 @@ public class SessionCacheTestServlet extends FATServlet {
         String sessionID = session.getId();
         System.out.println("Put entry: " + key + '=' + value + " into sessionID=" + sessionID);
         response.getWriter().write("session id: [" + sessionID + "]");
+
+        // Normally, session postinvoke writes the updates after the servlet returns control to the test logic.
+        // This can be a problem if the test logic proceeds to execute further test logic based on the expectation
+        // that updates made under the previous servlet request have gone into effect.  Tests that are vulnerable
+        // to this can use the sync=true parameter to force update to be made before servlet returns.
+        boolean sync = Boolean.parseBoolean(request.getParameter("sync"));
+        if (sync)
+            ((IBMSession) session).sync();
     }
 
     public void sessionGet(HttpServletRequest request, HttpServletResponse response) throws Throwable {
@@ -683,6 +691,14 @@ public class SessionCacheTestServlet extends FATServlet {
         String key = request.getParameter("key");
         HttpSession session = request.getSession(false);
         session.removeAttribute(key);
+
+        // Normally, session postinvoke writes the updates after the servlet returns control to the test logic.
+        // This can be a problem if the test logic proceeds to execute further test logic based on the expectation
+        // that updates made under the previous servlet request have gone into effect.  Tests that are vulnerable
+        // to this can use the sync=true parameter to force update to be made before servlet returns.
+        boolean sync = Boolean.parseBoolean(request.getParameter("sync"));
+        if (sync)
+            ((IBMSession) session).sync();
     }
 
     public void sessionGetTimeout(HttpServletRequest request, HttpServletResponse response) throws Throwable {
