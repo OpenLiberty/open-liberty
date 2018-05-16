@@ -211,37 +211,37 @@ public class MemoryInformation {
         if (line.contains("kb")) {
             modifier = BYTES_IN_KB;
             line = line.replaceAll("kb", "");
-        } else if (line.contains("kilo")) {
+        } else if (line.contains("kilobytes")) {
             modifier = BYTES_IN_KB;
             line = line.replaceAll("kilobytes", "");
         } else if (line.contains("mb")) {
             modifier = BYTES_IN_MB;
             line = line.replaceAll("mb", "");
-        } else if (line.contains("mega")) {
+        } else if (line.contains("megabytes")) {
             modifier = BYTES_IN_MB;
             line = line.replaceAll("megabytes", "");
         } else if (line.contains("gb")) {
             modifier = BYTES_IN_GB;
             line = line.replaceAll("gb", "");
-        } else if (line.contains("giga")) {
+        } else if (line.contains("gigabytes")) {
             modifier = BYTES_IN_GB;
             line = line.replaceAll("gigabytes", "");
         } else if (line.contains("tb")) {
             modifier = BYTES_IN_TB;
             line = line.replaceAll("tb", "");
-        } else if (line.contains("tera")) {
+        } else if (line.contains("terabytes")) {
             modifier = BYTES_IN_TB;
             line = line.replaceAll("terabytes", "");
         } else if (line.contains("pb")) {
             modifier = BYTES_IN_PB;
             line = line.replaceAll("pb", "");
-        } else if (line.contains("peta")) {
+        } else if (line.contains("petabytes")) {
             modifier = BYTES_IN_PB;
             line = line.replaceAll("petabytes", "");
         } else if (line.contains("eb")) {
             modifier = BYTES_IN_EB;
             line = line.replaceAll("eb", "");
-        } else if (line.contains("exa")) {
+        } else if (line.contains("exabytes")) {
             modifier = BYTES_IN_EB;
             line = line.replaceAll("exabytes", "");
         } else {
@@ -655,8 +655,13 @@ public class MemoryInformation {
         }
         try {
             if (methodGetTotalPhysicalMemorySize == null) {
-                methodGetTotalPhysicalMemorySize = osMxBean.getClass().getMethod("getTotalPhysicalMemorySize");
+                try {
+                    methodGetTotalPhysicalMemorySize = osMxBean.getClass().getMethod("getTotalPhysicalMemorySize");
+                } catch (NoSuchMethodException nsme) {
+                    methodGetTotalPhysicalMemorySize = osMxBean.getClass().getMethod("getTotalPhysicalMemory");
+                }
 
+                // This is needed for some JDKs since implementation is private
                 AccessController.doPrivileged(new PrivilegedAction<Object>() {
                     @Override
                     public Object run() {
