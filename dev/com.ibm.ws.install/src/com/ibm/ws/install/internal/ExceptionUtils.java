@@ -506,6 +506,7 @@ public class ExceptionUtils {
                     editions = new ArrayList<String>();
                     editions.add("Early Access");
                 }
+
                 Collections.sort(editions);
                 Map<String, String> productMap = new HashMap<String, String>();
                 applicableProducts.append(InstallUtils.NEWLINE);
@@ -522,13 +523,22 @@ public class ExceptionUtils {
                 applicableProducts.append(InstallUtils.NEWLINE);
                 //installing asset has invalid product version and/or edition
                 if (dependency == null || dependency.isEmpty()) {
-                    if (appliesToVersion.equals("")) //installing asset has invalid product edition only
-                        errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION" : "ERROR_INVALID_PRODUCT_EDITION",
-                                                                                new Object[] { feature, productName, edition, applicableProducts.toString(), productName,
-                                                                                               edition });
-                    else
+                    if (appliesToVersion.equals("")) { //installing asset has invalid product edition only
+
+                        if (((String) params[productEdition]).equalsIgnoreCase("Open_Web") && productName.equalsIgnoreCase("IBM WebSphere Application Server Liberty")) {
+                            errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION" : "ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE",
+                                                                                    new Object[] { feature });
+                        } else {
+
+                            errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION" : "ERROR_INVALID_PRODUCT_EDITION",
+                                                                                    new Object[] { feature, productName, edition, applicableProducts.toString(), productName,
+                                                                                                   edition });
+                        }
+
+                    } else {
                         errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION" : "ERROR_INVALID_PRODUCT_EDITION_VERSION",
                                                                                 new Object[] { feature, productName, edition, version, applicableProducts.toString() });
+                    }
                 } else
                     errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION" : "ERROR_DEPENDENT_INVALID_VERSION_EDITION",
                                                                             new Object[] { feature, dependency, productName, edition, version,
