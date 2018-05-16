@@ -14,6 +14,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.ws.kernel.service.util.MemoryInformation;
+import com.ibm.ws.kernel.service.util.OperatingSystem;
+import com.ibm.ws.kernel.service.util.OperatingSystemType;
 
 /**
  * Various unit tests.
@@ -21,19 +23,22 @@ import com.ibm.ws.kernel.service.util.MemoryInformation;
 public class MemoryInformationTests {
     @Test
     public void testOSMemoryStatistics() throws Exception {
-        long totalMemory = MemoryInformation.instance().getTotalMemory();
-        System.out.println("Total memory: " + totalMemory);
-        Assert.assertTrue("getTotalMemory invalid",
-                          totalMemory > 0);
+        // Getting free memory on z/OS is not implemented.
+        if (OperatingSystem.instance().getOperatingSystemType() != OperatingSystemType.zOS) {
+            long totalMemory = MemoryInformation.instance().getTotalMemory();
+            System.out.println("Total memory: " + totalMemory);
+            Assert.assertTrue("getTotalMemory invalid",
+                              totalMemory > 0);
 
-        long availableMemory = MemoryInformation.instance().getAvailableMemory();
-        System.out.println("Available memory: " + availableMemory);
-        Assert.assertTrue("getAvailableMemory invalid",
-                          availableMemory > 0);
+            long availableMemory = MemoryInformation.instance().getAvailableMemory();
+            System.out.println("Available memory: " + availableMemory);
+            Assert.assertTrue("getAvailableMemory invalid",
+                              availableMemory > 0);
 
-        float availableMemoryRatio = MemoryInformation.instance().getAvailableMemoryRatio();
-        System.out.println("Available memory %: " + (availableMemoryRatio * 100.0));
-        Assert.assertTrue("getAvailableMemoryRatio invalid",
-                          availableMemoryRatio > 0);
+            float availableMemoryRatio = MemoryInformation.instance().getAvailableMemoryRatio();
+            System.out.println("Available memory %: " + (availableMemoryRatio * 100.0));
+            Assert.assertTrue("getAvailableMemoryRatio invalid",
+                              availableMemoryRatio > 0);
+        }
     }
 }
