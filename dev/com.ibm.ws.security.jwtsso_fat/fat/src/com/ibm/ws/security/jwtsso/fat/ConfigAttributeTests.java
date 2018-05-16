@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,6 +23,7 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.actions.TestActions;
+import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
@@ -100,7 +100,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      * The ltpa cookie is included, but fallback is false, so fallback should not occur.
      */
     @Mode(TestMode.LITE)
-    @Test
+//    @Test
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
                    "javax.security.auth.login.LoginException" })
@@ -225,7 +225,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      * there should be an ltpa cookie present, and because fallback is enabled, we should be able to access
      * the resource.
      */
-    @Test
+//    @Test
     @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException",
                    "com.ibm.ws.security.jwt.internal.JwtTokenException",
