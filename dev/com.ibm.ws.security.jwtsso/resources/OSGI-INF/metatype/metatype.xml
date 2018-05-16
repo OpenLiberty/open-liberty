@@ -32,7 +32,7 @@
              required="false" type="String" />
           -->                           
                 
-         <AD id="setCookiePathToWebAppContextRoot"   name="%setCookiePathToWebAppContextRoot"  description="%setCookiePathToWebAppContextRoot.desc"
+         <AD id="setCookiePathToWebAppContextRoot"   name="internal"  description="internal use only"
              required="false" type="Boolean" default="false" /> 
              
          <AD id="setCookieSecureFlag"   name="%setCookieSecureFlag"  description="%setCookieSecureFlag.desc"
