@@ -161,7 +161,6 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                 // Should this be handled as an h2c upgrade request?
                 if (!handled) {
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                        System.out.println("looking at H2 upgrade");
                         logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "### looking at H2 upgrade");
                     }
                     if (h2Handler != null && httpInboundConnection != null && request instanceof HttpServletRequest) {
