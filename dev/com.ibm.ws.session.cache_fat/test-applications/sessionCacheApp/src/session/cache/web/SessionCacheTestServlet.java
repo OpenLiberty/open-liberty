@@ -24,6 +24,8 @@ import java.io.ObjectOutputStream;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -186,6 +188,17 @@ public class SessionCacheTestServlet extends FATServlet {
     }
 
     /**
+     * Invoke IBMSessionExt.invalidateAll(true)
+     */
+    public void testInvalidateAll(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpSession session = request.getSession();
+        // IBMSessionExt is SPI, so access the public method via reflection,
+        AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> session.getClass()
+                        .getMethod("invalidateAll", boolean.class)
+                        .invoke(session, true));
+    }
+
+    /**
      * Test that the last accessed time changes when accessed at different times.
      */
     public void testLastAccessedTime(HttpServletRequest request, HttpServletResponse response) throws Throwable {
@@ -249,7 +262,7 @@ public class SessionCacheTestServlet extends FATServlet {
         ((IBMSession) session).sync();
 
         long puts = attrCacheStatsMXBean.getCachePuts();
-        // TODO sometimes this assert is failing with observed value still being the initial value. Seems to be a bug in the JCache provider
+        // Sometimes this assert is failing with observed value still being the initial value. Seems to be a bug in the JCache provider
         // assertEquals(initialPuts + 1, puts);
 
         session.invalidate();
