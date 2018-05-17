@@ -10,13 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.identitystore;
 
-import java.lang.reflect.UndeclaredThrowableException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,7 +27,6 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapName;
 import javax.security.enterprise.credential.CallerOnlyCredential;
 import javax.security.enterprise.credential.Credential;
@@ -46,6 +42,14 @@ import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.wim.adapter.ldap.context.ContextManager;
+import com.ibm.ws.security.wim.adapter.ldap.context.ContextManager.InitializeResult;
+import com.ibm.ws.security.wim.adapter.ldap.context.TimedDirContext;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
+import com.ibm.wsspi.security.wim.exception.InvalidInitPropertyException;
+import com.ibm.wsspi.security.wim.exception.WIMApplicationException;
+import com.ibm.wsspi.security.wim.exception.WIMException;
+import com.ibm.wsspi.security.wim.exception.WIMSystemException;
 
 /**
  * Liberty's LDAP {@link IdentityStore} implementation.
@@ -57,6 +61,9 @@ public class LdapIdentityStore implements IdentityStore {
 
     /** The definitions for this IdentityStore. */
     private final LdapIdentityStoreDefinitionWrapper idStoreDefinition;
+
+    /** ContextManager to use for managing LDAP contexts. */
+    private ContextManager iContextManager;
 
     /**
      * Construct a new {@link LdapIdentityStore} instance using the specified definitions.
@@ -73,7 +80,7 @@ public class LdapIdentityStore implements IdentityStore {
      * @return The bound {@link DirContext}.
      * @throws NamingException If there was a failure to bind to the LDAP server.
      */
-    private DirContext bind() throws NamingException {
+    private TimedDirContext bind() throws NamingException {
         return bind(this.idStoreDefinition.getBindDn(), this.idStoreDefinition.getBindDnPassword());
     }
 
@@ -85,11 +92,11 @@ public class LdapIdentityStore implements IdentityStore {
      * @return The bound {@link DirContext}.
      * @throws NamingException If there was a failure to bind to the LDAP server.
      */
-    private DirContext bind(String bindDn, ProtectedString bindPw) throws NamingException {
+    private TimedDirContext bind(String bindDn, ProtectedString bindPw) throws NamingException {
         Hashtable<Object, Object> env = new Hashtable<Object, Object>();
         String url = this.idStoreDefinition.getUrl();
         if (url == null || url.isEmpty()) {
-            throw new IllegalArgumentException("No URL was provided to the LdapIdentityStore.");
+            throw new IdentityStoreRuntimeException("No URL was provided to the LdapIdentityStore.");
         }
 
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -111,7 +118,7 @@ public class LdapIdentityStore implements IdentityStore {
              */
             String decodedBindPw = PasswordUtil.passwordDecode(new String(bindPw.getChars()).trim());
             if (decodedBindPw == null || decodedBindPw.isEmpty()) {
-                throw new IllegalArgumentException("An empty password is invalid.");
+                throw new IdentityStoreRuntimeException("An empty password is invalid.");
             }
 
             env.put(Context.SECURITY_PRINCIPAL, bindDn);
@@ -121,28 +128,8 @@ public class LdapIdentityStore implements IdentityStore {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "JNDI_CALL bind", new Object[] { bindDn, url });
         }
-        return getDirContext(env);
-    }
-
-    @FFDCIgnore(PrivilegedActionException.class)
-    private DirContext getDirContext(Hashtable<Object, Object> env) throws NamingException {
-        try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<DirContext>() {
-                @Override
-                public DirContext run() throws NamingException {
-                    return new InitialLdapContext(env, null);
-                }
-            });
-        } catch (PrivilegedActionException e) {
-            Exception oe = e.getException();
-            if (oe instanceof NamingException) {
-                throw (NamingException) oe;
-            } else if (oe instanceof RuntimeException) {
-                throw (RuntimeException) oe;
-            } else {
-                throw new UndeclaredThrowableException(oe);
-            }
-        }
+        initializeContextManager(null);
+        return new TimedDirContext(env, null, 0);
     }
 
     @Override
@@ -218,7 +205,19 @@ public class LdapIdentityStore implements IdentityStore {
             /*
              * Authenticate the caller against the LDAP server.
              */
-            DirContext context = null;
+            TimedDirContext context = null;
+            try {
+                context = iContextManager.getDirContext();
+            } catch (Exception e) {
+                throw new IdentityStoreRuntimeException(e.toString());
+            } finally {
+                try {
+                    iContextManager.releaseDirContext(context);
+                } catch (WIMSystemException e) {
+                    throw new IdentityStoreRuntimeException(e.toString());
+                }
+            }
+
             if (!usernameOnly) {
                 try {
                     context = bind(userDn, new ProtectedString(((UsernamePasswordCredential) credential).getPassword().getValue()));
@@ -242,7 +241,7 @@ public class LdapIdentityStore implements IdentityStore {
                 callerName = userDn;
             } else {
                 try {
-                    Attributes attrs = context.getAttributes(userDn, new String[] { callerNameAttribute });
+                    Attributes attrs = context.getAttributes(new LdapName(userDn), new String[] { callerNameAttribute });
                     Attribute attribute = attrs.get(callerNameAttribute);
                     if (attribute == null) {
                         Tr.warning(tc, "JAVAEESEC_WARNING_MISSING_CALLER_ATTR", new Object[] { userDn, callerNameAttribute });
@@ -295,9 +294,23 @@ public class LdapIdentityStore implements IdentityStore {
         if (searchBase == null || searchBase.isEmpty()) {
             userDn = idStoreDefinition.getCallerNameAttribute() + "=" + callerName + "," + idStoreDefinition.getCallerBaseDn();
         } else {
-            DirContext ctx = null;
+            TimedDirContext context = null;
             try {
-                ctx = bind();
+                if (iContextManager == null) {
+                    initializeContextManager(null);
+                }
+                context = iContextManager.getDirContext();
+            } catch (Exception e) {
+                throw new IdentityStoreRuntimeException(e.toString());
+            } finally {
+                try {
+                    iContextManager.releaseDirContext(context);
+                } catch (WIMSystemException e) {
+                    throw new IdentityStoreRuntimeException(e.toString());
+                }
+            }
+            try {
+                context = bind();
             } catch (NamingException e) {
                 Tr.error(tc, "JAVAEESEC_ERROR_EXCEPTION_ON_BIND", new Object[] { this.idStoreDefinition.getBindDn(), e });
                 throw new IllegalStateException(e);
@@ -306,7 +319,7 @@ public class LdapIdentityStore implements IdentityStore {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "JNDI_CALL search", new Object[] { searchBase, filter, printControls(controls) });
                 }
-                NamingEnumeration<SearchResult> ne = ctx.search(new LdapName(searchBase), filter, controls);
+                NamingEnumeration<SearchResult> ne = context.search(new LdapName(searchBase), filter, controls);
                 if (ne.hasMoreElements()) {
                     userDn = ne.nextElement().getNameInNamespace();
                     if (ne.hasMoreElements()) {
@@ -329,7 +342,7 @@ public class LdapIdentityStore implements IdentityStore {
      * @param callerDn The caller's distinguished name.
      * @return The set of groups the caller is a member of.
      */
-    private Set<String> getGroups(DirContext context, String callerDn) {
+    private Set<String> getGroups(TimedDirContext context, String callerDn) {
         Set<String> groups = null;
         String groupSearchBase = idStoreDefinition.getGroupSearchBase();
         String groupSearchFilter = idStoreDefinition.getGroupSearchFilter();
@@ -350,7 +363,7 @@ public class LdapIdentityStore implements IdentityStore {
      * @param groupSearchBase The base of the tree to start the group search from
      * @return The set of groups the caller is a member of.
      */
-    private Set<String> getGroupsByMember(DirContext context, String callerDn, String groupSearchBase, String groupSearchFilter) {
+    private Set<String> getGroupsByMember(TimedDirContext context, String callerDn, String groupSearchBase, String groupSearchFilter) {
 
         String groupNameAttribute = idStoreDefinition.getGroupNameAttribute();
 
@@ -434,7 +447,7 @@ public class LdapIdentityStore implements IdentityStore {
      * @param callerDn The caller's distinguished name.
      * @return The set of groups the caller is a member of.
      */
-    private Set<String> getGroupsByMembership(DirContext context, String callerDn) {
+    private Set<String> getGroupsByMembership(TimedDirContext context, String callerDn) {
         String memberOfAttribute = idStoreDefinition.getGroupMemberOfAttribute();
         String groupNameAttribute = idStoreDefinition.getGroupNameAttribute();
         Attributes attrs;
@@ -444,7 +457,7 @@ public class LdapIdentityStore implements IdentityStore {
             Tr.debug(tc, "JNDI_CALL getAttributes", new Object[] { callerDn, memberOfAttribute });
         }
         try {
-            attrs = context.getAttributes(callerDn, new String[] { memberOfAttribute });
+            attrs = context.getAttributes(new LdapName(callerDn), new String[] { memberOfAttribute });
 
             Attribute groupSet = attrs.get(memberOfAttribute);
             if (groupSet != null) {
@@ -473,7 +486,7 @@ public class LdapIdentityStore implements IdentityStore {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "JNDI_CALL getAttributes", new Object[] { groupDn, groupNameAttribute });
                 }
-                Attributes groupNameAttrs = context.getAttributes(groupDn, new String[] { groupNameAttribute });
+                Attributes groupNameAttrs = context.getAttributes(new LdapName(groupDn), new String[] { groupNameAttribute });
                 Attribute groupNameAttr = groupNameAttrs.get(groupNameAttribute);
                 if (groupNameAttr == null) {
                     Tr.warning(tc, "JAVAEESEC_WARNING_MISSING_GROUP_ATTR", new Object[] { groupDn, groupNameAttribute });
@@ -554,5 +567,118 @@ public class LdapIdentityStore implements IdentityStore {
     @Override
     public Set<ValidationType> validationTypes() {
         return this.idStoreDefinition.getUseFor();
+    }
+
+    /**
+     * Initialize the {@link ContextManager} to manage LDAP connections.
+     *
+     * @param configProps Configuration properties for the component.
+     * @throws WIMException If there was an error initializing the {@link ContextManager}.
+     */
+    private void initializeContextManager(Map<String, Object> configProps) throws IdentityStoreRuntimeException {
+        final String METHODNAME = "initializeContextManager";
+        Tr.entry(tc, METHODNAME);
+
+        if (iContextManager != null)
+            return;
+        iContextManager = new ContextManager();
+
+        /*
+         * Set SSL configuration
+         */
+//        iContextManager.setSSLAlias((String) configProps.get("sslRef"));
+//        iContextManager.setSSLEnabled((Boolean) configProps.get(""));
+
+        /*
+         * Set the primary server.
+         */
+        String url = idStoreDefinition.getUrl();
+        url = url.replaceFirst("(?i)ldaps?:\\/\\/", "");
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+        String[] hostAndPort = url.split(":");
+        Tr.debug(tc, "host and port: ", hostAndPort[0] + " " + hostAndPort[1]);
+        iContextManager.setPrimaryServer(hostAndPort[0], Integer.parseInt(hostAndPort[1]));
+
+        /*
+         * Set the simple authentication credentials.
+         */
+        SerializableProtectedString password = new SerializableProtectedString(idStoreDefinition.getBindDnPassword().getChars());
+        iContextManager.setSimpleCredentials(idStoreDefinition.getBindDn(), password);
+
+        /*
+         * Set the connection timeout.
+         */
+        iContextManager.setConnectTimeout((Long) null);
+
+        /*
+         * Configure the context pool.
+         */
+        boolean enableContextPool = true;
+
+        Integer initPoolSize = 1;
+        Integer maxPoolSize = 0;
+        Integer prefPoolSize = 3;
+        Long poolTimeOut = 0L;
+        Long poolWaitTime = 3000L;
+
+//        if (enableContextPool) {
+//            if (poolConfig.get(CONFIG_PROP_INIT_POOL_SIZE) != null) {
+//                initPoolSize = (Integer) poolConfig.get(CONFIG_PROP_INIT_POOL_SIZE);
+//            }
+//            if (poolConfig.get(CONFIG_PROP_MAX_POOL_SIZE) != null) {
+//                maxPoolSize = (Integer) poolConfig.get(CONFIG_PROP_MAX_POOL_SIZE);
+//            }
+//            if (poolConfig.get(CONFIG_PROP_PREF_POOL_SIZE) != null) {
+//                prefPoolSize = (Integer) poolConfig.get(CONFIG_PROP_PREF_POOL_SIZE);
+//            }
+//
+//            if (poolConfig.get(CONFIG_PROP_POOL_TIME_OUT) != null) {
+//                poolTimeOut = (Long) poolConfig.get(CONFIG_PROP_POOL_TIME_OUT);
+//
+//                /**
+//                 * The metatype is set to long for this property and all
+//                 * values will be passed as milliseconds.
+//                 * A value of 0 means no timeout, leave at 0
+//                 * Between 0 and 1000ms, round up to 1s
+//                 * Otherwise round to nearest second
+//                 */
+//                if (poolTimeOut > 0 && poolTimeOut <= 1000) {
+//                    poolTimeOut = 1l; // override to 1 second
+//                } else {
+//                    poolTimeOut = roundToSeconds(poolTimeOut);
+//                }
+//            }
+//            if (poolConfig.get(CONFIG_PROP_POOL_WAIT_TIME) != null) {
+//                poolWaitTime = (Long) poolConfig.get((CONFIG_PROP_POOL_WAIT_TIME));
+//            }
+//        }
+
+        /*
+         * Set the configuration on the ContextManager.
+         */
+        try {
+            iContextManager.setContextPool(enableContextPool, initPoolSize, prefPoolSize, maxPoolSize, poolTimeOut, poolWaitTime);
+        } catch (InvalidInitPropertyException e) {
+            throw new IdentityStoreRuntimeException(e.toString());
+        }
+
+        /*
+         * Initialize the ContextManager.
+         *
+         * Only need to check for missing password as the configuration for LDAP would catch a missing
+         * primary server. The password is optional and only required when the bind DN is configured.
+         */
+        try {
+            InitializeResult result = iContextManager.initialize();
+        } catch (WIMApplicationException e) {
+            throw new IdentityStoreRuntimeException(e.toString());
+        }
+//        if (result == InitializeResult.MISSING_PASSWORD) {
+//            String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_INI_PROPERTY, WIMMessageHelper.generateMsgParms(CONFIG_PROP_BIND_PASSWORD));
+//            throw new IdentityStoreRuntimeException("");
+//        }
+        Tr.exit(tc, METHODNAME);
     }
 }
