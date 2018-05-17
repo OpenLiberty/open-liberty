@@ -102,7 +102,7 @@ public class DelaySseTestServlet extends FATServlet {
             source.open();
             System.out.println("client source open");
 
-            assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
+            assertTrue("Completion listener runnable was not executed", executionLatch.await(300, TimeUnit.SECONDS));
 
         } catch (InterruptedException e) {
             // falls through
