@@ -46,7 +46,6 @@ import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.wsspi.security.auth.callback.Constants;
-import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
 /**
@@ -54,13 +53,13 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
  */
 public abstract class ServerCommonLoginModule extends CommonLoginModule implements LoginModule {
     private static final TraceComponent tc = Tr.register(ServerCommonLoginModule.class);
-    // private static final String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
-    private static final String[] jsonWebTokenProperties = { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY,
-                                                             AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
-                                                             AttributeNameConstants.WSCREDENTIAL_REALM,
-                                                             AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN,
-                                                             AuthenticationConstants.INTERNAL_ASSERTION_KEY,
-                                                             AttributeNameConstants.WSCREDENTIAL_SECURITYNAME };
+    private static final String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
+//    private static final String[] jsonWebTokenProperties = { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY,
+//                                                             AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
+//                                                             AttributeNameConstants.WSCREDENTIAL_REALM,
+//                                                             AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN,
+//                                                             AuthenticationConstants.INTERNAL_ASSERTION_KEY,
+//                                                             AttributeNameConstants.WSCREDENTIAL_SECURITYNAME };
 
     protected SubjectHelper subjectHelper = new SubjectHelper();
 
