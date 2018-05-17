@@ -53,7 +53,6 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 EJBModuleTestProtectedServlet.class,
                 EJBModuleTestUnprotectedServlet.class,
                 MultipleModuleGlobalLoginTest.class,
-                MultipleModuleRunAsTest.class,
                 MultipleModuleDBRunAsTest.class,
                 ScopedTest.class,
                 MultipleModuleRunAsTest.class,

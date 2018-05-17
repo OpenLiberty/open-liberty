@@ -27,9 +27,9 @@ import web.ejb.jar.bean.SecurityEJBInterface;
  */
 @BasicAuthenticationMechanismDefinition(realmName = "ejbRealmRunAs")
 @DatabaseIdentityStoreDefinition(
-                                 callerQuery = "select password from callertable where name = ?",
-                                 groupsQuery = "select group_name from callertable_groups where caller_name = ?",
-                                 dataSourceLookup = "jdbc/derby1fat")
+                                 dataSourceLookup = "jdbc/derby2fat",
+                                 callerQuery = "select password from callers where name = ?",
+                                 groupsQuery = "select group_name from caller_groups where caller_name = ?")
 
 @RunAs("Manager")
 public class SecurityEJBRunAsServlet extends SecurityEJBBaseServlet {

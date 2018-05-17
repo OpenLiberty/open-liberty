@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -152,13 +150,13 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         //add ear to the server
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_REALM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_REALM2_NAME);
-        WCApplicationHelper.addWarToServerApps(myServer, "dbfatAuthAlias.war", true, JAR_NAME, false, "web.jar.base", "web.war.db");
-        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
+        WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
+        Log.info(logClass, "setUp()", "-----EAR app created");
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(XML_REALM_NAME, EJB_REALM_APP_NAME, EJB_REALM2_APP_NAME);
-        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
-                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
+//        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
+//                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
 
         //Test case USER1AccessEAR1
         //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.
@@ -239,13 +237,13 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         //add ear to the server
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_REALM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_REALM2_NAME);
-        WCApplicationHelper.addWarToServerApps(myServer, "dbfatAuthAlias.war", true, JAR_NAME, false, "web.jar.base", "web.war.db");
-        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
+        WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
+        Log.info(logClass, "setUp()", "-----EAR app created");
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(XML_INCORRECT_REALM, EJB_REALM_APP_NAME, EJB_REALM2_APP_NAME);
-        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
-                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
+//        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
+//                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
 
         //Test case USER1AccessEAR1
         //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.

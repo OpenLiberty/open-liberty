@@ -70,7 +70,6 @@ public class SecurityEJBRunAsServlet extends SecurityEJBBaseServlet {
     protected Map<String, String> statefulBeans() {
 
         Map<String, String> beanMap = new HashMap<String, String>();
-//        beanMap.put("ejbm0x", "java:app/SecurityEJB/SecurityEJBM0xBean");
         return beanMap;
     }
 

@@ -11,6 +11,8 @@
 
 package com.ibm.ws.security.javaeesec.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,7 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -138,242 +141,239 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testEJBAnnotatedLdapISOnWar1andWar2() throws Exception {
-//        String response;
-//        String queryString;
-//        //create app and setup server
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//        Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
-//
-//        // create ejbinwarservlet.war,
-//        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-//                                      "web.war.identitystores.ldap.ldap1");
-//
-//        // create ejbinwarservlet.war,
-//        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-//                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2");
-//
-//        // add the servlet war inside the ear
-//        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
-//
-//        //add ear to the server
-//        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
-//        WCApplicationHelper.addWarToServerApps(myServer, "dbfatAuthAlias.war", true, JAR_NAME, false, "web.jar.base", "web.war.db");
-//        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
-//
-//        Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
-//        startServer(XML_NAME, EJB_APP_NAME);
-//        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
-//                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
-//
-//        //Test case isUserInRoleLDAPISWar1
-//        //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.
-//        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar1 scenario");
-//        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-//                                                   LocalLdapServer.PASSWORD,
-//                                                   HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
-//                              Constants.getEjbCallerPrincipal + LocalLdapServer.USER1);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar1");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        //Test case testisUserNotInRoleLDAPWar1
-//        //Access WAR 1 and check for isUserInRole sending an invalid user.
-//        Log.info(logClass, getCurrentTestName(), "-----Running testisUserNotInRoleLDAPWar1 scenario");
-//
-//        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
-//                                                   LocalLdapServer.PASSWORD,
-//                                                   HttpServletResponse.SC_FORBIDDEN);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyEjbErrorUserResponse(response, Constants.ejbAuthorizationFailed);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting testisUserNotInRoleLDAPWar1");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        //Test case testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations
-//        //Access WAR 1 and check for isUserInRole but then fails even when it falls back to UR.
-//        Log.info(logClass, getCurrentTestName(), "-----Running testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations scenario");
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user99",
-//                                                   "user99pwd",
-//                                                   HttpServletResponse.SC_UNAUTHORIZED);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        myServer.removeInstalledAppForValidation(EJB_APP_NAME);
-//        myServer.stopServer();
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * In this test case the following configuration will be used.
-//     * 1. WAR 1 will be configured to use a custom Identity Store.
-//     * 2. WAR 2 will use the LDAP2 Identity Store.
-//     * </OL>
-//     * <P> Multiple results are expected.
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    //@Mode(TestMode.LITE)
-//    //@Test
-//    //@AllowedFFDC("javax.naming.AuthenticationException")
-//    public void testEJBCustomISonWAR1AnnotatedLDAPISonWAR2() throws Exception {
-//        //create app and setup server
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//        Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
-//
-//        // create ejbinwarservlet.war,
-//        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-//                                      "web.war.identitystores.ldap.ldap2");
-//
-//        // create ejbinwarservlet.war,
-//        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-//                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores", "web.war.identitystores.scoped.application");
-//
-//        // add the servlet war inside the ear
-//        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
-//
-//        //add ear to the server
-//        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
-//        WCApplicationHelper.addWarToServerApps(myServer, "dbfatAuthAlias.war", true, JAR_NAME, false, "web.jar.base", "web.war.db");
-//        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
-//
-//        Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
-//        startServer(XML_NAME, EJB_APP_NAME);
-//        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
-//                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
-//        String queryString;
-//        String response;
-//
-//        //Test case isUserInRoleLDAPISWar1
-//        //Access WAR 1 and check UserInRole, sending user1 which does not exist in this IS.
-//        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar1 scenario");
-//        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
-//                                                   LocalLdapServer.PASSWORD,
-//                                                   HttpServletResponse.SC_UNAUTHORIZED);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyExceptionResponse(response, "Error 401: JASPIC Authenticated with status: SEND_FAILURE, AuthResult.FAILURE");
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar1");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        //Test case isUserInRoleLDAPISWar2
-//        //Access WAR 2 and check for UserInRole, sending AnotherUser1 which exist in WAR 2 Annotated LDAP IS.
-//        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar2 scenario");
-//        queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.ANOTHERUSER1,
-//                                                   LocalLdapServer.ANOTHERPASSWORD,
-//                                                   HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
-//                              Constants.getEjbCallerPrincipal + LocalLdapServer.ANOTHERUSER1);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar2");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        //Test case isUserInRoleLDAPISWar1
-//        //Access WAR 1 and check for UserInRole, sending anotherUser which exist in WAR 1 LDAP IS.
-//        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar1 scenario");
-//        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.ANOTHERUSER1,
-//                                                   LocalLdapServer.ANOTHERPASSWORD,
-//                                                   HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
-//                              Constants.getEjbCallerPrincipal + LocalLdapServer.ANOTHERUSER1);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar1");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        //Test case isUserInRoleCustomISWar2
-//        //Access WAR 2 and check for UserInRole, sending basicRoleUser which exist in WAR 1 IS.
-//        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleCustomISWar2 scenario");
-//        queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser,
-//                                                   Constants.javaeesec_basicRolePwd,
-//                                                   HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
-//                              Constants.getEjbCallerPrincipal + Constants.javaeesec_basicRoleUser);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleCustomISWar2");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        //Test case isCallerInRoleCustomISWar1
-//        //Access WAR 1 and check for isCallerInRole sending basicRoleUser which exist in WAR 2 IS but not in WAR 1.
-//        //WAR 2 uses custom IS, when using a user that only exist in WAR 2, the authentication should fail on WAR 1.
-//        Log.info(logClass, getCurrentTestName(), "-----Running isCallerInRoleCustomISWar1 scenario");
-//
-//        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser,
-//                                                   Constants.javaeesec_basicRolePwd,
-//                                                   HttpServletResponse.SC_UNAUTHORIZED);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyEjbErrorUserResponse(response, Constants.RESPONSE_AUTHENTICATION_FAILED);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting isCallerInRoleCustomISWar1");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        //Test case testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations
-//        //Access WAR 1 and check for isUserInRole but then fails to fall back to UR.
-//        Log.info(logClass, getCurrentTestName(), "-----Running testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations scenario");
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user99",
-//                                                   "user99pwd",
-//                                                   HttpServletResponse.SC_UNAUTHORIZED);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        myServer.removeInstalledAppForValidation(EJB_APP_NAME);
-//        myServer.stopServer();
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//
-//    }
+    @Mode(TestMode.LITE)
+    @Test
+    public void testEJBAnnotatedLdapISOnWar1andWar2() throws Exception {
+        String response;
+        String queryString;
+        //create app and setup server
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
 
+        // create ejbinwarservlet.war,
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
+                                      "web.war.identitystores.ldap.ldap1");
+
+        // create ejbinwarservlet.war,
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
+                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2");
+
+        // add the servlet war inside the ear
+        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
+
+        //add ear to the server
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
+        WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
+        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
+
+        Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
+        //start server
+        startServer(XML_NAME, EJB_APP_NAME);
+        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
+                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
+
+        //Test case isUserInRoleLDAPISWar1
+        //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.
+        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar1 scenario");
+        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
+                                                   LocalLdapServer.PASSWORD,
+                                                   HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
+                              Constants.getEjbCallerPrincipal + LocalLdapServer.USER1);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar1");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        //Test case testisUserNotInRoleLDAPWar1
+        //Access WAR 1 and check for isUserInRole sending an invalid user.
+        Log.info(logClass, getCurrentTestName(), "-----Running testisUserNotInRoleLDAPWar1 scenario");
+
+        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.INVALIDUSER,
+                                                   LocalLdapServer.PASSWORD,
+                                                   HttpServletResponse.SC_FORBIDDEN);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbErrorUserResponse(response, Constants.ejbAuthorizationFailed);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting testisUserNotInRoleLDAPWar1");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        //Test case testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations
+        //Access WAR 1 and check for isUserInRole but then fails even when it falls back to UR.
+        Log.info(logClass, getCurrentTestName(), "-----Running testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations scenario");
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user99",
+                                                   "user99pwd",
+                                                   HttpServletResponse.SC_UNAUTHORIZED);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        myServer.removeInstalledAppForValidation(EJB_APP_NAME);
+        myServer.stopServer();
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * In this test case the following configuration will be used.
+     * 1. WAR 1 will be configured to use a custom Identity Store.
+     * 2. WAR 2 will use the LDAP2 Identity Store.
+     * </OL>
+     * <P> Multiple results are expected.
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @AllowedFFDC("javax.naming.AuthenticationException")
+    public void testEJBCustomISonWAR1AnnotatedLDAPISonWAR2() throws Exception {
+        //create app and setup server
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
+
+        // create ejbinwarservlet.war,
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
+                                      "web.war.identitystores.ldap.ldap2");
+
+        // create ejbinwarservlet.war,
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
+                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores", "web.war.identitystores.scoped.application");
+
+        // add the servlet war inside the ear
+        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
+
+        //add ear to the server
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
+        WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
+        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
+
+        Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
+        //start server
+        startServer(XML_NAME, EJB_APP_NAME);
+        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
+                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
+        String queryString;
+        String response;
+
+        //Test case isUserInRoleLDAPISWar1
+        //Access WAR 1 and check UserInRole, sending user1 which does not exist in this IS.
+        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar1 scenario");
+        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.USER1,
+                                                   LocalLdapServer.PASSWORD,
+                                                   HttpServletResponse.SC_UNAUTHORIZED);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar1");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        //Test case isUserInRoleLDAPISWar2
+        //Access WAR 2 and check for UserInRole, sending AnotherUser1 which exist in WAR 2 Annotated LDAP IS.
+        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar2 scenario");
+        queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.ANOTHERUSER1,
+                                                   LocalLdapServer.ANOTHERPASSWORD,
+                                                   HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
+                              Constants.getEjbCallerPrincipal + LocalLdapServer.ANOTHERUSER1);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar2");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        //Test case isUserInRoleLDAPISWar1
+        //Access WAR 1 and check for UserInRole, sending anotherUser which exist in WAR 1 LDAP IS.
+        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar1 scenario");
+        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.ANOTHERUSER1,
+                                                   LocalLdapServer.ANOTHERPASSWORD,
+                                                   HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
+                              Constants.getEjbCallerPrincipal + LocalLdapServer.ANOTHERUSER1);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar1");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        //Test case isUserInRoleCustomISWar2
+        //Access WAR 2 and check for UserInRole, sending basicRoleUser which exist in WAR 1 IS.
+        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleCustomISWar2 scenario");
+        queryString = EJB_WAR2_PATH + SIMPLE_SERVLET2 + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser,
+                                                   Constants.javaeesec_basicRolePwd,
+                                                   HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbUserResponse(response, Constants.getEJBBeanResponse + Constants.ejb03Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodManager,
+                              Constants.getEjbCallerPrincipal + Constants.javaeesec_basicRoleUser);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleCustomISWar2");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        //Test case isCallerInRoleCustomISWar1
+        //Access WAR 1 and check for isCallerInRole sending basicRoleUser which exist in WAR 2 IS but not in WAR 1.
+        //WAR 2 uses custom IS, when using a user that only exist in WAR 2, the authentication should fail on WAR 1.
+        Log.info(logClass, getCurrentTestName(), "-----Running isCallerInRoleCustomISWar1 scenario");
+
+        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser,
+                                                   Constants.javaeesec_basicRolePwd,
+                                                   HttpServletResponse.SC_UNAUTHORIZED);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting isCallerInRoleCustomISWar1");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        //Test case testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations
+        //Access WAR 1 and check for isUserInRole but then fails to fall back to UR.
+        Log.info(logClass, getCurrentTestName(), "-----Running testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations scenario");
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        queryString = EJB_WAR_PATH + SIMPLE_SERVLET + "?testInstance=ejb03&testMethod=manager";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, "user99",
+                                                   "user99pwd",
+                                                   HttpServletResponse.SC_UNAUTHORIZED);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        myServer.removeInstalledAppForValidation(EJB_APP_NAME);
+        myServer.stopServer();
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+
+    }
+
+//TODO
     /**
      * Verify the following:
      * <OL>
@@ -395,7 +395,7 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
-    @Test
+    //TODO @Test
     public void testEJBRunAsAnnotatedLdapOnWar1AndDBOnWAR2() throws Exception {
 
         String response;
@@ -406,7 +406,7 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-                                      "web.war.identitystores.db.db1");
+                                      "web.war.identitystores.db.derby2;");
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
@@ -422,6 +422,8 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(XML_NAME, EJB_APP_NAME);
+        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
+                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
 
         //Test case testisRunAsUserInRoleLDAPtoDBWar1
         //Access WAR 2 and check for UserInRole, sending AnotherUser1 which exist in WAR 2 Annotated LDAP IS.
@@ -447,140 +449,140 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
 
     }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * In this test case the following configuration will be used.
-//     * 1. WAR 1 will be configured to use Database.
-//     * 2. WAR 2 will use the custom IS.
-//     * 3. Test cases will run using the RunAsServlet.
-//     * </OL>
-//     * <P> Since the user we will be sending only exist in the custom IS,
-//     * the test user will not be found and thus it will throw an authentication failure.
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testEJBRunAsCustomISWar1AndDBonWAR2() throws Exception {
-//        String response;
-//        String queryString;
-//        //create app and setup server
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//        Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
-//
-//        // create ejbinwarservlet.war,
-//        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-//                                      "web.war.identitystores.db.db");
-//
-//        // create ejbinwarservlet.war,
-//        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-//                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores");
-//
-//        // add the servlet war inside the ear
-//        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
-//
-//        //add ear to the server
-//        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
-//        WCApplicationHelper.addWarToServerApps(myServer, "dbfatAuthAlias.war", true, JAR_NAME, false, "web.jar.base", "web.war.db");
-//        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
-//
-//        Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
-//        startServer(JASPIC_RUN_AS_XML_NAME, EJB_APP_NAME);
-//
-//        //Test case testisRunAsUserInRoleLDAPtoDBWar1
-//        //Access WAR 2 and check for UserInRole, sending AnotherUser1 which exist in WAR 2 Annotated LDAP IS.
-//        Log.info(logClass, getCurrentTestName(), "-------Running testisRunAsUserInRoleLDAPtoDBWar1 scenario");
-//
-//        queryString = EJB_WAR_PATH + RUNAS_SERVLET + "?testInstance=ejb01&testMethod=runAsSpecified";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser,
-//                                                   Constants.javaeesec_basicRolePwd,
-//                                                   HttpServletResponse.SC_UNAUTHORIZED);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        //TODO should be a 401
-//        verifyExceptionResponse(response, "Error 401: JASPIC Authenticated with status: SEND_FAILURE, AuthResult.FAILURE");
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting testisRunAsUserInRoleLDAPtoDBWar1");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        myServer.removeInstalledAppForValidation(EJB_APP_NAME);
-//        myServer.stopServer();
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//
-//    }
-//
-//    /**
-//     * Verify the following:
-//     * <OL>
-//     * <LI> An ear file that contains two war files.
-//     * One war file contains two servlets, the other one contains one servlet.
-//     * Each war files has one jar file.
-//     * In this test case the following configuration will be used.
-//     * 1. WAR 1 will use the LDAP Identity Store.
-//     * 2. WAR 2 will use the LDAP2 Identity Store.
-//     * </OL>
-//     * <P> Multiple results are expected.
-//     * <OL>
-//     * <LI>
-//     * </OL>
-//     */
-//    @Mode(TestMode.LITE)
-//    @Test
-//    public void testEJBRunAsLdapISOnWar1andWar2() throws Exception {
-//        String response;
-//        String queryString;
-//        //create app and setup server
-//        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-//        Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
-//
-//        // create ejbinwarservlet.war,
-//        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-//                                      "web.war.identitystores.ldap.ldap1");
-//
-//        // create ejbinwarservlet.war,
-//        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
-//                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2");
-//
-//        // add the servlet war inside the ear
-//        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
-//
-//        //add ear to the server
-//        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
-//        WCApplicationHelper.addWarToServerApps(myServer, "dbfatAuthAlias.war", true, JAR_NAME, false, "web.jar.base", "web.war.db");
-//        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
-//
-//        Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
-//        startServer(LDAP_RUN_AS_XML_NAME, EJB_APP_NAME);
-//
-//        //Test case isUserInRoleLDAPISWar1
-//        //Access WAR 1 and check UserInRole, sending RunAsUser1 which exist in the Annotated LDAP IS.
-//        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar1 scenario");
-//        queryString = EJB_WAR_PATH + RUNAS_SERVLET + "?testInstance=ejb01&testMethod=runAsSpecified";
-//        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
-//        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.RUNASUSER1,
-//                                                   LocalLdapServer.PASSWORD,
-//                                                   HttpServletResponse.SC_OK);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
-//        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
-//        verifyEjbRunAsUserResponse(response, Constants.ejb01Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodRunAsSpecified,
-//                                   Constants.getEjbCallerPrincipal + LocalLdapServer.USER1, LocalLdapServer.USER2);
-//        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar1");
-//        httpclient.getConnectionManager().shutdown();
-//        setupConnection();
-//
-//        myServer.removeInstalledAppForValidation(EJB_APP_NAME);
-//        myServer.stopServer();
-//        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-//    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * In this test case the following configuration will be used.
+     * 1. WAR 1 will be configured to use Database.
+     * 2. WAR 2 will use the custom IS.
+     * 3. Test cases will run using the RunAsServlet.
+     * </OL>
+     * <P> Since the user we will be sending only exist in the custom IS,
+     * the test user will not be found and thus it will throw an authentication failure.
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testEJBRunAsCustomISWar1AndDBonWAR2() throws Exception {
+        String response;
+        String queryString;
+        //create app and setup server
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
+
+        // create ejbinwarservlet.war,
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
+                                      "web.war.identitystores.db.derby2;");
+
+        // create ejbinwarservlet.war,
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
+                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores");
+
+        // add the servlet war inside the ear
+        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
+
+        //add ear to the server
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
+        WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
+        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
+
+        Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
+        startServer(JASPIC_RUN_AS_XML_NAME, EJB_APP_NAME);
+        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
+                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
+
+        //Test case testisRunAsUserInRoleLDAPtoDBWar1
+        //Access WAR 2 and check for UserInRole, sending AnotherUser1 which exist in WAR 2 Annotated LDAP IS.
+        Log.info(logClass, getCurrentTestName(), "-------Running testisRunAsUserInRoleLDAPtoDBWar1 scenario");
+
+        queryString = EJB_WAR_PATH + RUNAS_SERVLET + "?testInstance=ejb01&testMethod=runAsSpecified";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser,
+                                                   Constants.javaeesec_basicRolePwd,
+                                                   HttpServletResponse.SC_UNAUTHORIZED);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting testisRunAsUserInRoleLDAPtoDBWar1");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        myServer.removeInstalledAppForValidation(EJB_APP_NAME);
+        myServer.stopServer();
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+
+    }
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> An ear file that contains two war files.
+     * One war file contains two servlets, the other one contains one servlet.
+     * Each war files has one jar file.
+     * In this test case the following configuration will be used.
+     * 1. WAR 1 will use the LDAP Identity Store.
+     * 2. WAR 2 will use the LDAP2 Identity Store.
+     * </OL>
+     * <P> Multiple results are expected.
+     * <OL>
+     * <LI>
+     * </OL>
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testEJBRunAsLdapISOnWar1andWar2() throws Exception {
+        String response;
+        String queryString;
+        //create app and setup server
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
+
+        // create ejbinwarservlet.war,
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
+                                      "web.war.identitystores.ldap.ldap1");
+
+        // create ejbinwarservlet.war,
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
+                                      "web.ejb.jar.bean", "web.war.ejb.is.servlet2", "web.war.identitystores.ldap.ldap2");
+
+        // add the servlet war inside the ear
+        WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EJB_EAR_NAME, true, EJB_WAR_NAME, EJB_WAR_NAME2);
+
+        //add ear to the server
+        WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
+        WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
+        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
+
+        Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
+        startServer(LDAP_RUN_AS_XML_NAME, EJB_APP_NAME);
+        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
+                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
+
+        //Test case isUserInRoleLDAPISWar1
+        //Access WAR 1 and check UserInRole, sending RunAsUser1 which exist in the Annotated LDAP IS.
+        Log.info(logClass, getCurrentTestName(), "-------Running isUserInRoleLDAPISWar1 scenario");
+        queryString = EJB_WAR_PATH + RUNAS_SERVLET + "?testInstance=ejb01&testMethod=runAsSpecified";
+        Log.info(logClass, getCurrentTestName(), "-------------Executing BasicAuthCreds");
+        response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, LocalLdapServer.RUNASUSER1,
+                                                   LocalLdapServer.PASSWORD,
+                                                   HttpServletResponse.SC_OK);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Response");
+        Log.info(logClass, getCurrentTestName(), "-------------Verifying Response");
+        verifyEjbRunAsUserResponse(response, Constants.ejb01Bean, Constants.getEjbBeanMethodName + Constants.ejbBeanMethodRunAsSpecified,
+                                   Constants.getEjbCallerPrincipal + LocalLdapServer.USER1, LocalLdapServer.USER2);
+        Log.info(logClass, getCurrentTestName(), "-------------End of Verification of Response");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting isUserInRoleLDAPISWar1");
+        httpclient.getConnectionManager().shutdown();
+        setupConnection();
+
+        myServer.removeInstalledAppForValidation(EJB_APP_NAME);
+        myServer.stopServer();
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
 
 /* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {

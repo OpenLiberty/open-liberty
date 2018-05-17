@@ -8,22 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web.war.identitystores.db.db1;
+package web.war.identitystores.db.derby2;
 
 import java.util.logging.Logger;
 
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 
 @DatabaseIdentityStoreDefinition(
-                                 dataSourceLookup = "jdbc/db1",
+                                 dataSourceLookup = "jdbc/derby2fat",
                                  priority = 200,
                                  callerQuery = "select password from callers where name = ?",
                                  groupsQuery = "select group_name from caller_groups where caller_name = ?")
 
-public class DatabaseAnnotate200 {
-    private static Logger log = Logger.getLogger(DatabaseAnnotate200.class.getName());
+public class DatabaseAnnotateDerby2 {
+    private static Logger log = Logger.getLogger(DatabaseAnnotateDerby2.class.getName());
 
-    public DatabaseAnnotate200() {
+    public DatabaseAnnotateDerby2() {
         log.info("<ctor>");
     }
 }

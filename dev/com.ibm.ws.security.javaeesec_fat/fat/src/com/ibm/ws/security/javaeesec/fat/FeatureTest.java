@@ -154,13 +154,13 @@ public class FeatureTest extends JavaEESecTestBase {
 
         //add ear to the server
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME);
-        WCApplicationHelper.addWarToServerApps(myServer, "dbfatAuthAlias.war", true, JAR_NAME, false, "web.jar.base", "web.war.db");
-        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
+        WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
+        Log.info(logClass, "setUp()", "-----EAR app created");
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(XML_NAME, EJB_APP_NAME);
-        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
-                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
+//        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
+//                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
 
         //Test case isUserInRoleLDAPISWar1
         //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.
@@ -219,8 +219,8 @@ public class FeatureTest extends JavaEESecTestBase {
 
         //add ear to the server
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME_noPermission);
-        WCApplicationHelper.addWarToServerApps(myServer, "dbfatAuthAlias.war", true, JAR_NAME, false, "web.jar.base", "web.war.db");
-        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
+        WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
+        Log.info(logClass, "setUp()", "-----EAR app created");
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(APP_SEC_2_XML_NAME, EJB_APP_NAME_noPermission);
@@ -271,8 +271,8 @@ public class FeatureTest extends JavaEESecTestBase {
 
         //add ear to the server
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EJB_EAR_NAME_noPermission);
-        WCApplicationHelper.addWarToServerApps(myServer, "dbfatAuthAlias.war", true, JAR_NAME, false, "web.jar.base", "web.war.db");
-        Log.info(logClass, getCurrentTestName(), "-----EAR app created");
+        WCApplicationHelper.addWarToServerApps(myServer, "dbfat2.war", true, JAR_NAME, false, "web.jar.base", "web.war.db2");
+        Log.info(logClass, "setUp()", "-----EAR app created");
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(APP_SEC_1_XML_NAME, EJB_APP_NAME_noPermission);
