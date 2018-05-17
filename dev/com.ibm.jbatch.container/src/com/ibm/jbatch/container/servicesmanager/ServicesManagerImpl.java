@@ -1,14 +1,14 @@
 /*
- * 
+ *
  * Copyright 2012,2013 International Business Machines Corp.
- * 
+ *
  * See the NOTICE file distributed with this work for additional information
- * regarding copyright ownership. Licensed under the Apache License, 
+ * regarding copyright ownership. Licensed under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,7 +53,6 @@ import com.ibm.jbatch.spi.services.IBatchServiceBase;
 import com.ibm.jbatch.spi.services.IBatchThreadPoolService;
 import com.ibm.jbatch.spi.services.IJobXMLLoaderService;
 import com.ibm.jbatch.spi.services.ITransactionManagementService;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class ServicesManagerImpl implements BatchContainerConstants, ServicesManager {
@@ -111,8 +110,7 @@ public class ServicesManagerImpl implements BatchContainerConstants, ServicesMan
     private void initFromPropertiesFiles() {
 
         Properties serviceIntegratorProps = new Properties();
-        InputStream batchServicesListInputStream = this.getClass()
-                        .getResourceAsStream("/META-INF/services/" + BATCH_INTEGRATOR_CONFIG_FILE);
+        InputStream batchServicesListInputStream = this.getClass().getResourceAsStream("/META-INF/services/" + BATCH_INTEGRATOR_CONFIG_FILE);
 
         if (batchServicesListInputStream != null) {
             try {
@@ -188,8 +186,8 @@ public class ServicesManagerImpl implements BatchContainerConstants, ServicesMan
             logger.config("value = " + batchContainerProps.get(key));
         }
 
-        // Set this on the config. 
-        // 
+        // Set this on the config.
+        //
         // WARNING:  This sets us up for collisions since this is just a single holder of properties
         // potentially used by any service impl.
         batchRuntimeConfig.setConfigProperties(batchContainerProps);
@@ -247,7 +245,7 @@ public class ServicesManagerImpl implements BatchContainerConstants, ServicesMan
     // If not exist, create a new one, add to registry and return that one
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.jbatch.container.config.ServicesManager#getService(com.ibm.jbatch.container.config.ServicesManagerImpl.ServiceType)
      */
     private IBatchServiceBase getService(Name serviceType) throws BatchContainerServiceException {
@@ -469,9 +467,7 @@ public class ServicesManagerImpl implements BatchContainerConstants, ServicesMan
     /**
      * DS injection
      */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-                    policy = ReferencePolicy.DYNAMIC,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setEventsPublisher(BatchEventsPublisher publisher) {
         eventsPublisher = publisher;
     }
@@ -483,7 +479,6 @@ public class ServicesManagerImpl implements BatchContainerConstants, ServicesMan
     }
 
     @Override
-    @Trivial
     public BatchEventsPublisher getBatchEventsPublisher() {
         return eventsPublisher;
     }
@@ -497,10 +492,7 @@ public class ServicesManagerImpl implements BatchContainerConstants, ServicesMan
     /**
      * DS injection
      */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-                    policy = ReferencePolicy.DYNAMIC,
-                    policyOption = ReferencePolicyOption.GREEDY,
-                    target = "(type=JMS)")
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, target = "(type=JMS)")
     protected void setBatchJmsDispatcher(BatchDispatcher ref) {
         this.batchJmsDispatcher = ref;
     }

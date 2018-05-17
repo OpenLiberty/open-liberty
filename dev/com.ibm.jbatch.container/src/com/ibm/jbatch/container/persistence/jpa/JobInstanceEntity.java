@@ -282,6 +282,7 @@ public class JobInstanceEntity implements JobInstance, WSJobInstance, EntityCons
         buf.append("For JobInstanceEntity: ");
         buf.append(" instanceId = " + instanceId);
         buf.append(", batchStatus = " + batchStatus);
+        buf.append(", instanceState = " + instanceState);
         return buf.toString();
     }
 
