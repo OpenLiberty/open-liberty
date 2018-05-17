@@ -8,27 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.security.registry.basic.fat;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
-
 @RunWith(Suite.class)
 @SuiteClasses({
                 CustomCertificateMapperInBellTest.class,
-                CustomCertificateMapperInFeatureTest.class
+                CustomCertificateMapperInFeatureTest.class,
+                FATTest.class,
+                FATTestFederated.class,
+                FATTestIgnoreCase.class
 })
-public class FATSuite {
-
-    // Using the RepeatTests @ClassRule will cause all tests to be run twice.
-    // First without any modifications, then again with all features upgraded to their EE8 equivalents.
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
-
-}
+public class FATSuite {}
