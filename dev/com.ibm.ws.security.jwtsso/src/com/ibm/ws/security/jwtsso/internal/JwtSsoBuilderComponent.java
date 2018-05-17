@@ -40,6 +40,7 @@ import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.jwtsso.config.JwtSsoBuilderConfig;
+import com.ibm.ws.security.jwtsso.utils.ConfigUtils;
 import com.ibm.ws.security.jwtsso.utils.IssuerUtil;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
@@ -217,6 +218,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
         }
         jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
         cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
+        cookieName = (new ConfigUtils()).validateCookieName(cookieName, false);
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "process");
         }

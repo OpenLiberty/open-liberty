@@ -35,6 +35,7 @@ import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.jwtsso.config.JwtSsoConfig;
+import com.ibm.ws.security.jwtsso.utils.ConfigUtils;
 import com.ibm.ws.security.jwtsso.utils.IssuerUtil;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
@@ -248,6 +249,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
         jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
         jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
         cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
+        cookieName = (new ConfigUtils()).validateCookieName(cookieName, true);
         if (jwtConsumerRef == null) {
             setJwtSsoConsumerDefaults();
         }

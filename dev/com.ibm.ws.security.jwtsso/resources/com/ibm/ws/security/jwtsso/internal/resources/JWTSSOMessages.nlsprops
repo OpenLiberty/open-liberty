@@ -16,4 +16,10 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS6300 - CWWKS6399
-
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6300E: The cookieName attribute of jwtSso cannot be null or empty. The default cookieName value will be used.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=The supplied value of the cookieName attribute is not valid.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=Remove the cookieName attribute or specify a valid value.
+ 
+COOKIE_NAME_INVALID=CWWKS6301E: The cookieName attribute of jwtSso [{0}] contains an invalid character [{1}]. The default cookieName value will be used.
+COOKIE_NAME_INVALID.explanation=The supplied cookieName value is not valid because it contains a character disallowed by RFC6265.
+COOKIE_NAME_INVALID.useraction=Remove the cookieName attribute or specify a valid value.
