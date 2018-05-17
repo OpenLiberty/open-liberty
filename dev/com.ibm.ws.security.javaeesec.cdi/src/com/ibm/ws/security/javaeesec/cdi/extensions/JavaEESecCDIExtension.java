@@ -157,11 +157,11 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         AnnotatedType<SecurityContextProducer> securityContextProducerType = beanManager.createAnnotatedType(SecurityContextProducer.class);
-        beforeBeanDiscovery.addAnnotatedType(securityContextProducerType, SecurityContextProducer.class.getName());
+        beforeBeanDiscovery.addAnnotatedType(securityContextProducerType, SecurityContextProducer.class.getName() + ":" + getClass().getClassLoader().hashCode());
         AnnotatedType<AutoApplySessionInterceptor> autoApplySessionInterceptorType = beanManager.createAnnotatedType(AutoApplySessionInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(autoApplySessionInterceptorType, AutoApplySessionInterceptor.class.getName());
+        beforeBeanDiscovery.addAnnotatedType(autoApplySessionInterceptorType, AutoApplySessionInterceptor.class.getName() + ":" + getClass().getClassLoader().hashCode());
         AnnotatedType<RememberMeInterceptor> rememberMeInterceptorInterceptorType = beanManager.createAnnotatedType(RememberMeInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(rememberMeInterceptorInterceptorType, RememberMeInterceptor.class.getName());
+        beforeBeanDiscovery.addAnnotatedType(rememberMeInterceptorInterceptorType, RememberMeInterceptor.class.getName() + ":" + getClass().getClassLoader().hashCode());
     }
 
     public <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
