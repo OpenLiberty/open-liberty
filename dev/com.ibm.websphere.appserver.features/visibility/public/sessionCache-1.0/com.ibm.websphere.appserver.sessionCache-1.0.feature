@@ -21,7 +21,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.javax.servlet-4.0; ibm.tolerates:="3.1,3.0"; apiJar=false, \
   com.ibm.websphere.appserver.transaction-1.2; ibm.tolerates:=1.1
 -bundles=\
-  com.ibm.websphere.javaee.jcache.1.1, \
+  com.ibm.websphere.javaee.jcache.1.1; mavenCoordinates="javax.cache:cache-api:1.1.0", \
   com.ibm.websphere.security, \
   com.ibm.ws.require.java8, \
   com.ibm.ws.session, \
