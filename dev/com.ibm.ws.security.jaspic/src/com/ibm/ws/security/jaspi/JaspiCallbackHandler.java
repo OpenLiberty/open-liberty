@@ -31,6 +31,7 @@ import java.util.List;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.message.callback.CallerPrincipalCallback;
 import javax.security.auth.message.callback.GroupPrincipalCallback;
@@ -44,7 +45,6 @@ import com.ibm.websphere.security.EntryNotFoundException;
 import com.ibm.websphere.security.PasswordCheckFailedException;
 import com.ibm.websphere.security.UserRegistry;
 import com.ibm.websphere.security.WSSecurityException;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
@@ -55,6 +55,7 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 public class JaspiCallbackHandler implements CallbackHandler {
 
     private static final TraceComponent tc = Tr.register(JaspiCallbackHandler.class, "Security", null);
+    private static final String DEFAULT_REALM = "defaultRealm";
 
     private JaspiService jaspiService;
 
@@ -76,13 +77,16 @@ public class JaspiCallbackHandler implements CallbackHandler {
             return;
         }
         try {
+            String realm = DEFAULT_REALM;
             for (Callback callback : callbacks) {
                 if (callback instanceof CallerPrincipalCallback) {
-                    handleCallerPrincipalCallback((CallerPrincipalCallback) callback);
+                    handleCallerPrincipalCallback((CallerPrincipalCallback) callback, realm);
                 } else if (callback instanceof GroupPrincipalCallback) {
                     handleGroupPrincipalCallback((GroupPrincipalCallback) callback);
                 } else if (callback instanceof PasswordValidationCallback) {
                     handlePasswordValidationCallback((PasswordValidationCallback) callback);
+                } else if (callback instanceof NameCallback) {
+                    realm = handleNameCallback((NameCallback) callback);
                 } else {
                     throw new UnsupportedCallbackException(callback);
                 }
@@ -92,6 +96,20 @@ public class JaspiCallbackHandler implements CallbackHandler {
         } catch (Exception t) {
             throw new IOException(t);
         }
+    }
+
+    private String handleNameCallback(NameCallback nameCallback) throws UnsupportedCallbackException {
+        String realm = DEFAULT_REALM;
+        if (AttributeNameConstants.WSCREDENTIAL_REALM.equals(nameCallback.getPrompt())) {
+            realm = getRealm(nameCallback.getName());
+        } else {
+            throw new UnsupportedCallbackException(nameCallback);
+        }
+        return realm;
+    }
+
+    private String getRealm(String realm) {
+        return realm != null && realm.trim().isEmpty() == false ? realm : DEFAULT_REALM;
     }
 
     /*
@@ -117,7 +135,7 @@ public class JaspiCallbackHandler implements CallbackHandler {
      * container. When the argument Principal is null, the handler will establish the container's representation of the unauthenticated caller
      * principal.
      */
-    protected void handleCallerPrincipalCallback(CallerPrincipalCallback callback) throws WSSecurityException {
+    protected void handleCallerPrincipalCallback(CallerPrincipalCallback callback, String realm) throws WSSecurityException {
         Subject clientSubject = callback.getSubject();
         String userName = callback.getName();
         Principal userPrincipal = callback.getPrincipal();
@@ -134,11 +152,11 @@ public class JaspiCallbackHandler implements CallbackHandler {
                 credData.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, securityName);
             } else if (userPrincipal != null) {
                 securityName = userPrincipal.getName();
-                addCommonAttributes(securityName, credData);
+                addCommonAttributes(realm, securityName, credData);
                 credData.put("com.ibm.wsspi.security.cred.jaspi.principal", userPrincipal);
             } else {
                 securityName = userName;
-                addCommonAttributes(securityName, credData);
+                addCommonAttributes(realm, securityName, credData);
             }
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Added securityName: " + securityName);
@@ -149,7 +167,7 @@ public class JaspiCallbackHandler implements CallbackHandler {
         }
     }
 
-    protected void addCommonAttributes(String securityName, Hashtable<String, Object> credData) {
+    protected void addCommonAttributes(String realm, String securityName, Hashtable<String, Object> credData) {
         try {
             UserRegistry registry = getUserRegistry();
             if (registry != null && registry.isValidUser(securityName)) {
@@ -162,7 +180,7 @@ public class JaspiCallbackHandler implements CallbackHandler {
                 }
             } else {
                 if (registry == null) {
-                    credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:defaultRealm/" + securityName);
+                    credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:" + realm + "/" + securityName);
                 } else {
                     credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, registry.getRealm() + "/" + securityName);
                 }
