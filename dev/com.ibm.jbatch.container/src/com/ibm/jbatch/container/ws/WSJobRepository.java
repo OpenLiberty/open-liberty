@@ -157,15 +157,6 @@ public interface WSJobRepository {
      */
     public abstract WSJobInstance updateJobInstanceState(long instanceId, InstanceState state);
 
-    // DELETE ME
-    /**
-     * Update the instanceState of this job instance if state is currently STOPPED or FAILED
-     *
-     * @param instanceId
-     * @param state
-     */
-    public abstract WSJobInstance updateJobInstanceStateUponRestart(long instanceId, InstanceState state);
-
     /**
      * Update the instanceState to SUBMITTED for this job instance if state is currently STOPPED or FAILED
      *
