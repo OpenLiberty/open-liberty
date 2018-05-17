@@ -217,6 +217,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 		}
 		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
 		cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
+        cookieName = (new ConfigUtils()).validateCookieName(cookieName, false);
 		if (tc.isEntryEnabled()) {
 			Tr.exit(tc, "process");
 		}
