@@ -34,7 +34,6 @@ import com.ibm.ws.jandex.JandexApplicationHelper;
  */
 public class JandexAppFalseAppMgrTrueTest extends LoggingTest {
 
-    @SuppressWarnings("unused")
     private static final Logger LOG = Logger.getLogger(JandexAppFalseAppMgrTrueTest.class.getName());
 
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
@@ -76,7 +75,7 @@ public class JandexAppFalseAppMgrTrueTest extends LoggingTest {
 
         LOG.info("Setup : wait for message to indicate app has started");
 
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40");
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40", LOG_SEARCH_TIMEOUT);
 
         LOG.info("Setup : app has started, or so we believe");
 
