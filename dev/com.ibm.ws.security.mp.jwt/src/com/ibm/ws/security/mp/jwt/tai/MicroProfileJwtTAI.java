@@ -50,7 +50,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.tai.TAIResult;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 
-@Component(service = { TrustAssociationInterceptor.class }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "type=microProfileJwtTAI", "id=MPJwtTAI", "TAIName=MPJwtTAI", "invokeBeforeSSO:Boolean=true", "addLTPACookieToResponse:Boolean=false" })
+@Component(service = { TrustAssociationInterceptor.class }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, name = "microProfileJwtTAI", property = { "service.vendor=IBM", "type=microProfileJwtTAI", "id=MPJwtTAI", "TAIName=MPJwtTAI", "invokeBeforeSSO:Boolean=true", "addLTPACookieToResponse:Boolean=false" })
 public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
 
     private static TraceComponent tc = Tr.register(MicroProfileJwtTAI.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -291,7 +291,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             }
             return result;
         }
-        TAIResult result = handleMicroProfileJwtValidation(request, response, mpJwtConfig, token);
+        TAIResult result = handleMicroProfileJwtValidation(request, response, mpJwtConfig, token, false);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
@@ -299,7 +299,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
     }
 
     @FFDCIgnore({ MpJwtProcessingException.class })
-    TAIResult handleMicroProfileJwtValidation(HttpServletRequest req, HttpServletResponse res, MicroProfileJwtConfig clientConfig, String token) throws WebTrustAssociationFailedException {
+    public TAIResult handleMicroProfileJwtValidation(HttpServletRequest req, HttpServletResponse res, MicroProfileJwtConfig clientConfig, String token, boolean addJwtPrincipal) throws WebTrustAssociationFailedException {
         String methodName = "handleMicroProfileJwtValidation";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, req, res, clientConfig, token);
@@ -322,7 +322,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
 
         TAIResult authnResult = null;
         try {
-            authnResult = createResult(res, clientConfig, jwtToken, decodedPayload);
+            authnResult = createResult(res, clientConfig, jwtToken, decodedPayload, addJwtPrincipal);
         } catch (Exception e) {
             Tr.error(tc, "ERROR_CREATING_RESULT", new Object[] { clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
@@ -333,7 +333,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         return authnResult;
     }
 
-    TAIResult createResult(HttpServletResponse res, MicroProfileJwtConfig clientConfig, @Sensitive JwtToken jwtToken, @Sensitive String decodedPayload) throws WebTrustAssociationFailedException, MpJwtProcessingException {
+    TAIResult createResult(HttpServletResponse res, MicroProfileJwtConfig clientConfig, @Sensitive JwtToken jwtToken, @Sensitive String decodedPayload, boolean addJwtPrincipal) throws WebTrustAssociationFailedException, MpJwtProcessingException {
         String methodName = "createResult";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, res, clientConfig, jwtToken, decodedPayload);
@@ -341,7 +341,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         TAIMappingHelper mappingHelper = new TAIMappingHelper(decodedPayload, clientConfig);
         mappingHelper.createJwtPrincipalAndPopulateCustomProperties(jwtToken);
 
-        Subject subject = mappingHelper.createSubjectFromCustomProperties(jwtToken);
+        Subject subject = mappingHelper.createSubjectFromCustomProperties(addJwtPrincipal);
         TAIResult result = TAIResult.create(HttpServletResponse.SC_OK, mappingHelper.getUsername(), subject);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
@@ -350,7 +350,10 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
     }
 
     TAIResult sendToErrorPage(HttpServletResponse response, TAIResult taiResult) {
-        return ErrorHandlerImpl.getInstance().handleErrorResponse(response, taiResult);
+        if (response != null) {
+            return ErrorHandlerImpl.getInstance().handleErrorResponse(response, taiResult);
+        }
+        return taiResult;
     }
 
 }

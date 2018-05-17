@@ -38,22 +38,22 @@ public class IssuerUtil {
                 hosturl = "https://" + host + ":" + port;
             } catch (Exception e) {
 
-            }
-        }
-        if (httpendpointInfoMBean != null) {
-            try {
-                String host = resolveHost((String) httpendpointInfoMBean.getAttribute("Host"), serverInfoMBean);
-                int port = (Integer) httpendpointInfoMBean.getAttribute("Port");
-                hosturl = "http://" + host + ":" + port;
-            } catch (Exception e) {
+			}
+		} else if (httpendpointInfoMBean != null) {
+			try {
+				String host = resolveHost((String) httpendpointInfoMBean.getAttribute("Host"), serverInfoMBean);
+				int port = (Integer) httpendpointInfoMBean.getAttribute("Port");
+				hosturl = "http://" + host + ":" + port;
+			} catch (Exception e) {
 
-            }
-        }
-        if (hosturl != null) {
-            hosturl = hosturl + JWTSSO_CONTEXT_PATH + uniqueId;
-        }
-        return hosturl;
-    }
+			}
+		}
+
+		if (hosturl != null) {
+			hosturl = hosturl + JWTSSO_CONTEXT_PATH + uniqueId;
+		}
+		return hosturl;
+	}
 
     protected String resolveHost(String host, ServerInfoMBean serverInfoMBean) {
         if ("*".equals(host)) {
