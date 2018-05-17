@@ -60,6 +60,30 @@ public class AuditEvent {
     public final static String TARGET_MESSAGING_USER_NAME = "target.messaging.userName";
     public final static String TARGET_MESSAGING_DESTINATION = "target.messaging.destination";
     public final static String TARGET_MESSAGING_OPERATIONTYPE = "target.messaging.operationType";
+    public final static String TARGET_MESSAGING_CALLTYPE = "target.messaging.callType";
+    public final static String TARGET_MESSAGING_JMS_RESOURCE = "target.messaging.jmsResource";
+    public final static String TARGET_MESSAGING_JMS_ROLES = "target.messaging.jmsRoles";
+    public final static String TARGET_MESSAGING_JMS_REQUESTOR_TYPE = "target.messaging.jmsRequestorType";
+    public final static String TARGET_MESSAGING_JMS_QUEUE_PERMISSIONS = "target.messaging.queuePermissions";
+    public final static String TARGET_MESSAGING_JMS_TOPIC_PERMISSIONS = "target.messaging.topicPermissions";
+    public final static String TARGET_MESSAGING_JMS_TEMPORARY_DESTINATION_PERMISSIONS = "target.messaging.tempDestinationPermissions";
+
+    public final static String TARGET_JMX_NOTIFICATION_NAME = "target.jmx.notification.name";
+    public final static String TARGET_JMX_NOTIFICATION_LISTENER = "target.jmx.notification.listener";
+    public final static String TARGET_JMX_NOTIFICATION_FILTER = "target.jmx.notification.filter";
+    public final static String TARGET_JMX_NOTIFICATION_HANDBACK = "target.jmx.notification.handback";
+
+    public final static String TARGET_JMX_MBEAN_NAME = "target.jmx.mbean.name";
+    public final static String TARGET_JMX_MBEAN_ACTION = "target.jmx.mbean.action";
+    public final static String TARGET_JMX_MBEAN_ATTRIBUTE_NAME = "target.jmx.mbean.attribute.name";
+    public final static String TARGET_JMX_MBEAN_ATTRIBUTE_NAMES = "target.jmx.mbean.attribute.names";
+    public final static String TARGET_JMX_MBEAN_ATTRIBUTE_ACTION = "target.jmx.mbean.attribute.action";
+    public final static String TARGET_JMX_MBEAN_CLASSNAME = "target.jmx.mbean.classname";
+    public final static String TARGET_JMX_MBEAN_CLASSLOADER_NAME = "target.jmx.mbean.classloader.name";
+    public final static String TARGET_JMX_MBEAN_INVOKE_OPERATION = "target.jmx.mbean.invoke.operation";
+    public final static String TARGET_JMX_MBEAN_PARAMS = "target.jmx.mbean.params";
+    public final static String TARGET_JMX_MBEAN_SIGNATURE = "target.jmx.mbean.signature";
+    public final static String TARGET_JMX_MBEAN_QUERYEXP = "target.jmx.mbean.queryExp";
 
     public final static String TARGET_APPNAME = "target.appname";
     public final static String TARGET_PARAMS = "target.params";
@@ -140,6 +164,11 @@ public class AuditEvent {
     public static final String REASON_TYPE_INVALID_SEARCH_EXPRESSION = "Invalid search expression"; // 219
     public static final String REASON_TYPE_EXCEED_MAX_TOTAL_SEARCH_LIMIT = "Exceeding max total search limit"; // 220
     public static final String REASON_TYPE_ENTITY_SEARCH_FAILED = "Entity search failed"; // 221
+
+    public static final String REASON_TYPE_NON_COMPLIANT_MBEAN = "Not compliant MBean";
+    public static final String REASON_TYPE_INSTANCE_ALREADY_EXISTS = "Instance of MBean already exists";
+    public static final String REASON_TYPE_MBEAN_REGISTRATION_FAILURE = "MBean registration failure";
+    public static final String REASON_TYPE_INSTANCE_NOT_FOUND = "Instance of MBean not found";
 
     /**
      * Outcomes
@@ -481,7 +510,7 @@ public class AuditEvent {
     /**
      * @return unique identifier id of this server
      */
-    private static String getServerID() {
+    public static String getServerID() {
         if (serverID == null) {
             AuditService auditService = SecurityUtils.getAuditService();
             if (auditService != null) {

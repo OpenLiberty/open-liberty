@@ -102,7 +102,7 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
         }
         return doResumeFinal(response);
     }
-    private boolean doResumeFinal(Object response) {
+    private synchronized boolean doResumeFinal(Object response) {
         inMessage.getExchange().put(AsyncResponse.class, this);
         cont.setObject(response);
         resumedByApplication = true;
@@ -170,7 +170,7 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
     }
 
     @Override
-    public boolean setTimeout(long time, TimeUnit unit) throws IllegalStateException {
+    public synchronized boolean setTimeout(long time, TimeUnit unit) throws IllegalStateException {
         if (isCancelledOrNotSuspended()) {
             return false;
         }

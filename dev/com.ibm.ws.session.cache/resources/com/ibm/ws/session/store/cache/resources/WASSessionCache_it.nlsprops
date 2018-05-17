@@ -14,3 +14,9 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+
+# The range SESN0300 - SESN0350 has been reserved for use in this file
+
+INCORRECT_URI_SYNTAX=SESN0300E: Sintassi non valida nell''URI httpSessionCache.  La causa \u00e8 {0}.
+INCORRECT_URI_SYNTAX.explanation=La sintassi dell'URI di configurazione httpSessionCache JCache specificato non \u00e8 valida.
+INCORRECT_URI_SYNTAX.useraction=Correggere la sintassi dell'URI di configurazione httpSessionCache specificato.

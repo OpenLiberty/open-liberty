@@ -80,7 +80,7 @@ public class AutoApplySessionTest extends JavaEESecTestBase {
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESec.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets",
                                                "web.war.mechanisms",
                                                "web.war.mechanisms.autoapplysession",
-                                               "web.war.identitystores");
+                                               "web.war.identitystores", "web.war.identitystores.scoped.application");
         myServer.setServerConfigurationFile("commonServer.xml");
         myServer.startServer(true);
         myServer.addInstalledAppForValidation("JavaEESec");

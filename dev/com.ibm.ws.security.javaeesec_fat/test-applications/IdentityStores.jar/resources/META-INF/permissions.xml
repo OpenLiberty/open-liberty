@@ -31,9 +31,4 @@
       <actions>read</actions>
    </permission>
 
-   <permission>
-      <class-name>javax.security.enterprise.identitystore.IdentityStorePermission</class-name>
-      <name>getGroups</name>
-   </permission>
-
 </permissions>

@@ -13,6 +13,7 @@ package com.ibm.ws.messaging.security.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -636,6 +637,42 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
                 SibTr.debug(tc, "    " + role + ": " + groupRoles.get(role));
             }
         }
+    }
+    
+    /**
+     * Get the Destination Roles, it will be used for audit
+     */
+    public String[] getDestinationRoles(Map<String, ?> destinationPermissions, String dest, String user) {
+        SibTr.debug(tc,  " dest: " + dest + " user: " + user);
+        ArrayList<String> roleList = new ArrayList();
+        int element = 0;
+        Set<String> destinations = destinationPermissions.keySet();
+        for (String destination : destinations) {
+            SibTr.debug(tc, "Destination: " + destination);
+            if (destination.equals(dest)) {
+                Permission permission = (Permission) destinationPermissions.get(destination);
+                Map<String, Set<String>> userRoles = permission.getRoleToUserMap();
+                Set<String> uRoles = userRoles.keySet();
+                for (String role : uRoles) {
+                    SibTr.debug(tc, "    users: " + userRoles.get(role));
+                    Set<String> rs = userRoles.get(role);
+                    for (String r : rs) {
+                        SibTr.debug(tc,  "     user: " + r);
+                        if (r.equals(user)) {
+                            roleList.add(role);
+                        }
+                     }
+                }
+ 
+            }
+        }
+        if (roleList != null)
+            SibTr.debug(tc,  "roles: " + roleList.toArray().toString());
+        
+        Object[] roleListAsObjectArray = roleList.toArray();
+        String[] roleListAsStrArray = Arrays.copyOf(roleListAsObjectArray, roleListAsObjectArray.length, String[].class);
+        
+        return (roleListAsStrArray);
     }
 
     /*

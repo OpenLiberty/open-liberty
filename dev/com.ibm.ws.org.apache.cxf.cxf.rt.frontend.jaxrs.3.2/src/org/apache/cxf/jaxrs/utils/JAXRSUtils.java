@@ -19,6 +19,8 @@
 
 package org.apache.cxf.jaxrs.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,6 +49,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
@@ -89,7 +92,9 @@ import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.io.DelegatingInputStream;
 import org.apache.cxf.io.ReaderInputStream;
 import org.apache.cxf.jaxrs.JAXRSServiceImpl;
 import org.apache.cxf.jaxrs.ext.ContextProvider;
@@ -245,7 +250,7 @@ public final class JAXRSUtils {
                     }
                 }
             }
-            
+
             produceTypes = getProduceTypes(annotation);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "getProviderProduceTypes - return1",  produceTypes);
@@ -571,7 +576,7 @@ public final class JAXRSUtils {
                                                           final boolean checkDistance) {
         List<MediaType> all = intersectMimeTypes(acceptTypes, producesTypes, true, checkDistance);
         if (all.size() > 1) {
-            Collections.sort(all, new Comparator<MediaType>() {
+            all.sort(new Comparator<MediaType>() {
 
                 @Override
                 public int compare(MediaType mt1, MediaType mt2) {
@@ -831,6 +836,11 @@ public final class JAXRSUtils {
                                            Message message,
                                            OperationResourceInfo ori) throws IOException, WebApplicationException {
         InputStream is = message.getContent(InputStream.class);
+        // Liberty change start
+        if (is instanceof DelegatingInputStream) {
+            ((DelegatingInputStream)is).cacheInput();
+        }
+        // Liberty change end
         if (is == null) {
             Reader reader = message.getContent(Reader.class);
             if (reader != null) {
@@ -972,9 +982,15 @@ public final class JAXRSUtils {
             m.put(FormUtils.FORM_PARAM_MAP, params);
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
+                // Liberty change start
+                InputStream is = m.getContent(InputStream.class);
+                if (is instanceof DelegatingInputStream) {
+                    ((DelegatingInputStream)is).cacheInput();
+                }
+                // Liberty change end
                 String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
-                String body = FormUtils.readBody(m.getContent(InputStream.class), enc);
-                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, decode);
+                String body = FormUtils.readBody(is, enc); // Liberty change
+                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
                     && MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(mt)) {
@@ -985,6 +1001,14 @@ public final class JAXRSUtils {
                     Tr.warning(tc, errorMsg.toString());
                     throw ExceptionUtils.toNotSupportedException(null, null);
                 }
+            }
+        }
+
+        if (decode) {
+            List<String> values = params.get(key);
+            if (values != null) {
+                values = values.stream().map(value -> HttpUtils.urlDecode(value)).collect(Collectors.toList());
+                params.replace(key, values);
             }
         }
 
@@ -1245,14 +1269,13 @@ public final class JAXRSUtils {
                                            boolean decodePlus,
                                            boolean valueIsCollection) {
         if (!StringUtils.isEmpty(query)) {
-            List<String> parts = Arrays.asList(StringUtils.split(query, sep));
-            for (String part : parts) {
+            for (String part : query.split(sep)) { // fastpath expected
                 int index = part.indexOf('=');
                 String name = null;
                 String value = null;
                 if (index == -1) {
                     name = part;
-                    value = "";
+                    value = ""; //Liberty change - this probably shouldn't have been removed from CXF
                 } else {
                     name = part.substring(0, index);
                     value = index < part.length() ? part.substring(index + 1) : "";
@@ -1275,11 +1298,13 @@ public final class JAXRSUtils {
                                                boolean decode,
                                                boolean decodePlus) {
 
-        if (decodePlus && value.contains("+")) {
-            value = value.replace('+', ' ');
-        }
-        if (decode) {
-            value = (";".equals(sep)) ? HttpUtils.pathDecode(value) : HttpUtils.urlDecode(value);
+        if (value != null) {
+            if (decodePlus && value.contains("+")) {
+                value = value.replace('+', ' ');
+            }
+            if (decode) {
+                value = (";".equals(sep)) ? HttpUtils.pathDecode(value) : HttpUtils.urlDecode(value);
+            }
         }
 
         queries.add(HttpUtils.urlDecode(name), value);
@@ -1421,21 +1446,27 @@ public final class JAXRSUtils {
     public static boolean matchConsumeTypes(MediaType requestContentType,
                                             OperationResourceInfo ori) {
 
-        return !intersectMimeTypes(ori.getConsumeTypes(), requestContentType).isEmpty();
+        // Liberty change begin
+        return doMimeTypesIntersect(ori.getConsumeTypes(), requestContentType);
+        // Liberty change end
     }
 
     public static boolean matchProduceTypes(MediaType acceptContentType,
                                             OperationResourceInfo ori) {
 
-        return !intersectMimeTypes(ori.getProduceTypes(), acceptContentType).isEmpty();
+        // Liberty change begin
+        return doMimeTypesIntersect(ori.getProduceTypes(), acceptContentType);
+        // Liberty change end
     }
 
     public static boolean matchMimeTypes(MediaType requestContentType,
                                          MediaType acceptContentType,
                                          OperationResourceInfo ori) {
 
-        return intersectMimeTypes(ori.getConsumeTypes(), requestContentType).size() != 0
-               && intersectMimeTypes(ori.getProduceTypes(), acceptContentType).size() != 0;
+        // Liberty change begin
+        return doMimeTypesIntersect(ori.getConsumeTypes(), requestContentType) &&
+               doMimeTypesIntersect(ori.getProduceTypes(), acceptContentType);
+        // Liberty change end
     }
 
     public static List<MediaType> parseMediaTypes(String types) {
@@ -1472,6 +1503,42 @@ public final class JAXRSUtils {
                                                      boolean addRequiredParamsIfPossible) {
         return intersectMimeTypes(requiredMediaTypes, userMediaTypes, addRequiredParamsIfPossible, false);
     }
+
+    // Liberty change begin
+    public static boolean doMimeTypesIntersect(List<MediaType> requiredMediaTypes,
+                                               List<MediaType> userMediaTypes) {
+        for (MediaType requiredType : requiredMediaTypes) {
+            for (MediaType userType : userMediaTypes) {
+                boolean isCompatible = isMediaTypeCompatible(requiredType, userType);
+                if (isCompatible) {
+                    boolean parametersMatched = true;
+                    for (Map.Entry<String, String> entry : userType.getParameters().entrySet()) {
+                        String value = requiredType.getParameters().get(entry.getKey());
+                        if (value != null && entry.getValue() != null
+                            && !(stripDoubleQuotesIfNeeded(value).equals(stripDoubleQuotesIfNeeded(entry.getValue())))) {
+                            if (HTTP_CHARSET_PARAM.equals(entry.getKey())
+                                && value.equalsIgnoreCase(entry.getValue())) {
+                                continue;
+                            }
+                            parametersMatched = false;
+                            break;
+                        }
+                    }
+                    if (!parametersMatched) {
+                        continue;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    public static boolean doMimeTypesIntersect(List<MediaType> mimeTypesA, MediaType mimeTypeB) {
+        return doMimeTypesIntersect(mimeTypesA, Collections.singletonList(mimeTypeB));
+    }
+    // Liberty change end
 
     public static List<MediaType> intersectMimeTypes(List<MediaType> requiredMediaTypes,
                                                      List<MediaType> userMediaTypes,
@@ -1766,7 +1833,7 @@ public final class JAXRSUtils {
     public static ResponseBuilder fromResponse(Response response) {
         return fromResponse(response, true);
     }
-    
+
     public static ResponseBuilder fromResponse(Response response, boolean copyEntity) {
         ResponseBuilder rb = toResponseBuilder(response.getStatus());
         if (copyEntity) {
@@ -1854,5 +1921,4 @@ public final class JAXRSUtils {
     public static JaxRsRuntimeException toJaxRsRuntimeException(Throwable ex) {
         return new JaxRsRuntimeException(ex);
     }
-
 }

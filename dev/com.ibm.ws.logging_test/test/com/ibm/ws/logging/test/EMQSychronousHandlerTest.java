@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.logging.test;
 
 import static org.junit.Assert.assertEquals;
@@ -9,6 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 
 import test.common.SharedOutputManager;
@@ -112,7 +123,7 @@ public class EMQSychronousHandlerTest {
         }
         testBufferManager.addSyncHandler(syncHandler);
         assertEquals(200, syncHandler.getNumOfMessages());
-        BufferManagerImpl.removeEMQTrigger();
+        BufferManagerEMQHelper.removeEMQTrigger();
 
         DummyHandler syncHandler2 = new DummyHandler();
         testBufferManager.add(syncHandler2);
@@ -121,8 +132,8 @@ public class EMQSychronousHandlerTest {
 
     @Test
     public void RemoveEMQ() {
-        BufferManagerImpl.removeEMQTrigger();
-        assertTrue(BufferManagerImpl.getEMQRemovedFlag());
+        BufferManagerEMQHelper.removeEMQTrigger();
+        assertTrue(BufferManagerEMQHelper.getEMQRemovedFlag());
     }
 
 }

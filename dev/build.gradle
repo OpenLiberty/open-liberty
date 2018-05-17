@@ -20,9 +20,15 @@ ext {
 }
 
 subprojects {
+  plugins.apply 'java'
   def bndProject = bndWorkspace.getProject(name)
   if (bndProject != null) {
     plugins.apply 'biz.aQute.bnd'
+  } else {
+    task publish { }
+    task release { }
+    task releaseNeeded { dependsOn release }
+    task copyPiiFiles { }
   }
 
   /* For Java 9 builds, set the --release compiler flag to keep bootclasspath in sync */
@@ -37,13 +43,27 @@ subprojects {
       }
     }
   }
+  tasks.withType(Javadoc) {
+    doFirst {
+      // Starting with JDK 9.0.4 the javadoc compiler started to striclty enforce proper HTML
+      // syntax and other breaking changes.  Fixing all of these ocurrances would take far too
+      // long and be a poor use of time, so we will disable these checks for JDK9 and up
+      if(JavaVersion.current().isJava9Compatible()) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+      }
+    }
+  }
 
-  apply from: cnf.file('gradle/scripts/repos.gradle')
-  apply from: cnf.file('gradle/scripts/publish.gradle')
-  apply from: cnf.file('gradle/scripts/tasks.gradle')
+  if (bndProject != null) {
+    apply from: cnf.file('gradle/scripts/repos.gradle')
+    apply from: cnf.file('gradle/scripts/publish.gradle')
+    apply from: cnf.file('gradle/scripts/anttaskdefs.gradle')
+    apply from: cnf.file('gradle/scripts/tasks.gradle')
 
-  if (bndis('fat.project')) {
-    apply from: cnf.file('gradle/scripts/fat.gradle')
+    if (bndis('fat.project')) {
+      apply from: cnf.file('gradle/scripts/fat.gradle')
+    }
+
   }
 
   // Make the release task depend on assemble so that invoking 'release' or 'releaseNeeded'

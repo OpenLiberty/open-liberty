@@ -203,8 +203,8 @@ APPLICATION_UPDATED=CWWKZ0062I: Aplica\u0163ia {0} a fost actualizat\u0103, dar 
 APPLICATION_UPDATED.explanation=A ap\u0103rut o modificare minor\u0103 \u00een aplica\u0163ia specificat\u0103 \u015fi modificarea a fost considerat\u0103 suficient de minor\u0103 astfel \u00eenc\u00e2t nu trebuie repornit\u0103 aplica\u0163ia.
 APPLICATION_UPDATED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
-APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Utilizarea Jandex este activat\u0103 pentru toate aplica\u0163iile.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=Pentru toate aplica\u0163iile, \u015fi atunci c\u00e2nd sunt disponibile indexuri Jandex, clasa \u015fi datele de adnotare sunt ob\u0163inute de la indexuri Jandex.
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Setarea implicit\u0103 pentru utilizarea Jandex a fost modificat\u0103 la true pentru toate aplica\u0163iile.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Pentru toate aplica\u0163iile, \u015fi c\u00e2nd sunt disponibile indexuri Jandex, clasa \u015fi datele de adnotare sunt ob\u0163inute din indexurile Jandex, \u00een afar\u0103 de cazul \u00een care este dezactivat\u0103 special utilizarea Jandex pentru aplica\u0163ie.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 #{0} is application name

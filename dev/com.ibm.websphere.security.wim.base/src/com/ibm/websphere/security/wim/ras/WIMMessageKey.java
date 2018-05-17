@@ -1579,8 +1579,44 @@ public interface WIMMessageKey {
      * Entity type name is not specified for property names.
      */
     String ENTITY_TYPE_NAME_NOT_SPECIFIED = "ENTITY_TYPE_NAME_NOT_SPECIFIED";
+
     /**
      * Value for timestamp format specified for LDAP adapter is invalid.
      */
     String INVALID_TIMESTAMP_FORMAT = "INVALID_TIMESTAMP_FORMAT";
+
+    /**
+     * The extended property has already been defined and will be ignored.
+     */
+    String DUPLICATE_PROPERTY_EXTENDED = "DUPLICATE_PROPERTY_EXTENDED";
+
+    /**
+     * The extended property cannot override a property on the entity.
+     */
+    String DUPLICATE_PROPERTY_ENTITY = "DUPLICATE_PROPERTY_ENTITY";
+
+    /**
+     * The LDAP registry will ignore the certificate authentication request since 'certificateMapeMode' is set to IGNORE.
+     */
+    String LDAP_REGISTRY_CERT_IGNORED = "LDAP_REGISTRY_CERT_IGNORED";
+
+    /**
+     * No custom X.509 certificate mapper implementation has been registered with the LDAP registry.
+     */
+    String LDAP_REGISTRY_MAPPER_NOT_BOUND = "LDAP_REGISTRY_MAPPER_NOT_BOUND";
+
+    /**
+     * The custom X.509 certificate mapper implementation has thrown a CertificateMapNotSupportedException.
+     */
+    String LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED = "LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED";
+
+    /**
+     * The custom X.509 certificate mapper implementation has thrown a CertificateMapFailedException.
+     */
+    String LDAP_REGISTRY_CUSTOM_MAPPER_FAILED = "LDAP_REGISTRY_CUSTOM_MAPPER_FAILED";
+
+    /**
+     * The custom X.509 certificate mapper implementation returned an invalid mapping value.
+     */
+    String LDAP_REGISTRY_INVALID_MAPPING = "LDAP_REGISTRY_INVALID_MAPPING";
 }

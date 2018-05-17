@@ -553,3 +553,14 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Dal\u0161\u00ed informace
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Intern\u00ed chyba proch\u00e1zen\u00ed t\u0159\u00eddy: Jandex zpracov\u00e1v\u00e1 duplicitn\u00ed zpracov\u00e1n\u00ed t\u0159\u00eddy [{0}].
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} A number
+# # {3} A number
+# # {4} The name of a file or the name of a directory
+# # Read - Past tense. 
+ANNO_JANDEX_USAGE=CWWKC0092I: \u010c\u00edst indexy Jandex pro {0} z {1} archiv\u016f ({2} z {3} t\u0159\u00edd) v {4}. 
+ANNO_JANDEX_USAGE.explanation=Zobrazuje po\u010det archiv\u016f v modulu, kter\u00e9 byly zpracov\u00e1ny \u010dten\u00edm index\u016f Jandex, sp\u00ed\u0161e ne\u017e skenov\u00e1n\u00edm skute\u010dn\u00fdch soubor\u016f t\u0159\u00edd. Zobrazuje tak\u00e9 celkov\u00fd po\u010det t\u0159\u00edd v aplikaci, kter\u00e9 byly zpracov\u00e1ny \u010dten\u00edm index\u016f Jandex.
+ANNO_JANDEX_USAGE.useraction=Jestli\u017ee jsou indexy Jandex ur\u010deny ke \u010dten\u00ed pro aplikaci, nen\u00ed \u017e\u00e1dn\u00e1 akce. Pokud nemaj\u00ed b\u00fdt indexy Jandex \u010dteny pro aplikaci, potom nastavte atribut useJandex="false" v prvku aplikace v souboru server.xml. Voliteln\u011b nastavte parametr useJandex="false" v prvku applicationManger v souboru server.xml pro ignorov\u00e1n\u00ed index\u016f Jandex ve v\u0161ech aplikac\u00edch.
+

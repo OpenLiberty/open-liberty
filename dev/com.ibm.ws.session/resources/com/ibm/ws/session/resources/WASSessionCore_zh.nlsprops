@@ -14,6 +14,11 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+
+# Note:
+# SESN0300 - SESN0350 has been reserved for use in: 
+# com.ibm.ws.session.cache/resources/com/ibm/ws/session/store/cache/resources/WASSessionCache.nlsprops
+
 SessionContext.createWhenStop=SESN0006E: \u5df2\u5c1d\u8bd5\u5728\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u6b63\u8fdb\u884c\u505c\u6b62\u65f6\u521b\u5efa\u4f1a\u8bdd\u3002
 SessionContext.createWhenStop.explanation=\u5982\u679c\u5728\u670d\u52a1\u5668\u6b63\u5728\u505c\u6b62\u65f6\u63a5\u6536\u5230\u4f1a\u8bdd\u8bf7\u6c42\uff0c\u90a3\u4e48\u5c06\u53d1\u751f\u6b64\u9519\u8bef\u3002
 SessionContext.createWhenStop.useraction=\u8bf7\u91cd\u65b0\u542f\u52a8\u670d\u52a1\u5668\u3002

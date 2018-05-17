@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import com.ibm.ejs.ras.TrLevelConstants;
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TraceStateChangeListener;
@@ -241,6 +242,8 @@ public class WsLogger extends Logger implements TraceStateChangeListener {
             logRecord.setComponent(getComponent());
         }
 
+        LogRecordContext.getExtensions(logRecord.getExtensions());        
+        
         logRecord.setTraceClass(ivTC.getTraceClass());
 
         // populate runtime data

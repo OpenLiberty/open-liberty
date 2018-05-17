@@ -1,0 +1,19 @@
+<server>
+    <featureManager>
+        <feature>componentTest-1.0</feature>
+		<feature>jdbc-4.0</feature>
+		<feature>servlet-3.1</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
+    <library id="DerbyLib" filesetRef="DerbyFileset"/>
+    <fileset id="DerbyFileset" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+
+    <dataSource id="jdbc/TestDataSource" jndiName="jdbc/TestDataSource" jdbcDriverRef="DerbyEmbedded">
+        <properties databaseName="memory:injectionFat" createDatabase="create"/>
+    </dataSource>
+	
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>

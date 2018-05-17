@@ -20,7 +20,8 @@ src: \
 	test-applications/beanManagerLookupApp.war/src,\
 	test-applications/cdi12helloworldtest.war/src,\
 	test-applications/HelloAppClient.jar/src,\
-	test-applications/jndiLookup.war/src
+	test-applications/jndiLookup.war/src,\
+	test-applications/jndiLookup.jar/src
 	
 tested.features:\
 	cdi-2.0,\

@@ -124,7 +124,7 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
         String methodName = "getCurrentHttpServletMapping";
 
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-            logger.entering(CLASS_NAME, methodName);
+            logger.entering(CLASS_NAME, methodName + " dispatchContext -> " + dispatchContext);
         }
 
         HttpServletMapping returnMapping = null;
@@ -258,8 +258,18 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
             logger.logp(Level.FINE, CLASS_NAME, methodName, "create " + String.valueOf(create) + ", this -> " + this);
         }
-        _sessionCreated = true;
-        return super.getSession(create);
+
+        HttpSession session = super.getSession(create);
+
+        if (session != null) {
+            _sessionCreated = true;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, methodName, "_sessionCreated " + _sessionCreated + ", this -> " + this);
+        }
+
+        return session;
     }
 
     private Enumeration<String> getPushBuilderHeaders() {

@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import com.ibm.ws.org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import com.ibm.ws.org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
 import com.ibm.ws.kernel.boot.archive.UnixModeHelper;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
@@ -45,7 +45,7 @@ public class ZipArchive extends AbstractArchive {
 
     /**
      * Create an archive
-     * 
+     *
      * @param archiveFile the target zip file.
      */
     public ZipArchive(File archiveFile) throws IOException {
@@ -84,8 +84,8 @@ public class ZipArchive extends AbstractArchive {
             return;
         }
 
-        // Ignore the file if it happens to be the zipfile's path we are writing to. 
-        // Use Canonical instead of equals method - this compares paths in a system dependent way 
+        // Ignore the file if it happens to be the zipfile's path we are writing to.
+        // Use Canonical instead of equals method - this compares paths in a system dependent way
         if (archiveFile.getCanonicalFile().equals(sourceFile.getCanonicalFile())) {
             return;
         }

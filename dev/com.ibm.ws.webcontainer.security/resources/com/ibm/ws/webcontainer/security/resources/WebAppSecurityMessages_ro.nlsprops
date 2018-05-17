@@ -137,3 +137,7 @@ SEC_JACC_AUTHZ_FAILED.useraction=Contacta\u0163i-v\u0103 administratorul de secu
 SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: URL-ul furnizat pe logoutExitPage personalizat al serviciului Delogare cu formular nu poate fi afi\u015fat, requestURL={0}, logoutExitPage={1}. Delogarea s-a f\u0103cut cu succes \u015fi a fost afi\u015fat\u0103 pagina implicit\u0103 Delogare cu formular.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Serviciul de Delogare cu formular a e\u015fuat redirec\u0163ionarea la pagina specificat\u0103 pe parametrul de servlet logoutExitPage. URL-ul specificat este fie un URL formatat invalid fie numele de gazd\u0103 nu este specificat pe proprietatea com.ibm.websphere.security.logoutExitPageDomainList.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Corecta\u0163i URL-ul specificat pe parametrul logoutExitPage.
+
+JWT_ALREADY_LOGGED_OUT=CWWKS9126E: Logarea cu un jeton JWT (JSON Web Token) a e\u015fuat deoarece jetonul a fost anterior delogat.
+JWT_ALREADY_LOGGED_OUT.explanation=Un jeton JWT care a fost anterior delogat a fost retransmis pentru autentificarea de logare.
+JWT_ALREADY_LOGGED_OUT.useraction=Ob\u0163ine\u0163i un JWT (JSON Web Token) nou sau seta\u0163i atributul de configura\u0163ie trackLoggedOutSSOCookiesEnabled la false, ceea ce este mai pu\u0163in sigur.

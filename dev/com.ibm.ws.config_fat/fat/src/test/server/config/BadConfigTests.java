@@ -61,7 +61,7 @@ public class BadConfigTests {
             assertNotNull("The config should be updated", server.waitForStringInLogUsingMark("CWWKG0017I.*"));
 
         } finally {
-            server.stopServer();
+            server.stopServer("CWWKG0075E", "CWWKG0076W", "CWWKG0083W");
         }
 
     }
@@ -81,7 +81,7 @@ public class BadConfigTests {
         }
 
         finally {
-            server.stopServer();
+            server.stopServer("CWWKG0074E", "CWWKG0075E", "CWWKG0076W", "CWWKG0031E");
         }
 
     }
@@ -101,7 +101,7 @@ public class BadConfigTests {
             // Start the server with invalid configuration and ensure that the warning is printed exactly once
             assertEquals("There should be exactly one (1) warning for createDatabase", 1, matches.size());
         } finally {
-            server.stopServer();
+            server.stopServer("CWWKG0032W");
         }
 
     }
@@ -116,7 +116,7 @@ public class BadConfigTests {
             // Start the server, skipping the optional include with a bad protocol - ensure warning message is printed
             assertNotNull("There should be an error during server start", server.waitForStringInLog("CWWKG0084W.*bogus.*"));
         } finally {
-            server.stopServer();
+            server.stopServer("CWWKG0084W");
         }
 
     }

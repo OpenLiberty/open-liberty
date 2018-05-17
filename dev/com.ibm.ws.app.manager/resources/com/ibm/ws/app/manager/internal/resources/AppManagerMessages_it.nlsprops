@@ -203,8 +203,8 @@ APPLICATION_UPDATED=CWWKZ0062I: L''applicazione {0} \u00e8 stata aggiornata, ma 
 APPLICATION_UPDATED.explanation=Nell'applicazione specificata si \u00e8 verificata una modifica secondaria che \u00e8 stata ritenuta abbastanza trascurabile da non rendere necessario un riavvio dell'applicazione.
 APPLICATION_UPDATED.useraction=Non \u00e8 richiesta alcuna azione.
 
-APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: L'utilizzo di Jandex \u00e8 abilitato per tutte le applicazioni.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=Per tutte le applicazioni, e quando gli indici Jandex sono disponibili, i dati classe e annotazione sono ottenuti dagli indici Jandex.
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: L'impostazione predefinita per l'utilizzo di Jandex \u00e8 stata modificata in true per tutte le applicazioni.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Per tutte le applicazioni, e quando gli indici Jandex sono disponibili, i dati classe e annotazione sono ottenuti dagli indici Jandex, a meno che l'utilizzo di Jandex non sia disabilitato specificatamente per l'applicazione.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=Non \u00e8 richiesta alcuna azione.
 
 #{0} is application name

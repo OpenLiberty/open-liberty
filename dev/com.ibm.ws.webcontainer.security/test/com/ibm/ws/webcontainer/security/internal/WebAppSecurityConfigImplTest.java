@@ -24,8 +24,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
@@ -33,15 +31,13 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 public class WebAppSecurityConfigImplTest {
+
     private final Mockery mock = new JUnit4Mockery() {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
     private final WebAppSecurityConfig mockedConfig = mock.mock(WebAppSecurityConfig.class);
-//    private final WsLocationAdmin mockLocationAdmin = mock.mock(WsLocationAdmin.class);
-    private final ComponentContext cc = mock.mock(ComponentContext.class);
-    private final BundleContext bundleContext = mock.mock(BundleContext.class);
     private final AtomicServiceReference<WsLocationAdmin> locationAdminRef = mock.mock(AtomicServiceReference.class, "locationAdminRef");
     private final AtomicServiceReference<SecurityService> securityServiceRef = mock.mock(AtomicServiceReference.class, "securityServiceRef");
     private final WsLocationAdmin locateService = mock.mock(WsLocationAdmin.class);
@@ -172,6 +168,8 @@ public class WebAppSecurityConfigImplTest {
         cfg.put("autoGenSsoCookieName", Boolean.FALSE);
         cfg.put("ssoDomainNames", "austin.ibm.com|raleigh.ibm.com|useDomainFromURL");
         cfg.put("webAlwaysLogin", Boolean.TRUE);
+        cfg.put("jaspicSessionForMechanismsEnabled", Boolean.TRUE);
+        cfg.put("jaspicSessionCookieName", "jaspicSession");
         WebAppSecurityConfig webCfgOld = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
 
         cfg.put("allowFailOverToBasicAuth", Boolean.FALSE);
@@ -180,10 +178,12 @@ public class WebAppSecurityConfigImplTest {
         cfg.put("autoGenSsoCookieName", Boolean.FALSE);
         cfg.put("ssoDomainNames", "");
         cfg.put("webAlwaysLogin", Boolean.FALSE);
+        cfg.put("jaspicSessionForMechanismsEnabled", Boolean.FALSE);
+        cfg.put("jaspicSessionCookieName", "myJaspicSession");
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
 
         assertEquals("When all settings have changed, all should be listed",
-                     "allowFailOverToBasicAuth=false,displayAuthenticationRealm=true,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false",
+                     "allowFailOverToBasicAuth=false,displayAuthenticationRealm=true,jaspicSessionCookieName=myJaspicSession,jaspicSessionForMechanismsEnabled=false,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false",
                      webCfg.getChangedProperties(webCfgOld));
     }
 
@@ -219,6 +219,18 @@ public class WebAppSecurityConfigImplTest {
     @Test
     public void getChangedProperties_httpOnlyCookies() {
         driveSingleAttributeTest("httpOnlyCookies",
+                                 Boolean.TRUE, Boolean.FALSE);
+    }
+
+    @Test
+    public void getChangedProperties_jaspicSessionCookieName() {
+        driveSingleAttributeTest("jaspicSessionCookieName",
+                                 "jaspicSession", "myJaspicSession");
+    }
+
+    @Test
+    public void getChangedProperties_jaspicSessionForMechanismsEnabled() {
+        driveSingleAttributeTest("jaspicSessionForMechanismsEnabled",
                                  Boolean.TRUE, Boolean.FALSE);
     }
 
@@ -304,6 +316,24 @@ public class WebAppSecurityConfigImplTest {
     public void getChangedProperties_webAlwaysLogin() {
         driveSingleAttributeTest("webAlwaysLogin",
                                  Boolean.TRUE, Boolean.FALSE);
+    }
+
+    @Test
+    public void testGetJaspicSessionCookieName() {
+        String expectCookieName = "jaspicSession";
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put("jaspicSessionCookieName", expectCookieName);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
+        assertEquals("The jaspicSessionCookieName value must be set.", expectCookieName, webCfg.getJaspicSessionCookieName());
+    }
+
+    @Test
+    public void testIsJaspicSessionForMechanismsEnabled() {
+        Boolean expectedValue = Boolean.TRUE;
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put("jaspicSessionForMechanismsEnabled", expectedValue);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
+        assertEquals("The jaspicSessionForMechanismsEnabled value must be set.", expectedValue, webCfg.isJaspicSessionForMechanismsEnabled());
     }
 
     @Test

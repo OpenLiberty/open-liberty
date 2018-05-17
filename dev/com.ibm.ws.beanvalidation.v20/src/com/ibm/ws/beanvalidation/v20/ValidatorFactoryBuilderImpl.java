@@ -29,17 +29,26 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder;
 import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
+import com.ibm.ws.util.ThreadContextAccessor;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true)
 public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
+    private static final TraceComponent tc = Tr.register(ValidatorFactoryBuilderImpl.class);
 
     private static final String REFERENCE_BVAL_MANAGED_OBJECT_BUILDER = "BvalManagedObjectBuilder";
     private final AtomicServiceReference<BvalManagedObjectBuilder> bvalManagedObjectBuilderSR = new AtomicServiceReference<BvalManagedObjectBuilder>(REFERENCE_BVAL_MANAGED_OBJECT_BUILDER);
+
+    @Reference
+    private ClassLoadingService classLoadingService;
 
     @Override
     public void closeValidatorFactory(ValidatorFactory vf) {
@@ -50,22 +59,72 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
     @Override
     public ValidatorFactory buildValidatorFactory(final ClassLoader appClassLoader, final String containerPath) {
+        ClassLoader tcclClassLoader = null;
+        SetContextClassLoaderPrivileged setClassLoader = null;
+        ClassLoader oldClassLoader = null;
+        try {
+            ClassLoader tcclClassLoaderTmp = tcclClassLoader = configureBvalClassloader(appClassLoader);
 
-        ClassLoader bvalClassLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new Validation20ClassLoader(appClassLoader, containerPath));
+            ClassLoader bvalClassLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new Validation20ClassLoader(tcclClassLoaderTmp, containerPath));
 
-        Configuration<?> config = Validation.byDefaultProvider().configure();
+            ThreadContextAccessor tca = AccessController.doPrivileged((PrivilegedAction<ThreadContextAccessor>) () -> ThreadContextAccessor.getThreadContextAccessor());
 
-        if (config instanceof HibernateValidatorConfiguration) {
-            HibernateValidatorConfiguration hvConfig = ((HibernateValidatorConfiguration) config);
-            hvConfig.externalClassLoader(bvalClassLoader);
+            // set the thread context class loader to be used, must be reset in finally block
+            setClassLoader = new SetContextClassLoaderPrivileged(tca);
+            oldClassLoader = setClassLoader.execute(bvalClassLoader);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Called setClassLoader with oldClassLoader of " + oldClassLoader + " and newClassLoader of " + bvalClassLoader);
+            }
+
+            Configuration<?> config = Validation.byDefaultProvider().configure();
+
+            if (config instanceof HibernateValidatorConfiguration) {
+                HibernateValidatorConfiguration hvConfig = ((HibernateValidatorConfiguration) config);
+                hvConfig.externalClassLoader(bvalClassLoader);
+            }
+
+            if (bvalManagedObjectBuilderSR.getReference() != null) {
+                BvalManagedObjectBuilder bvalManagedObjectBuilder = bvalManagedObjectBuilderSR.getServiceWithException();
+                return bvalManagedObjectBuilder.injectValidatorFactoryResources(config, appClassLoader);
+            } else {
+                return config.buildValidatorFactory();
+            }
+        } finally {
+            if (setClassLoader != null) {
+                setClassLoader.execute(oldClassLoader);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
+                }
+            }
+            if (setClassLoader != null && setClassLoader.wasChanged) {
+                releaseLoader(tcclClassLoader);
+            }
         }
+    }
 
-        if (bvalManagedObjectBuilderSR.getReference() != null) {
-            BvalManagedObjectBuilder bvalManagedObjectBuilder = bvalManagedObjectBuilderSR.getServiceWithException();
-            return bvalManagedObjectBuilder.injectValidatorFactoryResources(config, appClassLoader);
-        } else {
-            return config.buildValidatorFactory();
+    private ClassLoader configureBvalClassloader(ClassLoader cl) {
+        if (cl == null) {
+            cl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         }
+        if (cl != null) {
+            if (classLoadingService.isThreadContextClassLoader(cl)) {
+                return cl;
+            } else if (classLoadingService.isAppClassLoader(cl)) {
+                return createTCCL(cl);
+            }
+        }
+        return createTCCL(ValidatorFactoryBuilderImpl.class.getClassLoader());
+    }
+
+    private ClassLoader createTCCL(ClassLoader parentCL) {
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> classLoadingService.createThreadContextClassLoader(parentCL));
+    }
+
+    private void releaseLoader(ClassLoader tccl) {
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            classLoadingService.destroyThreadContextClassLoader(tccl);
+            return null;
+        });
     }
 
     @Activate

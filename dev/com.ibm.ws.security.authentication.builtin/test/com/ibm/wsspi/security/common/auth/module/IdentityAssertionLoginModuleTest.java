@@ -36,8 +36,6 @@ import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
@@ -53,6 +51,8 @@ import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.security.token.SingleSignonToken;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -135,7 +135,7 @@ public class IdentityAssertionLoginModuleTest {
      * The cleanup of the JAASServiceImpl is necessary as the
      * references it holds are static, and if not cleaned up, will spill
      * over into the next test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -217,7 +217,7 @@ public class IdentityAssertionLoginModuleTest {
         try {
             mockery.checking(new Expectations() {
                 {
-                    one(userRegistry).mapCertificate(certificateChain[0]);
+                    one(userRegistry).mapCertificate(certificateChain);
                     will(returnValue(CERTIFICATE_USER_NAME));
                 }
             });
@@ -338,9 +338,9 @@ public class IdentityAssertionLoginModuleTest {
     class SubjectContainingHashtableMatcher extends TypeSafeMatcher<Subject> {
 
         private final String[] hashtableLoginProperties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
-                                                           AttributeNameConstants.WSCREDENTIAL_USERID,
-                                                           AttributeNameConstants.WSCREDENTIAL_SECURITYNAME,
-                                                           AttributeNameConstants.WSCREDENTIAL_CACHE_KEY };
+                                                            AttributeNameConstants.WSCREDENTIAL_USERID,
+                                                            AttributeNameConstants.WSCREDENTIAL_SECURITYNAME,
+                                                            AttributeNameConstants.WSCREDENTIAL_CACHE_KEY };
 
         /** {@inheritDoc} */
         @Override

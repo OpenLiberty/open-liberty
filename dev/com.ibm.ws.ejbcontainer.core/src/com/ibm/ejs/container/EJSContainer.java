@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2016 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,8 +104,7 @@ import com.ibm.wsspi.ejbcontainer.WSEJBEndpointManager;
  * Container for both entity and session EJBs. <p>
  */
 
-public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospectable
-{
+public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospectable {
     private static final String CLASS_NAME = EJSContainer.class.getName();
     private static final TraceComponent tc = Tr.register(EJSContainer.class, "EJBContainer", "com.ibm.ejs.container.container");
 
@@ -150,10 +149,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     protected StatefulBeanEnqDeq ivStatefulBeanEnqDeq; // d646413.2
     // LIDB2775-23.1
     protected DispatchEventListenerManager ivDispatchEventListenerManager; // @MD16426A, d646413.2
-    protected final static boolean isZOS =
-                    EJSPlatformHelper.isZOS();
-    protected final static boolean isZOSCRA =
-                    EJSPlatformHelper.isZOSCRA();
+    protected final static boolean isZOS = EJSPlatformHelper.isZOS();
+    protected final static boolean isZOSCRA = EJSPlatformHelper.isZOSCRA();
 
     private boolean initialized = false;
 
@@ -230,12 +227,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      */
     protected static ClassLoader classLoader;
 
-    private static ThreadLocal<EJBThreadData> svThreadData = // d630940
-    new WSThreadLocal<EJBThreadData>()
-    {
+    private static ThreadLocal<EJBThreadData> svThreadData = new WSThreadLocal<EJBThreadData>() {
         @Override
-        protected EJBThreadData initialValue()
-        {
+        protected EJBThreadData initialValue() {
             return new EJBThreadData();
         }
     };
@@ -368,8 +362,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * for use until <code>initialize</code>() has completed
      * successfully. <p>
      */
-    public EJSContainer() //d568119 - delegate to new ctor
-    {
+    public EJSContainer() {
         this(false);
     }
 
@@ -378,8 +371,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * for use until <code>initialize</code>() has completed
      * successfully. <p>
      */
-    public EJSContainer(boolean embedded) //d568119 - new embedded parm
-    {
+    public EJSContainer(boolean embedded) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "<init> " + String.valueOf(embedded));
 
@@ -394,9 +386,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *            configuration information for this container instance <p>
      *
      */
-    public synchronized void initialize(ContainerConfig configData)
-                    throws CSIException
-    {
+    public synchronized void initialize(ContainerConfig configData) throws CSIException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -414,8 +404,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         this.ivName = configData.getContainerName();
         this.persisterFactory = configData.getPersisterFactory();
         EJSContainer.sessionKeyFactory = configData.getSessionKeyFactory();
-        this.sessionHandleFactory =
-                        configData.getStatefulSessionHandleFactory();//86203
+        this.sessionHandleFactory = configData.getStatefulSessionHandleFactory();//86203
         this.ivSecurityCollaborator = configData.getSecurityCollaborator();
 
         this.uowCtrl = configData.getUOWControl();
@@ -440,11 +429,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         //-------------------------------------------------
 
         poolManager = configData.getPoolManager();//87918.7
-        activator = new Activator(this
-                        , configData.getEJBCache()
-                        , configData.getPassivationPolicy()
-                        , passivator
-                        , ivSfFailoverCache); //LIDB2018-1
+        activator = new Activator(this, configData.getEJBCache(), configData.getPassivationPolicy(), passivator, ivSfFailoverCache); //LIDB2018-1
         homeOfHomes = new HomeOfHomes(this, activator);
         int uncached = Activator.UNCACHED_ACTIVATION_STRATEGY;
         ActivationStrategy as = activator.getActivationStrategy(uncached);
@@ -483,8 +468,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * after this method completes. <p>
      *
      */
-    public void terminate()
-    {
+    public void terminate() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -535,8 +519,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         return ivEJBRuntime;
     }
 
-    public void setSecurityCollaborator(EJBSecurityCollaborator<?> securityCollaborator)
-    {
+    public void setSecurityCollaborator(EJBSecurityCollaborator<?> securityCollaborator) {
         ivSecurityCollaborator = securityCollaborator;
     }
 
@@ -552,8 +535,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @param wrapper the wrapper requesting the object
      */
-    public EJSDeployedSupport getEJSDeployedSupport(EJSWrapperBase wrapper)
-    {
+    public EJSDeployedSupport getEJSDeployedSupport(EJSWrapperBase wrapper) {
         return new EJSDeployedSupport(); // F61004.3
     }
 
@@ -564,11 +546,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * <p>NOTE: This method only exists to support ejbdeploy wrappers.
      */
     // d113344
-    public void putEJSDeployedSupport(EJSDeployedSupport s)
-    {
+    public void putEJSDeployedSupport(EJSDeployedSupport s) {
         //d146239.5
-        if (s.methodId < 0)
-        {
+        if (s.methodId < 0) {
             s.ivThreadData.getEJBMethodInfoStack().done(s.methodInfo); // d742761
         }
         //d146239.5
@@ -604,12 +584,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *                that occurred.
      **/
     // LI3294-35 d496060
-    public WSEJBEndpointManager createWebServiceEndpointManager
-                    (J2EEName j2eeName,
-                     Class<?> provider, // d492780, F87951
-                     Method[] methods)
-                                    throws EJBException, EJBConfigurationException
-    {
+    public WSEJBEndpointManager createWebServiceEndpointManager(J2EEName j2eeName,
+                                                                Class<?> provider, // d492780, F87951
+                                                                Method[] methods) throws EJBException, EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -620,8 +597,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
         // If a WebService request comes in after a home has been uninstalled,
         // then it won't be found.                                         d547849
-        if (home == null)
-        {
+        if (home == null) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "createWebServiceEndpointManager could not find home for : " +
                             j2eeName);
@@ -637,22 +613,18 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // and JITDeploy the WSEJBProxy class if there are around invoke
         // interceptors.                                                   d497921
         // -----------------------------------------------------------------------
-        synchronized (bmd) // d521886
-        {
-            if (!bmd.ivWebServiceEndpointCreated)
-            {
-                if (provider != null)
-                {
+        synchronized (bmd) {
+            if (!bmd.ivWebServiceEndpointCreated) {
+                if (provider != null) {
                     // The Web Service Endpoint Interface from ejb-jar.xml is for
                     // JAX-RPC, and cannot be used with a JAX-WS Provider.
-                    if (bmd.webserviceEndpointInterfaceClass != null)
-                    {
+                    if (bmd.webserviceEndpointInterfaceClass != null) {
                         // Log the error and throw meaningful exception.
                         Tr.error(tc, "WS_ENDPOINT_PROVIDER_CONFLICT_CNTR0176E",
                                  new Object[] { bmd.webserviceEndpointInterfaceClass.getName(),
-                                               bmd.j2eeName.getComponent(),
-                                               bmd.j2eeName.getModule(),
-                                               bmd.j2eeName.getApplication() });
+                                                bmd.j2eeName.getComponent(),
+                                                bmd.j2eeName.getModule(),
+                                                bmd.j2eeName.getApplication() });
                         throw new EJBConfigurationException("Web Service Provider interface conflicts with the " +
                                                             "configured Web Service Endpoint interface " +
                                                             bmd.webserviceEndpointInterfaceClass.getName() +
@@ -665,7 +637,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                     endpointMethods = provider.getMethods();
 
                     if (isTraceOn && tc.isDebugEnabled())
-                        Tr.debug(tc, "provider methods : ", (Object[])endpointMethods);
+                        Tr.debug(tc, "provider methods : ", (Object[]) endpointMethods);
                 }
 
                 // Resolve the Web Service Endpoint methods.  This will make sure that
@@ -673,40 +645,34 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                 // excess methodInfos for the webservice endpoint interface in BMD.
                 // Until now, EJBContainer is not aware of what the endpoint methods
                 // are, so assumes all methods on the bean may be endpoint methods.
-                boolean hasAroundInvoke = WSEJBWrapper.resolveWebServiceEndpointMethods
-                                (bmd, endpointMethods);
+                boolean hasAroundInvoke = WSEJBWrapper.resolveWebServiceEndpointMethods(bmd, endpointMethods);
 
                 // Finally, if any of the methods have around invoke interceptors,
                 // then a WSEJBProxy must be created by JITDeploy.  An instance of
                 // the proxy will be returned to WebServices component to invoke
                 // the bean method, instead of an actual bean instance.
-                if (hasAroundInvoke)
-                {
-                    try
-                    {
-                        bmd.ivWebServiceEndpointProxyClass = JITDeploy.generateWSEJBProxy
-                                        (bmd.classLoader,
-                                         bmd.ivWebServiceEndpointProxyName,
-                                         provider,
-                                         endpointMethods,
-                                         bmd.wsEndpointMethodInfos,
-                                         bmd.enterpriseBeanClassName,
-                                         bmd.j2eeName.toString(),
-                                         getEJBRuntime().getClassDefiner()); // F70650
-                    } catch (ClassNotFoundException ex)
-                    {
+                if (hasAroundInvoke) {
+                    try {
+                        bmd.ivWebServiceEndpointProxyClass = JITDeploy.generateWSEJBProxy(bmd.classLoader,
+                                                                                          bmd.ivWebServiceEndpointProxyName,
+                                                                                          provider,
+                                                                                          endpointMethods,
+                                                                                          bmd.wsEndpointMethodInfos,
+                                                                                          bmd.enterpriseBeanClassName,
+                                                                                          bmd.j2eeName.toString(),
+                                                                                          getEJBRuntime().getClassDefiner()); // F70650
+                    } catch (ClassNotFoundException ex) {
                         // Log the error and throw meaningful exception.
                         Tr.error(tc, "WS_EJBPROXY_FAILURE_CNTR0177E",
                                  new Object[] { bmd.j2eeName.getComponent(),
-                                               bmd.j2eeName.getModule(),
-                                               bmd.j2eeName.getApplication(),
-                                               ex });
-                        throw ExceptionUtil.EJBException
-                                        ("Failure occurred attempting to create a Web service " +
-                                         "endpoint proxy for the " + bmd.j2eeName.getComponent() +
-                                         " bean in the " + bmd.j2eeName.getModule() +
-                                         " module of the " + bmd.j2eeName.getApplication() +
-                                         " application.", ex);
+                                                bmd.j2eeName.getModule(),
+                                                bmd.j2eeName.getApplication(),
+                                                ex });
+                        throw ExceptionUtil.EJBException("Failure occurred attempting to create a Web service " +
+                                                         "endpoint proxy for the " + bmd.j2eeName.getComponent() +
+                                                         " bean in the " + bmd.j2eeName.getModule() +
+                                                         " module of the " + bmd.j2eeName.getApplication() +
+                                                         " application.", ex);
                     }
                 }
 
@@ -749,16 +715,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @throws EJBStoppedException if the bean has been stopped
      */
-    public EJSHome getStartedHome(J2EEName beanName) // d660700
-    {
+    public EJSHome getStartedHome(J2EEName beanName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(tc, "getStartedHome : " + beanName);
 
         HomeRecord hr = homeOfHomes.getHomeRecord(beanName); //LIDB859-4
         EJSHome hi = hr.getHomeAndInitialize(); //d199071
-        if (hi == null)
-        {
+        if (hi == null) {
             // This method should only be called when it is known that the bean
             // has been started.  Doing nothing would result in an NPE, so report
             // a meaningful exception instead.                             d547849
@@ -783,15 +747,13 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *             application may have been stopped or has not been installed.
      */
     // F743-34304
-    public EJSHome getInstalledHome(J2EEName beanName) throws EJBNotFoundException
-    {
+    public EJSHome getInstalledHome(J2EEName beanName) throws EJBNotFoundException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(tc, "getInstalledHome : " + beanName);
 
         HomeRecord hr = homeOfHomes.getHomeRecord(beanName);
-        if (hr != null)
-        {
+        if (hr != null) {
             return hr.getHomeAndInitialize();
         }
 
@@ -808,8 +770,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     /**
      * Return the local home named beanName.
      */
-    EJSWrapperCommon getHomeWrapperCommon(J2EEName beanName) throws CSIException //d196495
-    {
+    EJSWrapperCommon getHomeWrapperCommon(J2EEName beanName) throws CSIException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -844,9 +805,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Stop the bean instance specified by the beanName. ManagedContainer
      * wrapper around uninstallBean
      */
-    public void stopBean(BeanMetaData bmd) // F743-26072
-    throws CSIException
-    {
+    public void stopBean(BeanMetaData bmd) throws CSIException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -867,9 +826,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Remove the bean with the given bean home name from
      * this container. <p>
      */
-    private void uninstallBean(BeanMetaData bmd, boolean terminate) // F743-26072
-    throws ContainerException
-    {
+    private void uninstallBean(BeanMetaData bmd, boolean terminate) throws ContainerException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         J2EEName beanHomeName = bmd.j2eeName;
@@ -891,8 +848,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // if the two BMDs are out of synch, so the following FFDC is designed
         // to detect that state and collect possibly useful information.   PM65053
         BeanMetaData ibmd = internalBeanMetaDataStore.get(bmd.j2eeName);
-        if (bmd != ibmd)
-        {
+        if (bmd != ibmd) {
             Exception isex = new IllegalStateException("Mismatch in internal bean metadata : " + bmd.j2eeName);
             FFDCFilter.processException(isex, CLASS_NAME + ".uninstallBean", "1500",
                                         this, new Object[] { bmd, ibmd });
@@ -919,8 +875,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                 //was stopped.
                 try {
 
-                    if (home.isMessageDrivenHome())
-                    {
+                    if (home.isMessageDrivenHome()) {
                         ((MDBInternalHome) home).deactivateEndpoint(); //LI2110.41
                     }
                 } catch (Throwable e) { // d138839
@@ -941,8 +896,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                 // F743-1751 - Unregister the home from the wrapper manager after uninstalling the bean
                 // from the activator and destroying the home since either could cause PreDestroy
                 // lifecycle interceptors to be called, which could cause wrappers to be registered.
-                try
-                {
+                try {
                     wrapperManager.unregisterHome(beanHomeName, home);
                 } catch (Throwable e) { // d138839
                     FFDCFilter.processException(e, CLASS_NAME + ".uninstallBean", "999", this);
@@ -951,8 +905,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         } catch (Throwable t) {
             FFDCFilter.processException(t, CLASS_NAME + ".uninstallBean",
                                         "1430", this);
-            ContainerEJBException ex = new ContainerEJBException
-                            ("Failed to destroy the home.", t);
+            ContainerEJBException ex = new ContainerEJBException("Failed to destroy the home.", t);
             Tr.error(tc,
                      "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
                      new Object[] { t, ex.toString() });
@@ -971,9 +924,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @return the home instance
      */
-    public EJSHome startBean(BeanMetaData bmd) // f111627, d648522
-    throws ContainerException
-    {
+    public EJSHome startBean(BeanMetaData bmd) throws ContainerException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1034,8 +985,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     /**
      * Return the home of homes instance owned by this container. <p>
      */
-    public HomeOfHomes getHomeOfHomes() //LIDB2018-1
-    {
+    public HomeOfHomes getHomeOfHomes() {
         return homeOfHomes;
     }
 
@@ -1043,26 +993,22 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Return the Java EE name factory instance owned by this container. <p>
      */
     //89554
-    protected J2EENameFactory getJ2EENameFactory()
-    {
+    protected J2EENameFactory getJ2EENameFactory() {
         return j2eeNameFactory;
     } // getHomeOfHomes
 
     /**
      * Return lock manager used by this container.
      */
-    public final LockManager getLockManager()
-    {
+    public final LockManager getLockManager() {
         return lockManager;
     } // getTranControl
 
-    public WrapperManager getWrapperManager()
-    {
+    public WrapperManager getWrapperManager() {
         return wrapperManager;
     }
 
-    public Activator getActivator()
-    {
+    public Activator getActivator() {
         return activator;
     }
 
@@ -1070,8 +1016,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Utility method used by UOWControl to determine if a
      * given BeanId corresponds to a stateless session bean. <p>
      */
-    public final boolean isStatelessSessionBean(BeanId id)
-    {
+    public final boolean isStatelessSessionBean(BeanId id) {
         boolean result = id.getHome().isStatelessSessionHome();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isStatelessSessionBean : " + result + ", " + id);
@@ -1082,8 +1027,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Utility method used by UOWControl to determine if a
      * given BeanId corresponds to a stateful session bean. <p>
      */
-    public final boolean isStatefulSessionBean(BeanId id)
-    {
+    public final boolean isStatefulSessionBean(BeanId id) {
         boolean result = id.getHome().isStatefulSessionHome();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isStatefulSessionBean : " + result + ", " + id);
@@ -1100,8 +1044,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      */
     public void setCustomFinderAccessIntentThreadState(boolean cfwithupdateaccess,
                                                        boolean readonly,
-                                                       String methodname)
-    {
+                                                       String methodname) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         // create a thread local context for ContainerManagedBeanO to determine CF Access Information
@@ -1127,8 +1070,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * is not valid, which is the key to determinig if a lazy enumeration.
      *
      */
-    public CMP11CustomFinderAccIntentState getCustomFinderAccessIntentThreadState() //PQ95614 modified
-    {
+    public CMP11CustomFinderAccIntentState getCustomFinderAccessIntentThreadState() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         // create a thread local context for ContainerManagedBeanO to determine CF Access Information
@@ -1155,8 +1097,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Must reset each batch is returned as there is no way to guarantee customer will
      * return to get more instances.
      */
-    public void resetCustomFinderAccessIntentContext()
-    {
+    public void resetCustomFinderAccessIntentContext() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         // create a thread local context for ContainerManagedBeanO to determine CF Access Information
@@ -1175,8 +1116,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Tell the container that the given container transaction has
      * completed. <p>
      */
-    public void containerTxCompleted(ContainerTx containerTx)
-    {
+    public void containerTxCompleted(ContainerTx containerTx) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1198,8 +1138,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Tell the container that the given container transaction has
      * completed. <p>
      */
-    public void containerASCompleted(Object asKey)
-    {
+    public void containerASCompleted(Object asKey) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1223,8 +1162,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @return container transaction associated with the current thread.
      */
-    public ContainerTx getCurrentContainerTx()
-    {
+    public ContainerTx getCurrentContainerTx() {
         ContainerTx result = null;
         SynchronizationRegistryUOWScope currTxKey = null;
         try {
@@ -1261,8 +1199,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *                has been marked for rolled back only, is rolling back, or
      *                has rolled back.
      */
-    public ContainerTx getActiveContainerTx() throws CSITransactionRolledbackException
-    {
+    public ContainerTx getActiveContainerTx() throws CSITransactionRolledbackException {
         ContainerTx result = null;
         SynchronizationRegistryUOWScope currTxKey = uowCtrl.getCurrentTransactionalUOW(true);
 
@@ -1290,8 +1227,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @deprecated use {@link #getActiveContainerTx()} instead.
      */
     @Deprecated
-    public ContainerTx getCurrentTx() throws CSITransactionRolledbackException
-    {
+    public ContainerTx getCurrentTx() throws CSITransactionRolledbackException {
         // Forward call to method with boolean flag.                       d166414
         return getCurrentTx(true);
     } // getCurrentTx
@@ -1314,9 +1250,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @deprecated use {@link #getCurrentContainerTx()} instead.
      */
     @Deprecated
-    public ContainerTx getCurrentTx(boolean checkMarkedRollback)
-                    throws CSITransactionRolledbackException
-    {
+    public ContainerTx getCurrentTx(boolean checkMarkedRollback) throws CSITransactionRolledbackException {
         ContainerTx result = null;
         SynchronizationRegistryUOWScope currTxKey = uowCtrl.getCurrentTransactionalUOW(checkMarkedRollback);
 
@@ -1325,8 +1259,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // Okay to return null in this case.
         //---------------------------------------------------------
 
-        if (currTxKey != null)
-        {
+        if (currTxKey != null) {
             result = (ContainerTx) currTxKey.getResource(containerTxResourceKey);
         }
 
@@ -1352,9 +1285,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *                fails to enlist with the specified transaction.
      */
     // d139352-2
-    public ContainerTx getCurrentTx(SynchronizationRegistryUOWScope uowId, boolean isLocal)
-                    throws CSITransactionRolledbackException
-    {
+    public ContainerTx getCurrentTx(SynchronizationRegistryUOWScope uowId, boolean isLocal) throws CSITransactionRolledbackException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1370,19 +1301,15 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // ContainerTx.  If there is a transaction, then look for an existing
         // ContainerTx, or create one if not found.
 
-        if (currTxKey != null)
-        {
+        if (currTxKey != null) {
             result = (ContainerTx) currTxKey.getResource(containerTxResourceKey);
-            if (result == null)
-            {
+            if (result == null) {
                 result = ivEJBRuntime.createContainerTx(this, !isLocal, currTxKey,
                                                         uowCtrl);
 
-                try
-                {
+                try {
                     uowCtrl.enlistWithTransaction(currTxKey, result);
-                } catch (CSIException ex)
-                {
+                } catch (CSIException ex) {
                     FFDCFilter.processException(ex, CLASS_NAME + ".getCurrentTx",
                                                 "1305", this);
                     uowCtrl.setRollbackOnly();
@@ -1411,10 +1338,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *                resetOnly. <p>
      */
     // Added checMarkedRest parameter.                                   d348420
-    public ContainerAS getCurrentSessionalUOW(boolean checkMarkedReset)
-                    throws CSIException,
-                    CSITransactionRolledbackException
-    {
+    public ContainerAS getCurrentSessionalUOW(boolean checkMarkedReset) throws CSIException, CSITransactionRolledbackException {
         ContainerAS result = null;
         Object currASKey = uowCtrl.getCurrentSessionalUOW(checkMarkedReset);
 
@@ -1444,27 +1368,21 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @return verified EJB thread data
      * @throws EJBException if the pre-conditions aren't met
      */
-    public static EJBThreadData getUserTransactionThreadData() // d704496
-    {
+    public static EJBThreadData getUserTransactionThreadData() {
         EJBThreadData threadData = getThreadData();
         BeanO beanO = threadData.getCallbackBeanO();
 
-        if (beanO == null)
-        {
-            EJBException ex = new EJBException(
-                            "EJB UserTransaction can only be used from an EJB");
+        if (beanO == null) {
+            EJBException ex = new EJBException("EJB UserTransaction can only be used from an EJB");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getUserTransactionThreadData: " + ex);
             throw ex;
         }
 
-        try
-        {
+        try {
             beanO.getUserTransaction();
-        } catch (IllegalStateException ex)
-        {
-            EJBException ex2 = new EJBException(
-                            "EJB UserTransaction cannot be used: " + ex, ex);
+        } catch (IllegalStateException ex) {
+            EJBException ex2 = new EJBException("EJB UserTransaction cannot be used: " + ex, ex);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getUserTransactionThreadData: " + beanO + ": " + ex2);
             throw ex2;
@@ -1484,9 +1402,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @param threadData the thread data returned by {@link #getUserTransactionThreadData}
      * @param isLocal if the user transaction ended
      */
-    public void processTxContextChange(EJBThreadData threadData, boolean isLocal)
-                    throws RemoteException
-    {
+    public void processTxContextChange(EJBThreadData threadData, boolean isLocal) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1499,17 +1415,21 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         ContainerTx tx = getCurrentTx(uowId, isLocal);
 
         EJSDeployedSupport s = threadData.getMethodContext();
-        if (s != null && !threadData.isLifeCycleMethodTransactionActive())
-        {
+        if (s != null && !threadData.isLifeCycleMethodTransactionActive()) {
             // Then update the EJSDeployedSupport object for the current method
             // invokation with the new ContainerTx and UOWCoordinator.       d139352-2
             s.currentTx = tx;//d140003.19
             s.uowCookie.setTransactionalUOW(uowId); // d139352-2
 
+            // If currentTx is changed while running under UOWManager.runUnderUOW, then
+            // the value may not be valid during postInvoke; indicate reset needed.
+            if (s.ivRunUnderUOW > 0) {
+                s.resetCurrentTx = true;
+            }
+
             //d458031 - start: The task name will be set in TranStrategry when a local Tx is begun, so no need to set
             //it here, only set a task name when the user begins a tx.
-            if (!isLocal)
-            {
+            if (!isLocal) {
                 EJBMethodInfoImpl methodInfo = s.methodInfo;
                 //Get the bean class name and method name which will be used as the default JPA task name.
                 String taskName = methodInfo.getBeanClassName() + "." + methodInfo.getMethodName();
@@ -1523,27 +1443,19 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         }
 
         // d165585 Begins
-        if (isTraceOn && TETxLifeCycleInfo.isTraceEnabled()) // PQ74774
-        { // PQ74774
+        if (isTraceOn && TETxLifeCycleInfo.isTraceEnabled()) { // PQ74774
             String idStr;
-            if (isLocal)
-            {
-                if (uowId != null)
-                {
+            if (isLocal) {
+                if (uowId != null) {
                     idStr = "" + System.identityHashCode(uowId);
                     TETxLifeCycleInfo.traceLocalTxBegin(idStr, "Local Tx Begin");
                 }
-            } else
-            {
+            } else {
                 idStr = uowId.toString();
                 int idx;
-                idStr = (idStr != null)
-                                ? (((idx = idStr.indexOf("(")) != -1)
-                                                ? idStr.substring(idx + 1, idStr.indexOf(")"))
-                                                : ((idx = idStr.indexOf("tid=")) != -1)
-                                                                ? idStr.substring(idx + 4)
-                                                                : idStr)
-                                : "NoTx";
+                idStr = (idStr != null) ? (((idx = idStr.indexOf("(")) != -1) ? idStr.substring(idx + 1,
+                                                                                                idStr.indexOf(")")) : ((idx = idStr.indexOf("tid=")) != -1) ? idStr.substring(idx
+                                                                                                                                                                              + 4) : idStr) : "NoTx";
                 TETxLifeCycleInfo.traceUserTxBegin(idStr, "User Tx Begin");
             }
         } // PQ74774
@@ -1553,19 +1465,16 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // commits, a local tran will be started, so a new ContainerTx
         // will be created and must be setup.  If a ContainerTx does
         // not exist, then this must be an EJB 1.1 jar.                    d125430
-        if (tx != null) // d704496
-        {
+        if (tx != null) {
             BeanO beanO = threadData.getCallbackBeanO();
             UserTransactionEnabledContext utxBeanO = (UserTransactionEnabledContext) beanO;
 
-            if (utxBeanO.getModuleVersion() == BeanMetaData.J2EE_EJB_VERSION_1_1)
-            {
+            if (utxBeanO.getModuleVersion() == BeanMetaData.J2EE_EJB_VERSION_1_1) {
                 tx.setIsolationLevel(utxBeanO.getIsolationLevel());
             }
 
             // Enlist the bean with the ContainerTx
-            if (utxBeanO.enlist(tx))
-            {
+            if (utxBeanO.enlist(tx)) {
                 activator.enlistBean(tx, beanO);
             }
         }
@@ -1593,8 +1502,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     // d671368 d671368.1
     boolean transitionToStickyGlobalTran(BeanId beanId,
                                          ContainerTx currentTx,
-                                         ContainerTx expectedTx)
-    {
+                                         ContainerTx expectedTx) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "transitionToStickyGlobalTran (" + beanId +
@@ -1605,8 +1513,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         EJBMethodInfoImpl methodInfo = s.methodInfo;
         BeanMetaData bmd = beanId.getBeanMetaData();
 
-        try
-        {
+        try {
             // -----------------------------------------------------------------------
             // First, complete the local transaction that was started early in
             // preInvoke with the normal postInvoke processing.
@@ -1650,21 +1557,18 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             int isolationLevel = methodInfo.isolationAttr;
             if (bmd.ivModuleVersion <= BeanMetaData.J2EE_EJB_VERSION_1_1 ||
                 (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_2_0 &&
-                bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X))
-            {
+                 bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X)) {
                 resumedTx.setIsolationLevel(isolationLevel);
             }
             s.currentIsolationLevel = isolationLevel;
-        } catch (RemoteException rex)
-        {
+        } catch (RemoteException rex) {
             FFDCFilter.processException(rex, CLASS_NAME + ".getBean", "1542", this);
 
             // Something very unexpected, and ugly happened. Report this as an
             // EJBException, which will cause bean activation to fail. The method
             // context should be in an appropriate state that postInvoke will be
             // able to cleanup properly.
-            throw ExceptionUtil.EJBException
-                            ("A failure occured resuming a bean managed transaction", rex);
+            throw ExceptionUtil.EJBException("A failure occured resuming a bean managed transaction", rex);
         }
 
         // -----------------------------------------------------------------------
@@ -1691,8 +1595,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     // a new version that takes the PortabilityLayer as a parameter.
     // It has been left for now for compatibility purposes for efixes.   d107762
     //-----------------------------------------------------------------
-    public static int getIsolationLevel(SynchronizationRegistryUOWScope txKey)
-    {
+    public static int getIsolationLevel(SynchronizationRegistryUOWScope txKey) {
         ContainerTx ctx = (ContainerTx) txKey.getResource(containerTxResourceKey);
         if (ctx == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
@@ -1727,8 +1630,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      **/
     // d107762
     public static int getIsolationLevel(SynchronizationRegistryUOWScope txKey,
-                                        int preferredIsolationLevel)
-    {
+                                        int preferredIsolationLevel) {
         int isolationLevel;
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
@@ -1794,8 +1696,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @return the isolation level for the current transaction.
      **/
     // d128344.1
-    public int getIsolationLevel(int preferred)
-    {
+    public int getIsolationLevel(int preferred) {
         int isolationLevel;
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
@@ -1805,11 +1706,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // First, go get the ContainerTx for the current transaction.
 
         ContainerTx ctx = null;
-        try
-        {
+        try {
             ctx = getCurrentTx(false);//d171654
-        } catch (CSITransactionRolledbackException ex)
-        {
+        } catch (CSITransactionRolledbackException ex) {
             // This would be a Container internal error. Log it and continue.
             FFDCFilter.processException(ex, CLASS_NAME + ".getIsolationLevel",
                                         "1614");
@@ -1873,16 +1772,11 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *         being added to this container; null if bean successfully
      *         added <p>
      */
-    public BeanO addBean(BeanO beanO, ContainerTx containerTx)
-                    throws DuplicateKeyException,
-                    RemoteException
-    {
+    public BeanO addBean(BeanO beanO, ContainerTx containerTx) throws DuplicateKeyException, RemoteException {
         return activator.addBean(containerTx, beanO);
     } // addBean
 
-    public boolean lockBean(BeanO beanO, ContainerTx containerTx)
-                    throws RemoteException
-    {
+    public boolean lockBean(BeanO beanO, ContainerTx containerTx) throws RemoteException {
         return activator.lockBean(containerTx, beanO.beanId); // d140003.29
     }
 
@@ -1894,9 +1788,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @param id the <code>BeanId</code> to retrieve bean for <p>
      */
-    public EJBObject getBean(ContainerTx tx, BeanId id)
-                    throws RemoteException
-    {
+    public EJBObject getBean(ContainerTx tx, BeanId id) throws RemoteException {
         EJBObject result = null;
 
         BeanO beanO = activator.getBean(tx, id);
@@ -1925,17 +1817,13 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @param w the <code>EJSWrapper</code> to remove <p>
      */
-    public void removeBean(EJSWrapperBase w) // f111627
-    throws RemoteException,
-                    RemoveException
-    {
+    public void removeBean(EJSWrapperBase w) throws RemoteException, RemoveException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         // Beans that have been configured with a reload interval, and are
         // therefore ReadOnly, may not be removed. However this is not
         // considered a rollback situation, so throw a checked exception.   LI3408
-        if (w.bmd.ivCacheReloadType != BeanMetaData.CACHE_RELOAD_NONE)
-        {
+        if (w.bmd.ivCacheReloadType != BeanMetaData.CACHE_RELOAD_NONE) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "RemoveException: Read only EJB may not be removed.");
 
@@ -1953,8 +1841,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // business due to the differences in PMI and enlisted remove.     d742761
         int methodId = MID_BUSINESS_REMOVE;
         if (w.ivInterface == WrapperInterface.LOCAL ||
-            w.ivInterface == WrapperInterface.REMOTE)
-        {
+            w.ivInterface == WrapperInterface.REMOTE) {
             methodId = w.methodInfos.length - 1;
         }
 
@@ -1980,17 +1867,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             // called indirectly via BeanO.commit().  This method can still be
             // called for CDI remove, so we still rely on BeanO.commit() rather
             // than explicitly calling BeanO.remove() here for proper PMI handling.
-            if (methodId == MID_BUSINESS_REMOVE)
-            {
+            if (methodId == MID_BUSINESS_REMOVE) {
                 // Set the bean in the current tx for removal after the transaction
                 // completes.  This would normally be set during postInvoke, but the
                 // temporary EJBMethodInfoImpl isn't marked setSFSBRemove (perhaps
                 // because extra cleanup would be required when putting it back in
                 // the temporary pool).
                 s.currentTx.ivRemoveBeanO = s.beanO; // F743-29185
-            }
-            else
-            {
+            } else {
                 s.beanO.remove();//d140003.19
             }
 
@@ -2005,8 +1889,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             //---------------------------------------------------------------------
 
             if (!isStateless &&
-                s.unpinOnPostInvoke == true) // d147604
-            {
+                s.unpinOnPostInvoke == true) {
                 boolean removed = wrapperManager.unregister(w.beanId, true); //d181569
                 if (removed)
                     s.unpinOnPostInvoke = false; // d140003.19
@@ -2064,11 +1947,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             FFDCFilter.processException(ex, CLASS_NAME + ".removeBean", "1612", this);
             s.setUncheckedException(ex);
         } finally {
-            try
-            {
+            try {
                 postInvoke(w, methodId, s);
-            } finally
-            {
+            } finally {
                 putEJSDeployedSupport(s); // d742761
             }
             if (isTraceOn && tc.isEntryEnabled())
@@ -2081,9 +1962,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Used to clean up from create failures. It is not an error if
      * the bean does not exist in this container.
      */
-    public void removeBean(BeanO beanO)
-                    throws CSITransactionRolledbackException
-    {
+    public void removeBean(BeanO beanO) throws CSITransactionRolledbackException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -2099,27 +1978,21 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
         BeanId id = beanO.getId();
 
-        if (id != null)
-        {
-            try
-            {
+        if (id != null) {
+            try {
                 // If this particular BeanO was enlisted, then it needs to be
                 // removed from the tran and the ejb cache.                  d145697
                 ContainerTx currentTx = getCurrentTx(false); //d171654 // d139352-2
-                if (currentTx.delist(beanO))
-                {
+                if (currentTx.delist(beanO)) {
                     activator.removeBean(currentTx, beanO);
-                }
-                else
-                {
+                } else {
                     // This is normal, it just means the failure occurred early in
                     // the create proccess, before the bean was ever enlisted or
                     // added to the EJB Cache.                                d145697
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "BeanO not enlisted - not removed from tx or cache");
                 }
-            } catch (Throwable th)
-            {
+            } catch (Throwable th) {
                 // The transaction may have already rolled back.             d145697
                 FFDCFilter.processException(th, CLASS_NAME + ".removeBean(BeanO)",
                                             "1949", this);
@@ -2127,9 +2000,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                     Tr.event(tc, "Exception thrown in removeBean()",
                              new Object[] { beanO, th });
             }
-        }
-        else
-        {
+        } else {
             // This is normal, it just means the failure occurred early in
             // the create proccess, before the bean was ever enlisted or
             // added to the EJB Cache.                                      d145697
@@ -2157,8 +2028,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @return true if removed, false if previously removed
      */
     // F743-29185
-    public boolean removeStatefulBean(Object bean) throws RemoteException, RemoveException
-    {
+    public boolean removeStatefulBean(Object bean) throws RemoteException, RemoveException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "removeStatefulBean : " + Util.identity(bean));
@@ -2170,16 +2040,11 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // -----------------------------------------------------------------------
 
         EJSWrapperBase wrapper = null;
-        if (bean instanceof EJSWrapperBase)
-        {
+        if (bean instanceof EJSWrapperBase) {
             wrapper = (EJSWrapperBase) bean;
-        }
-        else if (bean instanceof LocalBeanWrapper)
-        {
+        } else if (bean instanceof LocalBeanWrapper) {
             wrapper = EJSWrapperCommon.getLocalBeanWrapperBase((LocalBeanWrapper) bean);
-        }
-        else
-        {
+        } else {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "removeStatefulBean : RemoveException:" + Util.identity(bean));
             throw new RemoveException("Object to remove is not an enterprise bean reference : " + Util.identity(bean));
@@ -2189,8 +2054,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // Confirm that the bean is a stateful bean, per method contract.
         // -----------------------------------------------------------------------
 
-        if (!isStatefulSessionBean(wrapper.beanId))
-        {
+        if (!isStatefulSessionBean(wrapper.beanId)) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "removeStatefulBean : RemoveException:not stateful : " + wrapper.beanId);
             throw new RemoveException("Object to remove is not a stateful bean reference : " + wrapper.beanId);
@@ -2205,34 +2069,28 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // This will perform normal lifecycle removal and update pmi statistics.
         // -----------------------------------------------------------------------
 
-        try
-        {
+        try {
             removeBean(wrapper);
 
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "removeStatefulBean : true");
             return true;
-        } catch (NoSuchEJBException ex)
-        {
+        } catch (NoSuchEJBException ex) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "removeStatefulBean : false (NoSuchEJBException)");
             return false;
-        } catch (NoSuchObjectLocalException ex)
-        {
+        } catch (NoSuchObjectLocalException ex) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "removeStatefulBean : false (NoSuchObjectLocalException)");
             return false;
-        } catch (OBJECT_NOT_EXIST ex)
-        {
+        } catch (OBJECT_NOT_EXIST ex) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "removeStatefulBean : false (OBJECT_NOT_EXIST)");
             return false;
-        } catch (EJBException ex)
-        {
+        } catch (EJBException ex) {
             // The RemoveException is considered 'checked' and should not be
             // wrapped in an EJBException.                                  d661827
-            if (ex.getCause() instanceof RemoveException)
-            {
+            if (ex.getCause() instanceof RemoveException) {
                 RemoveException rex = (RemoveException) ex.getCause();
                 throw rex;
             }
@@ -2247,23 +2105,18 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @return the wrapper
      * @throws EJBException if the proxy cannot be reconnected
      */
-    public static Object resolveWrapperProxy(BusinessLocalWrapperProxy proxy) // F58064
-    {
+    public static Object resolveWrapperProxy(BusinessLocalWrapperProxy proxy) {
         WrapperProxyState state = proxy.ivState;
 
         Object wrapper = state.ivWrapper;
-        if (wrapper == null)
-        {
-            do
-            {
+        if (wrapper == null) {
+            do {
                 state = state.reconnect();
                 wrapper = state.ivWrapper;
             } while (wrapper == null);
 
             proxy.ivState = state;
-        }
-        else
-        {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "resolveWrapperProxy: " + state);
         }
@@ -2278,23 +2131,18 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @return the wrapper
      * @throws EJBException if the proxy cannot be reconnected
      */
-    public static Object resolveWrapperProxy(EJSLocalWrapperProxy proxy) // F58064
-    {
+    public static Object resolveWrapperProxy(EJSLocalWrapperProxy proxy) {
         WrapperProxyState state = proxy.ivState;
 
         Object wrapper = state.ivWrapper;
-        if (wrapper == null)
-        {
-            do
-            {
+        if (wrapper == null) {
+            do {
                 state = state.reconnect();
                 wrapper = state.ivWrapper;
             } while (wrapper == null);
 
             proxy.ivState = state;
-        }
-        else
-        {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "resolveWrapperProxy: " + state);
         }
@@ -2313,10 +2161,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * in the EJSDeployedSupport for the duration of the method call.
      */
     //d140003.20 return signature change
-    private EJBMethodInfoImpl mapMethodInfo(EJSDeployedSupport s, //130230
+    private EJBMethodInfoImpl mapMethodInfo(EJSDeployedSupport s,
                                             EJSWrapperBase wrapper, int methodId,
-                                            String methodSignature) // d117288
-    {
+                                            String methodSignature) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -2327,32 +2174,23 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         s.methodId = methodId; //130230 d140003.19
         s.ivWrapper = wrapper; // d366807.1
 
-        if (methodId < 0)
-        {
-            if (methodId == MID_BUSINESS_REMOVE) // d742761
-            {
+        if (methodId < 0) {
+            if (methodId == MID_BUSINESS_REMOVE) {
                 // Internal remove method for business interfaces.        F743-29185
                 rtnInfo = s.ivThreadData.getEJBMethodInfoStack().get(
                                                                      "$remove:", null, wrapper,
-                                                                     wrapper.ivInterface == WrapperInterface.BUSINESS_LOCAL
-                                                                                     ? MethodInterface.LOCAL
-                                                                                     : MethodInterface.REMOTE,
-                                                                     wrapper.bmd.usesBeanManagedTx
-                                                                                     ? TransactionAttribute.TX_BEAN_MANAGED
-                                                                                     : TransactionAttribute.TX_NOT_SUPPORTED);
+                                                                     wrapper.ivInterface == WrapperInterface.BUSINESS_LOCAL ? MethodInterface.LOCAL : MethodInterface.REMOTE,
+                                                                     wrapper.bmd.usesBeanManagedTx ? TransactionAttribute.TX_BEAN_MANAGED : TransactionAttribute.TX_NOT_SUPPORTED);
                 rtnInfo.setClassLoader = true; // d661827
-            }
-            else
-            {
+            } else {
                 rtnInfo = ivEntityHelper.getPMMethodInfo(s, wrapper, methodId, methodSignature);
             }
-        }
-        else // d122418-1
+        } else // d122418-1
         { // d122418-1
           // d206696 - Account for case where
           // methodInfos array is null (which occurs if WS invocation
           // API is used on an SLSB with no service endpoint interface defined)
-            if (wrapper.methodInfos == null) // d206696
+            if (wrapper.methodInfos == null)
                 throw new IllegalStateException("An attempt was made to invoke a method on a bean interface that is not defined.");
             rtnInfo = wrapper.methodInfos[methodId]; // d122418-1
         }
@@ -2390,9 +2228,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *                deployed code (where preInvoke is called) <p>
      */
     public EnterpriseBean preInvoke(EJSWrapper wrapper, int methodId,
-                                    EJSDeployedSupport s)
-                    throws RemoteException
-    {
+                                    EJSDeployedSupport s) throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "old preinvoke called by EJBDeploy, not new JACC preinvoke");
 
@@ -2405,11 +2241,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * The old preInvoke( EJSWrapper...) must still be supported for backward
      * compatible with old generated code base.
      */
-    public EnterpriseBean preInvoke(EJSWrapperBase wrapper, // f111627
-                                    int methodId, // f111627
-                                    EJSDeployedSupport s) // f111627
-    throws RemoteException // f111627
-    {
+    public EnterpriseBean preInvoke(EJSWrapperBase wrapper,
+                                    int methodId,
+                                    EJSDeployedSupport s) throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "old preinvoke called by EJBDeploy, not new JACC preinvoke");
 
@@ -2428,8 +2262,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      */
     //LIDB2617.11 added this method.
     //d209070 rewrote method.
-    final public boolean doesJaccNeedsEJBArguments(EJSWrapperBase wrapper)
-    {
+    final public boolean doesJaccNeedsEJBArguments(EJSWrapperBase wrapper) {
         // Default to false in case Security Collaborator is not defined
         EJBSecurityCollaborator<?> securityCollaborator = ivSecurityCollaborator;
         boolean result = securityCollaborator != null && securityCollaborator.areRequestMethodArgumentsRequired();
@@ -2450,19 +2283,15 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     public EnterpriseBean preInvoke(EJSWrapperBase wrapper,
                                     int methodId,
                                     EJSDeployedSupport s,
-                                    Object[] args)
-                    throws RemoteException
-    {
+                                    Object[] args) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         // Get the EJBMethodInfoImpl object for the methodId
         // assigned to this method by ejbdeploy tool.
         EJBMethodInfoImpl methodInfo = mapMethodInfo(s, wrapper, methodId, null);
 
-        try
-        {
-            if (isTraceOn) // d527372
-            {
+        try {
+            if (isTraceOn) {
                 if (TEEJBInvocationInfo.isTraceEnabled())
                     TEEJBInvocationInfo.tracePreInvokeBegins(s, wrapper);
 
@@ -2479,12 +2308,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             // collaborators and other processing. This path is encapsulated in a separate
             // method for now, to avoid lots of "if" statements within this method.
             Object bean = null; // Changed EnterpriseBean to Object       d366807.1
-            if (methodInfo.isStatelessSessionBean && methodInfo.isHomeCreate)
-            {
+            if (methodInfo.isStatelessSessionBean && methodInfo.isHomeCreate) {
                 bean = preInvokeForStatelessSessionCreate(wrapper, methodId, s, methodInfo, args); //LIDB2617.11
-            }
-            else
-            {
+            } else {
                 // Perform preinvoke processing that must occur prior
                 // to activation of the EJB.
                 bean = preInvokeActivate(wrapper, methodId, s, methodInfo);
@@ -2495,10 +2321,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             }
 
             // Normal path exit.
-            if (isTraceOn) // d527372
-            {
-                if (tc.isEntryEnabled())
-                {
+            if (isTraceOn) {
+                if (tc.isEntryEnabled()) {
                     ContainerTx containerTx = s.currentTx;
 
                     Tr.exit(tc, "EJBpreInvoke(" + methodId + ":" +
@@ -2507,9 +2331,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                                 "' on bean '" + wrapper.getClass().getName() +
                                 "(" + wrapper.beanId + ")" +
                                 "', '" + containerTx + "', isGlobalTx=" +
-                                (containerTx != null ?
-                                                (containerTx.isTransactionGlobal() ?
-                                                                "true" : "false") : "Unknown"));
+                                (containerTx != null ? (containerTx.isTransactionGlobal() ? "true" : "false") : "Unknown"));
                 }
 
                 if (TEEJBInvocationInfo.isTraceEnabled())
@@ -2519,8 +2341,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             // No exceptions occured, so return the Enterprise bean
             // that was activated and/or loaded.
             return (EnterpriseBean) bean;
-        } catch (Throwable t)
-        {
+        } catch (Throwable t) {
             //FFDCFilter.processException( t, CLASS_NAME + ".preInvoke", "2558");
             preinvokeHandleException(t, wrapper, methodId, s, methodInfo);
 
@@ -2542,19 +2363,15 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     public Object EjbPreInvoke(EJSWrapperBase wrapper,
                                int methodId,
                                EJSDeployedSupport s,
-                               Object[] args)
-                    throws RemoteException
-    {
+                               Object[] args) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         // Get the EJBMethodInfoImpl object for the methodId
         // assigned to this method by JITDeploy/EJBbdeploy tool.
         EJBMethodInfoImpl methodInfo = mapMethodInfo(s, wrapper, methodId, null);
 
-        try
-        {
-            if (isTraceOn)
-            {
+        try {
+            if (isTraceOn) {
                 if (TEEJBInvocationInfo.isTraceEnabled())
                     TEEJBInvocationInfo.tracePreInvokeBegins(s, wrapper);
 
@@ -2575,10 +2392,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             preInvokeAfterActivate(wrapper, bean, s, args);
 
             // Normal path exit.
-            if (isTraceOn)
-            {
-                if (tc.isEntryEnabled())
-                {
+            if (isTraceOn) {
+                if (tc.isEntryEnabled()) {
                     ContainerTx containerTx = s.currentTx;
 
                     // Change trace message when method is asynchronous
@@ -2590,9 +2405,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                                     "' on bean '" + wrapper.getClass().getName() +
                                     "(" + wrapper.beanId + ")" +
                                     "', '" + containerTx + "', isGlobalTx=" +
-                                    (containerTx != null ?
-                                                    (containerTx.isTransactionGlobal() ?
-                                                                    "true" : "false") : "Unknown"));
+                                    (containerTx != null ? (containerTx.isTransactionGlobal() ? "true" : "false") : "Unknown"));
 
                     } else {
 
@@ -2602,9 +2415,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                                     "' on bean '" + wrapper.getClass().getName() +
                                     "(" + wrapper.beanId + ")" +
                                     "', '" + containerTx + "', isGlobalTx=" +
-                                    (containerTx != null ?
-                                                    (containerTx.isTransactionGlobal() ?
-                                                                    "true" : "false") : "Unknown"));
+                                    (containerTx != null ? (containerTx.isTransactionGlobal() ? "true" : "false") : "Unknown"));
                     }
                 }
 
@@ -2615,8 +2426,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             // No exceptions occured, so return the Enterprise bean
             // that was activated and/or loaded.
             return bean;
-        } catch (Throwable t)
-        {
+        } catch (Throwable t) {
             //FFDCFilter.processException( t, CLASS_NAME + ".preInvoke", "2558");
             preinvokeHandleException(t, wrapper, methodId, s, methodInfo);
 
@@ -2642,15 +2452,11 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     private EnterpriseBean preInvokePmInternal(EJSWrapperBase wrapper,
                                                int methodId,
                                                EJSDeployedSupport s,
-                                               EJBMethodInfoImpl methodInfo) //181971
-    throws RemoteException
-    {
+                                               EJBMethodInfoImpl methodInfo) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
-        try
-        {
-            if (isTraceOn) // d527372
-            {
+        try {
+            if (isTraceOn) {
                 if (TEEJBInvocationInfo.isTraceEnabled())
                     TEEJBInvocationInfo.tracePreInvokeBegins(s, wrapper);
 
@@ -2663,12 +2469,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             // collaborators and other processing. This path is encapsulated in a separate
             // method for now, to avoid lots of "if" statements within this method.
             Object bean = null; // Changed EnterpriseBean to Object       d366807.1
-            if (methodInfo.isStatelessSessionBean && methodInfo.isHomeCreate)
-            {
+            if (methodInfo.isStatelessSessionBean && methodInfo.isHomeCreate) {
                 bean = preInvokeForStatelessSessionCreate(wrapper, methodId, s, methodInfo, null); //LIDB2617.11
-            }
-            else
-            {
+            } else {
                 // Perform preinvoke processing that must occur prior
                 // to activation of the EJB.
                 bean = preInvokeActivate(wrapper, methodId, s, methodInfo);
@@ -2679,10 +2482,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             }
 
             // Normal path exit.
-            if (isTraceOn) // d527372
-            {
-                if (tc.isEntryEnabled())
-                {
+            if (isTraceOn) {
+                if (tc.isEntryEnabled()) {
                     ContainerTx containerTx = s.currentTx;
                     Tr.exit(tc, "EJBpreInvoke(" + methodId + ":" +
                                 methodInfo.getMethodName() + ") " +
@@ -2690,9 +2491,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                                 "' on bean '" + wrapper.getClass().getName() +
                                 "(" + wrapper.beanId + ")" +
                                 "', '" + containerTx + "', isGlobalTx=" +
-                                (containerTx != null ?
-                                                (containerTx.isTransactionGlobal() ?
-                                                                "true" : "false") : "Unknown"));
+                                (containerTx != null ? (containerTx.isTransactionGlobal() ? "true" : "false") : "Unknown"));
                 }
 
                 if (TEEJBInvocationInfo.isTraceEnabled())
@@ -2702,8 +2501,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             // No exceptions occured, so return the Enterprise bean
             // that was activated and/or loaded.
             return (EnterpriseBean) bean;
-        } catch (Throwable t)
-        {
+        } catch (Throwable t) {
             //FFDCFilter.processException( t, CLASS_NAME + ".preInvoke", "2558");
             preinvokeHandleException(t, wrapper, methodId, s, methodInfo);
 
@@ -2730,13 +2528,10 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     //LIDB2617.11 added this method.  F88119 made method public
     public Object preInvokeMdbActivate(EJSWrapperBase wrapper,
                                        int methodId,
-                                       EJSDeployedSupport s) // d414873
-    throws Exception
-    {
+                                       EJSDeployedSupport s) throws Exception {
         EJBMethodInfoImpl methodInfo = mapMethodInfo(s, wrapper, methodId, null);
 
-        if (TraceComponent.isAnyTracingEnabled()) // d527372
-        {
+        if (TraceComponent.isAnyTracingEnabled()) {
             if (TEEJBInvocationInfo.isTraceEnabled())
                 TEEJBInvocationInfo.tracePreInvokeBegins(s, wrapper);
 
@@ -2776,18 +2571,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     public void preInvokeMdbAfterActivate(EJSWrapperBase wrapper,
                                           EJSDeployedSupport s,
                                           Object eb, // d414873
-                                          Object[] args)
-                    throws RemoteException
-    {
+                                          Object[] args) throws RemoteException {
         // Now perform preinvoke processing that must occur after
         // the bean is activated.
         preInvokeAfterActivate(wrapper, eb, s, args);
 
         // Normal path exit.
-        if (TraceComponent.isAnyTracingEnabled()) // d527372
-        {
-            if (tc.isEntryEnabled())
-            {
+        if (TraceComponent.isAnyTracingEnabled()) {
+            if (tc.isEntryEnabled()) {
                 int methodId = s.methodId;
                 EJBMethodInfoImpl methodInfo = s.methodInfo;
                 ContainerTx containerTx = s.currentTx;
@@ -2797,9 +2588,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                             "' on bean '" + wrapper.getClass().getName() +
                             "(" + wrapper.beanId + ")" +
                             "', '" + containerTx + "', isGlobalTx=" +
-                            (containerTx != null ?
-                                            (containerTx.isTransactionGlobal() ?
-                                                            "true" : "false") : "Unknown"));
+                            (containerTx != null ? (containerTx.isTransactionGlobal() ? "true" : "false") : "Unknown"));
             }
 
             if (TEEJBInvocationInfo.isTraceEnabled())
@@ -2823,16 +2612,12 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      */
     public void preinvokeHandleException(Throwable t, EJSWrapperBase wrapper,
                                          int methodId, EJSDeployedSupport s,
-                                         EJBMethodInfoImpl methodInfo)
-                    throws RemoteException
-    {
+                                         EJBMethodInfoImpl methodInfo) throws RemoteException {
         // Note, FFDC will be logged in setUncheckedException, as needed.  d350987
 
         s.preInvokeException = true; // d116274.1
-        if (TraceComponent.isAnyTracingEnabled()) // d527372
-        {
-            if (tc.isEntryEnabled())
-            {
+        if (TraceComponent.isAnyTracingEnabled()) {
+            if (tc.isEntryEnabled()) {
                 ContainerTx containerTx = s.currentTx;
                 Tr.exit(tc, "EJBpreInvoke(" + methodId + ":" +
                             methodInfo.getMethodName() + ") " +
@@ -2840,9 +2625,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                             "' on bean '" + wrapper.getClass().getName() +
                             "(" + wrapper.beanId + ")" +
                             "', '" + containerTx + "', isGlobalTx=" +
-                            (containerTx != null ?
-                                            (containerTx.isTransactionGlobal() ?
-                                                            "true" : "false") : "Unknown"));
+                            (containerTx != null ? (containerTx.isTransactionGlobal() ? "true" : "false") : "Unknown"));
             }
 
             if (TEEJBInvocationInfo.isTraceEnabled())
@@ -2871,9 +2654,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     public EnterpriseBean preInvoke(EJSWrapperBase wrapper,
                                     int methodId,
                                     EJSDeployedSupport s,
-                                    EJBMethodInfoImpl methodInfo)
-                    throws RemoteException
-    {
+                                    EJBMethodInfoImpl methodInfo) throws RemoteException {
 
         s.methodId = methodId; //130230 d140003.19
         s.ivWrapper = wrapper; // d366807.1
@@ -2900,9 +2681,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     public EnterpriseBean preInvoke(EJSWrapperBase wrapper,
                                     int methodId,
                                     EJSDeployedSupport s,
-                                    String methodSignature)
-                    throws RemoteException
-    {
+                                    String methodSignature) throws RemoteException {
         EJBMethodInfoImpl methodInfo = mapMethodInfo(s, wrapper, methodId,
                                                      methodSignature); //130230 d140003.20 d139562.14.EJBC
 
@@ -2965,9 +2744,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     private Object preInvokeActivate(EJSWrapperBase wrapper,
                                      int methodId,
                                      EJSDeployedSupport s,
-                                     EJBMethodInfoImpl methodInfo)
-                    throws Exception
-    {
+                                     EJBMethodInfoImpl methodInfo) throws Exception {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
         EJBThreadData threadData = s.ivThreadData; // d630940
         ContainerTx containerTx = null; // LI3795-56
@@ -2980,18 +2757,15 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         DispatchEventListenerCookie[] dispatchEventListenerCookies = null; // @MD16633A
 
         // LIDB2775-23.1 ASV60
-        if (isZOS)
-        {
+        if (isZOS) {
             // To make it very obvious what the problem is, if an attempt is made
             // to invoke an EJB method in the CRA, throw an exception.    d450334.1
-            if (isZOSCRA)
-            {
+            if (isZOSCRA) {
                 throw new EJBException("EJB access not permitted in Adjunct process");
             }
 
             if (ivDispatchEventListenerManager != null &&
-                ivDispatchEventListenerManager.dispatchEventListenersAreActive()) // @539186C, d646413.2
-            {
+                ivDispatchEventListenerManager.dispatchEventListenersAreActive()) {
                 // create and stack DispatchContext cookies ...
                 dispatchEventListenerCookies = ivDispatchEventListenerManager.getNewDispatchEventListenerCookieArray();
                 s.ivDispatchEventListenerCookies = dispatchEventListenerCookies; // d646413.2
@@ -2999,9 +2773,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         }
 
         // Pin and update the LRU data for any managed wrapper     d174057.2
-        s.unpinOnPostInvoke = (wrapper.isManagedWrapper)
-                        ? wrapperManager.preInvoke(wrapper)
-                        : false;
+        s.unpinOnPostInvoke = (wrapper.isManagedWrapper) ? wrapperManager.preInvoke(wrapper) : false;
 
         int isolationLevel = methodInfo.isolationAttr; // d114677 //d140003.20
 
@@ -3009,8 +2781,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // Pmi instrumentation for methods in beans
         // Use pmiBean cached in the wrapper.                     d140003.33
         EJBPMICollaborator pmiBean = wrapper.ivPmiBean; // d174057.2
-        if (pmiBean != null)
-        {
+        if (pmiBean != null) {
             s.pmiCookie = pmiBean.methodPreInvoke(wrapper.beanId, methodInfo);
             s.pmiPreInvoked = true;
         }
@@ -3045,14 +2816,12 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // When not running in 'Lightweight' mode, perform full preInvoke and
         // postInvoke processing....
         // -----------------------------------------------------------------------
-        if (!s.isLightweight)
-        {
+        if (!s.isLightweight) {
             // 112678.6
             // For a remote method, the preInvokeORBDispatch method interface is
             // called prior to this method, which already set thread context
             // loader, so only do this processing for a "local" method.   d115602-1
-            if (methodInfo.setClassLoader) // LI2281.07
-            {
+            if (methodInfo.setClassLoader) {
                 s.oldClassLoader = EJBThreadData.svThreadContextAccessor.pushContextClassLoaderForUnprivileged(bmd.ivContextClassLoader); // d369927, PK83186, F85059
             }
             //end 89188
@@ -3064,10 +2833,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                                      + ivBeforeActivationCollaborators[i].getClass().getName());
                     //d140003.19
                     Object cookie = ivBeforeActivationCollaborators[i].preInvoke(s);
-                    if (cookie != null) // F61004.3
-                    {
-                        if (s.ivBeforeActivationCookies == null)
-                        {
+                    if (cookie != null) {
+                        if (s.ivBeforeActivationCookies == null) {
                             s.ivBeforeActivationCookies = new Object[ivBeforeActivationCollaborators.length];
                         }
                         s.ivBeforeActivationCookies[i] = cookie;
@@ -3078,21 +2845,17 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             }
 
             //92702
-            if (ivBeforeActivationAfterCompletionCollaborators != null) //d121610
-            {
+            if (ivBeforeActivationAfterCompletionCollaborators != null) {
                 int n = ivBeforeActivationAfterCompletionCollaborators.length;
-                for (int i = 0; i < n; i++)
-                {
+                for (int i = 0; i < n; i++) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "preInvokeActivate : Invoking BeforeActivationAfterCompletionCollaborator.preInvoke method on: "
                                      + ivBeforeActivationAfterCompletionCollaborators[i].getClass().getName());
 
                     //d140003.19
                     Object cookie = ivBeforeActivationAfterCompletionCollaborators[i].preInvoke(s);
-                    if (cookie != null) // F61004.3
-                    {
-                        if (s.ivBeforeActivationAfterCompletionCookies == null)
-                        {
+                    if (cookie != null) {
+                        if (s.ivBeforeActivationAfterCompletionCookies == null) {
                             s.ivBeforeActivationAfterCompletionCookies = new Object[ivBeforeActivationAfterCompletionCollaborators.length];
                         }
                         s.ivBeforeActivationAfterCompletionCookies[i] = cookie;
@@ -3104,41 +2867,33 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             //end 92702
         } // LI3795-56
 
-        if (methodInfo.isLightweightTxCapable)
-        {
-            if (s.isLightweight)
-            {
+        if (methodInfo.isLightweightTxCapable) {
+            if (s.isLightweight) {
                 // A true lightweight bean.  Only reuse the caller's transaction if
                 // it was established by another EJB and runUnderUOW has not been
                 // called (i.e. user initiated tx).                        LI4548-11
                 EJSDeployedSupport sCaller = s.ivCallerContext;
                 if (sCaller != null &&
-                    sCaller.ivRunUnderUOW == 0)
-                {
+                    sCaller.ivRunUnderUOW == 0) {
                     ContainerTx currentTx = sCaller.currentTx;
-                    if (currentTx != null && currentTx.isActiveGlobal()) // Active & Global      d303100
-                    {
+                    if (currentTx != null && currentTx.isActiveGlobal()) {
                         containerTx = currentTx;
                         s.currentTx = containerTx;
                         containerTx.preInvoke(s);
                     }
                 }
-            }
-            else
-            {
+            } else {
                 // An automatic lightweight transaction method.  Reuse the
                 // transaction context if possible.                         F61004.1
                 SynchronizationRegistryUOWScope uow = uowCtrl.getCurrentTransactionalUOW(false);
-                if (uow != null)
-                {
+                if (uow != null) {
                     // For SFSB, the optimization simulates enlist and commit of the
                     // active transaction for proper state transitions.  If a global
                     // transaction is active, CMT SFSB might already be enlisted, so
                     // we skip the optimization to avoid wrong state transitions.
                     boolean isLocal = uow.getUOWType() != UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION;
                     if (isLocal ||
-                        bmd.type != InternalConstants.TYPE_STATEFUL_SESSION)
-                    {
+                        bmd.type != InternalConstants.TYPE_STATEFUL_SESSION) {
                         // Ensure the caller transaction has not timed out.  This is
                         // an observable side effect of calling an EJB method, and it
                         // seems probable that a customer would make a call to a
@@ -3160,8 +2915,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // 'Lightweight' mode), then invoke the transaction collaborator
         // and locate or create the ContainerTx as necessary, per the
         // method transaction attribute.                                 LI3795-56
-        if (containerTx == null)
-        {
+        if (containerTx == null) {
             // NOTE: The following code to setup the transaction is 'duplicated'
             //       in transitionToStickyGlobalTransaction(...) as this may need
             //       to be redone when there is concurrent access for a BMT
@@ -3182,16 +2936,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             SynchronizationRegistryUOWScope UOWid = s.uowCookie.getTransactionalUOW();
             containerTx = getCurrentTx(UOWid, isLocal); // d161864
 
-            if (containerTx != null)
-            {
+            if (containerTx != null) {
                 s.currentTx = containerTx;//d140003.19
                 containerTx.preInvoke(s);
 
                 //d140003.20
                 if (bmd.ivModuleVersion <= BeanMetaData.J2EE_EJB_VERSION_1_1 ||
                     (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_2_0 &&
-                    bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X)) //d174083
-                {
+                     bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X)) {
                     containerTx.setIsolationLevel(isolationLevel);
                 }
                 //d140003.20
@@ -3201,8 +2953,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         } // LI3795-56
 
         // LIDB2775-23.1 ASV60
-        if (isZOS && dispatchEventListenerCookies != null) // d646413.2
-        {
+        if (isZOS && dispatchEventListenerCookies != null) {
             // notify event dispatch listeners
             this.ivDispatchEventListenerManager.callDispatchEventListeners(DispatchEventListener.BEGIN_DISPATCH, dispatchEventListenerCookies, methodInfo); // @MD16426A
         }
@@ -3300,9 +3051,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     private void preInvokeAfterActivate(EJSWrapperBase wrapper,
                                         Object bean, // d366807.1
                                         EJSDeployedSupport s,
-                                        Object[] args)
-                    throws RemoteException
-    {
+                                        Object[] args) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         // Remember EJB arguments in EJSDeployedSupport.  Needed
@@ -3312,10 +3061,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
         // Security and AfterActivation collaborators are executed after
         // bean activation, unless the current method is 'Lightweight'.  LI3795-56
-        if (!s.isLightweight)
-        {
-            try
-            {
+        if (!s.isLightweight) {
+            try {
                 // LIDB2167.11
                 // Now that we have both EJB instance and the EJB arguments,
                 // we can call security collaborator preInvoke. Note, this code
@@ -3323,18 +3070,15 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                 // occurs, the postinvoke will work without encountering a
                 // InvalidBeanOStateException.
                 EJBSecurityCollaborator<?> securityCollaborator = this.ivSecurityCollaborator;
-                if (securityCollaborator != null && s.methodId > -1) // PQ90079 d217920
-                {
+                if (securityCollaborator != null && s.methodId > -1) {
                     // For internal PM methods with negative methodId, do not invoke
                     // security collaborator.
                     s.securityCookie = notifySecurityCollaboratorPreInvoke(securityCollaborator, s); //LIDB2617.11
                     s.ivSecurityCollaborator = securityCollaborator; // d139352-2
                 }
 
-                if (ivAfterActivationCollaborators != null) //87918.8(2)
-                {
-                    for (int i = 0; i < ivAfterActivationCollaborators.length; i++)
-                    {
+                if (ivAfterActivationCollaborators != null) {
+                    for (int i = 0; i < ivAfterActivationCollaborators.length; i++) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "preInvokeAfterActivate : Invoking AfterActivationCollaborator.preInvoke method on: "
                                          + ivAfterActivationCollaborators[i].getClass().getName());
@@ -3342,10 +3086,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                         //PQ44001
                         //d140003.19
                         Object cookie = ivAfterActivationCollaborators[i].preInvoke(s);
-                        if (cookie != null) // F61004.3
-                        {
-                            if (s.ivAfterActivationCookies == null)
-                            {
+                        if (cookie != null) {
+                            if (s.ivAfterActivationCookies == null) {
                                 s.ivAfterActivationCookies = new Object[ivAfterActivationCollaborators.length];
                             }
                             s.ivAfterActivationCookies[i] = cookie;
@@ -3354,31 +3096,26 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                         //d140003.19
                     }
                 }
-            } catch (RuntimeException ex)
-            {
+            } catch (RuntimeException ex) {
                 throw ex;
-            } catch (CSIException ex)
-            {
+            } catch (CSIException ex) {
                 throw ex;
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 throw new CSIException("", ex);
             }
         } // LI3795-56
           // LI2775-107.2 Begins - MD17809
-        if (isZOS)
-        {
+        if (isZOS) {
             DispatchEventListenerCookie[] dispatchEventListenerCookies = s.ivDispatchEventListenerCookies;
-            if (dispatchEventListenerCookies != null) // @539186C, d646413.2
-            { // notify event dispatch listeners
-              // Note: It is important that the 'beforeEjbMethod' notification
-              //       occur as the last event during preInvoke so that this
-              //       signal is delivered as close as possible to the actual
-              //       invocation of the bean method.
-                this.ivDispatchEventListenerManager.callDispatchEventListeners
-                                (DispatchEventListener.BEFORE_EJBMETHOD,
-                                 dispatchEventListenerCookies, // d646413.2
-                                 s.methodInfo);
+            if (dispatchEventListenerCookies != null) {
+                // notify event dispatch listeners
+                // Note: It is important that the 'beforeEjbMethod' notification
+                //       occur as the last event during preInvoke so that this
+                //       signal is delivered as close as possible to the actual
+                //       invocation of the bean method.
+                this.ivDispatchEventListenerManager.callDispatchEventListeners(DispatchEventListener.BEFORE_EJBMETHOD,
+                                                                               dispatchEventListenerCookies, // d646413.2
+                                                                               s.methodInfo);
             }
         }
         // LI2775-107.2 Ends
@@ -3389,14 +3126,10 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * exception mapping for EJBSecurityCollaborator that throw
      * EJBAccessException rather than the legacy CSIAccessException.
      */
-    private Object notifySecurityCollaboratorPreInvoke(EJBSecurityCollaborator<?> collaborator, EJBRequestData request)
-                    throws CSIException
-    {
-        try
-        {
+    private Object notifySecurityCollaboratorPreInvoke(EJBSecurityCollaborator<?> collaborator, EJBRequestData request) throws CSIException {
+        try {
             return collaborator.preInvoke(request);
-        } catch (EJBAccessException ex)
-        {
+        } catch (EJBAccessException ex) {
             // The CSI exception created here will eventually be mapped back to an
             // EJBAccessException, so avoid setting the cause so that we don't end
             // up with an EJBAccessException chained to an EJBAccessException.
@@ -3405,40 +3138,34 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             CSIAccessException csiEx = new CSIAccessException(ex.getMessage());
             csiEx.setStackTrace(ex.getStackTrace());
             throw csiEx;
-        } catch (RuntimeException ex)
-        {
+        } catch (RuntimeException ex) {
             throw ex;
-        } catch (CSIException ex)
-        {
+        } catch (CSIException ex) {
             throw ex;
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             throw new CSIException("", ex);
         }
     }
 
     /**
-     * An optimized version of EJB preInvoke spcifically for the create
+     * An optimized version of EJB preInvoke specifically for the create
      * method of a Stateless Session Home. <p>
      *
      * When a Stateless Session Home 'create' method is invoked, it does
      * not result in any 'customer' code being called, so many of the
      * functions normally required during preInvoke processing may
-     * be skipped.... thus improving perormance. <p>
+     * be skipped.... thus improving performance. <p>
      *
      * This method is NOT called directly by generated code. Instead,
      * the normal preInvoke detects that the call is for a Stateless
      * create method, and re-directs preInvoke to this method. <p>
      **/
     // d110126
-    private EnterpriseBean preInvokeForStatelessSessionCreate
-                    (EJSWrapperBase wrapper,
-                     int methodId, // f111627
-                     EJSDeployedSupport s,
-                     EJBMethodInfoImpl methodInfo,
-                     Object[] args) // LIDB2617.11
-                    throws RemoteException
-    {
+    private EnterpriseBean preInvokeForStatelessSessionCreate(EJSWrapperBase wrapper,
+                                                              int methodId, // f111627
+                                                              EJSDeployedSupport s,
+                                                              EJBMethodInfoImpl methodInfo,
+                                                              Object[] args) throws RemoteException {
         s.methodInfo = methodInfo; // d140003.19 d114406 LIDB2617.11
         s.ivEJBMethodArguments = args; // LIDB2617.11
         EnterpriseBean eb = null;
@@ -3452,15 +3179,12 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             s.ivThreadData.pushMethodContext(s); // 127257, d646139.1, RTC102449
 
             // Pin and update the LRU data for any managed wrapper        d174057.2
-            s.unpinOnPostInvoke = (wrapper.isManagedWrapper)
-                            ? wrapperManager.preInvoke(wrapper)
-                            : false;
+            s.unpinOnPostInvoke = (wrapper.isManagedWrapper) ? wrapperManager.preInvoke(wrapper) : false;
 
             //d173022.7 begins
             // Only invoke security collaborator if security is enabled.
             EJBSecurityCollaborator<?> securityCollaborator = ivSecurityCollaborator;
-            if (securityCollaborator != null)
-            {
+            if (securityCollaborator != null) {
                 s.securityCookie = notifySecurityCollaboratorPreInvoke(securityCollaborator, s); //LIDB2617.11
                 s.ivSecurityCollaborator = securityCollaborator;
             }
@@ -3477,9 +3201,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             eb = (EnterpriseBean) wrapper.bmd.homeRecord.homeInternal;
             //173022.7 ends
 
-            if (isTraceOn) // d527372
-            {
-                if (tc.isEntryEnabled()) // LIDB2617.11
+            if (isTraceOn) {
+                if (tc.isEntryEnabled())
                     Tr.exit(tc, "EJBpreInvokeForStatelessSessionCreate(" + methodId +
                                 ":" + methodInfo.getMethodName() + ") " +
                                 " Invoking method '" + methodInfo.getMethodName() +
@@ -3491,17 +3214,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             }
 
             return eb; // LIDB2617.11
-        } catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             FFDCFilter.processException(ex, CLASS_NAME +
                                             ".preInvokeForStatelessSessionCreate",
-                                        "2139"
-                                        , new Object[] { this, wrapper, Integer.valueOf(methodId), s, methodInfo });//123338
+                                        "2139", new Object[] { this, wrapper, Integer.valueOf(methodId), s, methodInfo });//123338
 
             s.preInvokeException = true; // d116274.1
 
-            if (isTraceOn) // d527372
-            {
+            if (isTraceOn) {
                 if (tc.isEntryEnabled()) // LIDB2617.11
                     Tr.exit(tc, "EJBpreInvokeForStatelessSessionCreate(" + methodId +
                                 ":" + methodInfo.getMethodName() + ") " +
@@ -3537,23 +3257,18 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * the methodId and perform tracing. <p>
      **/
     // d413752
-    public Object EjbPreInvokeForStatelessCreate
-                    (EJSWrapperBase wrapper,
-                     int methodId,
-                     EJSDeployedSupport s,
-                     Object[] args)
-                                    throws RemoteException
-    {
+    public Object EjbPreInvokeForStatelessCreate(EJSWrapperBase wrapper,
+                                                 int methodId,
+                                                 EJSDeployedSupport s,
+                                                 Object[] args) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         // Get the EJBMethodInfoImpl object for the methodId
         // assigned to this method by JITDeploy/EJBbdeploy tool.
         EJBMethodInfoImpl methodInfo = mapMethodInfo(s, wrapper, methodId, null);
 
-        try
-        {
-            if (isTraceOn)
-            {
+        try {
+            if (isTraceOn) {
                 if (TEEJBInvocationInfo.isTraceEnabled())
                     TEEJBInvocationInfo.tracePreInvokeBegins(s, wrapper);
 
@@ -3571,15 +3286,12 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             s.ivThreadData.pushMethodContext(s); // d646139.1, RTC102449
 
             // Pin and update the LRU data for any managed wrapper        d174057.2
-            s.unpinOnPostInvoke = (wrapper.isManagedWrapper)
-                            ? wrapperManager.preInvoke(wrapper)
-                            : false;
+            s.unpinOnPostInvoke = (wrapper.isManagedWrapper) ? wrapperManager.preInvoke(wrapper) : false;
 
             //d173022.7 begins
             // Only invoke security collaborator if security is enabled.
             EJBSecurityCollaborator<?> securityCollaborator = ivSecurityCollaborator;
-            if (securityCollaborator != null)
-            {
+            if (securityCollaborator != null) {
                 s.securityCookie = notifySecurityCollaboratorPreInvoke(securityCollaborator, s);
                 s.ivSecurityCollaborator = securityCollaborator;
             }
@@ -3595,8 +3307,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             // the BeanMetaData referenced by the Wrapper.                  d221309
             Object bean = wrapper.bmd.homeRecord.homeInternal;
 
-            if (isTraceOn)
-            {
+            if (isTraceOn) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "EjbPreInvokeForStatelessCreate(" + methodId +
                                 ":" + methodInfo.getMethodName() + ") " +
@@ -3609,17 +3320,16 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             }
 
             return bean; // LIDB2617.11
-        } catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             FFDCFilter.processException(ex, CLASS_NAME +
-                                            ".EjbPreInvokeForStatelessCreate", "3894",
+                                            ".EjbPreInvokeForStatelessCreate",
+                                        "3894",
                                         new Object[] { this, wrapper,
-                                                      Integer.valueOf(methodId), s, methodInfo });
+                                                       Integer.valueOf(methodId), s, methodInfo });
 
             s.preInvokeException = true;
 
-            if (isTraceOn)
-            {
+            if (isTraceOn) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "EjbPreInvokeForStatelessCreate(" + methodId +
                                 ":" + methodInfo.getMethodName() + ") " +
@@ -3655,8 +3365,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                                              int methodId,
                                              EJSDeployedSupport s,
                                              BeanO beanO,
-                                             Object[] args)
-    {
+                                             Object[] args) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         // Get the EJBMethodInfoImpl object for the methodId
@@ -3674,8 +3383,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
         Object bean = beanO.getBeanInstance();
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "EjbPreInvokeForManagedBean(" + methodId +
                         ":" + methodInfo.getMethodName() + ") " +
                         " Invoking method '" + methodInfo.getMethodName() +
@@ -3700,9 +3408,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     public void preInvokeForLifecycleInterceptors(LifecycleInterceptorWrapper wrapper,
                                                   int methodId,
                                                   EJSDeployedSupport s,
-                                                  BeanO beanO)
-                    throws RemoteException
-    {
+                                                  BeanO beanO) throws RemoteException {
         // NOTE: The implementation of this method is structured after preInvoke.
         // For a detailed explanation of the operations here, see the comments in
         // that method.
@@ -3712,8 +3418,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         EJBThreadData threadData = s.ivThreadData; // d630940
         EJBMethodInfoImpl methodInfo = mapMethodInfo(s, wrapper, methodId, null);
 
-        if (isTraceOn)
-        {
+        if (isTraceOn) {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "preInvokeForLifecycleInterceptors(" + methodId + ":" +
                              methodInfo.getMethodName() + ")");
@@ -3739,8 +3444,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // d598062 - Always set context class loader for lifecycle methods.
         s.oldClassLoader = EJBThreadData.svThreadContextAccessor.pushContextClassLoaderForUnprivileged(bmd.ivContextClassLoader); // F85059
 
-        try
-        {
+        try {
             // Set up transaction context
             s.uowCookie = uowCtrl.preInvoke(wrapper.beanId, methodInfo);
             s.uowCtrlPreInvoked = true;
@@ -3750,16 +3454,13 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
             // Set up security context
             EJBSecurityCollaborator<?> securityCollaborator = ivSecurityCollaborator;
-            if (securityCollaborator != null)
-            {
+            if (securityCollaborator != null) {
                 s.securityCookie = notifySecurityCollaboratorPreInvoke(securityCollaborator, s);
                 s.ivSecurityCollaborator = securityCollaborator;
             }
 
-            if (isTraceOn) // d646139.1
-            {
-                if (tc.isEntryEnabled())
-                {
+            if (isTraceOn) {
+                if (tc.isEntryEnabled()) {
                     ContainerTx containerTx = s.currentTx;
                     Tr.exit(tc, "preInvokeForLifecycleInterceptors(" + methodId + ":" +
                                 methodInfo.getMethodName() + ") " +
@@ -3773,8 +3474,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                 if (TEEJBInvocationInfo.isTraceEnabled())
                     TEEJBInvocationInfo.tracePreInvokeEnds(s, wrapper);
             }
-        } catch (Throwable t)
-        {
+        } catch (Throwable t) {
             preinvokeHandleException(t, wrapper, methodId, s, methodInfo);
         }
     }
@@ -3797,9 +3497,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      */
     public void postInvoke(EJSWrapper wrapper, int methodId,
-                           EJSDeployedSupport s)
-                    throws RemoteException
-    {
+                           EJSDeployedSupport s) throws RemoteException {
         postInvoke((EJSWrapperBase) wrapper, methodId, s); // f111627
     }
 
@@ -3808,11 +3506,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * The old postInvoke( EJSWrapper...) must still be support for backward
      * compatible with old generated code base.
      */
-    public void postInvoke(EJSWrapperBase wrapper, int methodId, // f111627
-                           EJSDeployedSupport s) // f111627
-    throws RemoteException // f111627
-    { // f111627
-      // LIDB2775-23.1
+    public void postInvoke(EJSWrapperBase wrapper, int methodId,
+                           EJSDeployedSupport s) throws RemoteException {
+        // LIDB2775-23.1
         DispatchEventListenerCookie[] dispatchEventListenerCookies = null;// @MD16426A
         EJBMethodInfoImpl methodInfo = s.methodInfo; // d114406 d154342.4 d173022
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
@@ -3820,14 +3516,10 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // If this is a stateless SessionBean create, run only the bare minimum of
         // collaborators and other processing. This path is encapsulated in a separate
         // method for now, to avoid lots of "if" statements within this method.
-        if (methodInfo.isStatelessSessionBean && methodInfo.isHomeCreate)
-        {
+        if (methodInfo.isStatelessSessionBean && methodInfo.isHomeCreate) {
             EjbPostInvokeForStatelessCreate(wrapper, methodId, s);
-        }
-        else
-        {
-            if (isTraceOn)
-            {
+        } else {
+            if (isTraceOn) {
                 if (TEEJBInvocationInfo.isTraceEnabled())
                     TEEJBInvocationInfo.tracePostInvokeBegins(s, wrapper); // d161864
 
@@ -3844,13 +3536,18 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             BeanO beanO = null;
             BeanMetaData bmd = null;//92702
 
+            // UOWManager.runUnderUOW may have left cached currentTx invalid; reset
+            if (s.resetCurrentTx) {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "s.currentTx may be invalid; reset");
+                s.currentTx = getCurrentContainerTx();
+            }
+
             // LIDB2775-23.1
             // Do SMF after method recording - // MD16426A - begin
-            if (isZOS)
-            {
+            if (isZOS) {
                 dispatchEventListenerCookies = s.ivDispatchEventListenerCookies;
-                if (dispatchEventListenerCookies != null) // d646413.2
-                {
+                if (dispatchEventListenerCookies != null) {
                     // notify event dispatch listeners -
                     // Note: It is important that the 'afterEjbMethod' notification
                     //       occur as the first event during postInvoke so that this
@@ -3875,8 +3572,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                             Tr.event(tc, "Bean method threw unchecked exception",
                                      s.getException()); //d140003.19
                         // d113344
-                        if (beanO != null && s.preInvokeException == false) // LIDB2167.11, F743-1751, d639281
-                        {
+                        if (beanO != null && s.preInvokeException == false) {
                             // This indicates unchecked exception came from the business
                             // method itself, so we want to discard the bean instance.
                             beanO.discard();
@@ -3903,16 +3599,13 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                 // that were successfully preInvoked. Note that the order is the
                 // same as preInvoke. Note the ComponentMetaDataCollaborator is
                 // no longer in this list; see below.              d228192 LI3795-56
-                if (ivBeforeActivationCollaborators != null) // F61004.3
-                {
-                    for (int i = 0; i < s.ivBeforeActivationPreInvoked; i++)
-                    {
+                if (ivBeforeActivationCollaborators != null) {
+                    for (int i = 0; i < s.ivBeforeActivationPreInvoked; i++) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "postInvoke : Invoking BeforeActivationCollaborator.postInvoke method on: "
                                          + ivBeforeActivationCollaborators[i].getClass().getName());
 
-                        Object cookie = s.ivBeforeActivationCookies == null ? null :
-                                        s.ivBeforeActivationCookies[i]; // F61004.3
+                        Object cookie = s.ivBeforeActivationCookies == null ? null : s.ivBeforeActivationCookies[i]; // F61004.3
                         notifyPostInvoke(ivBeforeActivationCollaborators[i], s, cookie);
                     }
                 }
@@ -3920,16 +3613,13 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                 // Call postInvoke on all of the AfterActivation Collaborators
                 // that were successfully preInvoked. Note that the order is the
                 // same as preInvoke.                                        d228192
-                if (ivAfterActivationCollaborators != null) // F61004.3
-                {
-                    for (int i = 0; i < s.ivAfterActivationPreInvoked; i++)
-                    {
+                if (ivAfterActivationCollaborators != null) {
+                    for (int i = 0; i < s.ivAfterActivationPreInvoked; i++) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "postInvoke : Invoking AfterActivationCollaborator.postInvoke method on: "
                                          + ivAfterActivationCollaborators[i].getClass().getName());
 
-                        Object cookie = s.ivAfterActivationCookies == null ? null :
-                                        s.ivAfterActivationCookies[i]; // F61004.3
+                        Object cookie = s.ivAfterActivationCookies == null ? null : s.ivAfterActivationCookies[i]; // F61004.3
                         notifyPostInvoke(ivAfterActivationCollaborators[i], s, cookie);
                     }
                 }
@@ -3952,16 +3642,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             } finally {
 
                 // LIDB2775-23.1
-                if (isZOS && dispatchEventListenerCookies != null) // d646413.2
-                {
+                if (isZOS && dispatchEventListenerCookies != null) {
                     // Before transaction context changes, do SMF end dispatch recording
                     this.ivDispatchEventListenerManager.callDispatchEventListeners(DispatchEventListener.END_DISPATCH, dispatchEventListenerCookies, methodInfo); // @MD16426A
                 }
 
                 final ContainerTx currentTx = s.currentTx;//d140003.19
 
-                try
-                {
+                try {
                     if (beanO != null) {
                         activator.postInvoke(currentTx, beanO);
                     }
@@ -3970,10 +3658,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                         currentTx.postInvoke(s);
                     }
 
-                    if (s.uowCtrlPreInvoked) //PQ44001 //d140003.10
-                    {
-                        if (s.began && currentTx.ivPostInvokeContext == null)
-                        {
+                    if (s.uowCtrlPreInvoked) {
+                        if (s.began && currentTx != null && currentTx.ivPostInvokeContext == null) {
                             // Indicate that afterCompletion should call
                             // postInvokePopCallbackContexts.                 RTC107108
                             // Don't do see if this is a nested EJB call from
@@ -3986,12 +3672,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                     // Since 'Lightweight' methods may not be executing the
                     // Transaction Collaborator, the postInvoke processing must
                     // be done here.                                        LI3795-56
-                    else if (methodInfo.isLightweightTxCapable && s.currentTx != null)
-                    {
-                        if (s.isLightweight)
-                        {
-                            if (s.exType == ExceptionType.UNCHECKED_EXCEPTION)
-                            {
+                    else if (methodInfo.isLightweightTxCapable && s.currentTx != null) {
+                        if (s.isLightweight) {
+                            if (s.exType == ExceptionType.UNCHECKED_EXCEPTION) {
                                 // In this scenario, there is always an inherited global
                                 // transaction, and the correct action for all Tx
                                 // Strategies is to mark the tx as rollbackonly and throw
@@ -4002,10 +3685,8 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                                 uowCtrl.setRollbackOnly();
                                 throw new CSITransactionRolledbackException("Unexpected Exception from Lightweight EJB method");
                             }
-                        }
-                        else if (beanO != null &&
-                                 bmd.type == InternalConstants.TYPE_STATEFUL_SESSION)
-                        {
+                        } else if (beanO != null &&
+                                   bmd.type == InternalConstants.TYPE_STATEFUL_SESSION) {
                             // Simulate transaction commit for the bean.  We do not
                             // need to call ContainerTx.delist because we avoided
                             // ContainerTx.enlist during activation.            F61004.1
@@ -4022,21 +3703,17 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                     // wrapped in the appropriate exception, as it is generally
                     // not on the throws clause for @Remove methods.           390657
                     if (currentTx != null &&
-                        currentTx.ivRemoveBeanO != null)
-                    {
+                        currentTx.ivRemoveBeanO != null) {
                         // Per a SUN (CTS) clarification, not removing a SF bean
                         // in a transaction will only be enforced for Bean Managed
                         // beans, since the UserTx is 'sticky' and would be
                         // orphanded if the bean were removed.                 d451675
                         if (bmd.usesBeanManagedTx ||
-                            bmd.usesBeanManagedAS)
-                        {
+                            bmd.usesBeanManagedAS) {
                             currentTx.ivRemoveBeanO = null;
                             throw new RemoveException("Cannot remove stateful session bean " +
                                                       "within a transaction.");
-                        }
-                        else
-                        {
+                        } else {
                             // For the CMT case, the bean will just be removed from
                             // the transaction and removed.. without calling the
                             // synchronization methods. The following will transition
@@ -4046,11 +3723,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                             // d666718 - Delist the bean from the transaction.
                             // Otherwise, we will try to perform redundant processing
                             // on it later when the transaction actually completes.
-                            try
-                            {
+                            try {
                                 currentTx.delist(beanO);
-                            } catch (TransactionRolledbackException ex)
-                            {
+                            } catch (TransactionRolledbackException ex) {
                                 FFDCFilter.processException(ex, CLASS_NAME + ".postInvoke",
                                                             "4641", this);
                                 if (isTraceOn && tc.isEventEnabled())
@@ -4080,8 +3755,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                         // s.setUncheckedException throws either runtime (for local I/F) or
                         // remote exception.
                     }
-                } finally
-                {
+                } finally {
                     // Bean-specific contexts need to be present for beforeCompletion
                     // for JPA @PreUpdate, so we cannot pop the contexts prior to
                     // transaction completion, but ContainerTx.afterCompletion unpins
@@ -4093,20 +3767,16 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                     // begin it or it was a sticky BMT), or the transaction was
                     // committed but ContainerTx.afterCompletion wasn't called due to
                     // some fatal error in transactions.                    RTC107108
-                    if (currentTx == null)
-                    {
+                    if (currentTx == null) {
                         postInvokePopCallbackContexts(s);
-                    }
-                    else if (!s.began || currentTx.ivPostInvokeContext != null)
-                    {
+                    } else if (!s.began || currentTx.ivPostInvokeContext != null) {
                         postInvokePopCallbackContexts(s);
 
                         // Reset the indicator so that sticky BMT doesn't pop the
                         // callback context in the middle of a bean method, but only
                         // do so if we set the method context above (don't do so if
                         // this is a nested EJB call from beforeCompletion). RTC115108
-                        if (currentTx.ivPostInvokeContext == s)
-                        {
+                        if (currentTx.ivPostInvokeContext == s) {
                             currentTx.ivPostInvokeContext = null;
                         }
                     }
@@ -4115,63 +3785,52 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                     // Use pmiBean cached in the wrapper.                  d140003.33
                     // Insure this is done even if an exception is thrown.    d623908
                     EJBPMICollaborator pmiBean = wrapper.ivPmiBean; // d174057.2
-                    if (pmiBean != null && s.pmiPreInvoked)
-                    {
+                    if (pmiBean != null && s.pmiPreInvoked) {
                         pmiBean.methodPostInvoke(wrapper.beanId, methodInfo,
                                                  s.pmiCookie);
 
-                        if (methodInfo.isHomeCreate())
-                        {
+                        if (methodInfo.isHomeCreate()) {
                             // d647928 - SFSB and entity creation always goes through
                             // home wrappers.  The other bean types have code in
                             // EJSHome for create time.
-                            if (bmd.isStatefulSessionBean() || bmd.isEntityBean())
-                            {
+                            if (bmd.isStatefulSessionBean() || bmd.isEntityBean()) {
                                 pmiBean.finalTime(EJBPMICollaborator.CREATE_RT, s.pmiCookie);
                             }
-                        }
-                        else if (methodInfo.isComponentRemove())
-                        {
+                        } else if (methodInfo.isComponentRemove()) {
                             // d647928 - SFSB and entity can both be removed via the
                             // remove method on the wrapper.  That method is a no-op
                             // for the other bean types.
-                            if (bmd.isStatefulSessionBean() || bmd.isEntityBean())
-                            {
+                            if (bmd.isStatefulSessionBean() || bmd.isEntityBean()) {
                                 pmiBean.finalTime(EJBPMICollaborator.REMOVE_RT, s.pmiCookie);
                             }
                         }
                     }
 
                     // PQ74774 Begins
-                    if (s.ivSecurityCollaborator != null) // PQ44001 d140003.19
-                    {
+                    if (s.ivSecurityCollaborator != null) {
                         notifyPostInvoke(s.ivSecurityCollaborator, s, s.securityCookie);
                     }
                     // PQ74774 Ends
 
                     //92702 - BAAC collaborators must be called last of all
                     //the only example we know of is the JNS collaborator
-                    if (ivBeforeActivationAfterCompletionCollaborators != null) // F61004.3
-                    {
+                    if (ivBeforeActivationAfterCompletionCollaborators != null) {
                         // Call postInvoke on all of the BeforeActivationAfterCompletion
                         // Collaborators that were successfully preInvoked. Note that
                         // the order is the same as preInvoke.                    d228192
-                        for (int i = 0; i < s.ivBeforeActivationAfterCompletionPreInvoked; i++)
-                        {
+                        for (int i = 0; i < s.ivBeforeActivationAfterCompletionPreInvoked; i++) {
                             if (isTraceOn && tc.isDebugEnabled())
                                 Tr.debug(tc, "postInokve : Invoking BeforeActivationAfterCompletionCollaborator.postInvoke method on: "
                                              + ivBeforeActivationAfterCompletionCollaborators[i].getClass().getName());
 
-                            Object cookie = s.ivBeforeActivationAfterCompletionCookies == null ? null :
-                                            s.ivBeforeActivationAfterCompletionCookies[i]; // F61004.3
+                            Object cookie = s.ivBeforeActivationAfterCompletionCookies == null ? null : s.ivBeforeActivationAfterCompletionCookies[i]; // F61004.3
                             notifyPostInvoke(ivBeforeActivationAfterCompletionCollaborators[i], s, cookie);
                         }
                     }
 
                     // Inform EJB method callback that method has completed. This must be
                     // called after the transaction has completed.
-                    if (s.ivEJBMethodCallback != null) // d194342.1.1
-                    {
+                    if (s.ivEJBMethodCallback != null) {
                         // hmmmm, what if exception occurs?  Same problem as if beforeActivationAfterCompletion
                         // collaborators throw an exception prior to this change.
                         s.invocationCallbackPostInvoke(); // d194342.1.1
@@ -4192,19 +3851,15 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                     // point, since the postInvoke call on it restored the 'began'
                     // setting to the previous method state, so use the 'began' flag
                     // in EJSDeployedSupport (valid for current method).      d156688
-                    if (s.currentTx != null && s.began)
-                    {
+                    if (s.currentTx != null && s.began) {
                         s.currentTx.releaseResources(); // d215317
                         s.currentTx = null;
                     }
 
                     // 112678.6 d115602-1
-                    if (methodInfo.setClassLoader) // LI2281.07
-                    {
+                    if (methodInfo.setClassLoader) {
                         EJBThreadData.svThreadContextAccessor.popContextClassLoaderForUnprivileged(s.oldClassLoader);
-                    }
-                    else
-                    {
+                    } else {
                         threadData.popORBWrapperClassLoader();
                     }
 
@@ -4212,28 +3867,22 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                     threadData.popMethodContext(); // d646139.1, RTC102449
 
                     // d161864 Begins
-                    if (isTraceOn) // d527372
-                    {
+                    if (isTraceOn) {
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "EJBpostInvoke(" + methodId + ":" +
                                         methodInfo.getMethodName() + ")" +
-                                        ((s.ivException != null)
-                                                        ? ("**** throws " + s.ivException)
-                                                        : ""));
-                        if (TEEJBInvocationInfo.isTraceEnabled())
-                        {
-                            if (s.ivException == null)
-                            {
+                                        ((s.ivException != null) ? ("**** throws " + s.ivException) : ""));
+                        if (TEEJBInvocationInfo.isTraceEnabled()) {
+                            if (s.ivException == null) {
                                 TEEJBInvocationInfo.tracePostInvokeEnds(s, wrapper);
-                            } else
-                            {
+                            } else {
                                 TEEJBInvocationInfo.tracePostInvokeException(s, wrapper,
                                                                              s.ivException);
                             }
                         }
                     }
                     // d161864 Ends
-                }//end 92702
+                } //end 92702
             }
         }
     } // postInvoke
@@ -4241,29 +3890,23 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     /**
      * Pop contexts from the thread for the callback bean.
      */
-    void postInvokePopCallbackContexts(EJSDeployedSupport s) // RTC107108
-    {
+    void postInvokePopCallbackContexts(EJSDeployedSupport s) {
         // Pop the callback bean if Activator.preInvokeActivateBean was called
         // successfully (excluding homes).                                 d694142
-        if (s.ivPopCallbackBeanORequired)
-        {
+        if (s.ivPopCallbackBeanORequired) {
             s.ivThreadData.popCallbackBeanO();
 
             // If necessary, return the bean to the pool.  It will be null for
             // BeanNotReentrantException, which will prevent an in-use bean from
             // being returned to the pool.                                RTC107108
             BeanO beanO = s.beanO;
-            if (beanO != null)
-            {
+            if (beanO != null) {
                 BeanMetaData bmd = beanO.home.beanMetaData;
                 if (bmd.type == InternalConstants.TYPE_STATELESS_SESSION ||
-                    bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN)
-                {
-                    try
-                    {
+                    bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN) {
+                    try {
                         beanO.returnToPool();
-                    } catch (RemoteException ex)
-                    {
+                    } catch (RemoteException ex) {
                         FFDCFilter.processException(ex, CLASS_NAME + ".postInvoke", "359", this);
                     }
                 }
@@ -4277,22 +3920,16 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Call {@link EJBRequestCollaborator#postInvoke}. Handles generics casting
      * and CSIException handling.
      */
-    private static <T> void notifyPostInvoke(EJBRequestCollaborator<T> collaborator, EJBRequestData request, Object preInvokeData)
-                    throws CSIException
-    {
-        try
-        {
+    private static <T> void notifyPostInvoke(EJBRequestCollaborator<T> collaborator, EJBRequestData request, Object preInvokeData) throws CSIException {
+        try {
             @SuppressWarnings("unchecked")
             T uncheckedCookie = (T) preInvokeData;
             collaborator.postInvoke(request, uncheckedCookie);
-        } catch (RuntimeException ex)
-        {
+        } catch (RuntimeException ex) {
             throw ex;
-        } catch (CSIException ex)
-        {
+        } catch (CSIException ex) {
             throw ex;
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             throw new CSIException("", ex);
         }
     }
@@ -4304,9 +3941,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @param ex the exception
      */
-    private void postInvokeRolledbackException(EJSDeployedSupport s, CSITransactionRolledbackException ex)
-                    throws RemoteException
-    {
+    private void postInvokeRolledbackException(EJSDeployedSupport s, CSITransactionRolledbackException ex) throws RemoteException {
         //---------------------------------------------------------------
         // Check to see if the application requested that this transaction
         // be rolled back. If so, we can report no exception so suppress
@@ -4319,11 +3954,11 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
         //d140003.19 d186801
         if ((!s.ivBeginnerSetRollbackOnly &&
-            (!s.began ||
-            s.exType != ExceptionType.CHECKED_EXCEPTION)) ||
-            s.methodInfo.ivInterface == MethodInterface.TIMED_OBJECT)
-        { //90514;;
-          //d140003.19
+             (!s.began ||
+              s.exType != ExceptionType.CHECKED_EXCEPTION))
+            ||
+            s.methodInfo.ivInterface == MethodInterface.TIMED_OBJECT) { //90514;;
+                                                                                                                                                                           //d140003.19
             final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
             if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "postInvoke: transaction rollback in finally",
@@ -4333,36 +3968,29 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             // the cause set by TranStrategy since that one will contain
             // superfluous RuntimeException wrappers.          d109641.1 d616849.2
             if (s.currentTx != null &&
-                s.currentTx.ivPostProcessingException != null)
-            {
+                s.currentTx.ivPostProcessingException != null) {
                 // If there was an exception during post processing
                 // (commit), then set it as an unchecked exception.
                 // This will not override any exception that occurred
                 // during the bean method.        PQ90221 d219086 d219086.1
-                s.getExceptionMappingStrategy().setUncheckedException
-                                (s, s.currentTx.ivPostProcessingException);
+                s.getExceptionMappingStrategy().setUncheckedException(s, s.currentTx.ivPostProcessingException);
                 ex.detail = s.getRootCause();
-            }
-            else if (ex.detail == null)
-            {
+            } else if (ex.detail == null) {
                 ex.detail = s.getRootCause();//d140003.19
             }
             //d171654 make sure CSITRBException root cause not overwritten
-            else
-            {
+            else {
                 //d174358.1---------->
                 Throwable exceptionToUse = s.getRootCause();//d140003.19
 
-                if (exceptionToUse == null)
-                {
+                if (exceptionToUse == null) {
                     s.rootEx = s.getExceptionMappingStrategy().findRootCause(ex.detail);
-                }
-                else {
+                } else {
                     // we have a checked or unchecked so use that per spec
                     ex.detail = exceptionToUse;
                 }
                 //<----------d174358.1
-            }//<--------d171654
+            } //<--------d171654
 
             // Perform standard exception mapping using the exception
             // mapping utilities (just like EJSDeployedSupport). This
@@ -4393,8 +4021,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @param containerTx the transaction
      */
     // F61004.1
-    private void simulateCommitBean(BeanO beanO, ContainerTx containerTx)
-    {
+    private void simulateCommitBean(BeanO beanO, ContainerTx containerTx) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "simulateCommitBean");
@@ -4402,11 +4029,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // React to exceptions the same as afterCompletion, insure
         // both commit and commitBean are called.     F743-22462.CR
 
-        try
-        {
+        try {
             beanO.commit(containerTx);
-        } catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".simulateCommitBean",
                                         "5300", new Object[] { this, beanO });
             if (isTraceOn && tc.isEventEnabled())
@@ -4414,11 +4039,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                          new Object[] { beanO, ex });
         }
 
-        try
-        {
+        try {
             activator.commitBean(containerTx, beanO);
-        } catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".simulateCommitBean",
                                         "5313", new Object[] { this, beanO });
             if (isTraceOn && tc.isEventEnabled())
@@ -4432,14 +4055,11 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
     public void EjbPostInvokeForStatelessCreate(EJSWrapperBase wrapper,
                                                 int methodId, // f111627
-                                                EJSDeployedSupport s)
-                    throws RemoteException
-    {
+                                                EJSDeployedSupport s) throws RemoteException {
         EJBMethodInfoImpl methodInfo = s.methodInfo; // d114406 d154342.4 d173022
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
-        if (isTraceOn)
-        {
+        if (isTraceOn) {
             if (TEEJBInvocationInfo.isTraceEnabled())
                 TEEJBInvocationInfo.tracePostInvokeBegins(s, wrapper); // d161864
 
@@ -4451,12 +4071,18 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                              ":" + methodInfo.getMethodName() + ")"); // d161864
         }
 
+        // UOWManager.runUnderUOW may have left cached currentTx invalid; reset
+        if (s.resetCurrentTx) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "s.currentTx may be invalid; reset");
+            s.currentTx = getCurrentContainerTx();
+        }
+
         EJBThreadData threadData = s.ivThreadData;
 
         // do pop first to ensure that pop occurs even if exception occurs
         // after this point.
-        if (!methodInfo.setClassLoader) // d153263 LI2281.07
-        {
+        if (!methodInfo.setClassLoader) {
             threadData.popORBWrapperClassLoader();
         }
 
@@ -4465,8 +4091,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // made for d173022.7 in the preinvokeForStatelessSessionCreate method.
 
         // PQ74774 Begins
-        if (s.ivSecurityCollaborator != null) // PQ44001
-        {
+        if (s.ivSecurityCollaborator != null) {
             notifyPostInvoke(s.ivSecurityCollaborator, s, s.securityCookie);
         }
         // PQ74774 Ends
@@ -4480,19 +4105,15 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         threadData.popMethodContext(); // d127257, d646139.1, RTC102449
 
         // d161864 Begins
-        if (isTraceOn)
-        {
+        if (isTraceOn) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "EjbPostInvokeForStatelessCreate(" + methodId +
                             ":" + methodInfo.getMethodName() + ")");
 
-            if (TEEJBInvocationInfo.isTraceEnabled())
-            {
-                if (s.ivException == null)
-                {
+            if (TEEJBInvocationInfo.isTraceEnabled()) {
+                if (s.ivException == null) {
                     TEEJBInvocationInfo.tracePostInvokeEnds(s, wrapper);
-                } else
-                {
+                } else {
                     TEEJBInvocationInfo.tracePostInvokeException(s, wrapper,
                                                                  s.ivException);
                 }
@@ -4509,9 +4130,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      */
     public void postInvokeForLifecycleInterceptors(LifecycleInterceptorWrapper wrapper,
                                                    int methodId,
-                                                   EJSDeployedSupport s)
-                    throws RemoteException
-    {
+                                                   EJSDeployedSupport s) throws RemoteException {
         // NOTE: The implementation of this method is structured after postInvoke.
         // For a detailed explanation of the operations here, see the comments in
         // that method.
@@ -4519,8 +4138,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         EJBMethodInfoImpl methodInfo = s.methodInfo;
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn)
-        {
+        if (isTraceOn) {
             if (TEEJBInvocationInfo.isTraceEnabled())
                 TEEJBInvocationInfo.tracePostInvokeBegins(s, wrapper);
 
@@ -4532,21 +4150,24 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                              ":" + methodInfo.getMethodName() + ")");
         }
 
+        // UOWManager.runUnderUOW may have left cached currentTx invalid; reset
+        if (s.resetCurrentTx) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "s.currentTx may be invalid; reset");
+            s.currentTx = getCurrentContainerTx();
+        }
+
         s.currentTx.postInvoke(s);
 
-        try
-        {
+        try {
             boolean isRollbackOnly = uowCtrl.getRollbackOnly(); //d636725
-            try
-            {
-                if (s.began && s.currentTx.ivPostInvokeContext == null) // RTC107108, RTC115108
-                {
+            try {
+                if (s.began && s.currentTx.ivPostInvokeContext == null) {
                     s.currentTx.ivPostInvokeContext = s;
                 }
 
                 uowCtrl.postInvoke(wrapper.beanId, s.uowCookie, s.exType, methodInfo);
-            } catch (CSITransactionRolledbackException ex)
-            {
+            } catch (CSITransactionRolledbackException ex) {
                 // Per preInvokeForLifecycleInterceptors, all exceptions thrown from
                 // lifecycle interceptors must not be application exceptions.  This
                 // ensures postInvokeRolledbackException will propagate this exception
@@ -4569,8 +4190,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             // setRollbackOnly inside PostConstruct methods - they would
             // receive an IllegalStateException.
             if (methodId == LifecycleInterceptorWrapper.MID_POST_CONSTRUCT &&
-                isRollbackOnly)
-            {
+                isRollbackOnly) {
 
                 String msg = "setRollbackOnly called from within a singleton post construct method.";
                 if (isTraceOn && tc.isDebugEnabled())
@@ -4578,20 +4198,16 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                 throw new EJBTransactionRolledbackException(msg);
             }
             //d636725 end
-        } finally
-        {
-            if (!s.began || s.currentTx.ivPostInvokeContext != null) // RTC107108
-            {
+        } finally {
+            if (!s.began || s.currentTx.ivPostInvokeContext != null) {
                 postInvokePopCallbackContexts(s);
             }
 
-            if (s.ivSecurityCollaborator != null)
-            {
+            if (s.ivSecurityCollaborator != null) {
                 notifyPostInvoke(s.ivSecurityCollaborator, s, s.securityCookie);
             }
 
-            if (s.currentTx != null && s.began)
-            {
+            if (s.currentTx != null && s.began) {
                 s.currentTx.releaseResources();
                 s.currentTx = null;
             }
@@ -4600,14 +4216,11 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
             s.ivThreadData.popMethodContext(); // d646139.1, RTC102449
 
-            if (isTraceOn)
-            {
+            if (isTraceOn) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "postInvokeForLifecycleInterceptors(" + methodId + ":" +
                                 methodInfo.getMethodName() + ")" +
-                                ((s.ivException != null)
-                                                ? ("**** throws " + s.ivException)
-                                                : ""));
+                                ((s.ivException != null) ? ("**** throws " + s.ivException) : ""));
             }
         }
     }
@@ -4629,10 +4242,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * with the given <code>BeanId</code><p>
      */
 
-    public EJSWrapperCommon getWrapper(BeanId id) // f111627
-    throws CSIException,
-                    RemoteException
-    {
+    public EJSWrapperCommon getWrapper(BeanId id) throws CSIException, RemoteException {
         return wrapperManager.getWrapper(id);
     } // getWrapper
 
@@ -4654,10 +4264,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *                container <p>
      *
      */
-    public EJSWrapperCommon createWrapper(BeanId beanId) // f111627
-    throws RemoteException,
-                    CSIException
-    {
+    public EJSWrapperCommon createWrapper(BeanId beanId) throws RemoteException, CSIException {
         HomeInternal home = beanId.getHome();
 
         if (home == null) {
@@ -4681,16 +4288,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     /**
      * Return the default EJB container in application server.
      */
-    public static EJSContainer getContainer(String containerName)
-    {
+    public static EJSContainer getContainer(String containerName) {
         return getDefaultContainer();
     }
 
     /**
      * Return the default EJB container in application server.
      */
-    public static EJSContainer getDefaultContainer()
-    {
+    public static EJSContainer getDefaultContainer() {
         return defaultContainer;
     }
 
@@ -4699,8 +4304,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     /**
      * Gets the EJB data associated with the currently running thread.
      */
-    public static EJBThreadData getThreadData() // d630940
-    {
+    public static EJBThreadData getThreadData() {
         return svThreadData.get();
     }
 
@@ -4708,8 +4312,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Gets the bean that the container is currently processing via a business
      * method or lifecycle callback.
      */
-    public static BeanO getCallbackBeanO() // d630940
-    {
+    public static BeanO getCallbackBeanO() {
         return svThreadData.get().getCallbackBeanO();
     }
 
@@ -4717,8 +4320,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Return the class loader passed in as part of the config data
      * by the server
      */
-    public static ClassLoader getClassLoader()
-    {
+    public static ClassLoader getClassLoader() {
         return classLoader;
     }
 
@@ -4726,8 +4328,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Return the orb utils object passed in as part of the config data
      * by the server
      */
-    public OrbUtils getOrbUtils()
-    {
+    public OrbUtils getOrbUtils() {
         return orbUtils;
     }
 
@@ -4735,8 +4336,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Return the ContainerExtensionFactory object passed in as part of the
      * config data by the server
      */
-    public ContainerExtensionFactory getContainerExtensionFactory() // p125942
-    {
+    public ContainerExtensionFactory getContainerExtensionFactory() {
         return containerExtFactory;
     }
 
@@ -4755,16 +4355,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     // Bottom line is caller must check for null being returned and handle
     // appropriatedly.
     //
-    public static EJSDeployedSupport getMethodContext()
-    {
+    public static EJSDeployedSupport getMethodContext() {
         return getThreadData().getMethodContext(); // d646139.1
     }
 
     /**
      * Get the ClassLoader for the bean specified by beanName
      */
-    public static ClassLoader getClassLoader(J2EEName beanName)
-    {
+    public static ClassLoader getClassLoader(J2EEName beanName) {
         ClassLoader cl = null;
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
@@ -4772,12 +4370,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             Tr.entry(tc, "getClassLoader(" + beanName + ")");
 
         HomeInternal hi = homeOfHomes.getHome(beanName);
-        if (hi != null)
-        {
+        if (hi != null) {
             cl = hi.getClassLoader();
-        }
-        else
-        {
+        } else {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.exit(tc, "getClassLoader: Home not found!");
         }
@@ -4792,9 +4387,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Force the persistent state of all entity beans modified in the
      * current transaction to be written to the persistent store.
      */
-    public void flush()
-                    throws RemoteException
-    {
+    public void flush() throws RemoteException {
         ContainerTx containerTx = getCurrentTx(false); //d171654
         containerTx.flush();
     } // flush
@@ -4803,17 +4396,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Dump the internal state of this container instance to the
      * trace stream. <p>
      */
-    public void dump()
-    {
+    public void dump() {
         if (!tc.isDumpEnabled() || dumped) {
             return;
         }
 
-        try
-        {
+        try {
             introspect(new TrDumpWriter(tc), true);
-        } finally
-        {
+        } finally {
             dumped = true;
         }
     } // dump
@@ -4821,8 +4411,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     /**
      * Reset dumped state of this container instance. <p>
      */
-    public void resetDump()
-    {
+    public void resetDump() {
         dumped = false;
     } // resetDump
 
@@ -4837,11 +4426,9 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @return Object a 'cookie' which uniquely identifies this preinvoke()
      */
     @Override
-    public Object preInvokeORBDispatch(Object object, String operation) // F743-13024
-    {
+    public Object preInvokeORBDispatch(Object object, String operation) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isDebugEnabled())
-        {
+        if (isTraceOn && tc.isDebugEnabled()) {
             // toString of 'object' can be quite large and can really bloat the
             // trace.... so just trace the class name; usually the tie name or
             // class loader name. The IOR or classpath is not traced.       d133384
@@ -4853,15 +4440,13 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
         EJBThreadData threadData = null;
 
-        if (object instanceof javax.rmi.CORBA.Tie)
-        {
+        if (object instanceof javax.rmi.CORBA.Tie) {
             object = ((javax.rmi.CORBA.Tie) object).getTarget();
-            if (object instanceof EJSWrapperBase)
-            {
+            if (object instanceof EJSWrapperBase) {
                 final EJSWrapperBase wrapper = (EJSWrapperBase) object;
                 BeanMetaData bmd = wrapper.bmd;
-                if (bmd != null) // null if EJBFactory           d440604
-                {
+                // null if EJBFactory
+                if (bmd != null) {
                     threadData = svThreadData.get();
 
                     // d153263
@@ -4892,14 +4477,12 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *            preinvoke(Object, String)
      */
     @Override
-    public void postInvokeORBDispatch(Object object) // F743-13024
-    {
+    public void postInvokeORBDispatch(Object object) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "postInvokeORBDispatch: " + (object != null));
 
         // d717291 - Null object indicates a non-EJB request.
-        if (object != null)
-        {
+        if (object != null) {
             ((EJBThreadData) object).popClassLoader();
         }
     }
@@ -4915,9 +4498,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *                prevented this method from return EJBHome. Use the getCause
      *                method to recover the Throwable that occured.
      */
-    public EJBHome getEJBHome(J2EEName name)
-                    throws ContainerEJBException
-    {
+    public EJBHome getEJBHome(J2EEName name) throws ContainerEJBException {
         try {
             EJSWrapperCommon wrapperCommon = getHomeWrapperCommon(name);
             EJSWrapper wrapper = wrapperCommon.getRemoteWrapper();
@@ -4946,9 +4527,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *                prevented this method from return EJBLocalHome. Use the getCause
      *                method to recover the Throwable that occured.
      */
-    public EJBLocalHome getEJBLocalHome(J2EEName name)
-                    throws ContainerEJBException
-    {
+    public EJBLocalHome getEJBLocalHome(J2EEName name) throws ContainerEJBException {
         try {
             EJSWrapperCommon wrapperCommon = getHomeWrapperCommon(name);
             return (EJBLocalHome) wrapperCommon.getLocalObject(); // d188404
@@ -4983,17 +4562,14 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *             the aggregate wrapper class or create an instance of it.
      */
     // F743-34304
-    public Object createAggregateLocalReference(J2EEName beanName, ManagedObjectContext context)
-                    throws EJBNotFoundException, CreateException
-    {
+    public Object createAggregateLocalReference(J2EEName beanName, ManagedObjectContext context) throws EJBNotFoundException, CreateException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createAggregateLocalReference : " + beanName);
 
         EJSHome home = getInstalledHome(beanName);
 
-        if (!home.beanMetaData.isSessionBean())
-        {
+        if (!home.beanMetaData.isSessionBean()) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "createAggregateLocalReference : not a session bean!");
             throw new EJBException("The " + beanName.getComponent() + " bean in the " +
@@ -5019,8 +4595,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *            home object. For the case of a stub, both the stub
      *            and the wrapper must be colocated (located in same process).
      */
-    public J2EEName getJ2EEName(EJSWrapperBase wrapper)
-    {
+    public J2EEName getJ2EEName(EJSWrapperBase wrapper) {
         return wrapper.beanId.getJ2EEName();
     }
 
@@ -5031,8 +4606,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @param interval the interval in milliseconds.
      */
-    public void setInactivePoolCleanupInterval(long interval)
-    {
+    public void setInactivePoolCleanupInterval(long interval) {
         poolManager.setDrainInterval(interval);
     }
 
@@ -5042,8 +4616,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @param interval the interval in milliseconds.
      */
-    public void setInactiveCacheCleanupInterval(long interval)
-    {
+    public void setInactiveCacheCleanupInterval(long interval) {
         activator.setCacheSweepInterval(interval);
         wrapperManager.setWrapperCacheSweepInterval(3 * interval);
     }
@@ -5053,8 +4626,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @param size the preferred capacity of the cache
      */
-    public void setPreferredCacheSize(long size)
-    {
+    public void setPreferredCacheSize(long size) {
         int intSize = (int) size;
         activator.setCachePreferredMaxSize(intSize);
         wrapperManager.setWrapperCacheSize(2 * intSize);
@@ -5064,8 +4636,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Called by the runtime environment to prepare the EJB container for
      * running EJB timers.
      */
-    public void setupTimers()
-    {
+    public void setupTimers() {
         // The size of the pool should be related to the max number of alarm
         // threads for the scheduler, but there is not currently a public
         // method to obtain that information.  At max, there would only
@@ -5126,8 +4697,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * Method is synchronized to avoid creating multiple LockManager objects,
      * since bean install/start is no longer synchronized. d334557 PK20648
      */
-    public synchronized void initOptACleanUpLockManager() //added d173022.11
-    {
+    public synchronized void initOptACleanUpLockManager() {
         if (lockManager == null)
             lockManager = new LockManager();
     }
@@ -5140,12 +4710,10 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @param j2eeName unique identifier for EJB
      * @return Prmiary key class.
      */
-    public Class<?> getEJBPrimaryKeyClass(J2EEName j2eeName)
-    {
+    public Class<?> getEJBPrimaryKeyClass(J2EEName j2eeName) {
         Class<?> rtnPKeyClass = null;
         BeanMetaData bmd = internalBeanMetaDataStore.get(j2eeName);
-        if (bmd != null)
-        {
+        if (bmd != null) {
             rtnPKeyClass = bmd.pKeyClass;
         }
         return rtnPKeyClass;
@@ -5156,8 +4724,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * @return true if enabled at container level.
      */
-    final public boolean isEnableSFSBFailover() //LIDB2018-1
-    {
+    final public boolean isEnableSFSBFailover() {
         return ivSFSBFailoverEnabled;
     }
 
@@ -5166,8 +4733,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * to hold replicated SFSB data when failover is enabled.
      * A null reference is returned if SFSB failover is not enabled.
      */
-    public SfFailoverCache getSfFailoverCache() //LIDB2018-1
-    {
+    public SfFailoverCache getSfFailoverCache() {
         return ivSfFailoverCache;
     }
 
@@ -5188,9 +4754,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @return Object returned by business method invocation (which may be null
      *         if business method has void for return value).
      */
-    public Object invoke(EJSDeployedSupport s, Timer timer) // F743-17763, F743-17763.1
-    throws Exception
-    {
+    public Object invoke(EJSDeployedSupport s, Timer timer) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "EJBinvoke(" + s.methodId + ":" +
                          s.methodInfo.getMethodName() + ")");
@@ -5236,9 +4800,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      **/
     // d507967
     public Object invoke(EJSDeployedSupport s,
-                         Object[] parameters)
-                    throws Exception
-    {
+                         Object[] parameters) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "WS-EJBinvoke(" + s.methodId + ":" +
                          s.methodInfo.getMethodName() + ")");
@@ -5283,25 +4845,17 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *             business method throws an exception.
      */
     // LIDB3294-41
-    public Object invokeProceed(EJSDeployedSupport s
-                                , Method businessMethod
-                                , Object bean
-                                , Object[] methodParameters
-                                , boolean parametersModified)
-                    throws Exception
-    {
+    public Object invokeProceed(EJSDeployedSupport s, Method businessMethod, Object bean, Object[] methodParameters, boolean parametersModified) throws Exception {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "EJBinvokeProceed(" + s.methodId + ":" +
                          s.methodInfo.getMethodName() + ")");
 
-        if (parametersModified)
-        {
+        if (parametersModified) {
             s.ivEJBMethodArguments = methodParameters;
 
-            if (doesJaccNeedsEJBArguments(null) && s.ivSecurityCollaborator != null)
-            {
+            if (doesJaccNeedsEJBArguments(null) && s.ivSecurityCollaborator != null) {
                 // JACC parameter checking is enabled and SecurityCollaborator preInvoke was
                 // called and atleast one of the business method parameter was modified by an
                 // around invoke interceptor. Inform SecurityCollaborator of this change so
@@ -5314,17 +4868,13 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
         // If no exeception is thrown by security, then it is okay to invoke the business method.
         Object returnValue = businessMethod.invoke(bean, methodParameters);
-        if (isTraceOn && tc.isEntryEnabled()) // d419704.3
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             StringBuilder sb = new StringBuilder();
             sb.append("EJBinvokeProceed(").append(s.methodId).append(":");
             sb.append(s.methodInfo.getMethodName()).append(") returning ");
-            if (returnValue == null)
-            {
+            if (returnValue == null) {
                 sb.append("null");
-            }
-            else
-            {
+            } else {
                 sb.append(returnValue.getClass().getName());
                 sb.append("@").append(returnValue.hashCode());
             }
@@ -5335,9 +4885,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     }
 
     private static <T> void notifySecurityCollaboratorArgumentsUpdated(EJBSecurityCollaborator<T> collaborator,
-                                                                       EJSDeployedSupport s)
-                    throws Exception
-    {
+                                                                       EJSDeployedSupport s) throws Exception {
         @SuppressWarnings("unchecked")
         T preInvokeData = (T) s.securityCookie;
         collaborator.argumentsUpdated(s, preInvokeData);
@@ -5352,12 +4900,10 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *         persistence context.
      */
     // d515803
-    public Object getExPcBindingContext()
-    {
+    public Object getExPcBindingContext() {
         EJSDeployedSupport s = getMethodContext(); // d646139.1
 
-        if (s != null)
-        {
+        if (s != null) {
             return s.getExPcBindingContext();
         }
         return null;
@@ -5387,16 +4933,13 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @exception RemoteException - if the bean implements rmi remote business interface, wrap
      *                the exception in a RemoteException instead of EJBException
      */
-    public Future<?> scheduleAsynchMethod(EJSWrapperBase wrapper, int methodId, Object[] args)
-                    throws RemoteException // d617700
-    {
+    public Future<?> scheduleAsynchMethod(EJSWrapperBase wrapper, int methodId, Object[] args) throws RemoteException {
         return ivEJBRuntime.scheduleAsync(wrapper, wrapper.methodInfos[methodId], methodId, args); // F743-13022
     }
 
     // begin 619922
     @Override
-    public String[] introspectSelf()
-    {
+    public String[] introspectSelf() {
         // return nothing
         return new String[] {};
     }
@@ -5406,8 +4949,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *
      * Used by the EJBContainerDiagnosticModule instead of toString().
      */
-    public void ffdcDump(IncidentStream is)
-    {
+    public void ffdcDump(IncidentStream is) {
         introspect(new IncidentStreamWriter(is), false);
     }
 
@@ -5421,8 +4963,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * @param fullBMD true indicates BeanMetaData are also introspected
      */
     // F86406
-    public void introspect(IntrospectionWriter writer, boolean fullBMD)
-    {
+    public void introspect(IntrospectionWriter writer, boolean fullBMD) {
         // -----------------------------------------------------------------------
         // Indicate the start of the dump, and include the toString()
         // of EJSContainer, so this can easily be matched to a trace.
@@ -5455,18 +4996,13 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // ----------------------------------------------------------------------
 
         writer.begin("internalBeanMetaDataStore : " + internalBeanMetaDataStore.size() + " installed beans");
-        synchronized (internalBeanMetaDataStore)
-        {
-            if (fullBMD)
-            {
-                for (Enumeration<BeanMetaData> en = internalBeanMetaDataStore.elements(); en.hasMoreElements();)
-                {
+        synchronized (internalBeanMetaDataStore) {
+            if (fullBMD) {
+                for (Enumeration<BeanMetaData> en = internalBeanMetaDataStore.elements(); en.hasMoreElements();) {
                     BeanMetaData bmd = en.nextElement();
                     bmd.introspect(writer);
                 }
-            }
-            else
-            {
+            } else {
                 List<String> keyNames = new ArrayList<String>();
 
                 for (J2EEName name : internalBeanMetaDataStore.keySet()) {
@@ -5510,8 +5046,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                 String format = String.format("%-55s = %s", outString, Util.identity(element)); // 619922.1
                 writer.println(format);
             }
-        }
-        else {
+        } else {
             String outString = name + "[]";
             String format = String.format("%-55s %s", outString, "is empty.");
             writer.println(format);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,15 @@ package com.ibm.ws.security.jaspi;
 import java.io.File;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.Subject;
+import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.message.AuthException;
 import javax.security.auth.message.AuthStatus;
 import javax.security.auth.message.MessageInfo;
@@ -45,6 +48,8 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -52,6 +57,7 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.webcontainer.internalRuntimeExport.srt.IPrivateRequestAttributes;
 import com.ibm.ws.webcontainer.security.AuthResult;
@@ -87,16 +93,17 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
     private static final String AUTH_TYPE = "javax.servlet.http.authType";
     private static final String IS_MANDATORY_POLICY = "javax.security.auth.message.MessagePolicy.isMandatory";
     private static final String JACC_POLICY_CONTEXT = "javax.security.jacc.PolicyContext";
-    private static final String JASPI_WEB_REQUEST = "com.ibm.websphere.jaspi.request";
     public static final String UNAUTHENTICATED_ID = "UNAUTHENTICATED"; // TODO find a better home for this
 
     private static final String KEY_UNAUTHENTICATED_SUBJECT_SERVICE = "unauthenticatedSubjectService";
     private UnauthenticatedSubjectService unauthenticatedSubjectService;
     private boolean providerConfigModified = false;
-    private boolean bridgeBuilderModified = false;
     private WebProviderAuthenticatorHelper authHelper = null;
+    private final SubjectHelper subjectHelper = new SubjectHelper();
     private SubjectManager subjectManager = null;
     public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
+
+    public JaspiServiceImpl() {}
 
     @Reference(name = KEY_UNAUTHENTICATED_SUBJECT_SERVICE,
                service = UnauthenticatedSubjectService.class,
@@ -142,14 +149,10 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setBridgeBuilder(ServiceReference<BridgeBuilderService> reference) {
         bridgeBuilderServiceRef.setReference(reference);
-        bridgeBuilderModified = true;
-        // Tr.info(tc, "JASPI_PROVIDER_SERVICE_ACTIVATED", new Object[] { jaspiProviderServiceRef.getService().getClass() });
     }
 
     protected void unsetBridgeBuilder(ServiceReference<BridgeBuilderService> reference) {
-        // Tr.info(tc, "JASPI_PROVIDER_SERVICE_DEACTIVATED", new Object[] { jaspiProviderServiceRef.getService() != null ? jaspiProviderServiceRef.getService().getClass() : null });
         bridgeBuilderServiceRef.unsetReference(reference);
-        bridgeBuilderModified = true;
     }
 
     public static final String KEY_SECURITY_SERVICE = "securityService";
@@ -251,55 +254,6 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         @Override
         public void setRunSecureResponse(boolean isSet) {
             runSecureResponse = isSet;
-        }
-    }
-
-    public JaspiServiceImpl() {}
-
-    @Override
-    public Hashtable<String, Object> getCustomCredentials(final Subject clientSubject) {
-        if (clientSubject == null)
-            return null;
-        PrivilegedAction<Hashtable<String, Object>> action = new PrivilegedAction<Hashtable<String, Object>>() {
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public Hashtable<String, Object> run() {
-                Set s = clientSubject.getPrivateCredentials(Hashtable.class);
-                if (s == null || s.isEmpty()) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Subject has no Hashtable with custom credentials, return null.");
-                    return null;
-                } else {
-                    Hashtable t = (Hashtable) s.iterator().next();
-                    return t;
-                }
-            }
-        };
-        Hashtable<String, Object> cred = AccessController.doPrivileged(action);
-        return cred;
-    }
-
-    private void removeCustomCredentials(final Subject subject, final Hashtable creds) {
-        if (subject != null) {
-            AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                @Override
-                public Void run() {
-                    Set<Hashtable> s = subject.getPrivateCredentials(Hashtable.class);
-                    if (s == null || s.isEmpty()) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "No custom credentials to remove from Subject.");
-                    } else {
-                        for (Hashtable t : s) {
-                            if (t == creds) {
-                                s.remove(t);
-                                break;
-                            }
-                        }
-                    }
-                    return null;
-                }
-            });
         }
     }
 
@@ -406,7 +360,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         AuthStatus status = null;
         WebSecurityContext webSecurityContext = jaspiRequest.getWebSecurityContext();
         jaspiRequest.getHttpServletRequest().getServletContext().setAttribute("com.ibm.ws.security.jaspi.authenticated", Boolean.toString(Boolean.TRUE));
-        JaspiAuthContext jac = null;
+
         try {
             ServerAuthContext authContext = getServerAuthContext(jaspiRequest, provider);
             MessageInfo msgInfo = jaspiRequest.getMessageInfo();
@@ -422,41 +376,10 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             // This is where we actually call the JASPI provider to do the authentication
             //-----------------------------------------------------------------------------
             status = authContext.validateRequest(msgInfo, clientSubject, serviceSubject);
-            if (tc.isDebugEnabled())
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "******* return from JASPI provider authContext.validateRequest, status: " + status);
-            if (AuthStatus.SUCCESS == status || AuthStatus.SEND_SUCCESS == status) {
-                // if the provider asked that the subject be used on subsequent
-                // invocations then indicate that in the request object. later we will
-                // create an ltpa token cookie for the jaspi session
-                Map msgInfoMap = msgInfo.getMap();
-                if (msgInfoMap != null) {
-                    String session = (String) msgInfoMap.get("javax.servlet.http.registerSession");
-                    if (Boolean.valueOf(session).booleanValue()) {
-                        Map<String, Object> props = new HashMap<String, Object>();
-                        props.put("javax.servlet.http.registerSession", session);
-                        jaspiRequest.getWebRequest().setProperties(props);
-                    }
-                }
-                // if the provider gave us an HttServletRequestWrapper (or response) then save it
-                // in the servlet context. Our Filter will set it as the request/response object
-                // that is passed to the servlet when it is invoked.
-                Object request = msgInfo.getRequestMessage();
-                if (request != null && request != jaspiRequest.getHttpServletRequest()) {
-                    jaspiRequest.getHttpServletRequest().setAttribute("com.ibm.ws.security.jaspi.servlet.request.wrapper", request);
-                }
-                Object response = msgInfo.getResponseMessage();
-                if (response != null && response != jaspiRequest.getHttpServletResponse()) {
-                    jaspiRequest.getHttpServletRequest().setAttribute("com.ibm.ws.security.jaspi.servlet.response.wrapper", response);
-                }
-                Subject callerSubject = doHashTableLogin(clientSubject, jaspiRequest);
-                if (callerSubject != null && !callerSubject.getPrincipals().isEmpty()) {
-                    extraAuditData.put("jaspiSubject", callerSubject.getPrincipals().iterator().next().getName());
-                }
-                authResult = mapToAuthenticationResult(status, jaspiRequest, callerSubject);
-                setRequestAuthType(msgInfo, jaspiRequest);
-            } else {
-                authResult = mapToAuthenticationResult(status, jaspiRequest, null);
             }
+            authResult = createAuthenticationResult(clientSubject, jaspiRequest, status, msgInfo);
         } catch (AuthException e) {
             AuthenticationException ex = new AuthenticationException("JASPIC Authenticated with status: SEND_FAILURE, exception: " + e);
             ex.initCause(e);
@@ -474,12 +397,98 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         return authResult;
     }
 
+    private AuthenticationResult createAuthenticationResult(@Sensitive Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status,
+                                                            MessageInfo msgInfo) throws WSLoginFailedException {
+        if (System.getSecurityManager() == null) {
+            return processAuthStatus(clientSubject, jaspiRequest, status, msgInfo);
+        } else {
+            return processAuthStatusWithJava2Security(clientSubject, jaspiRequest, status, msgInfo);
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    private AuthenticationResult processAuthStatus(Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status,
+                                                   MessageInfo msgInfo) throws WSLoginFailedException {
+        AuthenticationResult authResult;
+        if (AuthStatus.SUCCESS == status || AuthStatus.SEND_SUCCESS == status) {
+            // if the provider asked that the subject be used on subsequent
+            // invocations then indicate that in the request object. later we will
+            // create an ltpa token cookie for the jaspi session
+            Map msgInfoMap = msgInfo.getMap();
+            if (msgInfoMap != null) {
+                String session = (String) msgInfoMap.get("javax.servlet.http.registerSession");
+                if (Boolean.valueOf(session).booleanValue()) {
+                    Map<String, Object> props = new HashMap<String, Object>();
+                    props.put("javax.servlet.http.registerSession", session);
+                    jaspiRequest.getWebRequest().setProperties(props);
+                }
+            }
+            // if the provider gave us an HttServletRequestWrapper (or response) then save it
+            // in the servlet context. Our Filter will set it as the request/response object
+            // that is passed to the servlet when it is invoked.
+            Object request = msgInfo.getRequestMessage();
+            if (request != null && request != jaspiRequest.getHttpServletRequest()) {
+                jaspiRequest.getHttpServletRequest().setAttribute("com.ibm.ws.security.jaspi.servlet.request.wrapper", request);
+            }
+            Object response = msgInfo.getResponseMessage();
+            if (response != null && response != jaspiRequest.getHttpServletResponse()) {
+                jaspiRequest.getHttpServletRequest().setAttribute("com.ibm.ws.security.jaspi.servlet.response.wrapper", response);
+            }
+            Subject callerSubject = doHashTableLogin(clientSubject, jaspiRequest);
+            if (callerSubject != null && !callerSubject.getPrincipals().isEmpty()) {
+                extraAuditData.put("jaspiSubject", callerSubject.getPrincipals().iterator().next().getName());
+            }
+            authResult = mapToAuthenticationResult(status, jaspiRequest, callerSubject);
+            setRequestAuthType(msgInfo, jaspiRequest);
+        } else {
+            authResult = mapToAuthenticationResult(status, jaspiRequest, null);
+        }
+        return authResult;
+    }
+
+    @FFDCIgnore(java.security.PrivilegedActionException.class)
+    private AuthenticationResult processAuthStatusWithJava2Security(@Sensitive Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status,
+                                                                    MessageInfo msgInfo) throws WSLoginFailedException {
+        try {
+            return AccessController.doPrivileged(new ProcessAuthStatusPrivilegedExceptionAction(clientSubject, jaspiRequest, status, msgInfo));
+        } catch (PrivilegedActionException privException) {
+            throw (WSLoginFailedException) privException.getException();
+        }
+    }
+
+    /*
+     * Class to avoid tracing Subject that otherwise is traced when using
+     * an anonymous PrivilegedAction resulting in an ACE when application code
+     * is in the call stack.
+     */
+    private class ProcessAuthStatusPrivilegedExceptionAction implements PrivilegedExceptionAction<AuthenticationResult> {
+
+        private final Subject clientSubject;
+        private final JaspiRequest jaspiRequest;
+        private final AuthStatus status;
+        private final MessageInfo msgInfo;
+
+        @Trivial
+        public ProcessAuthStatusPrivilegedExceptionAction(Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status, MessageInfo msgInfo) {
+            this.clientSubject = clientSubject;
+            this.jaspiRequest = jaspiRequest;
+            this.status = status;
+            this.msgInfo = msgInfo;
+        }
+
+        @Override
+        public AuthenticationResult run() throws Exception {
+            return processAuthStatus(clientSubject, jaspiRequest, status, msgInfo);
+        }
+
+    }
+
     /**
      * Some comment why we're doing this
      */
     private AuthConfigProvider getAuthConfigProvider(String appContext) {
         AuthConfigProvider provider = null;
-        AuthConfigFactory providerFactory = AuthConfigFactoryWrapper.getFactory();
+        AuthConfigFactory providerFactory = getAuthConfigFactory();
         if (providerFactory != null) {
             if (providerConfigModified &&
                 providerFactory instanceof ProviderRegistry) {
@@ -506,26 +515,12 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         return jaspiContext;
     }
 
+    @SuppressWarnings("unchecked")
     protected MessageInfo newMessageInfo(JaspiRequest jaspiRequest) {
         HttpServletRequest req = jaspiRequest.getHttpServletRequest();
         MessageInfo msgInfo = new JaspiMessageInfo(req, jaspiRequest.getHttpServletResponse());
         msgInfo.getMap().put(IS_MANDATORY_POLICY, Boolean.toString(jaspiRequest.isMandatory()));
         return msgInfo;
-    }
-
-    protected ServerAuthContext getAuthContextFromProvider(JaspiRequest jaspiRequest, AuthConfigProvider provider) throws AuthException, SecurityException {
-        ServerAuthContext authContext = null;
-        String appContext = jaspiRequest.getAppContext();
-        if (provider != null) {
-            ServerAuthConfig authConfig = provider.getServerAuthConfig("HttpServlet", appContext, new JaspiCallbackHandler(this));
-            MessageInfo msgInfo = newMessageInfo(jaspiRequest);
-            jaspiRequest.setMessageInfo(msgInfo);
-            String authContextID = authConfig.getAuthContextID(msgInfo);
-            Map<String, String> props = getAuthContextProps(jaspiRequest);
-            Subject serviceSubject = null;
-            authContext = authConfig.getAuthContext(authContextID, serviceSubject, props);
-        }
-        return authContext;
     }
 
     protected ServerAuthContext getServerAuthContext(JaspiRequest jaspiRequest, AuthConfigProvider provider) throws AuthenticationException {
@@ -546,6 +541,60 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             }
         }
         return authContext;
+    }
+
+    protected ServerAuthContext getAuthContextFromProvider(JaspiRequest jaspiRequest, AuthConfigProvider provider) throws AuthException, SecurityException {
+        ServerAuthContext authContext = null;
+        String appContext = jaspiRequest.getAppContext();
+        if (provider != null) {
+            CallbackHandler jaspiCallbackHandler = getCallbackHandler(provider);
+            ServerAuthConfig authConfig = provider.getServerAuthConfig("HttpServlet", appContext, jaspiCallbackHandler);
+            MessageInfo msgInfo = newMessageInfo(jaspiRequest);
+            jaspiRequest.setMessageInfo(msgInfo);
+            String authContextID = authConfig.getAuthContextID(msgInfo);
+            Map<String, String> props = getAuthContextProps(jaspiRequest);
+            Subject serviceSubject = null;
+            authContext = authConfig.getAuthContext(authContextID, serviceSubject, props);
+        }
+        return authContext;
+    }
+
+    private CallbackHandler getCallbackHandler(final AuthConfigProvider provider) {
+        CallbackHandler callbackHandler;
+
+        if (isJsr375BridgeProvider(provider)) {
+            callbackHandler = new NonMappingCallbackHandler(this);
+        } else {
+            callbackHandler = new JaspiCallbackHandler(this);
+        }
+
+        return callbackHandler;
+    }
+
+    private boolean isJsr375BridgeProvider(AuthConfigProvider provider) {
+        return BridgeBuilderService.PROVIDER_DESCRIPTION == getProviderDescription(provider);
+    }
+
+    private String getProviderDescription(final AuthConfigProvider provider) {
+        String description;
+        if (System.getSecurityManager() == null) {
+            description = getDescription(provider);
+        } else {
+            description = AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+                @Override
+                public String run() {
+                    return getDescription(provider);
+                }
+            });
+        }
+        return description;
+    }
+
+    private String getDescription(AuthConfigProvider provider) {
+        AuthConfigFactory factory = AuthConfigFactory.getFactory();
+        String id = factory.getRegistrationIDs(provider)[0];
+        return factory.getRegistrationContext(id).getDescription();
     }
 
     /*
@@ -657,25 +706,28 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                     break;
 
                 default:
-                    authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC provider with status: " + responseStatus);
+                    authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authenticated with status: " + responseStatus);
                     break;
             }
 
         } else if (AuthStatus.SEND_FAILURE == status) {
             pretty = "SEND_FAILURE";
-            String detail = "JASPIC Authenticated with status: " + pretty + ", AuthResult.FAILURE";
-            authResult = new AuthenticationResult(AuthResult.FAILURE, detail);
+            String detail = "Returning response from JASPIC Authenticated with status: " + pretty + ", map to AuthResult.RETURN";
+            authResult = new AuthenticationResult(AuthResult.RETURN, detail);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, detail);
         } else {
-            authResult = new AuthenticationResult(AuthResult.FAILURE, "JASPIC Authentication failed, unexpected JASPIC AuthStatus: " + status);
+            authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authentication failed, unexpected JASPIC AuthStatus: " + status
+                                                                     + ", map to AuthResult.RETURN");
+            pretty = status.toString();
         }
-        if (authResult.getStatus().equals(AuthResult.FAILURE)) {
+
+        if (authResult.getStatus().equals(AuthResult.RETURN)) {
             Tr.info(tc, "JASPI_PROVIDER_FAILED_AUTHENTICATE", new Object[] { status, jaspiRequest.getHttpServletRequest().getRequestURI(),
                                                                              jaspiProviderServiceRef.getService() != null ? jaspiProviderServiceRef.getService().getClass() : null });
         }
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "mapToAuthenticationResult", "AuthenticationResult=" + pretty);
+            Tr.exit(tc, "mapToAuthenticationResult", "Jaspi AuthenticationResult=" + pretty);
         return authResult;
     }
 
@@ -687,8 +739,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
      * @return the WAS Subject
      * @throws WSLoginFailedException
      */
-    @SuppressWarnings("unchecked")
-    protected Subject doHashTableLogin(final Subject clientSubject, JaspiRequest jaspiRequest) throws WSLoginFailedException {
+    protected Subject doHashTableLogin(Subject clientSubject, JaspiRequest jaspiRequest) throws WSLoginFailedException {
         Subject authenticatedSubject = null;
         final Hashtable<String, Object> hashTable = getCustomCredentials(clientSubject);
         String unauthenticatedSubjectString = UNAUTHENTICATED_ID;
@@ -732,25 +783,20 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             final Subject sessionSubject = getSessionSubject(jaspiRequest);
             if (sessionSubject != null) {
                 final Subject clone = new Subject();
-                AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                    @Override
-                    public Void run() {
-                        // clone the session subject
-                        clone.getPrivateCredentials().addAll(sessionSubject.getPrivateCredentials());
-                        clone.getPublicCredentials().addAll(sessionSubject.getPublicCredentials());
-                        clone.getPrincipals().addAll(sessionSubject.getPrincipals());
-                        // add the hashtable from the JASPI provider
-                        clone.getPrivateCredentials().add(hashTable);
-                        return null;
-                    }
-                });
+                clone.getPrivateCredentials().addAll(sessionSubject.getPrivateCredentials());
+                clone.getPublicCredentials().addAll(sessionSubject.getPublicCredentials());
+                clone.getPrincipals().addAll(sessionSubject.getPrincipals());
+                // add the hashtable from the JASPI provider
+                clone.getPrivateCredentials().add(hashTable);
                 loginSubject = clone;
             }
-            HttpServletRequest req = jaspiRequest.getHttpServletRequest();
-            HttpServletResponse res = (HttpServletResponse) jaspiRequest.getMessageInfo().getResponseMessage();
-            if (tc.isDebugEnabled())
+            final HttpServletRequest req = jaspiRequest.getHttpServletRequest();
+            final HttpServletResponse res = (HttpServletResponse) jaspiRequest.getMessageInfo().getResponseMessage();
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "JASPI login with HashTable: " + hashTable);
+            }
             AuthenticationResult result = getWebProviderAuthenticatorHelper().loginWithHashtable(req, res, loginSubject);
+
             authenticatedSubject = result.getSubject();
             // Remove the custom credential hashtable from the session subject
             if (sessionSubject != null) {
@@ -763,6 +809,12 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         return authenticatedSubject;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public Hashtable<String, Object> getCustomCredentials(@Sensitive final Subject clientSubject) {
+        return (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(clientSubject);
+    }
+
     private Subject getSessionSubject(JaspiRequest jaspiRequest) {
         Subject sessionSubject = null;
         Map<String, Object> requestProps = jaspiRequest.getWebRequest().getProperties();
@@ -772,13 +824,29 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         return sessionSubject;
     }
 
-    /**
-     * @return
-     */
     protected synchronized WebProviderAuthenticatorHelper getWebProviderAuthenticatorHelper() {
-        if (authHelper == null)
+        if (authHelper == null) {
             authHelper = new WebProviderAuthenticatorHelper(securityServiceRef);
+        }
         return authHelper;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void removeCustomCredentials(Subject subject, Hashtable creds) {
+        if (subject != null) {
+            Set<Hashtable> s = subject.getPrivateCredentials(Hashtable.class);
+            if (s == null || s.isEmpty()) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "No custom credentials to remove from Subject.");
+            } else {
+                for (Hashtable t : s) {
+                    if (t == creds) {
+                        s.remove(t);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     void setRunSecureResponse(boolean isSet, JaspiAuthContext jaspiContext) {
@@ -997,7 +1065,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         // we will assume that some provider is registered so we will call jaspi to
         // process the request.
         boolean result = true;
-        AuthConfigFactory providerFactory = AuthConfigFactoryWrapper.getFactory();
+        AuthConfigFactory providerFactory = getAuthConfigFactory();
         BridgeBuilderService bridgeBuilderService = bridgeBuilderServiceRef.getService();
         if (bridgeBuilderService != null) {
             JaspiRequest jaspiRequest = new JaspiRequest(webRequest, null); //TODO: Some paths have a WebAppConfig that should be taken into accounnt when getting the appContext
@@ -1015,4 +1083,33 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         }
         return result;
     }
+
+    private AuthConfigFactory getAuthConfigFactory() {
+        return AccessController.doPrivileged(new PrivilegedAction<AuthConfigFactory>() {
+
+            @Override
+            public AuthConfigFactory run() {
+                return AuthConfigFactoryWrapper.getFactory();
+            }
+        });
+    }
+
+    @Override
+    public boolean isProcessingNewAuthentication(HttpServletRequest req) {
+        BridgeBuilderService bridgeBuilderService = bridgeBuilderServiceRef.getService();
+        if (bridgeBuilderService != null) {
+            return bridgeBuilderService.isProcessingNewAuthentication(req);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialPresent(HttpServletRequest req) {
+        BridgeBuilderService bridgeBuilderService = bridgeBuilderServiceRef.getService();
+        if (bridgeBuilderService != null) {
+            return bridgeBuilderService.isCredentialPresent(req);
+        }
+        return false;
+    }
+
 }

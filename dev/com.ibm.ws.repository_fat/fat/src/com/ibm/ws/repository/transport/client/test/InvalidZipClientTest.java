@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.zip.ZipException;
 
 import org.junit.Test;
 
@@ -45,9 +46,9 @@ public class InvalidZipClientTest {
         try {
             invalidFile.checkRepositoryStatus();
             fail("An exception should have been thrown as the repo should not be reachable");
-        } catch (IOException e) {
-            assertTrue("Wrong exception messages,  expected \"error in opening zip file\" but got \"" + e.getMessage() + "\"",
-                       e.getMessage().contains("error in opening zip file"));
+        } catch (ZipException e) {
+            // Can't check anything more as the exception message varies across JVM
+            // and ZipException is a bit generic
         }
     }
 }

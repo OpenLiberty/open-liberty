@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 FATTest_SearchBase.class,
                 FATTest_EntityTypeSearchFilterForGroupMembership.class,
                 FederationCertificateLoginTest.class,
-                ContextPoolOnLDAPFailureTest.class,
                 TDSLDAP_SSLRef_NoSSLTest.class,
                 TDSLDAP_SSLRef_BadSSLTest.class,
                 LDAPRegistryNoCustomContext.class,
@@ -70,7 +69,10 @@ import org.junit.runners.Suite.SuiteClasses;
                 OutboundSSLLDAPTest.class,
                 URAPIs_PropertiesNotSupportedTest.class,
                 SearchPagingTest.class,
-                GetUserSecurityCustomLDAP.class
+                GetUserSecurityCustomLDAP.class,
+                FATTestIDS_allIbmGroups.class,
+                CustomCertificateMapperInBellTest.class,
+                CustomCertificateMapperInFeatureTest.class
 })
 public class FATSuite extends CommonLocalLDAPServerSuite {
 

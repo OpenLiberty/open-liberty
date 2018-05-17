@@ -18,6 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -65,6 +67,7 @@ import com.ibm.wsspi.library.LibraryChangeListener;
 @Component(name = "com.ibm.ws.classloading.bell", configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class Bell implements LibraryChangeListener {
     private static final TraceComponent tc = Tr.register(Bell.class);
+    private static final char COMMENT_CHAR = '#';
 
     /**
      * Holds the meta-inf/services configuration entry and the name of the implementation class for the service
@@ -72,10 +75,12 @@ public class Bell implements LibraryChangeListener {
     private static final class ServiceInfo {
         final ArtifactEntry providerConfigFile;
         final String implClass;
+        final Hashtable<String, String> props;
 
-        ServiceInfo(final ArtifactEntry providerConfigFile, final String implClass) {
+        ServiceInfo(final ArtifactEntry providerConfigFile, final String implClass, final Hashtable<String, String> props) {
             this.providerConfigFile = providerConfigFile;
             this.implClass = implClass;
+            this.props = props;
         }
 
         @Override
@@ -270,35 +275,7 @@ public class Bell implements LibraryChangeListener {
     private static BufferedReader createReader(final ArtifactEntry providerConfigFile) throws IOException {
         final InputStream is = providerConfigFile.getInputStream();
         final InputStreamReader input = new InputStreamReader(is, Charset.forName("UTF8"));
-        return new BufferedReader(input) {
-            private static final String COMMENT_CHAR = "#";
-
-            @Override
-            public void close() throws IOException {
-                super.close();
-                input.close();
-                is.close();
-            }
-
-            @Override
-            public String readLine() throws IOException {
-                String line;
-                do {
-                    line = super.readLine();
-                    if (line == null) {
-                        return line;
-                    }
-                    // strip comments
-                    final int startOfComment = line.indexOf(COMMENT_CHAR);
-                    if (startOfComment != -1) {
-                        line = line.substring(0, startOfComment);
-                    }
-                    line = line.trim();
-                } while (line.isEmpty());
-
-                return line;
-            }
-        };
+        return new BufferedReader(input);
     }
 
     private static List<ServiceInfo> getListOfServicesForContainer(final ArtifactContainer servicesFolder, final Library library, Set<String> serviceNames) {
@@ -327,9 +304,28 @@ public class Bell implements LibraryChangeListener {
             try {
                 final BufferedReader reader = createReader(providerConfigFile);
                 try {
-                    String implClass;
-                    while ((implClass = reader.readLine()) != null) {
-                        serviceInfos.add(new ServiceInfo(providerConfigFile, implClass));
+                    String line;
+                    Hashtable<String, String> props = new Hashtable<String, String>();
+                    while ((line = reader.readLine()) != null) {
+                        int index = line.indexOf(COMMENT_CHAR);
+                        String implClass;
+                        if (index != -1) {
+                          String propStr = line.substring(index + 1);
+                          implClass = line.substring(0, index).trim();
+                          if (implClass.length() == 0) {
+                            String[] prop = propStr.split("=");
+                            if (prop.length == 2) {
+                              props.put(prop[0].trim(), prop[1].trim());
+                            }
+                          }
+                        } else {
+                          implClass = line.trim();
+                        }
+
+                        if (implClass.length() > 0) {
+                          serviceInfos.add(new ServiceInfo(providerConfigFile, implClass, props));
+                          props = new Hashtable<String, String>();
+                        }
                     }
                 } finally {
                     try {
@@ -365,7 +361,8 @@ public class Bell implements LibraryChangeListener {
 
             // Not entirely sure what these properties would be used for, but ...
             // they are currently used by the FAT tests to force all bell services to be eagerly created.
-            final Dictionary<String, Object> properties = new Hashtable<String, Object>();
+            final Hashtable<String, Object> properties = new Hashtable<String, Object>();
+            properties.putAll(serviceInfo.props);
             properties.put("implementation.class", serviceInfo.implClass);
             properties.put("exported.from", library.id());
 
@@ -384,7 +381,12 @@ public class Bell implements LibraryChangeListener {
                 public Class<?> getProviderImplClass() {
                     Class<?> implClass = implClassRef.get();
                     if (implClass == null) {
-                        Object service = context.getService(reg.getReference());
+                        Object service = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                            @Override
+                            public Object run() {
+                                return context.getService(reg.getReference());
+                            }
+                        });
                         if (service != null)
                             implClassRef.set(implClass = service.getClass());
                     }

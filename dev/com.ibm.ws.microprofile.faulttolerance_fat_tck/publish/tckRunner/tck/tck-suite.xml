@@ -15,10 +15,16 @@
             <method-selectors>
                 <method-selector>
                     <script language="beanshell">
+                    <!-- Some of the bulkhead tests fail when the test server are super slow...
+                         There's a race condition that causes these TCK tests to occasionally fail
+                         if the execution service has threads available but is slow to start work.
+                         For information on testBulkheadMethodAsynchronousRetry55Trip see OL#2994
+                         For information on testBulkheadClassAsynchFutureDoneWithoutGet see OL#3376 -->
                          <![CDATA[
-                        !method.getDeclaringClass().getSimpleName().startsWith("BulkheadAsynchTest") &&
-                        !method.getDeclaringClass().getSimpleName().startsWith("BulkheadAsynchRetryTest") &&
-                        !method.getDeclaringClass().getSimpleName().startsWith("BulkheadSynchRetryTest")
+                        !method.getName().startsWith("testBulkheadClassAsynchFutureDoneWithoutGet") &&
+                        !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
+                        !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
+                        !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") 
                     ]]>
                     </script>
                 </method-selector>

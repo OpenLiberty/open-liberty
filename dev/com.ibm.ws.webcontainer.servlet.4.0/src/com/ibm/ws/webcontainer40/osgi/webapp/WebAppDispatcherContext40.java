@@ -66,6 +66,10 @@ public class WebAppDispatcherContext40 extends WebAppDispatcherContext {
     public void pushServletReference(IServletWrapper wrapper) {
         super.pushServletReference(wrapper);
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "pushServletReference ENTRY, dispatchContext -> " + this + " _mapping [" + this._mapping + "]");
+        }
+
         _currentMapping = ((SRTServletRequest40) _request).getCurrentHttpServletMapping(this);
 
         //Check if this is the original servlet in the chain and set _originalMapping accordingly
@@ -81,9 +85,9 @@ public class WebAppDispatcherContext40 extends WebAppDispatcherContext {
             this._originalMapping = ((WebAppDispatcherContext40) this.getParentContext())._originalMapping;
         }
 
-        //These 2 values will be null only when using a named dispatcher
-        boolean isNamedDispatcher = _mapping == null && _match == null;
-
+        //don't rely on _mapping to determine namedDispatch as it can change earlier in the filter-chain
+        //namedDispatch is determined and set explicitly at the start of dispatching.
+        boolean isNamedDispatcher = isNamedDispatcher();
         if (isNamedDispatcher) {
             //Set the mapping to the parent's mapping if using a named dispatcher
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -118,6 +122,10 @@ public class WebAppDispatcherContext40 extends WebAppDispatcherContext {
         } else if (this.isAsync() && _request.getAttribute(RequestDispatcher.FORWARD_MAPPING) == null) {
             //Request attribute under which the original HttpServletMapping is made available to the target of a dispatch(String) or dispatch(ServletContext,String)
             _request.setAttribute(AsyncContext.ASYNC_MAPPING, _originalMapping);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "pushServletReference EXIT, dispatchContext -> " + this + " _mapping [" + this._mapping + "]");
         }
     }
 

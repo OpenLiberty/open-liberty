@@ -28,17 +28,13 @@ Export-Package: \
     !com.ibm.ws.microprofile.config.resources, \
     com.ibm.ws.microprofile.config*
 
-Private-Package: \
-    com.ibm.ws.microprofile.config.resources
+Private-Package: com.ibm.ws.microprofile.config.resources
 
 Import-Package: \
         org.eclipse.microprofile.config.*;version="[1.0,2)", \
         *
 
 WS-TraceGroup: APPCONFIG
-
-Include-Resource: \
-  META-INF/services=resources/META-INF/services
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 

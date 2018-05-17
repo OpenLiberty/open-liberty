@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,13 @@
 package com.ibm.ws.security.javaeesec;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.security.auth.message.config.AuthConfigProvider;
 import javax.security.auth.message.config.RegistrationListener;
-import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -30,7 +28,6 @@ import org.osgi.service.component.annotations.Deactivate;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jaspi.BridgeBuilderService;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 
@@ -63,12 +60,34 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
             // Create AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule bridge.
             Map<String, String> props = new ConcurrentHashMap<String, String>();
             authConfigProvider = new AuthProvider(props, providerFactory);
-            providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, "Built-in JSR-375 Bridge Provider");
-        } else{
+            providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, PROVIDER_DESCRIPTION);
+        } else {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpAuthenticationMechanism bean is not identified. JSR375 BridgeProvider is not enabled.");
             }
         }
+    }
+
+    @Override
+    public boolean isProcessingNewAuthentication(HttpServletRequest req) {
+        if (getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
+            AuthenticationParameters authParams = (AuthenticationParameters) req.getAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
+            if (authParams != null) {
+                return authParams.isNewAuthentication();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialPresent(HttpServletRequest req) {
+        if (getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
+            AuthenticationParameters authParams = (AuthenticationParameters) req.getAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
+            if (authParams != null) {
+                return (authParams.getCredential() != null);
+            }
+        }
+        return false;
     }
 
     protected ModulePropertiesUtils getModulePropertiesUtils() {

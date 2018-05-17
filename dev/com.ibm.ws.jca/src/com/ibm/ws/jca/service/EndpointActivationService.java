@@ -52,7 +52,6 @@ import com.ibm.ws.jca.internal.Utils;
 import com.ibm.ws.jca.metadata.ConnectorModuleMetaData;
 import com.ibm.ws.jca.osgi.JCARuntimeVersion;
 import com.ibm.ws.jca.osgi.JCARuntimeVersion16;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
@@ -438,7 +437,7 @@ public class EndpointActivationService implements XAResourceFactory, Application
         final String filter = FilterUtils.createPropertyFilter(ID, id);
         ServiceReference<?> authDataRef;
         try {
-            ServiceReference<?>[] authDataRefs = PrivHelper.getServiceReferences(componentContext, "com.ibm.websphere.security.auth.data.AuthData", filter);
+            ServiceReference<?>[] authDataRefs = ConnectionFactoryService.priv.getServiceReferences(componentContext, "com.ibm.websphere.security.auth.data.AuthData", filter);
             if (authDataRefs == null || authDataRefs.length != 1)
                 throw new UnavailableException("authData: " + id);
             authDataRef = authDataRefs[0];

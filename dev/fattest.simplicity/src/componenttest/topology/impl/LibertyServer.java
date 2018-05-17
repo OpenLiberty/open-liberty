@@ -1879,7 +1879,7 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "validateTimedExitEnabled";
         // 20 second timeout
         final long TIMEOUT = 20 * 1000;
-        final String TIMED_EXIT_ENABLED = "Timed Exit Enabled";
+        final String TIMED_EXIT_ENABLED = "TE9900A";
 
         List<String> message = findStringsInLogs(TIMED_EXIT_ENABLED, messagesLog);
 
@@ -3708,6 +3708,18 @@ public class LibertyServer implements LogMonitorClient {
             Log.finer(c, "replaceServerConfiguration", "Sleeping for 1 second to work around Unix / JDK limitation fixed in Java 8");
             Thread.sleep(1000);
         }
+    }
+
+    /**
+     * Reconfigures the server to use the new configuration file provided (relative to the autoFVT test files directory), waits for the
+     * configuration update to be processed, and waits for all of the specified messages (if any).
+     */
+    public void reconfigureServer(String newConfigFile, String... waitForMessages) throws Exception {
+        Log.info(c, "reconfigureServer", "Reconfiguring server to use new config: " + newConfigFile);
+        setMarkToEndOfLog();
+
+        setServerConfigurationFile(newConfigFile);
+        waitForConfigUpdateInLogUsingMark(installedApplications, waitForMessages);
     }
 
     /**

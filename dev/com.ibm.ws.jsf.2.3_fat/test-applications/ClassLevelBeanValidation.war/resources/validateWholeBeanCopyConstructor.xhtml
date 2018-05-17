@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2017, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <title>JSF 2.3 Class-Level Bean Validation - Copy Constructor</title> 
+    </h:head>
+    <h:body>
+        JSF 2.3 Class-Level Bean Validation with a bean that uses a copy constructor
+        <br/>
+        <h:form id="form1">
+            <h:inputText id="password1" value="#{testPasswordBeanCopyConstructor.password1}">
+                <f:validateBean validationGroups="com.ibm.ws.jsf23.fat.classlevel.bval.beans.PasswordValidationGroup"/>
+            </h:inputText>
+            <h:inputText id="password2" value="#{testPasswordBeanCopyConstructor.password2}">
+                <f:validateBean validationGroups="com.ibm.ws.jsf23.fat.classlevel.bval.beans.PasswordValidationGroup"/>
+            </h:inputText>
+
+            <f:validateWholeBean value="#{testPasswordBeanCopyConstructor}" validationGroups="com.ibm.ws.jsf23.fat.classlevel.bval.beans.PasswordValidationGroup"/>
+
+            <h:commandButton id="button1" value="Submit"/>
+        </h:form>
+
+        <h:messages style="color:red;margin:8px;" />
+
+        password1: #{testPasswordBeanCopyConstructor.password1}
+    </h:body>
+</html>

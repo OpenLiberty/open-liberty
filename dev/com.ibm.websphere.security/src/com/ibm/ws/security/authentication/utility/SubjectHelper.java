@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ public class SubjectHelper {
 
     /**
      * Check whether the subject is un-authenticated or not.
-     * 
+     *
      * @param subject {@code null} is supported.
      * @return Returns {@code true} if the Subject is either null
      *         or the UNAUTHENTICATED Subject. {@code false} otherwise.
@@ -59,7 +59,7 @@ public class SubjectHelper {
 
     /**
      * Gets the realm from the subjects' WSCredential.
-     * 
+     *
      * @param subject {@code null} is not supported.
      * @return
      */
@@ -74,7 +74,7 @@ public class SubjectHelper {
 
     /**
      * Gets the WSCredential from the subject.
-     * 
+     *
      * @param subject {@code null} is not supported.
      * @return
      */
@@ -90,17 +90,15 @@ public class SubjectHelper {
 
     /**
      * Gets a Hashtable of values from the Subject.
-     * 
+     *
      * @param subject {@code null} is not supported.
      * @param properties The properties to get.
      * @return
      */
     public Hashtable<String, ?> getHashtableFromSubject(final Subject subject, final String[] properties) {
-        return AccessController.doPrivileged(new PrivilegedAction<Hashtable<String, ?>>()
-        {
+        return AccessController.doPrivileged(new PrivilegedAction<Hashtable<String, ?>>() {
             @Override
-            public Hashtable<String, ?> run()
-            {
+            public Hashtable<String, ?> run() {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Looking for custom properties in public cred list.");
                 }
@@ -127,7 +125,7 @@ public class SubjectHelper {
     /**
      * Given a credential Set and an array of properties, find the Hashtable (if it exists) that has the
      * expected properties.
-     * 
+     *
      * @param creds {@code null} is not supported.
      * @param properties {@code null} is not supported.
      * @return The Hashtable with our properties, or null.
@@ -153,8 +151,7 @@ public class SubjectHelper {
     /**
      * Gets a GSSCredential from a Subject
      */
-    public static GSSCredential getGSSCredentialFromSubject(final Subject subject)
-    {
+    public static GSSCredential getGSSCredentialFromSubject(final Subject subject) {
         if (subject == null) {
             return null;
         }
@@ -229,11 +226,9 @@ public class SubjectHelper {
 
     private static GSSCredential createGSSCredential(Subject subject, final KerberosTicket ticket) {
         GSSCredential gssCred = null;
-        PrivilegedAction<Object> action = new PrivilegedAction<Object>()
-        {
+        PrivilegedAction<Object> action = new PrivilegedAction<Object>() {
             @Override
-            public Object run()
-            {
+            public Object run() {
                 GSSCredential inGssCrd = null;
                 try {
                     String clientName = ticket.getClient().getName();
@@ -261,16 +256,100 @@ public class SubjectHelper {
     }
 
     /**
+     * Creates a Hashtable of values in the Subject without tracing the Subject.
+     *
+     * @param subject {@code null} is not supported.
+     * @return the hashtable containing the properties.
+     */
+    @Sensitive
+    public Hashtable<String, Object> createNewHashtableInSubject(@Sensitive final Subject subject) {
+        return AccessController.doPrivileged(new NewHashtablePrivilegedAction(subject));
+    }
+
+    /*
+     * Class to avoid tracing Subject that otherwise is traced when using
+     * an anonymous PrivilegedAction resulting in an ACE when application code
+     * is in the call stack.
+     */
+    class NewHashtablePrivilegedAction implements PrivilegedAction<Hashtable<String, Object>> {
+
+        private final Subject subject;
+
+        @Trivial
+        public NewHashtablePrivilegedAction(Subject subject) {
+            this.subject = subject;
+        }
+
+        @Override
+        public Hashtable<String, Object> run() {
+            Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
+            subject.getPrivateCredentials().add(hashtable);
+            return hashtable;
+        }
+
+    }
+
+    /**
+     * Gets a Hashtable of values from the Subject without tracing the Subject or hashtable.
+     *
+     * @param subject {@code null} is not supported.
+     * @return the hashtable containing the properties.
+     */
+    @Sensitive
+    public Hashtable<String, ?> getSensitiveHashtableFromSubject(@Sensitive final Subject subject) {
+        if (System.getSecurityManager() == null) {
+            return getHashtableFromSubject(subject);
+        } else {
+            return AccessController.doPrivileged(new GetHashtablePrivilegedAction(subject));
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Trivial
+    private Hashtable<String, ?> getHashtableFromSubject(Subject subject) {
+        Set s = subject.getPrivateCredentials(Hashtable.class);
+        if (s == null || s.isEmpty()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Subject has no Hashtable, return null.");
+            }
+            return null;
+        } else {
+            return (Hashtable<String, ?>) s.iterator().next();
+        }
+    }
+
+    /*
+     * Class to avoid tracing Subject that otherwise is traced when using
+     * an anonymous PrivilegedAction resulting in an ACE when application code
+     * is in the call stack.
+     */
+    private class GetHashtablePrivilegedAction implements PrivilegedAction<Hashtable<String, ?>> {
+
+        private final Subject subject;
+
+        @Trivial
+        public GetHashtablePrivilegedAction(Subject subject) {
+            this.subject = subject;
+        }
+
+        @Trivial
+        @Override
+        public Hashtable<String, ?> run() {
+            return getHashtableFromSubject(subject);
+        }
+
+    }
+
+    /**
      * Gets a Hashtable of values from the Subject, but do not trace the hashtable
-     * 
+     *
      * @param subject {@code null} is not supported.
      * @param properties The properties to get.
      * @return the hashtable containing the properties.
      */
     @Sensitive
     public Hashtable<String, ?> getSensitiveHashtableFromSubject(@Sensitive final Subject subject, @Sensitive final String[] properties) {
-        return AccessController.doPrivileged(new PrivilegedAction<Hashtable<String, ?>>()
-        {
+        return AccessController.doPrivileged(new PrivilegedAction<Hashtable<String, ?>>() {
             @Override
             public Hashtable<String, ?> run() {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

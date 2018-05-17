@@ -237,6 +237,10 @@ unableToUpdateFingerprint=Nu se poate actualiza amprenta serviciului datorit\u01
 #Updated not applicable message stating no files have been written.
 patchingNotApplicableNoChange=Nu a fost extras niciun con\u0163inut deoarece nu exist\u0103 nicio caracteristic\u0103 de potrivire \u00een runtime-ul {0}
 
+# {0} is the name of the superseded fix and {1} is the name of the superseding fix.
+patchingSkippedSupersededFix=Corec\u0163ia {0} este \u00eenlocuit\u0103 de {1}, care este deja instalat\u0103.\n\
+\TInstalarea {0} a fost s\u0103rit\u0103.
+
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=A ap\u0103rut o eroare la citirea informa\u0163iilor iFix pentru instalarea curent\u0103. Mesajul excep\u0163iei este: {0}.
 # {0} is the path to a file that could not be parsed

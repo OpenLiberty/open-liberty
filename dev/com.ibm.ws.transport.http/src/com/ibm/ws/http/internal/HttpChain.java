@@ -34,6 +34,7 @@ import com.ibm.wsspi.channelfw.ChainEventListener;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
+import com.ibm.wsspi.channelfw.exception.InvalidRuntimeStateException;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
@@ -198,6 +199,7 @@ public class HttpChain implements ChainEventListener {
      * Stop this chain. The chain will have to be recreated when port is updated
      * notification/follow-on of stop operation is in the chainStopped listener method.
      */
+    @FFDCIgnore(InvalidRuntimeStateException.class)
     public synchronized void stop() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "stop chain " + this);
@@ -219,8 +221,14 @@ public class HttpChain implements ChainEventListener {
             if (cd != null) {
                 cfw.stopChain(cd, cfw.getDefaultChainQuiesceTimeout());
                 stopWait.waitForStop(cfw.getDefaultChainQuiesceTimeout(), this); // BLOCK
-                cfw.destroyChain(cd);
-                cfw.removeChain(cd);
+                try {
+                    cfw.destroyChain(cd);
+                    cfw.removeChain(cd);
+                } catch (InvalidRuntimeStateException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Error destroying or removing chain " + chainName, this, e);
+                    }
+                }
             }
         } catch (ChannelException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -362,7 +370,13 @@ public class HttpChain implements ChainEventListener {
                 if (isHttps) {
                     ChannelData sslChannel = cfw.getChannel(sslName);
                     if (sslChannel == null) {
-                        sslChannel = cfw.addChannel(sslName, cfw.lookupFactory("SSLChannel"), new HashMap<Object, Object>(sslOptions));
+                        chanProps = new HashMap<Object, Object>(sslOptions);
+                        // Put the protocol version, which allows the http channel to dynamically
+                        // know what http version it will use.
+                        if (owner.getProtocolVersion() != null) {
+                            chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
+                        }
+                        sslChannel = cfw.addChannel(sslName, cfw.lookupFactory("SSLChannel"), chanProps);
                     }
                 }
 
@@ -373,6 +387,11 @@ public class HttpChain implements ChainEventListener {
                     // Put the endpoint id, which allows us to find the registered access log
                     // dynamically
                     chanProps.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
+                    // Put the protocol version, which allows the http channel to dynamically
+                    // know what http version it will use.
+                    if (owner.getProtocolVersion() != null) {
+                        chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
+                    }
                     httpChannel = cfw.addChannel(httpName, cfw.lookupFactory("HTTPInboundChannel"), chanProps);
                 }
 

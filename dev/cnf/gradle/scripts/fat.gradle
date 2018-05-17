@@ -158,6 +158,7 @@ task autoFVT {
     // Check for minimum java level for test execution:
     def minJavaLevel = bnd('fat.minimum.java.level', bnd('javac.source'))
     bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
+    bndProps.setProperty('micro.version', bnd('libertyBundleMicroVersion'))
     
     File propsFile = new File(autoFvtDir, 'fat.bnd.properties')
     def writer = new FileWriter(propsFile)
@@ -213,7 +214,7 @@ task autoFVT {
       into new File(autoFvtDir, 'lib')
     }
     
-    // Copy all non-java app resourecs, such as *.html or *.jsp
+    // Copy all non-java app resources, such as *.html or *.jsp
     copy {
       includeEmptyDirs = false
       from projectDir
@@ -221,7 +222,16 @@ task autoFVT {
       include 'test-applications/**', 'test-bundles/**', 'test-resourceadapters/**'
       exclude '**/*.java'
     }
-    
+
+    // Copy any locally cloned git repositories' files
+    // This omits all git metadata by default (see gradle issue:1348).
+    File gitReposDir = new File(project.buildDir, 'gitRepos')
+    copy {
+      from gitReposDir
+      into new File(autoFvtDir, 'publish/gitRepos/')
+    }
+    delete gitReposDir
+
     // Produce a list of features tested by this FAT
     def featureDeps = [] as Set
     // Include features added explictly via bnd.bnd
@@ -322,6 +332,69 @@ assemble {
     enabled = false;
     dependsOn = [];
   }
+}
+
+ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com', org = 'eclipse' ->
+
+  // We need to know which MP project at least
+  if( proj == null || proj.length() == 0 ){
+    project.logger.lifecycle("The first parameter to task clone is the project name and cannot be defaulted");
+    return
+  }
+
+  // Default the branch to master but allow -Dbranch= or a parameter coming in
+  if( "NOT_SET".equals( branch ) ){
+    String branchProp = System.getProperty('branch')
+    if( branchProp != null && branchProp.length() > 0 ){
+       branch = branchProp
+    }else{
+       branch = "master"
+    }
+  }
+  
+  // Default the destination folder to the project name
+  if( folder == null || folder.length() == 0 ){
+    folder = proj
+  }
+
+  //Staging area parent folder to enable copying all subfolders.
+  File gitReposDir = new File(project.buildDir, 'gitRepos')
+
+  // If running locally use git directly
+  if( System.properties['fat.test.localrun'] ){
+
+    File repoDir = new File(gitReposDir, folder)
+    String into = repoDir.getAbsolutePath()
+     
+    String url = " " + site + ":" + org + "/" + proj + ".git "
+    String cmd = "git clone --depth 1 --single-branch --branch " + branch + " " + url + " " + into
+      
+    delete into
+    mkdir into
+    
+    def proc = cmd.execute()
+    proc.in.eachLine { line -> println cmd + ':\n' + line }
+    proc.err.eachLine { line -> println cmd + ':\n' + line }
+    proc.waitFor()
+    
+  } else {
+    // Make use of the EBC clone mechanism
+    project.logger.lifecycle('ebc clone')
+    ebcClone(url) 
+    
+    //EBC clones in dev/../../../<repo>
+    File ebcCloneDir = new File( project, "./../../../" )
+    copy {
+      from ebcCloneDir
+      include proj
+      into gitReposDir
+    }
+  }
+  
+}
+
+def ebcClone(String url, String branch, String repoPath){
+  // Non-local cloning is not implemented for now  
 }
 
 build {

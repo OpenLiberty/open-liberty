@@ -170,14 +170,9 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         try {
             verifyConfiguration();
             if (!identityStoreHandlerRegistered) {
-                if (identityStoreRegistered) {
-                    beansToAdd.add(new IdentityStoreHandlerBean(beanManager));
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "registering the default IdentityStoreHandler.");
-                } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "IdentityStoreHander is not registered because none of the identity store has been registered.");
-                }
+                beansToAdd.add(new IdentityStoreHandlerBean(beanManager));
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "registering the default IdentityStoreHandler.");
             } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "IdentityStoreHandler is not registered because a custom IdentityStoreHandler has been registered,");
@@ -974,7 +969,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         Properties props = new Properties();
         if (realm == null) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "basicAuthenticationMechanismRealmName is not set. the default value " + JavaEESecConstants.BASIC_AUTH_DEFAULT_REALM + " is used.");
+                Tr.debug(tc, "basicAuthenticationMechanismRealmName is not set. the default value " + JavaEESecConstants.DEFAULT_REALM + " is used.");
             }
         } else {
             if (tc.isDebugEnabled()) {

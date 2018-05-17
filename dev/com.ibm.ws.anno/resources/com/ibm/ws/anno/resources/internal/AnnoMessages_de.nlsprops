@@ -551,3 +551,14 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Suchen Sie in der Ausnahm
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Interner Fehler beim Scannen von Klassen: Jandex hat die Klasse [ {0} ] bereits verarbeitet.
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001 
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} A number
+# # {3} A number
+# # {4} The name of a file or the name of a directory
+# # Read - Past tense. 
+ANNO_JANDEX_USAGE=CWWKC0092I: Die Jandex-Indizes f\u00fcr {0} wurden aus {1} Archiven ({2} von {3} Klassen) in {4} gelesen. 
+ANNO_JANDEX_USAGE.explanation=Diese Nachricht zeigt die Anzahl der Archive im Modul an, die durch das Lesen von Jandex-Indizes und nicht durch das Scannen der eigentlichen Klassendateien verarbeitet wurden. Au\u00dferdem enth\u00e4lt die Nachricht die Gesamtanzahl der Klassen in der Anwendung, die durch das Lesen von Jandex-Indizes verarbeitet wurden.
+ANNO_JANDEX_USAGE.useraction=Wenn Jandex-Indizes f\u00fcr die Anwendung gelesen werden sollen, ist keine Aktion erforderlich. Wenn keine Jandex-Indizes f\u00fcr die Anwendung gelesen werden sollen, setzen Sie das Attribut useJandex="false" im Element application der Datei server.xml. Alternativ k\u00f6nnen Sie useJandex="false" im Element applicationManger in der Datei server.xml setzen, damit Jandex-Indizes in allen Anwendungen ignoriert werden.
+

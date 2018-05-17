@@ -38,7 +38,7 @@ import com.ibm.ws.security.registry.UserRegistry;
  * <p>
  * Identity Assertion login module
  * </p>
- * 
+ *
  * <p>
  * A principal will be logged in if a trust is established. This login module considers trust to
  * be established if the shared state contains a Map called com.ibm.wsspi.security.common.auth.module.IdentityAssertionLoginModule.state.
@@ -54,12 +54,12 @@ import com.ibm.ws.security.registry.UserRegistry;
  * <p>
  * If the Map is provided in the shared state then the identity will be logged in.
  * </p>
- * 
+ *
  * @author IBM Corporation
  * @version 1.0
  * @since 1.0
  * @ibm-spi
- * 
+ *
  */
 public class IdentityAssertionLoginModule implements LoginModule {
 
@@ -80,7 +80,7 @@ public class IdentityAssertionLoginModule implements LoginModule {
 
     /**
      * <p>Initialize this login module.</p>
-     * 
+     *
      * <p>
      * This is called by the <code>LoginContext</code> after this login module is
      * instantiated. The relevant information is passed from the <code>LoginContext</code>
@@ -88,7 +88,7 @@ public class IdentityAssertionLoginModule implements LoginModule {
      * stored in the <code>sharedState</code> and <code>options</code> parameters,
      * they can be ignored.
      * </p>
-     * 
+     *
      * @param subject The subject to be authenticated.
      * @param callbackHandler
      *            A <code>CallbackHandler</code> for communicating with the end user to gather login information (e.g., username and password).
@@ -106,7 +106,7 @@ public class IdentityAssertionLoginModule implements LoginModule {
      * <p>
      * Method to authenticate a Subject (first phase).
      * </p>
-     * 
+     *
      * <p>
      * This method authenticates a Subject. It uses the Map stored in the shared state property com.ibm.wsspi.security.common.auth.module.IdentityAssertionLoginModule.state.
      * The com.ibm.wsspi.security.common.auth.module.IdentityAssertionLoginModule.trusted key in the Map is used to determine trust. If true
@@ -114,7 +114,7 @@ public class IdentityAssertionLoginModule implements LoginModule {
      * com.ibm.wsspi.security.common.auth.module.IdentityAssertionLoginModule.principal or com.ibm.wsspi.security.common.auth.module.IdentityAssertionLoginModule.certificates
      * key will contain the identity to login as.
      * </p>
-     * 
+     *
      * @return <code><b>true</b></code> if the authentication succeeded, or <code><b>false</b></code>
      *         if this login module should be ignored.
      * @exception WSLoginFailedException
@@ -196,7 +196,7 @@ public class IdentityAssertionLoginModule implements LoginModule {
     private String getUserNameFromCertificate() throws WSLoginFailedException {
         String name = null;
         try {
-            name = userRegistry.mapCertificate(certificateChain[0]);
+            name = userRegistry.mapCertificate(certificateChain);
         } catch (Exception e) {
             // if (tc.isDebugEnabled()) Tr.debug(tc, "Exception when calling contextManager.login");
             throw new WSLoginFailedException(e.getLocalizedMessage());
@@ -213,15 +213,15 @@ public class IdentityAssertionLoginModule implements LoginModule {
 
     /**
      * Commit the authentication (phase 2).
-     * 
+     *
      * <p>
      * If the login module authentication attempted in phase 1 succeeded, then relevant principals and credentials
      * are associated with the subject. If the authentication attempted in phase 1 failed, then this method
      * removes/destroys any state that was originally saved.
      * </p>
-     * 
+     *
      * @exception WSLoginFailedException if the commit fails
-     * 
+     *
      * @return true if this LoginModule's own login and commit attempts
      *         succeeded, or false otherwise.
      */
@@ -266,7 +266,7 @@ public class IdentityAssertionLoginModule implements LoginModule {
 
     /**
      * Abort the authentication (second phase).
-     * 
+     *
      * <p>
      * This method is called if the <code>LoginContext</code>'s overall authentication failed.
      * </p>
@@ -274,9 +274,9 @@ public class IdentityAssertionLoginModule implements LoginModule {
      * If this login module's authentication attempt succeeded, then this method cleans up the previous state
      * saved in phase 1.
      * </p>
-     * 
+     *
      * @exception LoginException if the abort fails
-     * 
+     *
      * @return false if this LoginModule's own login and/or commit attempts
      *         failed, and true otherwise.
      */
@@ -289,13 +289,13 @@ public class IdentityAssertionLoginModule implements LoginModule {
 
     /**
      * Logout the user
-     * 
+     *
      * <p>
      * The principals and credentials are removed from the Shared state.
      * </p>
-     * 
+     *
      * @exception LoginException if the logout fails
-     * 
+     *
      * @return true in all cases (this <code>LoginModule</code>
      *         should not be ignored).
      */

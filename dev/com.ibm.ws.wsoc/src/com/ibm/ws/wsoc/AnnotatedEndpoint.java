@@ -67,8 +67,8 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
     private boolean shouldProcessPath = true;
 
     private static final Class<?>[] messageTextTypesAllowed = { String.class, Reader.class, char.class, Character.class, byte.class, Byte.class, short.class, Short.class,
-                                                               int.class, Integer.class,
-                                                               long.class, Long.class, float.class, Float.class, double.class, Double.class, boolean.class, Boolean.class };
+                                                                int.class, Integer.class,
+                                                                long.class, Long.class, float.class, Float.class, double.class, Double.class, boolean.class, Boolean.class };
     private static List<Class<?>> messageTextTypesList = Arrays.asList(messageTextTypesAllowed);
 
     private static final Class<?>[] messageBinaryTypesAllowed = { ByteBuffer.class, InputStream.class, byte[].class };
@@ -143,8 +143,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 valid = true;
             }
         }
@@ -153,7 +152,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.Endpoint#onOpen(javax.websocket.Session, javax.websocket.EndpointConfig)
      */
     @Override
@@ -197,7 +196,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.Endpoint#onOpen(javax.websocket.Session, javax.websocket.EndpointConfig)
      */
     @Override
@@ -225,7 +224,8 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                      * "If the container cannot decode the path segment appropriately to the annotated path parameter, then the container must raise an DecodeException to the error
                      * handling method of the websocket containing the path segment. [WSC-4.3-6]"
                      * Section
-                     * 4.5:"If the method itself throws an error, the implementation must pass this error to the onError() method of the endpoint together with the session [WSC-4.5-3]"
+                     * 4.
+                     * 5:"If the method itself throws an error, the implementation must pass this error to the onError() method of the endpoint together with the session [WSC-4.5-3]"
                      */
                     this.onError(session, e);
                     return;
@@ -260,7 +260,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.Endpoint#onOpen(javax.websocket.Session, javax.websocket.EndpointConfig)
      */
     @Override
@@ -283,11 +283,11 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                     onError.processPathParameters(this, args);
                 } catch (DecodeException e) {
                     //We can not call onError() again for this since that will result in infinite loop. This is a double error situation,
-                    //1) First exception is original exception 'thr' which onError method is called for  
+                    //1) First exception is original exception 'thr' which onError method is called for
                     //2) Secondly, while processing @OnError method's pathparam, there is an exception. Spec is not clear on how to report both exceptions to the user.
                     //We report DecodeException (@PathParam processing issue) first, so that user can correct their @Pathparam parameter in their app
                     //For e.g onError() method, if user has declared parameter as 'int vipLevel'and passed value for vipLevel as 'xyz' by mistake, DecodeException
-                    //will occur here and they need to correct it first anyway. Then, for the next invocation user's onError(..) is called with the exception why the 
+                    //will occur here and they need to correct it first anyway. Then, for the next invocation user's onError(..) is called with the exception why the
                     //onError(..) is invoked for.
                     thr = e;
                 }
@@ -372,11 +372,11 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc,
                                  "Pong @OnMessage found: Path: " + endpointPath + "Endpoint Class: " + clazz.getName() + " Method name: " + onMessagePong.method.getName()
-                                                 + " Message Type: "
-                                                 + onMessagePongLocal.getMethodData().getMessageType()
-                                                 + " Message index: "
-                                                 + onMessagePongLocal.getMethodData().getMessageIndex()
-                                                 + " Session index: " + onMessagePongLocal.getMethodData().getSessionIndex());
+                                     + " Message Type: "
+                                     + onMessagePongLocal.getMethodData().getMessageType()
+                                     + " Message index: "
+                                     + onMessagePongLocal.getMethodData().getMessageIndex()
+                                     + " Session index: " + onMessagePongLocal.getMethodData().getSessionIndex());
                     }
                     continue;
                 }
@@ -399,11 +399,11 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc,
                                  "Binary @OnMessage found: Path: " + endpointPath + "Endpoint Class: " + clazz.getName() + " Method name: " + onMessageBinary.method.getName()
-                                                 + " Message Type: "
-                                                 + onMessageBinary.getMethodData().getMessageType()
-                                                 + " Message index: "
-                                                 + onMessageBinary.getMethodData().getMessageIndex()
-                                                 + " Session index: " + onMessageBinary.getMethodData().getSessionIndex());
+                                     + " Message Type: "
+                                     + onMessageBinary.getMethodData().getMessageType()
+                                     + " Message index: "
+                                     + onMessageBinary.getMethodData().getMessageIndex()
+                                     + " Session index: " + onMessageBinary.getMethodData().getSessionIndex());
                     }
                     //sets maxMessageSize if user has specified in @OnMessage annotation. This is applicable only for whole binary and text messages
                     setMaxMessageSize(method, onMessageBinaryLocal);
@@ -433,11 +433,11 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc,
                                  "Text @OnMessage found: Path: " + endpointPath + "Endpoint Class: " + clazz.getName() + " Method name: " + onMessageText.method.getName()
-                                                 + " Message Type: "
-                                                 + onMessageText.getMethodData().getMessageType()
-                                                 + " Message index: "
-                                                 + onMessageText.getMethodData().getMessageIndex()
-                                                 + " Session index: " + onMessageText.getMethodData().getSessionIndex());
+                                     + " Message Type: "
+                                     + onMessageText.getMethodData().getMessageType()
+                                     + " Message index: "
+                                     + onMessageText.getMethodData().getMessageIndex()
+                                     + " Session index: " + onMessageText.getMethodData().getSessionIndex());
                     }
                     //sets maxMessageSize if user has specified in @OnMessage annotation. This is applicable only for whole binary and text messages
                     setMaxMessageSize(method, onMessageTextLocal);
@@ -487,11 +487,9 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
             //check if this param is already processed as @PathParam. If yes, skip to the next param
             if (methodData.getPathParams() != null && methodData.getPathParams().containsKey(i)) {
                 continue;
-            }
-            else if (param.equals(javax.websocket.Session.class)) { //check if this is a optional session parameter
+            } else if (param.equals(javax.websocket.Session.class)) { //check if this is a optional session parameter
                 methodData.setSessionIndex(i);
-            }
-            else if (param.equals(javax.websocket.EndpointConfig.class)) { //check if this is a optional EndpointConfig parameter
+            } else if (param.equals(javax.websocket.EndpointConfig.class)) { //check if this is a optional EndpointConfig parameter
                 methodData.setEndpointConfigIndex(i);
             } else { //invalid type
                 String msg = Tr.formatMessage(tc,
@@ -532,11 +530,9 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
             //check if this param is already processed as @PathParam. If yes, skip to the next param
             if (methodData.getPathParams() != null && methodData.getPathParams().containsKey(i)) {
                 continue;
-            }
-            else if (param.equals(javax.websocket.Session.class)) { //check if this is a optional session parameter
+            } else if (param.equals(javax.websocket.Session.class)) { //check if this is a optional session parameter
                 methodData.setSessionIndex(i);
-            }
-            else if (param.equals(javax.websocket.CloseReason.class)) { //check if this is a optional CloseReason parameter
+            } else if (param.equals(javax.websocket.CloseReason.class)) { //check if this is a optional CloseReason parameter
                 methodData.setCloseReasonIndex(i);
             } else { //invalid type
                 onClose = null;
@@ -577,11 +573,9 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
             //check if this param is already processed as @PathParam. If yes, skip to the next param
             if (methodData.getPathParams() != null && methodData.getPathParams().containsKey(i)) {
                 continue;
-            }
-            else if (param.equals(javax.websocket.Session.class)) { //check if this is a optional session parameter
+            } else if (param.equals(javax.websocket.Session.class)) { //check if this is a optional session parameter
                 methodData.setSessionIndex(i);
-            }
-            else if (param.equals(java.lang.Throwable.class)) { //check if mandatory parameter Throwable exists
+            } else if (param.equals(java.lang.Throwable.class)) { //check if mandatory parameter Throwable exists
                 methodData.setThrowableIndex(i);
                 onErrorProcessed = true;
             } else { //invalid type
@@ -641,23 +635,20 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
             //check if this param is already processed as @PathParam. If yes, skip to the next param
             if (methodData.getPathParams() != null && methodData.getPathParams().containsKey(i)) {
                 continue;
-            }
-            else if (param.equals(javax.websocket.Session.class)) { //check if this is a session parameter
+            } else if (param.equals(javax.websocket.Session.class)) { //check if this is a session parameter
                 methodData.setSessionIndex(i);
-            }
-            else if (messagePongTypesList.contains(param)) {
+            } else if (messagePongTypesList.contains(param)) {
                 if (methodData.getMessageType() == null) {
                     methodData.setMessageType(param);
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc,
                                  "In discoverOnMessagePongMethodAnnotation: Path: " + endpointPath + "Endpoint Class: " + c.getName() + " Method name: " + method.getName()
-                                                 + " MethodHelper instance: "
-                                                 + methodHelper
-                                                 + " Setting MessageType in methodData: "
-                                                 + methodData
-                                                 + " param: "
-                                                 + param
-                                        );
+                                     + " MethodHelper instance: "
+                                     + methodHelper
+                                     + " Setting MessageType in methodData: "
+                                     + methodData
+                                     + " param: "
+                                     + param);
                     }
                     methodData.setMessageIndex(i);
                 }
@@ -694,21 +685,19 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc,
                      "In discoverOnMessageBinaryMethodAnnotation: Path: " + endpointPath + "Endpoint Class: " + c.getName() + " Method name: " + method.getName()
-                                     + " New MethodHelper instance: "
-                                     + methodHelper
-                                     + " New methodData instance: "
-                                     + methodData
-                            );
+                         + " New MethodHelper instance: "
+                         + methodHelper
+                         + " New methodData instance: "
+                         + methodData);
         }
         methodHelper.setMethodData(methodData);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc,
                      "In discoverOnMessageBinaryMethodAnnotation: Path: " + endpointPath + "Endpoint Class: " + c.getName() + " Method name: " + method.getName()
-                                     + " MethodHelper instance: "
-                                     + methodHelper
-                                     + " Setting methodData instance to method helper: "
-                                     + methodData
-                            );
+                         + " MethodHelper instance: "
+                         + methodHelper
+                         + " Setting methodData instance to method helper: "
+                         + methodData);
         }
         if (shouldProcessPath) {
             methodHelper.setEndpointPath(endpointPath);
@@ -721,8 +710,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
             //check if this param is already processed as @PathParam. If yes, skip to the next param
             if (methodData.getPathParams() != null && methodData.getPathParams().containsKey(i)) {
                 continue;
-            }
-            else if (param.equals(javax.websocket.Session.class)) {//check if this is a session parameter
+            } else if (param.equals(javax.websocket.Session.class)) {//check if this is a session parameter
                 methodData.setSessionIndex(i);
             }
             //Spec: OnMessage method can have byte[] and boolean pair (optional), or ByteBuffer and boolean pair(optional) to receive the message in parts
@@ -738,13 +726,12 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                         if (tc.isDebugEnabled()) {
                             Tr.debug(tc,
                                      "In discoverOnMessageBinaryMethodAnnotation: Path: " + endpointPath + "Endpoint Class: " + c.getName() + " Method name: " + method.getName()
-                                                     + " MethodHelper instance: "
-                                                     + methodHelper
-                                                     + " Setting MessageType in methodData: "
-                                                     + methodData
-                                                     + " param: "
-                                                     + param
-                                            );
+                                         + " MethodHelper instance: "
+                                         + methodHelper
+                                         + " Setting MessageType in methodData: "
+                                         + methodData
+                                         + " param: "
+                                         + param);
                         }
                         methodData.setMessageIndex(i);
                     }
@@ -752,6 +739,16 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                     if (param.equals(boolean.class)) {
                         if (methodData.getMessageType().equals(byte[].class) || methodData.getMessageType().equals(java.nio.ByteBuffer.class)) {
                             methodData.setMsgBooleanPairIndex(i);
+                        } else {
+                            //invalid param type found in a pong msg type method.
+                            String msg = Tr.formatMessage(tc,
+                                                          "invalid.binary.param",
+                                                          method.getName(), c.getName(), param.getClass().getName());
+                            Tr.error(tc,
+                                     "invalid.binary.param",
+                                     method.getName(), c.getName(), param.getClass().getName());
+                            throw new DeploymentException(msg);
+
                         }
                     } else {
                         //found another binary type param. This is a user error as there can be only one binary type param type in a method
@@ -816,14 +813,13 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                                                     if (tc.isDebugEnabled()) {
                                                         Tr.debug(tc,
                                                                  "In discoverOnMessageBinaryMethodAnnotation: Path: " + endpointPath + "Endpoint Class: " + c.getName()
-                                                                                 + " Method name: " + method.getName()
-                                                                                 + " MethodHelper instance: "
-                                                                                 + methodHelper
-                                                                                 + " Setting MessageType in methodData: "
-                                                                                 + methodData
-                                                                                 + " param: "
-                                                                                 + param
-                                                                        );
+                                                                     + " Method name: " + method.getName()
+                                                                     + " MethodHelper instance: "
+                                                                     + methodHelper
+                                                                     + " Setting MessageType in methodData: "
+                                                                     + methodData
+                                                                     + " param: "
+                                                                     + param);
                                                     }
                                                     methodData.setMessageIndex(i);
                                                 } else {
@@ -859,14 +855,13 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                                                     if (tc.isDebugEnabled()) {
                                                         Tr.debug(tc,
                                                                  "In discoverOnMessageBinaryMethodAnnotation: Path: " + endpointPath + "Endpoint Class: " + c.getName()
-                                                                                 + " Method name: " + method.getName()
-                                                                                 + " MethodHelper instance: "
-                                                                                 + methodHelper
-                                                                                 + " Setting MessageType in methodData: "
-                                                                                 + methodData
-                                                                                 + " param: "
-                                                                                 + param
-                                                                        );
+                                                                     + " Method name: " + method.getName()
+                                                                     + " MethodHelper instance: "
+                                                                     + methodHelper
+                                                                     + " Setting MessageType in methodData: "
+                                                                     + methodData
+                                                                     + " param: "
+                                                                     + param);
                                                     }
                                                     methodData.setMessageIndex(i);
                                                 } else {
@@ -959,8 +954,17 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
                     if (param.equals(boolean.class)) {
                         if (methodData.getMessageType().equals(String.class)) {
                             methodData.setMsgBooleanPairIndex(i);
+                        } else {
+                            String msg = Tr.formatMessage(tc,
+                                                          "invalid.text.param",
+                                                          method.getName(), c.getName(), param.getClass().getName());
+                            Tr.error(tc,
+                                     "invalid.text.param",
+                                     method.getName(), c.getName(), param.getClass().getName());
+                            throw new DeploymentException(msg);
+
                         }
-                    } else if (param.equals(String.class) && !methodData.getMessageType().equals(String.class)) { //check if 2nd param is also string. 2 string msg params are not allowed 
+                    } else if (param.equals(String.class) && !methodData.getMessageType().equals(String.class)) { //check if 2nd param is also string. 2 string msg params are not allowed
                         methodData.setMessageType(param); //found a string param, which means in if {} block was indeed a boolean pair. Hence override the msg type.
                         methodData.setMessageIndex(i);
                         // it's certain what was found in previous loop in if {} was a boolean pair
@@ -1092,7 +1096,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
 
     /**
      * Returns endpoint Path. For e.g endpoint path is /bookings/{guest-id} for endpoint class with @ServerEndpoint("/bookings/{guest-id}")
-     * 
+     *
      * @return endpoint path
      */
     public String getEndpointPath() {
@@ -1102,7 +1106,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
     /**
      * Returns request path for the runtime request.
      * endpoint class with @ServerEndpoint("/bookings/{guest-id}") the request path for this endpoint couldbe be /bookings/JohnSmith
-     * 
+     *
      * @return endpoint path
      */
     public String getRequestPath() {
@@ -1111,9 +1115,9 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
 
     /**
      * endpoint class with @ServerEndpoint("/bookings/{guest-id}") the request path for this endpoint could be /bookings/JohnSmith
-     * 
+     *
      * @param requestPath the requestPath
-     * 
+     *
      */
     public void setRequestPath(String requestPath) {
         this.requestPath = requestPath;
@@ -1166,7 +1170,7 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
     private void setMaxMessageSize(Method method, EndpointMethodHelper endpointMethodHelper) {
         OnMessage onMsgAnnotation = method.getAnnotation(OnMessage.class);
         Long maxMessageSize = onMsgAnnotation.maxMessageSize();
-        // maxMessageSize is apparently -1 if it is not defined. 
+        // maxMessageSize is apparently -1 if it is not defined.
         if (maxMessageSize < -1) {
             // user has put in an invalid value, so change it to undefined.
             maxMessageSize = Constants.ANNOTATED_UNDEFINED_MAX_MSG_SIZE;
@@ -1181,12 +1185,11 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
     private Method[] getDeclaredMethodsPrivileged(final Class<?> clazz) {
 
         return AccessController.doPrivileged(
-                        new PrivilegedAction<Method[]>() {
-                            @Override
-                            public Method[] run() {
-                                return clazz.getDeclaredMethods();
-                            }
-                        }
-                        );
+                                             new PrivilegedAction<Method[]>() {
+                                                 @Override
+                                                 public Method[] run() {
+                                                     return clazz.getDeclaredMethods();
+                                                 }
+                                             });
     }
 }

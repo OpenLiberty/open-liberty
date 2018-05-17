@@ -460,6 +460,11 @@ warning.binding.config=CWWKG0101W: Konfigurace s PID (persisted identity) {0} je
 warning.binding.config.explanation=Konfigurace je sv\u00e1z\u00e1na s bal\u00edkem vol\u00e1n\u00ed, kdy\u017e je metoda getConfiguration rozhran\u00ed ConfigurationAdmin vol\u00e1na poprv\u00e9. Po sv\u00e1z\u00e1n\u00ed nen\u00ed konfigurace ji\u017e viditeln\u00e1 pro jin\u00e9 bal\u00edky. 
 warning.binding.config.useraction=Chcete-li se ujistit, \u017ee um\u00edst\u011bn\u00ed bal\u00edku je o\u010dek\u00e1van\u00e1 hodnota, pou\u017eijte metodu getConfiguration v rozhran\u00ed ConfigurationAdmin, kde jako druh\u00fd parametr je um\u00edst\u011bn\u00ed bal\u00edku.
 
+# This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
+info.config.conflict=CWWKG0102I: {0}
+info.config.conflict.explanation=Pro stejnou vlastnost konfigurace je ur\u010deno v\u00edce hodnot. 
+info.config.conflict.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Informa\u010dn\u00ed zpr\u00e1va nebude vytv\u00e1\u0159ena, pokud \u00fapravou konfigurace serveru odeberete konflikt, kter\u00fd ji zp\u016fsobuje.
+ 
 
 # Non-TR message
 error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

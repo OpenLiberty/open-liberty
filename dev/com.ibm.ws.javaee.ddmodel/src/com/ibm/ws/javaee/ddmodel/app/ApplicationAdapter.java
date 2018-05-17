@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,21 +30,28 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
     private ServiceReference<JavaEEVersion> versionRef;
     private volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
 
-    public synchronized void setVersion(ServiceReference<JavaEEVersion> reference) {
-        versionRef = reference;
-        platformVersion = Version.parseVersion((String) reference.getProperty("version"));
+    public synchronized void setVersion(ServiceReference<JavaEEVersion> referenceRef) {
+        this.versionRef = referenceRef;
+
+        String versionText = (String) referenceRef.getProperty("version");
+        this.platformVersion = Version.parseVersion((String) referenceRef.getProperty("version"));
     }
 
-    public synchronized void unsetVersion(ServiceReference<JavaEEVersion> reference) {
-        if (reference == this.versionRef) {
-            versionRef = null;
-            platformVersion = JavaEEVersion.DEFAULT_VERSION;
+    public synchronized void unsetVersion(ServiceReference<JavaEEVersion> versionRef) {
+        if (versionRef == this.versionRef) {
+            this.versionRef = null;
+            this.platformVersion = JavaEEVersion.DEFAULT_VERSION;
         }
     }
 
     @FFDCIgnore(ParseException.class)
     @Override
-    public Application adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
+    public Application adapt(
+        Container root,
+        OverlayContainer rootOverlay,
+        ArtifactContainer artifactContainer,
+        Container containerToAdapt) throws UnableToAdaptException {
+
         Application appDD = (Application) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), Application.class);
         if (appDD != null) {
             return appDD;
@@ -84,50 +91,74 @@ public final class ApplicationAdapter implements ContainerAdapter<Application> {
             if (!"application".equals(rootElementLocalName)) {
                 throw new ParseException(invalidRootElement());
             }
+
+            // Old DTD based descriptor.
+
             if (namespace == null) {
                 if (dtdPublicId != null) {
                     if (APPLICATION_DTD_PUBLIC_ID_12.equals(dtdPublicId)) {
-                        version = 12;
-                        eePlatformVersion = 12;
+                        version = Application.VERSION_1_2;
+                        eePlatformVersion = Application.VERSION_1_2;
                         return new ApplicationType(getDeploymentDescriptorPath());
                     }
                     if (APPLICATION_DTD_PUBLIC_ID_13.equals(dtdPublicId)) {
-                        version = 13;
-                        eePlatformVersion = 13;
+                        version = Application.VERSION_1_3;
+                        eePlatformVersion = Application.VERSION_1_3;
                         return new ApplicationType(getDeploymentDescriptorPath());
                     }
                 }
                 throw new ParseException(unknownDeploymentDescriptorVersion());
             }
+
+            // Schema based descriptor.
+
+            // A version must always be specified.
             String vers = getAttributeValue("", "version");
+
             if (vers == null) {
                 throw new ParseException(missingDeploymentDescriptorVersion());
             }
 
-            if ("http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
-                if ("1.4".equals(vers)) {
-                    version = 14;
-                    eePlatformVersion = 14;
+            if ("1.4".equals(vers)) {
+                // Always supported. The namespace must be correct for the version.
+                if ("http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
+                    version = Application.VERSION_1_4;
+                    eePlatformVersion = Application.VERSION_1_4;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
-            }
-            else if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
-                if ("5".equals(vers)) {
-                    version = 50;
-                    eePlatformVersion = 50;
+            } else if ("5".equals(vers)) {
+                // Always supported. The namespace must be correct for the version.
+                if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
+                    version = Application.VERSION_5;
+                    eePlatformVersion = Application.VERSION_5;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
-                if ("6".equals(vers)) {
-                    version = 60;
-                    eePlatformVersion = 60;
+            } else if ("6".equals(vers)) {
+                // Always supported. The namespace must be correct for the version.
+                if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
+                    version = Application.VERSION_6;
+                    eePlatformVersion = Application.VERSION_6;
                     return new ApplicationType(getDeploymentDescriptorPath());
                 }
-            }
-            else if (eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0 && "http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                if ("7".equals(vers)) {
-                    version = 70;
-                    eePlatformVersion = 70;
-                    return new ApplicationType(getDeploymentDescriptorPath());
+            } else if ("7".equals(vers)) {
+                // Supported only when provisioned for java 7 or higher.
+                // The namespace must still be correctly set.
+                if (eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) {
+                    if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+                        version = Application.VERSION_7;
+                        eePlatformVersion = Application.VERSION_7;
+                        return new ApplicationType(getDeploymentDescriptorPath());
+                    }
+                }
+            } else if ("8".equals(vers)) {
+                // Supported only when provisioned for java 8 or higher.
+                // The namespace must still be correctly set.
+                if (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0) {
+                    if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+                        version = Application.VERSION_8;
+                        eePlatformVersion = Application.VERSION_8;
+                        return new ApplicationType(getDeploymentDescriptorPath());
+                    }
                 }
             }
 

@@ -19,8 +19,9 @@ import org.junit.Test;
 import com.ibm.ws.microprofile.config.TestUtils;
 import com.ibm.ws.microprofile.config.dynamic.test.TestDynamicConfigSource;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
-public class StaticSourceTest {
+public class StaticSourceTest extends AbstractConfigTest {
 
     @Test
     public void testStaticSource() {
@@ -39,19 +40,22 @@ public class StaticSourceTest {
         Config config = builder.build();
 
         //check that initially that is all we can see
-        TestUtils.assertContent(config, key1, value1, key2);
+        TestUtils.assertValue(config, key1, value1);
+        TestUtils.assertNotContainsKey(config, key2);
 
         //add a second entry
         configSource.put(key2, value2);
 
         //should not show up
-        TestUtils.assertContent(config, key1, value1, key2);
+        TestUtils.assertValue(config, key1, value1);
+        TestUtils.assertNotContainsKey(config, key2);
 
         //remove the first entry
         configSource.remove(key1);
 
         //still should not have changed
-        TestUtils.assertContent(config, key1, value1, key2);
+        TestUtils.assertValue(config, key1, value1);
+        TestUtils.assertNotContainsKey(config, key2);
 
     }
 

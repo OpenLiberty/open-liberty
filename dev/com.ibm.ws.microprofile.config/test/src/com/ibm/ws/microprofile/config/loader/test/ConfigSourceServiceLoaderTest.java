@@ -11,25 +11,24 @@
 package com.ibm.ws.microprofile.config.loader.test;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.config.TestUtils;
+import com.ibm.ws.microprofile.test.AbstractConfigTest;
 
-public class ConfigSourceServiceLoaderTest {
+public class ConfigSourceServiceLoaderTest extends AbstractConfigTest {
 
     //Service Loader is used when default Config Sources are added
     @Test
     public void testConfigSourceServiceLoader() {
         Config configA = null;
         try {
-            configA = ConfigProvider.getConfig();
-            Iterable<String> keys = configA.getPropertyNames();
-            TestUtils.assertContains(keys, "SLKey1");
-            TestUtils.assertContains(keys, "SLKey2");
-            TestUtils.assertContains(keys, "SLKey3");
-            TestUtils.assertContains(keys, "SLKey4");
+            configA = ConfigProviderResolver.instance().getConfig();
+            TestUtils.assertContainsKey(configA, "SLKey1");
+            TestUtils.assertContainsKey(configA, "SLKey2");
+            TestUtils.assertContainsKey(configA, "SLKey3");
+            TestUtils.assertContainsKey(configA, "SLKey4");
         } finally {
             if (configA != null) {
                 ConfigProviderResolver.instance().releaseConfig(configA);

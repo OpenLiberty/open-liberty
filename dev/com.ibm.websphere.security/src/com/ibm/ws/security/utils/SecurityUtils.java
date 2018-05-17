@@ -37,8 +37,7 @@ public class SecurityUtils {
     private static final TraceComponent tc = Tr.register(SecurityUtils.class);
 
     private static final String AUDIT_SERVICE = "auditService";
-    private static AtomicServiceReference<AuditService> auditServiceRef =
-                    new AtomicServiceReference<AuditService>(AUDIT_SERVICE);
+    private static AtomicServiceReference<AuditService> auditServiceRef = new AtomicServiceReference<AuditService>(AUDIT_SERVICE);
 
     @Reference(name = AUDIT_SERVICE,
                service = AuditService.class,

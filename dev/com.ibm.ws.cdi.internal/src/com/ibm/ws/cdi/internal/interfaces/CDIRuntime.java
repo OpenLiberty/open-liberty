@@ -110,10 +110,30 @@ public interface CDIRuntime extends CDIService {
      * @param extraAnnotations
      * @param applicationBDAsVisible
      * @param extClassesOnly
+     * @param application
      * @return
      * @throws CDIException
      */
-    public ExtensionArchive getExtensionArchiveForBundle(Bundle bundle, Set<String> extra_classes, Set<String> extraAnnotations,
+    public ExtensionArchive getExtensionArchiveForBundle(Bundle bundle,
+                                                         Set<String> extra_classes,
+                                                         Set<String> extraAnnotations,
+                                                         boolean applicationBDAsVisible,
+                                                         boolean extClassesOnly,
+                                                         Application application) throws CDIException;
+
+    /**
+     * @param bundle
+     * @param extra_classes
+     * @param extraAnnotations
+     * @param applicationBDAsVisible
+     * @param extClassesOnly
+     * @return
+     * @throws CDIException
+     *
+     */
+    public ExtensionArchive getExtensionArchiveForBundle(Bundle bundle,
+                                                         Set<String> extra_classes,
+                                                         Set<String> extraAnnotations,
                                                          boolean applicationBDAsVisible,
                                                          boolean extClassesOnly) throws CDIException;
 

@@ -8,7 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include: ${workspace}/gradle.properties
+-include: ${workspace}/gradle.properties, ${workspace}/cnf/gradle/scripts/anttaskdefs.bnd
 
 # Maven repository credentials
 -connection-settings: ${if;${artifactory.download.token};server;-dummy};id=https://${artifactory.download.server};username=${artifactory.download.user};password=${artifactory.download.token}, \
@@ -78,7 +78,7 @@ javac.debug: true
 javac.encoding: UTF-8
 -sources: false
 
--pedantic: true
+-pedantic: ${if;${driver;gradle};true;false}
 -fixupmessages.javac17: "The .JRE container is set to JavaSE-1.8 but bnd is compiling against 1.7";is:=ignore
 -fixupmessages.nosrc: "bnd's src folder 'src' is not in the Eclipse build path";is:=ignore
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=error
@@ -108,7 +108,10 @@ junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 mockito: org.mockito.mockito-core;version="[1.9,2)",\
   org.objenesis;version="[2.1,3)"
 
--pluginpath: ${if;${driver;gradle};${workspace}/cnf/lib/wlp-bndPlugins.jar,${workspace}/cnf/mavenlibs/org.apache.aries.util-1.1.3.jar;}
+build.bnd.plugins.jar: ${repo;wlp-bndPlugins}
+build.bnd.plugins.path: ${workspace}/cnf/bndplugins/classes,${repo;org.apache.aries:org.apache.aries.util;1.1.3}
+build.bnd.plugins: com.ibm.ws.build.bnd.plugins.ExternalPackageProcessor;path:="${build.bnd.plugins.path}",\
+  com.ibm.ws.build.bnd.plugins.BundleManifestValidator;path:="${build.bnd.plugins.path}"
 
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class

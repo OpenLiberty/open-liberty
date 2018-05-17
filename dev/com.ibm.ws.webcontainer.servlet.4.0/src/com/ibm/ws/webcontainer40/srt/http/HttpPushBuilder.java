@@ -48,6 +48,7 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
     private static final String HDR_IF_NONE_MATCH = HttpHeaderKeys.HDR_IF_NONE_MATCH.getName();
     private static final String HDR_IF_RANGE = HttpHeaderKeys.HDR_IF_RANGE.getName();
     private static final String HDR_IF_UNMODIFIED_SINCE = HttpHeaderKeys.HDR_IF_UNMODIFIED_SINCE.getName();
+    private static final String COOKIE_HEADER_NAME = "Cookie";
 
     private final SRTServletRequest40 _inboundRequest;
 
@@ -95,7 +96,14 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
                     hc.setMaxAge(cookie.getMaxAge());
                     hc.setSecure(cookie.getSecure());
                     hc.setHttpOnly(cookie.isHttpOnly());
+
+                    // Add the cookie to the set of cookies
                     _cookies.add(hc);
+
+                    // Need to add the Cookie to the headers for the push request. Cookies were
+                    // added to the response and therefore not included in the Cookie request header.
+                    // Without adding this a call to getHeader("Cookie") would return null.
+                    addHeader(COOKIE_HEADER_NAME, cookie.getName() + "=" + cookie.getValue());
                 }
             }
         } else {
@@ -331,6 +339,11 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
     @Override
     public Set<HttpCookie> getCookies() {
         return _cookies;
+    }
+
+    @Override
+    public String getPathQueryString() {
+        return _pathQueryString;
     }
 
     // Reset the "state" of this PushBuilder before next push

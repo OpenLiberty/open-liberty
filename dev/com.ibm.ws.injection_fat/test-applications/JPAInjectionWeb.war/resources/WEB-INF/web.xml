@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+
+	<!-- Listeners -->
+    <listener>
+        <display-name>AdvJPAPersistenceHttpSessionListener</display-name>
+        <listener-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionListener</listener-class>
+    </listener>
+
+    <listener>
+        <display-name>AdvJPAPersistenceHttpSessionAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvJPAPersistenceServletContextListener</display-name>
+        <listener-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvJPAPersistenceServletContextAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextAttributeListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvJPAPersistenceServletRequestListener</display-name>
+        <listener-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestListener</listener-class>
+    </listener>
+    
+    <listener>
+        <display-name>AdvJPAPersistenceRequestAttributeListener</display-name>
+        <listener-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestAttributeListener</listener-class>
+    </listener>
+    
+    <!-- Filters -->
+    <filter>
+        <display-name>AdvJPAPersistenceFilter</display-name>
+        <filter-name>AdvJPAPersistenceFilter</filter-name>
+        <filter-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceFilter</filter-class>
+    </filter>
+    
+    <filter-mapping>
+        <filter-name>AdvJPAPersistenceFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+        
+    <!-- The datasource definition -->
+    <resource-ref>
+       <res-ref-name>jdbc/PersistenceDS</res-ref-name>
+       <res-type>javax.sql.DataSource</res-type>
+       <res-auth>Container</res-auth>
+       <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+    
+    <!-- ##### Servlet: BasicJPAPErsistenceContextServlet ##### -->
+    <!-- Persistence Context(EntityManger) Injection targets -->
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.BasicJPAPersistenceContextServlet/EntityManagerFldXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.BasicJPAPersistenceContextServlet</injection-target-class>
+            <injection-target-name>emFldXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.BasicJPAPersistenceContextServlet/EntityManagerMthdXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.BasicJPAPersistenceContextServlet</injection-target-class>
+            <injection-target-name>entityManagerXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <!-- ##### Servlet: BasicJPAPErsistenceUnitServlet ##### -->
+    <!-- Persistence Unit(EntityMangerFactory) Injection targets -->
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.BasicJPAPersistenceUnitServlet/EntityManagerFactoryFldXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.BasicJPAPersistenceUnitServlet</injection-target-class>
+            <injection-target-name>emfFldXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.BasicJPAPersistenceUnitServlet/EntityManagerFactoryMthdXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.BasicJPAPersistenceUnitServlet</injection-target-class>
+            <injection-target-name>entityManagerFactoryXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.BasicJPAPersistenceUnitServlet/JNDI_XML_PU</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+    </persistence-unit-ref>
+    
+    <!-- ============Listener injection targets===============-->
+    <!-- ##### Listener: AdvJPAPersistenceHttpSessionListener ##### -->
+    <!-- Persistence Context(EntityManger) Injection targets -->
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionListener/EntityManagerFldXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionListener</injection-target-class>
+            <injection-target-name>emFldXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionListener/EntityManagerMthdXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionListener</injection-target-class>
+            <injection-target-name>entityManagerXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <!-- Persistence Unit(EntityMangerFactory) Injection targets -->
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionListener/EntityManagerFactoryFldXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionListener</injection-target-class>
+            <injection-target-name>emfFldXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionListener/EntityManagerFactoryMthdXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionListener</injection-target-class>
+            <injection-target-name>entityManagerFactoryXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <!-- ##### Listener: AdvJPAPersistenceHttpSessionAttributeListener ##### -->
+    <!-- Persistence Context(EntityManger) Injection targets -->
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionAttributeListener/EntityManagerFldXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionAttributeListener</injection-target-class>
+            <injection-target-name>emFldXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionAttributeListener/EntityManagerMthdXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionAttributeListener</injection-target-class>
+            <injection-target-name>entityManagerXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <!-- Persistence Unit(EntityMangerFactory) Injection targets -->
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionAttributeListener/EntityManagerFactoryFldXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionAttributeListener</injection-target-class>
+            <injection-target-name>emfFldXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionAttributeListener/EntityManagerFactoryMthdXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceHttpSessionAttributeListener</injection-target-class>
+            <injection-target-name>entityManagerFactoryXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <!-- ##### Listener: AdvJPAPersistenceServletContextListener ##### -->
+    <!-- Persistence Context(EntityManger) Injection targets -->
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextListener/EntityManagerFldXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextListener</injection-target-class>
+            <injection-target-name>emFldXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextListener/EntityManagerMthdXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextListener</injection-target-class>
+            <injection-target-name>entityManagerXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <!-- Persistence Unit(EntityMangerFactory) Injection targets -->
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextListener/EntityManagerFactoryFldXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextListener</injection-target-class>
+            <injection-target-name>emfFldXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextListener/EntityManagerFactoryMthdXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextListener</injection-target-class>
+            <injection-target-name>entityManagerFactoryXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <!-- ##### Listener: AdvJPAPersistenceServletContextAttributeListener ##### -->
+    <!-- Persistence Context(EntityManger) Injection targets -->
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextAttributeListener/EntityManagerFldXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextAttributeListener</injection-target-class>
+            <injection-target-name>emFldXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextAttributeListener/EntityManagerMthdXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextAttributeListener</injection-target-class>
+            <injection-target-name>entityManagerXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <!-- Persistence Unit(EntityMangerFactory) Injection targets -->
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextAttributeListener/EntityManagerFactoryFldXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextAttributeListener</injection-target-class>
+            <injection-target-name>emfFldXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextAttributeListener/EntityManagerFactoryMthdXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletContextAttributeListener</injection-target-class>
+            <injection-target-name>entityManagerFactoryXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <!-- ##### Listener: AdvJPAPersistenceServletRequestListener ##### -->
+    <!-- Persistence Context(EntityManger) Injection targets -->
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestListener/EntityManagerFldXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestListener</injection-target-class>
+            <injection-target-name>emFldXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestListener/EntityManagerMthdXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestListener</injection-target-class>
+            <injection-target-name>entityManagerXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <!-- Persistence Unit(EntityMangerFactory) Injection targets -->
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestListener/EntityManagerFactoryFldXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestListener</injection-target-class>
+            <injection-target-name>emfFldXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestListener/EntityManagerFactoryMthdXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestListener</injection-target-class>
+            <injection-target-name>entityManagerFactoryXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <!-- ##### Listener: AdvJPAPersistenceRequestAttributeListener ##### -->
+    <!-- Persistence Context(EntityManger) Injection targets -->
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestAttributeListener/EntityManagerFldXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestAttributeListener</injection-target-class>
+            <injection-target-name>emFldXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestAttributeListener/EntityManagerMthdXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestAttributeListener</injection-target-class>
+            <injection-target-name>entityManagerXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <!-- Persistence Unit(EntityMangerFactory) Injection targets -->
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestAttributeListener/EntityManagerFactoryFldXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestAttributeListener</injection-target-class>
+            <injection-target-name>emfFldXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestAttributeListener/EntityManagerFactoryMthdXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceServletRequestAttributeListener</injection-target-class>
+            <injection-target-name>entityManagerFactoryXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <!--========== Filter injection targets =========== -->
+    <!-- ##### Filter: AdvJPAPersistenceFilter ##### -->
+    <!-- Persistence Context(EntityManger) Injection targets -->
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceFilter/EntityManagerFldXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceFilter</injection-target-class>
+            <injection-target-name>emFldXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <persistence-context-ref>
+        <persistence-context-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceFilter/EntityManagerMthdXML</persistence-context-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <persistence-context-type>Transaction</persistence-context-type>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceFilter</injection-target-class>
+            <injection-target-name>entityManagerXML</injection-target-name>
+        </injection-target>
+    </persistence-context-ref>
+    
+    <!-- Persistence Unit(EntityMangerFactory) Injection targets -->
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceFilter/EntityManagerFactoryFldXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceFilter</injection-target-class>
+            <injection-target-name>emfFldXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+    
+    <persistence-unit-ref>
+        <persistence-unit-ref-name>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceFilter/EntityManagerFactoryMthdXML</persistence-unit-ref-name>
+        <persistence-unit-name>test</persistence-unit-name>
+        <injection-target>
+            <injection-target-class>com.ibm.ws.injection.jpa.web.AdvJPAPersistenceFilter</injection-target-class>
+            <injection-target-name>entityManagerFactoryXML</injection-target-name>
+        </injection-target>
+    </persistence-unit-ref>
+</web-app>

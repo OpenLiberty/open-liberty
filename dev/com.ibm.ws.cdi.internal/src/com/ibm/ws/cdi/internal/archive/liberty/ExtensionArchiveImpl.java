@@ -21,9 +21,17 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
     private final ExtensionContainerInfo extensionContainerInfo;
 
     public ExtensionArchiveImpl(ExtensionContainerInfo extensionContainerInfo,
-                                RuntimeFactory factory) throws CDIException {
-        super(null, extensionContainerInfo, ArchiveType.RUNTIME_EXTENSION, extensionContainerInfo.getClassLoader(), factory);
+                                RuntimeFactory factory,
+                                ApplicationImpl application) throws CDIException {
+        super(application, extensionContainerInfo, ArchiveType.RUNTIME_EXTENSION, extensionContainerInfo.getClassLoader(), factory);
         this.extensionContainerInfo = extensionContainerInfo;
+    }
+
+    @Deprecated
+    public ExtensionArchiveImpl(ExtensionContainerInfo extensionContainerInfo,
+                                RuntimeFactory factory) throws CDIException {
+        this(extensionContainerInfo, factory, null);
+
     }
 
     /** {@inheritDoc} */

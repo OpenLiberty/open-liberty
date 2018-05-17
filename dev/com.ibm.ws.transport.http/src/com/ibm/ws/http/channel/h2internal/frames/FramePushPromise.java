@@ -16,6 +16,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FramePushPromise extends Frame {
 
@@ -65,6 +66,7 @@ public class FramePushPromise extends Frame {
             payloadLength += paddingLength + 1;
         }
         frameType = FrameTypes.PUSH_PROMISE;
+        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -82,34 +84,48 @@ public class FramePushPromise extends Frame {
 
         setFlags();
 
-        int payloadIndex = 4;
-        int paddedLength = 0;
-
+        int payloadIndex = 0;
+        int paddingLength = 0;
         if (PADDED_FLAG) {
             // The padded field is present; set the paddedLength to represent the actual size of the data we want
-            paddedLength = payloadLength - frp.grabNextByte();
+            paddingLength = frp.grabNextByte();
             payloadIndex++;
         }
 
+        // grab the reserved bit
         byte nextPayloadByte = frp.grabNextByte();
-
-        // set the reserved bit
+        payloadIndex++;
         reservedBit = utils.getReservedBit(nextPayloadByte);
 
+        // grab the promised stream ID
         nextPayloadByte = (byte) (nextPayloadByte & Constants.MASK_7F);
         promisedStreamID = frp.grabNext24BitInt(nextPayloadByte);
+        payloadIndex += 3;
 
-        // grab all the buffered data
-        headerBlockFragment = new byte[paddedLength];
+        // grab the header block fragment
+        int headerBlockLength = payloadLength - payloadIndex - paddingLength;
+        headerBlockFragment = new byte[headerBlockLength];
+        for (int i = 0; payloadIndex++ < payloadLength - paddingLength;)
+            headerBlockFragment[i++] = frp.grabNextByte();
 
-        for (int i = 0; payloadIndex++ < paddedLength; i++)
-            headerBlockFragment[i] = frp.grabNextByte();
+        // consume any padding for this frame
+        if (PADDED_FLAG) {
+            for (; payloadIndex++ < payloadLength;) {
+                frp.grabNextByte();
+            }
+        }
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
+    public WsByteBuffer buildFrameForWrite() {
 
-        byte[] frame = super.buildFrameForWrite();
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_PUSH_PROMISE);
@@ -135,7 +151,9 @@ public class FramePushPromise extends Frame {
             frameIndex++;
         }
 
-        return frame;
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     @Override

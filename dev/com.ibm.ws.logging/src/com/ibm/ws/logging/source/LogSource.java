@@ -21,13 +21,15 @@ import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
-import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
+import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.KeyValuePairList;
+import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
-import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
 import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
@@ -109,17 +111,17 @@ public class LogSource implements Source, WsLogHandler {
     @Trivial
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
-        if (!ThreadLocalHandler.get()) {
 
-            LogRecord logRecord = routedMessage.getLogRecord();
-            if (logRecord != null && bufferMgr != null) {
-                GenericData parsedMessage = parse(routedMessage);
-                if (!BufferManagerImpl.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
-                    BufferManagerImpl.removeEMQTrigger();
-                }
-                bufferMgr.add(parsedMessage);
+        LogRecord logRecord = routedMessage.getLogRecord();
+        if (logRecord != null && bufferMgr != null) {
+
+            LogTraceData parsedMessage = parse(routedMessage);
+            if (!BufferManagerEMQHelper.getEMQRemovedFlag() && extractMessage(routedMessage, logRecord).startsWith("CWWKF0011I")) {
+                BufferManagerEMQHelper.removeEMQTrigger();
             }
+            bufferMgr.add(parsedMessage);
         }
+
     }
 
     private String extractMessage(RoutedMessage routedMessage, LogRecord logRecord) {
@@ -130,103 +132,66 @@ public class LogSource implements Source, WsLogHandler {
         return messageVal;
     }
 
-    public GenericData parse(RoutedMessage routedMessage) {
-
-        GenericData genData = new GenericData();
-        LogRecord logRecord = routedMessage.getLogRecord();
-        String messageVal = extractMessage(routedMessage, logRecord);
-
-        long dateVal = logRecord.getMillis();
-        genData.addPair("ibm_datetime", dateVal);
-
-        String messageIdVal = null;
-
-        if (messageVal != null) {
-            messageIdVal = parseMessageId(messageVal);
-        }
-
-        genData.addPair("ibm_messageId", messageIdVal);
-
-        int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
-        genData.addPair("ibm_threadId", threadIdVal);
-        genData.addPair("module", logRecord.getLoggerName());
-        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
-        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
-        genData.addPair("ibm_className", logRecord.getSourceClassName());
-
-        KeyValuePairList extensions = new KeyValuePairList();
-        Map<String, String> extMap = null;
-        if (logRecord instanceof WsLogRecord) {
-            if (((WsLogRecord) logRecord).getExtensions() != null) {
-                extMap = ((WsLogRecord) logRecord).getExtensions();
-                for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    extensions.addPair(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-
-        genData.addPairs(extensions);
-        genData.addPair("ibm_sequence", sequenceNumber.next(dateVal));
-        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
-
-        Throwable thrown = logRecord.getThrown();
-        StringBuilder msgBldr = new StringBuilder();
-        msgBldr.append(messageVal);
-        if (thrown != null) {
-            String stackTrace = DataFormatHelper.throwableToString(thrown);
-            if (stackTrace != null) {
-                msgBldr.append(LINE_SEPARATOR).append(stackTrace);
-            }
-        }
-        genData.addPair("message", msgBldr.toString());
-        genData.setSourceType(sourceName);
-        genData.setLogRecordLevel(logRecord.getLevel());
-        genData.setLoggerName(logRecord.getLoggerName());
-
-        return genData;
-
+    public LogTraceData parse(RoutedMessage routedMessage) {
+        return parse(routedMessage, routedMessage.getLogRecord());
     }
 
-    /* Overloaded method for test, should be removed down the line */
-    public GenericData parse(RoutedMessage routedMessage, LogRecord logRecord) {
+    public LogTraceData parse(RoutedMessage routedMessage, LogRecord logRecord) {
 
-        GenericData genData = new GenericData();
-        String messageVal = extractMessage(routedMessage, logRecord);
+        LogTraceData logData = new LogTraceData();
 
         long dateVal = logRecord.getMillis();
-        genData.addPair("ibm_datetime", dateVal);
+        logData.setDatetime(dateVal);
 
         String messageIdVal = null;
-
+        String messageVal = extractMessage(routedMessage, logRecord);
         if (messageVal != null) {
             messageIdVal = parseMessageId(messageVal);
         }
+        logData.setMessageId(messageIdVal);
 
-        genData.addPair("ibm_messageId", messageIdVal);
+        int threadIdVal = (int) Thread.currentThread().getId();
+        logData.setThreadId(threadIdVal);
+        logData.setModule(logRecord.getLoggerName());
+        logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
+        logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
+        logData.setMethodName(logRecord.getSourceMethodName());
+        logData.setClassName(logRecord.getSourceClassName());
 
-        int threadIdVal = (int) Thread.currentThread().getId();//logRecord.getThreadID();
-        genData.addPair("ibm_threadId", threadIdVal);
-        genData.addPair("module", logRecord.getLoggerName());
-        genData.addPair("severity", LogFormatUtils.mapLevelToType(logRecord));
-        genData.addPair("loglevel", LogFormatUtils.mapLevelToRawType(logRecord));
-        genData.addPair("ibm_methodName", logRecord.getSourceMethodName());
-        genData.addPair("ibm_className", logRecord.getSourceClassName());
+        logData.setLevelValue(logRecord.getLevel().intValue());
+        String threadName = Thread.currentThread().getName();
+        logData.setThreadName(threadName);
 
-        KeyValuePairList extensions = new KeyValuePairList();
-        Map<String, String> extMap = null;
-        if (logRecord instanceof WsLogRecord) {
-            extMap = ((WsLogRecord) logRecord).getExtensions();
-            for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                extensions.addPair(entry.getKey(), entry.getValue());
-            }
+        WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+        if (wsLogRecord != null) {
+            logData.setCorrelationId(wsLogRecord.getCorrelationId());
+            logData.setOrg(wsLogRecord.getOrganization());
+            logData.setProduct(wsLogRecord.getProduct());
+            logData.setComponent(wsLogRecord.getComponent());
+        } else {
+            logData.setCorrelationId(null);
+            logData.setOrg(null);
+            logData.setProduct(null);
+            logData.setComponent(null);
         }
 
-        genData.addPairs(extensions);
-        genData.addPair("ibm_sequence", sequenceNumber.next(dateVal));
-        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
+        logData.setSequence(sequenceNumber.next(dateVal));
 
         Throwable thrown = logRecord.getThrown();
+        if (thrown != null) {
+            String stackTrace = DataFormatHelper.throwableToString(thrown);
+            logData.setThrowable(stackTrace);
+
+            String s = thrown.getLocalizedMessage();
+            if (s == null) {
+                s = thrown.toString();
+            }
+            logData.setThrowableLocalized(s);
+        } else {
+            logData.setThrowable(null);
+            logData.setThrowableLocalized(null);
+        }
+
         StringBuilder msgBldr = new StringBuilder();
         msgBldr.append(messageVal);
         if (thrown != null) {
@@ -235,11 +200,32 @@ public class LogSource implements Source, WsLogHandler {
                 msgBldr.append(LINE_SEPARATOR).append(stackTrace);
             }
         }
-        genData.addPair("message", msgBldr.toString());
-        genData.setSourceType(sourceName);
+        logData.setMessage(msgBldr.toString());
 
-        return genData;
+        if (routedMessage.getFormattedMsg() != null) {
+            logData.setFormattedMsg(routedMessage.getFormattedMsg());
+        } else {
+            logData.setFormattedMsg(null);
+        }
 
+        if (logRecord instanceof WsLogRecord) {
+            if (((WsLogRecord) logRecord).getExtensions() != null) {
+                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
+                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
+                }
+                logData.setExtensions(extensions);
+            }
+        } else {
+            logData.setExtensions(null);
+        }
+
+        // cannot pass null to traceData.setObjectId(int i)
+
+        logData.setSourceType(sourceName);
+
+        return logData;
     }
 
     /**
@@ -251,5 +237,14 @@ public class LogSource implements Source, WsLogHandler {
         if (matcher.find())
             messageId = msg.substring(matcher.start(), matcher.end() - 1);
         return messageId;
+    }
+
+    @FFDCIgnore(value = { ClassCastException.class })
+    private WsLogRecord getWsLogRecord(LogRecord logRecord) {
+        try {
+            return (WsLogRecord) logRecord;
+        } catch (ClassCastException ex) {
+            return null;
+        }
     }
 }

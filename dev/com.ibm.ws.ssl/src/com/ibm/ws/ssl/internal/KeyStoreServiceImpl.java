@@ -17,6 +17,7 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -87,6 +88,20 @@ public class KeyStoreServiceImpl implements KeyStoreService {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "deactivate");
         }
+    }
+
+    @Override
+    public String[] getAllKeyStoreAliases() {
+        String[] aliases = KeyStoreManager.getInstance().getKeyStoreAliases();
+        // each alias has two entries, one by name and one by pid, strip the pid entry
+        ArrayList<String> alist = new ArrayList<String>();
+        for (int i = 0; i < aliases.length; i++) {
+            String entry = aliases[i];
+            if (!entry.startsWith("com.ibm.ws.ssl.keystore_")) {
+                alist.add(aliases[i]);
+            }
+        }
+        return alist.toArray(new String[] {});
     }
 
     /** {@inheritDoc} */

@@ -11,19 +11,24 @@
 package com.ibm.ws.security.common.web;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.StringBuffer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.TraceConstants;
 import com.ibm.ws.webcontainer.internalRuntimeExport.srt.IPrivateRequestAttributes;
 
@@ -250,6 +255,7 @@ public class WebUtils {
         return validateUriFormat(uri, "https?://" + CommonWebConstants.VALID_URI_PATH_CHARS + "+");
     }
 
+    @FFDCIgnore(java.security.PrivilegedActionException.class)
     public static boolean validateUriFormat(final String uri, String regexToMatch) {
         if (uri == null || uri.isEmpty()) {
             // TODO - NLS message
@@ -318,4 +324,140 @@ public class WebUtils {
         return sr;
     }
 
+    @Trivial
+    public static String stripSecretsFromUrl(String orig, String[] secretStrings) {
+        String retVal = orig;
+
+        if (secretStrings==null || secretStrings.length==0) {
+            return orig;
+        }
+        for (int i=0; i<secretStrings.length; i++) {
+            retVal = stripSecretFromUrl(retVal, secretStrings[i]);
+        }
+
+        return retVal;
+    }
+    //
+    // stripClientSecretFromUrl 
+    // this method is used to transform a URL or parameter string for tracing
+    // replace &client_secret=(whatever) with &client_secret==*****
+    //
+    @Trivial
+    public static String stripSecretFromUrl(String orig, String secretString) {
+      if (secretString==null || secretString.length()==0) {
+          return orig;
+      }
+      String retVal = orig;
+      String SECRETequals=secretString+"=";
+
+      int SECRETequalsLen=SECRETequals.length();
+
+      if (orig != null && orig.length() > SECRETequalsLen) {
+        if (orig.indexOf(SECRETequals) > -1) {
+          StringBuffer sb = null;
+          int i = 0;
+          // http://localhost/path?client_secret=pw
+          //                      ^ 
+          if ((i=orig.indexOf("?"))>-1) {
+              sb = new StringBuffer(orig.substring(0,i+1));
+              if (orig.length() > i+1) {
+                  orig=orig.substring(i+1);
+              }
+          } else {
+              sb = new StringBuffer();
+          }
+
+          // client_secret=pw&abc=123
+          //                 ^  
+          String [] strings = orig.split("&");
+          int numStrings = strings.length;
+
+          String SECRETregex = SECRETequals+".*";
+          String SECRETreplace = SECRETequals+"*****";
+          for (String entry: strings) {
+            --numStrings;
+            if (entry.startsWith(SECRETequals) && entry.length()>SECRETequalsLen) {
+              entry = entry.replaceAll(SECRETregex, SECRETreplace);
+              sb.append(entry);
+            } else {
+              sb.append(entry);
+            }
+            if (numStrings > 0) {
+              sb.append("&");
+            }
+          }
+          retVal = sb.toString();
+        }
+      }
+      return retVal;
+    }
+
+    // stripSecretFromParameters
+    // processes the parameter map for tracing, replacing the value
+    // for any parameter that matches secret with *****
+    @Trivial
+    public static String stripSecretsFromParameters(Map<String, String[]> pMap, String [] secretStrings) {
+       String retVal = null;
+       if (pMap != null && pMap.size()>0) {
+         java.util.List<String> secretList = null;
+         if (secretStrings!=null && secretStrings.length!=0) {
+             secretList = java.util.Arrays.asList(secretStrings);
+         } else {
+             secretList = new ArrayList();
+         }
+
+         StringBuffer sb = new StringBuffer();
+         java.util.Set<String> keys = pMap.keySet();
+         for (String key : keys) {
+           sb.append("{"+key+"=");
+           if (secretList.contains(key)) {
+               sb.append("*****");
+           } else {
+               String[] values = pMap.get(key);
+               sb.append(java.util.Arrays.toString(values));
+           }
+           sb.append("}");
+         }
+         retVal = sb.toString();
+       } 
+       return retVal;
+   }
+
+    @Trivial
+    public static String stripSecretFromParameters(Map<String, String[]> pMap, String secretString) {
+        return stripSecretsFromParameters(pMap, new String[] {secretString});
+    }
+
+    // getRequestStringForTrace
+    // processes an HTTPServletRequest url and query string to replace sensitive
+    // information and returns a string for tracing
+    @Trivial
+    public static String getRequestStringForTrace(HttpServletRequest request, String[] secretStrings) {
+        if (request==null || request.getRequestURL()==null) {
+            return "[]";
+        }
+
+        StringBuffer sb = new StringBuffer("["+stripSecretsFromUrl(request.getRequestURL().toString(),secretStrings)+"]");
+
+        String query = request.getQueryString();
+        if (query!=null) {
+            String queryString = stripSecretsFromUrl(query,secretStrings);
+            if (queryString!=null) {
+                sb.append(", queryString["+queryString+"]");
+            }
+        } else {
+            Map<String, String[]> pMap = request.getParameterMap();
+            String paramString = stripSecretsFromParameters(pMap, secretStrings);
+            if (paramString!=null) {
+                sb.append(", parameters["+paramString+"]");
+            }
+        }
+        return sb.toString();
+    }
+
+
+    @Trivial
+    public static String getRequestStringForTrace(HttpServletRequest request, String secretString) {
+        return getRequestStringForTrace(request, new String[] {secretString});
+    }
 }

@@ -199,8 +199,8 @@ APPLICATION_UPDATED=CWWKZ0062I: Die Anwendung {0} wurde aktualisiert, aber nicht
 APPLICATION_UPDATED.explanation=Es wurde eine geringf\u00fcgige \u00c4nderung an der angegebenen Anwendung vorgenommen, die als so geringf\u00fcgig eingestuft wurde, dass die Anwendung nicht erneut gestartet werden muss.
 APPLICATION_UPDATED.useraction=Es ist keine Aktion erforderlich.
 
-APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Die Verwendung von Jandex ist f\u00fcr alle Anwendungen aktiviert.
-APPLICATION_JANDEX_ENABLED_ALL.explanation=Bei allen Anwendungen, und wenn indexierte Jandex-Dateien verf\u00fcgbar sind, werden Klassen- und Annotationsdaten aus indexierten Jandex-Dateien abgerufen.
+APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: Die Standardeinstellung f\u00fcr die Verwendung von Jandex wurde f\u00fcr alle Anwendungen in true ge\u00e4ndert.
+APPLICATION_JANDEX_ENABLED_ALL.explanation=Bei allen Anwendungen, und wenn indexierte Jandex-Dateien verf\u00fcgbar sind, werden Klassen- und Annotationsdaten aus indexierten Jandex-Dateien abgerufen, sofern die Verwendung von Jandex f\u00fcr die Anwendung nicht speziell inaktiviert wurde.
 APPLICATION_JANDEX_ENABLED_ALL.useraction=Es ist keine Aktion erforderlich. 
 #{0} is application name
 APPLICATION_JANDEX_ENABLED=CWWKZ0064I: Die Verwendung von Jandex ist f\u00fcr die Anwendung {0} aktiviert.

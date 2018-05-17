@@ -16,7 +16,7 @@ import javax.jms.JMSException;
 
 import com.ibm.websphere.sib.api.jms.ApiJmsConstants;
 import com.ibm.ws.sib.jms.util.ArrayUtil;
-import com.ibm.ws.sib.jms.util.UTF8Encoder;
+import com.ibm.ws.sib.jms.util.Utf8Codec;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
 import com.ibm.websphere.ras.TraceComponent;
@@ -66,16 +66,16 @@ abstract class PropertyCoder {
 
     // If there is a non-null short name, stash its encoded form away
     if (shortName != null) {
-      encodedName = UTF8Encoder.encode(shortName);
+      encodedName = Utf8Codec.encode(shortName);
     }
 
     // Otherwise, we have to stash an encoded version of the long name
     else {
-      int len = UTF8Encoder.getEncodedLength(longName);
+      int len = Utf8Codec.getEncodedLength(longName);
       encodedName = new byte[1 + 2 + len];
       encodedName[0] = STAR;
       ArrayUtil.writeShort(encodedName, 1, (short)len);
-      UTF8Encoder.encode(encodedName, 3, longName);
+      Utf8Codec.encode(encodedName, 3, longName);
     }
 
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "PropertyCoder.<init>", toString());
@@ -175,10 +175,10 @@ class ShortStringPropertyCoder extends PropertyCoder {
       baos.write(encodedName, 0, encodedName.length);            // Write out the encoded tname
 
       String strVal = (String)value;
-      int len = UTF8Encoder.getEncodedLength(strVal);
+      int len = Utf8Codec.getEncodedLength(strVal);
       byte[] buffer = new byte[len + ArrayUtil.SHORT_SIZE];     // bytes for the value length & the value itself
       ArrayUtil.writeShort(buffer, 0, (short)len);              // Encode in the length of the String value
-      UTF8Encoder.encode(buffer, ArrayUtil.SHORT_SIZE, strVal); // Encode in the String value itself
+      Utf8Codec.encode(buffer, ArrayUtil.SHORT_SIZE, strVal); // Encode in the String value itself
 
       baos.write(buffer, 0, buffer.length);                     // Write the encode value to the buffer
     }

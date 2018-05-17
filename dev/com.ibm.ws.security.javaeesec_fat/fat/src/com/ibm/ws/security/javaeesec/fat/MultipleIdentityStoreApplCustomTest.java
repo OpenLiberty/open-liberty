@@ -79,11 +79,10 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-
         if (ldapServer != null) {
             ldapServer.stop();
         }
+        myServer.stopServer();
         myServer.setServerConfigurationFile("server.xml");
 
     }
@@ -192,7 +191,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
      * </OL>
      * <P> Expected Results:
      * <OL>
-     * <LI> Return code 403 (This this is not the basic auth, it returns 403 instead of 401).
+     * <LI> Return code 401
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
@@ -200,7 +199,7 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISApplCustomNoCred_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        String response = accessWithCustomHeader(httpclient, urlBase + queryString, null, null, HttpServletResponse.SC_FORBIDDEN);
+        String response = accessWithCustomHeader(httpclient, urlBase + queryString, null, null, HttpServletResponse.SC_UNAUTHORIZED);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 

@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.config.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -183,15 +184,35 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
      * @return sources as a sorted set
      */
     protected SortedSources getSources() {
-        SortedSources sources = new SortedSources(this.userSources);
-        if (addDefaultSources) {
+        SortedSources sources = new SortedSources(getUserSources());
+        if (addDefaultSourcesFlag()) {
             sources.addAll(DefaultSources.getDefaultSources(getClassLoader()));
         }
-        if (addDiscoveredSources) {
+        if (addDiscoveredSourcesFlag()) {
             sources.addAll(DefaultSources.getDiscoveredSources(getClassLoader()));
         }
         sources = sources.unmodifiable();
         return sources;
+    }
+
+    protected SortedSet<ConfigSource> getUserSources() {
+        return this.userSources;
+    }
+
+    protected boolean addDefaultSourcesFlag() {
+        return this.addDefaultSources;
+    }
+
+    protected boolean addDiscoveredSourcesFlag() {
+        return this.addDiscoveredSources;
+    }
+
+    protected boolean addDefaultConvertersFlag() {
+        return this.addDefaultConverters;
+    }
+
+    protected boolean addDiscoveredConvertersFlag() {
+        return this.addDiscoveredConverters;
     }
 
     /**
@@ -207,11 +228,11 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
         PriorityConverterMap allConverters = new PriorityConverterMap();
 
         //add the default converters
-        if (addDefaultConverters) {
+        if (addDefaultConvertersFlag()) {
             allConverters.addAll(getDefaultConverters());
         }
         //add the discovered converters
-        if (addDiscoveredConverters) {
+        if (addDiscoveredConvertersFlag()) {
             allConverters.addAll(DefaultConverters.getDiscoveredConverters(getClassLoader()));
         }
         //finally add the programatically added converters

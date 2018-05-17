@@ -274,12 +274,12 @@ JWT_SIGNER_CERT_NOT_AVAILABLE=CWWKS6046E: No se puede recuperar una clave de fir
 JWT_SIGNER_CERT_NOT_AVAILABLE.explanation=El almac\u00e9n de confianza especificado por la configuraci\u00f3n de consumidor de JWT no contiene ning\u00fan certificado de firmante. Es necesario un certificado de firmante para validar la se\u00f1al JWT.
 JWT_SIGNER_CERT_NOT_AVAILABLE.useraction=Compruebe que el almac\u00e9n de confianza utilizado por la configuraci\u00f3n de consumidor de JWT contiene al menos un certificado de firmante. El almac\u00e9n de confianza se puede configurar mediante el atributo 'trustStoreRef' de la configuraci\u00f3n de consumidor de JWT o como parte de la configuraci\u00f3n global SSL del servidor.
 
-# Do not translate "JWT", "trustedAlias"
+# Do not translate "JWT", "trustedAlias", "keyName"
 # single quoted terms do NOT use double single quotes when there are no replacement variables
 # Intended to be a child of JWT_ERROR_GETTING_PUBLIC_KEY
-JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: No se puede recuperar una clave de firma del almac\u00e9n de confianza. No se ha especificado el atributo 'trustedAlias' en la configuraci\u00f3n de consumidor de JWT y hay varios certificados de firmante en el almac\u00e9n de confianza.
-JWT_SIGNER_CERT_AMBIGUOUS.explanation=Se han encontrado varios certificados de firmante en el almac\u00e9n de confianza configurado. Si hay varios certificados en el almac\u00e9n de confianza, se debe especificar el atributo 'trustedAlias' en la configuraci\u00f3n de consumidor de JWT para establecer cu\u00e1l de los certificados se va a utilizar.
-JWT_SIGNER_CERT_AMBIGUOUS.useraction=Especifique el atributo de configuraci\u00f3n de consumidor de JWT 'trustedAlias' con el alias del certificado de firmante adecuado.
+JWT_SIGNER_CERT_AMBIGUOUS=CWWKS6047E: No se puede determinar qu\u00e9 certificado de firmante en el almac\u00e9n de debe utilizar. A\u00f1ada el atributo 'trustedAlias' a la configuraci\u00f3n del consumidor de JWT o el atributo 'keyName' a la configuraci\u00f3n MP-JWT.
+JWT_SIGNER_CERT_AMBIGUOUS.explanation=Se han encontrado varios certificados de firmante en el almac\u00e9n de confianza configurado. Si hay varios certificados en el almac\u00e9n de confianza, se debe especificar el atributo 'trustedAlias' en la configuraci\u00f3n de consumidor de JWT o se debe especificar el atributo 'keyName' en la configuraci\u00f3n de MP-JWT para establecer cu\u00e1l de los certificados se va a utilizar.
+JWT_SIGNER_CERT_AMBIGUOUS.useraction=Especifique qu\u00e9 certificado se va a utilizar en el almac\u00e9n de confianza a\u00f1adiendo el alias del certificado de firmante adecuado al atributo de configuraci\u00f3n del consumidor de JWT 'trustedAlias' o al atributo de configuraci\u00f3n de MP-JWT 'keyName'.
 
 # Do not translate "JSON Web Token", "JWT"
 JWT_PROPAGATION_INVALID_TOKEN_ERR=CWWKS6048E: El API de filtro de solicitudes de cliente no ha propagado el token web JSON (JWT).

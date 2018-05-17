@@ -154,7 +154,21 @@ final class ResultHandler {
 
         CompletionKey[] compKeys = new CompletionKey[size];
         for (int i = 0; i < size; i++) {
-            compKeys[i] = new CompletionKey();
+            compKeys[i] = (CompletionKey) AsyncLibrary.completionKeyPool.get();
+            if (compKeys[i] != null) {
+                // Initialize the IOCB obtained from the pool
+                compKeys[i].initializePoolEntry(0, 0);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Handler got CompletionKey from Pool:" + compKeys[i]);
+                }
+            } else {
+                compKeys[i] = new CompletionKey();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Handler newed up CompletionKey:" + compKeys[i]);
+                }
+            }
             compKeyAddrs[i] = compKeys[i].getAddress();
         }
 
@@ -368,17 +382,30 @@ final class ResultHandler {
                 FFDCFilter.processException(t, getClass().getName() + ".runEventProcessingLoop", "792", this);
                 throw new RuntimeException(t);
             }
-        }
+        } finally {
 
-        // decrement the number of in flight handlers, since this one is exiting
-        this.numHandlersInFlight.decrementInt();
-        // The completion processing thread is being shut down or failed
-        // if jit buffer was allocated, release it
-        for (int k = 0; k < size; k++) {
-            if (jitBufferAddressBatch[k] != 0) {
-                wsBBBatch[k].release();
+            // Decrement the number of in flight handlers, since this one is exiting
+            this.numHandlersInFlight.decrementInt();
+
+            // The completion processing thread is being shut down or failed
+            // if jit buffer was allocated, release it
+            for (int k = 0; k < size; k++) {
+                if (jitBufferAddressBatch[k] != 0) {
+                    wsBBBatch[k].release();
+                }
+            }
+
+            // Put the CompletionKeys into the pool for reuse.   They contain a DirectByteBuffer (WsByteBuffer).
+            for (int i = 0; i < size; i++) {
+                if (compKeys[i] != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Handler ending, pooling CompletionKey:\n" + compKeys[i]);
+                    }
+                    AsyncLibrary.completionKeyPool.put(compKeys[i]);
+                }
             }
         }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "runEventProcessingLoop: " + port + " " + Thread.currentThread());
         }

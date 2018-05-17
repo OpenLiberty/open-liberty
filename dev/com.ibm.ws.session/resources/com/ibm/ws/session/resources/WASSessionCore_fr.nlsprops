@@ -14,6 +14,11 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
+
+# Note:
+# SESN0300 - SESN0350 has been reserved for use in: 
+# com.ibm.ws.session.cache/resources/com/ibm/ws/session/store/cache/resources/WASSessionCache.nlsprops
+
 SessionContext.createWhenStop=SESN0006E: Tentative de cr\u00e9ation d'une session lors de la proc\u00e9dure d'arr\u00eat du serveur.
 SessionContext.createWhenStop.explanation=Cette erreur se produit lorsqu'une demande de session est re\u00e7ue pendant la proc\u00e9dure d'arr\u00eat du serveur.
 SessionContext.createWhenStop.useraction=Red\u00e9marrer le serveur.

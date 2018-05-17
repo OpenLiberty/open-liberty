@@ -12,9 +12,12 @@ package test.server.config;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -40,6 +43,11 @@ public class DelayedVariableTests extends ServletRunner {
         test(server);
     }
 
+    @Test
+    public void testConfigVariables() throws Exception {
+        test(server);
+    }
+
     @BeforeClass
     public static void setUpForMergedConfigTests() throws Exception {
         //copy the config feature into the server features location
@@ -47,7 +55,10 @@ public class DelayedVariableTests extends ServletRunner {
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/delayedVariable-1.0.mf");
 
         //copy the bundle into the server lib location
-        server.copyFileToLibertyInstallRoot("lib", "bundles/test.config.variables_1.0.0.jar");
+        server.copyFileToLibertyInstallRoot("lib", "bundles/test.config.variables.jar");
+
+        WebArchive varmergeApp = ShrinkHelper.buildDefaultApp("varmerge", "test.config.merged");
+        ShrinkHelper.exportAppToServer(server, varmergeApp);
 
         server.startServer("delayedVariables.log");
         //make sure the URL is available

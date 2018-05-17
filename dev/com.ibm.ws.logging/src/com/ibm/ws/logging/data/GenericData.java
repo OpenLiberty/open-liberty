@@ -11,35 +11,58 @@
 package com.ibm.ws.logging.data;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 public class GenericData {
-
-    //Marker class, genericdatamemeber interface
 
     private final ArrayList<Pair> pairs;
 
     private String sourceType;
 
-    private Level logRecordLevel = null;
-
-    private String loggerName = null;
+    private String jsonMessage = null;
 
     public GenericData() {
         pairs = new ArrayList<Pair>();
     }
 
+    public GenericData(int size) {
+        pairs = new ArrayList<Pair>(size);
+    }
+
+    public void setPair(int index, String key, String value) {
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
+        pairs.add(index, kvp);
+    }
+
+    public void setPair(int index, String key, int value) {
+        KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
+        pairs.add(index, kvp);
+    }
+
+    public void setPair(int index, String key, long value) {
+        KeyValueLongPair kvp = new KeyValueLongPair(key, value);
+        pairs.add(index, kvp);
+    }
+
+    public void setPair(int index, KeyValuePairList kvps) {
+        pairs.add(index, kvps);
+    }
+
     public void addPair(String key, String value) {
-        KeyValuePair kvp = new KeyValuePair(key, value, KeyValuePair.ValueTypes.STRING);
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
         pairs.add(kvp);
     }
 
-    public void addPair(String key, Number value) {
-        KeyValuePair kvp = new KeyValuePair(key, value.toString(), KeyValuePair.ValueTypes.NUMBER);
+    public void addPair(String key, int value) {
+        KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
         pairs.add(kvp);
     }
 
-    public void addPairs(KeyValuePairList kvps) {
+    public void addPair(String key, long value) {
+        KeyValueLongPair kvp = new KeyValueLongPair(key, value);
+        pairs.add(kvp);
+    }
+
+    public void addPair(KeyValuePairList kvps) {
         pairs.add(kvps);
     }
 
@@ -55,41 +78,11 @@ public class GenericData {
         this.sourceType = sourceType;
     }
 
-    public void setLogRecordLevel(Level logRecordLevel) {
-        this.logRecordLevel = logRecordLevel;
-    }
-
-    public Level getLogRecordLevel() {
-        return logRecordLevel;
-    }
-
-    public void setLoggerName(String loggerName) {
-        this.loggerName = loggerName;
-    }
-
-    public String getLoggerName() {
-        return loggerName;
-    }
-
-    //Method created to accomodate some tests, must remove down the line
-    public String getMessageID() {
-        for (Pair p : pairs) {
-            if (p instanceof KeyValuePair) {
-                KeyValuePair kvp = (KeyValuePair) p;
-                if (kvp.getKey().equals("ibm_messageId")) {
-                    return kvp.getValue();
-                }
-            }
-        }
-        return "";
-    }
-
     /** {@inheritDoc} */
     @Override
     public String toString() {
         KeyValuePair kvp;
         String key;
-        String val;
         StringBuilder sb = new StringBuilder();
         String comma = ",";
         sb.append("GenericData [");
@@ -98,16 +91,30 @@ public class GenericData {
             if (p instanceof KeyValuePair) {
                 kvp = (KeyValuePair) p;
                 key = kvp.getKey();
-                val = kvp.getValue();
                 sb.append(comma);
                 if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
                     key = "threadID";
                 }
-                sb.append(key + "=" + val);
+                if (kvp.isInteger()) {
+                    sb.append(key + "=" + kvp.getIntValue());
+                } else if (kvp.isLong()) {
+                    sb.append(key + "=" + kvp.getLongValue());
+                } else {
+                    sb.append(key + "=" + kvp.getStringValue());
+
+                }
             }
         }
+
         sb.append("]");
         return sb.toString();
     }
 
+    public String getJsonMessage() {
+        return jsonMessage;
+    }
+
+    public void setJsonMessage(String jsonMessage) {
+        this.jsonMessage = jsonMessage;
+    }
 }

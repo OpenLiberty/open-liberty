@@ -35,3 +35,8 @@ MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: Az ig\u00e9ny nem sz\u00farhat\u00f3 be az ApplicationScoped vagy a SessionScoped hat\u00f3k\u00f6r {0} k\u00f3dbesz\u00far\u00e1si pontj\u00e1ba.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=A Claim min\u0151s\u00edt\u0151vel annot\u00e1lt k\u00f3dbesz\u00far\u00e1si pontnak nyers t\u00edpus eset\u00e9n a RequestScoped hat\u00f3k\u00f6r annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1lyhoz kell tartoznia.
 MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f3dbesz\u00far\u00e1si pont a besz\u00farni k\u00edv\u00e1nt ig\u00e9ny RequestScoped hat\u00f3k\u00f6r\u00e9ben l\u00e9v\u0151 oszt\u00e1ly tagja.
+
+# Do not translate JsonWebToken
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE=CWWKS5604E: Nem sz\u00farhat\u00f3 be egy JsonWebToken Principal, mert nincs el\u00e9rhet\u0151. V\u00e9dje a k\u00e9r\u0151 er\u0151forr\u00e1st, hogy a hiteles\u00edt\u00e9s az er\u0151forr\u00e1s el\u00e9r\u00e9se el\u0151tt megt\u00f6rt\u00e9njen.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.explanation=Egy JsonWebToken besz\u00far\u00e1s\u00e1ra vonatkoz\u00f3 k\u00e9r\u00e9s \u00e9rkezett, de nincs el\u00e9rhet\u0151.
+MPJWT_CDI_PRINCIPAL_UNAVAILABLE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i hiteles\u00edt\u00e9s a besz\u00far\u00e1st k\u00e9r\u0151 er\u0151forr\u00e1s el\u00e9r\u00e9se el\u0151tt megt\u00f6rt\u00e9nt. 

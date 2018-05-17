@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
@@ -134,6 +135,13 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
         this.amountToBuffer = size;
         this.bbSize = (49152 < size) ? 32768 : 8192;
+
+        // make sure we never create larger frames than the max http2 frame size
+        Integer h2size = (Integer) this.getVc().getStateMap().get("h2_frame_size");
+        if (h2size != null && h2size < bbSize) {
+            this.bbSize = h2size;
+        }
+
         int numBuffers = (size / this.bbSize);
         if (0 == size || 0 != (size % this.bbSize)) {
             numBuffers++;
@@ -665,6 +673,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
     @Override
     public void setWebC_headersWritten(boolean headersWritten) {
         this.WCheadersWritten = headersWritten;
+    }
+
+    @Override
+    public void setWC_remoteUser(String remoteUser) {
+        //Set the given user here to the ISC or the response message
+        if (isc instanceof HttpInboundServiceContextImpl) {
+            ((HttpInboundServiceContextImpl) isc).setRemoteUser(remoteUser);
+        }
     }
 
 }

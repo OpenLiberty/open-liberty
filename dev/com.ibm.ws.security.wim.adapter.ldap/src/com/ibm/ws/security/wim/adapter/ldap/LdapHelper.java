@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,6 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.naming.InvalidNameException;
 import javax.naming.NamingEnumeration;
@@ -44,6 +42,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.wim.AccessControllerHelper;
 import com.ibm.wsspi.security.wim.exception.CertificateMapperException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
@@ -386,6 +385,7 @@ public class LdapHelper {
      *
      * @return The formatted DN. null will be returned if the specified DN is invalid.
      */
+    @FFDCIgnore(InvalidNameException.class)
     @SuppressWarnings("unchecked")
     public static String getValidDN(String dn) {
         Map<String, Map<String, String>> dnCache = null;
@@ -417,7 +417,6 @@ public class LdapHelper {
                 result = new LdapName(dn).toString();
                 dnCache.get(sDomainName).put(dn, result);
             } catch (InvalidNameException e) {
-                e.getMessage();
                 result = null;
             }
         }
@@ -711,32 +710,12 @@ public class LdapHelper {
      * @return The encoded byte array which can be stored in <code>unicodePwd</code> attribute in Active Directory.
      */
     public static byte[] encodePassword(String password) throws WIMSystemException {
-        byte[] encodedPassword = null;
-
         try {
-            // Encode password for Active Directory
-            String ATTRIBUTE_ENCODING = "Unicode";
-            String tempPassword = "\"" + password + "\"";
-            byte[] bytes = tempPassword.getBytes(ATTRIBUTE_ENCODING);
-            encodedPassword = new byte[bytes.length - 2];
-            System.arraycopy(bytes, 2, encodedPassword, 0, bytes.length - 2);
-
-            //Changing high byte in low byte for non intel-platforms, like SOLARIS, AIX, LINUX
-            if (!((AccessControllerHelper.getSystemProperty("os.arch").equals("x86")) || (AccessControllerHelper.getSystemProperty("os.arch").equals("ia64"))
-                  || (AccessControllerHelper.getSystemProperty("os.arch").equals("amd64")))) {
-                byte temp;
-                for (int i = 0; i < encodedPassword.length; i = i + 2) {
-                    temp = encodedPassword[i];
-                    encodedPassword[i] = encodedPassword[i + 1];
-                    encodedPassword[i + 1] = temp;
-                }
-            }
+            return ("\"" + password + "\"").getBytes("UTF-16LE");
         } catch (Exception e) {
             String msg = Tr.formatMessage(tc, WIMMessageKey.GENERIC, WIMMessageHelper.generateMsgParms(e.getMessage()));
             throw new WIMSystemException(WIMMessageKey.GENERIC, msg, e);
         }
-
-        return encodedPassword;
     }
 
     public static byte[] getOctetString(String hexStr) {
@@ -779,15 +758,15 @@ public class LdapHelper {
                 isUTCDate = true;
             }
 
-            if ("IBM Tivoli Directory Server".equalsIgnoreCase(ldapType)) {
+            if (LdapConstants.IDS_LDAP_SERVER.equalsIgnoreCase(ldapType)) {
                 if (isUTCDate) {
                     ldapValue = new SimpleDateFormat("yyyyMMddHHmmss.SSSSSS'Z'").format(date);
                 } else {
                     ldapValue = new SimpleDateFormat("yyyyMMddHHmmss.SSSSSSZ").format(date);
                 }
-            } else if ("Sun Java System Directory Server".equalsIgnoreCase(ldapType)
-                       || "IBM Lotus Domino".equalsIgnoreCase(ldapType)
-                       || "Novell eDirectory".equalsIgnoreCase(ldapType)) {
+            } else if (LdapConstants.SUN_LDAP_SERVER.equalsIgnoreCase(ldapType)
+                       || LdapConstants.DOMINO_LDAP_SERVER.equalsIgnoreCase(ldapType)
+                       || LdapConstants.NOVELL_LDAP_SERVER.equalsIgnoreCase(ldapType)) {
                 if (isUTCDate) {
                     ldapValue = new SimpleDateFormat("yyyyMMddHHmmss'Z'").format(date);
                 } else {
@@ -842,6 +821,11 @@ public class LdapHelper {
      * Copy from com.ibm.ws.security.registry.ldap.CertificateMapper
      */
     public static String[] parseFilterDescriptor(String mapDesc) throws CertificateMapperException {
+        if (mapDesc == null || mapDesc.isEmpty()) {
+            String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_CERTIFICATE_FILTER, mapDesc);
+            throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, msg);
+        }
+
         int prev_idx, cur_idx, end_idx;
         ArrayList<String> list = new ArrayList<String>();
         for (prev_idx = cur_idx = 0, end_idx = mapDesc.length(); cur_idx < end_idx; prev_idx = cur_idx) {
@@ -868,10 +852,8 @@ public class LdapHelper {
                 cur_idx = mapDesc.indexOf("}", prev_idx);
             }
             if (cur_idx == -1) {
-                throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, Tr.formatMessage(
-                                                                                                                tc,
-                                                                                                                WIMMessageKey.INVALID_CERTIFICATE_FILTER,
-                                                                                                                WIMMessageHelper.generateMsgParms(mapDesc)));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_CERTIFICATE_FILTER, mapDesc);
+                throw new CertificateMapperException(WIMMessageKey.INVALID_CERTIFICATE_FILTER, msg);
             }
             cur_idx++;
             list.add(mapDesc.substring(prev_idx, cur_idx));
@@ -923,42 +905,6 @@ public class LdapHelper {
             list.add(rdn);
         }
         return list.toArray(new String[0]);
-    }
-
-    /**
-     * Is the address an IPv6 Address.
-     *
-     * @param host
-     * @return
-     */
-    public static boolean isIPv6Addr(String host) {
-        if (host != null) {
-            if (host.contains("[") && host.contains("]"))
-                host = host.substring(host.indexOf("[") + 1, host.indexOf("]"));
-            host = host.toLowerCase();
-            Pattern p1 = Pattern.compile("^(?:(?:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9](?::|$)){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))$");
-            Pattern p2 = Pattern.compile("^(\\d{1,3}\\.){3}\\d{1,3}$");
-            Matcher m1 = p1.matcher(host);
-            boolean b1 = m1.matches();
-            Matcher m2 = p2.matcher(host);
-            boolean b2 = !m2.matches();
-            return b1 && b2;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Format the given address as an IPv6 Address.
-     *
-     * @param host
-     * @return
-     */
-    public static String formatIPv6Addr(String host) {
-        if (host == null)
-            return null;
-        else
-            return (new StringBuilder()).append("[").append(host).append("]").toString();
     }
 
     /**

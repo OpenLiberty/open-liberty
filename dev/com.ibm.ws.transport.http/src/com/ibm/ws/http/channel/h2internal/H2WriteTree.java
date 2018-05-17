@@ -48,6 +48,7 @@ public class H2WriteTree implements H2WorkQInterface {
     // since there is one Tree per Connection, the tree will keep track of the connection window update parameters.
     private final int connectionWindowUpdateWriteInitialSize = 65535;
     private int connectionWindowUpdateWriteLimit = 65535;
+    Object connectionWindowLock = new Object() {};
 
     /*
      * (non-Javadoc)
@@ -115,6 +116,9 @@ public class H2WriteTree implements H2WorkQInterface {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "process write entry with qStatus: " + qStatus + " entry: " + entry.hashCode());
+            }
+            if (entry.getFrameType() == FrameTypes.DATA) {
+                decreaseConnectionWindowUpdateWriteLimit(entry.getPayloadLength());
             }
 
             if (qStatus == Q_STATUS.NOT_IN_USE) {
@@ -223,19 +227,6 @@ public class H2WriteTree implements H2WorkQInterface {
             Tr.debug(tc, "H2WriteTree entered with stream-id: " + e.getStreamID() + " entry hc:" + e.hashCode());
         }
 
-        if (e.getFrameType() == FrameTypes.DATA) {
-            if (connectionWindowUpdateWriteLimit - e.getPayloadLength() < 0) {
-                // would exceed window update limit
-                String s = " connectionWindowUpdateWriteLimit " + connectionWindowUpdateWriteLimit +
-                           " connectionWindowUpdateWriteInitialSize " + connectionWindowUpdateWriteInitialSize;
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Can not write Data would exceed connection window update limit: " + s);
-                }
-                FlowControlException ex = new FlowControlException("Can not write Data would exceed connection window update limit: " + s);
-                throw ex;
-            }
-        }
-
         // where we actually do the write at the TCP Channel layer
         VirtualConnection vc = null;
 
@@ -268,15 +259,6 @@ public class H2WriteTree implements H2WorkQInterface {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "write worked right away");
             }
-
-            if (e.getFrameType() == FrameTypes.DATA) {
-                connectionWindowUpdateWriteLimit -= e.getPayloadLength();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Data payload written - new connectionWindowUpdateWriteLimit: " + connectionWindowUpdateWriteLimit);
-                }
-
-            }
-
             if (!e.getServicedOnQ() && (e.getForceQueue() == false)) {
 
                 // this is the caller's thread and force queue is not true
@@ -381,38 +363,40 @@ public class H2WriteTree implements H2WorkQInterface {
 
     @Override
     public void incrementConnectionWindowUpdateLimit(int x) throws FlowControlException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "incrementConnectionWindowUpdateLimit entry: inc value: " + x
-                         + "current connectionWindowUpdateWriteLimit: " + connectionWindowUpdateWriteLimit);
-        }
-        long proposedValue = (long) connectionWindowUpdateWriteLimit + (long) x;
-        if (proposedValue > Integer.MAX_VALUE) {
-            String s = "processWindowUpdateFrame: out of bounds increment, current connection write limit: " + connectionWindowUpdateWriteLimit
-                       + " total would have been: " + proposedValue;
+        synchronized (connectionWindowLock) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, s);
+                Tr.debug(tc, "incrementConnectionWindowUpdateLimit entry: inc value: " + x
+                             + "current connectionWindowUpdateWriteLimit: " + connectionWindowUpdateWriteLimit);
+            }
+            long proposedValue = (long) connectionWindowUpdateWriteLimit + (long) x;
+            if (proposedValue > Integer.MAX_VALUE) {
+                String s = "processWindowUpdateFrame: out of bounds increment, current connection write limit: " + connectionWindowUpdateWriteLimit
+                           + " total would have been: " + proposedValue;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, s);
+                }
+
+                FlowControlException e = new FlowControlException(s);
+                throw e;
             }
 
-            FlowControlException e = new FlowControlException(s);
-            throw e;
-        }
-
-        connectionWindowUpdateWriteLimit += x;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "connectionWindowUpdateWriteLimit updated to: " + connectionWindowUpdateWriteLimit);
+            connectionWindowUpdateWriteLimit += x;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "connectionWindowUpdateWriteLimit updated to: " + connectionWindowUpdateWriteLimit);
+            }
         }
     }
 
     @Override
     public void decreaseConnectionWindowUpdateWriteLimit(int x) {
+        synchronized (connectionWindowLock) {
+            connectionWindowUpdateWriteLimit -= x;
 
-        connectionWindowUpdateWriteLimit -= x;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "decreaseConnectionWindowUpdateWriteLimit: dec value: " + x
-                         + "connectionWindowUpdateWriteLimit decreased to: " + connectionWindowUpdateWriteLimit);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "decreaseConnectionWindowUpdateWriteLimit: dec value: " + x
+                             + "connectionWindowUpdateWriteLimit decreased to: " + connectionWindowUpdateWriteLimit);
+            }
         }
-
     }
 
     protected void startQThread() {
@@ -543,5 +527,4 @@ public class H2WriteTree implements H2WorkQInterface {
     public int getConnectionWriteLimit() {
         return connectionWindowUpdateWriteLimit;
     }
-
 }

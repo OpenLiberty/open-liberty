@@ -24,26 +24,23 @@ IBM-Web-Extension-Processing-Disabled: true
 Web-ContextPath: /openapi
 
 Import-Package: \
-	org.apache.commons.io*;version=1.4;packageType=was_internal,\
 	org.eclipse.microprofile.config.*;version="[1.0,2)",\
 	*
+    
+Export-Package: \
+	com.ibm.ws.microprofile.openapi,\
+	com.ibm.ws.microprofile.openapi.utils,\
+    !com.ibm.ws.microprofile.openapi.impl.validation.resources,\
+    com.ibm.ws.microprofile.openapi.impl.*
+    
 
 Private-Package: \
     com.ibm.ws.microprofile.openapi.resources,\
-    com.ibm.ws.microprofile.openapi.utils,\
-    com.ibm.ws.microprofile.openapi.impl.*    
+    com.ibm.ws.microprofile.openapi.impl.validation.resources
     
-Export-Package: \
-	com.ibm.ws.microprofile.openapi
-		
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
-  	META-INF/services=resources/META-INF/services,\
-  	@${repo;com.fasterxml.jackson.core:jackson-core;2.9.1},\
-  	@${repo;com.fasterxml.jackson.core:jackson-annotations;2.9.1},\
-  	@${repo;com.fasterxml.jackson.core:jackson-databind;2.9.1},\
-  	@${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.9.1},\
-  	@${repo;org.yaml:snakeyaml;1.18}
+  	META-INF/services=resources/META-INF/services
   	
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
@@ -81,7 +78,7 @@ instrument.classesExcludes: \
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.websphere.appserver.spi.artifact;version=latest,\
-	com.ibm.ws.org.apache.commons.io.2.4;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3.3.5;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
 	com.fasterxml.jackson.core.jackson-core;version=2.9.1,\

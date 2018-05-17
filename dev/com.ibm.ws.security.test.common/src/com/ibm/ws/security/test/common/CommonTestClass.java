@@ -33,59 +33,89 @@ public class CommonTestClass {
 
     /****************************************** Helper methods ******************************************/
 
-    protected void verifyPattern(String input, String regex) {
+    public void assertStringInTrace(SharedOutputManager outputMgr, String checkForString) {
+        checkForString = (checkForString == null) ? "null" : checkForString;
+        assertTrue("Did not find expected value [" + checkForString + "] in trace.", outputMgr.checkForLiteralTrace(checkForString));
+    }
+
+    public void assertStringNotInTrace(SharedOutputManager outputMgr, String checkForString) {
+        checkForString = (checkForString == null) ? "null" : checkForString;
+        assertFalse("Found value [" + checkForString + "] in trace but should not have.", outputMgr.checkForLiteralTrace(checkForString));
+    }
+
+    public void assertRegexInTrace(SharedOutputManager outputMgr, String checkForRegex) {
+        checkForRegex = (checkForRegex == null) ? "null" : checkForRegex;
+        assertTrue("Did not find expected regular expression [" + checkForRegex + "] in trace.", outputMgr.checkForTrace(checkForRegex));
+    }
+
+    public void assertRegexNotInTrace(SharedOutputManager outputMgr, String checkForRegex) {
+        checkForRegex = (checkForRegex == null) ? "null" : checkForRegex;
+        assertFalse("Found regular expression [" + checkForRegex + "] in trace but should not have.", outputMgr.checkForTrace(checkForRegex));
+    }
+
+    public void assertStringInStandardOut(SharedOutputManager outputMgr, String checkForString) {
+        checkForString = (checkForString == null) ? "null" : checkForString;
+        assertTrue("Did not find expected value [" + checkForString + "] in standard out.", outputMgr.checkForLiteralStandardOut(checkForString));
+    }
+
+    public void assertStringNotInStandardOut(SharedOutputManager outputMgr, String checkForString) {
+        checkForString = (checkForString == null) ? "null" : checkForString;
+        assertFalse("Found value [" + checkForString + "] in standard out but should not have.", outputMgr.checkForLiteralStandardOut(checkForString));
+    }
+
+    public void verifyPattern(String input, String regex) {
         Pattern pattern = Pattern.compile(regex);
         verifyPatternExists(input, pattern, "Input did not contain the expected expression.");
     }
 
-    protected void verifyPattern(String input, String regex, String failureMsg) {
+    public void verifyPattern(String input, String regex, String failureMsg) {
         Pattern pattern = Pattern.compile(regex);
         verifyPatternExists(input, pattern, failureMsg);
     }
 
-    protected void verifyPatternMatches(String input, Pattern pattern, String failureMsg) {
+    public void verifyPatternMatches(String input, Pattern pattern, String failureMsg) {
         assertNotNull(failureMsg + " Value should not have been null but was. Expected pattern [" + pattern.toString() + "].", input);
         assertTrue(failureMsg + " Expected to find pattern [" + pattern.toString() + "]. Value was [" + input + "].", pattern.matcher(input).matches());
     }
 
-    protected void verifyPatternExists(String input, Pattern pattern, String failureMsg) {
+    public void verifyPatternExists(String input, Pattern pattern, String failureMsg) {
         assertNotNull(failureMsg + " Value should not have been null but was. Expected pattern [" + pattern.toString() + "].", input);
         assertTrue(failureMsg + " Expected to find pattern [" + pattern.toString() + "]. Value was [" + input + "].", pattern.matcher(input).find());
     }
 
-    protected void verifyNoLogMessage(SharedOutputManager outputMgr, String messageRegex) {
+    public void verifyNoLogMessage(SharedOutputManager outputMgr, String messageRegex) {
         assertFalse("Found message [" + messageRegex + "] in log but should not have.", outputMgr.checkForMessages(messageRegex));
     }
 
-    protected void verifyLogMessage(SharedOutputManager outputMgr, String messageRegex) {
+    public void verifyLogMessage(SharedOutputManager outputMgr, String messageRegex) {
         assertTrue("Did not find message [" + messageRegex + "] in log.", outputMgr.checkForMessages(messageRegex));
     }
 
-    protected void verifyLogMessageWithInserts(SharedOutputManager outputMgr, String msgKey, String... inserts) {
+    public void verifyLogMessageWithInserts(SharedOutputManager outputMgr, String msgKey, String... inserts) {
         String fullPattern = buildStringWithInserts(msgKey, inserts).toString();
         assertTrue("Did not find message [" + fullPattern + "] in log.", outputMgr.checkForMessages(fullPattern));
     }
 
-    protected void verifyException(Exception e, String errorMsgRegex) {
-        String errorMsg = e.getLocalizedMessage();
+    public void verifyException(Exception e, String errorMsgRegex) {
+        String errorMsg = e.toString();
         Pattern pattern = Pattern.compile(errorMsgRegex);
         Matcher m = pattern.matcher(errorMsg);
         assertTrue("Exception message did not match expected expression. Expected: [" + errorMsgRegex + "]. Message was: [" + errorMsg + "]", m.find());
     }
 
-    protected void verifyExceptionWithInserts(Exception e, String msgKey, String... inserts) {
-        String errorMsg = e.getLocalizedMessage();
+    public void verifyExceptionWithInserts(Exception e, String msgKey, String... inserts) {
+        String errorMsg = e.toString();
         verifyStringWithInserts(errorMsg, msgKey, inserts);
     }
 
-    protected void verifyStringWithInserts(String searchString, String msgKey, String... inserts) {
+    public void verifyStringWithInserts(String searchString, String msgKey, String... inserts) {
         String fullPattern = buildStringWithInserts(msgKey, inserts).toString();
         Pattern pattern = Pattern.compile(fullPattern);
         Matcher m = pattern.matcher(searchString);
         assertTrue("Provided string did not contain [" + fullPattern + "] as expected. Full string was: [" + searchString + "]", m.find());
     }
 
-    protected StringBuilder buildStringWithInserts(String msgKey, String... inserts) {
+    private StringBuilder buildStringWithInserts(String msgKey, String... inserts) {
         // Expects inserts to be in square brackets '[]'
         StringBuilder regexBuilder = new StringBuilder(msgKey).append(".*");
         for (String insert : inserts) {

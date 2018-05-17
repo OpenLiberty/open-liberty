@@ -20,7 +20,6 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jdbc.DataSourceService;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 
@@ -53,15 +52,15 @@ public class SerializedDataSourceWrapper implements Serializable {
             Tr.entry(this, tc, "readResolve", filter, resourceRefInfo);
 
         Object dataSource;
-        BundleContext bundleContext = PrivHelper.getBundleContext(FrameworkUtil.getBundle(DataSourceService.class));
+        BundleContext bundleContext = WSJdbcWrapper.priv.getBundleContext(FrameworkUtil.getBundle(DataSourceService.class));
         ServiceReference<DataSourceService> dssvcRef = null;
         try {
-            Collection<ServiceReference<DataSourceService>> srs = PrivHelper.getServiceReferences(bundleContext,DataSourceService.class, filter);
+            Collection<ServiceReference<DataSourceService>> srs = WSJdbcWrapper.priv.getServiceReferences(bundleContext,DataSourceService.class, filter);
             if (srs.isEmpty())
                 throw new IllegalStateException(filter);
 
             dssvcRef = srs.iterator().next();
-            DataSourceService dssvc = PrivHelper.getService(bundleContext,dssvcRef);
+            DataSourceService dssvc = WSJdbcWrapper.priv.getService(bundleContext,dssvcRef);
 
             dataSource = dssvc.createResource((ResourceRefInfo) resourceRefInfo);
         } catch (Exception x) {

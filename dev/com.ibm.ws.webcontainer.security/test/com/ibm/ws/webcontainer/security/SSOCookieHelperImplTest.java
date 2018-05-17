@@ -33,6 +33,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Test;
 
+import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.webcontainer.security.internal.CookieMatcher;
 import com.ibm.ws.webcontainer.security.internal.StringUtil;
 import com.ibm.wsspi.security.token.SingleSignonToken;
@@ -57,6 +58,7 @@ public class SSOCookieHelperImplTest {
     private final WebAppSecurityConfig config = mock.mock(WebAppSecurityConfig.class);
     private final SSOCookieHelperImpl ssoCookieHelper = new SSOCookieHelperImpl(config);
     private final Subject subject = new Subject();
+    private final JwtSSOTokenHelper jwtSSOTokenHelper = mock.mock(JwtSSOTokenHelper.class);
 
     private class SSOCookieHelperImplTestDouble extends SSOCookieHelperImpl {
 
@@ -501,5 +503,99 @@ public class SSOCookieHelperImplTest {
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);
+    }
+
+    @Test
+    public void splitString() {
+        String buf = "abcdefghijklmnopqrstuvwxyz"; //26
+        String[] result = ssoCookieHelper.splitString(buf, 1);
+        assertTrue(result.length == 26);
+
+        result = ssoCookieHelper.splitString(buf, 3);
+        assertTrue(result.length == 9);
+        assertTrue(result[8].equals("yz"));
+
+        result = ssoCookieHelper.splitString(buf, 25);
+        assertTrue(result.length == 2);
+        assertTrue(result[0].length() == 25);
+        assertTrue(result[1].equals("z"));
+
+        result = ssoCookieHelper.splitString(buf, 26);
+        assertTrue(result.length == 1);
+        assertTrue(result[0].equals(buf));
+
+    }
+
+    private class SSOCookieHelperImplTestDouble2 extends SSOCookieHelperImpl {
+        public boolean removeSSOCookieFromResponseNOTInvoked = true;
+
+        public SSOCookieHelperImplTestDouble2(WebAppSecurityConfig config) {
+            super(config);
+        }
+
+        boolean secure = true;
+
+        @Override
+        public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue, boolean secure) {
+            return new Cookie(cookieName, cookieValue); //skip hard-to-mock ssodomain stuff.
+        }
+
+        @Override
+        protected String getJwtCookieName() {
+            return "JwtToken"; // alas, static methods cannot be mocked, so override
+        }
+    }
+
+    @Test
+    // add a large cookie and confirm it gets split into two.
+    // expectations will fail if addCookie is not called twice.
+    public void addCookies() {
+        SSOCookieHelperImplTestDouble2 schi = new SSOCookieHelperImplTestDouble2(config);
+        StringBuffer sb = new StringBuffer();
+        while (sb.length() < 4000) {
+            sb.append("x");
+        }
+        String bigStr = sb.toString();
+        mock.checking(new Expectations() {
+            {
+                allowing(req).isSecure();
+                one(resp).addCookie(with(any(Cookie.class)));
+                one(resp).addCookie(with(any(Cookie.class)));
+//                allowing(config).getSSORequiresSSL();
+//                allowing(config).getHttpOnlyCookies();
+//                allowing(config).getSSODomainList();
+//                allowing(config).getSSOUseDomainFromURL();
+//                allowing(req).getRequestURI();
+            }
+        });
+
+        schi.addJwtCookies(bigStr, req, resp);
+        mock.assertIsSatisfied();
+    }
+
+    class SSOATestDouble extends SSOCookieHelperImpl {
+
+        SSOATestDouble(WebAppSecurityConfig config) {
+            super(config);
+        }
+
+        @Override
+        protected String getCookieValue(HttpServletRequest req, String cookieName) {
+            if (cookieName.endsWith("03"))
+                return null;
+            return cookieName + "_value";
+        }
+    }
+
+    @Test
+    // test that cookie contatenation in getJwtSsoTokenFromCookies works.
+    // Use the testDouble class to feed two cookies into the test.
+    public void getJwtSsoTokenFromCookies() {
+
+        SSOATestDouble stb = new SSOATestDouble(config);
+        String result = stb.getJwtSsoTokenFromCookies(req, "jwtToken");
+        String expected = "jwtToken_valuejwtToken02_value";
+        System.out.println("getJwtSsoTokenFromCookies result is: " + result + " expected is: " + expected);
+        assertTrue(result.equals(expected));
     }
 }

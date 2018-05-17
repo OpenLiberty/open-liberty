@@ -16,7 +16,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.io.ObjectStreamConstants;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -29,7 +34,6 @@ import java.util.regex.Pattern;
 import javax.cache.Cache;
 import javax.cache.CacheException;
 import javax.cache.configuration.MutableConfiguration;
-import javax.cache.configuration.OptionalFeature;
 import javax.cache.expiry.EternalExpiryPolicy;
 
 import com.ibm.websphere.ras.Tr;
@@ -50,11 +54,11 @@ import com.ibm.wsspi.session.IStore;
  * <ul>
  *  <li>com.ibm.ws.session.info.{PERCENT_ENCODED_APP_CONTEXT_ROOT}
  *   <br>Keys are session ids. Except for one additional key, {INVAL_KEY}, which is used to track the timestamp of invalidation
- *   <br>Value is an ArrayList, containing information about the session, but not any session property values. Its content is represented by SessionInfo.
+ *   <br>Value is an ArrayList, containing information about the session, but not any session attribute values. Its content is represented by SessionInfo.
  *  </li>
  *  <li>com.ibm.ws.session.prop.{PERCENT_ENCODED_APP_CONTEXT_ROOT}
- *   <br>Keys are {SESSION_ID}.{SESSION_PROPERTY_NAME}
- *   <br>Value is a byte[] which is the session property value serialized to bytes.
+ *   <br>Keys are {SESSION_ID}.{SESSION_ATTRIBUTE_NAME}
+ *   <br>Value is a byte[] which is the session attribute value serialized to bytes.
  *  </li>
  * </ul>
  */
@@ -69,9 +73,22 @@ public class CacheHashMap extends BackedHashMap {
     private static final Pattern COLON = Pattern.compile(":"), PERCENT = Pattern.compile("%"), SLASH = Pattern.compile("/");
 
     /**
+     * The end-of-line marker.
+     */
+    private static final String EOLN = String.format("%n");
+
+    /**
      * Key in the session info cache that is reserved for coordinating invalidation
      */
     private static final String INVAL_KEY = ".inval";
+    
+    /**
+     * Stream header for objects written using normal serialization process
+     */
+    static final byte[] OBJECT_OUTPUT_STREAM_HEADER = new byte[] {
+                                                                  (byte) (ObjectStreamConstants.STREAM_MAGIC >>> 8),
+                                                                  (byte) (ObjectStreamConstants.STREAM_MAGIC >>> 0)
+    };
 
     // this is set to true for multirow if additional conditions are satisfied
     private final boolean appDataTablesPerThread;
@@ -81,21 +98,28 @@ public class CacheHashMap extends BackedHashMap {
     private final SessionManagerConfig _smc;
 
     /**
-     * Per-application cache that contains information about the session but not the session property values.
+     * Per-application session attribute cache.
      */
-    @SuppressWarnings("rawtypes")
-    private Cache<String, ArrayList> sessionInfoCache;
+    private Cache<String, byte[]> sessionAttributeCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
 
     /**
-     * Per-application session property cache.
+     * Per-application cache that contains meta information about the session but not the session attribute values.
      */
-    private Cache<String, byte[]> sessionPropertyCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
+    @SuppressWarnings("rawtypes")
+    private Cache<String, ArrayList> sessionMetaCache;
 
-    @FFDCIgnore(CacheException.class)
+    /**
+     * Trace identifier for the session attribute cache
+     */
+    private String tcSessionAttrCache;
+
+    /**
+     * Trace identifier for the session meta information cache
+     */
+    private String tcSessionMetaCache;
+
     CacheHashMap(IStore store, SessionManagerConfig smc, CacheStoreService cacheStoreService) {
         super(store, smc);
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         this.cacheStoreService = cacheStoreService;
         this._iStore = store;
@@ -105,86 +129,129 @@ public class CacheHashMap extends BackedHashMap {
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
 
+        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            cacheInit();
+            return null;
+        });
+    }
+
+    /**
+     * A helper method to perform JCache operations around finding, creating and initializing caches.
+     * Only invoke this method from the CacheHashMap constructor, within a doPrivileged block.
+     */
+    @FFDCIgnore(CacheException.class)
+    private void cacheInit() {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // Attempt lazy initialization if necessary
+        if (cacheStoreService.cacheManager == null)
+            cacheStoreService.activateLazily();
+
         // Build a unique per-application cache name by starting with the application context root and percent encoding
         // the / and : characters (JCache spec does not allow these in cache names)
         // and also the % character (which is necessary because of percent encoding)
-        String a = PERCENT.matcher(store.getId()).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
+        String a = PERCENT.matcher(_iStore.getId()).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
         a = SLASH.matcher(a).replaceAll("%2F");
         a = COLON.matcher(a).replaceAll("%3A");
 
-        String infoCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.info.").append(a).toString();
+        // Session Meta Information Cache
+
+        String metaCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.meta.").append(a).toString();
 
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "find or create cache", infoCacheName);
+            tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
 
-        sessionInfoCache = cacheStoreService.cacheManager.getCache(infoCacheName, String.class, ArrayList.class);
-        if (sessionInfoCache == null) {
+        sessionMetaCache = cacheStoreService.cacheManager.getCache(metaCacheName, String.class, ArrayList.class);
+        boolean create;
+        if (create = sessionMetaCache == null) {
+            if (trace && tc.isDebugEnabled())
+                tcReturn(cacheStoreService.tcCacheManager, "getCache", "null");
+
             @SuppressWarnings("rawtypes")
             MutableConfiguration<String, ArrayList> config = new MutableConfiguration<String, ArrayList>()
                             .setTypes(String.class, ArrayList.class)
                             .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
-            if (cacheStoreService.cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE))
+            if (cacheStoreService.supportsStoreByReference)
                 config = config.setStoreByValue(false);
             try {
-                sessionInfoCache = cacheStoreService.cacheManager.createCache(infoCacheName, config);
-
                 if (trace && tc.isDebugEnabled())
-                    Tr.debug(tc, "Created a new session info cache", sessionInfoCache);
+                    tcInvoke(cacheStoreService.tcCacheManager, "createCache", metaCacheName, config);
+
+                sessionMetaCache = cacheStoreService.cacheManager.createCache(metaCacheName, config);
             } catch (CacheException x) {
-                sessionInfoCache = cacheStoreService.cacheManager.getCache(infoCacheName, String.class, ArrayList.class);
-                if (sessionInfoCache == null)
+                create = false;
+                if (trace && tc.isDebugEnabled()) {
+                    tcReturn(cacheStoreService.tcCacheManager, "createCache", x);
+                    tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
+                }
+                sessionMetaCache = cacheStoreService.cacheManager.getCache(metaCacheName, String.class, ArrayList.class);
+                if (sessionMetaCache == null)
                     throw x;
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Using session info cache", sessionInfoCache);
+        tcSessionMetaCache = "MetaCache" + Integer.toHexString(System.identityHashCode(sessionMetaCache));
+        if (trace && tc.isDebugEnabled())
+            tcReturn(cacheStoreService.tcCacheManager, create ? "createCache" : "getCache", tcSessionMetaCache, sessionMetaCache);
 
-        String propCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.prop.").append(a).toString();
+        cacheStoreService.configureMonitoring(metaCacheName);
+
+        // Session Attributes Cache
+
+        String attrCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.attr.").append(a).toString();
 
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "find or create cache", propCacheName);
+            tcInvoke(cacheStoreService.tcCacheManager, "getCache", attrCacheName, "String", "byte[]");
 
-        sessionPropertyCache = cacheStoreService.cacheManager.getCache(propCacheName, String.class, byte[].class);
-        if (sessionPropertyCache == null) {
+        sessionAttributeCache = cacheStoreService.cacheManager.getCache(attrCacheName, String.class, byte[].class);
+
+        if (create = sessionAttributeCache == null) {
+            if (trace && tc.isDebugEnabled())
+                tcReturn(cacheStoreService.tcCacheManager, "getCache", "null");
+
             MutableConfiguration<String, byte[]> config = new MutableConfiguration<String, byte[]>()
                             .setTypes(String.class, byte[].class)
                             .setExpiryPolicyFactory(EternalExpiryPolicy.factoryOf());
-            if (cacheStoreService.cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE))
+            if (cacheStoreService.supportsStoreByReference)
                 config = config.setStoreByValue(false);
             try {
-                sessionPropertyCache = cacheStoreService.cacheManager.createCache(propCacheName, config);
-
                 if (trace && tc.isDebugEnabled())
-                    Tr.debug(tc, "Created a new session property cache", propCacheName);
+                    tcInvoke(cacheStoreService.tcCacheManager, "createCache", attrCacheName, config);
+
+                sessionAttributeCache = cacheStoreService.cacheManager.createCache(attrCacheName, config);
             } catch (CacheException x) {
-                sessionPropertyCache = cacheStoreService.cacheManager.getCache(propCacheName, String.class, byte[].class);
-                if (sessionPropertyCache == null)
+                create = false;
+                if (trace && tc.isDebugEnabled()) {
+                    tcReturn(cacheStoreService.tcCacheManager, "createCache", x);
+                    tcInvoke(cacheStoreService.tcCacheManager, "getCache", attrCacheName, "String", "byte[]");
+                }
+                sessionAttributeCache = cacheStoreService.cacheManager.getCache(attrCacheName, String.class, byte[].class);
+                if (sessionAttributeCache == null)
                     throw x;
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Using session property cache", sessionPropertyCache);
+        tcSessionAttrCache = "AttrCache" + Integer.toHexString(System.identityHashCode(sessionAttributeCache));
+        if (trace && tc.isDebugEnabled())
+            tcReturn(cacheStoreService.tcCacheManager, create ? "createCache" : "getCache", tcSessionAttrCache, sessionAttributeCache);
+
+        cacheStoreService.configureMonitoring(attrCacheName);
     }
 
     /**
-     * Create a key for a session property, of the form: SessionId.PropertyId
+     * Create a key for a session attribute, of the form: SessionId.AttributeId
      * 
      * @param sessionId the session id
-     * @param propertyId the session property
+     * @param attributeId the session attribute
      * @return the key
      */
     @Trivial
-    private static final String createSessionPropertyKey(String sessionId, String propertyId) {
-        String key = new StringBuilder(sessionId.length() + 1 + propertyId.length())
+    private static final String createSessionAttributeKey(String sessionId, String attributeId) {
+        return new StringBuilder(sessionId.length() + 1 + attributeId.length())
                         .append(sessionId)
                         .append('.')
-                        .append(propertyId)
+                        .append(attributeId)
                         .toString();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "session property key: " + key);
-        return key;
     }
 
     /**
@@ -200,12 +267,30 @@ public class CacheHashMap extends BackedHashMap {
             // loop through all the candidates eligible for invalidation
             BackedSession pmiStatSession = null; // fake session for pmi stats
             SessionStatistics pmiStats = null;
-            for (@SuppressWarnings("rawtypes") Iterator<Cache.Entry<String, ArrayList>> it = sessionInfoCache.iterator(); it.hasNext(); ) {
+
+            if (trace && tc.isDebugEnabled())
+                tcInvoke(tcSessionMetaCache, "iterator");
+
+            @SuppressWarnings("rawtypes")
+            Iterator<Cache.Entry<String, ArrayList>> it = sessionMetaCache.iterator();
+
+            if (trace && tc.isDebugEnabled())
+                tcReturn(tcSessionMetaCache, "iterator", it);
+
+            while (it.hasNext()) {
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "_iterator.next");
+
                 @SuppressWarnings("rawtypes")
                 Cache.Entry<String, ArrayList> entry = it.next();
                 String id = entry == null ? null : entry.getKey();
+                ArrayList<?> value = entry.getValue();
+
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionMetaCache, "_iterator.next", id, value);
+
                 if (id != null && !INVAL_KEY.equals(id)) {
-                    SessionInfo sessionInfo = new SessionInfo(entry.getValue());
+                    SessionInfo sessionInfo = new SessionInfo(value);
                     long lastAccessTime = sessionInfo.getLastAccess();
                     short listenerTypes = sessionInfo.getListenerTypes();
                     int maxInactiveTime = sessionInfo.getMaxInactiveTime();
@@ -219,23 +304,28 @@ public class CacheHashMap extends BackedHashMap {
                         }
 
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "attempt to delete " + id);
+                            tcInvoke(tcSessionMetaCache, "remove", id, value);
 
-                        if (sessionInfoCache.remove(id, entry.getValue())) {
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "deleted " + id);
+                        boolean removed = sessionMetaCache.remove(id, value);
 
+                        if (trace && tc.isDebugEnabled())
+                            tcReturn(tcSessionMetaCache, "remove", removed);
+
+                        if (removed) {
                             //delete sub rows
                             Set<String> propIds = sessionInfo.getSessionPropertyIds();
                             if (propIds != null && !propIds.isEmpty()) {
                                 HashSet<String> propKeys = new HashSet<String>();
                                 for (String propId : propIds)
-                                    propKeys.add(createSessionPropertyKey(id, propId));
+                                    propKeys.add(createSessionAttributeKey(id, propId));
 
                                 if (trace && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, "deleting", propKeys);
+                                    tcInvoke(tcSessionAttrCache, "removeAll", propKeys);
 
-                                sessionPropertyCache.removeAll(propKeys);
+                                sessionAttributeCache.removeAll(propKeys);
+
+                                if (trace && tc.isDebugEnabled())
+                                    tcReturn(tcSessionAttrCache, "removeAll");
                             }
                         }
 
@@ -266,18 +356,31 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
-     * Loads all the properties.
+     * Loads all the session attributes.
      * Copied from DatabaseHashMapMR.
      */
+    @Trivial // return value contains customer data
     Object getAllValues(BackedSession sess) {
+        @SuppressWarnings("static-access")
+        final boolean hideValues = _smc.isHideSessionValues();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getAllValues", sess);
 
         String id = sess.getId();
 
         long startTime = System.nanoTime();
         long readSize = 0;
 
-        ArrayList<?> list = sessionInfoCache.get(id);
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcSessionMetaCache, "get", id);
+
+        ArrayList<?> list = sessionMetaCache.get(id);
+
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcSessionMetaCache, "get", list);
+
         Set<String> propIds = list == null ? null : new SessionInfo(list).getSessionPropertyIds();
 
         Hashtable<String, Object> h = new Hashtable<String, Object>();
@@ -295,29 +398,36 @@ public class CacheHashMap extends BackedHashMap {
                         continue;
                     }
 
-                    String propertyKey = createSessionPropertyKey(id, propId);
-                    byte[] b = sessionPropertyCache.get(propertyKey);
+                    String attributeKey = createSessionAttributeKey(id, propId);
 
-                    if (b != null) {
-                        ByteArrayInputStream bais = new ByteArrayInputStream(b);
-                        BufferedInputStream bis = new BufferedInputStream(bais);
-                        Object obj;
+                    if (trace && tc.isDebugEnabled())
+                        tcInvoke(tcSessionAttrCache, "get", attributeKey);
+
+                    byte[] b = sessionAttributeCache.get(attributeKey);
+
+                    if (b == null) {
+                        if (trace && tc.isDebugEnabled())
+                            tcReturn(tcSessionAttrCache, "get", "null");
+                    } else {
+                        Object value;
                         try {
-                            obj = ((CacheStore) getIStore()).getLoader().loadObject(bis);
+                            value = deserialize(b);
                             readSize += b.length;
+                            
+                            if (trace && tc.isDebugEnabled())
+                                if (hideValues)
+                                    tcReturn(tcSessionAttrCache, "get", "byte[" + b.length + "]");
+                                else
+                                    tcReturn(tcSessionAttrCache, "get", b, value);
                         } catch (ClassNotFoundException x) {
-                            FFDCFilter.processException(x, getClass().getName(), "91", sess);
+                            if (trace && tc.isDebugEnabled())
+                                tcReturn(tcSessionAttrCache, "get", hideValues ? ("byte[" + b.length + "]") : b);
+
+                            FFDCFilter.processException(x, getClass().getName(), "91", sess, new Object[] { hideValues ? "byte[" + b.length + "]" : TypeConversion.limitedBytesToString(b) });
                             throw new RuntimeException(x);
-                        }
-
-                        bis.close();
-                        bais.close();
-
-                        if (obj != null) {
-                            if (trace && tc.isDebugEnabled()) {
-                                Tr.debug(this, tc, "put prop in mSwappableData: " + propId);
-                            }
-                            h.put(propId, obj);
+                        }                   
+                        if (value != null) {
+                            h.put(propId, value);
                         }
                     }
                 }
@@ -329,8 +439,13 @@ public class CacheHashMap extends BackedHashMap {
             }
         } catch (IOException e) {
             FFDCFilter.processException(e, getClass().getName(), "319", sess);
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "getAllValues", e);
             throw new RuntimeException(e);
         }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getAllValues", hideValues ? h.keySet() : h);
         return h;
     }
 
@@ -390,27 +505,34 @@ public class CacheHashMap extends BackedHashMap {
                         throw new IllegalArgumentException(propid); // internal error, should never occur
                     }
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    String key = createSessionAttributeKey(id, propid);
+                    Object value = session.getSwappableData().get(propid);
 
-                    ObjectOutputStream oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
-                    oos.writeObject(session.getSwappableData().get(propid));
-                    oos.flush();
+                    if (value == null) {
+                        // Value removed by another thread
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "ignoring " + propid + " because it is no longer found");
+                    } else {
+                        byte[] objbuf = serialize(value);
 
-                    int size = baos.size();
-                    byte[] objbuf = baos.toByteArray();
+                        if (trace && tc.isDebugEnabled()) {
+                            @SuppressWarnings("static-access")
+                            boolean hideValues = _smc.isHideSessionValues();
+                            if (hideValues)
+                                tcInvoke(tcSessionAttrCache, "put", key, "byte[" + objbuf.length + "]");
+                            else
+                                tcInvoke(tcSessionAttrCache, "put", key, objbuf, value);
+                        }
 
-                    oos.close();
-                    baos.close();
+                        sessionAttributeCache.put(key, objbuf);
 
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "before update " + propid + " for session " + id + " size " + size);
+                        if (trace && tc.isDebugEnabled())
+                            tcReturn(tcSessionAttrCache, "put");
 
-                    String key = createSessionPropertyKey(id, propid);
-                    sessionPropertyCache.put(key, objbuf);
-
-                    SessionStatistics pmiStats = _iStore.getSessionStatistics();
-                    if (pmiStats != null) {
-                        pmiStats.writeTimes(objbuf.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+                        SessionStatistics pmiStats = _iStore.getSessionStatistics();
+                        if (pmiStats != null) {
+                            pmiStats.writeTimes(objbuf.length, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime));
+                        }
                     }
                 }
 
@@ -457,8 +579,15 @@ public class CacheHashMap extends BackedHashMap {
                         if (trace && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "deleting prop " + propid + " for session " + id);
                         }
-                        String key = createSessionPropertyKey(id, propid);
-                        sessionPropertyCache.remove(key);
+                        String key = createSessionAttributeKey(id, propid);
+
+                        if (trace && tc.isDebugEnabled())
+                            tcInvoke(tcSessionAttrCache, "remove", key);
+
+                        boolean removed = sessionAttributeCache.remove(key);
+
+                        if (trace && tc.isDebugEnabled())
+                            tcReturn(tcSessionAttrCache, "remove", removed);
                     }
                 }
 
@@ -481,28 +610,38 @@ public class CacheHashMap extends BackedHashMap {
             if (propsToWrite != null || propsToRemove != null) {
                 ArrayList<?> oldValue, newValue;
                 long backoff = 20; // allows first two attempts without delay, then a delay of 160-319ms, then a delay of 320-639 ms, ...
-                do {
-                    if ((backoff *= 2) > 100)
+                for (boolean replaced = false; !replaced; ) {
+                    if (backoff > 500 || (backoff *= 2) > 100)
                         try {
-                            // TODO remove this error and switch to enforce a maximum on backoff time
-                            // This error is temporarily here to identify how often this is reached
-                            if (backoff > 500)
-                                throw new RuntimeException("Giving up on retries"); 
                             TimeUnit.MILLISECONDS.sleep(backoff + (long) Math.random() * backoff);
                         } catch (InterruptedException x) {
                             FFDCFilter.processException(x, getClass().getName(), "324", new Object[] { id, backoff, propsToWrite, propsToRemove });
                             throw new RuntimeException(x);
                         }
-                    oldValue = sessionInfoCache.get(id);
-                    if (oldValue == null)
-                        throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?
+                    if (trace && tc.isDebugEnabled())
+                        tcInvoke(tcSessionMetaCache, "get", id);
+
+                    oldValue = sessionMetaCache.get(id);
+
+                    if (trace && tc.isDebugEnabled())
+                        tcReturn(tcSessionMetaCache, "get", oldValue);
+                    if (oldValue == null) 
+                        {break;} // TODO implement code path where cache entry for session is expired. Delete the property entries?
                     SessionInfo sessionInfo = new SessionInfo(oldValue).clone();
                     if (propsToWrite != null)
                         sessionInfo.addSessionPropertyIds(propsToWrite);
                     if (propsToRemove != null)
                         sessionInfo.removeSessionPropertyIds(propsToRemove);
                     newValue = sessionInfo.getArrayList();
-                } while (!sessionInfoCache.replace(id, oldValue, newValue));
+
+                    if (trace && tc.isDebugEnabled())
+                        tcInvoke(tcSessionMetaCache, "replace", id, oldValue, newValue);
+
+                    replaced = sessionMetaCache.replace(id, oldValue, newValue);
+
+                    if (trace && tc.isDebugEnabled())
+                        tcReturn(tcSessionMetaCache, "replace", replaced);
+                }
             }
         } catch (IOException x) {
             FFDCFilter.processException(x, getClass().getName(), "256", session);
@@ -517,7 +656,8 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected void insertSession(BackedSession session) {
-        // TODO rewrite this. For now, it is copied based on DatabaseHashMap.insertSession
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         String id = session.getId();
 
         listenerFlagUpdate(session);
@@ -526,8 +666,17 @@ public class CacheHashMap extends BackedHashMap {
         session.setLastWriteLastAccessTime(tmpCreationTime);
 
         SessionInfo sessionInfo = new SessionInfo(tmpCreationTime, session.getMaxInactiveInterval(), session.listenerFlag, session.getUserName());
+        ArrayList<Object> list = sessionInfo.getArrayList();
 
-        if (!sessionInfoCache.putIfAbsent(id, sessionInfo.getArrayList()))
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcSessionMetaCache, "putIfAbsent", id, list);
+
+        boolean added = sessionMetaCache.putIfAbsent(id, list);
+
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcSessionMetaCache, "putIfAbsent", added);
+
+        if (!added)
             throw new IllegalStateException("Cache already contains " + id);
 
         session.needToInsert = false;
@@ -545,12 +694,20 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected boolean isPresent(String id) {
-        return sessionInfoCache.containsKey(id);
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcSessionMetaCache, "containsKey", id);
+
+        boolean contains = sessionMetaCache.containsKey(id);
+
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcSessionMetaCache, "containsKey", contains);
+        return contains;
     }
 
     /**
      * Copied from DatabaseHashMap.
-     * Attempts to get the requested attr from the db
+     * Attempts to get the requested attr from the cache
      * Returns null if attr doesn't exist
      * We consider populatedAppData as well
      * populatedAppData is true when session is new or when the entire session is read into memory
@@ -559,32 +716,42 @@ public class CacheHashMap extends BackedHashMap {
      * @see com.ibm.ws.session.store.common.BackedHashMap#loadOneValue(java.lang.String, com.ibm.ws.session.store.common.BackedSession)
      */
     @Override
+    @Trivial // return value contains customer data
     protected Object loadOneValue(String attrName, BackedSession sess) {
+        @SuppressWarnings("static-access")
+        final boolean hideValues = _smc.isHideSessionValues();
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "loadOneValue", attrName, sess);
 
         Object value = null;
         if (!((CacheSession) sess).getPopulatedAppData()) {
             String id = sess.getId();
-            String appName = getIStore().getId();
 
-            String key = createSessionPropertyKey(id, attrName);
-            byte[] bytes = sessionPropertyCache.get(key);
+            String key = createSessionAttributeKey(id, attrName);
 
             if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "byte length", bytes == null ? null : bytes.length);
+                tcInvoke(tcSessionAttrCache, "get", key);
 
-            if (bytes != null && bytes.length > 0) {
+            byte[] bytes = sessionAttributeCache.get(key);
+
+            if (bytes == null || bytes.length == 0) {
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionAttrCache, "get", bytes);
+            } else {
                 long startTime = System.nanoTime();
-
-                BufferedInputStream in = new BufferedInputStream(new ByteArrayInputStream(bytes));
                 try {
-                    try {
-                        value = ((CacheStore) getIStore()).getLoader().loadObject(in);
-                    } finally {
-                        in.close();
-                    }
+                    value = deserialize(bytes);
+                    if (trace && tc.isDebugEnabled())
+                        if (hideValues)
+                            tcReturn(tcSessionAttrCache, "get", "byte[" + bytes.length + "]");
+                        else
+                            tcReturn(tcSessionAttrCache, "get", bytes, value);
                 } catch (ClassNotFoundException | IOException x) {
-                    FFDCFilter.processException(x, getClass().getName(), "197", sess);
+                    if (trace && tc.isDebugEnabled())
+                        tcReturn(tcSessionAttrCache, "get", hideValues ? "byte[" + bytes.length + "]" : bytes);
+                    FFDCFilter.processException(x, getClass().getName(), "197", sess, new Object[] { hideValues ? bytes.length : TypeConversion.limitedBytesToString(bytes) });
                     throw new RuntimeException(x);
                 }
 
@@ -595,13 +762,21 @@ public class CacheHashMap extends BackedHashMap {
             }
 
             // Before returning the value, confirm that the session hasn't expired
-            if (!sessionInfoCache.containsKey(id)) {
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, id + " does not appear to be a valid session for " + appName);
+            if (trace && tc.isDebugEnabled())
+                tcInvoke(tcSessionMetaCache, "containsKey", id);
+
+            boolean contains = sessionMetaCache.containsKey(id);
+
+            if (trace && tc.isDebugEnabled())
+                tcReturn(tcSessionMetaCache, "containsKey", contains);
+
+            if (!contains) {
                 value = null;
-                throw new UnsupportedOperationException(); // TODO implement code path where cache entry for session is expired. Delete the property entries?
             }
         }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "loadOneValue", hideValues ? (value == null ? null : "not null") : value);
         return value;
     }
 
@@ -613,20 +788,43 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected int overQualLastAccessTimeUpdate(BackedSession sess, long nowTime) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         String id = sess.getId();
 
         int updateCount;
 
-        ArrayList<?> oldValue = sessionInfoCache.get(id);
-        SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcSessionMetaCache, "get", id);
+
         synchronized (sess) {
-            if (sessionInfo == null || sessionInfo.getLastAccess() != sess.getCurrentAccessTime() || sessionInfo.getLastAccess() == nowTime) {
+            ArrayList<?> oldValue = sessionMetaCache.get(id);
+
+            if (trace && tc.isDebugEnabled())
+                tcReturn(tcSessionMetaCache, "get", oldValue);
+
+            SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
+
+            long curAccessTime = sess.getCurrentAccessTime();
+            if (sessionInfo == null || sessionInfo.getLastAccess() != curAccessTime) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "session current access time: " + curAccessTime);
                 updateCount = 0;
+            } else if (sessionInfo.getLastAccess() >= nowTime) { // avoid setting last access when the cache already has a later time
+                updateCount = 1; // be consistent with Statement.executeUpdate which returns 1 when the row matches but no changes are made
             } else {
                 sessionInfo.setLastAccess(nowTime);
                 ArrayList<?> newValue = sessionInfo.getArrayList();
 
-                if (sessionInfoCache.replace(id, oldValue, newValue)) {
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "replace", id, oldValue, newValue);
+
+                boolean replaced = sessionMetaCache.replace(id, oldValue, newValue);
+
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionMetaCache, "replace", replaced);
+
+                if (replaced) {
                     sess.updateLastAccessTime(nowTime);
                     updateCount = 1;
                 } else {
@@ -658,7 +856,14 @@ public class CacheHashMap extends BackedHashMap {
             }
 
             if (doCacheInval) {
-                ArrayList<?> oldValue = sessionInfoCache.get(INVAL_KEY);
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "get", INVAL_KEY);
+
+                ArrayList<?> oldValue = sessionMetaCache.get(INVAL_KEY);
+
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionMetaCache, "get", oldValue);
+
                 if (oldValue == null) {
                     // If we are here, it means this is the first time this web module is
                     // trying to perform invalidation of sessions
@@ -667,7 +872,15 @@ public class CacheHashMap extends BackedHashMap {
                                                               (short) 0, // listener count 
                                                               null); // user name
                     ArrayList<Object> newValue = sessionInfo.getArrayList();
-                    sessionInfoCache.put(INVAL_KEY, newValue);
+
+                    if (trace && tc.isDebugEnabled())
+                        tcInvoke(tcSessionMetaCache, "put", INVAL_KEY, newValue);
+
+                    sessionMetaCache.put(INVAL_KEY, newValue);
+
+                    if (trace && tc.isDebugEnabled())
+                        tcReturn(tcSessionMetaCache, "put");
+
                     doInvals = true;
                 } else {
                     SessionInfo sessionInfo = new SessionInfo(oldValue);
@@ -685,7 +898,14 @@ public class CacheHashMap extends BackedHashMap {
                         sessionInfo = sessionInfo.clone();
                         sessionInfo.setLastAccess(now);
                         ArrayList<Object> newValue = sessionInfo.getArrayList();
-                        doInvals = sessionInfoCache.replace(INVAL_KEY, oldValue, newValue);
+
+                        if (trace && tc.isDebugEnabled())
+                            tcInvoke(tcSessionMetaCache, "replace", INVAL_KEY, oldValue, newValue);
+
+                        doInvals = sessionMetaCache.replace(INVAL_KEY, oldValue, newValue);
+
+                        if (trace && tc.isDebugEnabled())
+                            tcReturn(tcSessionMetaCache, "replace", doInvals);
                     }
                 }
 
@@ -703,8 +923,6 @@ public class CacheHashMap extends BackedHashMap {
     }
 
     /**
-     * // TODO rewrite this. For now, it is copied based on DatabaseHashMap.insertSession
-     *
      * @see com.ibm.ws.session.store.common.BackedHashMap#persistSession(com.ibm.ws.session.store.common.BackedSession, boolean)
      */
     @FFDCIgnore(Exception.class) // FFDC logged manually with extra info
@@ -731,7 +949,14 @@ public class CacheHashMap extends BackedHashMap {
             }
 
             for (boolean updated = false; !updated;) {
-                ArrayList<?> oldValue = sessionInfoCache.get(id);
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "get", id);
+
+                ArrayList<?> oldValue = sessionMetaCache.get(id);
+
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionMetaCache, "get", oldValue);
+
                 if (oldValue == null)
                     return false;
 
@@ -762,7 +987,14 @@ public class CacheHashMap extends BackedHashMap {
                     Tr.debug(this, tc, id, sessionInfo);
 
                 ArrayList<?> newValue = sessionInfo.getArrayList();
-                updated = sessionInfoCache.replace(id, oldValue, newValue);
+
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "replace", id, oldValue, newValue);
+
+                updated = sessionMetaCache.replace(id, oldValue, newValue);
+
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionMetaCache, "replace", updated);
             }
         } catch (Exception ee) {
             FFDCFilter.processException(ee, getClass().getName(), "272", session);
@@ -783,12 +1015,29 @@ public class CacheHashMap extends BackedHashMap {
 
         long start = System.currentTimeMillis();
 
-        for (@SuppressWarnings("rawtypes") Iterator<Cache.Entry<String, ArrayList>> it = sessionInfoCache.iterator(); it.hasNext(); ) {
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcSessionMetaCache, "iterator");
+
+        @SuppressWarnings("rawtypes")
+        Iterator<Cache.Entry<String, ArrayList>> it = sessionMetaCache.iterator();
+
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcSessionMetaCache, "iterator", it);
+
+        while (it.hasNext()) {
+            if (trace && tc.isDebugEnabled())
+                tcInvoke(tcSessionMetaCache, "_iterator.next");
+
             @SuppressWarnings("rawtypes")
             Cache.Entry<String, ArrayList> entry = it.next();
             String id = entry == null ? null : entry.getKey();
+            ArrayList<?> value = entry.getValue();
+
+            if (trace && tc.isDebugEnabled())
+                tcReturn(tcSessionMetaCache, "_iterator.next", id, value);
+
             if (id != null && !INVAL_KEY.equals(id)) {
-                SessionInfo sessionInfo = new SessionInfo(entry.getValue());
+                SessionInfo sessionInfo = new SessionInfo(value);
                 long lastAccess = sessionInfo.getLastAccess();
                 short listenerTypes = sessionInfo.getListenerTypes();
                 int maxInactive = sessionInfo.getMaxInactiveTime();
@@ -824,7 +1073,18 @@ public class CacheHashMap extends BackedHashMap {
 
                         // only invalidate those which have not been accessed since
                         // check in computeInvalidList
-                        if (sessionInfoCache.remove(id, sessionInfo.getArrayList())) {
+
+                        ArrayList<Object> list = sessionInfo.getArrayList();
+
+                        if (trace && tc.isDebugEnabled())
+                            tcInvoke(tcSessionMetaCache, "remove", id, list);
+
+                        boolean removed = sessionMetaCache.remove(id, list);
+
+                        if (trace && tc.isDebugEnabled())
+                            tcReturn(tcSessionMetaCache, "remove", removed);
+
+                        if (removed) {
                             // return of session done as a result of this call
                             session.internalInvalidate(true);
 
@@ -832,12 +1092,15 @@ public class CacheHashMap extends BackedHashMap {
                             if (propIds != null && !propIds.isEmpty()) {
                                 HashSet<String> propKeys = new HashSet<String>();
                                 for (String propId : propIds)
-                                    propKeys.add(createSessionPropertyKey(id, propId));
+                                    propKeys.add(createSessionAttributeKey(id, propId));
 
                                 if (trace && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, "deleting", propKeys);
+                                    tcInvoke(tcSessionAttrCache, "removeAll", propKeys);
 
-                                sessionPropertyCache.removeAll(propKeys);
+                                sessionAttributeCache.removeAll(propKeys);
+
+                                if (trace && tc.isDebugEnabled())
+                                    tcReturn(tcSessionAttrCache, "removeAll");
                             }
                         }
 
@@ -868,8 +1131,18 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected BackedSession readFromExternal(String id) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         CacheSession sess = null;
-        ArrayList<?> value = sessionInfoCache.get(id);
+
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcSessionMetaCache, "get", id);
+
+        ArrayList<?> value = sessionMetaCache.get(id);
+
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcSessionMetaCache, "get", value);
+
         if (value != null) {
             SessionInfo sessionInfo = new SessionInfo(value);
             sess = new CacheSession(this, id, getIStore().getStoreCallback());
@@ -888,22 +1161,104 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected void removePersistedSession(String id) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         //If the app calls invalidate, it may not be removed from the local cache yet.
         superRemove(id);
 
-        ArrayList<?> removed = sessionInfoCache.getAndRemove(id);
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcSessionMetaCache, "getAndRemove", id);
+
+        ArrayList<?> removed = sessionMetaCache.getAndRemove(id);
+
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcSessionMetaCache, "getAndRemove", removed);
 
         addToRecentlyInvalidatedList(id);
 
         Set<String> propIds = removed == null ? null : new SessionInfo(removed).getSessionPropertyIds();
         if (propIds != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "remove session properties", propIds);
             for (String propId : propIds) {
-                String propertyKey = createSessionPropertyKey(id, propId);
-                sessionPropertyCache.remove(propertyKey);
+                String attributeKey = createSessionAttributeKey(id, propId);
+
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionAttrCache, "remove", attributeKey);
+
+                sessionAttributeCache.remove(attributeKey);
+
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionAttrCache, "remove");
             }
         }
+    }
+
+    /**
+     * Generates a trace string of the form,
+     * ==> Instance12345678.methName arg0, arg1, byte[22]: DeserializedFormOfArg2Bytes
+     * 
+     * @param instance instance
+     * @param methName method name
+     * @param args method arguments
+     */
+    @Trivial
+    static final void tcInvoke(String instance, String methName, Object... args) {
+        StringBuilder b = new StringBuilder("==> ").append(instance);
+        if (methName.charAt(0) != '_')
+            b.append('.');
+        b.append(methName).append(' ');
+        for (int i = 0; i < args.length; i++) {
+            if (i > 0)
+                b.append(", ");
+            if (args[i] instanceof byte[]) {
+                byte[] bytes = (byte[]) args[i];
+                b.append("byte[").append(bytes.length).append("]");
+                if (++i < args.length && bytes.length < 1000)
+                    b.append(": ").append(args[i]);
+            } else {
+                if (args[i] instanceof Collection)
+                    b.append(EOLN).append(' ');
+                b.append(args[i]);
+            }
+        }
+        Tr.debug(tc, b.toString());
+    }
+
+    /**
+     * Generates a trace string of the form,
+     * <== Instance12345678.methName byte[100]: DeserializedFormOfResult
+     *
+     * @param instance instance
+     * @param methName method name
+     * @param result first argument is the result or bytes representing the result. If the first argument is bytes, then the second argument is the result.
+     */
+    @Trivial
+    static final void tcReturn(String instance, String methName, Object... result) {
+        StringBuilder b = new StringBuilder("<== ").append(instance);
+        if (methName.charAt(0) != '_')
+            b.append('.');
+        b.append(methName).append(' ');
+        if (result == null) {
+            b.append("null");
+        } else if (result.length > 0) {
+            byte[] bytes;
+            if (result[0] instanceof byte[]) {
+                bytes = (byte[]) result[0];
+                b.append("byte[").append(bytes.length).append("]");
+            } else {
+                bytes = null;
+                if (result[0] instanceof Collection)
+                    b.append(EOLN).append(' ');
+                b.append(result[0]);
+            }
+            if (result.length > 1 && (bytes == null || bytes.length < 1000)) {
+                b.append(bytes == null ? ' ' : ':');
+                if (result[1] instanceof Collection)
+                    b.append(EOLN);
+                b.append(' ');
+                b.append(result[1]);
+            }
+        }
+        Tr.debug(tc, b.toString());
     }
 
     @Trivial
@@ -919,20 +1274,36 @@ public class CacheHashMap extends BackedHashMap {
      */
     @Override
     protected int updateLastAccessTime(BackedSession sess, long nowTime) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         String id = sess.getId();
 
         int updateCount = -1;
 
         while (updateCount == -1) {
-            ArrayList<?> oldValue = sessionInfoCache.get(id);
+            if (trace && tc.isDebugEnabled())
+                tcInvoke(tcSessionMetaCache, "get", id);
+
+            ArrayList<?> oldValue = sessionMetaCache.get(id);
+
+            if (trace && tc.isDebugEnabled())
+                tcReturn(tcSessionMetaCache, "get", oldValue);
+
             SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
             if (sessionInfo == null || sessionInfo.getLastAccess() == nowTime) {
                 updateCount = 0;
             } else {
                 sessionInfo.setLastAccess(nowTime);
                 ArrayList<Object> newValue = sessionInfo.getArrayList();
-                if (sessionInfoCache.replace(id, oldValue, newValue))
+
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "replace", id, oldValue, newValue);
+
+                if (sessionMetaCache.replace(id, oldValue, newValue))
                     updateCount = 1;
+
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionMetaCache, "replace", updateCount == 1);
             }
         }
 
@@ -946,13 +1317,22 @@ public class CacheHashMap extends BackedHashMap {
      * it was already done within the specified time interval for that app.
      */
     private void updateNukerTimeStamp(String appName) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         long now = System.currentTimeMillis();
         SessionInfo sessionInfo = new SessionInfo(now, // last access
                                                   -1, // max inactive time,
                                                   (short) 0, // listener count 
                                                   null); // user name
         ArrayList<Object> newValue = sessionInfo.getArrayList();
-        sessionInfoCache.put(INVAL_KEY, newValue);
+
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcSessionMetaCache, "put", INVAL_KEY, newValue);
+
+        sessionMetaCache.put(INVAL_KEY, newValue);
+
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcSessionMetaCache, "put");
     }
 
     /**
@@ -977,17 +1357,28 @@ public class CacheHashMap extends BackedHashMap {
             try {
                 for (int updateCount = -1; updateCount == -1; ) {
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Updating LastAccess for " + id);
+                        tcInvoke(tcSessionMetaCache, "get", id);
 
-                    ArrayList<?> oldValue = sessionInfoCache.get(id);
+                    ArrayList<?> oldValue = sessionMetaCache.get(id);
+
+                    if (trace && tc.isDebugEnabled())
+                        tcReturn(tcSessionMetaCache, "get", oldValue);
+
                     SessionInfo sessionInfo = oldValue == null ? null : new SessionInfo(oldValue).clone();
                     if (sessionInfo == null || sessionInfo.getLastAccess() >= time) {
                         updateCount = 0;
                     } else {
                         sessionInfo.setLastAccess(time);
                         ArrayList<Object> newValue = sessionInfo.getArrayList();
-                        if (sessionInfoCache.replace(id, oldValue, newValue))
+
+                        if (trace && tc.isDebugEnabled())
+                            tcInvoke(tcSessionMetaCache, "replace", id, oldValue, newValue);
+
+                        if (sessionMetaCache.replace(id, oldValue, newValue))
                             updateCount = 1;
+
+                        if (trace && tc.isDebugEnabled())
+                            tcReturn(tcSessionMetaCache, "replace", updateCount == 1);
                     }
                 }
             } catch (Exception x) {
@@ -1003,4 +1394,64 @@ public class CacheHashMap extends BackedHashMap {
     private void writeObject(ObjectOutputStream out) throws IOException {
         throw new UnsupportedOperationException();
     }
+
+    //Converts an object to a byte array, using enhancements when possible to reduce size
+    public byte[] serialize(Object value) throws IOException {
+        BuiltinSerializationInfo<?> info = SerializationInfoCache.lookupByClass(value.getClass());
+
+        byte[] objbuf = null;
+
+        if(info != null) {
+            //This is a value that can be written directly to bytes
+            //TODO handle exceptions that occur when converting to bytes
+            objbuf = info.objectToBytes(value);
+        } else {
+            //Go through normal serialization process
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = cacheStoreService.serializationService.createObjectOutputStream(baos);
+            try {
+                oos.writeObject(value);
+                oos.flush();
+
+                objbuf = baos.toByteArray();
+            } finally {
+                oos.close();
+                baos.close();
+            }
+        }   
+        return objbuf;
+    }
+
+    public Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException{
+        Object obj = null;
+        
+        if (bytes.length >= 4 
+                && bytes[0] == OBJECT_OUTPUT_STREAM_HEADER[0]
+                && bytes[1] == OBJECT_OUTPUT_STREAM_HEADER[1]) {    
+            //This was serialized using the standard method, deserialize with readObject
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            BufferedInputStream in = new BufferedInputStream(bais);
+            try {
+                obj = ((CacheStore) getIStore()).getLoader().loadObject(in);
+            } finally {
+                in.close();
+                bais.close();
+            }
+        } else if(bytes[0] == SerializationInfoCache.BUILTIN_SERIALIZATION) {
+            //This was written directly to bytes, so read directly from bytes
+                           
+            BuiltinSerializationInfo<?> info = SerializationInfoCache.lookupByIndex(bytes[1]);
+            if(info == null) {
+                //Stream is not in the normal serializaton or built-in format
+                //TODO improve this exception/add NLS
+                throw new StreamCorruptedException("invalid stream header: " + bytes[0] + " " + bytes[1]);
+            }
+            //TODO handle exceptions that occur when converting to object
+            obj = info.bytesToObject(bytes);       
+        } else {
+            //TODO improve this exception/add NLS
+            throw new StreamCorruptedException("invalid stream header: " + bytes[0] + " " + bytes[1]);
+        }
+        return obj;
+}
 }

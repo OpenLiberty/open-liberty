@@ -41,7 +41,9 @@ public class ShrinkHelper {
      * autoFVT/publish/... and wlp/usr/...
      */
     public static void exportToServer(LibertyServer server, String path, Archive<?> a) throws Exception {
-        exportToServer(server, path, a, false);
+        String serverDir = "publish/servers/" + server.getServerName();
+        exportArtifact(a, serverDir + '/' + path);
+        server.copyFileToLibertyServerRoot(serverDir + "/" + path, path, a.getName());
     }
 
     /**
@@ -49,37 +51,9 @@ public class ShrinkHelper {
      * autoFVT/publish/... and wlp/usr/...
      */
     public static void exportToClient(LibertyClient client, String path, Archive<?> a) throws Exception {
-        exportToClient(client, path, a, false);
-    }
-
-    /**
-     * Export an artifact to servers/$server.getName()/$path/$a.getName() under two directories:
-     * autoFVT/publish/... and wlp/usr/...
-     */
-    public static void exportToServer(LibertyServer server, String path, Archive<?> a, boolean overWrite) throws Exception {
-        String serverDir = "publish/servers/" + server.getServerName();
-        File outputFile = new File(serverDir + '/' + path, a.getName());
-        if (! outputFile.exists() || overWrite) {
-            exportArtifact(a, serverDir + '/' + path, true, overWrite);
-            server.copyFileToLibertyServerRoot(serverDir + "/" + path, path, a.getName());
-        } else {
-            Log.info(ShrinkHelper.class, "exportToServer", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
-        }
-    }
-
-    /**
-     * Export an artifact to clients/$client.getName()/$path/$a.getName() under two directories:
-     * autoFVT/publish/... and wlp/usr/...
-     */
-    public static void exportToClient(LibertyClient client, String path, Archive<?> a, boolean overWrite) throws Exception {
         String clientDir = "publish/clients/" + client.getClientName();
-        File outputFile = new File(clientDir + '/' + path, a.getName());
-        if (! outputFile.exists() || overWrite) {
-            exportArtifact(a, clientDir + '/' + path, true, overWrite);
-            client.copyFileToLibertyClientRoot(clientDir + "/" + path, path, a.getName());
-        } else {
-            Log.info(ShrinkHelper.class, "exportToClient", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
-        }
+        exportArtifact(a, clientDir + '/' + path);
+        client.copyFileToLibertyClientRoot(clientDir + "/" + path, path, a.getName());
     }
 
     /**
@@ -141,7 +115,7 @@ public class ShrinkHelper {
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents) {
-            return exportArtifact(a, dest, printArchiveContents, false);
+        return exportArtifact(a, dest, printArchiveContents, false);
     }
 
     /**
@@ -157,7 +131,7 @@ public class ShrinkHelper {
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents, boolean overWrite) {
         Log.info(c, "exportArtifact", "Exporting shrinkwrap artifact: " + a.toString() + " to " + dest);
         File outputFile = new File(dest, a.getName());
-        if (outputFile.exists() && ! overWrite) {
+        if (outputFile.exists() && !overWrite) {
             Log.info(ShrinkHelper.class, "exportArtifact", "Not exporting artifact because it already exists at " + outputFile.getAbsolutePath());
             return a;
         }
@@ -199,6 +173,19 @@ public class ShrinkHelper {
      * @return a WebArchive representing the application created
      */
     public static WebArchive buildDefaultApp(String appName, String... packages) throws Exception {
+        return buildDefaultAppFromPath(appName, null, packages);
+    }
+
+    /**
+     * Builds a WebArchive (WAR) with the default format, which assumes all resources are at:
+     * '$appPath/test-applications/$appName/resources/`
+     *
+     * @param appName The name of the application. The '.war' file extension is assumed
+     * @param appPath Absolute path where the appropriate test-applications directory exists.
+     * @param packages A list of java packages to add to the application.
+     * @return a WebArchive representing the application created
+     */
+    public static WebArchive buildDefaultAppFromPath(String appName, String appPath, String... packages) throws Exception {
         String appArchiveName = appName.endsWith(".war") ? appName : appName + ".war";
         WebArchive app = ShrinkWrap.create(WebArchive.class, appArchiveName);
         for (String p : packages) {
@@ -207,8 +194,10 @@ public class ShrinkHelper {
             else
                 app = app.addPackages(false, p);
         }
-        if (new File("test-applications/" + appName + "/resources/").exists())
-            app = (WebArchive) addDirectory(app, "test-applications/" + appName + "/resources/");
+        String testAppResourcesDir = (appPath == null ? "" : appPath) + "test-applications/" + appName + "/resources/";
+        if (new File(testAppResourcesDir).exists()) {
+            app = (WebArchive) addDirectory(app, testAppResourcesDir);
+        }
         return app;
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.service.component.annotations.Activate;
@@ -26,9 +27,13 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.osgi.service.metatype.annotations.Option;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.crypto.PasswordUtil;
@@ -36,7 +41,9 @@ import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.security.X509CertificateMapper;
 import com.ibm.ws.bnd.metatype.annotation.Ext;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.registry.CertificateMapFailedException;
 import com.ibm.ws.security.registry.CertificateMapNotSupportedException;
 import com.ibm.ws.security.registry.CustomRegistryException;
@@ -63,6 +70,10 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 @Ext.ObjectClassClass(UserRegistry.class)
 interface BasicRegistryConfig {
 
+    public static final String MAP_MODE_PRINCIPAL_CN = "PRINCIPAL_CN";
+    public static final String MAP_MODE_CUSTOM = "CUSTOM";
+    public static final String MAP_MODE_NOT_SUPPORTED = "NOT_SUPPORTED";
+
     @AttributeDefinition(name = "%realm", description = "%realm.desc", defaultValue = BasicRegistry.DEFAULT_REALM_NAME)
     String realm();
 
@@ -79,6 +90,19 @@ interface BasicRegistryConfig {
 
     @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, required = false)
     String config_id();
+
+    @AttributeDefinition(name = "%certificate.map.mode", description = "%certificate.map.mode.desc", required = false,
+                         options = { @Option(value = MAP_MODE_PRINCIPAL_CN, label = "%certificate.map.mode.principal_cn"),
+                                     @Option(value = MAP_MODE_CUSTOM, label = "%certificate.map.mode.custom"),
+                                     @Option(value = MAP_MODE_NOT_SUPPORTED, label = "%certificate.map.mode.not.supported") },
+                         defaultValue = MAP_MODE_PRINCIPAL_CN)
+    String certificateMapMode();
+
+    @AttributeDefinition(name = "%certificate.mapper.id", description = "%certificate.mapper.id.desc", type = AttributeType.STRING, required = false)
+    String certificateMapperId();
+
+    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "(x509.certificate.mapper.id=${certificateMapperId})")
+    String CertificateMapper_target();
 }
 
 @ObjectClassDefinition(factoryPid = "com.ibm.ws.security.registry.basic.config.user", name = "%basic.user", description = "%basic.user.desc",
@@ -126,6 +150,16 @@ public class BasicRegistry implements UserRegistry {
 
     private volatile State state;
 
+    /**
+     * Certificate mapping mode.
+     */
+    private String certificateMapMode = null;
+
+    /**
+     * The {@link X509CertificateMapper} reference.
+     */
+    private final AtomicReference<X509CertificateMapper> iCertificateMapperRef = new AtomicReference<X509CertificateMapper>();
+
     private class State {
         final String realm;// = DEFAULT_REALM_NAME;
         final boolean ignoreCaseForAuthentication;// = Boolean.FALSE;
@@ -150,6 +184,11 @@ public class BasicRegistry implements UserRegistry {
         if (state.users.isEmpty()) {
             Tr.warning(tc, "BASIC_REGISTRY_NO_USERS_DEFINED", new Object[] { config.config_id() });
         }
+
+        /*
+         * Determine the X.509 certificate authentication mode.
+         */
+        this.certificateMapMode = config.certificateMapMode();
     }
 
     private static Map<String, BasicPassword> users(User[] users) {
@@ -244,38 +283,6 @@ public class BasicRegistry implements UserRegistry {
         state = null;
     }
 
-    /**
-     * Constructs an initialized BasicRegistry.
-     *
-     * @param realm Realm name, may be <code>null</code>. If null, use default value.
-     * @param ignoreCase, indicates if case insensitive authentication may .
-     * @param basicUsers Set of BasicUser objects, must not be <code>null</code>.
-     * @param basicGroups Set of BasicGroup objects, must not be <code>null</code>.
-     */
-//    BasicRegistry(String realm, Boolean ignoreCase, Set<BasicUser> basicUsers, Set<BasicGroup> basicGroups) {
-//        if (realm != null) {
-//            this.realm = realm;
-//        }
-//        if (ignoreCase != null && ignoreCase.booleanValue()) {
-//            state.ignoreCaseForAuthentication = Boolean.TRUE;
-//        }
-//
-//        Map<String, BasicPassword> tmpUsers = new HashMap<String, BasicPassword>();
-//        for (BasicUser user : basicUsers) {
-//            tmpUsers.put(user.getName(), user.getPassword());
-//        }
-//
-//        Map<String, List<String>> tmpGroups = new HashMap<String, List<String>>();
-//        for (BasicGroup group : basicGroups) {
-//            List<String> members = new ArrayList<String>();
-//            members.addAll(group.getMembers());
-//            tmpGroups.put(group.getName(), members);
-//        }
-//
-//        users = Collections.unmodifiableMap(tmpUsers);
-//        groups = Collections.unmodifiableMap(tmpGroups);
-//    }
-
     /** {@inheritDoc} */
     @Override
     public String getRealm() {
@@ -345,17 +352,73 @@ public class BasicRegistry implements UserRegistry {
 
     /** {@inheritDoc} */
     @Override
-    public String mapCertificate(X509Certificate cert) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
-        if (cert == null) {
-            throw new IllegalArgumentException("cert is null");
+    @FFDCIgnore({ com.ibm.websphere.security.CertificateMapNotSupportedException.class, com.ibm.websphere.security.CertificateMapFailedException.class })
+    public String mapCertificate(X509Certificate[] chain) throws CertificateMapNotSupportedException, CertificateMapFailedException, RegistryException {
+
+        if (BasicRegistryConfig.MAP_MODE_NOT_SUPPORTED.equalsIgnoreCase(certificateMapMode)) {
+
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Certificate authentication has been disabled for this basic registry.");
+            }
+            String msg = Tr.formatMessage(tc, "BASIC_REGISTRY_CERT_IGNORED");
+            throw new CertificateMapNotSupportedException(msg);
+
+        } else if (BasicRegistryConfig.MAP_MODE_CUSTOM.equalsIgnoreCase(certificateMapMode)) {
+
+            if (chain == null || chain.length == 0) {
+                throw new IllegalArgumentException("cert is null");
+            }
+
+            /*
+             * Use the custom certificate mapper.
+             */
+            try {
+                X509CertificateMapper mapper = iCertificateMapperRef.get();
+                if (mapper == null) {
+                    String msg = Tr.formatMessage(tc, "BASIC_REGISTRY_MAPPER_NOT_BOUND");
+                    throw new CertificateMapFailedException(msg);
+                }
+
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Using custom X.509 certificate mapper: " + mapper.getClass());
+                }
+
+                String name = mapper.mapCertificate(chain);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The custom X.509 certificate mapper returned the following mapping: " + name);
+                }
+
+                if (name == null || !isValidUser(name)) {
+                    String msg = Tr.formatMessage(tc, "BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND", name);
+                    throw new CertificateMapFailedException(msg);
+                }
+                return name;
+
+            } catch (com.ibm.websphere.security.CertificateMapNotSupportedException e) {
+                String msg = Tr.formatMessage(tc, "BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED");
+                throw new CertificateMapNotSupportedException(msg, e);
+            } catch (com.ibm.websphere.security.CertificateMapFailedException e) {
+                String msg = Tr.formatMessage(tc, "BASIC_REGISTRY_CUSTOM_MAPPER_FAILED");
+                throw new CertificateMapFailedException(msg, e);
+            }
+
+        } else {
+
+            if (chain == null || chain.length == 0 || chain[0] == null) {
+                throw new IllegalArgumentException("cert is null");
+            }
+
+            // getSubjectDN is denigrated
+            String dn = chain[0].getSubjectX500Principal().getName();
+            String name = LDAPUtils.getCNFromDN(dn);
+            if (name == null || !isValidUser(name)) {
+                String msg = Tr.formatMessage(tc, "BASIC_REGISTRY_NAME_NOT_FOUND", dn);
+                throw new CertificateMapFailedException(msg);
+            }
+            return name;
+
         }
-        // getSubjectDN is denigrated
-        String dn = cert.getSubjectX500Principal().getName();
-        String name = LDAPUtils.getCNFromDN(dn);
-        if (name == null || !isValidUser(name)) {
-            throw new CertificateMapFailedException("DN: " + dn + " does not map to a valid registry user");
-        }
-        return name;
+
     }
 
     /** {@inheritDoc} */
@@ -652,14 +715,17 @@ public class BasicRegistry implements UserRegistry {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.security.registry.UserRegistry#getType()
-     */
     @Override
     public String getType() {
         return TYPE;
     }
 
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
+    protected void setCertificateMapper(X509CertificateMapper reference) {
+        iCertificateMapperRef.set(reference);
+    }
+
+    protected void unsetCertificateMapper(X509CertificateMapper reference) {
+        iCertificateMapperRef.compareAndSet(reference, null);
+    }
 }

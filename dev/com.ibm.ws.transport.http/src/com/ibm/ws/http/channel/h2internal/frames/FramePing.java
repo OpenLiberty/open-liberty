@@ -17,6 +17,7 @@ import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.FrameSizeException;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FramePing extends Frame {
 
@@ -58,6 +59,7 @@ public class FramePing extends Frame {
                 this.opaquePayload[i] = 's';
             }
         }
+        writeFrameLength += payloadLength;
         setInitialized(); // we have everything we need to write out, now
     }
 
@@ -78,29 +80,34 @@ public class FramePing extends Frame {
     }
 
     @Override
-    public byte[] buildFrameForWrite() {
-
-        byte[] frame = super.buildFrameForWrite();
+    public WsByteBuffer buildFrameForWrite() {
+        WsByteBuffer buffer = super.buildFrameForWrite();
+        byte[] frame;
+        if (buffer.hasArray()) {
+            frame = buffer.array();
+        } else {
+            frame = super.createFrameArray();
+        }
 
         // add the first 9 bytes of the array
         setFrameHeaders(frame, utils.FRAME_TYPE_PING);
 
-        // now for the Setting Frame payload
-        int frameIndex = SIZE_FRAME_BEFORE_PAYLOAD;
-
         for (int i = 0; i < opaquePayload.length; i++) {
             frame[i + SIZE_FRAME_BEFORE_PAYLOAD] = opaquePayload[i];
         }
-        return frame;
+
+        buffer.put(frame, 0, writeFrameLength);
+        buffer.flip();
+        return buffer;
     }
 
     @Override
     public void validate(H2ConnectionSettings settings) throws ProtocolException, FrameSizeException {
         if (streamId != 0) {
-            throw new ProtocolException("PING frame streamID must be 0x0; received " + streamId);
+            throw new ProtocolException("ping frames must be sent on stream 0");
         }
         if (this.payloadLength != 8) {
-            throw new FrameSizeException("PING opaque data must have a length of 8.  Actual length : " + payloadLength);
+            throw new FrameSizeException("ping frames must have a length of 8 bytes");
         }
     }
 

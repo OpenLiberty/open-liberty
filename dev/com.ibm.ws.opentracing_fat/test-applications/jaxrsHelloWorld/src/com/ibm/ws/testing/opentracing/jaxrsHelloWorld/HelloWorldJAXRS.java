@@ -35,6 +35,7 @@ public class HelloWorldJAXRS extends Application {
     @Path("helloWorld")
     @Produces(MediaType.TEXT_PLAIN)
     public String helloWorld() {
+        System.out.println("helloWorld web service called");
         return "Hello World";
     }
 

@@ -553,3 +553,14 @@ ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Oszt\u00e1lyelemz\u00e9si bels\u0151 hiba: Jandex feldolgoz\u00e1s - a(z) [ {0} ] oszt\u00e1ly t\u00f6bbsz\u00f6r\u00f6s feldolgoz\u00e1sa.
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
+
+# # {0} A number
+# # {1} A number
+# # {2} A number
+# # {3} A number
+# # {4} The name of a file or the name of a directory
+# # Read - Past tense. 
+ANNO_JANDEX_USAGE=CWWKC0092I: Jandex indexek beolvasva {0} / {1} arch\u00edvumhoz ({2} / {3} oszt\u00e1ly) {4} alatt. 
+ANNO_JANDEX_USAGE.explanation=Megjelen\u00edti a modulban l\u00e9v\u0151 arch\u00edvumok sz\u00e1m\u00e1t, amelyek a Jandex indexek beolvas\u00e1s\u00e1val lettek feldolgozva, \u00e9s nem a t\u00e9nyleges oszt\u00e1lyf\u00e1jlok elemz\u00e9s\u00e9vel. Megjelen\u00edti az alkalmaz\u00e1sban l\u00e9v\u0151 oszt\u00e1lyok sz\u00e1m\u00e1t is, amelyek Jandex indexek beolvas\u00e1s\u00e1val lettek feldolgozva.
+ANNO_JANDEX_USAGE.useraction=Ha a Jandex indexek beolvas\u00e1sa az alkalmaz\u00e1shoz sz\u00e1nd\u00e9kos, akkor nincs teend\u0151. Ha a Jandex indexeket nem kellene beolvasni az alkalmaz\u00e1shoz, akkor \u00e1ll\u00edtsa be a useJandex="false" attrib\u00fatumot a server.xml f\u00e1jl application elem\u00e9ben. Ennek alternat\u00edv\u00e1jak\u00e9nt \u00e1ll\u00edtsa be a useJandex="false" tulajdons\u00e1got a server.xml f\u00e1jl applicationManger elem\u00e9ben a Jandex indexek figyelmen k\u00edv\u00fcl hagy\u00e1s\u00e1hoz az alkalmaz\u00e1shoz.
+

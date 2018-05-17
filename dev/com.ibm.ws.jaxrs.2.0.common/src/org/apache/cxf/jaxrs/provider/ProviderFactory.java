@@ -23,6 +23,8 @@ import static com.ibm.ws.jaxrs20.utils.CustomizerUtils.createCustomizerKey;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -32,6 +34,7 @@ import java.lang.reflect.WildcardType;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -100,7 +103,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.JaxRsConstants;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
-import com.ibm.ws.jaxrs20.providers.jsonp.JsonPProvider;
 import com.ibm.ws.jaxrs20.providers.multipart.IBMMultipartProvider;
 
 public abstract class ProviderFactory {
@@ -145,7 +147,7 @@ public abstract class ProviderFactory {
     //Liberty code change start
     //defect 178126
     //A cache for getGenericInterfaces
-    private static final ConcurrentHashMap<ClassPair, Type[]> genericInterfacesCache = new ConcurrentHashMap<ClassPair, Type[]>();
+    private static final ConcurrentHashMap<ClassesKey, Type[]> genericInterfacesCache = new ConcurrentHashMap<>();
     private static final Type[] emptyType = new Type[] {};
 
     //Liberty code change end
@@ -247,6 +249,7 @@ public abstract class ProviderFactory {
     }
 
     // Liberty Change for CXF Begin
+    @FFDCIgnore(value = { Throwable.class })
     public static Object createJsonpProvider() {
 
         // We can only create the JSON-P provider if the jsonp feature is provisioned. This usually
@@ -254,7 +257,7 @@ public abstract class ProviderFactory {
         // that includes it).  The following classloading code checks to see if this bundle can load
         // (via dynamic import) the JSON-P classes.  If so, then it returns the JSON-P provider.  If not,
         // it returns null.
-        JsonPProvider provider = null;
+        Object provider = null;
         ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
 
             @Override
@@ -264,7 +267,22 @@ public abstract class ProviderFactory {
         });
         Class<?> c = ProviderFactory.loadClass(cl, JSONPCLASS);
         if (c != null) {
-            provider = new JsonPProvider();
+            // Use reflection so that we do not load JSON classes if jsonp feature is not enabled.
+            String className = "com.ibm.ws.jaxrs20.providers.jsonp.JsonPProvider";
+            Class<?> pProviderCls = ProviderFactory.loadClass(cl, className);
+            try {
+                provider = pProviderCls.newInstance();
+            } catch (Throwable ex) {
+                String message = "Problem with creating the Jsonp provider " + className;
+                if (ex.getMessage() != null) {
+                    message += ": " + ex.getMessage();
+                } else {
+                    message += ", exception class : " + ex.getClass().getName();
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, message);
+                }
+            }
         }
 
         return provider;
@@ -371,7 +389,9 @@ public abstract class ProviderFactory {
                         if (argCls != null && argCls.isAssignableFrom(contextCls)) {
                             List<MediaType> mTypes = JAXRSUtils.getProduceTypes(
                                                                                 cr.getProvider().getClass().getAnnotation(Produces.class));
-                            if (JAXRSUtils.intersectMimeTypes(mTypes, type).size() > 0) {
+                            //Liberty code change begin
+                            if (JAXRSUtils.doMimeTypesIntersect(mTypes, type)) {
+                            //Liberty code change end
                                 injectContextValues(cr, m);
                                 candidates.add((ContextResolver<T>) cr.getProvider());
                             }
@@ -966,10 +986,9 @@ public abstract class ProviderFactory {
         MessageBodyReader<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderConsumeTypes(ep);
 
-        List<MediaType> availableMimeTypes =
-            JAXRSUtils.intersectMimeTypes(Collections.singletonList(mediaType), supportedMediaTypes, false);
-
-        return availableMimeTypes.size() != 0;
+        //Liberty code change begin
+        return JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
+        //Liberty code change end
     }
 
     private boolean isReadable(ProviderInfo<MessageBodyReader<?>> pi,
@@ -1009,12 +1028,9 @@ public abstract class ProviderFactory {
                                                 MediaType mediaType) {
         MessageBodyWriter<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderProduceTypes(ep);
-
-        List<MediaType> availableMimeTypes =
-            JAXRSUtils.intersectMimeTypes(Collections.singletonList(mediaType),
-                                                                           supportedMediaTypes, false);
-
-        return availableMimeTypes.size() != 0;
+        //Liberty code change begin
+        return JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
+        //Liberty code change end
     }
 
     private boolean isWriteable(ProviderInfo<MessageBodyWriter<?>> pi,
@@ -1340,8 +1356,7 @@ public abstract class ProviderFactory {
         if (Object.class == cls) {
             return emptyType;
         }
-        ClassPair classPair = new ClassPair(cls, expectedClass);
-        Type[] cachedTypes = genericInterfacesCache.get(classPair);
+        Type[] cachedTypes = getTypes(cls, expectedClass);
         if (cachedTypes != null)
             return cachedTypes;
         if (expectedClass != null) {
@@ -1350,21 +1365,21 @@ public abstract class ProviderFactory {
                 Class<?> actualType = InjectionUtils.getActualType(genericSuperType);
                 if (actualType != null && actualType.isAssignableFrom(expectedClass)) {
                     Type[] tempTypes = new Type[] { genericSuperType };
-                    genericInterfacesCache.put(classPair, tempTypes);
+                    putTypes(cls, expectedClass, tempTypes);
                     return tempTypes;
                 } else if (expectedClass.isAssignableFrom(actualType)) {
-                    genericInterfacesCache.put(classPair, emptyType);
+                    putTypes(cls, expectedClass, emptyType);
                     return emptyType;
                 }
             }
         }
         Type[] types = cls.getGenericInterfaces();
         if (types.length > 0) {
-            genericInterfacesCache.put(classPair, types);
+            putTypes(cls, expectedClass, types);
             return types;
         }
         Type[] superGenericTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass);
-        genericInterfacesCache.put(classPair, superGenericTypes);
+        putTypes(cls, expectedClass, superGenericTypes);
         return superGenericTypes;
     }
 
@@ -1672,77 +1687,131 @@ public abstract class ProviderFactory {
         sortReaders();
         sortWriters();
     }
-}
 
-//Liberty code change start
-//defect 178126
-class ClassPair {
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((firstClass == null) ? 0 : firstClass.hashCode());
-        result = prime * result + ((secondClass == null) ? 0 : secondClass.hashCode());
-        result = prime * result + ((firstClassLoader == null) ? 0 : firstClassLoader.hashCode());
-        result = prime * result + ((secondClassLoader == null) ? 0 : secondClassLoader.hashCode());
-        return result;
+    //Liberty code change start
+    //defect 178126
+    private static final ReferenceQueue<Class<?>> referenceQueue = new ReferenceQueue<>();
+
+    private static void poll() {
+        ClassWeakReference key;
+        while ((key = (ClassWeakReference) referenceQueue.poll()) != null) {
+            genericInterfacesCache.remove(key.getOwningKey());
+        }
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ClassPair other = (ClassPair) obj;
-        if (firstClass == null) {
-            if (other.firstClass != null)
-                return false;
-        } else if (!firstClass.equals(other.firstClass))
-            return false;
-        if (secondClass == null) {
-            if (other.secondClass != null)
-                return false;
-        } else if (!secondClass.equals(other.secondClass))
-            return false;
-
-        if (firstClassLoader == null) {
-            if (other.firstClassLoader != null)
-                return false;
-        } else if (!firstClassLoader.equals(other.firstClassLoader))
-            return false;
-        if (secondClassLoader == null) {
-            if (other.secondClassLoader != null)
-                return false;
-        } else if (!secondClassLoader.equals(other.secondClassLoader))
-            return false;
-
-        return true;
+    private static Type[] getTypes(Class<?> cls, Class<?> expectedCls) {
+        poll();
+        return genericInterfacesCache.get(new ClassesKey(cls, expectedCls));
     }
 
-    private String getClassLoaderString(final Class<?> cls) {
-        return cls == null ? null : AccessController.doPrivileged(new PrivilegedAction<String>() {
+    /**
+     * Add a new expected class and Type[] to the Map of Maps. If there is only one expected class
+     * for a given class, then we will use a Collections.singletonMap(). Otherwise we will convert to a
+     * ConcurrentHashMap. This reduces overhead when there is only one expected Class.
+     *
+     * @param cls
+     * @param expectedCls
+     * @param types
+     */
+    private static void putTypes(Class<?> cls, Class<?> expectedCls, Type[] types) {
+        poll();
+        genericInterfacesCache.put(new ClassesKey(referenceQueue, cls, expectedCls), types);
+    }
 
-            @Override
-            public String run() {
-                ClassLoader cl = cls.getClassLoader();
-                return cl == null ? null : cl.getClass().getName() + "." + cl.hashCode();
+    private static class ClassesKey {
+        private final ClassWeakReference[] classes;
+        private final int hash;
+
+        ClassesKey(Class<?>... cl) {
+            int length = cl.length;
+            classes = new ClassWeakReference[length];
+            int hashCode = 0;
+            for (int i = 0; i < length; ++i) {
+                if (cl[i] != null) {
+                    classes[i] = new ClassWeakReference(cl[i], this);
+                    hashCode += cl[i].hashCode();
+                }
             }
-        });
+            hash = hashCode;
+        }
+
+        ClassesKey(ReferenceQueue<Class<?>> referenceQueue, Class<?>... cl) {
+            int length = cl.length;
+            classes = new ClassWeakReference[length];
+            int hashCode = 0;
+            for (int i = 0; i < length; ++i) {
+                if (cl[i] != null) {
+                    classes[i] = new ClassWeakReference(cl[i], this, referenceQueue);
+                    hashCode += cl[i].hashCode();
+                }
+            }
+            hash = hashCode;
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ClassesKey other = (ClassesKey) obj;
+            if (!Arrays.equals(classes, other.classes))
+                return false;
+            return true;
+        }
     }
 
-    private final String firstClass;
-    private final String secondClass;
-    private final String firstClassLoader;
-    private final String secondClassLoader;
+    private static class ClassWeakReference extends WeakReference<Class<?>> {
+        private final int hash;
+        private final ClassesKey owningKey;
 
-    public ClassPair(Class<?> firstClass, Class<?> secondClass) {
-        this.firstClass = firstClass == null ? null : firstClass.getName();
-        this.secondClass = secondClass == null ? null : secondClass.getName();
-        this.firstClassLoader = getClassLoaderString(firstClass);
-        this.secondClassLoader = getClassLoaderString(secondClass);
+        ClassWeakReference(Class<?> referent, ClassesKey owningKey) {
+            super(referent);
+            this.owningKey = owningKey;
+            hash = referent.hashCode();
+        }
+
+        ClassWeakReference(Class<?> referent, ClassesKey owningKey,
+                           ReferenceQueue<Class<?>> referenceQueue) {
+            super(referent, referenceQueue);
+            this.owningKey = owningKey;
+            hash = referent.hashCode();
+        }
+
+        ClassesKey getOwningKey() {
+            return owningKey;
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+
+            if (obj instanceof ClassWeakReference) {
+                return get() == ((ClassWeakReference) obj).get();
+            }
+
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            Class<?> referent = get();
+            return new StringBuilder("ClassWeakReference: ").append(referent == null ? null : referent.getName()).toString();
+        }
     }
+    //Liberty code change end
 }
-//Liberty code change end

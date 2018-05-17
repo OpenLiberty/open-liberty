@@ -56,6 +56,12 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "httpEndpoint")
     private ConfigElementList<HttpEndpoint> httpEndpoints;
 
+    @XmlElement(name = "virtualHost")
+    private ConfigElementList<VirtualHost> virtualHosts;
+
+    @XmlElement(name = "ssl")
+    private ConfigElementList<SSLConfig> ssls;
+
     @XmlElement(name = "wasJmsEndpoint")
     private ConfigElementList<JmsEndpoint> wasJmsEndpoints;
 
@@ -65,6 +71,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "httpSession")
     private HttpSession httpSession;
 
+    @XmlElement(name = "httpSessionCache")
+    private ConfigElementList<HttpSessionCache> httpSessionCaches;
+
     @XmlElement(name = "httpSessionDatabase")
     private HttpSessionDatabase httpSessionDatabase;
 
@@ -73,6 +82,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "webApplication")
     private ConfigElementList<WebApplication> webApplications;
+
+    @XmlElement(name = "springBootApplication")
+    private ConfigElementList<SpringBootApplication> springBootApplications;
 
     @XmlElement(name = "cloudant")
     private ConfigElementList<Cloudant> cloudants;
@@ -130,6 +142,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "managedThreadFactory")
     private ConfigElementList<ManagedThreadFactory> managedThreadFactories;
+
+    @XmlElement(name = "monitor")
+    private ConfigElementList<Monitor> monitors;
 
     @XmlElement(name = "resourceAdapter")
     private ConfigElementList<ResourceAdapter> resourceAdapters;
@@ -386,6 +401,18 @@ public class ServerConfiguration implements Cloneable {
     }
 
     /**
+     * Retrieves the list of VirtualHosts in this configuration
+     *
+     * @return the list of VirtualHosts in this configuration
+     */
+    public ConfigElementList<VirtualHost> getVirtualHosts() {
+        if (this.virtualHosts == null) {
+            this.virtualHosts = new ConfigElementList<>();
+        }
+        return this.virtualHosts;
+    }
+
+    /**
      * Retrieves the list of wasJmsEndpoints in this configuration
      *
      * @return the list of JmsEndpoints in this configuration
@@ -417,6 +444,15 @@ public class ServerConfiguration implements Cloneable {
             this.httpSession = new HttpSession();
         }
         return this.httpSession;
+    }
+
+    /**
+     * @return the list of httpSesssionCache configuration elements
+     */
+    public ConfigElementList<HttpSessionCache> getHttpSessionCaches() {
+        if (this.httpSessionCaches == null)
+            this.httpSessionCaches = new ConfigElementList<HttpSessionCache>();
+        return this.httpSessionCaches;
     }
 
     /**
@@ -495,6 +531,12 @@ public class ServerConfiguration implements Cloneable {
         return this.managedThreadFactories;
     }
 
+    public ConfigElementList<Monitor> getMonitors() {
+        if (monitors == null)
+            monitors = new ConfigElementList<Monitor>();
+        return monitors;
+    }
+
     public ConfigElementList<ResourceAdapter> getResourceAdapters() {
         if (this.resourceAdapters == null)
             this.resourceAdapters = new ConfigElementList<ResourceAdapter>();
@@ -513,6 +555,16 @@ public class ServerConfiguration implements Cloneable {
             this.webContainer = new WebContainerElement();
         }
         return this.webContainer;
+    }
+
+    /**
+     * @return the ssl configurations for this server
+     */
+    public ConfigElementList<SSLConfig> getSsls() {
+        if (this.ssls == null) {
+            this.ssls = new ConfigElementList<SSLConfig>();
+        }
+        return this.ssls;
     }
 
     /**
@@ -633,6 +685,16 @@ public class ServerConfiguration implements Cloneable {
     }
 
     /**
+     * @return explicitly installed Spring Boot applications
+     */
+    public ConfigElementList<SpringBootApplication> getSpringBootApplications() {
+        if (this.springBootApplications == null) {
+            this.springBootApplications = new ConfigElementList<SpringBootApplication>();
+        }
+        return this.springBootApplications;
+    }
+
+    /**
      * @return the connection managers
      */
     public ConfigElementList<ConnectionManager> getConnectionManagers() {
@@ -646,7 +708,7 @@ public class ServerConfiguration implements Cloneable {
      * Removes all applications with a specific name
      *
      * @param name
-     *            the name of the applications to remove
+     *                 the name of the applications to remove
      * @return the removed applications (no longer bound to the server
      *         configuration)
      */
@@ -667,12 +729,12 @@ public class ServerConfiguration implements Cloneable {
      * a specific name if it already exists
      *
      * @param name
-     *            the name of the application
+     *                 the name of the application
      * @param path
-     *            the fully qualified path to the application archive on the
-     *            liberty machine
+     *                 the fully qualified path to the application archive on the
+     *                 liberty machine
      * @param type
-     *            the type of the application (ear/war/etc)
+     *                 the type of the application (ear/war/etc)
      * @return the deployed application
      */
     public Application addApplication(String name, String path, String type) {
@@ -956,7 +1018,7 @@ public class ServerConfiguration implements Cloneable {
      * Finds all of the objects in the given config element that implement the
      * ModifiableConfigElement interface.
      *
-     * @param element The config element to check.
+     * @param element                  The config element to check.
      * @param modifiableConfigElements The list containing all modifiable elements.
      * @throws Exception
      */

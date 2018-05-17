@@ -106,8 +106,8 @@ public class IdentityStoreHandlerServiceImpl implements IdentityStoreHandlerServ
      * @return whether an identityStoreHander is available.
      */
     @Override
-    public boolean isIdentityStoreHanderAvailable() {
-        return getModulePropertiesUtils().isHttpAuthenticationMechanism() && (utils.getIdentityStoreHandler(getCDI()) != null);
+    public boolean isIdentityStoreAvailable() {
+        return getModulePropertiesUtils().isHttpAuthenticationMechanism() && (utils.isIdentityStoreAvailable(getCDI()));
     }
 
     @SuppressWarnings("rawtypes")

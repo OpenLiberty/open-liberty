@@ -1,0 +1,36 @@
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD description="%springapp.desc" name="%springapp.name" id="com.ibm.ws.app.manager.springappcfg"
+                 ibm:alias="springBootApplication"
+                 ibm:extends="com.ibm.ws.app.manager"
+                 ibm:excludeChildren="context-root,
+                         com.ibm.ws.appconfig.appProperties,
+                         com.ibm.ws.javaee.dd.appbnd.ApplicationBnd,
+                         com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd,
+                         com.ibm.ws.javaee.dd.appext.ApplicationExt,
+                         com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd,
+                         com.ibm.ws.javaee.dd.ejbext.EJBJarExt,
+                         com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd,
+                         com.ibm.ws.javaee.dd.webbnd.WebBnd,
+                         com.ibm.ws.javaee.dd.webext.WebExt,
+                         com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd,
+                         com.ibm.ws.jca.embeddedResourceAdapter">
+        <AD id="type" name="internal" description="internal" type="String" default="spring" ibm:final="true"/>
+        <AD id="applicationArgument" name="%applicationArgument.name" description="%applicationArgument.desc" required="false" type="String" cardinality="2147483647"/>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.app.manager.springappcfg">
+        <Object ocdref="com.ibm.ws.app.manager.springappcfg"/>
+    </Designate>
+</metatype:MetaData>

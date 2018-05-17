@@ -10,41 +10,35 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
-public class KeyValuePair implements Pair {
-
+/**
+ *
+ */
+public interface KeyValuePair {
     public static enum ValueTypes {
-        STRING, NUMBER
+        STRING, INTEGER, LONG, FLOAT, BOOLEAN
     }
 
-    private final String key;
-    private final String value;
-    private final ValueTypes valueType;
+    public boolean isInteger();
 
-    public KeyValuePair(String key, String value, ValueTypes valueType) {
-        this.key = key;
-        this.value = value;
-        this.valueType = valueType;
-    }
+    public boolean isLong();
 
-    public boolean isNumber() {
-        return (valueType == ValueTypes.NUMBER);
+    public boolean isString();
 
-    }
+    public boolean isFloat();
 
-    public boolean isString() {
-        return (valueType == ValueTypes.STRING);
-    }
+    public boolean isBoolean();
 
-    public ValueTypes getType() {
-        return valueType;
-    }
+    public int getIntValue();
 
-    public String getKey() {
-        return key;
-    }
+    public long getLongValue();
 
-    public String getValue() {
-        return value;
-    }
+    public String getStringValue();
 
+    public float getFloatValue();
+
+    public boolean getBooleanValue();
+
+    public ValueTypes getType();
+
+    public String getKey();
 }

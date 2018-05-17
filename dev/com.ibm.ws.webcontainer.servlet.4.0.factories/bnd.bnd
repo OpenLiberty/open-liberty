@@ -24,8 +24,16 @@ Service-Component: \
   com.ibm.ws.webcontainer.v40.dd; \
     implementation:=com.ibm.ws.javaee.version.ServletVersion; \
     provide:=com.ibm.ws.javaee.version.ServletVersion; \
-    properties:="version:Integer=40"
-
+    properties:="version:Integer=40", \
+  com.ibm.ws.webcontainer.v40.httpTransportBehavior; \
+    implementation:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
+    provide:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
+    properties:="useEE7Streams:Boolean=true,useIOEBehavior:Boolean=true", \
+  com.ibm.ws.webcontainer.v40.httpProtocolBehavior; \
+  	implementation:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+  	provide:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+  	properties:="httpVersionSetting:String=2.0_Optional_On"
+    
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation

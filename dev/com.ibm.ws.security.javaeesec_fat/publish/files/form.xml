@@ -6,39 +6,21 @@
 	</featureManager>
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
-	
-		<application type="war" id="JavaEEsecFormAuth" name="JavaEEsecFormAuth" location="JavaEEsecFormAuth.war">
+
+	<webAppSecurity jaspicSessionForMechanismsEnabled="true" />
+
+	<application type="war" id="JavaEEsecFormAuth" name="JavaEEsecFormAuth" location="JavaEEsecFormAuth.war">
  		<application-bnd>
-			<security-role name="javaeesec_basic">
-				<user name="jaspiuser1" />
-				<user name="jaspildapuser1" access-id="user:localhost:10389/uid=jaspildapuser1,o=ibm,c=us" />
-				<group name="group1" />
-			</security-role>	
-			<security-role name="javaeesec_form">
-				<user name="jaspiuser3" />
-				<user name="jaspildapuser1" access-id="user:localhost:10389/uid=jaspildapuser1,o=ibm,c=us" />
-				<group name="group2" />
-			</security-role>
-			<security-role name="AllAuthenticated">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			<security-role name="grantedgroup">
+				<user name="user1" access-id="user:127.0.0.1:10389/uid=user1,ou=users,o=ibm,c=us" />
 			</security-role>
 		</application-bnd>
 	</application>
 	
 	<application type="war" id="JavaEEsecFormAuthRedirect" name="JavaEEsecFormAuthRedirect" location="JavaEEsecFormAuthRedirect.war">
- 		<application-bnd>
-			<security-role name="javaeesec_basic">
-				<user name="jaspiuser1" />
-				<user name="jaspildapuser1" access-id="user:localhost:10389/uid=jaspildapuser1,o=ibm,c=us" />
-				<group name="group1" />
-			</security-role>	
-			<security-role name="javaeesec_form">
-				<user name="jaspiuser3" />
-				<user name="jaspildapuser1" access-id="user:localhost:10389/uid=jaspildapuser1,o=ibm,c=us" />
-				<group name="group2" />
-			</security-role>
-			<security-role name="AllAuthenticated">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
+ 		<application-bnd>	
+			<security-role name="grantedgroup">
+				<user name="user1" access-id="user:127.0.0.1:10389/uid=user1,ou=users,o=ibm,c=us" />
 			</security-role>
 		</application-bnd>
 	</application>

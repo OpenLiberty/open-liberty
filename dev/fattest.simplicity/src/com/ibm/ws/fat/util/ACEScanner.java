@@ -35,7 +35,8 @@ public class ACEScanner {
     public static final Pattern JAVA_2_SEC_NORETHROW = Pattern.compile("^\\[WARNING \\] CWWKE09(21W|12W|13E|14W|15W|16W):.*");
     public static final String JAVA_2_SEC_RETHROW = "ERROR: java.security.AccessControlException:";
     public static final String JAVA_2_SEC_SYSERR = "[err] java.security.AccessControlException:";
-    private static final Pattern IBM_STACK = Pattern.compile("^(\\s*at )?com\\.ibm\\.ws.*");
+    // Matches: com.ibm.ws.*, com.ibm.wsspi.*, com.ibm.jbatch.*
+    private static final Pattern IBM_STACK = Pattern.compile("^(\\s*at )?(com\\.ibm\\.ws|com\\.ibm\\.jbatch\\.).*");
     private static final Class<?> c = ACEScanner.class;
     private static final boolean DEBUG = false;
     private final Map<String, String> exceptionMap = new HashMap<String, String>();
@@ -64,7 +65,7 @@ public class ACEScanner {
     public void run() {
         try {
             Log.info(c, "run", "Processing log file: " + INPUT_FILE);
-            
+
             // Find all the unique ACEs and store them in a map
             BufferedReader infile = new BufferedReader(new FileReader(INPUT_FILE));
             String curLine;
