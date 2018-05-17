@@ -43,7 +43,7 @@ public class BasicClientTestServlet extends FATServlet {
 
     @Override
     public void init() throws ServletException {
-        String baseUrlStr = "http://localhost:" + getSysProp("bvt.prop.HTTP_secondary") + "/basicRemoteApp/basic";
+        String baseUrlStr = "https://localhost:" + getSysProp("bvt.prop.HTTP_secondary.secure") + "/basicRemoteApp/basic";
         LOG.info("baseUrl = " + baseUrlStr);
         URL baseUrl;
         try {
@@ -54,6 +54,7 @@ public class BasicClientTestServlet extends FATServlet {
         builder = RestClientBuilder.newBuilder()
                         .register(DuplicateWidgetExceptionMapper.class)
                         .register(UnknownWidgetExceptionMapper.class)
+                        .property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig")
                         .baseUrl(baseUrl);
     }
 
