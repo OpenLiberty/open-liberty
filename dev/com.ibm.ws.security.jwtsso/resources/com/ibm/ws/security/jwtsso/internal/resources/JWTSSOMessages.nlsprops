@@ -25,4 +25,12 @@ TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: Too many MicroProfile JWT services [{0}] a
 TOO_MANY_MP_JWT_PROVIDERS.explanation=The JWTSSO feature cannot select a MicroProfile JWT service to handle the request when more than one service is qualified to handle the request.
 TOO_MANY_MP_JWT_PROVIDERS.useraction=Make sure that no more than one MicroProfile JWT service in the server configuration is configured to handle the request.
 
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: The value of the JwtSso cookieName attribute cannot be null or empty. The default cookieName value will be used.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=The cookieName attribute needs to be valid cookie name.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=Remove the cookieName attribute, or correct the value.
+
+COOKIE_NAME_INVALID=CWWKS6303E: The value of the jwtSso cookieName attribute  [{0}] contains an invalid character [{1}]. The default cookieName value will be used instead.
+COOKIE_NAME_INVALID.explanation=The cookieName attribute needs to be valid cookie name.
+COOKIE_NAME_INVALID.useraction=Remove the cookieName attribute, or correct the value.
+
 
