@@ -10,9 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.wlp.mavenFeatures.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import com.ibm.ws.wlp.mavenFeatures.utils.Constants;
@@ -40,7 +38,7 @@ public class LibertyFeature {
 	 * @param mavenCoordinates Maven coordinates
 	 * @param isWebsphereLiberty If true then it is WebSphere Liberty, else Open Liberty
 	 */
-	public LibertyFeature(String symbolicName, String shortName, String name, String description, Map<String, Collection<String>> requiredFeaturesWithTolerates, String productVersion, String mavenCoordinates, boolean isWebsphereLiberty, boolean restrictedLicense) {
+	public LibertyFeature(String symbolicName, String shortName, String name, String description, Map<String, Collection<String>> requiredFeaturesWithTolerates, String productVersion, String mavenCoordinates, boolean isWebsphereLiberty, boolean restrictedLicense) throws MavenRepoGeneratorException {
 		super();
 		this.symbolicName = symbolicName;
 		this.shortName = shortName;
@@ -49,7 +47,11 @@ public class LibertyFeature {
 		this.requiredFeaturesWithTolerates = requiredFeaturesWithTolerates;
 		this.productVersion = productVersion;
 		if (mavenCoordinates != null) {
-			this.mavenCoordinates = new MavenCoordinates(mavenCoordinates);
+		    try {
+		        this.mavenCoordinates = new MavenCoordinates(mavenCoordinates);
+		    } catch (IllegalArgumentException e) {
+		        throw new MavenRepoGeneratorException("Invalid Maven coordinates defined for feature " + symbolicName, e);
+		    }
 		} else {
 			String artifactId = shortName != null ? shortName : symbolicName;
 			this.mavenCoordinates = new MavenCoordinates(
