@@ -27,6 +27,8 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -61,9 +63,39 @@ public class SessionCacheTwoServerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            serverA.stopServer();
+            testFailover();
         } finally {
-            serverB.stopServer();
+            try {
+                if (serverA.isStarted())
+                    serverA.stopServer();
+            } finally {
+                if (serverB.isStarted())
+                    serverB.stopServer();
+            }
+        }
+    }
+
+    /**
+     * Test lifecycle of cache for http sessions by putting data into a server,
+     * shutting down that server, and verifying the data failed over to the other server
+     */
+    // No @Test because this is called manually in @AfterClass
+    private static void testFailover() throws Exception {
+        // Put some data into Server A and shut it down
+        List<String> session = new ArrayList<>();
+        appA.sessionPut("testFailover-1", "foo", session, true);
+        appA.sessionGet("testFailover-1", "foo", session);
+        serverA.stopServer();
+
+        // Now verify the cache failed over to Server B
+        appB.sessionGet("testFailover-1", "foo", session);
+        serverB.stopServer();
+
+        if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL) {
+            // Starting server A again should result in a fresh cache that does not contain the original stuff
+            serverA.startServer("testFailover.log");
+            appA.sessionGet("testFailover-1", null, session);
+            serverA.stopServer();
         }
     }
 
@@ -149,23 +181,6 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appB.invokeServlet("testHttpSessionListener&listener=listener1" +
                            "&sessionDestroyed=" + sessionId2,
                            null);
-    }
-
-    // @Test // TODO still in progress
-    public void testMaxSessions() throws Exception {
-        List<String> session1 = new ArrayList<>();
-        List<String> session2 = new ArrayList<>();
-        appA.sessionPut("testMaxSessions-session1", "hello", session1, true);
-        appB.sessionGet("testMaxSessions-session1", "hello", session1);
-
-        // Starting a new session should push session1 out of the cache
-        appA.sessionPut("testMaxSessions-session2", "hello2", session2, true);
-
-        // Verify that session2 is in the server and session1 is not
-        appA.sessionGet("testMaxSessions-session2", "hello2", session2);
-        appB.sessionGet("testMaxSessions-session2", "hello2", session2);
-        appB.sessionGet("testMaxSessions-session1", null, session1);
-        appA.sessionGet("testMaxSessions-session1", null, session1);
     }
 
     /**
