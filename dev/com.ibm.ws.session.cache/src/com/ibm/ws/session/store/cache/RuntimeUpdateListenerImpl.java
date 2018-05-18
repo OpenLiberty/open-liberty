@@ -106,7 +106,7 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener{
 
                         if (libraryRefs == null) {               
                             if (!isSessionCacheBellConfigured()) {
-                                Tr.warning(tc, "WARN_CONFIG_INVALID_HTTPSESSIONCACHE", Tr.formatMessage(tc, "SESSION_CACHE_CONFIG_MESSAGE", sampleConfig));
+                                Tr.error(tc, "ERROR_CONFIG_INVALID_HTTPSESSIONCACHE", Tr.formatMessage(tc, "SESSION_CACHE_CONFIG_MESSAGE", sampleConfig));
                             }
                         } else if (libraryRefs.length == 0) {
                             Tr.debug(tc, "The libraryRef attribute of the httpSessionCache in the server configuration could not be resolved. "
