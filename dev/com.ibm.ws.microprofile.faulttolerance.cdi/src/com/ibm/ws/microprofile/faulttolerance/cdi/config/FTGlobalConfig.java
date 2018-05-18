@@ -10,10 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.cdi.config;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -42,6 +45,73 @@ public class FTGlobalConfig {
     private final static Set<Class<?>> ALL_ANNOTATIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Asynchronous.class, CircuitBreaker.class,
                                                                                                                  Retry.class, Timeout.class, Bulkhead.class, Fallback.class)));
     private final static String CONFIG_NONFALLBACK_ENABLED = "MP_Fault_Tolerance_NonFallback_Enabled";
+
+    /**
+     * Checks if an annotation is enabled or disabled via configuration options. Annotations can be disabled with the following syntax:
+     *
+     * Disable on the class-level: com.acme.test.MyClient/serviceA/CircuitBreaker/enabled=false
+     * Disable at the method-level: com.acme.test.MyClient/serviceA/methodA/CircuitBreaker/enabled=false
+     * Disable globally: CircuitBreaker/enabled=false
+     *
+     * Method-level properties takes precedence over class-level properties, which in turn has precedence over global properties.
+     *
+     * @param ann The annotation
+     * @param clazz The class containing the annotation.
+     * @return Is the annotation enabled
+     */
+    public static boolean isAnnotationEnabled(Annotation ann, Class<?> clazz) {
+        return isAnnotationEnabled(ann, clazz, null);
+    }
+
+    /**
+     * Checks if an annotation is enabled or disabled via configuration options. Annotations can be disabled with the following syntax:
+     *
+     * <ul>
+     * <li>Disable on the class-level: com.acme.test.MyClient/serviceA/CircuitBreaker/enabled=false</li>
+     * <li>Disable at the method-level: com.acme.test.MyClient/serviceA/methodA/CircuitBreaker/enabled=false</li>
+     * <li>Disable globally: CircuitBreaker/enabled=false</li>
+     * </ul>
+     *
+     * Method-level properties take precedence over class-level properties, which in turn take precedence over global properties.
+     *
+     * @param ann The annotation
+     * @param clazz The class containing the annotation.
+     * @param method The method annotated with the annotation. If {@code null} only class and global scope properties will be checked.
+     * @return Is the annotation enabled
+     */
+    public static boolean isAnnotationEnabled(Annotation ann, Class<?> clazz, Method method) {
+        // Find the real class since we probably have a Weld proxy
+        clazz = FTUtils.getRealClass(clazz);
+        ClassLoader cl = FTUtils.getClassLoader(clazz);
+        Config mpConfig = ConfigProvider.getConfig(cl);
+
+        if (method != null) {
+            String methodKey = clazz.getCanonicalName() + "/" + method.getName() + "/" + ann.annotationType().getSimpleName() + "/enabled";
+            Optional<Boolean> methodEnabled = mpConfig.getOptionalValue(methodKey, Boolean.class);
+            if (methodEnabled.isPresent()) {
+                return methodEnabled.get(); //Method scoped properties take precedence. We can return, otherwise move on to class scope.
+            }
+        }
+
+        String clazzKey = clazz.getCanonicalName() + "/" + ann.annotationType().getSimpleName() + "/enabled";
+        Optional<Boolean> classEnabled = mpConfig.getOptionalValue(clazzKey, Boolean.class);
+        if (classEnabled.isPresent()) {
+            return classEnabled.get();
+        }
+
+        String annKey = ann.annotationType().getSimpleName() + "/enabled";
+        Optional<Boolean> globalEnabled = mpConfig.getOptionalValue(annKey, Boolean.class);
+        if (globalEnabled.isPresent()) {
+            return globalEnabled.get();
+        }
+
+        //The lowest priority is a global disabling of all fault tolerence annotations. (Only check FT annotations. Fallback is exempt from this global configuration)
+        if (ALL_ANNOTATIONS.contains(ann.annotationType()) && !getActiveAnnotations(clazz).contains(ann.annotationType())){
+            return false;
+        }
+
+        return true; //The default is enabled.
+    }
 
     public static Set<Class<?>> getActiveAnnotations(Class<?> clazz) {
         ClassLoader cl = FTUtils.getClassLoader(clazz);
