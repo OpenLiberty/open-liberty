@@ -18,7 +18,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -54,9 +53,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         serverB.useSecondaryHTTPPort();
 
         String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
 
-        if (osName.contains("z/os")) {
+        if (FATSuite.isMulticastDisabled()) {
             Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
             hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         }
