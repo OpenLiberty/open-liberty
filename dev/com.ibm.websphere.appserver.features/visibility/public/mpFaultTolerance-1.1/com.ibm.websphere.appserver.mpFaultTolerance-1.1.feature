@@ -13,7 +13,7 @@ Subsystem-Name: MicroProfile Fault Tolerance 1.1
  com.ibm.websphere.appserver.mpConfig-1.1; ibm.tolerates:=1.2
 -bundles=com.ibm.ws.require.java8, \
  com.ibm.ws.net.jodah.failsafe.1.0.4; apiJar=false; location:="lib/", \
- com.ibm.ws.microprofile.faulttolerance; apiJar=false; location:="lib/", \
+ com.ibm.ws.microprofile.faulttolerance.1.1; apiJar=false; location:="lib/", \
  com.ibm.ws.microprofile.faulttolerance.spi; apiJar=false; location:="lib/"
 kind=noship
 edition=full
