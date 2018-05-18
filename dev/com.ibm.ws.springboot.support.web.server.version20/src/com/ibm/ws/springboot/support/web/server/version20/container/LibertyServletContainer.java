@@ -11,6 +11,7 @@
 package com.ibm.ws.springboot.support.web.server.version20.container;
 
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.ADDRESS;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.HTTP2;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.LIBERTY_USE_DEFAULT_HOST;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.PORT;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SERVER_HEADER;
@@ -179,6 +180,10 @@ public class LibertyServletContainer implements WebServer {
             serverProperties.put(SSL_TRUST_STORE_PASSWORD, ssl.getTrustStorePassword());
             serverProperties.put(SSL_TRUST_STORE_PROVIDER, ssl.getTrustStoreProvider());
             serverProperties.put(SSL_TRUST_STORE_TYPE, ssl.getTrustStoreType());
+        }
+
+        if (factory.getHttp2() != null) {
+            serverProperties.put(HTTP2, factory.getHttp2().isEnabled());
         }
         return serverProperties;
     }
