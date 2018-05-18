@@ -21,5 +21,6 @@ javac.source: 1.8
 javac.target: 1.8
 
 -buildpath: \
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.jcache.1.1;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest
