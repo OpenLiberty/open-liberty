@@ -1186,7 +1186,7 @@ public class CacheHashMap extends BackedHashMap {
      * @see com.ibm.ws.session.store.common.BackedHashMap#readFromExternal(java.lang.String)
      */
     @Override
-    @FFDCIgnore(Exception.class) //manually logged or is NoSuchElementException which we want to ignore
+    @FFDCIgnore(Exception.class) //manually logged
     protected BackedSession readFromExternal(String id) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
