@@ -36,7 +36,7 @@ public interface JwtSsoBuilderConfig extends JwtConfig {
 
 	String getJwtBuilderRef();
 
-	String getJwtConsumerRef();
+	// String getJwtConsumerRef();
 
 	String getCookieName();
 

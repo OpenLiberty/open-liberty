@@ -18,6 +18,6 @@
 
     <authentication cacheEnabled="false"/>
 
-    <jwtSso  jwtBuilderRef="bogusbuilder"  fallbackToLtpa="false" includeLtpaCookie="true" setCookieSecureFlag="false"/>
+    <jwtSso  jwtBuilderRef="bogusbuilder"  useLtpaIfJwtAbsent="false" includeLtpaCookie="true" setCookieSecureFlag="false"/>
 
 </server>

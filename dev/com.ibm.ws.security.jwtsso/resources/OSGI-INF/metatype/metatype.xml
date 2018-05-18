@@ -18,7 +18,7 @@
          name="%jwtSso" description="%jwtSso.desc">
          
          <AD id="cookieName" name="%cookieName" description="%cookieName.desc" 
-             required="false" type="String" default="jwtToken" />
+             required="false" type="String" default="MPJWT" />
              
          <!--  These next 3 will be read in from the AppSecurity 3.0 metadata and used intact 
          
@@ -32,7 +32,7 @@
              required="false" type="String" />
           -->                           
                 
-         <AD id="setCookiePathToWebAppContextPath"   name="%setCookiePathToWebAppContextPath"  description="%setCookiePathToWebAppContextPath.desc"
+         <AD id="setCookiePathToWebAppContextRoot"   name="%setCookiePathToWebAppContextRoot"  description="%setCookiePathToWebAppContextRoot.desc"
              required="false" type="Boolean" default="false" /> 
              
          <AD id="setCookieSecureFlag"   name="%setCookieSecureFlag"  description="%setCookieSecureFlag.desc"
@@ -41,7 +41,7 @@
          <AD id="includeLtpaCookie"  name="%includeLtpaCookie" description="%includeLtpaCookie.desc"
              required="false"  type="Boolean" default="false" />
             
-         <AD id="fallbackToLtpa"  name="%fallbackToLtpa" description="%fallbackToLtpa.desc"
+         <AD id="useLtpaIfJwtAbsent"  name="%fallbackToLtpa" description="%fallbackToLtpa.desc"
              required="false"  type="Boolean" default="false" />
            
          <!-- 
@@ -56,9 +56,6 @@
 
          <AD id="jwtBuilderRef" name="%jwtBuilderRef" description="%jwtBuilderRef.desc"
              required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.builder" />
-             
-         <AD id="jwtConsumerRef" name="%jwtConsumerRef" description="%jwtConsumerRef.desc"
-             required="false" type="String" ibmui:uiReference="com.ibm.ws.security.jwt.consumer" />  
              
           <!--  future encryption attributes go here someday  -->
          
