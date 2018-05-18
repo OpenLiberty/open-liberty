@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
@@ -80,9 +79,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.web");
 
-        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
-
-        if (osName.contains("z/os")) {
+        if (FATSuite.isMulticastDisabled()) {
             Log.info(SessionCacheErrorPathsTest.class, "setUp", "Disabling multicast in Hazelcast config.");
             hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         }

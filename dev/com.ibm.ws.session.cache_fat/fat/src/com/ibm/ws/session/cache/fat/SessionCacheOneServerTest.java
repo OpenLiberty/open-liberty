@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -50,9 +49,8 @@ public class SessionCacheOneServerTest extends FATServletClient {
         app = new SessionCacheApp(server, true, "session.cache.web", "session.cache.web.listener1", "session.cache.web.listener2");
 
         String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
 
-        if (osName.contains("z/os")) {
+        if (FATSuite.isMulticastDisabled()) {
             Log.info(SessionCacheOneServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
             hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         }

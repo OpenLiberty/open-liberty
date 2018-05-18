@@ -12,7 +12,6 @@ package com.ibm.ws.session.cache.fat;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -43,9 +42,8 @@ public class HazelcastClientTest extends FATServletClient {
         serverB.useSecondaryHTTPPort();
 
         String serverAhazelcastConfigFile = "hazelcast-localhost-only.xml";
-        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
 
-        if (osName.contains("z/os")) {
+        if (FATSuite.isMulticastDisabled()) {
             Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
             serverAhazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         }
