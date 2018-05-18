@@ -134,9 +134,9 @@ J2CA8816.reserved.resource.adapter.id.useraction=Provide an unreserved value for
 #{0} is the resource adapter name
 #{1} is the relative path to the deployment descriptor
 #{2} is the exception message
-J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: Resource adapter {0} encountered a parse error when processing deployment descriptor {1}: {2}
-J2CA8817.parse.deployment.descriptor.failed.explanation=An error occurred while parsing the deployment descriptor.  The resource adapter will not be available.
-J2CA8817.parse.deployment.descriptor.failed.useraction=See the exception information for additional details.  Review the contents of the deployment descriptor to ensure that the contents are valid as XML data. If necessary, work with the resource adapter vendor to resolve the invalid XML data.
+J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: The {0} resource adapter encountered a parse error when it processed the deployment descriptor in the {1} path: {2}
+J2CA8817.parse.deployment.descriptor.failed.explanation=An error occurred while the resource adapter parsed the deployment descriptor. The resource adapter will not be available.
+J2CA8817.parse.deployment.descriptor.failed.useraction=See the exception information for additional details. Review the contents of the deployment descriptor to ensure that the contents are valid as XML data. If necessary, work with the resource adapter vendor to resolve the invalid XML data.
 
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"
