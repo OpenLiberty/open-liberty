@@ -76,6 +76,7 @@ public class H2FATDriverServlet extends FATServlet {
     public static final long STRESS_MS_PER_LOOP = 10000L; //TODO: Might need to adjust this to a more sensible value
 
     public static final FrameSettings EMPTY_SETTINGS_FRAME = new FrameSettings();
+    public static final FrameSettings DEFAULT_SERVER_SETTINGS_FRAME = new FrameSettings(0, -1, -1, 200, -1, 57344, -1, false);
 
     int testTimeout = Utils.STRESS_TEST_TIMEOUT_testMulitData;
 
@@ -2099,7 +2100,7 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        h2Client.addExpectedFrame(EMPTY_SETTINGS_FRAME);
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         byte[] debugData = "Cannot start a stream from the client with an even numbered ID. stream-id: 2".getBytes();
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
@@ -4893,7 +4894,7 @@ public class H2FATDriverServlet extends FATServlet {
      * @throws Exception
      */
     FrameHeaders setupDefaultPreface(Http2Client client) throws IOException, Exception {
-        client.addExpectedFrame(EMPTY_SETTINGS_FRAME);
+        client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         SimpleDateFormat date = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
         date.setTimeZone(TimeZone.getTimeZone("GMT"));
 

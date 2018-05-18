@@ -161,11 +161,12 @@ public class H2InboundLink extends HttpInboundLink {
         h2MuxTCPConnectionContext = tcc;
         h2MuxTCPReadContext = tcc.getReadInterface();
         h2MuxTCPWriteContext = tcc.getWriteInterface();
+        config = channel.getHttpConfig();
         localConnectionSettings = new H2ConnectionSettings();
         localConnectionSettings.setMaxConcurrentStreams(this.config.getH2MaxConcurrentStreams());
         localConnectionSettings.setMaxFrameSize(this.config.getH2MaxFrameSize());
         remoteConnectionSettings = new H2ConnectionSettings();
-        config = channel.getHttpConfig();
+
         h2MuxServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
 
         // set up the initial connection read window size
@@ -793,7 +794,9 @@ public class H2InboundLink extends HttpInboundLink {
 
     public void cleanupStream(int streamID) {
         streamTable.remove(streamID);
-        writeQ.removeNodeFromQ(streamID);
+        if (streamID != 0) {
+            writeQ.removeNodeFromQ(streamID);
+        }
     }
 
     /*

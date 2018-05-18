@@ -656,7 +656,7 @@ public class H2StreamProcessor {
             muxLink.getVirtualConnection().getStateMap().put("h2_frame_size", muxLink.getRemoteConnectionSettings().getMaxFrameSize());
 
             // immediately send out ACK (an empty SETTINGS frame with the ACK flag set)
-            currentFrame = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), -1, this.muxLink.config.getH2MaxFrameSize(), -1, false);
+            currentFrame = new FrameSettings(0, -1, -1, -1, -1, -1, -1, false);
             currentFrame.setAckFlag();
 
             try {
