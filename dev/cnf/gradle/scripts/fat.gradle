@@ -334,7 +334,7 @@ assemble {
   }
 }
 
-ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com', org = 'eclipse' ->
+ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com', org = 'NOT_SET' ->
 
   // We need to know which MP project at least
   if( proj == null || proj.length() == 0 ){
@@ -351,7 +351,17 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
        branch = "master"
     }
   }
-  
+
+  // Default the org to eclipse but allow -Dorg= or a parameter coming in
+  if( "NOT_SET".equals( org ) ){
+    String orgProp = System.getProperty('org')
+    if( orgProp != null && orgProp.length() > 0 ){
+      org = orgProp
+    }else{
+      org = "eclipse"
+    }
+  }
+
   // Default the destination folder to the project name
   if( folder == null || folder.length() == 0 ){
     folder = proj
