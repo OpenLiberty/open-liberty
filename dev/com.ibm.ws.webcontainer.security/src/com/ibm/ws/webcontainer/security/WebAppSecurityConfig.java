@@ -11,6 +11,7 @@
 package com.ibm.ws.webcontainer.security;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Encapsulate the web application security settings.
@@ -76,6 +77,17 @@ public interface WebAppSecurityConfig {
      */
     String getChangedProperties(WebAppSecurityConfig original);
 
+    /**
+     * Calculates the delta between this WebAppSecurityConfig and the provided
+     * WebAppSecurityConfig. The values returned are the values from this Object.
+     * If no properties were changed, an empty Map should be returned.
+     *
+     * @param webAppSecConfig WebAppSecurityConfig object to compare settings against
+     * @return Map of modified attributes. key is the name of modified attributes, and value is this object.
+     *         if the value is not set, the empty string is set.
+     */
+    Map<String, String> getChangedPropertiesMap(WebAppSecurityConfig original);
+
     String getLoginFormURL();
 
     /**
@@ -91,6 +103,13 @@ public interface WebAppSecurityConfig {
      * @return {@code true} if FORM failover is allowed
      */
     boolean getAllowFailOverToFormLogin();
+
+    /**
+     * Is failover to the application defined (either login config or JSR375 HAM) from CLIENT_CERT allowed?
+     *
+     * @return {@code true} if failover to applicatioin defined is allowed
+     */
+    boolean getAllowFailOverToAppDefined();
 
     /**
      * Is any failover from CLIENT_CERT allowed?
@@ -116,9 +135,9 @@ public interface WebAppSecurityConfig {
     WebAuthenticatorProxy createWebAuthenticatorProxy();
 
     /**
-     * Returns the value of overrideHttpAuthenticationMechanism
+     * Returns the value of overrideHttpAuthMethod
      */
-    String getOverrideHttpAuthenticationMechanism();
+    String getOverrideHttpAuthMethod();
 
     /**
      * Returns the value of loginFormContextRoot

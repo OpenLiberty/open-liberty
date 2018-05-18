@@ -248,11 +248,27 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
 
     /**
      * {@inheritDoc}<p>
-     * This does not need an implemented as these properties never change.
      */
     @Override
     public String getChangedProperties(WebAppSecurityConfig original) {
-        return "";
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null) {
+            return globalConfig.getChangedProperties(original);
+        } else {
+            return "";
+        }
+    }
+    /**
+     * {@inheritDoc}<p>
+     */
+    @Override
+    public Map<String, String> getChangedPropertiesMap(WebAppSecurityConfig original) {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null) {
+            return globalConfig.getChangedPropertiesMap(original);
+        } else {
+            return null;
+        }
     }
 
     /** {@inheritDoc} */
@@ -286,6 +302,17 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
         else
             return false;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean getAllowFailOverToAppDefined() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getAllowFailOverToAppDefined();
+        else
+            return false;
+    }
+
 
     /** {@inheritDoc} */
     @Override
@@ -337,10 +364,10 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
-    public String getOverrideHttpAuthenticationMechanism() {
+    public String getOverrideHttpAuthMethod() {
         WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
         if (globalConfig != null)
-            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getOverrideHttpAuthMethod();
         else
             return null;
     }

@@ -10,9 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.internal;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -55,15 +58,15 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_SSO_REQUIRES_SSL = "ssoRequiresSSL";
     static final String CFG_KEY_SSO_USE_DOMAIN_FROM_URL = "ssoUseDomainFromURL";
     public static final String CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED = "useAuthenticationDataForUnprotectedResource";
-    static final String CFG_KEY_LOGIN_FORM_URL = "loginFormURL";
-    static final String CFG_KEY_LOGIN_ERROR_URL = "loginErrorURL";
+    public static final String CFG_KEY_LOGIN_FORM_URL = "loginFormURL";
+    public static final String CFG_KEY_LOGIN_ERROR_URL = "loginErrorURL";
     public static final String CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD = "allowAuthenticationFailOverToAuthMethod";
     static final String CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL = "includePathInWASReqURL";
     static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES = "trackLoggedOutSSOCookies";
     static final String CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME = "useOnlyCustomCookieName";
-    static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthenticationMechanism";
-    static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
-    static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
+    public static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthMethod";
+    public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
+    public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
     static final String CFG_KEY_JASPIC_SESSION_FOR_MECHANISMS_ENABLED = "jaspicSessionForMechanismsEnabled";
     static final String CFG_KEY_JASPIC_SESSION_COOKIE_NAME = "jaspicSessionCookieName";
 
@@ -92,7 +95,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean includePathInWASReqURL;
     private final Boolean trackLoggedOutSSOCookies;
     private final Boolean useOnlyCustomCookieName;
-    private final String overrideHttpAuthenticationMechanism;
+    private final String overrideHttpAuthMethod;
     private final String loginFormContextRoot;
     private final String basicAuthRealmName;
     private final String jaspicSessionCookieName;
@@ -100,6 +103,42 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
+
+    static Map<String, String> configAttributes = new TreeMap<String, String>() {
+        /**  */
+        private static final long serialVersionUID = -6244999820664139565L;
+        {
+            put(CFG_KEY_FAIL_OVER_TO_BASICAUTH, "allowFailOverToBasicAuth");
+            put(CFG_KEY_ALLOW_LOGOUT_PAGE_REDIRECT_TO_ANY_HOST, "allowLogoutPageRedirectToAnyHost");
+            put(CFG_KEY_DISPLAY_AUTHENTICATION_REALM, "displayAuthenticationRealm");
+            put(CFG_KEY_HTTP_ONLY_COOKIES, "httpOnlyCookies");
+            put(CFG_KEY_JASPIC_SESSION_COOKIE_NAME, "jaspicSessionCookieName");
+            put(CFG_KEY_JASPIC_SESSION_FOR_MECHANISMS_ENABLED, "jaspicSessionForMechanismsEnabled");
+            put(CFG_KEY_LOGOUT_ON_HTTP_SESSION_EXPIRE, "logoutOnHttpSessionExpire");
+            put(CFG_KEY_LOGOUT_PAGE_REDIRECT_DOMAIN_NAMES, "logoutPageRedirectDomainNames");
+            put(CFG_KEY_PRESERVE_FULLY_QUALIFIED_REFERRER_URL, "preserveFullyQualifiedReferrerUrl");
+            put(CFG_KEY_POSTPARAM_COOKIE_SIZE, "postParamCookieSize");
+            put(CFG_KEY_POSTPARAM_SAVE_METHOD, "postParamSaveMethod");
+            put(CFG_KEY_SINGLE_SIGN_ON_ENABLED, "singleSignonEnabled");
+            put(CFG_KEY_SSO_COOKIE_NAME, "ssoCookieName");
+            put(CFG_KEY_AUTO_GEN_SSO_COOKIE_NAME, "autoGenSsoCookieName");
+            put(CFG_KEY_SSO_DOMAIN_NAMES, "ssoDomainNames");
+            put(CFG_KEY_SSO_REQUIRES_SSL, "ssoRequiresSSL");
+            put(CFG_KEY_SSO_USE_DOMAIN_FROM_URL, "ssoUseDomainFromURL");
+            put(CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED, "useAuthenticationDataForUnprotectedResource");
+            put(CFG_KEY_WEB_ALWAYS_LOGIN, "webAlwaysLogin");
+            put(CFG_KEY_LOGIN_FORM_URL, "loginFormURL");
+            put(CFG_KEY_LOGIN_ERROR_URL, "loginErrorURL");
+            put(CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD, "allowFailOverToAuthMethod");
+            put(CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL, "includePathInWASReqURL");
+            put(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES, "trackLoggedOutSSOCookies");
+            put(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME, "useOnlyCustomCookieName");
+            put(CFG_KEY_WAS_REQ_URL_REDIRECT_DOMAIN_NAMES, "wasReqURLRedirectDomainNames");
+            put(CFG_KEY_OVERRIDE_HAM, "overrideHttpAuthMethod");
+            put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
+            put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
+        }
+    };
 
     public WebAppSecurityConfigImpl(Map<String, Object> newProperties,
                                     AtomicServiceReference<WsLocationAdmin> locationAdminRef,
@@ -130,7 +169,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         includePathInWASReqURL = (Boolean) newProperties.get(CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL);
         trackLoggedOutSSOCookies = (Boolean) newProperties.get(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES);
         useOnlyCustomCookieName = (Boolean) newProperties.get(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME);
-        overrideHttpAuthenticationMechanism = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
+        overrideHttpAuthMethod = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         jaspicSessionCookieName = (String) newProperties.get(CFG_KEY_JASPIC_SESSION_COOKIE_NAME);
@@ -257,8 +296,17 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
+    public boolean getAllowFailOverToAppDefined() {
+        if (allowFailOverToAuthMethod != null && allowFailOverToAuthMethod.equalsIgnoreCase(LoginConfiguration.APP_DEFINED))
+            return true;
+        else
+            return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean allowFailOver() {
-        return (getAllowFailOverToBasicAuth() || getAllowFailOverToFormLogin());
+        return (getAllowFailOverToBasicAuth() || getAllowFailOverToFormLogin() || getAllowFailOverToAppDefined());
     }
 
     /** {@inheritDoc} */
@@ -342,8 +390,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     }
 
     @Override
-    public String getOverrideHttpAuthenticationMechanism() {
-        return overrideHttpAuthenticationMechanism;
+    public String getOverrideHttpAuthMethod() {
+        return overrideHttpAuthMethod;
     }
 
     @Override
@@ -398,65 +446,63 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
 
         StringBuffer buf = new StringBuffer();
         WebAppSecurityConfigImpl orig = (WebAppSecurityConfigImpl) original;
-        appendToBufferIfDifferent(buf, "allowFailOverToBasicAuth",
-                                  this.allowFailOverToBasicAuth, orig.allowFailOverToBasicAuth);
-        appendToBufferIfDifferent(buf, "allowLogoutPageRedirectToAnyHost",
-                                  this.allowLogoutPageRedirectToAnyHost, orig.allowLogoutPageRedirectToAnyHost);
-        appendToBufferIfDifferent(buf, "displayAuthenticationRealm",
-                                  this.displayAuthenticationRealm, orig.displayAuthenticationRealm);
-        appendToBufferIfDifferent(buf, "httpOnlyCookies",
-                                  this.httpOnlyCookies, orig.httpOnlyCookies);
-        appendToBufferIfDifferent(buf, "jaspicSessionCookieName",
-                                  this.jaspicSessionCookieName, orig.jaspicSessionCookieName);
-        appendToBufferIfDifferent(buf, "jaspicSessionForMechanismsEnabled",
-                                  this.jaspicSessionForMechanismsEnabled, orig.jaspicSessionForMechanismsEnabled);
-        appendToBufferIfDifferent(buf, "logoutOnHttpSessionExpire",
-                                  this.logoutOnHttpSessionExpire, orig.logoutOnHttpSessionExpire);
-        appendToBufferIfDifferent(buf, "logoutPageRedirectDomainNames",
-                                  this.logoutPageRedirectDomainNames, orig.logoutPageRedirectDomainNames);
-        appendToBufferIfDifferent(buf, "preserveFullyQualifiedReferrerUrl",
-                                  this.preserveFullyQualifiedReferrerUrl, orig.preserveFullyQualifiedReferrerUrl);
-        appendToBufferIfDifferent(buf, "postParamCookieSize",
-                                  this.postParamCookieSize, orig.postParamCookieSize);
-        appendToBufferIfDifferent(buf, "postParamSaveMethod",
-                                  this.postParamSaveMethod, orig.postParamSaveMethod);
-        appendToBufferIfDifferent(buf, "singleSignonEnabled",
-                                  this.singleSignonEnabled, orig.singleSignonEnabled);
-        appendToBufferIfDifferent(buf, "ssoCookieName",
-                                  this.ssoCookieName, orig.ssoCookieName);
-        appendToBufferIfDifferent(buf, "autoGenSsoCookieName",
-                                  this.autoGenSsoCookieName, orig.autoGenSsoCookieName);
-        appendToBufferIfDifferent(buf, "ssoDomainNames",
-                                  this.ssoDomainNames, orig.ssoDomainNames);
-        appendToBufferIfDifferent(buf, "ssoRequiresSSL",
-                                  this.ssoRequiresSSL, orig.ssoRequiresSSL);
-        appendToBufferIfDifferent(buf, "ssoUseDomainFromURL",
-                                  this.ssoUseDomainFromURL, orig.ssoUseDomainFromURL);
-        appendToBufferIfDifferent(buf, "useAuthenticationDataForUnprotectedResource",
-                                  this.useAuthenticationDataForUnprotectedResource, orig.useAuthenticationDataForUnprotectedResource);
-        appendToBufferIfDifferent(buf, "webAlwaysLogin",
-                                  this.webAlwaysLogin, orig.webAlwaysLogin);
-        appendToBufferIfDifferent(buf, "loginFormURL",
-                                  this.loginFormURL, orig.loginFormURL);
-        appendToBufferIfDifferent(buf, "loginErrorURL",
-                                  this.loginErrorURL, orig.loginErrorURL);
-        appendToBufferIfDifferent(buf, "allowFailOverToAuthMethod",
-                                  this.allowFailOverToAuthMethod, orig.allowFailOverToAuthMethod);
-        appendToBufferIfDifferent(buf, "includePathInWASReqURL",
-                                  this.includePathInWASReqURL, orig.includePathInWASReqURL);
-        appendToBufferIfDifferent(buf, "trackLoggedOutSSOCookies",
-                                  this.trackLoggedOutSSOCookies, orig.trackLoggedOutSSOCookies);
-        appendToBufferIfDifferent(buf, "useOnlyCustomCookieName",
-                                  this.useOnlyCustomCookieName, orig.useOnlyCustomCookieName);
-        appendToBufferIfDifferent(buf, "wasReqURLRedirectDomainNames",
-                                  this.wasReqURLRedirectDomainNames, orig.wasReqURLRedirectDomainNames);
-        appendToBufferIfDifferent(buf, "overrideHttpAuthenticationMechanism",
-                                  this.overrideHttpAuthenticationMechanism, orig.overrideHttpAuthenticationMechanism);
-        appendToBufferIfDifferent(buf, "loginFormContextRoot",
-                                  this.loginFormContextRoot, orig.loginFormContextRoot);
-        appendToBufferIfDifferent(buf, "basicAuthRealmName",
-                                  this.basicAuthRealmName, orig.basicAuthRealmName);
+
+        for (Entry<String, String> entry : configAttributes.entrySet()) {
+            try {
+                Field field = (WebAppSecurityConfigImpl.class).getDeclaredField(entry.getValue());
+                field.setAccessible(true);
+                appendToBufferIfDifferent(buf, entry.getKey(), field.get(this), field.get(orig));
+            } catch (Exception e) {
+                // this won't happen. just ignore.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception is caught " + e);
+                }
+
+            }
+        }
         return buf.toString();
+    }
+
+    private void appendToMapIfDifferent(Map<String, String> map, String name, Object thisValue, Object otherValue) {
+        if ((thisValue != otherValue) && (thisValue != null) && (!thisValue.equals(otherValue))) {
+            map.put(name, thisValue.toString());
+        }
+    }
+
+    /**
+     * {@inheritDoc}<p>
+     * This method needs to be maintained when new attributes are added.
+     * Order should be presented in alphabetical order.
+     */
+    @Override
+    public Map<String, String> getChangedPropertiesMap(WebAppSecurityConfig original) {
+        // Bail out if it is the same object, or if this isn't of the right type.
+        if (this == original) {
+            return null;
+        }
+        if (!(original instanceof WebAppSecurityConfigImpl)) {
+            return null;
+        }
+
+        TreeMap<String, String> output = new TreeMap<String, String>();
+        WebAppSecurityConfigImpl orig = (WebAppSecurityConfigImpl) original;
+
+        for (Entry<String, String> entry : configAttributes.entrySet()) {
+            try {
+                Field field = (WebAppSecurityConfigImpl.class).getDeclaredField(entry.getValue());
+                field.setAccessible(true);
+                appendToMapIfDifferent(output, entry.getKey(), field.get(this), field.get(orig));
+            } catch (Exception e) {
+                // this won't happen. just ignore.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception is caught " + e);
+                }
+            }
+        }
+        if (output.isEmpty()) {
+            output = null;
+        }
+        return output;
     }
 
     /** {@inheritDoc} */

@@ -64,6 +64,13 @@ public interface LoginConfiguration {
      * @see javax.servlet.http.HttpServletRequest#getAuthType()
      */
     public static final String CLIENT_CERT = "CLIENT_CERT";
+    /**
+     * Application defined  authentication value for &lt;auth-method&gt;
+     * When this value is set, the container code introspect the login configuration
+     * of the application and honor the value. Mainly this is for fail over when the
+     * client certificate was failed.
+     */
+    public static final String APP_DEFINED = "APP_DEFINED";
 
     /**
      * Gets the authentication method.
