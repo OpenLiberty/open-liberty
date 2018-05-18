@@ -18,6 +18,6 @@ import com.ibm.ws.app.manager.springboot.support.SpringBootSupport;
  *
  */
 @Component(service = SpringBootSupport.class)
-public class SpringBoot15Support extends SpringBootSupport {
+public class SpringBoot20Support extends SpringBootSupport {
 
 }
