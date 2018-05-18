@@ -144,7 +144,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before
      * (in absence of sessionCache-1.0 feature) is not.
      */
-    @AllowedFFDC("java.net.MalformedURLException")
     @Test
     public void testAddFeature() throws Exception {
         // Start the server with sessionCache-1.0 enabled
@@ -192,9 +191,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Start the server with an invalid Hazelcast uri configured on httpSessionCache.
      * Verify that after correcting the uri, session data is persisted.
      */
-    @AllowedFFDC(value = { "javax.cache.CacheException", // for invalid uri
-                           "java.net.MalformedURLException" // TODO possible bug
-    })
+    @AllowedFFDC(value = { "javax.cache.CacheException" }) // for invalid uri
     @Test
     public void testInvalidURI() throws Exception {
         // Start the server with invalid httpSessionCache uri
@@ -246,9 +243,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Configure httpSessionCache pointing at a library that lacks a valid JCache provider. Access a session before and after,
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before is not.
      */
-    @AllowedFFDC(value = { "javax.cache.CacheException", // expected on error path: No CachingProviders have been configured
-                           "java.net.MalformedURLException" // TODO possible bug
-    })
+    @AllowedFFDC(value = { "javax.cache.CacheException" }) // expected on error path: No CachingProviders have been configured
     @Test
     public void testLibraryWithoutJCacheProvider() throws Exception {
         // Start the server with libraryRef missing
@@ -291,7 +286,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before is not
      * (the OSGi service backing httpSessionCache config will be unable to activate in the absence of libraryRef).
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
     public void testMissingLibraryRef() throws Exception {
         try {
@@ -325,9 +319,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         }
     }
 
-    @AllowedFFDC(value = { "javax.cache.CacheException", // expected on error path: No CachingProviders have been configured
-                           "java.net.MalformedURLException" // TODO possible bug
-    })
+    @AllowedFFDC(value = { "javax.cache.CacheException" }) // expected on error path: No CachingProviders have been configured
     @Test
     public void testModifyFileset() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
@@ -363,7 +355,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Capture a dump of the server without monitoring enabled. This means the JCache MXBeans will be unavailable
      * and so cache statistics will not be included in the dump output.
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
     public void testServerDumpWithMonitoring() throws Exception {
         ServerConfiguration config = savedConfig.clone();
@@ -436,7 +427,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Capture a dump of the server with monitoring enabled. This means the JCache MXBeans will be available
      * and should have cache statistics included in the dump output.
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
     public void testServerDumpWithoutMonitoring() throws Exception {
         server.startServer(testName.getMethodName() + ".log");
