@@ -18,5 +18,6 @@
     </buildSpec>
     <natures>
         <nature>org.eclipse.jdt.core.javanature</nature>
+        <nature>bndtools.core.bndnature</nature>
     </natures>
 </projectDescription>

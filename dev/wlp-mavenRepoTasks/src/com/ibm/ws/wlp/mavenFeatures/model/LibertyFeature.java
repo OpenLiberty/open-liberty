@@ -84,46 +84,8 @@ public class LibertyFeature {
 	public boolean isRestrictedLicense() {
 		return restrictedLicense;
 	}
-	
-	/**
-	 * Gets the list of features that this feature depends on.
-	 * 
-	 * @param allFeatures
-	 *            The map of all features, mapping from symbolic name to
-	 *            LibertyFeature object
-	 * @return List of LibertyFeature objects that this feature depends on.
-	 * @throws MavenRepoGeneratorException
-	 *             If a required feature cannot be found in the map.
-	 */
-	public List<LibertyFeature> getRequiredFeatures(Map<String, LibertyFeature> allFeatures)
-			throws MavenRepoGeneratorException {
-		List<LibertyFeature> dependencies = new ArrayList<LibertyFeature>();
-		if (requiredFeaturesWithTolerates != null) {
-			for (String requireFeature : requiredFeaturesWithTolerates.keySet()) {
-				Collection<String> toleratesVersions = null;
-				if (allFeatures.containsKey(requireFeature)) {
-					dependencies.add(allFeatures.get(requireFeature));
-				} else if ((toleratesVersions = requiredFeaturesWithTolerates.get(requireFeature)) != null) {
-					boolean tolerateFeatureFound = false;
-					for (String version : toleratesVersions) {
-						String tolerateFeatureAndVersion = requireFeature.substring(0, requireFeature.lastIndexOf("-")) + "-" + version;
-						if (allFeatures.containsKey(tolerateFeatureAndVersion)) {
-							dependencies.add(allFeatures.get(tolerateFeatureAndVersion));
-							tolerateFeatureFound = true;
-							break;
-						}
-					}
-					if (!tolerateFeatureFound) {
-						throw new MavenRepoGeneratorException(
-								"For feature " + symbolicName + ", cannot find required feature " + requireFeature + " or any of its tolerated versions: " + toleratesVersions);
-					}
-				} else {
-					throw new MavenRepoGeneratorException(
-							"For feature " + symbolicName + ", cannot find required feature " + requireFeature);
-				}
-			}
-		}
-		return dependencies;
+	public Map<String, Collection<String>> getRequiredFeaturesWithTolerates() {
+		return requiredFeaturesWithTolerates;
 	}
 	
 }

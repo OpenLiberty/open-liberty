@@ -48,357 +48,357 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
 // This class handles the builder objects, the JwtSsoComponent class handles the consumer objects.
 @Component(service = { JwtSsoBuilderConfig.class,
-        JwtConfig.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoBuilderConfig", property = "service.vendor=IBM")
+		JwtConfig.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwtsso", name = "jwtSsoBuilderConfig", property = "service.vendor=IBM")
 public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 
-    private static final TraceComponent tc = Tr.register(JwtSsoBuilderComponent.class);
+	private static final TraceComponent tc = Tr.register(JwtSsoBuilderComponent.class);
 
-    private DynamicMBean httpsendpointInfoMBean;
+	private DynamicMBean httpsendpointInfoMBean;
 
-    private DynamicMBean httpendpointInfoMBean;
+	private DynamicMBean httpendpointInfoMBean;
 
-    private ServerInfoMBean serverInfoMBean;
+	private ServerInfoMBean serverInfoMBean;
 
-    private boolean setCookiePathToWebAppContextPath;
-    private boolean includeLtpaCookie;
-    private boolean fallbackToLtpa;
-    private boolean cookieSecureFlag;
-    private String jwtBuilderRef;
-    private String jwtConsumerRef;
-    private String cookieName;
-    private WebAppSecurityConfig webAppSecConfig;
-    private String signatureAlgorithm = "RS256";
-    private final static String KEY_JWT_SERVICE = "jwtConfig";
-    private final static String CFG_KEY_ID = "id";
-    private final JwtConfig builderConfig = null;
-    private final Object initlock = new Object();
-    ConcurrentServiceReferenceMap<String, JwtConfig> jwtServiceMapRef = new ConcurrentServiceReferenceMap<String, JwtConfig>(KEY_JWT_SERVICE);
+	private boolean setCookiePathToWebAppContextPath;
+	private boolean includeLtpaCookie;
+	private boolean fallbackToLtpa;
+	private boolean cookieSecureFlag;
+	private String jwtBuilderRef;
+	private String jwtConsumerRef;
+	private String cookieName;
+	private WebAppSecurityConfig webAppSecConfig;
+	private String signatureAlgorithm = "RS256";
+	private final static String KEY_JWT_SERVICE = "jwtConfig";
+	private final static String CFG_KEY_ID = "id";
+	private final JwtConfig builderConfig = null;
+	private final Object initlock = new Object();
+	ConcurrentServiceReferenceMap<String, JwtConfig> jwtServiceMapRef = new ConcurrentServiceReferenceMap<String, JwtConfig>(
+			KEY_JWT_SERVICE);
+	protected static final String KEY_UNIQUE_ID = "id";
+	protected String uniqueId = null;
+	private IssuerUtil issuerUtil;
+	private boolean isDefaultBuilder = false;
 
-    protected static final String KEY_UNIQUE_ID = "id";
-    protected String uniqueId = null;
+	@Override
+	public boolean isHttpOnlyCookies() {
+		return WebConfigUtils.getWebAppSecurityConfig().getHttpOnlyCookies();
+	}
 
-    private IssuerUtil issuerUtil;
-    private boolean isDefaultBuilder = false;
+	@Override
+	public boolean isSsoUseDomainFromURL() {
+		return WebConfigUtils.getWebAppSecurityConfig().getSSOUseDomainFromURL();
+	}
 
-    @Override
-    public boolean isHttpOnlyCookies() {
-        return WebConfigUtils.getWebAppSecurityConfig().getHttpOnlyCookies();
-    }
+	@Override
+	public List<String> getSsoDomainNames() {
+		return WebConfigUtils.getWebAppSecurityConfig().getSSODomainList();
+	}
 
-    @Override
-    public boolean isSsoUseDomainFromURL() {
-        return WebConfigUtils.getWebAppSecurityConfig().getSSOUseDomainFromURL();
-    }
+	@Override
+	public boolean isSetCookiePathToWebAppContextPath() {
+		return setCookiePathToWebAppContextPath;
+	}
 
-    @Override
-    public List<String> getSsoDomainNames() {
-        return WebConfigUtils.getWebAppSecurityConfig().getSSODomainList();
-    }
+	@Override
+	public boolean isIncludeLtpaCookie() {
+		return includeLtpaCookie;
+	}
 
-    @Override
-    public boolean isSetCookiePathToWebAppContextPath() {
-        return setCookiePathToWebAppContextPath;
-    }
+	@Override
+	public boolean isFallbackToLtpa() {
+		return fallbackToLtpa;
+	}
 
-    @Override
-    public boolean isIncludeLtpaCookie() {
-        return includeLtpaCookie;
-    }
+	@Override
+	public boolean isCookieSecured() {
+		return cookieSecureFlag;
+	}
 
-    @Override
-    public boolean isFallbackToLtpa() {
-        return fallbackToLtpa;
-    }
+	@Override
+	public String getJwtBuilderRef() {
+		return jwtBuilderRef;
+	}
 
-    @Override
-    public boolean isCookieSecured() {
-        return cookieSecureFlag;
-    }
+	// /** {@inheritDoc} */
+	// @Override
+	// public String getJwtConsumerRef() {
+	// return jwtConsumerRef;
+	// }
 
-    @Override
-    public String getJwtBuilderRef() {
-        return jwtBuilderRef;
-    }
+	// we track the builder config so we can get the token expiration time
+	@org.osgi.service.component.annotations.Reference(service = JwtConfig.class, name = KEY_JWT_SERVICE, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.RELUCTANT)
+	protected void setJwtConfig(org.osgi.framework.ServiceReference<JwtConfig> ref) {
+		synchronized (initlock) {
+			jwtServiceMapRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
+		}
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getJwtConsumerRef() {
-        return jwtConsumerRef;
-    }
+	protected void unsetJwtConfig(org.osgi.framework.ServiceReference<JwtConfig> ref) {
+		synchronized (initlock) {
+			jwtServiceMapRef.removeReference((String) ref.getProperty(CFG_KEY_ID), ref);
+		}
+	}
 
-    // we track the builder config so we can get the token expiration time
-    @org.osgi.service.component.annotations.Reference(service = JwtConfig.class, name = KEY_JWT_SERVICE, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.RELUCTANT)
-    protected void setJwtConfig(org.osgi.framework.ServiceReference<JwtConfig> ref) {
-        synchronized (initlock) {
-            jwtServiceMapRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
-        }
-    }
+	// todo: remove if not needed
+	@org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint)", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
+		httpendpointInfoMBean = endpointInfoMBean;
+	}
 
-    protected void unsetJwtConfig(org.osgi.framework.ServiceReference<JwtConfig> ref) {
-        synchronized (initlock) {
-            jwtServiceMapRef.removeReference((String) ref.getProperty(CFG_KEY_ID), ref);
-        }
-    }
+	// todo: remove if not needed
+	protected void unsetEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
+		if (httpendpointInfoMBean == endpointInfoMBean) {
+			httpendpointInfoMBean = null;
+		}
+	}
 
-    // todo: remove if not needed
-    @org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint)", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
-        httpendpointInfoMBean = endpointInfoMBean;
-    }
+	// todo: remove if not needed
+	@org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint-ssl)", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setHttpsEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
+		httpsendpointInfoMBean = endpointInfoMBean;
+	}
 
-    // todo: remove if not needed
-    protected void unsetEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
-        if (httpendpointInfoMBean == endpointInfoMBean) {
-            httpendpointInfoMBean = null;
-        }
-    }
+	// todo: remove if not needed
+	protected void unsetHttpsEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
+		if (httpsendpointInfoMBean == endpointInfoMBean) {
+			httpsendpointInfoMBean = null;
+		}
+	}
 
-    // todo: remove if not needed
-    @org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=channelfw,type=endpoint,name=defaultHttpEndpoint-ssl)", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setHttpsEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
-        httpsendpointInfoMBean = endpointInfoMBean;
-    }
+	/**
+	 * DS injection WebSphere:feature=kernel,name=ServerInfo
+	 */
+	@org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=kernel,name=ServerInfo)", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
+	protected void setServerInfoMBean(ServerInfoMBean serverInfoMBean) {
+		this.serverInfoMBean = serverInfoMBean;
+	}
 
-    // todo: remove if not needed
-    protected void unsetHttpsEndPointInfoMBean(DynamicMBean endpointInfoMBean) {
-        if (httpsendpointInfoMBean == endpointInfoMBean) {
-            httpsendpointInfoMBean = null;
-        }
-    }
+	protected void unsetServerInfoMBean(ServerInfoMBean serverInfoMBean) {
+		if (this.serverInfoMBean == serverInfoMBean) {
+			this.serverInfoMBean = null;
+		}
+	}
 
-    /**
-     * DS injection WebSphere:feature=kernel,name=ServerInfo
-     */
-    @org.osgi.service.component.annotations.Reference(target = "(jmx.objectname=WebSphere:feature=kernel,name=ServerInfo)", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setServerInfoMBean(ServerInfoMBean serverInfoMBean) {
-        this.serverInfoMBean = serverInfoMBean;
-    }
+	@Activate
+	protected void activate(Map<String, Object> properties, ComponentContext cc) {
+		uniqueId = (String) properties.get(KEY_UNIQUE_ID);
+		process(properties);
+	}
 
-    protected void unsetServerInfoMBean(ServerInfoMBean serverInfoMBean) {
-        if (this.serverInfoMBean == serverInfoMBean) {
-            this.serverInfoMBean = null;
-        }
-    }
+	@Modified
+	protected void modify(Map<String, Object> properties) {
+		process(properties);
+	}
 
-    @Activate
-    protected void activate(Map<String, Object> properties, ComponentContext cc) {
-        uniqueId = (String) properties.get(KEY_UNIQUE_ID);
-        process(properties);
-    }
+	@Deactivate
+	protected void deactivate(int reason, ComponentContext cc) {
 
-    @Modified
-    protected void modify(Map<String, Object> properties) {
-        process(properties);
-    }
+	}
 
-    @Deactivate
-    protected void deactivate(int reason, ComponentContext cc) {
+	private void process(Map<String, Object> props) {
+		if (tc.isEntryEnabled()) {
+			Tr.entry(tc, "process");
+		}
 
-    }
+		if (props == null || props.isEmpty()) {
+			return;
+		}
+		setCookiePathToWebAppContextPath = (Boolean) props
+				.get(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
+		includeLtpaCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE);
+		fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_KEY_FALLBACKTOLTPA);
+		cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
+		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
+		isDefaultBuilder = false;
+		if (jwtBuilderRef == null) {
+			setJwtSsoBuilderDefaults();
+			isDefaultBuilder = true;
+		}
+		jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
+		cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
+		if (tc.isEntryEnabled()) {
+			Tr.exit(tc, "process");
+		}
+	}
 
-    private void process(Map<String, Object> props) {
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "process");
-        }
+	private void setJwtSsoBuilderDefaults() {
+		jwtBuilderRef = getId();
+		signatureAlgorithm = "RS256";
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "builder id = ", jwtBuilderRef);
+		}
+		issuerUtil = new IssuerUtil();
 
-        if (props == null || props.isEmpty()) {
-            return;
-        }
-        setCookiePathToWebAppContextPath = (Boolean) props
-                .get(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
-        includeLtpaCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE);
-        fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_KEY_FALLBACKTOLTPA);
-        cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
-        jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
-        isDefaultBuilder = false;
-        if (jwtBuilderRef == null) {
-            setJwtSsoBuilderDefaults();
-            isDefaultBuilder = true;
-        }
-        jwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF));
-        cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
-        if (tc.isEntryEnabled()) {
-            Tr.exit(tc, "process");
-        }
-    }
+	}
 
-    private void setJwtSsoBuilderDefaults() {
-        jwtBuilderRef = getId();
-        signatureAlgorithm = "RS256";
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "builder id = ", jwtBuilderRef);
-        }
-        issuerUtil = new IssuerUtil();
+	/** {@inheritDoc} */
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return getUniqueId();
+	}
 
-    }
+	/** {@inheritDoc} */
+	@Override
+	public List<String> getAudiences() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getId() {
-        // TODO Auto-generated method stub
-        return getUniqueId();
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String getSignatureAlgorithm() {
+		// TODO Auto-generated method stub
+		return signatureAlgorithm;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public List<String> getAudiences() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String getSharedKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getSignatureAlgorithm() {
-        // TODO Auto-generated method stub
-        return signatureAlgorithm;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String getTrustStoreRef() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getSharedKey() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String getTrustedAlias() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getTrustStoreRef() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	public String getUniqueId() {
+		// TODO Auto-generated method stub
+		return uniqueId;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getTrustedAlias() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String getIssuerUrl() {
+		return getResolvedHostAndPortUrl();
 
-    public String getUniqueId() {
-        // TODO Auto-generated method stub
-        return uniqueId;
-    }
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getIssuerUrl() {
-        return getResolvedHostAndPortUrl();
+	/** {@inheritDoc} */
+	@Override
+	public boolean isJwkEnabled() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    }
+	/** {@inheritDoc} */
+	@Override
+	public long getValidTime() {
+		long result = 0;
+		if (isDefaultBuilder) {
+			result = 2; // hour, for now
+		} else {
+			boolean haveNull = jwtServiceMapRef.getReference(jwtBuilderRef) == null
+					|| jwtServiceMapRef.getReference(jwtBuilderRef).getProperty(JwtUtils.CFG_KEY_VALID) == null;
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean isJwkEnabled() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+			result = (haveNull) ? 0
+					: ((Long) jwtServiceMapRef.getReference(jwtBuilderRef).getProperty(JwtUtils.CFG_KEY_VALID))
+							.longValue();
+		}
+		return result;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public long getValidTime() {
-        long result = 0;
-        if (isDefaultBuilder) {
-            result = 2; // hour, for now
-        } else {
-            boolean haveNull = jwtServiceMapRef.getReference(jwtBuilderRef) == null ||
-                    jwtServiceMapRef.getReference(jwtBuilderRef).getProperty(JwtUtils.CFG_KEY_VALID) == null;
+	/** {@inheritDoc} */
+	@Override
+	public List<String> getClaims() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-            result = (haveNull) ? 0 : ((Long) jwtServiceMapRef.getReference(jwtBuilderRef).getProperty(JwtUtils.CFG_KEY_VALID)).longValue();
-        }
-        return result;
+	/** {@inheritDoc} */
+	@Override
+	public String getScope() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    }
+	/** {@inheritDoc} */
+	@Override
+	public boolean getJti() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public List<String> getClaims() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String getKeyStoreRef() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getScope() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String getKeyAlias() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean getJti() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String getJwkJsonString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getKeyStoreRef() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public JSONWebKey getJSONWebKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getKeyAlias() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public long getJwkRotationTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public String getJwkJsonString() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public int getJwkSigningKeySize() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public JSONWebKey getJSONWebKey() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/** {@inheritDoc} */
 
-    /** {@inheritDoc} */
-    @Override
-    public long getJwkRotationTime() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	@Override
+	public String getResolvedHostAndPortUrl() {
+		return issuerUtil.getResolvedHostAndPortUrl(httpsendpointInfoMBean, httpendpointInfoMBean, serverInfoMBean,
+				uniqueId);
+		// TODO Auto-generated method stub
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public int getJwkSigningKeySize() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	/** {@inheritDoc} */
+	@Override
+	public PrivateKey getPrivateKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
+	@Override
+	public PublicKey getPublicKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    public String getResolvedHostAndPortUrl() {
-        return issuerUtil.getResolvedHostAndPortUrl(httpsendpointInfoMBean, httpendpointInfoMBean, serverInfoMBean,
-                uniqueId);
-        // TODO Auto-generated method stub
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public PrivateKey getPrivateKey() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public PublicKey getPublicKey() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getCookieName() {
-        // TODO Auto-generated method stub
-        return cookieName;
-    }
+	@Override
+	public String getCookieName() {
+		// TODO Auto-generated method stub
+		return cookieName;
+	}
 
 }

@@ -323,25 +323,33 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
             setUpSubject();
         }
         if (customCacheKey != null || customRealm != null) {
-            SingleSignonToken ssoToken = getSSOToken(subject);
-            if (ssoToken != null) {
-                if (customCacheKey != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Add custom cache key into SSOToken");
-                    }
-                    ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, (String) customCacheKey);
-                }
-                if (customRealm != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Add custom realm into SSOToken");
-                    }
-                    ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
-                }
-            }
-            JwtSSOTokenHelper.addCustomCacheKeyToJwtSSOToken(subject, (String) customCacheKey);
+            addCustomCacheKeyAndRealmToSSOToken();
+            //Recreate the jwtSSOToken with customCacheKey and customRealm
+            JwtSSOTokenHelper.addCustomCacheKeyAndRealmToJwtSSOToken(subject);
         }
 
         return true;
+    }
+
+    /**
+     * 
+     */
+    private void addCustomCacheKeyAndRealmToSSOToken() {
+        SingleSignonToken ssoToken = getSSOToken(subject);
+        if (ssoToken != null) {
+            if (customCacheKey != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Add custom cache key into SSOToken");
+                }
+                ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, (String) customCacheKey);
+            }
+            if (customRealm != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Add custom realm into SSOToken");
+                }
+                ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
+            }
+        }
     }
 
     /** {@inheritDoc} */

@@ -18,8 +18,9 @@
 
     <authentication cacheEnabled="false"/>
 
-    <jwtSso  jwtBuilderRef="builder02" jwtConsumerRef="bogusconsumer" setCookieSecureFlag="false"/>
+    <jwtSso  jwtBuilderRef="builder02" setCookieSecureFlag="false"/>
     <jwtBuilder  id="builder02" issuer="https://flintstone:19443/jwt/defaultJWT"/>
-    <jwtConsumer id="consumer45" issuer="https://flintstone:19443/jwt/defaultJWT"/>
+    <mpJwt id="consumer45" issuer="https://flintstone:19443/jwt/defaultJWT"/>
+    <mpJwt id="consumer47" issuer="https://flintstone:19443/jwt/defaultJWT"/>
 
 </server>

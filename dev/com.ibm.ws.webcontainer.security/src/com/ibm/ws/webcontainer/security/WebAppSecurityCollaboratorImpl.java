@@ -70,6 +70,7 @@ import com.ibm.ws.webcontainer.security.internal.PermitReply;
 import com.ibm.ws.webcontainer.security.internal.ReturnReply;
 import com.ibm.ws.webcontainer.security.internal.SRTServletRequestUtils;
 import com.ibm.ws.webcontainer.security.internal.URLHandler;
+import com.ibm.ws.webcontainer.security.internal.WebAppSecurityConfigChangeEventImpl;
 import com.ibm.ws.webcontainer.security.internal.WebReply;
 import com.ibm.ws.webcontainer.security.internal.WebSecurityCollaboratorException;
 import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
@@ -85,6 +86,7 @@ import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
+import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
@@ -110,6 +112,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     static final String JASPI_SERVICE_COMPONENT_NAME = "com.ibm.ws.security.jaspi";
     public static final String KEY_WEB_AUTHENTICATOR = "webAuthenticator";
     public static final String KEY_UNPROTECTED_RESOURCE_SERVICE = "unprotectedResourceService";
+    static final String KEY_CONFIG_CHANGE_LISTENER = "webAppSecurityConfigChangeListener";
+
     static final String DELEGATION_USERS_LIST = "DELEGATION_USERS_LIST";
     protected final ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef = new ConcurrentServiceReferenceMap<String, WebAuthenticator>(KEY_WEB_AUTHENTICATOR);
     protected final ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef = new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>(KEY_UNPROTECTED_RESOURCE_SERVICE);
@@ -118,6 +122,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     protected final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(KEY_INTERCEPTOR_SERVICE);
     protected final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     protected final AtomicServiceReference<JaccService> jaccServiceRef = new AtomicServiceReference<JaccService>(KEY_JACC_SERVICE);
+    protected final ConcurrentServiceReferenceSet<WebAppSecurityConfigChangeListener> webAppSecurityConfigchangeListenerRef = new ConcurrentServiceReferenceSet<WebAppSecurityConfigChangeListener>(KEY_CONFIG_CHANGE_LISTENER);
 
     private static final String KEY_LOCATION_ADMIN = "locationAdmin";
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_ADMIN);
@@ -308,6 +313,14 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         this.provisionerService = null;
     }
 
+    protected void setWebAppSecurityConfigChangeListener(ServiceReference<WebAppSecurityConfigChangeListener> ref) {
+        webAppSecurityConfigchangeListenerRef.addReference(ref);
+    }
+
+    protected void unsetWebAppSecurityConfigChangeListener(ServiceReference<WebAppSecurityConfigChangeListener> ref) {
+        webAppSecurityConfigchangeListenerRef.removeReference(ref);
+    }
+
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         isActive = true;
         locationAdminRef.activate(cc);
@@ -317,6 +330,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         jaccServiceRef.activate(cc);
         webAuthenticatorRef.activate(cc);
         unprotectedResourceServiceRef.activate(cc);
+        webAppSecurityConfigchangeListenerRef.activate(cc);
         currentProps.clear();
         if (props != null) {
             currentProps.putAll(props);
@@ -342,13 +356,16 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     protected void modified(Map<String, Object> newProperties) {
         WebAppSecurityConfig newWebAppSecConfig = authenticatorFactory.createWebAppSecurityConfigImpl(newProperties, locationAdminRef, securityServiceRef);
         // Capture the properties that were changed for our audit record
-        String deltaString = newWebAppSecConfig.getChangedProperties(webAppSecConfig);
+        Map<String, String> deltaMap = newWebAppSecConfig.getChangedPropertiesMap(webAppSecConfig);
+        String deltaString = toStringFormChangedPropertiesMap(deltaMap);
+
         currentProps.clear();
         if (newProperties != null) {
             currentProps.putAll(newProperties);
         }
         webAppSecConfig = newWebAppSecConfig;
         updateComponents();
+        notifyWebAppSecurityConfigChangeListeners(new ArrayList(deltaMap.keySet()));
         Tr.audit(tc, "WEB_APP_SECURITY_CONFIGURATION_UPDATED", deltaString);
     }
 
@@ -361,6 +378,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         jaccServiceRef.deactivate(cc);
         webAuthenticatorRef.deactivate(cc);
         unprotectedResourceServiceRef.deactivate(cc);
+        webAppSecurityConfigchangeListenerRef.deactivate(cc);
         WebSecurityHelperImpl.setWebAppSecurityConfig(null);
     }
 
@@ -488,7 +506,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
                 if (webSecurityContext.getJaspiAuthContext() != null &&
                     webAuthenticatorRef != null) {
-                    WebAuthenticator jaspiService = webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
+                    WebAuthenticator jaspiService = webAuthenticatorRef.getService(JASPI_SERVICE_COMPONENT_NAME);
                     if (jaspiService != null) {
                         try {
                             ((JaspiService) jaspiService).postInvoke(webSecurityContext);
@@ -614,7 +632,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
          * normal processing.
          */
         if (isJaspiEnabled &&
-            ((JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi")).isAnyProviderRegistered(webRequest)) {
+            ((JaspiService) webAuthenticatorRef.getService(JASPI_SERVICE_COMPONENT_NAME)).isAnyProviderRegistered(webRequest)) {
             webReply = handleJaspi(receivedSubject, uriName, webRequest, webSecurityContext);
         }
 
@@ -649,11 +667,27 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                                  WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
         performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
         WebReply webReply = unprotectedSpecialURI(webRequest, uriName, webRequest.getHttpServletRequest().getMethod());
+
         if (webReply == null) {
-            AuthenticationResult authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
-            authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
-            if (receivedSubject != null && receivedSubject.getPrincipals() != null) {
-                authResult.setAuditCredValue(receivedSubject.getPrincipals().iterator().next().getName());
+            // check global cert login.
+            String authMech = webAppSecConfig.getOverrideHttpAuthMethod();
+            AuthenticationResult authResult = null;
+            if (authMech != null && authMech.equals("CLIENT_CERT")) {
+                // process client cert auth first.
+                // disable failover in order to avoid failover to non-jaspi code path.
+                webRequest.setDisableClientCertFailOver(true);
+                // client cert.
+                authResult = authenticateRequest(webRequest);
+                // reset the value.
+                webRequest.setDisableClientCertFailOver(false);
+            }
+            if (authResult == null || (authResult.getStatus() != AuthResult.SUCCESS && webAppSecConfig.allowFailOver())) {
+                // if client cert is not processed or failed and allowFailOver is configured.
+                authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
+                authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
+                if (receivedSubject != null && receivedSubject.getPrincipals() != null) {
+                    authResult.setAuditCredValue(receivedSubject.getPrincipals().iterator().next().getName());
+                }
             }
             if (authResult.getStatus() == AuthResult.RETURN) {
                 //
@@ -1008,7 +1042,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         boolean isNewAuthenticate = false;
         boolean isCredentialPresent = false;
         if (isJaspiEnabled) {
-            jaspiService = (JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
+            jaspiService = (JaspiService) webAuthenticatorRef.getService(JASPI_SERVICE_COMPONENT_NAME);
             isNewAuthenticate = jaspiService.isProcessingNewAuthentication(req);
             isCredentialPresent = jaspiService.isCredentialPresent(req);
         }
@@ -1608,5 +1642,37 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     private void removeModuleMetaDataFromThreadLocal(Object key) {
         WebConfigUtils.removeWebModuleMetaData(key);
+    }
+
+    /**
+     * Notify the registered listeners of the change to the UserRegistry
+     * configuration.
+     */
+    private void notifyWebAppSecurityConfigChangeListeners(List<String> delta) {
+        WebAppSecurityConfigChangeEvent event = new WebAppSecurityConfigChangeEventImpl(delta);
+        for (WebAppSecurityConfigChangeListener listener : webAppSecurityConfigchangeListenerRef.services()) {
+            listener.notifyWebAppSecurityConfigChanged(event);
+        }
+    }
+
+    /**
+     * Format the map of config change attributes for the audit function. The output format would be the
+     * same as original WebAppSecurityConfig.getChangedProperties method.
+     *
+     * @return String in the format of "name=value, name=value, ..." encapsulating the
+     *         properties that are different between this WebAppSecurityConfig and the specified one
+     */
+    private String toStringFormChangedPropertiesMap(Map<String, String> delta) {
+        if (delta == null || delta.isEmpty()) {
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, String> entry : delta.entrySet()) {
+            if (sb.length() > 0) {
+                sb.append(",");
+            }
+            sb.append(entry.getKey()).append("=").append(entry.getValue());
+        }
+        return sb.toString();
     }
 }

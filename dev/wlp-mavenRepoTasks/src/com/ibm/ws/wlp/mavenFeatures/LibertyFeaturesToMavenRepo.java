@@ -247,7 +247,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 	 * @param type The type of artifact.
 	 * @throws MavenRepoGeneratorException If the POM file could not be written.
 	 */
-	private static void generatePom(LibertyFeature feature, Map<String, List<MavenCoordinates>> additionalDependencies, List<MavenCoordinates> featureCompileDependencies, Map<String, LibertyFeature> allFeatures, File outputDir,
+	private void generatePom(LibertyFeature feature, Map<String, List<MavenCoordinates>> additionalDependencies, List<MavenCoordinates> featureCompileDependencies, Map<String, LibertyFeature> allFeatures, File outputDir,
 			Constants.ArtifactType type) throws MavenRepoGeneratorException {
 		MavenCoordinates coordinates = feature.getMavenCoordinates();
 		Model model = new Model();
@@ -264,7 +264,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setDependencies(dependencies);
 					
 		// ESA depends on other ESAs
-		List<LibertyFeature> requiredFeatures = feature.getRequiredFeatures(allFeatures);
+		List<LibertyFeature> requiredFeatures = getRequiredFeatures(feature, allFeatures);
 		if (!requiredFeatures.isEmpty()) {
 			for (LibertyFeature requiredFeature : requiredFeatures) {
 				MavenCoordinates requiredArtifact = requiredFeature.getMavenCoordinates();
@@ -762,6 +762,51 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			}
 		}
 		return productVersion;
+	}
+	
+	/**
+	 * Gets the list of features that this feature depends on.
+	 * 
+	 * @param feature This feature.
+	 * @param allFeatures
+	 *            The map of all features, mapping from symbolic name to
+	 *            LibertyFeature object
+	 * @return List of LibertyFeature objects that this feature depends on.
+	 * @throws MavenRepoGeneratorException
+	 *             If a required feature cannot be found in the map.
+	 */
+	public List<LibertyFeature> getRequiredFeatures(LibertyFeature feature, Map<String, LibertyFeature> allFeatures)
+			throws MavenRepoGeneratorException {
+		List<LibertyFeature> dependencies = new ArrayList<LibertyFeature>();
+		Map<String, Collection<String>> requiredFeaturesWithTolerates = feature.getRequiredFeaturesWithTolerates();
+		if (requiredFeaturesWithTolerates != null) {
+			for (String requireFeature : requiredFeaturesWithTolerates.keySet()) {
+				Collection<String> toleratesVersions = null;
+				if (allFeatures.containsKey(requireFeature)) {
+					dependencies.add(allFeatures.get(requireFeature));
+				} else if ((toleratesVersions = requiredFeaturesWithTolerates.get(requireFeature)) != null) {
+					log("For feature " + feature.getSymbolicName() + ", cannot find direct dependency to required feature " + requireFeature + " so it must use tolerates list: " + toleratesVersions, LogLevel.WARN.getLevel());
+					boolean tolerateFeatureFound = false;
+					for (String version : toleratesVersions) {
+						String tolerateFeatureAndVersion = requireFeature.substring(0, requireFeature.lastIndexOf("-")) + "-" + version;
+						if (allFeatures.containsKey(tolerateFeatureAndVersion)) {
+							dependencies.add(allFeatures.get(tolerateFeatureAndVersion));
+							log("For feature " + feature.getSymbolicName() + ", found tolerated dependency " + tolerateFeatureAndVersion, LogLevel.DEBUG.getLevel());
+							tolerateFeatureFound = true;
+							break;
+						}
+					}
+					if (!tolerateFeatureFound) {
+						throw new MavenRepoGeneratorException(
+								"For feature " + feature.getSymbolicName() + ", cannot find required feature " + requireFeature + " or any of its tolerated versions: " + toleratesVersions);
+					}
+				} else {
+					throw new MavenRepoGeneratorException(
+							"For feature " + feature.getSymbolicName() + ", cannot find required feature " + requireFeature);
+				}
+			}
+		}
+		return dependencies;
 	}
 
 }

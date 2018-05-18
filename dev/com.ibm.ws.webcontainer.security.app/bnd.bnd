@@ -44,10 +44,11 @@ Service-Component: \
     unprotectedResourceService=com.ibm.ws.webcontainer.security.UnprotectedResourceService; \
     jaccService=com.ibm.ws.security.authorization.jacc.JaccService;\
     kernelProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner;\
-    multiple:='interceptorService, webAuthenticator, unprotectedResourceService'; \
+    webAppSecurityConfigChangeListener=com.ibm.ws.webcontainer.security.WebAppSecurityConfigChangeListener;\
+    multiple:='interceptorService, webAuthenticator, unprotectedResourceService, webAppSecurityConfigChangeListener'; \
     greedy:='interceptorService, webAuthenticator, unprotectedResourceService,authenticatorFactory'; \
-    optional:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService'; \
-    dynamic:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,authenticatorFactory'; \
+    optional:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,webAppSecurityConfigChangeListener'; \
+    dynamic:='taiService,interceptorService,webAuthenticator,jaccService,unprotectedResourceService,authenticatorFactory,webAppSecurityConfigChangeListener'; \
     properties:="service.vendor=IBM", \
   com.ibm.ws.webcontainer.security.ServletStartedListener; \
     implementation:=com.ibm.ws.webcontainer.security.ServletStartedListener; \

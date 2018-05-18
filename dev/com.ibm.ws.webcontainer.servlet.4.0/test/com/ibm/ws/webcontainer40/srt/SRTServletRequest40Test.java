@@ -104,6 +104,14 @@ public class SRTServletRequest40Test {
                 oneOf(dispContext).getRequestedSessionId();
                 will(returnValue(null));
 
+                // Used to construct the Referer header when the PushBuilder is initialized.
+                oneOf(dispContext).getRequestURI();
+                will(returnValue("/UnitTest/test_PushBuilderHeaders"));
+
+                // Used to construct the Referer header when the PushBuilder is initialized.
+                oneOf(IReq40).getQueryString();
+                will(returnValue("test=queryStringFromRequest"));
+
                 oneOf(IReq40).getHeaders("Content-Type");
                 will(returnValue(ctE));
 
@@ -126,10 +134,20 @@ public class SRTServletRequest40Test {
 
         Set<String> pbHeaders = pb.getHeaderNames();
 
-        assertTrue(pbHeaders.size() == 4);
+        // Content-Type, Date, From, MaxForwards + Referer header constructed and added on PushBuilder init.
+        assertTrue(pbHeaders.size() == 5);
         assertTrue(pb.getHeader("If-Modified-Since") == null);
         assertTrue(pb.getHeader("Expect") == null);
-        assertTrue(pb.getHeader("Referer") == null);
+
+        // The Referer header from the initial request is stripped from the headers
+        // sent to the PushBuilder. The Referer header is then reconstructed with the following
+        // values when the PushBuilder is initialized:
+        //      The Referer(sic) header will be set to HttpServletRequest.getRequestURL() plus any HttpServletRequest.getQueryString()
+        String expectedRefererHeaderValue = "/UnitTest/test_PushBuilderHeaders?test=queryStringFromRequest";
+        String actualRefererHeaderValue = pb.getHeader("Referer");
+
+        assertTrue("The value of the Referer header was: " + actualRefererHeaderValue + " but should have been: "
+                   + expectedRefererHeaderValue, actualRefererHeaderValue.equals(expectedRefererHeaderValue));
 
     }
 
