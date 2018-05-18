@@ -1140,7 +1140,7 @@ public class H2InboundLink extends HttpInboundLink {
         }
 
         closeTable.put(streamProcessor.getId(), streamProcessor);
-        streamTable.remove(streamProcessor.getId());
+        cleanupStream(streamProcessor.getId());
         if (streamProcessor.getId() % 2 == 0) {
             synchronized (pushSync) {
                 this.openPushStreams--;
