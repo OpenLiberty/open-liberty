@@ -202,8 +202,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 CacheHashMap.tcInvoke(tcCachingProvider, "close");
                 cachingProvider.close();
                 CacheHashMap.tcReturn(tcCachingProvider, "close");
-                throw x;
             }
+            throw x;
         }
     }
 
