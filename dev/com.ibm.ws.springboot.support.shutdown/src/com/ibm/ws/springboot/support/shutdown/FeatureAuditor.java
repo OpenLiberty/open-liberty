@@ -50,6 +50,21 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
 
         }
 
+        /* Throw an application error if websocket feature is not enabled */
+        try {
+            Class.forName("org.springframework.web.socket.WebSocketHandler");
+            checkWebSocketPresent();
+        } catch (ClassNotFoundException e) {
+
+        }
+    }
+
+    private void checkWebSocketPresent() {
+        try {
+            Class.forName("javax.websocket.WebSocketContainer");
+        } catch (ClassNotFoundException e) {
+            throw new ApplicationError(Type.MISSING_WEBSOCKET_FEATURE);
+        }
     }
 
     private void checkServletPresent() {
