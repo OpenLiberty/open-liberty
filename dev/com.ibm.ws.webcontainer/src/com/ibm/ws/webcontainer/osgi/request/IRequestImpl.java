@@ -127,14 +127,16 @@ public class IRequestImpl implements IRequestExtended
   
   //PI75166
   /**
-   * @return
+   * @return the ciphersuite string, or null if the SSL context or session is null
    */
   public String getConnectionCipherSuite() { //F001872 Start
        
       String suite = null;
       SSLContext ssl = this.conn.getSSLContext();
       if (null != ssl) {
-          suite = ssl.getSession().getCipherSuite();
+          if (ssl.getSession() != null) {
+              suite = ssl.getSession().getCipherSuite();
+          }
       }    
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
           Tr.debug(tc, "getConnectionCipherSuite suite --> " + suite);
