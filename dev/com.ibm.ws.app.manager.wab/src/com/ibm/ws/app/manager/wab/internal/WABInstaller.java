@@ -19,11 +19,11 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.eclipse.equinox.region.Region;
@@ -207,7 +207,8 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
     /**
      * A map of WABs grouped under an EBA, keyed by the EBA ID
      */
-    private final ConcurrentHashMap<String, WABGroup> wabGroups = new ConcurrentHashMap<String, WABGroup>();
+    private final ReentrantLock wabGroupsLock = new ReentrantLock();
+    private final Map<String, WABGroup> wabGroups = new HashMap<String, WABGroup>();
 
     private BundleContext ctx = null;
 
@@ -294,13 +295,25 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
         }
 
         //remove all the known WABs from the web container
-        for (WABGroup wabGroup : wabGroups.values()) {
+        Collection<WABGroup> toRemoveGroups;
+        wabGroupsLock.lock();
+        try {
+            toRemoveGroups = new ArrayList<>(wabGroups.values());
+        } finally {
+            wabGroupsLock.unlock();
+        }
+        for (WABGroup wabGroup : toRemoveGroups) {
             wabLifecycleDebug("Master WAB Tracker uninstalling WABGroup during deactivate", wabGroup);
             wabGroup.uninstallGroup(this);
         }
 
         //forget the wabGroups
-        wabGroups.clear();
+        wabGroupsLock.lock();
+        try {
+            wabGroups.clear();
+        } finally {
+            wabGroupsLock.unlock();
+        }
 
         // forget all our wabs.
         synchronized (knownPaths) {
@@ -328,7 +341,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
      * This method is called asynchronously from queued work resulting from
      * WAB bundles entering the STARTING|ACTIVE states as tracked by the {@link WABTracker} and {@link WABTrackerCustomizer}.
      *
-     * @param wab - the tracked {@link WAB} object
+     * @param wab    - the tracked {@link WAB} object
      * @param bundle - the {@link Bundle} to install
      */
     protected boolean installIntoWebContainer(WAB wab) {
@@ -405,6 +418,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
                                                                                              null,
                                                                                              null,
                                                                                              new ApplicationInfoForContainer() {
+                                                                                                 @Override
                                                                                                  public boolean getUseJandex() {
                                                                                                      return false;
                                                                                                  }
@@ -413,46 +427,59 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
                 }
                 wab.setApplicationInfo(appInfo);
 
-                WABGroup wabGroup = new WABGroup(new WABDeployedAppInfo(appInfo));
-                WABGroup existingEbaWabGroup = wabGroups.putIfAbsent(appInfo.getName(), wabGroup);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    //Note: this trace string is checked in FAT tests
-                    Tr.debug(tc, "installIntoWebContainer wabGroups.putIfAbsent(" + appInfo.getName() + " , " + wabGroup + ") ==> " + existingEbaWabGroup);
-                }
-                if (existingEbaWabGroup != null) {
-                    wabGroup = existingEbaWabGroup;
-                }
-
-                //We need to make sure that the initial addWebContainerApplication calls
-                //have completed before we try to add any new modules to the application.
-                synchronized (wabGroup) {
-                    WABDeployedAppInfo deployedApp = (WABDeployedAppInfo) wabGroup.getDeployedAppInfo();
-
-                    //add the WAB to the WAB group (we add standalone WABs to a group, but they'll only ever have one WAB in the group)
-                    wabGroup.addWab(wab, this);
-
-                    ModuleContainerInfo mci = deployedApp.createModuleContainerInfo(contextRoot, wabContainer, modPath);
-                    ModuleMetaData mmd = deployedApp.createModuleMetaData(mci, loader);
-                    ExtendedModuleInfo moduleInfo = deployedApp.getModuleInfo(mci);
-                    DeployedModuleInfo deployedMod = deployedApp.getDeployedModule(moduleInfo);
-                    wab.setDeployedModuleInfo(deployedMod);
-
-                    //deploy the module
-                    Future<Boolean> appFuture = webModuleHandler.deployModule(deployedMod, deployedApp);
-                    if (appFuture.isDone() && !appFuture.get()) {
-                        postFailureEvent(wab, "wab.install.fail", bundle, contextRoot);
-                        Tr.error(tc, "wab.install.fail", bundle, contextRoot);
-                        return false;
+                WABGroup wabGroup;
+                // Using old fashion locks here. Can revisit when we can use Java 8.
+                boolean groupsLocked = true;
+                wabGroupsLock.lock();
+                try {
+                    wabGroup = wabGroups.get(appInfo.getName());
+                    if (wabGroup == null) {
+                        wabGroup = new WABGroup(new WABDeployedAppInfo(appInfo));
+                        wabGroups.put(appInfo.getName(), wabGroup);
                     }
 
-                    //register the WAB bundle with a key that can be looked up elsewhere
-                    //based on the J2EEName form
-                    Dictionary<String, Object> bRegProps = new Hashtable<String, Object>(1);
-                    bRegProps.put("web.module.key", appInfo.getName() + "#" + moduleInfo.getName());
-                    bRegProps.put("installed.wab.contextRoot", contextRoot);
-                    bRegProps.put("installed.wab.container", wabContainer);
-                    ServiceRegistration<Bundle> reg = ctx.registerService(Bundle.class, bundle, bRegProps);
-                    wab.setRegistration(reg);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        //Note: this trace string is checked in FAT tests
+                        Tr.debug(tc, "installIntoWebContainer wabGroups.putIfAbsent(" + appInfo.getName() + " , " + wabGroup + ") ==> " + wabGroup);
+                    }
+
+                    //We need to make sure that the initial addWebContainerApplication calls
+                    //have completed before we try to add any new modules to the application.
+                    synchronized (wabGroup) {
+                        WABDeployedAppInfo deployedApp = (WABDeployedAppInfo) wabGroup.getDeployedAppInfo();
+
+                        //add the WAB to the WAB group (we add standalone WABs to a group, but they'll only ever have one WAB in the group)
+                        wabGroup.addWab(wab, this);
+                        groupsLocked = false;
+                        wabGroupsLock.unlock();
+
+                        ModuleContainerInfo mci = deployedApp.createModuleContainerInfo(contextRoot, wabContainer, modPath);
+                        ModuleMetaData mmd = deployedApp.createModuleMetaData(mci, loader);
+                        ExtendedModuleInfo moduleInfo = deployedApp.getModuleInfo(mci);
+                        DeployedModuleInfo deployedMod = deployedApp.getDeployedModule(moduleInfo);
+                        wab.setDeployedModuleInfo(deployedMod);
+
+                        //deploy the module
+                        Future<Boolean> appFuture = webModuleHandler.deployModule(deployedMod, deployedApp);
+                        if (appFuture.isDone() && !appFuture.get()) {
+                            postFailureEvent(wab, "wab.install.fail", bundle, contextRoot);
+                            Tr.error(tc, "wab.install.fail", bundle, contextRoot);
+                            return false;
+                        }
+
+                        //register the WAB bundle with a key that can be looked up elsewhere
+                        //based on the J2EEName form
+                        Dictionary<String, Object> bRegProps = new Hashtable<String, Object>(1);
+                        bRegProps.put("web.module.key", appInfo.getName() + "#" + moduleInfo.getName());
+                        bRegProps.put("installed.wab.contextRoot", contextRoot);
+                        bRegProps.put("installed.wab.container", wabContainer);
+                        ServiceRegistration<Bundle> reg = ctx.registerService(Bundle.class, bundle, bRegProps);
+                        wab.setRegistration(reg);
+                    }
+                } finally {
+                    if (groupsLocked) {
+                        wabGroupsLock.unlock();
+                    }
                 }
             } else {
                 postFailureEvent(wab, "wab.install.fail.container", bundle, contextRoot);
@@ -482,12 +509,27 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
         if (webModuleHandler != null) {
             //check if this is a WAB from an EBA group
             ApplicationInfo info = wab.getApplicationInfo();
-            WABGroup group = wabGroups.get(info.getName());
-            if (group != null) {
-                //synchronize on the WABGroup to match up with install
-                synchronized (group) {
-                    webModuleHandler.undeployModule(wab.getDeployedModuleInfo());
-                    group.removeWAB(wab);
+            String groupKey = info.getName();
+            WABGroup group;
+            boolean groupsLocked = true;
+            wabGroupsLock.lock();
+            try {
+                group = wabGroups.get(groupKey);
+                if (group != null) {
+                    //synchronize on the WABGroup to match up with install
+                    synchronized (group) {
+                        if (group.removeWAB(wab)) {
+                            // group is empty remove it
+                            wabGroups.remove(groupKey);
+                            groupsLocked = false;
+                            wabGroupsLock.unlock();
+                        }
+                        webModuleHandler.undeployModule(wab.getDeployedModuleInfo());
+                    }
+                }
+            } finally {
+                if (groupsLocked) {
+                    wabGroupsLock.unlock();
                 }
             }
 

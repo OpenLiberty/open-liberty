@@ -11,6 +11,7 @@
 package com.ibm.ws.app.manager.springboot.container;
 
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
+import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 
 /**
@@ -35,8 +36,9 @@ public interface SpringBootConfig {
      * @param config liberty server configuration
      * @param factoryParam a factory specific parameter
      * @param factoryParamtype the helper specific parameter type
+     * @param additionalAppConfiguration Spring boot application config
      */
-    <T> void configure(ServerConfiguration config, T factoryParam, Class<T> factoryParamType);
+    <T> void configure(ServerConfiguration config, T factoryParam, Class<T> factoryParamType, SpringConfiguration additionalAppConfiguration);
 
     /**
      * Starts the http endpoint for this configuration
@@ -52,7 +54,7 @@ public interface SpringBootConfig {
 
     /**
      * Spring boot config id
-     * 
+     *
      * @return Spring boot config id
      */
     String getId();

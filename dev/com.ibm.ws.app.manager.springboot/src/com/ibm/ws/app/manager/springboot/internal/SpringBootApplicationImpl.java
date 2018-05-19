@@ -84,6 +84,7 @@ import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ConfigElement;
 import com.ibm.ws.app.manager.springboot.container.config.KeyStore;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
+import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instance;
@@ -177,6 +178,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     }
 
     final class SpringBootConfigImpl implements SpringBootConfig {
+
         private final String id;
         private final AtomicReference<ServerConfiguration> serverConfig = new AtomicReference<>();
         private final AtomicReference<Bundle> virtualHostConfig = new AtomicReference<>();
@@ -191,7 +193,10 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
 
         @Override
-        public <T> void configure(ServerConfiguration config, T helperParam, Class<T> type) {
+        public <T> void configure(ServerConfiguration config, T helperParam, Class<T> type, SpringConfiguration additionalConfig) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SpringConfiguration Info = " + additionalConfig);
+            }
             if (!config.getSsls().isEmpty() && !isSSLEnabled()) {
                 throw new IllegalStateException(Tr.formatMessage(tc, "error.missing.ssl"));
             }
@@ -210,7 +215,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             }
 
             try {
-                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, virtualHostId, helperParam))) {
+                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, virtualHostId, helperParam, additionalConfig))) {
                     throw new IllegalStateException("Config instance already created.");
                 }
             } catch (IOException | UnableToAdaptException | MetaDataException e) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.springboot.support.web.server.version20.osgi;
+package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ann.ejb;
 
-import org.osgi.service.component.annotations.Component;
+import javax.interceptor.AroundTimeout;
+import javax.interceptor.InvocationContext;
 
-import com.ibm.ws.app.manager.springboot.support.SpringBootSupport;
-
-/**
- *
- */
-@Component(service = SpringBootSupport.class)
-public class SpringBoot15Support extends SpringBootSupport {
-
+public class OverrideProtectedParent extends OverrideBase {
+    @AroundTimeout
+    protected Object aroundTimeout(InvocationContext ic) throws Exception {
+        return doParentAroundTimeout(ic);
+    }
 }

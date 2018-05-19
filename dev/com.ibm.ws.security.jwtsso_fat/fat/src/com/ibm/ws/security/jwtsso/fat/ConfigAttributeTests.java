@@ -192,14 +192,15 @@ public class ConfigAttributeTests extends CommonJwtFat {
     }
 
     /**
-     * Test the jwtConsumerRef attribute. Specify an invalid consumer and try to authenticate.
-     * We should get an error message about the invalid consumer.
+     * Test the detection of the mpJwt server config element. Specify an extra element and try to authenticate.
+     * We should get an error message about the extra element.
      */
     @Test
     @Mode(TestMode.LITE)
     @AllowedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException",
                    "javax.security.auth.login.LoginException",
                    "com.ibm.websphere.security.jwt.InvalidConsumerException",
+                   "com.ibm.websphere.security.WSSecurityException",
                    "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException" })
     public void test_invalidConsumerRef() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testbadconsumer.xml");
@@ -217,10 +218,12 @@ public class ConfigAttributeTests extends CommonJwtFat {
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword); // should fail and we should get login page again
         validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
+
+        server.waitForStringInLog("CWWKS6301E", 100); // CWWKS6301E: Too many MicroProfile JWT services are qualified...
     }
 
     /**
-     * Test the fallbackToLtpa attribute.
+     * Test the useLtpaIfJwtAbsent attribute, formerly known as fallBackToLtpa
      * Specify an invalid builder, includeLtpa, and fallBackToLtpa. There should be no jwt cookie present,
      * there should be an ltpa cookie present, and because fallback is enabled, we should be able to access
      * the resource.
