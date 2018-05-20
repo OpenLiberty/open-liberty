@@ -653,34 +653,28 @@ public class SSLUtils {
         TCPWriteRequestContext deviceWriteContext = connLink.getDeviceWriteInterface();
         JSSEHelper jsseHelper = connLink.getChannel().getJsseHelper();
 
-        // check to see if any ALPN negotiator is on the classpath; if so, register the current engine and link
+        // check to see if any ALPN negotiator is on the classpath; if so, and if this is the first time through this 
+        // method for the current connection (not a callback), register the current engine and link
         ThirdPartyAlpnNegotiator negotiator = null;
-        boolean tryAlpnNegotiator = false;
-
-        if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
-
-            if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
-                if (connLink.getChannel().getUseH2ProtocolAttribute() != null && connLink.getChannel().getUseH2ProtocolAttribute()) {
-                    tryAlpnNegotiator = true;
+        if (!fromCallback) {
+            boolean useAlpn = false;
+            if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
+                if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+                    if (connLink.getChannel().getUseH2ProtocolAttribute() != null && connLink.getChannel().getUseH2ProtocolAttribute()) {
+                        useAlpn = true;
+                    }
+                } else if (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+                    if (connLink.getChannel().getUseH2ProtocolAttribute() == null || connLink.getChannel().getUseH2ProtocolAttribute()) {
+                        useAlpn = true;
+                    }
                 }
             }
-
-            else if (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
-                if (connLink.getChannel().getUseH2ProtocolAttribute() == null || connLink.getChannel().getUseH2ProtocolAttribute()) {
-                    tryAlpnNegotiator = true;
-                }
+            // try to register with one of the alpn extensions.  If useAlpn is false, tell the active ALPN handler to skip negotiation
+            if (bTrace && tc.isDebugEnabled()) {
+                Tr.debug(tc, "handleHandshake, h2 protocol enabled: " + useAlpn);
             }
-
-            if (tryAlpnNegotiator) {
-                // if the grizzly-npn or jetty-alpn projects are on the bootclasspath, use them for ALPN
-                if (bTrace && tc.isEntryEnabled()) {
-                    Tr.debug(tc, "handleHandshake, try Alpn Negotiator");
-                }
-                negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink);
-            }
-
+            negotiator = JDK8AlpnNegotiator.tryToRegisterAlpnNegotiator(engine, connLink, useAlpn);
         }
-
         int amountToWrite = 0;
         boolean firstPass = true;
         HandshakeStatus hsstatus = HandshakeStatus.NEED_WRAP;
@@ -983,7 +977,7 @@ public class SSLUtils {
                 result = null;
             }
         } finally {
-            if (tryAlpnNegotiator) {
+            if (!fromCallback) {
                 JDK8AlpnNegotiator.tryToRemoveAlpnNegotiator(negotiator, engine, connLink);
             }
         }
