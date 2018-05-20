@@ -16,27 +16,6 @@
         </group>
     </basicRegistry>
 
-
-    <application type="ear" id="multipleModuleRunAsMixed" name="multipleModuleRunAsMixed" location="multipleModuleRunAsMixed.ear">
-        <application-bnd>
-            <security-role name="grantedgroup">
-                <group name="grantedgroup" access-id="grantedgroup"/>
-            </security-role>
-            <security-role name="javaeesec_runas">
-                <run-as userid="runasuser1" />
-            </security-role>
-            <security-role name="javaeesec_runas2">
-                <run-as userid="anotherrunasuser1" password="{xor}PjFvKzc6LSxsPCotbism" />
-            </security-role>
-            <security-role name="basicgroup1">
-                <group name="basicgroup1" />
-            </security-role>
-            <security-role name="nojavaeesec_runas">
-                <run-as userid="basicrunasuser1" />
-            </security-role>
-        </application-bnd>
-    </application>
-
 <!-- in order to avoid ACEs the following elements are required even jdbc is not used -->
     <dataSource id="db1" fat.modify="true"  jndiName="jdbc/db1">
         <jdbcDriver libraryRef="DerbyLib"/>

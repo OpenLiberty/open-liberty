@@ -35,4 +35,12 @@
       <class-name>java.lang.RuntimePermission</class-name>
       <name>getClassLoader</name>
    </permission>
+
+<!-- this is for java.io.PrintWriter.write in FlexibleBaseNoJavaEESecServlet.class -->
+   <permission>
+      <class-name>java.net.SocketPermission</class-name>
+      <name>127.0.0.1</name>
+      <actions>resolve</actions>
+   </permission>
+
 </permissions>

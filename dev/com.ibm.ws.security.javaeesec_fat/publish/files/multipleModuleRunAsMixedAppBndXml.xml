@@ -19,5 +19,22 @@
 
     <application type="ear" id="multipleModuleRunAsMixedAppBndXml" name="multipleModuleRunAsMixedAppBndXml" location="multipleModuleRunAsMixedAppBndXml.ear"/>
 
+<!-- in order to avoid ACEs the following elements are required even jdbc is not used -->
+    <dataSource id="db1" fat.modify="true"  jndiName="jdbc/db1">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded databaseName="memory:db1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    <dataSource id="db2" fat.modify="true"  jndiName="jdbc/db2">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded databaseName="memory:db2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+
+    <library id="DerbyLib" fat.modify="true">
+        <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+    </library>
+
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+<!-- end of Java2 ACE for jdbc -->
+
     <include location="../fatTestPorts.xml" />
 </server>

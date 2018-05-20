@@ -66,6 +66,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
     protected static String MODULE3_ROOT = "multipleModule3";
     protected static String MODULE3_NAME = "NoJavaEESecRunAs";
     protected static String WAR3_NAME = MODULE3_NAME + ".war";
+    protected static String XML_BASE_NAME = "multipleModuleDBBase.xml";
     protected static String XML_NAME = "multipleModuleRunAs.xml";
     protected static String XML_FALLBACK_NAME = "multipleModuleRunAsFallBack.xml";
     protected static String XML_MIXED_NAME = "multipleModuleRunAsMixed.xml";
@@ -126,6 +127,10 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
 
         ldapServer = new LocalLdapServer();
         ldapServer.start();
+
+        myServer.setServerConfigurationFile(XML_BASE_NAME);
+        myServer.startServer(true);
+        urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 
     @AfterClass
@@ -133,7 +138,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         if (ldapServer != null) {
             ldapServer.stop();
         }
-        myServer.stopServer();
+        myServer.stopServer("CWWKS0005E");
         myServer.setServerConfigurationFile("server.xml");
     }
 
@@ -149,19 +154,11 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
     @After
     public void cleanupConnection() throws Exception {
         httpclient.getConnectionManager().shutdown();
-        myServer.stopServer();
     }
 
     @Override
     protected String getCurrentTestName() {
         return name.getMethodName();
-    }
-
-    protected void startServer(String config, String appName) throws Exception {
-        myServer.setServerConfigurationFile(config);
-        myServer.startServer(true);
-        myServer.addInstalledAppForValidation(appName);
-        urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 
     /**
@@ -178,8 +175,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
-//
-//    @Test
+    @Test
     public void testMultipleModuleWarsAllRunAs() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -194,7 +190,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
 
-        startServer(XML_NAME, APP_NAME);
+        myServer.setServerConfigurationFile(XML_NAME);
+        myServer.addInstalledAppForValidation(APP_NAME);
 
         // ------------- accessing module1 ---------------
         // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
@@ -262,6 +259,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         verifyResponse(response, REALM2_USER, REALM2_REALM_NAME, null, REALM2_GROUPS, LocalLdapServer.ANOTHERRUNASUSER1);
         httpclient.getConnectionManager().shutdown();
 
+        myServer.setMarkToEndOfLog();
+        myServer.setServerConfigurationFile(XML_BASE_NAME);
         myServer.removeInstalledAppForValidation(APP_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -282,7 +281,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
-//    @Test
+    @Test
     @ExpectedFFDC("javax.naming.AuthenticationException")
     public void testMultipleModuleWarsAllRunAsFallBackToCaller() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -298,7 +297,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_NAME);
 
-        startServer(XML_FALLBACK_NAME, APP_NAME);
+        myServer.setServerConfigurationFile(XML_FALLBACK_NAME);
+        myServer.addInstalledAppForValidation(APP_NAME);
 
         // ------------- accessing module1 ---------------
         // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
@@ -368,6 +368,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         verifyResponse(response, REALM2_USER, REALM2_REALM_NAME,  IS2_GROUP_REALM_NAME, REALM2_GROUPS, REALM2_USER);
         httpclient.getConnectionManager().shutdown();
 
+        myServer.setMarkToEndOfLog();
+        myServer.setServerConfigurationFile(XML_BASE_NAME);
         myServer.removeInstalledAppForValidation(APP_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -389,7 +391,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.FULL)
-//    @Test
+    @Test
     public void testMultipleModuleWarsWithNoJavaEESecWarAllRunAs() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -407,7 +409,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_MIXED_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME, WAR3_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_MIXED_NAME);
 
-        startServer(XML_MIXED_NAME, APP_MIXED_NAME);
+        myServer.setServerConfigurationFile(XML_MIXED_NAME);
+        myServer.addInstalledAppForValidation(APP_MIXED_NAME);
 
         // ------------- accessing module1 ---------------
         // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
@@ -483,6 +486,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         verifyResponse(response, BASIC_USER1,  BASIC_REALM_NAME, IS1_GROUP_REALM_NAME, BASIC_GROUPS, BASIC_RUNASUSER1);
         httpclient.getConnectionManager().shutdown();
 
+        myServer.setMarkToEndOfLog();
+        myServer.setServerConfigurationFile(XML_BASE_NAME);
         myServer.removeInstalledAppForValidation(APP_MIXED_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -505,7 +510,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.FULL)
-//    @Test
+    @Test
     public void testMultipleModuleWarsWithNoJavaEESecWarAllRunAsAppBndXml() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -523,7 +528,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_APPBNDXML_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME, WAR3_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_APPBNDXML_NAME);
 
-        startServer(XML_APPBNDXML_NAME, APP_APPBNDXML_NAME);
+        myServer.setServerConfigurationFile(XML_APPBNDXML_NAME);
+        myServer.addInstalledAppForValidation(APP_APPBNDXML_NAME);
 
         // ------------- accessing module1 ---------------
         // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
@@ -599,6 +605,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         verifyResponse(response, BASIC_USER1,  BASIC_REALM_NAME, IS1_GROUP_REALM_NAME, BASIC_GROUPS, BASIC_RUNASUSER1);
         httpclient.getConnectionManager().shutdown();
 
+        myServer.setMarkToEndOfLog();
+        myServer.setServerConfigurationFile(XML_BASE_NAME);
         myServer.removeInstalledAppForValidation(APP_APPBNDXML_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -634,7 +642,8 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
 
         WCApplicationHelper.addWarToServerApps(myServer, "multipleDB.war", true, JAR_NAME, false, "web.jar.base", "web.war.db.multiple");
 
-        startServer(XML_DB_NAME, APP_NAME);
+        myServer.setServerConfigurationFile(XML_DB_NAME);
+        myServer.addInstalledAppForValidation(APP_NAME);
 
         // ------------- accessing module1 ---------------
         // Execute Form login and get redirect location for LdapIdentityStoreDefinision on this module.
@@ -702,11 +711,11 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
         verifyResponse(response, REALM2_USER, REALM2_REALM_NAME, null, REALM2_GROUPS, Constants.DB_USER2);
         httpclient.getConnectionManager().shutdown();
 
+        myServer.setMarkToEndOfLog();
+        myServer.setServerConfigurationFile(XML_BASE_NAME);
         myServer.removeInstalledAppForValidation(APP_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
-
-
 
 /* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {
