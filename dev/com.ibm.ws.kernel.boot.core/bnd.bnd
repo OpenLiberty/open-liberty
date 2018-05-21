@@ -26,6 +26,7 @@ Export-Package: \
 	com.ibm.ws.kernel.internal.classloader,\
 	com.ibm.ws.kernel.productinfo,\
 	com.ibm.ws.kernel.provisioning,\
+	com.ibm.ws.kernel.util,\
 	com.ibm.wsspi.kernel.embeddable
 	
 Private-Package: \
@@ -47,3 +48,6 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.kernel.boot.java7;version=latest, \
 	com.ibm.ws.org.apache.commons:commons-compress;version=1.16.1
+
+-testpath: \
+  ../build.sharedResources/lib/junit/old/junit.jar;version=file
