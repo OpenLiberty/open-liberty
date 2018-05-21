@@ -365,7 +365,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         }
         webAppSecConfig = newWebAppSecConfig;
         updateComponents();
-        notifyWebAppSecurityConfigChangeListeners(new ArrayList(deltaMap.keySet()));
+        if (deltaMap != null) {
+            notifyWebAppSecurityConfigChangeListeners(new ArrayList(deltaMap.keySet()));
+        }
         Tr.audit(tc, "WEB_APP_SECURITY_CONFIGURATION_UPDATED", deltaString);
     }
 

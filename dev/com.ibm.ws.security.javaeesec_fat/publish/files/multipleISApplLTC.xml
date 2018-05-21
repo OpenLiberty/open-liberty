@@ -1,4 +1,4 @@
-<server description="JavaEESec EL for LoginToContinue FAT">
+<server description="JavaEESec Multiple IdentityStore FAT">
 
     <featureManager>
         <feature>appSecurity-3.0</feature>
@@ -7,7 +7,10 @@
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 
-    <application type="war" id="JavaEESecFormELTest" name="JavaEESecFormELTest" location="JavaEESecFormELTest.war">
+    <application type="war" location="ApplLTCRedirect.war">
+    </application>
+
+    <application type="war" location="ApplLTCForward.war">
     </application>
 
     <include location="../fatTestPorts.xml" />

@@ -16,19 +16,5 @@
         </group>
     </basicRegistry>
 
-    <application type="ear" id="multipleModuleRunAs" name="multipleModuleRunAs" location="multipleModuleRunAs.ear">
-        <application-bnd>
-            <security-role name="grantedgroup">
-                <group name="grantedgroup" access-id="grantedgroup"/>
-            </security-role>
-            <security-role name="javaeesec_runas">
-                <run-as userid="runasuser1" />
-            </security-role>
-            <security-role name="javaeesec_runas2">
-                <run-as userid="anotherrunasuser1" password="{xor}PjFvKzc6LSxsPCotbism" />
-            </security-role>
-        </application-bnd>
-    </application>
-
     <include location="../fatTestPorts.xml" />
 </server>

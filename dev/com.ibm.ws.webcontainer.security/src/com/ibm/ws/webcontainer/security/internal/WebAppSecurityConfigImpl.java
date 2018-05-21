@@ -419,13 +419,19 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     }
 
     private void appendToBufferIfDifferent(StringBuffer buffer, String name, Object thisValue, Object otherValue) {
-        if ((thisValue != otherValue) && (thisValue != null) && (!thisValue.equals(otherValue))) {
+        if ((thisValue != otherValue) && (((thisValue != null) && (!thisValue.equals(otherValue))) || ((otherValue != null) && (!otherValue.equals(thisValue))))) {
             if (buffer.length() > 0) {
                 buffer.append(",");
             }
             buffer.append(name);
             buffer.append("=");
-            buffer.append(thisValue.toString());
+            String value;
+            if (thisValue == null) {
+                value = "";
+            } else {
+                value = thisValue.toString();
+            }
+            buffer.append(value);
         }
     }
 
@@ -464,8 +470,14 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     }
 
     private void appendToMapIfDifferent(Map<String, String> map, String name, Object thisValue, Object otherValue) {
-        if ((thisValue != otherValue) && (thisValue != null) && (!thisValue.equals(otherValue))) {
-            map.put(name, thisValue.toString());
+        if ((thisValue != otherValue) && (((thisValue != null) && (!thisValue.equals(otherValue))) || ((otherValue != null) && (!otherValue.equals(thisValue))))) {
+            String value;
+            if (thisValue == null) {
+                value = "";
+            } else {
+                value = thisValue.toString();
+            }
+            map.put(name, value);
         }
     }
 
