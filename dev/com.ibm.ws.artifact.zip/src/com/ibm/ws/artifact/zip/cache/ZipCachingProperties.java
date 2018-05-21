@@ -259,15 +259,26 @@ public class ZipCachingProperties {
      * closed, and displaying lifetime statistics for all.</li>
      * </ul>
      */
-    public static final String ZIP_CACHE_DEBUG_STATE_PROPERTY_NAME = "zip.cache.debug.state";
+    public static final String ZIP_CACHE_DEBUG_STATE_PROPERTY_NAME =
+        "zip.cache.debug.state";
     public static final boolean ZIP_CACHE_DEBUG_STATE_DEFAULT_VALUE = false;
     public static final boolean ZIP_CACHE_DEBUG_STATE;
+
+    public static final String ZIP_CACHE_COLLECT_TIMINGS_PROPERTY_NAME =
+        "zip.cache.collect.timings";
+    public static final boolean ZIP_CACHE_COLLECT_TIMINGS_DEFAULT_VALUE = false;
+    public static final boolean ZIP_CACHE_COLLECT_TIMINGS;
 
     static {
         String methodName = "<static init>";
 
+        ZIP_CACHE_COLLECT_TIMINGS = getProperty(methodName,
+            ZIP_CACHE_COLLECT_TIMINGS_PROPERTY_NAME,
+            ZIP_CACHE_COLLECT_TIMINGS_DEFAULT_VALUE);
+
         ZIP_CACHE_DEBUG_STATE = getProperty(methodName,
-            ZIP_CACHE_DEBUG_STATE_PROPERTY_NAME, ZIP_CACHE_DEBUG_STATE_DEFAULT_VALUE);
+            ZIP_CACHE_DEBUG_STATE_PROPERTY_NAME,
+            ZIP_CACHE_DEBUG_STATE_DEFAULT_VALUE);
     }
 
     //
@@ -505,5 +516,32 @@ public class ZipCachingProperties {
             }
             return PAD.substring(0, pad) + "." + "000";
         }
+    }
+
+    //
+
+    // Not the best place for this property ... but the zip file container uses the zip caching
+    // service and uses zip file handles.
+
+    public static final String ARTIFACT_ZIP_USE_EXTRA_PATH_CACHE_PROPERTY_NAME =
+        "artifact.zip.use.extra.path.cache";
+    public static final boolean ARTIFACT_ZIP_USE_EXTRA_PATH_CACHE_DEFAULT_VALUE = true;
+    public static final boolean ARTIFACT_ZIP_USE_EXTRA_PATH_CACHE;
+
+    public static final String ARTIFACT_ZIP_COLLECT_TIMINGS_PROPERTY_NAME =
+        "artifact.zip.collect.timings";
+    public static final boolean ARTIFACT_ZIP_COLLECT_TIMINGS_DEFAULT_VALUE = false;
+    public static final boolean ARTIFACT_ZIP_COLLECT_TIMINGS;
+
+    static {
+        String methodName = "<static init>";
+
+        ARTIFACT_ZIP_USE_EXTRA_PATH_CACHE = getProperty(methodName,
+            ARTIFACT_ZIP_USE_EXTRA_PATH_CACHE_PROPERTY_NAME,
+            ARTIFACT_ZIP_USE_EXTRA_PATH_CACHE_DEFAULT_VALUE);
+
+        ARTIFACT_ZIP_COLLECT_TIMINGS = getProperty(methodName,
+            ARTIFACT_ZIP_COLLECT_TIMINGS_PROPERTY_NAME,
+            ARTIFACT_ZIP_COLLECT_TIMINGS_DEFAULT_VALUE);
     }
 }

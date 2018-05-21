@@ -36,6 +36,7 @@ import java.util.zip.ZipFile;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
 import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.ZipEntryData;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -148,6 +149,64 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     static final TraceComponent tc = Tr.register(ZipFileContainer.class);
 
     //
+    
+    /**
+     * Tuning parameter: Used to enable and disable the use
+     * of a hash map as a faster way to locate paths.  Enabling
+     * the map makes for faster lookups, but at a cost of allocating
+     * the extra map structure.  Disabling the map makes for slower
+     * lookups, but avoids allocating the extra map structure.
+     * 
+     * This tuning is based on profile data, which shows that a very
+     * large (between 5% and 10%) of startup time can be spent in
+     * {@link #locatePath(String)}.
+     */
+    public static final boolean USE_EXTRA_PATH_CACHE =
+        ZipCachingProperties.ARTIFACT_ZIP_USE_EXTRA_PATH_CACHE;
+
+    public static final boolean COLLECT_TIMINGS =
+        ZipCachingProperties.ARTIFACT_ZIP_COLLECT_TIMINGS;
+
+    private static enum Timings {
+        DataTime, MapTime, DataLookupTime, MapLookupTime; 
+    }
+
+    public static class TimingsLock {
+        // EMPTY
+    }
+    private static final TimingsLock timingsLock = ( COLLECT_TIMINGS ? new TimingsLock() : null );
+
+    private static int[] timingCounts = ( COLLECT_TIMINGS ? new int[ Timings.values().length ] : null );
+    private static long[] timingTotals= ( COLLECT_TIMINGS ? new long[ Timings.values().length ] : null );
+
+    private static void record(
+        Timings timing, long startTimeNs, long endTimeNs,
+        String data, int frequency) {
+
+        int timingOrd = timing.ordinal();
+        long durationNs = endTimeNs - startTimeNs;
+
+        int newCount;
+        long newTotal;
+
+        synchronized(timingsLock) {
+            newCount = timingCounts[timingOrd] += 1;
+            newTotal = timingTotals[timingOrd] += durationNs;
+        }
+
+        if ( data != null ) {
+            String startText = ZipCachingProperties.toAbsSec(startTimeNs);
+            String durationText = ZipCachingProperties.toAbsSec(durationNs);
+            System.out.println("ZFC [ " + data + " ]: Timing [ " + timing + " ] Count [ " + newCount + " ] Next [ " + durationText + " ] at [ " + startText + " ]");
+        }
+
+        if ( newCount % frequency == 0 ) {
+            String totalText = ZipCachingProperties.toAbsSec(newTotal);
+            System.out.println("ZFC: Timing [ " + timing + " ] Count [ " + newCount + " ] Total [ " + totalText + " ]");
+        }
+    }
+
+    //
 
     /**
      * Create a root zip file type container which is not an enclosed container.
@@ -188,6 +247,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             Tr.debug(tc, methodName + " ZipContainer (root-of-root)");
             Tr.debug(tc, methodName + " Archive file [ " + archiveFilePath + " ]");
             Tr.debug(tc, methodName + " Cache [ " + cacheDir.getAbsolutePath() + " ]");
+        }
+
+        if ( COLLECT_TIMINGS ) {
+            System.out.println("ZFC: Timings [ " + archiveFilePath + " ]");
         }
     }
 
@@ -247,6 +310,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             if ( archiveFile != null ) {
                 Tr.debug(tc, methodName + " Archive file [ " + archiveFilePath + " ]");
             }
+        }
+
+        if ( COLLECT_TIMINGS ) {
+            System.out.println("ZFC: Timings [ " + enclosingContainer.getPath() + " : " + entryInEnclosingContainer.getName() + " ]");
         }
     }
 
@@ -721,54 +788,89 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     private volatile ZipEntryData[] zipEntryData;
     private Map<String, ZipEntryData> zipEntryDataMap;
 
+    private String getTimingName() {
+        if ( archiveFileLock == null ) {
+            return archiveFilePath;
+        } else {
+            return enclosingContainer.getPath() + " : " + entryInEnclosingContainer.getName();
+        }
+    }
+
     @Trivial
     private void setZipEntryData() {
         if ( zipEntryData == null ) {
             synchronized( zipEntryDataLock ) {
                 if ( zipEntryData == null ) {
+
+                    long dataStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
+                    String timingName = (COLLECT_TIMINGS ? getTimingName() : null);
                     ZipEntryData[] useZipEntryData = createZipEntryData();
-                    zipEntryDataMap = ZipFileContainerUtils.setLocations(useZipEntryData);
+                    if ( COLLECT_TIMINGS ) {
+                        record(Timings.DataTime, dataStart, System.nanoTime(), timingName, 1);
+                    }
+
+                    if ( USE_EXTRA_PATH_CACHE ) {
+                        if ( COLLECT_TIMINGS ) {
+                            System.out.println("ZFC: Timings [ " + archiveFilePath + " ]");
+                        }
+
+                        long mapStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
+                        zipEntryDataMap = ZipFileContainerUtils.setLocations(useZipEntryData);
+                        if ( COLLECT_TIMINGS ) {
+                            record(Timings.MapTime, mapStart, System.nanoTime(), timingName, 1);
+                        }
+                    }
+
                     zipEntryData = useZipEntryData; 
                 }
             }
         }
     }
 
+    // Used externally by:
+    //   com.ibm.ws.artifact.zip.internal.ZipFileArtifactNotifier.collectRegisteredPaths(String, List<String>)
+    //   com.ibm.ws.artifact.zip.internal.ZipFileArtifactNotifier.loadZipEntries()
+    //   com.ibm.ws.artifact.zip.internal.ZipFileNestedDirContainer.iterator()
+    // And several times from within ZipFileContainer itself.
     @Trivial
-    public ZipEntryData[] getZipEntryData() {
+    protected ZipEntryData[] getZipEntryData() {
         setZipEntryData();
         return zipEntryData;
     }
 
+    /**
+     * Fast entry lookup.  For use only when {@link #USE_EXTRA_PATH_CACHE} is true.
+     * 
+     * @param r_path The path to lookup.
+     * 
+     * @return The data stored under the path.
+     */
     @Trivial
-    public Map<String, ZipEntryData> getZipEntryDataMap() {
+    private ZipEntryData fastGetZipEntryData(String r_path) {
         setZipEntryData();
-        return zipEntryDataMap;
-    }
-
-    public ZipEntryData getZipEntryData(String r_path) {
-        return getZipEntryDataMap().get(r_path);
+        return zipEntryDataMap.get(r_path);
     }
 
     @Trivial
     public int locatePath(String r_path) {
-        ZipEntryData entryData = getZipEntryData(r_path);
-        if ( entryData == null ) {
-            return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
-        } else {
-            return entryData.getOffset();
+        if ( USE_EXTRA_PATH_CACHE ) {
+            long mapLookupStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
+            ZipEntryData entryData = fastGetZipEntryData(r_path);
+            if ( COLLECT_TIMINGS ) {
+                record(Timings.MapLookupTime, mapLookupStart, System.nanoTime(), null, 100);
+            }
+            if ( entryData != null ) {
+                return entryData.getOffset();
+            }
         }
-    }
-
-    @Trivial
-    public int locatePath(ZipEntryData[] useZipEntryData, String r_path) {
-        ZipEntryData entryData = getZipEntryData(r_path);
-        if ( entryData == null ) {
-            return ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
-        } else {
-            return entryData.getOffset();
+        // Have to fall back to the locate call: The path might be of a virtual
+        // directory entry which is the parent of an entry.
+        long lookupStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);        
+        int location = ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
+        if ( COLLECT_TIMINGS ) {
+            record(Timings.DataLookupTime, lookupStart, System.nanoTime(), null, 100);
         }
-        // return ZipFileContainerUtils.locatePath(useZipEntryData, r_path);
+        return location;
     }
 
     @Trivial

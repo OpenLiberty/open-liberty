@@ -25,7 +25,15 @@ public class ZipFileDataStore {
     public ZipFileDataStore(String name) {
         this.name = name;
 
+        // Table of zip data paths to the cell which has that data:
+        //   cells.get(aCell.data.path) == aCell.
+
         this.cells = new HashMap<String, Cell>();
+
+        // Doubly linked list, with an anchor which has null data:
+        //   anchor.data == null
+        //   aCell.next.prev == aCell; aCell.prev.next == aCell.
+        //   the anchor is not in the cell table
 
         this.anchor = new Cell(null);
         this.anchor.next = this.anchor;
@@ -36,6 +44,12 @@ public class ZipFileDataStore {
 
     private final String name;
 
+    /**
+     * Answer the name of this data store.  The name is used
+     * for debugging.
+     *
+     * @return The name of this data store.
+     */
     @Trivial
     public String getName() {
         return name;
@@ -43,33 +57,43 @@ public class ZipFileDataStore {
 
     //
 
+    /**
+     * Iterator type for the zip file store.
+     */
     private class CellIterator implements Iterator<ZipFileData> {
+        /**
+         * The cell of the data most previously returned by {@link #next()}.
+         * Initially null, and null after a call to {@link #remove()}. 
+         */
         private Cell prev;
+        
+        /**
+         * The cell of the data to be answered by the next call to {@link #next()}.
+         */
         private Cell next;
 
         @Trivial
         public CellIterator() {
-            this.prev = null;
-            this.next = anchor.next;
+            this.prev = null; // No calls yet to 'next()', nor after a call to 'remove()'
+            this.next = anchor.next; // The cell for the next call to 'next()'.
         }
 
         @Override
         @Trivial
         public boolean hasNext() {
-            return ( next != anchor );
+            return ( next != anchor ); // We are finished when we circle back to the anchor.
         }
 
         @Override
         @Trivial
         public ZipFileData next() {
-            if ( next == anchor ) {
+            if ( next == anchor ) { // We are finished when we circle back to the anchor.
                 throw new NoSuchElementException();
             }
 
-            ZipFileData nextData = next.data;
-            prev = next;
-            next = next.next;
-            return nextData;
+            prev = next; // Need to remember this to support 'remove()'.
+            next = prev.next;
+            return prev.data;
         }
 
         @Trivial
@@ -87,6 +111,7 @@ public class ZipFileDataStore {
     
     public static class Cell {
         public ZipFileData data;
+
         public Cell prev;
         public Cell next;
 
@@ -109,16 +134,34 @@ public class ZipFileDataStore {
 
         @Trivial
         public void putBetween(Cell prev, Cell next) {
+            if ( this == prev ) {
+                throw new IllegalArgumentException("Cannot put a cell after itself");
+            } else if ( this == next ) {
+                throw new IllegalArgumentException("Cannot put a cell before itself");
+            }
+
+            // Either:
+            //
+            // A -> A + B ==> A -> B -> A
+            //   A.next == A; A.prev == A
+            //     ==>
+            //   A.next == B; A.prev == B, B.prev == A, B.next == A
+            //
+            // A -> C + B ==> A -> B -> C
+            //    A.next == C; C.prev == A
+            //      ==>
+            //    A.next == B; C.prev == B; B.prev == A; B.next == C
+
             this.next = next;
             next.prev = this;
-            
+
             this.prev = prev;
             prev.next = this;
         }
     }
 
     private final Map<String, Cell> cells;
-    private Cell anchor;
+    private final Cell anchor;
 
     //
 
@@ -136,24 +179,6 @@ public class ZipFileDataStore {
     public boolean hasOne() {
         return ( cells.size() == 1 );
     }
-
-    @Trivial
-    public ZipFileData get(String path) {
-        Cell cell = cells.get(path);
-        return ( (cell == null) ? null : cell.data );
-    }
-
-    @Trivial    
-    public ZipFileData getFirst() {
-        Cell firstCell = getFirstCell();
-        return ( (firstCell == null) ? null : firstCell.data );
-    }
-
-    @Trivial
-    public ZipFileData getLast() {
-        Cell lastCell = getLastCell();
-        return ( (lastCell == null) ? null : lastCell.data );
-    }    
 
     @Trivial
     public Cell getCell(String path) {
@@ -180,206 +205,34 @@ public class ZipFileDataStore {
         }
     }
 
+    //
+
+    @Trivial
+    public ZipFileData get(String path) {
+        Cell cell = cells.get(path);
+        return ( (cell == null) ? null : cell.data );
+    }
+
+    @Trivial    
+    public ZipFileData getFirst() {
+        Cell firstCell = getFirstCell();
+        return ( (firstCell == null) ? null : firstCell.data );
+    }
+
+    @Trivial
+    public ZipFileData getLast() {
+        Cell lastCell = getLastCell();
+        return ( (lastCell == null) ? null : lastCell.data );
+    }    
+
+    //
+
     @Trivial
     public Iterator<ZipFileData> values() {
         return new CellIterator();
     }
 
-    @Trivial
-    public ZipFileData addAfter(ZipFileData beforeData, ZipFileData afterData) {
-        String beforePath = beforeData.path;
-
-        if ( afterData == beforeData ) {
-            throw new IllegalArgumentException("Attempt to put [ " + beforePath + " ] after itself");
-        }
-
-        Cell beforeCell = cells.get(beforePath);
-        if ( beforeCell == null ) {
-            throw new NoSuchElementException("Path not stored [ " + beforePath + " ]");
-        }
-
-        return addAfter(beforeCell, afterData).data;
-    }
-
-    @Trivial
-    private Cell addAfter(Cell beforeCell, ZipFileData afterData) {
-        Cell oldAfterCell = beforeCell.next;
-
-        String afterPath = afterData.path;
-        Cell newAfterCell = cells.get(afterPath);
-        if ( newAfterCell == null ) {
-            newAfterCell = new Cell(afterData);
-            newAfterCell.putBetween(beforeCell, oldAfterCell);
-        } else if ( newAfterCell != oldAfterCell ) {
-            newAfterCell.excise();
-            newAfterCell.putBetween(beforeCell, oldAfterCell);
-        }
-
-        return oldAfterCell;
-    }
-
-    @Trivial
-    public ZipFileData addBefore(ZipFileData afterData, ZipFileData beforeData) {
-        String afterPath = afterData.path;
-
-        if ( beforeData == afterData ) {
-            throw new IllegalArgumentException("Attempt to put [ " + afterPath + " ] before itself");
-        }
-
-        Cell afterCell = cells.get(afterPath);
-        if ( afterCell == null ) {
-            throw new NoSuchElementException("Path not stored [ " + afterPath + " ]");
-        }
-
-        return addBefore(afterCell, beforeData).data;
-    }
-
-    @Trivial
-    private Cell addBefore(Cell afterCell, ZipFileData beforeData) {
-        Cell oldBeforeCell = afterCell.next;
-
-        String beforePath = beforeData.path;
-        Cell newBeforeCell = cells.get(beforePath);
-        if ( newBeforeCell == null ) {
-            newBeforeCell = new Cell(beforeData);
-            newBeforeCell.putBetween(afterCell, oldBeforeCell);
-        } else if ( newBeforeCell != oldBeforeCell ) {
-            newBeforeCell.excise();
-            newBeforeCell.putBetween(afterCell, oldBeforeCell);
-        }
-
-        return oldBeforeCell;
-    }
-
-    public ZipFileData addFirst(ZipFileData newFirstData) {
-        Cell oldFirstCell = anchor.next;
-
-        String path = newFirstData.path;
-        Cell newFirstCell = cells.get(path);
-        if ( newFirstCell == null ) {
-            newFirstCell = new Cell(newFirstData);
-            cells.put(path, newFirstCell);
-            newFirstCell.putBetween(anchor, oldFirstCell);
-        } else if ( newFirstCell.prev != anchor ) {
-            newFirstCell.excise();
-            newFirstCell.putBetween(anchor, oldFirstCell);
-        } else {
-            // Already first.
-        }
-
-        return oldFirstCell.data;
-    }
-
-    public ZipFileData addLast(ZipFileData newLastData, int maximumSize) {
-        int size = size();
-        if ( (maximumSize == -1) || (size < maximumSize) ) {
-            @SuppressWarnings("unused")
-            ZipFileData oldLastData = addLast(newLastData);
-            return null;
-
-        } else if ( size == 1 ) {
-            Cell lastCell = anchor.prev;
-            ZipFileData oldLastData = lastCell.data;
-            lastCell.data = newLastData;
-            return oldLastData;
-
-        } else {
-            Cell oldFirstCell = anchor.next;
-            ZipFileData oldFirstData = oldFirstCell.data;
-            
-            oldFirstCell.excise();
-            oldFirstCell.data = newLastData;
-            oldFirstCell.putBetween(anchor.prev, anchor);
-
-            return oldFirstData;
-        }
-    }
-
-    public ZipFileData addLast(ZipFileData newLastData) {
-        Cell oldLastCell = anchor.prev;
-
-        String path = newLastData.path;
-        Cell newLastCell = cells.get(path);
-        if ( newLastCell == null ) {
-            newLastCell = new Cell(newLastData);
-            cells.put(path, newLastCell);
-            newLastCell.putBetween(oldLastCell, anchor);
-        } else if ( newLastCell.next != anchor ) {
-            newLastCell.excise();
-            newLastCell.putBetween(oldLastCell, anchor);
-        } else {
-            // Already last.
-        }
-
-        return oldLastCell.data;
-    }
-
-    /**
-     * Add data keeping the expiration times in order.
-     * 
-     * While this is expected to be done only with data which has a
-     * short expiration, this method handles new data with both short
-     * and long expirations.
-     * 
-     * Walk the data from the beginning until finding the insertion point. 
-     *
-     * @param newData Data to add.
-     * @param maximumSize The maximum allowed size of the data.
-     * @param quickDelay The delay used for fast expirations.
-     * @param slowDelay The delay used for slow expirations.
-     * 
-     * @return The first data, if the storage capacity has been exceeded.
-     *     Otherwise, null.
-     */
-    public ZipFileData addFirst(
-        ZipFileData newData,
-        int maximumSize,
-        long quickDelay, long slowDelay) {
-
-        long nextExpireAt = newData.lastPendAt + (newData.expireQuickly ? quickDelay : slowDelay);
-
-        // Stop upon reaching the anchor;
-        // Or, stop on the first data that expires after the new data.
-
-        // TODO: This is a bit slow!  We may want to use
-        //       a more advanced data structure to speed up insertions.
-
-        Cell nextCell = anchor;
-        while ( ((nextCell = nextCell.next) != anchor) &&
-                (nextExpireAt >= nextCell.data.expireAt(quickDelay, slowDelay)) ) {
-            // NO-OP
-        }
-
-        if ( (maximumSize != -1) && (size() == maximumSize) ) {
-            if ( nextCell.prev == anchor ) {
-                // The new data would be first.  Don't bother adding it,
-                // since it would be pushed out.
-
-                return newData;
-
-            } else {
-                // Push out the first data; reuse and insert the old first cell.
-
-                Cell firstCell = anchor.next;
-                ZipFileData firstData = firstCell.data;
-
-                firstCell.excise();
-                firstCell.data = newData;
-                firstCell.putBetween(nextCell.prev, nextCell);
-
-                return firstData;
-            }
-
-        } else {
-            // Create and insert a wholly new cell.
-
-            Cell newCell = new Cell(newData);
-            cells.put(newData.path, newCell);
-            newCell.putBetween(nextCell.prev, nextCell);
-
-            return null;
-        }
-    }
+    //
 
     @Trivial
     public ZipFileData remove(String path) {
@@ -392,6 +245,114 @@ public class ZipFileDataStore {
         cell.data = null;
         cell.excise();
         return data;
+    }
+
+    /**
+     * Add data as new first data.
+     * 
+     * Answer the previous first data.
+     *
+     * Throw an exception if the path of the new data is already stored.
+     * 
+     * @param newFirstData The new data to put as the first stored data.
+     * 
+     * @return The data which was previously the first stored data.  Null
+     *     if the store was empty.
+     */
+    public ZipFileData addFirst(ZipFileData newFirstData) {
+        String newFirstPath = newFirstData.path;
+
+        Cell dupCell = cells.get(newFirstPath);
+        if ( dupCell != null ) {
+            throw new IllegalArgumentException("Path [ " + newFirstPath + " ] is already stored");
+        }
+
+        Cell oldFirstCell = anchor.next;
+
+        Cell newFirstCell = new Cell(newFirstData);
+        cells.put(newFirstPath, newFirstCell);
+
+        newFirstCell.putBetween(anchor, oldFirstCell);
+
+        return oldFirstCell.data;
+    }
+
+    /**
+     * Add data as new last data.
+     * 
+     * Answer the previous last data.
+     *
+     * Throw an exception if the path of the new data is already stored.
+     * 
+     * @param newLastData The new data to put as the last stored data.
+     * 
+     * @return The data which was previously the last stored data.  Null
+     *     if the store was empty.
+     */
+    public ZipFileData addLast(ZipFileData newLastData) {
+        String newLastPath = newLastData.path;
+
+        Cell dupCell = cells.get(newLastPath);
+        if ( dupCell != null ) {
+            throw new IllegalArgumentException("Path [ " + newLastPath + " ] is already stored");
+        }
+
+        Cell oldLastCell = anchor.prev;
+
+        Cell newLastCell = new Cell(newLastData);
+        cells.put(newLastPath, newLastCell);
+
+        newLastCell.putBetween(anchor, oldLastCell);
+
+        return oldLastCell.data;
+    }
+    
+    /**
+     * Add data as the last data of the store.  If the addition pushes a cell
+     * out of the list, answer the data of the cell which was removed.
+     * 
+     * Throw an exception if the path of the new data is already stored.
+     *
+     * @param newLastData The new data to add as the last data of the store.
+     * @param maximumSize The maximum size of the store.  '-1' to allow the
+     *     store to grow indefinitely.
+     * 
+     * @return Data which was removed from the store.  Null if the store maximum
+     *     size has not yet been reached.
+     */
+    public ZipFileData addLast(ZipFileData newLastData, int maximumSize) {
+        String newLastPath = newLastData.path;
+
+        Cell dupCell = cells.get(newLastPath);
+        if ( dupCell != null ) {
+            throw new IllegalArgumentException("Path [ " + newLastPath + " ] is already stored");
+        }
+
+        int size = size();
+
+        if ( (maximumSize == -1) || (size < maximumSize) ) {
+            @SuppressWarnings("unused")
+            ZipFileData oldLastData = addLast(newLastData);
+            return null;
+        }
+
+        Cell oldFirstCell = anchor.next;
+        ZipFileData oldFirstData = oldFirstCell.data;
+        String oldFirstPath = oldFirstData.path;
+
+        if ( oldFirstCell != cells.remove(oldFirstPath) ) {
+            throw new IllegalStateException("Bad cell alignment on path [ " + oldFirstPath + " ]");
+        }
+
+        oldFirstCell.data = newLastData;
+        cells.put(newLastPath,  oldFirstCell);
+
+        if ( size != 1 ) {
+            oldFirstCell.excise();
+            oldFirstCell.putBetween(anchor.prev, anchor);
+        }
+        
+        return oldFirstData;
     }
 
     //
@@ -418,10 +379,6 @@ public class ZipFileDataStore {
     }
 
     public void validate() {
-        if ( anchor == null ) {
-            throw new IllegalStateException("Null anchor [ " + name + " ]");
-        }
-
         int cellNo = 0;
         Cell next = anchor;
         validate(0, next, NULL_DATA);
