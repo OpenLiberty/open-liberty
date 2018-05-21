@@ -23,8 +23,9 @@ import com.ibm.ws.kernel.service.util.OperatingSystemType;
 public class MemoryInformationTests {
     @Test
     public void testOSMemoryStatistics() throws Exception {
-        // Getting free memory on z/OS is not implemented.
-        if (OperatingSystem.instance().getOperatingSystemType() != OperatingSystemType.zOS) {
+        // Since unit tests are part of builds, we're conservative in which
+        // ones we always test
+        if (OperatingSystem.instance().getOperatingSystemType() == OperatingSystemType.Linux) {
             long totalMemory = MemoryInformation.instance().getTotalMemory();
             System.out.println("Total memory: " + totalMemory);
             Assert.assertTrue("getTotalMemory invalid",
