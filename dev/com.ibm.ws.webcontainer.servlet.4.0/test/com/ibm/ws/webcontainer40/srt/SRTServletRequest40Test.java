@@ -14,6 +14,7 @@ package com.ibm.ws.webcontainer40.srt;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -29,9 +30,13 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 import com.ibm.websphere.servlet40.IRequest40;
+import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
 import com.ibm.wsspi.http.HttpRequest;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+import com.ibm.wsspi.webcontainer.collaborator.ICollaboratorHelper;
+import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
 
 /**
  *
@@ -50,6 +55,9 @@ public class SRTServletRequest40Test {
     final private SRTServletResponse40 srtRes = context.mock(SRTServletResponse40.class);
     final private HttpRequest hReq = context.mock(HttpRequest.class);
     final private WebAppDispatcherContext dispContext = context.mock(WebAppDispatcherContext.class);
+    final private WebApp webApp = context.mock(WebApp.class);
+    final private ICollaboratorHelper collabHelper = context.mock(ICollaboratorHelper.class);
+    final private IWebAppSecurityCollaborator webAppSecCollab = context.mock(IWebAppSecurityCollaborator.class);
 
     @Test
     public void test_PushBuilderHeaders() throws IOException {
@@ -88,6 +96,26 @@ public class SRTServletRequest40Test {
 
                 oneOf(IReq40).getHttpRequest();
                 will(returnValue(hReq));
+
+                allowing(dispContext).getWebApp();
+                will(returnValue(webApp));
+
+                oneOf(webApp).getCollaboratorHelper();
+                will(returnValue(collabHelper));
+
+                oneOf(collabHelper).getSecurityCollaborator();
+                will(returnValue(webAppSecCollab));
+
+                oneOf(webAppSecCollab).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                oneOf(IReq40).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
 
                 oneOf(hReq).isPushSupported();
                 will(returnValue(true));
@@ -134,8 +162,8 @@ public class SRTServletRequest40Test {
 
         Set<String> pbHeaders = pb.getHeaderNames();
 
-        // Content-Type, Date, From, MaxForwards + Referer header constructed and added on PushBuilder init.
-        assertTrue(pbHeaders.size() == 5);
+        // Content-Type, Date, From, MaxForwards + Referer and Authorization headers constructed and added on PushBuilder init.
+        assertTrue(pbHeaders.size() == 6);
         assertTrue(pb.getHeader("If-Modified-Since") == null);
         assertTrue(pb.getHeader("Expect") == null);
 

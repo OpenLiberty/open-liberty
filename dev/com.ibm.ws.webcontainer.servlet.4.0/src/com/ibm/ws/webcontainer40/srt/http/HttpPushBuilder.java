@@ -49,6 +49,7 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
     private static final String HDR_IF_RANGE = HttpHeaderKeys.HDR_IF_RANGE.getName();
     private static final String HDR_IF_UNMODIFIED_SINCE = HttpHeaderKeys.HDR_IF_UNMODIFIED_SINCE.getName();
     private static final String HDR_COOKIE = HttpHeaderKeys.HDR_COOKIE.getName();
+    private static final String HDR_AUTHORIZATION = HttpHeaderKeys.HDR_AUTHORIZATION.getName();
 
     private final SRTServletRequest40 _inboundRequest;
 
@@ -80,6 +81,12 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
                     addHeader(headerName, headerValues.nextElement());
                 }
             }
+        }
+
+        // If the request is authenticated, an Authorization header should be set to the PushBuilder
+        if (request.getUserPrincipal() != null) {
+            // Set PushBuilder's Authorization header with the same value as the original request
+            this.setHeader(HDR_AUTHORIZATION, request.getHeader(HDR_AUTHORIZATION));
         }
 
         if (addedCookies != null) {
