@@ -481,7 +481,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             expectations.addExpectation(Expectation.createResponseExpectation(action, "some", "Should have found \"some\" in full response."));
             expectations.addExpectation(Expectation.createResponseExpectation("some other action", "DO NOT FIND", failureMsg));
             expectations.addExpectation(Expectation.createResponseExpectation(action, "response content", "Did not find expected string in full response."));
-            expectations.addExpectation(Expectation.createResponseStatusExpectation("yet another action", 403));
+            expectations.addExpectation(new ResponseStatusExpectation("yet another action", 403));
 
             utils.validateResult(contentToValidate, action, expectations);
 
@@ -506,7 +506,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             expectations.addExpectation(Expectation.createResponseExpectation(action, "some", "Should have found \"some\" in full response."));
             expectations.addExpectation(Expectation.createResponseExpectation(action, "DO NOT FIND", failureMsg));
             expectations.addExpectation(Expectation.createResponseExpectation("another action", "response content", "Did not find expected string in full response."));
-            expectations.addExpectation(Expectation.createResponseStatusExpectation(action, 403));
+            expectations.addExpectation(new ResponseStatusExpectation(action, 403));
 
             try {
                 utils.validateResult(contentToValidate, action, expectations);

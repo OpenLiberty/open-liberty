@@ -37,6 +37,7 @@ import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
 import com.ibm.ws.security.fat.common.apps.jwtbuilder.ProtectedServlet;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
@@ -377,7 +378,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         String newProtectedUrl = httpUrlBase + JwtFatConstants.JWT_BUILDER_CONTEXT_ROOT + "/protected";
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(Expectation.createResponseStatusExpectation(currentAction, HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ResponseStatusExpectation(currentAction, HttpServletResponse.SC_UNAUTHORIZED));
 
         Page response = actions.invokeUrl(testName.getMethodName(), newProtectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -401,7 +402,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         String newProtectedUrl = httpUrlBase + JwtFatConstants.JWT_BUILDER_CONTEXT_ROOT + "/protected";
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(Expectation.createResponseStatusExpectation(currentAction, HttpServletResponse.SC_OK));
+        expectations.addExpectation(new ResponseStatusExpectation(currentAction, HttpServletResponse.SC_OK));
         expectations.addExpectation(new ResponseUrlExpectation(currentAction, JwtFatConstants.STRING_EQUALS, newProtectedUrl, "Did not reach the expected URL."));
         expectations.addExpectation(Expectation.createResponseExpectation(currentAction, String.format(ProtectedServlet.SUCCESS_MESSAGE, defaultUser),
                                                                           "Did not find the expected success message in the servlet response."));
