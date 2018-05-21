@@ -38,8 +38,6 @@ public class JCacheTestServlet extends FATServlet {
     @Inject
     ZombiePod zp;
 	
-	//TODO: Disabling all tests until the hazelcast config for the bucket is fixed and Annotations are addressed.
-	@Test
 	public void mustHaveTest() throws Exception {
 		assertTrue(true);
 	}
@@ -47,7 +45,6 @@ public class JCacheTestServlet extends FATServlet {
     /**
      * Basic test to confirm we can get a cache, insert a value, and retrieve it.
      */
-    //@Test
     public void basicJCacheTest() throws Exception {
         CachingProvider provider = Caching.getCachingProvider();
         URI hazelcastXML = new URI("../hazelcast/hazelcast-localhost-only.xml");
@@ -74,7 +71,6 @@ public class JCacheTestServlet extends FATServlet {
         provider.close(hazelcastXML, Caching.getDefaultClassLoader());
     }
     
-    //@Test
     public void testCloseAndReopen() throws Exception {
         CachingProvider provider = Caching.getCachingProvider();
         URI hazelcastXML = new URI("../hazelcast/hazelcast-localhost-only.xml");
@@ -105,7 +101,6 @@ public class JCacheTestServlet extends FATServlet {
      * Test that we can use an entry processor with a cache.
      * @throws Exception
      */
-    //@Test
     public void testEntryProcessor() throws Exception {
         CachingProvider provider = Caching.getCachingProvider();
         URI hazelcastXML = new URI("../hazelcast/hazelcast-localhost-only.xml");
@@ -142,7 +137,6 @@ public class JCacheTestServlet extends FATServlet {
     /**
      * Test that we can use annotations
      */
-    @Test
     public void testAnnotations() throws Exception {
         zp.emptyPod();
 

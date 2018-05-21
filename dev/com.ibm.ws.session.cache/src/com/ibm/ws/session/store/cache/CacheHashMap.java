@@ -643,7 +643,7 @@ public class CacheHashMap extends BackedHashMap {
                     if (trace && tc.isDebugEnabled())
                         tcReturn(tcSessionMetaCache, "get", oldValue);
                     if (oldValue == null) 
-                    {break;} // TODO implement code path where cache entry for session is expired. Delete the property entries?
+                        break; // no need to delete corresponding entries from attributes cache. The code that deleted the session meta info will do so.
                     SessionInfo sessionInfo = new SessionInfo(oldValue).clone();
                     if (propsToWrite != null)
                         sessionInfo.addSessionPropertyIds(propsToWrite);
