@@ -16,8 +16,5 @@
         </group>
     </basicRegistry>
 
-
-    <application type="ear" id="multipleModuleRunAsMixedAppBndXml" name="multipleModuleRunAsMixedAppBndXml" location="multipleModuleRunAsMixedAppBndXml.ear"/>
-
     <include location="../fatTestPorts.xml" />
 </server>
