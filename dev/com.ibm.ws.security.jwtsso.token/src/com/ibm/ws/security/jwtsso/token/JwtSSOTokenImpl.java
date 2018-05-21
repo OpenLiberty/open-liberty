@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.Subject;
-import javax.security.auth.login.LoginException;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 // import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -31,6 +30,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.common.crypto.HashUtils;
@@ -127,7 +127,8 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * auth.Subject)
 	 */
 	@Override
-	public void createJwtSSOToken(Subject subject) throws LoginException {
+	// @FFDCIgnore(Exception.class)
+	public void createJwtSSOToken(Subject subject) throws WSLoginFailedException {
 		// TODO Auto-generated method stub
 		if (subject != null) {
 			if (isSubjectUnauthenticated(subject) || subjectHasJwtPrincipal(subject)) {
@@ -140,13 +141,13 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 					ssotoken = tokenUtil.buildTokenFromSecuritySubject(subject);
 				} catch (Exception e) {
 					// TODO ffdc
-					throw new LoginException(e.getLocalizedMessage());
+					throw new WSLoginFailedException(e.getLocalizedMessage());
 				}
 				updateSubject(subject, ssotoken);
 			} else {
 				// TODO : nls
 				String msg = "jwtsso configuration is not valid";
-				throw new LoginException(msg);
+				throw new WSLoginFailedException(msg);
 			}
 		}
 	}
@@ -352,30 +353,37 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * java.lang.String)
 	 */
 	@Override
-	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws LoginException {
+	// @FFDCIgnore(Exception.class)
+	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws WSLoginFailedException {
 		// TODO Auto-generated method stub
+		// TODO : nls
+		String msg = "jwtsso configuration is not valid or token is not valid";
+		Subject resultSub = null;
+
 		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenConsumerUtils();
 		if (tokenUtil != null && encodedjwt != null) {
 			if (subject != null) {
 				try {
-					return tokenUtil.handleJwtSsoTokenValidationWithSubject(subject, encodedjwt);
+					resultSub = tokenUtil.handleJwtSsoTokenValidationWithSubject(subject, encodedjwt);
 				} catch (Exception e) {
-					throw new LoginException(e.getLocalizedMessage());
+					throw new WSLoginFailedException(e.getLocalizedMessage());
 				}
 			} else {
 				try {
-					return tokenUtil.handleJwtSsoTokenValidation(encodedjwt);
+					resultSub = tokenUtil.handleJwtSsoTokenValidation(encodedjwt);
 				} catch (Exception e) {
-					throw new LoginException(e.getLocalizedMessage());
+					throw new WSLoginFailedException(e.getLocalizedMessage());
 				}
 			}
 		} else {
-			// TODO : nls
-			String msg = "jwtsso configuration is not valid or token is not valid";
-			throw new LoginException(msg);
+			throw new WSLoginFailedException(msg);
 		}
-		// authenticateWithJwt(subject);
 
+		if (resultSub == null) {
+			throw new WSLoginFailedException(msg);
+		}
+
+		return resultSub;
 	}
 
 	/*
@@ -423,7 +431,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws LoginException {
+	public void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws WSLoginFailedException {
 		Set<JsonWebToken> jsonWebTokenPrincipals = getJwtPrincipals(subject);
 		if (!jsonWebTokenPrincipals.isEmpty()) {
 			subject.getPrincipals().removeAll(jsonWebTokenPrincipals);

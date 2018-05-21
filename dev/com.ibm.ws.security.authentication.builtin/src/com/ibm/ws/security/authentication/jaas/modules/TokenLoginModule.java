@@ -26,6 +26,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
+import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.websphere.security.auth.callback.WSAuthMechOidCallbackImpl;
 import com.ibm.websphere.security.auth.callback.WSCredTokenCallbackImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -66,7 +67,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore({ InvalidTokenException.class, TokenExpiredException.class })
+    @FFDCIgnore({ InvalidTokenException.class, TokenExpiredException.class, WSLoginFailedException.class })
     public boolean login() throws LoginException {
         if (isAlreadyProcessed()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -101,11 +102,11 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
             }
             updateSharedState();
             return true;
-        } catch (
-
-        InvalidTokenException e) {
+        } catch (InvalidTokenException e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
         } catch (TokenExpiredException e) {
+            throw new AuthenticationException(e.getLocalizedMessage(), e);
+        } catch (WSLoginFailedException e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
         } catch (Exception e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);

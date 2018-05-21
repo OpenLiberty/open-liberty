@@ -27,6 +27,7 @@ import javax.security.auth.x500.X500Principal;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationException;
@@ -74,7 +75,7 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore({ RegistryException.class, CertificateMapFailedException.class, LoginException.class })
+    @FFDCIgnore({ RegistryException.class, CertificateMapFailedException.class, WSLoginFailedException.class, LoginException.class })
     public boolean login() throws LoginException {
         if (isAlreadyProcessed()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

@@ -13,7 +13,6 @@ package com.ibm.ws.security.jwtsso.token.proxy;
 import java.util.Map;
 
 import javax.security.auth.Subject;
-import javax.security.auth.login.LoginException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -25,6 +24,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
@@ -85,7 +85,7 @@ public class JwtSSOTokenHelper {
         }
     }
 
-    public static void createJwtSSOToken(Subject subject) throws LoginException {
+    public static void createJwtSSOToken(Subject subject) throws WSLoginFailedException {
         if (jwtSSOTokenProxyRef.getService() != null) {
             jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
         }
@@ -102,15 +102,11 @@ public class JwtSSOTokenHelper {
 
     }
 
-    public static Subject handleJwtSSOToken(String jwtssotoken) throws LoginException {
-        if (jwtSSOTokenProxyRef.getService() != null) {
-            return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(null, jwtssotoken);
-        }
-        return null;
-
+    public static Subject handleJwtSSOToken(String jwtssotoken) throws WSLoginFailedException {
+        return handleJwtSSOToken(null, jwtssotoken);
     }
 
-    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) throws LoginException {
+    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) throws WSLoginFailedException {
         if (jwtSSOTokenProxyRef.getService() != null) {
             return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(subject, jwtssotoken);
         }
@@ -132,7 +128,7 @@ public class JwtSSOTokenHelper {
         return null;
     }
 
-    public static void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws LoginException {
+    public static void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws WSLoginFailedException {
         if (jwtSSOTokenProxyRef.getService() != null) {
             jwtSSOTokenProxyRef.getService().addCustomCacheKeyAndRealmToJwtSSOToken(subject);
         }
