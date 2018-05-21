@@ -49,14 +49,14 @@ public class AfterTypeServlet extends HttpServlet {
 
         PrintWriter pw = response.getWriter();
 
-        pw.write(b.getMsg() + System.getProperty("line.separator"));
+        pw.write(b.getMsg() + System.lineSeparator());
 
         for (String s : GlobalState.getOutput()) {
-            pw.write(s + System.getProperty("line.separator"));
+            pw.write(s + System.lineSeparator());
         }
 
-        pw.write("expecting one: " + altOne.getMsg() + System.getProperty("line.separator"));
-        pw.write("expecting two: " + altTwo.getMsg() + System.getProperty("line.separator"));
+        pw.write("expecting one: " + altOne.getMsg() + System.lineSeparator());
+        pw.write("expecting two: " + altTwo.getMsg() + System.lineSeparator());
 
         pw.flush();
         pw.close();

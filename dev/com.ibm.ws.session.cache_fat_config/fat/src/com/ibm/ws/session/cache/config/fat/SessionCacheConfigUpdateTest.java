@@ -35,6 +35,7 @@ import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.HttpSessionCache;
 import com.ibm.websphere.simplicity.config.Monitor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -75,8 +76,16 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_JCACHE, "test.cache.web");
         server.removeInstalledAppForValidation(APP_JCACHE); // This application is available for tests to add but not configured by default.
 
-        String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+
+        if (FATSuite.isMulticastDisabled()) {
+            Log.info(SessionCacheConfigUpdateTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+        }
+
+        String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
+                                           "-Dhazelcast.config.file=" + hazelcastConfigFile,
                                            "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         savedConfig = server.getServerConfiguration().clone();
@@ -256,10 +265,6 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         // Set a new attribute value without performing a manual sync, the value in the cache should not be updated
         run("testSetAttribute&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
         run("testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
-
-        // TODO enable if manual sync is supported across same session spanning multiple servlet requests:
-        // Perform a manual sync under a subsequent servlet request and verify the previously set value is updated
-        // FATSuite.run(server, APP_NAME + '/' + SERVLET_NAME, "testManualSync&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
 
         // Perform a manual update within the same servlet request
         run("testManualUpdate&attribute=testWriteFrequency&value=3_MANUAL_UPDATE", session);

@@ -35,6 +35,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -59,7 +60,13 @@ import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.namespace.PackageNamespace;
 import org.osgi.framework.startlevel.BundleStartLevel;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.FrameworkWiring;
+import org.osgi.resource.Namespace;
+import org.osgi.resource.Requirement;
+import org.osgi.resource.Resource;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -77,6 +84,7 @@ import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ConfigElement;
 import com.ibm.ws.app.manager.springboot.container.config.KeyStore;
 import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
+import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory.Instance;
@@ -170,6 +178,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     }
 
     final class SpringBootConfigImpl implements SpringBootConfig {
+
         private final String id;
         private final AtomicReference<ServerConfiguration> serverConfig = new AtomicReference<>();
         private final AtomicReference<Bundle> virtualHostConfig = new AtomicReference<>();
@@ -184,7 +193,13 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
 
         @Override
-        public <T> void configure(ServerConfiguration config, T helperParam, Class<T> type) {
+        public <T> void configure(ServerConfiguration config, T helperParam, Class<T> type, SpringConfiguration additionalConfig) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SpringConfiguration Info = " + additionalConfig);
+            }
+            if (!config.getSsls().isEmpty() && !isSSLEnabled()) {
+                throw new IllegalStateException(Tr.formatMessage(tc, "error.missing.ssl"));
+            }
             ContainerInstanceFactory<T> containerInstanceFactory = factory.getContainerInstanceFactory(type);
             if (containerInstanceFactory == null) {
                 throw new IllegalStateException("No configuration helper found for: " + type);
@@ -200,12 +215,40 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             }
 
             try {
-                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, virtualHostId, helperParam))) {
+                if (!configInstance.compareAndSet(null, containerInstanceFactory.intialize(SpringBootApplicationImpl.this, id, virtualHostId, helperParam, additionalConfig))) {
                     throw new IllegalStateException("Config instance already created.");
                 }
             } catch (IOException | UnableToAdaptException | MetaDataException e) {
                 throw new IllegalArgumentException(e);
             }
+        }
+
+        private boolean isSSLEnabled() {
+            Bundle systemBundle = factory.getBundleContext().getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+            FrameworkWiring fwkWiring = systemBundle.adapt(FrameworkWiring.class);
+            Collection<BundleCapability> packages = fwkWiring.findProviders(new Requirement() {
+
+                @Override
+                public Resource getResource() {
+                    return null;
+                }
+
+                @Override
+                public String getNamespace() {
+                    return PackageNamespace.PACKAGE_NAMESPACE;
+                }
+
+                @Override
+                public Map<String, String> getDirectives() {
+                    return Collections.singletonMap(Namespace.REQUIREMENT_FILTER_DIRECTIVE, "(" + PackageNamespace.PACKAGE_NAMESPACE + "=com.ibm.ws.ssl)");
+                }
+
+                @Override
+                public Map<String, Object> getAttributes() {
+                    return Collections.emptyMap();
+                }
+            });
+            return !packages.isEmpty();
         }
 
         @Override

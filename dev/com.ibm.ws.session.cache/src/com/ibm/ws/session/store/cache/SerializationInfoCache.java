@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.session.store.cache.TypeConversion;
 
 public class SerializationInfoCache {    
@@ -119,6 +120,7 @@ public class SerializationInfoCache {
         addBuiltinSerializationInfo(ATOMIC_LONG_INFO);
     }
 
+    @Trivial // reveals customer data
     public static final class LongInfo implements BuiltinSerializationInfo<Long> {
         public byte getIndex() {
             return LONG;
@@ -144,6 +146,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class IntegerInfo implements BuiltinSerializationInfo<Integer> {
         public byte getIndex() {
             return INTEGER;
@@ -169,6 +172,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class ShortInfo implements BuiltinSerializationInfo<Short> {
         public byte getIndex() {
             return SHORT;
@@ -190,6 +194,7 @@ public class SerializationInfoCache {
 
     }
 
+    @Trivial // reveals customer data
     public static final class ByteInfo implements BuiltinSerializationInfo<Byte> {
         public byte getIndex() {
             return BYTE;
@@ -198,7 +203,7 @@ public class SerializationInfoCache {
         public Class<Byte> getObjectClass() {
             return Byte.class;
         }
-
+        
         public Byte bytesToObject(byte[] bytes) {
             return Byte.valueOf(bytes[2]);
         }
@@ -209,6 +214,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class FloatInfo implements BuiltinSerializationInfo<Float> {
         public byte getIndex() {
             return FLOAT;
@@ -236,6 +242,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class DoubleInfo implements BuiltinSerializationInfo<Double> {
         public byte getIndex() {
             return DOUBLE;
@@ -263,6 +270,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class CharacterInfo implements BuiltinSerializationInfo<Character> {
         public byte getIndex() {
             return CHARACTER;
@@ -283,6 +291,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class BooleanInfo implements BuiltinSerializationInfo<Boolean> {
         private static final byte[] TRUE_BYTES = {BUILTIN_SERIALIZATION, BOOLEAN, 1};
         private static final byte[] FALSE_BYTES = {BUILTIN_SERIALIZATION, BOOLEAN, 0};
@@ -304,6 +313,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class DateInfo implements BuiltinSerializationInfo<java.util.Date> {
         public byte getIndex() {
             return DATE;
@@ -331,6 +341,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class SqlDateInfo implements BuiltinSerializationInfo<java.sql.Date> {
         public byte getIndex() {
             return SQL_DATE;
@@ -358,6 +369,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class SqlTimestampInfo implements BuiltinSerializationInfo<Timestamp> {
         public byte getIndex() {
             return SQL_TIMESTAMP;
@@ -384,12 +396,9 @@ public class SerializationInfoCache {
             TypeConversion.intToBytes(nanos, bytes, 10);
             return bytes;
         }
-
-        public byte[] convertBytes(byte[] originalBytes, short version) {
-            return originalBytes;
-        }
     }
 
+    @Trivial // reveals customer data
     public static final class SqlTimeInfo implements BuiltinSerializationInfo<Time> {
         public byte getIndex() {
             return SQL_TIME;
@@ -417,6 +426,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class BigDecimalInfo implements BuiltinSerializationInfo<BigDecimal> {
         public byte getIndex() {
             return BIG_DECIMAL;
@@ -452,6 +462,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class BigIntegerInfo implements BuiltinSerializationInfo<BigInteger> {
         public byte getIndex() {
             return BIG_INTEGER;
@@ -484,6 +495,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class ByteArrayInfo implements BuiltinSerializationInfo<byte[]> {
         public byte getIndex() {
             return BYTE_ARRAY;
@@ -515,6 +527,7 @@ public class SerializationInfoCache {
         }
     }
     
+    @Trivial // reveals customer data
     public static final class AtomicIntegerInfo implements BuiltinSerializationInfo<AtomicInteger> {
         public byte getIndex() {
             return ATOMIC_INTEGER;
@@ -541,6 +554,7 @@ public class SerializationInfoCache {
         }
     }
 
+    @Trivial // reveals customer data
     public static final class AtomicLongInfo implements BuiltinSerializationInfo<AtomicLong> {
         public byte getIndex() {
             return ATOMIC_LONG;

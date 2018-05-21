@@ -172,7 +172,7 @@ public class JavaEESecCDIExtensionTest {
                 will(returnValue(String.class));
                 one(at1).getAnnotations();
                 will(returnValue(aset));
-                one(wasc).getOverrideHttpAuthenticationMechanism();
+                one(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(null));
             }
         });
@@ -202,7 +202,7 @@ public class JavaEESecCDIExtensionTest {
                 will(returnValue(at1));
                 one(at1).getAnnotations();
                 will(returnValue(aset));
-                one(wasc).getOverrideHttpAuthenticationMechanism();
+                one(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(null));
             }
         });
@@ -233,7 +233,7 @@ public class JavaEESecCDIExtensionTest {
                 will(returnValue(at1));
                 one(at1).getAnnotations();
                 will(returnValue(aset));
-                one(wasc).getOverrideHttpAuthenticationMechanism();
+                one(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(null));
             }
         });
@@ -289,7 +289,7 @@ public class JavaEESecCDIExtensionTest {
                 will(returnValue(at1));
                 one(at1).getAnnotations();
                 will(returnValue(aset));
-                one(wasc).getOverrideHttpAuthenticationMechanism();
+                one(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(null));
             }
         });
@@ -347,7 +347,7 @@ public class JavaEESecCDIExtensionTest {
                 will(returnValue(at1));
                 one(at1).getAnnotation(LoginToContinue.class);
                 will(returnValue(ltc));
-                one(wasc).getOverrideHttpAuthenticationMechanism();
+                one(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(null));
                 one(at1).getAnnotations();
                 will(returnValue(aset));
@@ -428,7 +428,7 @@ public class JavaEESecCDIExtensionTest {
                 one(at2).getAnnotations();
                 will(returnValue(aset2));
 
-                exactly(2).of(wasc).getOverrideHttpAuthenticationMechanism();
+                exactly(2).of(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(null));
             }
         });
@@ -516,7 +516,7 @@ public class JavaEESecCDIExtensionTest {
                 one(at2).getAnnotations();
                 will(returnValue(aset2));
 
-                allowing(wasc).getOverrideHttpAuthenticationMechanism();
+                allowing(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(GLOBAL_FORM));
                 exactly(2).of(wasc).getLoginFormURL();
                 will(returnValue(GLOBAL_FORM_LOGIN_URL));
@@ -618,7 +618,7 @@ public class JavaEESecCDIExtensionTest {
                 one(at2).getAnnotations();
                 will(returnValue(aset2));
 
-                allowing(wasc).getOverrideHttpAuthenticationMechanism();
+                allowing(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(GLOBAL_BASIC));
                 exactly(2).of(wasc).getBasicAuthRealmName();
                 will(returnValue(GLOBAL_BASIC_REALM_NAME));

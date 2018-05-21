@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.jwt.utils;
 
@@ -89,7 +89,7 @@ public class JwtCreator {
                 }
 
                 // IAT, EXP, NBF
-                long validForInSeconds = jwtData.getConfig().getValidTime() * 60 * 60;
+                long validForInSeconds = jwtData.getConfig().getValidTime();
                 long expTimeInSeconds = jwtclaims.getExpiration();
                 long issueTimeInSeconds = jwtclaims.getIssuedAt();
                 long timeInSeconds = System.currentTimeMillis() / 1000;

@@ -30,18 +30,18 @@ public class WSPrincipal implements Principal, Serializable {
     /**
      * Fields to serialize
      */
-    private static final ObjectStreamField[] serialPersistentFields =
-                    new ObjectStreamField[] {
-                                             new ObjectStreamField(AUTH_METHOD, String.class),
-                                             new ObjectStreamField(ACCESS_ID, String.class),
-                                             new ObjectStreamField(SECURITY_NAME, String.class)
-                    };
+    private static final ObjectStreamField[] serialPersistentFields = new ObjectStreamField[] {
+                                                                                                new ObjectStreamField(AUTH_METHOD, String.class),
+                                                                                                new ObjectStreamField(ACCESS_ID, String.class),
+                                                                                                new ObjectStreamField(SECURITY_NAME, String.class)
+    };
 
     // TODO: should this be an enum? can we really enumerate all of the different methods
     //       we'll want to use in the future? Note - switching to enum would break serialization compatibility if not done carefully
     public static final String AUTH_METHOD_PASSWORD = "password";
     public static final String AUTH_METHOD_CERTIFICATE = "certificate";
     public static final String AUTH_METHOD_TOKEN = "token";
+    public static final String AUTH_METHOD_JWT_SSO_TOKEN = "jwtSSOToken";
     public static final String AUTH_METHOD_IDENTITY_ASSERTION = "idAssert";
     public static final String AUTH_METHOD_HASH_TABLE = "hashtable";
     public static final String AUTH_METHOD_BASIC = "basic";
@@ -54,7 +54,7 @@ public class WSPrincipal implements Principal, Serializable {
     /**
      * A WSPrincipal's name is the securityName of the authenticated
      * identity.
-     * 
+     *
      * @param securityName A String representing the user's name. Must not be <code>null</code> or empty.
      * @param accessId A String representing the user's accessId.
      * @see com.ibm.ws.security.AccessIdUtil#createAccessId(String, String, String)
@@ -125,9 +125,9 @@ public class WSPrincipal implements Principal, Serializable {
 
     /**
      * Deserialize security context.
-     * 
+     *
      * @param in The stream from which this object is read.
-     * 
+     *
      * @throws IOException
      * @throws ClassNotFoundException
      */
@@ -149,9 +149,9 @@ public class WSPrincipal implements Principal, Serializable {
 
     /**
      * Serialize security context.
-     * 
+     *
      * @param out The stream to which this object is serialized.
-     * 
+     *
      * @throws IOException
      */
     private void writeObject(ObjectOutputStream out) throws IOException {

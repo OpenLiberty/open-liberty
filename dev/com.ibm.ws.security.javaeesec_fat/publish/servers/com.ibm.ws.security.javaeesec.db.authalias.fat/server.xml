@@ -9,8 +9,6 @@
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 
- 	<webAppSecurity jaspicSessionForMechanismsEnabled="false" />
-
  	<webContainer deferServletLoad="false"/>
     
     <application type="war" id="CustomQueryDatabaseServlet" name="CustomQueryDatabaseServlet" location="dbfatAuthAlias.war">

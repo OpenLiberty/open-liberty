@@ -44,7 +44,7 @@ public class CacheStore extends BackedStore {
         return new CacheSession((CacheHashMap) _sessions, sessionId, _storeCallback);
     }
 
-    // TODO implement correctly. This was copied from DatabaseStore.
+    // Copied from DatabaseStore.
     // Set max inactive time to 0 in database so invalidator will will do inval
     // Then remove the session from cache
     @Override
@@ -52,7 +52,7 @@ public class CacheStore extends BackedStore {
         super.remoteInvalidate(sessionId, backendUpdate);
 
         if (backendUpdate) {
-            //((CacheHashMap) _sessions).setMaxInactToZero(sessionId, getId());
+            ((CacheHashMap) _sessions).setMaxInactToZero(sessionId, getId());
         }
 
         // now clean this session out of cache -- we do this even if not doing db inval

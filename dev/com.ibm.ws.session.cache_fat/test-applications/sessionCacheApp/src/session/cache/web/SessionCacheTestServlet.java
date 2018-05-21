@@ -24,6 +24,8 @@ import java.io.ObjectOutputStream;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -186,6 +188,17 @@ public class SessionCacheTestServlet extends FATServlet {
     }
 
     /**
+     * Invoke IBMSessionExt.invalidateAll(true)
+     */
+    public void testInvalidateAll(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        HttpSession session = request.getSession();
+        // IBMSessionExt is SPI, so access the public method via reflection,
+        AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> session.getClass()
+                        .getMethod("invalidateAll", boolean.class)
+                        .invoke(session, true));
+    }
+
+    /**
      * Test that the last accessed time changes when accessed at different times.
      */
     public void testLastAccessedTime(HttpServletRequest request, HttpServletResponse response) throws Throwable {
@@ -249,7 +262,7 @@ public class SessionCacheTestServlet extends FATServlet {
         ((IBMSession) session).sync();
 
         long puts = attrCacheStatsMXBean.getCachePuts();
-        // TODO sometimes this assert is failing with observed value still being the initial value. Seems to be a bug in the JCache provider
+        // Sometimes this assert is failing with observed value still being the initial value. Seems to be a bug in the JCache provider
         // assertEquals(initialPuts + 1, puts);
 
         session.invalidate();
@@ -654,6 +667,14 @@ public class SessionCacheTestServlet extends FATServlet {
         String sessionID = session.getId();
         System.out.println("Put entry: " + key + '=' + value + " into sessionID=" + sessionID);
         response.getWriter().write("session id: [" + sessionID + "]");
+
+        // Normally, session postinvoke writes the updates after the servlet returns control to the test logic.
+        // This can be a problem if the test logic proceeds to execute further test logic based on the expectation
+        // that updates made under the previous servlet request have gone into effect.  Tests that are vulnerable
+        // to this can use the sync=true parameter to force update to be made before servlet returns.
+        boolean sync = Boolean.parseBoolean(request.getParameter("sync"));
+        if (sync)
+            ((IBMSession) session).sync();
     }
 
     public void sessionGet(HttpServletRequest request, HttpServletResponse response) throws Throwable {
@@ -683,6 +704,14 @@ public class SessionCacheTestServlet extends FATServlet {
         String key = request.getParameter("key");
         HttpSession session = request.getSession(false);
         session.removeAttribute(key);
+
+        // Normally, session postinvoke writes the updates after the servlet returns control to the test logic.
+        // This can be a problem if the test logic proceeds to execute further test logic based on the expectation
+        // that updates made under the previous servlet request have gone into effect.  Tests that are vulnerable
+        // to this can use the sync=true parameter to force update to be made before servlet returns.
+        boolean sync = Boolean.parseBoolean(request.getParameter("sync"));
+        if (sync)
+            ((IBMSession) session).sync();
     }
 
     public void sessionGetTimeout(HttpServletRequest request, HttpServletResponse response) throws Throwable {

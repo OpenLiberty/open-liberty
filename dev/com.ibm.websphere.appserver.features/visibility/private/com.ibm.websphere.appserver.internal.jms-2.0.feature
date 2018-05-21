@@ -7,7 +7,7 @@ IBM-API-Package: javax.jms; version="2.0"; type="spec"
  com.ibm.websphere.appserver.javaeePlatform-7.0, \
  com.ibm.websphere.appserver.internal.jca-1.6, \
  com.ibm.websphere.appserver.transaction-1.2
--bundles=com.ibm.websphere.javaee.jms.2.0; location:="dev/api/spec/,lib/", \
+-bundles=com.ibm.websphere.javaee.jms.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jms:javax.jms-api:2.0", \
  com.ibm.ws.messaging.jmsspec.common
 kind=ga
 edition=base

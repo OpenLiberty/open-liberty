@@ -456,6 +456,11 @@ warning.binding.config=CWWKG0101W: A(z) {0} t\u00e1rolt azonoss\u00e1ggal (PID) 
 warning.binding.config.explanation=A konfigur\u00e1ci\u00f3 akkor lesz a h\u00edv\u00f3 k\u00f6teggel \u00f6sszerendelve, amikor a ConfigurationAdmin fel\u00fclet getConfiguration met\u00f3dus\u00e1t els\u0151 alkalommal futtatj\u00e1k. A konfigur\u00e1ci\u00f3 \u00f6sszerendel\u00e9se ut\u00e1n m\u00e1s k\u00f6tegek sz\u00e1m\u00e1ra nem l\u00e1that\u00f3.  
 warning.binding.config.useraction=Ha meg szeretne gy\u0151z\u0151dni r\u00f3la, hogy a k\u00f6teg helye a v\u00e1rt \u00e9rt\u00e9k\u0171, akkor haszn\u00e1lja a ConfigurationAdmin fel\u00fclet getConfiguration  met\u00f3dus\u00e1t, amely a k\u00f6teg hely\u00e9t m\u00e1sodik param\u00e9terk\u00e9nt veszi \u00e1t.
 
+# This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
+info.config.conflict=CWWKG0102I: {0}
+info.config.conflict.explanation=Ugyanarra a konfigur\u00e1ci\u00f3s tulajdons\u00e1gra vonatkoz\u00f3an t\u00f6bb \u00e9rt\u00e9k is meg van adva. 
+info.config.conflict.useraction=Nem kell semmit tennie. Az inform\u00e1ci\u00f3s \u00fczenet elker\u00fclhet\u0151, ha a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 szerkeszt\u00e9s\u00e9vel elt\u00e1vol\u00edtja az \u00fctk\u00f6z\u00e9st.
+ 
 
 # Non-TR message
 error.invalidOCDRef=HIBA: A(z) [{0}] metat\u00edpus PID nem l\u00e9tez\u0151 objektumoszt\u00e1ly meghat\u00e1roz\u00e1s azonos\u00edt\u00f3t ([{1}]) ad meg.

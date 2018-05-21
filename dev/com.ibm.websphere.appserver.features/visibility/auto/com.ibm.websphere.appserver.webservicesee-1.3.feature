@@ -7,6 +7,6 @@ IBM-Provision-Capability: osgi.identity;filter:="(&(type=osgi.subsystem.feature)
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.javaee.ddmodel.ws, \
  com.ibm.ws.webservices.javaee.common, \
- com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"
+ com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12"
 kind=ga
 edition=base

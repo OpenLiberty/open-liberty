@@ -533,7 +533,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         if (newInstalledFeatures.isEmpty())
             installedFeatures = Collections.emptySet();
         else
-            installedFeatures = new HashSet<String>(newInstalledFeatures);
+            installedFeatures = Collections.unmodifiableSet(new HashSet<String>(newInstalledFeatures));
 
         current = configuredFeatures;
         if (!current.equals(newConfiguredFeatures)) {
@@ -542,22 +542,17 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         if (newConfiguredFeatures.isEmpty())
             configuredFeatures = Collections.emptySet();
         else
-            configuredFeatures = new HashSet<String>(newConfiguredFeatures);
+            configuredFeatures = Collections.unmodifiableSet(new HashSet<String>(newConfiguredFeatures));
 
         this.configurationError = configurationError;
     }
 
     public Set<String> getInstalledFeatures() {
-        Set<String> current = installedFeatures;
-        if (current.isEmpty())
-            return Collections.emptySet();
-        else
-            return new HashSet<String>(current);
-
+        return installedFeatures;
     }
 
     public Set<String> getConfiguredFeatures() {
-        return Collections.unmodifiableSet(configuredFeatures);
+        return configuredFeatures;
     }
 
     public boolean hasConfigurationError() {
@@ -821,6 +816,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      */
     public void removeInstalledFeature(String feature) {
         this.configurationError = true;
-        installedFeatures.remove(feature);
+        HashSet<String> newInstalledFeatures = new HashSet<>(installedFeatures);
+        if (newInstalledFeatures.remove(feature)) {
+            installedFeatures = newInstalledFeatures.isEmpty() ? Collections.<String> emptySet() : Collections.unmodifiableSet(newInstalledFeatures);
+        }
     }
 }

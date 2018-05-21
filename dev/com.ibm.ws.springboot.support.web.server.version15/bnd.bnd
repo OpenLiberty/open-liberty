@@ -33,6 +33,7 @@ instrument.disabled: true
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot15Server.jar; version:Version=1.5
 
 -buildpath: \
+	org.springframework:spring-web;strategy=exact;version=4.3.13.RELEASE, \
 	org.springframework:spring-core;strategy=exact;version=4.3.13.RELEASE, \
 	org.springframework:spring-context;strategy=exact;version=4.3.13.RELEASE, \
 	org.springframework:spring-aop;strategy=exact;version=4.3.13.RELEASE, \
@@ -51,7 +52,8 @@ Provide-Capability: spring.boot.support; jars:List<String>=springBoot15Server.ja
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.threading;version=latest,\
-	com.ibm.ws.springboot.support.web.server;version=latest
+	com.ibm.ws.springboot.support.web.server;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Popis:
+global.actions=Akce:
+global.options=Volby:
+global.usage=Pou\u017eit\u00ed:
+global.required=Vy\u017eadov\u00e1no:
+global.options.statement=\tPomoc\u00ed p\u0159\u00edkazu help [n\u00e1zev_akce] z\u00edsk\u00e1te podrobn\u00e9 informace o volb\u00e1ch jednotliv\u00fdch akc\u00ed.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tVytisknout informace n\u00e1pov\u011bdy pro ur\u010denou akci.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [n\u00e1zev_akce]
+
+
+# -------- THIN OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+thin.desc=\tVytvo\u0159te tenkou aplikaci pro pou\u017eit\u00ed konfigurac\u00ed serveru. 
+#Note to translator the word "thin" should not be translated
+thin.usage.options=\t{0} thin --sourceAppPath=path [volby]
+
+thin.required-key.sourceapp=\ \ \ \ --sourceAppPath=file
+thin.required-desc.sourceapp=\tCesta souboru zdrojov\u00e9 aplikace na tenkou.
+
+thin.optional-key.targetthinapp=\ \ \ \ --targetThinAppPath=file
+#Note to translator the word ".spring" should not be translated
+thin.optional-desc.targetthinapp=\tCesta pou\u017eit\u00e1 k ulo\u017een\u00ed souboru tenk\u00e9 aplikace.\n\
+\tNen\u00ed-li tato volba uvedena, vytvo\u0159\u00ed se nov\u00fd soubor s p\u0159\u00edponou .spring\n\
+\tv nad\u0159\u00edzen\u00e9m adres\u00e1\u0159i zdrojov\u00e9 aplikace. 
+
+thin.optional-key.targetlibcache=\ \ \ \ --targetLibCachePath=directory
+#Note to translator the word "lib.index.cache" should not be translated
+thin.optional-desc.targetlibcache=\tCesta k adres\u00e1\u0159i pro ulo\u017een\u00ed mezipam\u011bti knihovny.\n\
+\tNen\u00ed-li tato volba uvedena, adres\u00e1\u0159 s n\u00e1zvem lib.index.cache\n\
+\tbude vytvo\u0159en v nad\u0159\u00edzen\u00e9m adres\u00e1\u0159i zdrojov\u00e9 aplikace.
+
+thin.optional-key.parentlibcache=\ \ \ \ --parentLibCachePath=directory
+thin.optional-desc.parentlibcache=\tCesta k adres\u00e1\u0159i nad\u0159\u00edzen\u00e9 mezipam\u011bti knihovny typu jen pro \u010dten\u00ed.\n\
+\tExistuj\u00edc\u00ed knihovny se nejd\u0159\u00edve hledaj\u00ed v nad\u0159\u00edzen\u00e9 mezipam\u011bti\n\
+\tknihovny. Nen\u00ed-li \u017e\u00e1dn\u00e1 knihovna nalezena, potom je knihovna\n\
+\tulo\u017eena do zapisovateln\u00e9 mezipam\u011bti knihovny ur\u010den\u00e9 volbou\n\
+\t--targetLibCachePath. Pokud nen\u00ed tato volba specifikov\u00e1na, \n\
+\tnebude hled\u00e1na \u017e\u00e1dn\u00e1 nad\u0159\u00edzen\u00e1 mezipam\u011b\u0165 knihovny.
+
+
+

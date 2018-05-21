@@ -14,5 +14,5 @@ Subsystem-Name: JwtSso
   com.ibm.ws.security.common, \
   com.ibm.websphere.org.eclipse.microprofile.jwt.1.0; location:="dev/api/stable/,lib/",\
   com.ibm.ws.security.mp.jwt
-kind=beta
+kind=ga
 edition=core

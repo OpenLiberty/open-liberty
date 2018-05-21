@@ -25,7 +25,7 @@ IBM-SPI-Package: com.ibm.wsspi.webservices.handler
  com.ibm.ws.jaxrs.2.0.common, \
  com.ibm.ws.jaxrs.2.x.config, \
  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
- com.ibm.websphere.javaee.jaxrs.2.0; location:="dev/api/spec/,lib/", \
+ com.ibm.websphere.javaee.jaxrs.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.ws.rs:javax.ws.rs-api:2.0.1", \
  com.ibm.ws.jaxrs.2.0.tools
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jaxrs20_1.0-javadoc.zip, \
  bin/jaxrs/wadl2java, \

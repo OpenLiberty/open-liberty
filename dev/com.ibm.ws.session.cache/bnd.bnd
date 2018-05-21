@@ -28,7 +28,8 @@ Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
-  com.ibm.ws.session.store.cache.DefaultCachingProviderSupport
+  com.ibm.ws.session.store.cache.DefaultCachingProviderSupport,\
+  com.ibm.ws.session.store.cache.RuntimeUpdateListenerImpl
 
 Service-Component=com.ibm.ws.session.cache;\
   implementation:="com.ibm.ws.session.store.cache.CacheStoreService";\
@@ -50,6 +51,7 @@ Service-Component=com.ibm.ws.session.cache;\
     com.ibm.websphere.javaee.servlet.3.0;version=latest,\
     com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.cm,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.classloading;version=latest,\
@@ -57,4 +59,6 @@ Service-Component=com.ibm.ws.session.cache;\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.serialization;version=latest,\
 	com.ibm.ws.session;version=latest,\
-	com.ibm.ws.session.store;version=latest
+	com.ibm.ws.session.store;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.runtime.update;version=latest

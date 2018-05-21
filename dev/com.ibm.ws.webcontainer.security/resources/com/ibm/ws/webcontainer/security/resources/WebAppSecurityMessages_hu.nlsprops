@@ -133,3 +133,7 @@ SEC_JACC_AUTHZ_FAILED.useraction=Ha nem ezt v\u00e1rta, akkor l\u00e9pjen kapcso
 SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: A Form-Logout szolg\u00e1ltat\u00e1s egy\u00e9ni logoutExitPage oldal\u00e1n megadott URL c\u00edm nem jelen\u00edthet\u0151 meg; requestURL={0}, logoutExitPage={1}. A kijelentkez\u00e9s sikeres volt \u00e9s az alap\u00e9rtelmezett Form-Logout oldal ker\u00fclt megjelen\u00edt\u00e9sre.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=A Form-Logout szolg\u00e1ltat\u00e1snak nem siker\u00fclt \u00e1tir\u00e1ny\u00edtania a logoutExitPage szervlet param\u00e9terben megadott oldalra. A megadott URL \u00e9rv\u00e9nytelen form\u00e1tum\u00fa URL vagy nincs megadva a hosztn\u00e9v a com.ibm.websphere.security.logoutExitPageDomainList tulajdons\u00e1gban.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Jav\u00edtsa ki a logoutExitPage param\u00e9terben megadott URL c\u00edmet.
+
+JWT_ALREADY_LOGGED_OUT=CWWKS9126E: A bejelentkez\u00e9s a JSON Web Token haszn\u00e1lat\u00e1val nem siker\u00fclt, mert a token kor\u00e1bban ki lett jelentkeztetve.
+JWT_ALREADY_LOGGED_OUT.explanation=Egy kor\u00e1bban kijelentkeztetett JSON Web Token (JWT) \u00fajrak\u00fcld\u00e9sre ker\u00fclt bejelentkez\u00e9s hiteles\u00edt\u00e9sre.
+JWT_ALREADY_LOGGED_OUT.useraction=Szerezzen be \u00faj JSON Web Tokent, vagy \u00e1ll\u00edtsa a trackLoggedOutSSOCookiesEnabled konfigur\u00e1ci\u00f3s attrib\u00fatumot false \u00e9rt\u00e9kre, ami kev\u00e9sb\u00e9 biztons\u00e1gos.

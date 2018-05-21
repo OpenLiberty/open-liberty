@@ -13,6 +13,6 @@ package com.ibm.ws.security.jwtsso.utils;
 public class Constants {
 
 	// todo: implement me
-	public static final String CCK_CLAIM = "session"; // custom cache key claim
+	public static final String CCK_CLAIM = "sid"; // custom cache key claim
 
 }

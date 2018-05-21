@@ -12,7 +12,7 @@
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="10m"/>
 
     <httpSessionCache libraryRef="HazelcastLib" writeContents="GET_AND_SET_ATTRIBUTES">
-        <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+        <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}"/>
     </httpSessionCache>
 
     <library id="HazelcastLib">
@@ -20,7 +20,7 @@
     </library>
     
     <!-- Perms needed because the application uses Hazelcast directly   -->
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>

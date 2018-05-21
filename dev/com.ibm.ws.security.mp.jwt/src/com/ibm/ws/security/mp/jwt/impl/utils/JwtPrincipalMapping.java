@@ -24,7 +24,8 @@ import com.ibm.ws.security.mp.jwt.impl.MicroProfileJwtConfigImpl;
 public class JwtPrincipalMapping {
 
     private static TraceComponent tc = Tr.register(JwtPrincipalMapping.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-    //String realm = null;
+    protected static final String REALM_CLAIM = "realm";
+    String realm = null;
     //String uniqueSecurityName = null;
     String userName = null;
     ArrayList<String> groupIds = null;
@@ -45,6 +46,7 @@ public class JwtPrincipalMapping {
             Tr.debug(tc, "user name = ", userName);
         }
         if (!mapToUr) {
+            realm = getRealm(REALM_CLAIM, jsonstr);
             populateGroupIds(jsonstr, groupAttr);
         }
         if (tc.isDebugEnabled()) {
@@ -52,8 +54,28 @@ public class JwtPrincipalMapping {
         }
     }
 
+    /**
+     * @param string
+     * @param jsonstr
+     * @return
+     */
+    private String getRealm(String realmAttribute, String jsonstr) {
+
+        if (jsonstr != null && realmAttribute != null) {
+            Object realm = getClaim(jsonstr, realmAttribute);
+            if (realm instanceof String) {
+                return (String) realm;
+            }
+        }
+        return null;
+    }
+
     public boolean isUserNameNull() {
         return (userName == null || userName.isEmpty());
+    }
+
+    public String getMappedRealm() {
+        return realm;
     }
 
     public String getMappedUser() {

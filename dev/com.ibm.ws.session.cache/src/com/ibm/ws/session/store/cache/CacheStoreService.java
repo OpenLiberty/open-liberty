@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -28,6 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.cache.Cache;
 import javax.cache.Cache.Entry;
+import javax.cache.CacheException;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.CompleteConfiguration;
@@ -196,14 +198,19 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
             if (trace && tc.isDebugEnabled())
                 CacheHashMap.tcReturn(tcCachingProvider, "isSupported", supportsStoreByReference);
+        } catch (CacheException x) {
+            if (library.getFiles().isEmpty()) {
+                Tr.error(tc, "ERROR_CONFIG_EMPTY_LIBRARY", library.id(), Tr.formatMessage(tc, "SESSION_CACHE_CONFIG_MESSAGE", RuntimeUpdateListenerImpl.sampleConfig));
+            }
+            throw x;
         } catch (Error | RuntimeException x) {
             // deactivate will not be invoked if activate fails, so ensure CachingProvider is closed on error paths
             if (cachingProvider != null) {
                 CacheHashMap.tcInvoke(tcCachingProvider, "close");
                 cachingProvider.close();
                 CacheHashMap.tcReturn(tcCachingProvider, "close");
-                throw x;
             }
+            throw x;
         }
     }
 
@@ -402,23 +409,29 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                             if (isAttrCache) {
                                 out.println(INDENT + "First 100 entries:");
                                 int i = 0;
-                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); ) {
-                                    Entry<?, ?> entry = (Entry<?, ?>) it.next();
-                                    if (entry != null) {
-                                        // deserialization of the value might require the application's class loader, which is not available during introspection
-                                        byte[] bytes = (byte[]) entry.getValue();
-                                        out.println(INDENT + INDENT + "session attribute " + entry.getKey() + ": " + (bytes == null ? null : ("byte[" + bytes.length + "]")));
+                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); )
+                                    try {
+                                        Entry<?, ?> entry = (Entry<?, ?>) it.next();
+                                        if (entry != null) {
+                                            // deserialization of the value might require the application's class loader, which is not available during introspection
+                                            byte[] bytes = (byte[]) entry.getValue();
+                                            out.println(INDENT + INDENT + "session attribute " + entry.getKey() + ": " + (bytes == null ? null : ("byte[" + bytes.length + "]")));
+                                        }
+                                    } catch (NoSuchElementException x) {
+                                        // ignore - some JCache providers might raise this instead of returning null when modified during iterator
                                     }
-                                }
                             } else if (isMetaCache) {
                                 out.println(INDENT + "First 50 entries:");
                                 int i = 0;
-                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); ) {
-                                    Entry<?, ?> entry = (Entry<?, ?>) it.next();
-                                    if (entry != null) {
-                                        out.println(INDENT + INDENT + "session " + entry.getKey() + ": " + new SessionInfo((ArrayList<?>) entry.getValue()));
+                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); )
+                                    try {
+                                        Entry<?, ?> entry = (Entry<?, ?>) it.next();
+                                        if (entry != null) {
+                                            out.println(INDENT + INDENT + "session " + entry.getKey() + ": " + new SessionInfo((ArrayList<?>) entry.getValue()));
+                                        }
+                                    } catch (NoSuchElementException x) {
+                                        // ignore - some JCache providers might raise this instead of returning null when modified during iterator
                                     }
-                                }
                             }
                         }
                     }

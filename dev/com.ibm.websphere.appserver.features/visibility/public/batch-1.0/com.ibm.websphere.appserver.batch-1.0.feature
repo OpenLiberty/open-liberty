@@ -27,6 +27,6 @@ Subsystem-Name: Batch API 1.0
  com.ibm.ws.security.credentials, \
  com.ibm.websphere.security, \
  com.ibm.jbatch.container, \
- com.ibm.websphere.javaee.batch.1.0; location:="dev/api/spec/,lib/"
+ com.ibm.websphere.javaee.batch.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.batch:javax.batch-api:1.0.1"
 kind=ga
 edition=base

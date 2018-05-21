@@ -18,10 +18,10 @@
     </featureManager>   
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="5s" reaperPollInterval="30"/>
     <httpSessionCache libraryRef="HazelcastLib" writeContents="ALL_SESSION_ATTRIBUTES">
-        <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+        <properties hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}"/>
     </httpSessionCache>
     
-    <jndiEntry jndiName="jcache/hazelcast.config" value="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+    <jndiEntry jndiName="jcache/hazelcast.config" value="${shared.resource.dir}/hazelcast/${hazelcast.config.file}"/>
 
     <!-- Use this config for testing sessionDatabase 
     <featureManager>
@@ -55,7 +55,7 @@
     </library>
 	
 	<!-- Perms needed because the application uses Hazelcast directly   -->
-    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
     <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
