@@ -309,7 +309,6 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Caught exception during SSL handshake, " + e);
                 }
-                FFDCFilter.processException(e, getClass().getName(), "152", this);
                 callback.error(getConnLink().getVirtualConnection(), this, e);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                     Tr.exit(tc, "writeAsynch: null");
@@ -324,7 +323,6 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Unable to complete SSLhandshake, " + e);
                     }
-                    FFDCFilter.processException(e, getClass().getName(), "157", this);
                     callback.error(getConnLink().getVirtualConnection(), this, e);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                         Tr.exit(tc, "writeAsynch: null");
@@ -560,7 +558,6 @@ public class SSLWriteServiceContext extends SSLBaseServiceContext implements TCP
          */
         @Override
         public void error(IOException ioe) {
-            FFDCFilter.processException(ioe, getClass().getName(), "117", this);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception during encryption, " + ioe);
             }
