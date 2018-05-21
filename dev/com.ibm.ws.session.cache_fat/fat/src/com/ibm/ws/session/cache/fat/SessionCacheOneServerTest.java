@@ -27,6 +27,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -46,7 +48,14 @@ public class SessionCacheOneServerTest extends FATServletClient {
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, true, "session.cache.web", "session.cache.web.listener1", "session.cache.web.listener2");
 
-        String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+
+        if (FATSuite.isMulticastDisabled()) {
+            Log.info(SessionCacheOneServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+        }
+
+        String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
                                            "-Dhazelcast.config=" + configLocation));
 
