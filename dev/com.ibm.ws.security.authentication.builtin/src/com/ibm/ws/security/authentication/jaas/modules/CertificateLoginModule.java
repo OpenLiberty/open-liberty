@@ -139,6 +139,8 @@ public class CertificateLoginModule extends ServerCommonLoginModule implements L
                 Tr.debug(tc, "CLIENT-CERT Authentication failed for the client certificate with dn " + dn + ". The dn did not map to a user in the registry.");
             }
             throw new AuthenticationException(msg, e);
+        } catch (WSLoginFailedException e) {
+            throw new AuthenticationException(e.getLocalizedMessage());
         } catch (LoginException e) {
             // Need to re-throw LoginException
             throw e;
