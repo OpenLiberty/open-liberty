@@ -273,6 +273,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             run("invalidateSession", session);
         } finally {
             server.stopServer("SRVE8059E", // An unexpected exception occurred when trying to retrieve the session context java.lang.RuntimeException: Internal Server Error
+                              "SESN0309E", // The libraryWithoutJCacheProvider session cache library is empty.
                               "SESN0307E"); // An exception occurred when trying to initialize the cache. Exception is: javax.cache.CacheException: No CachingProviders have been configured
         }
     }
@@ -285,32 +286,35 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
     public void testMissingLibraryRef() throws Exception {
-        // Start the server with libraryRef missing
-        ServerConfiguration config = savedConfig.clone();
-        config.getHttpSessionCaches().get(0).setLibraryRef(null);
-        server.updateServerConfiguration(config);
-        server.startServer(testName.getMethodName() + ".log");
+        try {
+            // Start the server with libraryRef missing
+            LibertyServer.setValidateApps(false); //With a bad config, the sessionCacheConfigApp won't start.
+            ServerConfiguration config = savedConfig.clone();
+            config.getHttpSessionCaches().get(0).setLibraryRef(null);
+            server.updateServerConfiguration(config);
+            server.startServer(testName.getMethodName() + ".log");
 
-        // Session manager should warn user that sessions will be stored in memory
-        assertEquals(1, server.findStringsInLogs("SESN8501I").size());
+            // RuntimeUpdateListenerImpl should display an error of invalid or missing httpSessionCache configuration.
+            assertEquals(1, server.findStringsInLogs("SESN0308E").size());
 
-        List<String> session = new ArrayList<>();
-        run("testSetAttribute&attribute=testMissingLibraryRef1&value=MLF1", session);
+            List<String> session = new ArrayList<>();
 
-        // Add the libraryRef
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(savedConfig);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+            // Add the libraryRef
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(savedConfig);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
-        run("testSetAttribute&attribute=testMissingLibraryRef2&value=MLF2", session);
+            run("testSetAttribute&attribute=testMissingLibraryRef2&value=MLF2", session);
 
-        // second value should be written to the cache
-        run("testCacheContains&attribute=testMissingLibraryRef2&value=MLF2", session);
+            // MLF2 value should be written to the cache
+            run("testCacheContains&attribute=testMissingLibraryRef2&value=MLF2", session);
 
-        // first value should not be written to the cache
-        run("testCacheContains&attribute=testMissingLibraryRef1&value=null", session);
-
-        run("invalidateSession", session);
+            run("invalidateSession", session);
+        } finally {
+            if (server.isStarted())
+                server.stopServer("SESN0308E"); // An invalid or missing httpSessionCache configuration was detected.
+            LibertyServer.setValidateApps(true);
+        }
     }
 
     @AllowedFFDC(value = { "javax.cache.CacheException", // expected on error path: No CachingProviders have been configured
@@ -344,7 +348,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         run("testSetAttribute&attribute=testModifyFileset&value=1", session);
         run("testCacheContains&attribute=testModifyFileset&value=1", session);
 
-        server.stopServer("CWWKL0012W.*bogus", "SRVE8059E", "CWWKE0701E.*CacheException", "SESN0307E");
+        server.stopServer("CWWKL0012W.*bogus", "SRVE8059E", "CWWKE0701E.*CacheException", "SESN0307E", "SESN0309E");
     }
 
     /**
