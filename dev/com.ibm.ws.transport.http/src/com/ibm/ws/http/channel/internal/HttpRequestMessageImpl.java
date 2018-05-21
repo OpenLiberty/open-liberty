@@ -2011,21 +2011,41 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         }
 
         try {
-            // If all is well, encode the method and path
+            // If all is well, start encoding, first the method
             ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, pushBuilder.getMethod(), LiteralIndexType.NOINDEXING));
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pbPath, LiteralIndexType.NOINDEXING));
 
             // Encode the scheme
-            if (isc.isSecure()) {
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "https", LiteralIndexType.NOINDEXING));
-            } else {
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
+            String scheme = new String("https");
+            if (!isc.isSecure()) {
+                scheme = new String("http");
             }
+            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, scheme, LiteralIndexType.NOINDEXING));
 
             // Encode authority
+            // If the :authority header was sent in the request, get the information from there
+            // If it was not, use getTargetHost and and getTargetPort to create it
+            // If it's still null, we have to bail, since it's a required header in a push_promise frame
             String auth = ((H2HttpInboundLinkWrap) link).muxLink.getAuthority();
-            if (auth != null) {
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
+            if (null == auth) {
+                auth = getTargetHost();
+                if (null != auth) {
+                    if (0 <= getTargetPort()) {
+                        auth = auth + ":" + Integer.toString(getTargetPort());
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.exit(tc, "HTTPRequestMessageImpl: Cannot find hostname for required :authority pseudo header");
+                    }
+                    return;
+                }
+            }
+
+            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
+
+            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pbPath, LiteralIndexType.NOINDEXING));
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPRequestMessageImpl: Method is GET,  scheme is " + scheme + ", auth is " + auth);
             }
 
             // Encode headers, if any are present
@@ -2039,6 +2059,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                         Tr.debug(tc, "HTTPRequestMessageImpl.getHeaders() " + hf.getName() + " " + hf.asString());
                     }
                     ppStream.write(H2Headers.encodeHeader(h2WriteTable, hf.getName(), hf.asString(), LiteralIndexType.NOINDEXING));
+
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
