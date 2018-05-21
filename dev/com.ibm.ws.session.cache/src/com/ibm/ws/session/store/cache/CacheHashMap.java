@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -264,6 +265,7 @@ public class CacheHashMap extends BackedHashMap {
      * Copied from DatabaseHashMap.doInvalidations.
      * this method removes timed out sessions that do not require listener processing
      */
+    @FFDCIgnore(NoSuchElementException.class)
     private void doInvalidations() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -288,7 +290,13 @@ public class CacheHashMap extends BackedHashMap {
                     tcInvoke(tcSessionMetaCache, "_iterator.next");
 
                 @SuppressWarnings("rawtypes")
-                Cache.Entry<String, ArrayList> entry = it.next();
+                Cache.Entry<String, ArrayList> entry;
+                try {
+                    entry = it.next();
+                } catch (NoSuchElementException x) {
+                    // ignore - some JCache providers might raise this instead of returning null when modified during iterator
+                    entry = null;
+                }
                 String id = entry == null ? null : entry.getKey();
                 ArrayList<?> value = entry.getValue();
 
@@ -1049,7 +1057,7 @@ public class CacheHashMap extends BackedHashMap {
      * This method determines the set of sessions with session listeners which
      * need to be invalidated and processes them.
      */
-    @FFDCIgnore(Exception.class) //manually logged
+    @FFDCIgnore(Exception.class) //manually logged or is NoSuchElementException which we want to ignore
     private void processInvalidListeners() {
         final boolean trace = com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled();
 
@@ -1071,7 +1079,13 @@ public class CacheHashMap extends BackedHashMap {
                 tcInvoke(tcSessionMetaCache, "_iterator.next");
 
             @SuppressWarnings("rawtypes")
-            Cache.Entry<String, ArrayList> entry = it.next();
+            Cache.Entry<String, ArrayList> entry;
+            try {
+                entry = it.next();
+            } catch (NoSuchElementException x) {
+                // ignore - some JCache providers might raise this instead of returning null when modified during iterator
+                entry = null;
+            }
             String id = entry == null ? null : entry.getKey();
             ArrayList<?> value = entry.getValue();
 
