@@ -460,8 +460,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     @Override
     public boolean isCDINeeded() {
-        Set<String> installedFeatures = provisionerService.getInstalledFeatures();
-        return WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40 && installedFeatures.contains("appSecurity-3.0");
+        return WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40 &&
+               provisionerService.getInstalledFeatures().contains("appSecurity-3.0");
     }
 
     /**
