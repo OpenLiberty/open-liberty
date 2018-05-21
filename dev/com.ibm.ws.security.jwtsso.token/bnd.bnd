@@ -17,13 +17,16 @@ Bundle-Description: Security JWT SSO token utility service, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
 WS-TraceGroup: \
-  Security
+  JWTSSOTOKEN
 																																																															
 Export-Package: com.ibm.ws.security.jwtsso.token
 
 Import-Package: !*.internal.*, \
   org.eclipse.microprofile.jwt, \
   *
+  
+Private-Package: \
+  com.ibm.ws.security.jwtsso.token.resources
    
 -dsannotations: \
   com.ibm.ws.security.jwtsso.token.JwtSSOTokenImpl, \

@@ -233,6 +233,43 @@ public class CookieProcessingTests extends CommonJwtFat {
         assertFalse("Did not find expected replay warning message CWWKS9126A in log", errorMsg == null);
     }
 
+    /**
+     * Test that when a JWT token is sent in the auth header instead of in a cookie,
+     * we accept it same as if we sent a cookie.
+     *
+     * Since the option to respect the type of application_auth is not specified
+     * in the mpJwt configuration, any application will be accessed directly
+     * without going through login page, basic challenge, etc.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void test_TokenInAuthHeader() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+
+        // get jwt token from token endpoint.
+        String tokenEndpointUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() +
+                                  "/jwt/ibm/api/defaultJwtSso/token";
+        wc = new WebClient();
+        wc.getOptions().setUseInsecureSSL(true);
+        response = actions.invokeUrlWithBasicAuth(testName.getMethodName(), wc, tokenEndpointUrl, defaultUser, defaultPassword);
+        String responseStr = response.getWebResponse().getContentAsString();
+        Log.info(thisClass, "", "received this from token endpoint: " + responseStr);
+        // strip json
+        String token = responseStr.replace("{\"token\": ", "").replaceAll("\"}", "");
+        Log.info(thisClass, "", "parsed token: " + token);
+
+        wc = new WebClient();
+        response = actions.invokeUrlWithBearerToken(testName.getMethodName(), wc, protectedUrl, token);
+
+        // should be able to reach protected page, skipping login form
+        responseStr = response.getWebResponse().getContentAsString();
+        boolean check2 = responseStr.contains("SimpleServlet");
+        assertTrue("Did not successfully access the protected resource", check2);
+
+    }
+
     //TODO: more tests for multiple cookies on non-root path
 
 }
