@@ -6,5 +6,5 @@ IBM-ShortName: springBoot-2.0
 IBM-Process-Types: server
 Subsystem-Name: Spring Boot Support version 2.0
 -features=com.ibm.websphere.appserver.springBootHandler-1.0
-kind=beta
+kind=ga
 edition=core
