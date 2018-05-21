@@ -27,6 +27,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -39,22 +41,17 @@ import javax.json.JsonReader;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.aries.util.manifest.ManifestProcessor;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
-import org.apache.maven.model.Model;
 import org.apache.maven.model.License;
+import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.LogLevel;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.ibm.ws.wlp.mavenFeatures.model.LibertyFeature;
 import com.ibm.ws.wlp.mavenFeatures.model.MavenCoordinates;
@@ -64,7 +61,7 @@ import com.ibm.ws.wlp.mavenFeatures.utils.Utils;
 
 public class LibertyFeaturesToMavenRepo extends Task {
 	
-	/**
+    /**
 	 * inputDirPath-  the source directory with existing ESA and JSON files.
 	 * outputDirPath- the target directory for the Maven repository to be generated.
 	 */
@@ -129,9 +126,6 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				  			
 			}
 			
-			// parse additional dependencies from XML
-			Map<String, List<MavenCoordinates>> additionalDependencies = parseAdditionalDependencies();
-			
 			// for each LibertyFeature
 			for (LibertyFeature feature : allFeatures.values()) {
 				if (websphereLibertyJson != null && !feature.isWebsphereLiberty()) {
@@ -140,13 +134,12 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				}
 				
 				// copy ESA to target dirs
-				System.out.println("This is the feature: "+ feature.getSymbolicName());
 				copyArtifact(inputDir, outputDir, feature, Constants.ArtifactType.ESA);
 
 				List<MavenCoordinates> featureCompileDependencies = getFeatureCompileDependencies(inputDir, feature);
 
 				// generate POM in target dir with list of dependencies
-				generatePom(feature, additionalDependencies, featureCompileDependencies, allFeatures, outputDir, Constants.ArtifactType.ESA);
+				generatePom(feature, featureCompileDependencies, allFeatures, outputDir, Constants.ArtifactType.ESA);
 			}
 			
 			String version;
@@ -240,14 +233,13 @@ public class LibertyFeaturesToMavenRepo extends Task {
 	 * Generate POM file.
 	 * 
 	 * @param feature The Liberty feature to generate POM for.
-	 * @param additionalDependencies Map of each feature's symbolic name to additional dependencies.
 	 * @param featureCompileDependencies List of compile dependencies that the feature should provide.
 	 * @param allFeatures The map of feature symbolic names to LibertyFeature objects.
 	 * @param outputDir The root directory of the target Maven repository.
 	 * @param type The type of artifact.
 	 * @throws MavenRepoGeneratorException If the POM file could not be written.
 	 */
-	private void generatePom(LibertyFeature feature, Map<String, List<MavenCoordinates>> additionalDependencies, List<MavenCoordinates> featureCompileDependencies, Map<String, LibertyFeature> allFeatures, File outputDir,
+	private void generatePom(LibertyFeature feature, List<MavenCoordinates> featureCompileDependencies, Map<String, LibertyFeature> allFeatures, File outputDir,
 			Constants.ArtifactType type) throws MavenRepoGeneratorException {
 		MavenCoordinates coordinates = feature.getMavenCoordinates();
 		Model model = new Model();
@@ -271,15 +263,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				addDependency(dependencies, requiredArtifact, type,null);
 			}
 		}
-		
-		// add additional dependencies that it should provide
-		if (additionalDependencies != null && additionalDependencies.containsKey(feature.getSymbolicName())) {
-			List<MavenCoordinates> artifacts = additionalDependencies.get(feature.getSymbolicName());
-			for (MavenCoordinates requiredArtifact : artifacts) {
-				addDependency(dependencies, requiredArtifact, null,null);
-			}
-		}
-		
+				
 		if (featureCompileDependencies != null) {
 			for (MavenCoordinates requiredArtifact : featureCompileDependencies) {
 				addDependency(dependencies, requiredArtifact, null,null);
@@ -445,17 +429,27 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while (entries.hasMoreElements()) {
 				ZipEntry zipEntry = entries.nextElement();
+				// find API dependencies in zip
 				MavenCoordinates c = findCompileDependency(zipEntry.getName(), Constants.API_DEPENDENCIES_GROUP_ID);
 				if (c != null) {
 					compileDependencies.add(c);
 					continue;
 				}
+				// find SPI dependencies in zip
 				c = findCompileDependency(zipEntry.getName(), Constants.SPI_DEPENDENCIES_GROUP_ID);
 				if (c != null) {
 					compileDependencies.add(c);
 					continue;
-				}					
+				}
 			}
+            // find Java spec dependencies from manifest
+            ZipEntry manifest = zipFile.getEntry(Constants.MANIFEST_ZIP_ENTRY);
+            if (manifest != null) {
+                compileDependencies.addAll(findCompileDependenciesFromManifest(zipFile, manifest));
+            } else {
+                throw new MavenRepoGeneratorException(
+                        "Could not find manifest file " + Constants.MANIFEST_ZIP_ENTRY + " within the ESA file " + esa);
+            }
 		} catch (IOException e) {
 			throw new MavenRepoGeneratorException("ESA " + esa + " could not be read as a zip file.");
 		} finally {
@@ -471,6 +465,13 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		return compileDependencies;
 	}
 	
+	/**
+	 * Find compile dependency from a zip entry in the ESA
+	 * 
+	 * @param zipEntryPath The entry path in the zip
+	 * @param groupId The group ID of the dependency to look for
+	 * @return Maven coordinates corresponding to the entry
+	 */
 	private static MavenCoordinates findCompileDependency(String zipEntryPath, String groupId) {
 		int apiNameIndex = zipEntryPath.indexOf(groupId);
 		int extensionIndex = zipEntryPath.lastIndexOf(".jar");
@@ -484,6 +485,65 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			return coordinates;
 		}
 		return null;
+	}
+	
+	/**
+	 * Find compile dependencies from the manifest file in the ESA
+	 * 
+	 * @param zipFile The ESA file
+	 * @param zipEntry The manifest entry in the zip
+	 * @return List of Maven coordinates for compile dependencies found in the manifest, or empty list if none found
+	 * @throws MavenRepoGeneratorException If the manifest could not be parsed
+	 */
+	private static List<MavenCoordinates> findCompileDependenciesFromManifest(ZipFile zipFile, ZipEntry zipEntry) throws MavenRepoGeneratorException {
+	    List<MavenCoordinates> result = new ArrayList<MavenCoordinates>();
+	    InputStream inputStream = null;
+	    try {
+	        inputStream = zipFile.getInputStream(zipEntry);
+	        Manifest manifest = new Manifest(inputStream);
+	        Attributes mainAttributes = manifest.getMainAttributes();
+	        String subsystemContent = mainAttributes.getValue(Constants.SUBSYSTEM_CONTENT);
+	        List<String> lines = ManifestProcessor.split(subsystemContent, ",");
+	        for (String line : lines) {
+	            if (line.contains(Constants.SUBSYSTEM_MAVEN_COORDINATES)){
+	                List<String> components = ManifestProcessor.split(line, ";");
+	                String requiredFeature = components.get(0);
+	                String mavenCoordinates = null;
+	                for (String component : components) {
+	                    if (component.startsWith(Constants.SUBSYSTEM_MAVEN_COORDINATES)) {
+	                        mavenCoordinates = component.substring(Constants.SUBSYSTEM_MAVEN_COORDINATES.length() + 1, component.length());
+	                        if (mavenCoordinates.startsWith("\"") && mavenCoordinates.endsWith("\"")) {
+	                            mavenCoordinates = mavenCoordinates.substring(1, mavenCoordinates.length() - 1);
+	                        }
+	                        break;
+	                    }
+	                }
+	                if (mavenCoordinates != null) {
+	                    try {
+	                        result.add(new MavenCoordinates(mavenCoordinates));
+	                        System.out.println("Found compile dependency for subsystem content " + requiredFeature + ": " + mavenCoordinates);
+	                    } catch (IllegalArgumentException e) {
+	                        throw new MavenRepoGeneratorException(
+	                                "Invalid Maven coordinates defined in subsystem content " + requiredFeature + " in the manifest for ESA file " + zipFile.getName(), e);
+	                    }
+	                } else {
+	                    throw new MavenRepoGeneratorException(
+	                            "For ESA " + zipFile.getName() + ", found " + Constants.SUBSYSTEM_MAVEN_COORDINATES + " key in manifest but failed to parse it from the string: " + line);
+	                }
+	            }
+	        }
+	    } catch (IOException e) {
+	        throw new MavenRepoGeneratorException("Could not read manifest file " + zipEntry.getName()
+	        + " from ESA file " + zipFile.getName(), e);
+	    } finally {
+	        if (inputStream != null) {
+	            try {
+	                inputStream.close();
+	            } catch (IOException e) {
+	            }
+	        }
+	    }
+	    return result;
 	}
 
 	/**
@@ -505,9 +565,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		}
 
 		File sourceFile = new File(inputDir, feature.getSymbolicName() + type.getLibertyFileExtension());
-		System.out.println("This is the source file:" +sourceFile);
-		System.out.println("This is the inputDir:"+inputDir);
-		System.out.println("This is the name:" +feature.getSymbolicName() + type.getLibertyFileExtension() );
+		System.out.println("Source file: " +sourceFile);
 		if (!sourceFile.exists()) {
 			throw new MavenRepoGeneratorException("Artifact source file " + sourceFile + " does not exist.");
 		}
@@ -627,10 +685,6 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				String mavenCoordinates = null;
 				if (wlpInfo.containsKey(Constants.MAVEN_COORDINATES_KEY)) {
 					mavenCoordinates = wlpInfo.getString(Constants.MAVEN_COORDINATES_KEY);
-					String[] tokens = mavenCoordinates.split(":");
-					if (tokens.length != 3) {
-						throw new MavenRepoGeneratorException("String " + mavenCoordinates + " is not a valid Maven coordinate string. Expected format is groupId:artifactId:version");
-					}
 				}
 
 				LibertyFeature feature = new LibertyFeature(symbolicName, shortName, name, description, requireFeaturesWithTolerates, productVersion, mavenCoordinates, isWebsphereLiberty, restrictedLicense);
@@ -699,55 +753,6 @@ public class LibertyFeaturesToMavenRepo extends Task {
 				out.close();
 			}
 		}
-	}
-
-	/**
-	 * Parse additional dependencies from XML file in project resources.
-	 * 
-	 * @return Map of each feature's symbolic name to a list of Maven coordinates for its dependencies
-	 * @throws MavenRepoGeneratorException If the XML file could not be parsed.
-	 */
-	private Map<String, List<MavenCoordinates>> parseAdditionalDependencies() throws MavenRepoGeneratorException {
-		Map<String, List<MavenCoordinates>> dependenciesMap = new HashMap<String, List<MavenCoordinates>>();
-		
-		InputStream in = getClass().getResourceAsStream("/featureMavenDependency.xml"); 		
-		if (in == null) {
-			throw new MavenRepoGeneratorException("Cannot find resource featureMavenDependency.xml");
-		}
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db;
-		try {
-			db = dbf.newDocumentBuilder();
-			Document document = db.parse(in);
-			document.getDocumentElement().normalize();
-			NodeList featureNodeList = document.getElementsByTagName("feature");
-			for (int i = 0; i < featureNodeList.getLength(); i++) {
-				Node featureNode = featureNodeList.item(i);
-				if (featureNode.getNodeType() == Node.ELEMENT_NODE) {
-					Element featureElement = (Element) featureNode;
-					String featureName = featureElement.getAttribute("name");
-					NodeList mavenDependenciesNodeList = featureElement.getElementsByTagName("mavendependencies");
-					Element mavenDependenciesElement = (Element) mavenDependenciesNodeList.item(0);
-					NodeList dependenciesNodeList = mavenDependenciesElement.getElementsByTagName("dependency");
-					List<MavenCoordinates> artifacts = new ArrayList<MavenCoordinates>();
-					for (int j = 0; j < dependenciesNodeList.getLength(); j++) {
-						Node dependencyNode = dependenciesNodeList.item(j);
-						if (dependencyNode.getNodeType() == Node.ELEMENT_NODE) {
-							Element dependencyElement = (Element) dependencyNode;
-							String groupId = dependencyElement.getElementsByTagName("groupId").item(0).getTextContent();
-							String artifactId = dependencyElement.getElementsByTagName("artifactId").item(0).getTextContent();
-							String version = dependencyElement.getElementsByTagName("version").item(0).getTextContent();
-							artifacts.add(new MavenCoordinates(groupId, artifactId, version));
-						}
-					}
-					dependenciesMap.put(featureName, artifacts);
-				}
-			}
-		} catch (Exception e) {
-			throw new MavenRepoGeneratorException("Failed to parse featureMavenDependency.xml", e);
-		}
-		
-		return dependenciesMap;
 	}
 	
 	private static String parseProductVersion(String appliesTo) {
