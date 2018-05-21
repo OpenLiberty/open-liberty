@@ -174,7 +174,7 @@ public class CustomCertificateMapperInBellTest {
     }
 
     /**
-     * Test mapping with a {@link CertificateMapper} that maps the X.509 certificate to a
+     * Test mapping with a {@link X509CertificateMapper} that maps the X.509 certificate to a
      * name that does exist in the basic registry.
      *
      * @throws Exception If the test failed for an unforeseen reason.
@@ -189,7 +189,7 @@ public class CustomCertificateMapperInBellTest {
         verifyProgrammaticAPIValues(BASIC_USER_1, response);
 
         /*
-         * Check for CertificateMapper.mapCertificate() call.
+         * Check for {@link X509CertificateMapper}.mapCertificate() call.
          */
         String trace = "The custom X.509 certificate mapper returned the following mapping: " + BASIC_USER_1;
         List<String> matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
@@ -197,7 +197,7 @@ public class CustomCertificateMapperInBellTest {
     }
 
     /**
-     * Test mapping with a {@link CertificateMapper} that maps the X.509 certificate to a
+     * Test mapping with a {@link X509CertificateMapper} that maps the X.509 certificate to a
      * name that does NOT exist in the basic registry.
      *
      * @throws Exception If the test failed for an unforeseen reason.
@@ -227,8 +227,8 @@ public class CustomCertificateMapperInBellTest {
     }
 
     /**
-     * Test handling of a {@link CertificateMapper} implementation that throws {@link CertificateMapNotSupportedException}
-     * from the {@link CertificateMapper#mapCertificate(java.security.cert.X509Certificate)} method.
+     * Test handling of a {@link X509CertificateMapper} implementation that throws {@link CertificateMapNotSupportedException}
+     * from the {@link {@link X509CertificateMapper#mapCertificate(java.security.cert.X509Certificate[])}} method.
      *
      * @throws Exception If the test failed for an unforeseen reason.
      */
@@ -261,8 +261,8 @@ public class CustomCertificateMapperInBellTest {
     }
 
     /**
-     * Test handling of a {@link CertificateMapper} implementation that throws {@link CertificateMapFailedException}
-     * from the {@link CertificateMapper#mapCertificate(java.security.cert.X509Certificate)} method.
+     * Test handling of a {@link X509CertificateMapper} implementation that throws {@link CertificateMapFailedException}
+     * from the {@link {@link X509CertificateMapper#mapCertificate(java.security.cert.X509Certificate[])}} method.
      *
      * @throws Exception If the test failed for an unforeseen reason.
      */
