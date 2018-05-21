@@ -564,6 +564,7 @@ public class MemoryInformation {
     }
 
     private long getAvailableMemoryHp() throws MemoryInformationException {
+        // See getTotalMemoryHp
         try {
             List<String> lines = OperatingSystem.executeProgram("vmstat", "1", "1");
             for (int i = 0; i < lines.size(); i++) {
@@ -580,11 +581,14 @@ public class MemoryInformation {
     }
 
     private long getTotalMemoryIBMi() throws MemoryInformationException {
-        // Available in QWCRSSTS but inaccessible without a native layer.
+        // Available in QWCRSSTS but requires jt400.jar (IBM Toolbox for Java)
+        // and we don't want to add that dependency in OL.
+        // Find sample code RetrieveMemory.java if going down this path.
         return getTotalMemoryJDK();
     }
 
     private long getAvailableMemoryIBMi() throws MemoryInformationException {
+        // See getTotalMemoryIBMi
         return getFreeMemoryJDK();
     }
 
