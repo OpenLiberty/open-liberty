@@ -13,7 +13,7 @@ Subsystem-Name: J2EE Management 1.1
  com.ibm.websphere.appserver.transaction-1.2
 -bundles=com.ibm.ws.management.j2ee, \
  com.ibm.ws.management.j2ee.mbeans; location:=lib/, \
- com.ibm.websphere.javaee.management.j2ee.1.1; location:=dev/api/spec/; mavenCoordinates="javax.management.j2ee:management-api:1.1-rev-1"
+ com.ibm.websphere.javaee.management.j2ee.1.1; location:=dev/api/spec/; mavenCoordinates="javax.management.j2ee:javax.management.j2ee-api:1.1.1"
 -jars=com.ibm.websphere.appserver.api.j2eemanagement; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.j2eemanagement_1.1-javadoc.zip
 kind=ga

@@ -885,7 +885,7 @@ public final class ThreadPoolController {
                 distance = poolSize - priorKey.intValue();
                 if (priorKey > hangBufferPoolSize) {
                     inHangBuffer = false;
-                    if (pruneData(priorStats, forecast, distance, downwardCompareSpan)) {
+                    if (pruneData(priorStats, forecast)) {
                         threadStats.remove(priorKey);
                         pruned = true;
                     }
@@ -938,7 +938,7 @@ public final class ThreadPoolController {
                         try {
                             // potentially different compare span when looking at larger poolSizes
                             int upwardCompareSpan = Math.min(compareRange * poolIncrement, maxThreads - poolSize);
-                            Integer largestPoolSize = getLargestValidPoolSize(poolSize, forecast, upwardCompareSpan);
+                            Integer largestPoolSize = getLargestValidPoolSize(poolSize, forecast);
                             // only make this check if data is available well beyond compareSpan
                             if ((largestPoolSize - poolSize) > (upwardCompareSpan * compareSpanRatioMultiplier))
                                 if (leanTowardShrinking(poolSize, largestPoolSize, forecast, threadStats.get(largestPoolSize).getMovingAverage()))
@@ -950,7 +950,7 @@ public final class ThreadPoolController {
                         // shrink more eagerly if we are not very inclined to shrink based on compareRange data,
                         // but we have much smaller poolSize data showing similar tput to current larger size
                         try {
-                            Integer smallestPoolSize = getSmallestValidPoolSize(poolSize, forecast, downwardCompareSpan);
+                            Integer smallestPoolSize = getSmallestValidPoolSize(poolSize, forecast);
                             // only make this check if data is available well beyond compareSpan
                             if ((poolSize - smallestPoolSize) > (downwardCompareSpan * compareSpanRatioMultiplier))
                                 if (leanTowardShrinking(smallestPoolSize, poolSize, threadStats.get(smallestPoolSize).getMovingAverage(), forecast))
@@ -1014,7 +1014,7 @@ public final class ThreadPoolController {
                 // discard invalid data (old or out-of-range)
                 ThroughputDistribution priorStats = threadStats.get(priorKey);
                 distance = priorKey - poolSize;
-                if (pruneData(priorStats, forecast, distance, upwardCompareSpan)) {
+                if (pruneData(priorStats, forecast)) {
                     threadStats.remove(priorKey);
                 } else {
                     // found valid data, add it to the score
@@ -1063,7 +1063,7 @@ public final class ThreadPoolController {
                     try {
                         // potentially different compare span when looking at smaller poolSizes
                         int downwardCompareSpan = Math.min(compareRange * poolDecrement, poolSize - coreThreads);
-                        Integer smallestPoolSize = getSmallestValidPoolSize(poolSize, forecast, downwardCompareSpan);
+                        Integer smallestPoolSize = getSmallestValidPoolSize(poolSize, forecast);
                         // only make this check if data is available well beyond compareSpan
                         if ((poolSize - smallestPoolSize) > (downwardCompareSpan * compareSpanRatioMultiplier)) {
                             if (leanTowardShrinking(smallestPoolSize, poolSize, threadStats.get(smallestPoolSize).getMovingAverage(), forecast))
@@ -1078,7 +1078,7 @@ public final class ThreadPoolController {
                         // data for much larger poolSizes showing tput is not much better, we can be even
                         // less eager to grow
                         try {
-                            Integer largestPoolSize = getLargestValidPoolSize(poolSize, forecast, upwardCompareSpan);
+                            Integer largestPoolSize = getLargestValidPoolSize(poolSize, forecast);
                             // only make this check if data is available well beyond compareSpan
                             if ((largestPoolSize - poolSize) > (upwardCompareSpan * compareSpanRatioMultiplier)) {
                                 if (leanTowardShrinking(poolSize, largestPoolSize, forecast, threadStats.get(largestPoolSize).getMovingAverage()))
@@ -1496,11 +1496,9 @@ public final class ThreadPoolController {
      *
      * @param priorStats - ThroughputDistribution under evaluation
      * @param forecast - expected throughput at the current poolSize
-     * @param distance - number of threads difference between priorStats and current poolSize
-     * @param compareSpan - number of threads currently used for grow/shrink decisions
      * @return - true if priorStats should be removed
      */
-    private boolean pruneData(ThroughputDistribution priorStats, double forecast, int distance, int compareSpan) {
+    private boolean pruneData(ThroughputDistribution priorStats, double forecast) {
         boolean prune = false;
 
         // if forecast tput is much greater or much smaller than priorStats, we suspect
@@ -1524,20 +1522,17 @@ public final class ThreadPoolController {
      *
      * @param poolSize - current poolSize
      * @param forecast - expected throughput at current poolSize
-     * @param compareSpan - number of threads currently used for grow/shrink decisions
      * @return - smallest valid poolSize found
      */
-    private Integer getSmallestValidPoolSize(Integer poolSize, Double forecast, int compareSpan) {
+    private Integer getSmallestValidPoolSize(Integer poolSize, Double forecast) {
         Integer smallestPoolSize = threadStats.firstKey();
         Integer nextPoolSize = threadStats.higherKey(smallestPoolSize);
         Integer pruneSize = -1;
         boolean validSmallData = false;
-        int distance = 0;
-        while (!validSmallData) {
+        while (!validSmallData && nextPoolSize != null) {
             ThroughputDistribution smallestPoolSizeStats = getThroughputDistribution(smallestPoolSize, false);;
-            distance = poolSize - smallestPoolSize;
             // prune data that is too old or outside believable range
-            if (pruneData(smallestPoolSizeStats, forecast, distance, compareSpan)) {
+            if (pruneData(smallestPoolSizeStats, forecast)) {
                 pruneSize = smallestPoolSize;
                 smallestPoolSize = nextPoolSize;
                 nextPoolSize = threadStats.higherKey(smallestPoolSize);
@@ -1556,20 +1551,17 @@ public final class ThreadPoolController {
      *
      * @param poolSize - current poolSize
      * @param forecast - expected throughput at current poolSize
-     * @param compareSpan - number of threads currently used for grow/shrink decisions
      * @return - largest valid poolSize found
      */
-    private Integer getLargestValidPoolSize(Integer poolSize, Double forecast, int compareSpan) {
+    private Integer getLargestValidPoolSize(Integer poolSize, Double forecast) {
         Integer largestPoolSize = -1;
         // find largest poolSize with valid data
         boolean validLargeData = false;
-        int distance = 0;
         while (!validLargeData) {
             largestPoolSize = threadStats.lastKey();
             ThroughputDistribution largestPoolSizeStats = getThroughputDistribution(largestPoolSize, false);;
-            distance = largestPoolSize - poolSize;
             // prune any data that is too old or outside believable range
-            if (pruneData(largestPoolSizeStats, forecast, distance, compareSpan)) {
+            if (pruneData(largestPoolSizeStats, forecast)) {
                 threadStats.remove(largestPoolSize);
             } else {
                 validLargeData = true;

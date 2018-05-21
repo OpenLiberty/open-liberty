@@ -70,6 +70,8 @@ public class H2InboundLink extends HttpInboundLink {
     READ_LINK_STATUS readLinkStatus = READ_LINK_STATUS.NOT_READING;
     Object readLinkStatusSync = new Object() {};
 
+    private final int configuredInactivityTimeout = 0; // in milleseconds;
+    private long lastWriteTime = 0;
     private int OutstandingWriteCount = 0;
     private final Object OutstandingWriteCountSync = new Object() {};
     private final int closeWaitForWritesWatchDogTimer = 5000;
@@ -402,8 +404,13 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public void startAsyncRead(boolean newFrame) {
+        // start the read with the configured read timeout
+        startAsyncRead(newFrame, configuredInactivityTimeout);
+    }
+
+    public void startAsyncRead(boolean newFrame, int readTimeout) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "startAsyncRead entry; newframe = " + newFrame);
+            Tr.debug(tc, "startAsyncRead entry; newframe = " + newFrame + " readTimeout: " + readTimeout);
         }
         // if new frame, reset and reuse the current one
         if (newFrame) {
@@ -426,7 +433,12 @@ public class H2InboundLink extends HttpInboundLink {
                 readLinkStatus = READ_LINK_STATUS.READ_OUTSTANDING;
             }
             try {
-                h2MuxTCPReadContext.read(numBytes, h2MuxReadCallback, forceQueue, TCPRequestContext.NO_TIMEOUT);
+                int timeout = TCPRequestContext.NO_TIMEOUT;
+                if (readTimeout != 0) {
+                    timeout = readTimeout;
+                }
+
+                h2MuxTCPReadContext.read(numBytes, h2MuxReadCallback, forceQueue, timeout);
             } catch (Throwable up) {
                 setReadLinkStatusToNotReadingAndNotify();
                 throw up;
@@ -495,6 +507,11 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public void processRead(VirtualConnection vc, TCPReadRequestContext rrc) {
+        // use the configured timeout
+        processRead(vc, rrc, configuredInactivityTimeout);
+    }
+
+    public void processRead(VirtualConnection vc, TCPReadRequestContext rrc, int readTimeout) {
 
         boolean readForNewFrame = true;
 
@@ -593,7 +610,7 @@ public class H2InboundLink extends HttpInboundLink {
             if (doRead) {
                 // read for a new frame
                 // read outside of synchronized to avoid thread deadlock
-                startAsyncRead(readForNewFrame);
+                startAsyncRead(readForNewFrame, readTimeout);
             }
         }
     }
@@ -698,11 +715,19 @@ public class H2InboundLink extends HttpInboundLink {
                 }
                 e.waitWriteCompleteLatch();
             }
+
+            // write worked, update time if we are current tracking it for inactivity
+            if (configuredInactivityTimeout != 0) {
+                synchronized (OutstandingWriteCountSync) {
+                    lastWriteTime = System.nanoTime();
+                }
+            }
+
         } finally {
             synchronized (OutstandingWriteCountSync) {
                 OutstandingWriteCount--;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "writeSync - decremented write count to: " + OutstandingWriteCount + " H2InboundLink hc: " + this.hashCode());
+                    Tr.debug(tc, "writeSync - decremented write count to: " + OutstandingWriteCount + " lastWriteTime: " + lastWriteTime + " H2InboundLink hc: " + this.hashCode());
                 }
                 if (OutstandingWriteCount == 0) {
                     OutstandingWriteCountSync.notify();
@@ -838,6 +863,10 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public void closeConnectionLink(Exception exceptionForCloseFromHere) {
+        closeConnectionLink(exceptionForCloseFromHere, false);
+    }
+
+    public void closeConnectionLink(Exception exceptionForCloseFromHere, boolean attemptGoAway) {
 
         // can only enter this routine once per lifecycle of this object
         synchronized (oneTimeEntrySync) {
@@ -886,13 +915,38 @@ public class H2InboundLink extends HttpInboundLink {
                 }
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "closeConnectionLink: close the device link now. setting :linkStatus: to CLOSING" + " :close: H2InboundLink hc: " + this.hashCode());
+            if (!attemptGoAway) {
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeConnectionLink: close the device link now. setting :linkStatus: to CLOSING" + " :close: H2InboundLink hc: " + this.hashCode());
+                }
+                // we are tasked with closing the device link, and now no more frames should be written or read by the H2 code on this connection.
+                linkStatus = LINK_STATUS.CLOSING;
             }
-            // we are tasked with closing the device link, and now no more frames should be written or read by the H2 code on this connection.
-            linkStatus = LINK_STATUS.CLOSING;
 
         } // end sync, close the deviceLink outside the sync lock
+
+        if (attemptGoAway) {
+
+            try {
+                streamTable.get(0).sendGOAWAYFrame(new Http2Exception(exceptionForCloseFromHere.getMessage()));
+            } catch (Http2Exception x) {
+                // just keep closing down
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeConnectionLink: exeception received while sending GOAWAY :close: H2InboundLink hc: " + hcDebug + " " + x);
+                }
+            }
+
+            synchronized (linkStatusSync) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeConnectionLink: close the device link now after sending GOAWAY. setting :linkStatus: to CLOSING" + " :close: H2InboundLink hc: "
+                                 + this.hashCode());
+                }
+                // we are tasked with closing the device link, and now no more frames should be written or read by the H2 code on this connection.
+                linkStatus = LINK_STATUS.CLOSING;
+            }
+
+        }
 
         // tell the write tree queue to quit.  wait for the queue to drain, so no writes will be outstanding when closing
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1206,6 +1260,16 @@ public class H2InboundLink extends HttpInboundLink {
      */
     public String getAuthority() {
         return this.authority;
+    }
+
+    protected long getLastWriteTime() {
+        synchronized (OutstandingWriteCountSync) {
+            return lastWriteTime;
+        }
+    }
+
+    protected int getconfiguredInactivityTimeout() {
+        return configuredInactivityTimeout;
     }
 
 }

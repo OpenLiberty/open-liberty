@@ -25,6 +25,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
+import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.SpringBootApplication;
 import com.ibm.ws.container.service.metadata.MetaDataException;
@@ -62,7 +63,7 @@ public class WebInstanceFactory implements ContainerInstanceFactory<WebInitializ
 
     @Override
     public Instance intialize(SpringBootApplication app, String id, String virtualHostID,
-                              WebInitializer initializer) throws IOException, UnableToAdaptException, MetaDataException {
+                              WebInitializer initializer, SpringConfiguration additionalConfig) throws IOException, UnableToAdaptException, MetaDataException {
         String filterString = "(&(" + OBJECTCLASS +
                               "=" + VirtualHost.class.getName() + ")(id=" + virtualHostID + "))";
         Filter filter = null;
@@ -72,7 +73,7 @@ public class WebInstanceFactory implements ContainerInstanceFactory<WebInitializ
             throw new IllegalArgumentException(e);
         }
         ServiceTracker<VirtualHost, VirtualHost> tracker = new ServiceTracker<>(context, filter, null);
-        return new WebInstance(this, app, id, virtualHostID, initializer, tracker);
+        return new WebInstance(this, app, id, virtualHostID, initializer, tracker, additionalConfig);
     }
 
     ModuleHandler getModuleHandler() {

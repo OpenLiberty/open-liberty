@@ -26,7 +26,7 @@ public class Transaction extends ConfigElement {
     private Integer propogatedOrBMTTranLifetimeTimeout;
     private Boolean recoverOnStartup;
     private Boolean timeoutGracePeriodEnabled;
-    private Integer totalTranLifetimeTimeout;
+    private String totalTranLifetimeTimeout;
     private String transactionLogDirectory;
     private Integer transactionLogSize;
     private Boolean waitForRecovery;
@@ -122,11 +122,11 @@ public class Transaction extends ConfigElement {
     }
 
     @XmlAttribute(name = "totalTranLifetimeTimeout")
-    public void setTotalTranLifetimeTimeout(Integer totalTranLifetimeTimeout) {
+    public void setTotalTranLifetimeTimeout(String totalTranLifetimeTimeout) {
         this.totalTranLifetimeTimeout = totalTranLifetimeTimeout;
     }
 
-    public Integer getTotalTranLifetimeTimeout() {
+    public String getTotalTranLifetimeTimeout() {
         return this.totalTranLifetimeTimeout;
     }
 

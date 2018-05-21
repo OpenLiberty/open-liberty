@@ -79,7 +79,7 @@ public class PackageProcessor implements ArchiveProcessor {
         this.packageFile = packageFile;
         this.bootProps = bootProps;
         this.installRoot = bootProps.getInstallRoot();
-        
+
         this.options = new HashMap<PackageOption, String>();
         if (options != null) {
             for (Pair<PackageOption, String> option : options) {
@@ -137,7 +137,7 @@ public class PackageProcessor implements ArchiveProcessor {
      * @return true if --include=runnable was specified on the package command.
      */
     private boolean doesIncludeOptionHaveRunnable() {
-        String val =  options.get(PackageOption.INCLUDE);
+        String val = options.get(PackageOption.INCLUDE);
 
         return IncludeOption.RUNNABLE.matches(val);
     }
@@ -210,7 +210,7 @@ public class PackageProcessor implements ArchiveProcessor {
             } else {
                 String val = options.get(PackageOption.INCLUDE);
                 // process all the options here
-                if (includeAllorRunnable(val)) {
+                if (includeAllorNoMinifyRunnable(val)) {
                     archive.addEntryConfigs(createAllConfigs(processName, runtimeOnly));
                 } else if (includeUsr(val)) {
                     archive.addEntryConfigs(createUsrConfigs(processName, true));
@@ -246,8 +246,8 @@ public class PackageProcessor implements ArchiveProcessor {
      *
      * Otherwise return false.
      */
-    private boolean includeAllorRunnable(String val) {
-        return IncludeOption.ALL.matches(val) || IncludeOption.RUNNABLE.matches(val);
+    private boolean includeAllorNoMinifyRunnable(String val) {
+        return IncludeOption.ALL.matches(val) || (IncludeOption.RUNNABLE.matches(val) && !IncludeOption.MINIFY.matches(val));
     }
 
     /*

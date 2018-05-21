@@ -187,7 +187,12 @@ public class FormLoginAuthenticator implements WebAuthenticator {
         FormLoginConfiguration formLoginConfig = webRequest.getFormLoginConfiguration();
         String inURL = null;
         String contextPath = null;
-        if (formLoginConfig != null) {
+        // if the global login is set as CERT and the fallback is allowed to FORM,
+        // use global form login.
+        String authMech = webAppSecConfig.getOverrideHttpAuthMethod();
+        if (authMech != null && authMech.equals("CLIENT_CERT") && webAppSecConfig.getAllowFailOverToFormLogin()) {
+            inURL = webAppSecConfig.getLoginFormURL();
+        } else if (formLoginConfig != null) {
             inURL = formLoginConfig.getLoginPage();
             if (inURL != null)
                 contextPath = req.getContextPath();

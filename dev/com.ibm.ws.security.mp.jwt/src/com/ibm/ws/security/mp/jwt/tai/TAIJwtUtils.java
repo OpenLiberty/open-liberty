@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.tai;
 
@@ -30,7 +30,7 @@ public class TAIJwtUtils {
     private static TraceComponent tc = Tr.register(TAIJwtUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     public static final String TYPE_JWT_TOKEN = "Json Web Token";
 
-    protected TAIJwtUtils() {
+    public TAIJwtUtils() {
     }
 
     public JwtToken createJwt(@Sensitive String idToken, String jwtConfigId) throws MpJwtProcessingException {

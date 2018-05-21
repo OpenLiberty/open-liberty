@@ -42,7 +42,6 @@ import com.ibm.ws.app.manager.springboot.container.config.VirtualHost;
 @SuppressWarnings("restriction")
 public class ServerConfigurationFactory {
     private static final String SECURITY_DIR = "resources/security/";
-
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String PORT = "port";
     public static final String ADDRESS = "address";
@@ -62,6 +61,9 @@ public class ServerConfigurationFactory {
     public static final String SSL_TRUST_STORE_PASSWORD = "ssl.trust-store-password";
     public static final String SSL_TRUST_STORE_PROVIDER = "ssl.trust-store-provider";
     public static final String SSL_TRUST_STORE_TYPE = "ssl.trust-store-type";
+    public static final String HTTP2 = "http2";
+    private static final String HTTP_11 = "http/1.1";
+    private static final String HTTP_2 = "http/2";
 
     public static ServerConfiguration createServerConfiguration(Map<String, Object> serverProperties, SpringBootConfigFactory configFactory, Function<String, URL> urlGetter) {
         ServerConfiguration sc = new ServerConfiguration();
@@ -118,6 +120,15 @@ public class ServerConfigurationFactory {
         String serverHeader = (String) serverProperties.get(SERVER_HEADER);
         if (serverHeader != null) {
             endpoint.getHttpOptions().setServerHeaderValue(serverHeader);
+        }
+
+        Boolean isHttp2Enabled = (Boolean) serverProperties.get(HTTP2);
+        if (isHttp2Enabled != null) {
+            if (isHttp2Enabled) {
+                endpoint.setProtocolVersion(HTTP_2);
+            } else {
+                endpoint.setProtocolVersion(HTTP_11);
+            }
         }
     }
 

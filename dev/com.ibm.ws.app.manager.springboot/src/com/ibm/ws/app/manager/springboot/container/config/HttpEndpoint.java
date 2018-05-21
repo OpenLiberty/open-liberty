@@ -27,6 +27,7 @@ public class HttpEndpoint extends ConfigElement {
     private String host;
     private Integer httpPort;
     private Integer httpsPort;
+    private String protocolVersion;
 
     /**
      * @return TCP options for this configuration
@@ -103,6 +104,21 @@ public class HttpEndpoint extends ConfigElement {
         this.httpsPort = httpsPort;
     }
 
+    /**
+     * @return the protocolVersion for this entry
+     */
+    public String getProtocolVersion() {
+        return this.protocolVersion;
+    }
+
+    /**
+     * @param protocolVersion for this entry
+     */
+    @XmlAttribute
+    public void setProtocolVersion(String protocolVersion) {
+        this.protocolVersion = ConfigElement.getValue(protocolVersion);
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("HttpEndpoint{");
@@ -113,6 +129,8 @@ public class HttpEndpoint extends ConfigElement {
             buf.append("httpPort=\"" + this.httpPort + "\" ");
         if (this.httpsPort != null)
             buf.append("httpsPort=\"" + this.httpsPort + "\" ");
+        if (this.protocolVersion != null)
+            buf.append("protocolVersion=\"" + this.protocolVersion + "\" ");
         if (this.tcpOptions != null)
             buf.append(tcpOptions.toString());
         if (this.sslOptions != null)

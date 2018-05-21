@@ -402,7 +402,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
                                       "web.war.identitystores.custom.realm2");
     
         // create module3, non JSR375 form login
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR3_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesecrunas");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR3_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec", "web.war.servlets.nojavaeesec.runas");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_MIXED_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME, WAR3_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_MIXED_NAME);
@@ -518,7 +518,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
                                       "web.war.identitystores.custom.realm2");
     
         // create module3, non JSR375 form login
-        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR3_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesecrunas");
+        WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR3_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec", "web.war.servlets.nojavaeesec.runas");
 
         WCApplicationHelper.packageWarsToEar(myServer, TEMP_DIR, EAR_APPBNDXML_NAME, true, WAR1_NAME, WAR2CUSTOM_NAME, WAR3_NAME);
         WCApplicationHelper.addEarToServerApps(myServer, TEMP_DIR, EAR_APPBNDXML_NAME);

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -202,8 +203,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 CacheHashMap.tcInvoke(tcCachingProvider, "close");
                 cachingProvider.close();
                 CacheHashMap.tcReturn(tcCachingProvider, "close");
-                throw x;
             }
+            throw x;
         }
     }
 
@@ -402,23 +403,29 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                             if (isAttrCache) {
                                 out.println(INDENT + "First 100 entries:");
                                 int i = 0;
-                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); ) {
-                                    Entry<?, ?> entry = (Entry<?, ?>) it.next();
-                                    if (entry != null) {
-                                        // deserialization of the value might require the application's class loader, which is not available during introspection
-                                        byte[] bytes = (byte[]) entry.getValue();
-                                        out.println(INDENT + INDENT + "session attribute " + entry.getKey() + ": " + (bytes == null ? null : ("byte[" + bytes.length + "]")));
+                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); )
+                                    try {
+                                        Entry<?, ?> entry = (Entry<?, ?>) it.next();
+                                        if (entry != null) {
+                                            // deserialization of the value might require the application's class loader, which is not available during introspection
+                                            byte[] bytes = (byte[]) entry.getValue();
+                                            out.println(INDENT + INDENT + "session attribute " + entry.getKey() + ": " + (bytes == null ? null : ("byte[" + bytes.length + "]")));
+                                        }
+                                    } catch (NoSuchElementException x) {
+                                        // ignore - some JCache providers might raise this instead of returning null when modified during iterator
                                     }
-                                }
                             } else if (isMetaCache) {
                                 out.println(INDENT + "First 50 entries:");
                                 int i = 0;
-                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); ) {
-                                    Entry<?, ?> entry = (Entry<?, ?>) it.next();
-                                    if (entry != null) {
-                                        out.println(INDENT + INDENT + "session " + entry.getKey() + ": " + new SessionInfo((ArrayList<?>) entry.getValue()));
+                                for (Iterator<?> it = cache.iterator(); i++ < 50 && it.hasNext(); )
+                                    try {
+                                        Entry<?, ?> entry = (Entry<?, ?>) it.next();
+                                        if (entry != null) {
+                                            out.println(INDENT + INDENT + "session " + entry.getKey() + ": " + new SessionInfo((ArrayList<?>) entry.getValue()));
+                                        }
+                                    } catch (NoSuchElementException x) {
+                                        // ignore - some JCache providers might raise this instead of returning null when modified during iterator
                                     }
-                                }
                             }
                         }
                     }

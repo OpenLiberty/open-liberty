@@ -5,4 +5,7 @@
         <name>${hazelcast.group.name}</name>
         <password>dev-pass</password>
     </group>
+    <network>
+      <connection-timeout>120000</connection-timeout>
+    </network>
 </hazelcast-client>

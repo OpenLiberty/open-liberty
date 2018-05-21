@@ -34,9 +34,8 @@ public class TokenBuilder {
 	private static TraceComponent tc = Tr.register(TokenBuilder.class);
 	protected static final String USER_CLAIM = "upn"; // mp-jwt format
 	protected static final String GROUP_CLAIM = "groups"; // mp-jwt format
-	protected static final String CCK_CLAIM = "session"; // custom cache key
-															// claim
-
+	protected static final String CCK_CLAIM = "sid"; // custom cache key
+	protected static final String REALM_CLAIM = "realm"; // realm
 	private final static String GROUP_PREFIX = "group:";
 
 	/**
@@ -175,6 +174,11 @@ public class TokenBuilder {
 			builder.subject(user);
 			builder.claim(USER_CLAIM, user);
 
+			String realm = getRealm(subject);
+			if (realm != null) {
+				builder.claim(REALM_CLAIM, realm);
+			}
+
 			ArrayList<String> groups = getGroups(subject);
 			if (isValidList(groups)) {
 				builder.claim(GROUP_CLAIM, groups);
@@ -188,6 +192,19 @@ public class TokenBuilder {
 		} catch (Exception e) {
 			// ffdc
 			throw e;
+		}
+	}
+
+	private String getRealm(Subject subject) {
+		try {
+			WSCredential wsCred = getWSCredential(subject);
+			if (wsCred == null) {
+				wsCred = getPrivateWSCredential(subject);
+			}
+			return wsCred != null ? wsCred.getRealmName() : null;
+		} catch (Exception e) {
+			// ffdc
+			return null;
 		}
 	}
 
