@@ -345,8 +345,7 @@ public class MemoryInformation {
                 availableFallback = free - watermark_low + fileCache + slabReclaimable
                                     - Math.min(slabReclaimable / 2, watermark_low);
             } else {
-                availableFallback = free + buffers + cached;
-                availableFallback = applySwappiness(availableFallback);
+                availableFallback = free + buffers + applySwappiness(cached);
             }
 
             if (availableFallback > 0) {
