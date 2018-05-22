@@ -34,8 +34,6 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.management.security.ManagementRole;
 import com.ibm.ws.management.security.ManagementSecurityConstants;
 import com.ibm.ws.security.SecurityService;
@@ -45,6 +43,8 @@ import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -61,7 +61,9 @@ public class ManagementSecurityAuthorizationTableTest {
     static class ManagementRoleDouble implements ManagementRole {
         private final String roleName;
         private Set<String> users = new HashSet<String>();
+        private Set<String> userAccessIds = new HashSet<String>();
         private Set<String> groups = new HashSet<String>();
+        private Set<String> groupAccessIds = new HashSet<String>();
 
         ManagementRoleDouble(String roleName) {
             this.roleName = roleName;
@@ -79,8 +81,17 @@ public class ManagementSecurityAuthorizationTableTest {
             return users;
         }
 
+        @Override
+        public Set<String> getUserAccessIds() {
+            return userAccessIds;
+        }
+
         public void setUsers(Set<String> users) {
             this.users = users;
+        }
+
+        public void setUserAccessIds(Set<String> userAccessIds) {
+            this.userAccessIds = userAccessIds;
         }
 
         /** {@inheritDoc} */
@@ -89,8 +100,17 @@ public class ManagementSecurityAuthorizationTableTest {
             return groups;
         }
 
+        @Override
+        public Set<String> getGroupAccessIds() {
+            return groupAccessIds;
+        }
+
         public void setGroups(Set<String> groups) {
             this.groups = groups;
+        }
+
+        public void setGroupAccessIds(Set<String> groupAccessIds) {
+            this.groupAccessIds = groupAccessIds;
         }
 
     }
@@ -331,7 +351,8 @@ public class ManagementSecurityAuthorizationTableTest {
                      RoleSet.EMPTY_ROLESET,
                      table.getRolesForSpecialSubject(ManagementSecurityConstants.ADMIN_RESOURCE_NAME, AuthorizationTableService.EVERYONE));
         assertTrue("Role allAuthenticatedUsers not found for special subject ALL_AUTHENTICATED_USERS",
-                   table.getRolesForSpecialSubject(ManagementSecurityConstants.ADMIN_RESOURCE_NAME, AuthorizationTableService.ALL_AUTHENTICATED_USERS).contains(ManagementSecurityConstants.ALL_AUTHENTICATED_USERS_ROLE_NAME));
+                   table.getRolesForSpecialSubject(ManagementSecurityConstants.ADMIN_RESOURCE_NAME,
+                                                   AuthorizationTableService.ALL_AUTHENTICATED_USERS).contains(ManagementSecurityConstants.ALL_AUTHENTICATED_USERS_ROLE_NAME));
         assertEquals("No special subjects are supported",
                      RoleSet.EMPTY_ROLESET,
                      table.getRolesForSpecialSubject(ManagementSecurityConstants.ADMIN_RESOURCE_NAME, AuthorizationTableService.ALL_AUTHENTICATED_IN_TRUSTED_REALMS));
