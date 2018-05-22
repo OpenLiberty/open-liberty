@@ -43,6 +43,6 @@ public interface JwtSSOTokenProxy {
 
     boolean shouldAlsoIncludeLtpaCookie();
 
-    boolean shouldFallbackToLtpaCookie();
+    boolean shouldUseLtpaIfJwtAbsent();
 
 }

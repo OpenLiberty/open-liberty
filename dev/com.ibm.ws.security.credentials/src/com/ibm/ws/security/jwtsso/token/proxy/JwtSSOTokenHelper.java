@@ -156,9 +156,9 @@ public class JwtSSOTokenHelper {
         return true;
     }
 
-    public static boolean shouldFallbackToLtpaCookie() {
+    public static boolean shouldUseLtpaIfJwtAbsent() {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            return jwtSSOTokenProxyRef.getService().shouldFallbackToLtpaCookie();
+            return jwtSSOTokenProxyRef.getService().shouldUseLtpaIfJwtAbsent();
         }
         return true;
     }

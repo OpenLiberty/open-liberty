@@ -528,14 +528,14 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * (non-Javadoc)
 	 *
 	 * @see com.ibm.ws.security.jwt.sso.token.utils.JwtSSOToken#
-	 * shouldFallbackToLtpaCookie()
+	 * shouldUseLtpaIfJwtAbsent()
 	 */
 	@Override
-	public boolean shouldFallbackToLtpaCookie() {
+	public boolean shouldUseLtpaIfJwtAbsent() {
 		// TODO Auto-generated method stub
 		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
 		if (jwtssobuilderConfig != null) {
-			return jwtssobuilderConfig.isFallbackToLtpa();
+			return jwtssobuilderConfig.isUseLtpaIfJwtAbsent();
 		}
 		return true;
 	}
