@@ -53,6 +53,9 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
+import com.ibm.websphere.security.web.PasswordExpiredException;
+import com.ibm.websphere.security.web.UserRevokedException;
+
 public class AuthenticateApi {
     private static final TraceComponent tc = Tr.register(AuthenticateApi.class);
 
@@ -140,14 +143,17 @@ public class AuthenticateApi {
             reply = createReplyForAuthnFailure(authResult, realm);
 
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_01, req, authResult, Integer.valueOf(reply.getStatusCode()));
-            String extraInfoText = "";
+            
             if (authResult.passwordExpired == true) {
-                extraInfoText = extraInfoText + " [PWEXPIRED]";
+                throw new PasswordExpiredException(authResult.getReason());
             }
-            if (authResult.userRevoked == true) {
-                extraInfoText = extraInfoText + "[IDREVOKED]";
+            else if (authResult.userRevoked == true) {
+                throw new UserRevokedException(authResult.getReason());
             }
-            throw new ServletException(authResult.getReason() + extraInfoText);
+            else {
+                throw new ServletException(authResult.getReason());
+            }
+            
         } else {
 
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_01, req, authResult, Integer.valueOf(HttpServletResponse.SC_OK));
@@ -582,9 +588,6 @@ public class AuthenticateApi {
         WebReply reply = null;
         switch (authResult.getStatus()) {
             case FAILURE:
-                String reason = authResult.getReason();
-                if (reason != null && reason.contains("JASPIC"))
-                    return new ChallengeReply(realm, reason);
                 return DENY_AUTHN_FAILED;
 
             case SEND_401:

@@ -429,17 +429,14 @@ public class AuthenticateApiTest {
      */
     @Test
     public void passwordExpired () throws Exception {
-        System.out.println("Password Expired Testcase running!");
-        FileOutputStream fs = new FileOutputStream("C:/logs/testcases.txt");
-        PrintWriter pw = new PrintWriter(fs);
-        try {
-            
+           
         final CollaboratorUtils cu = mock.mock(CollaboratorUtils.class);
         
         final String jaasEntryName = JaasLoginConfigConstants.SYSTEM_WEB_INBOUND;
         subjectManager.clearSubjects();
         final Subject subject = createAuthenticatedSubject();
         final AuthenticationData authenticationData = createAuthenticationData(user, password);
+        
         mock.checking(new Expectations() {
             {
                 one(config).getLogoutOnHttpSessionExpire();
@@ -450,7 +447,6 @@ public class AuthenticateApiTest {
                 will(returnValue(false));
                 allowing(authnService).authenticate(with(equal(jaasEntryName)), with(matchingAuthenticationData(authenticationData)), with(equal((Subject) null)));
                 will(throwException(new com.ibm.ws.security.authentication.PasswordExpiredException("authn failed")));
-                //one(ssoCookieHelper).addSSOCookiesToResponse(subject, req, resp);
                 one(cu).getUserRegistryRealm(securityServiceRef);
                 will(returnValue("joe"));
                 allowing(securityServiceRef).getService();
@@ -466,27 +462,73 @@ public class AuthenticateApiTest {
                 will(returnValue(mockServletContext));
                 allowing(mockServletContext).getAttribute(with(any(String.class)));
                 will(returnValue(null));
-                
             }
         });
-        pw.println("Right above the try");
+        
         AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, cu, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"));
         BasicAuthAuthenticator basicAuthAuthenticator = new BasicAuthAuthenticator(authnService, userRegistry, ssoCookieHelper, config);
+        
         try {
-            pw.println("about to log in");
             authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
         } catch (Exception e) {
-            pw.println("Exceptoin HIT");
-            pw.println(e.toString());
-            e.printStackTrace(pw);
-            pw.println(e.getMessage());
+            boolean foundException = false;
+            if(e instanceof com.ibm.websphere.security.web.PasswordExpiredException){
+                foundException = true;
+            }
+            assertEquals(e.getMessage(), true, foundException);
+        }
+    }
+    /**
+     */
+    @Test
+    public void userRevoked () throws Exception {
+      
+        final CollaboratorUtils cu = mock.mock(CollaboratorUtils.class);
+        
+        final String jaasEntryName = JaasLoginConfigConstants.SYSTEM_WEB_INBOUND;
+        subjectManager.clearSubjects();
+        final Subject subject = createAuthenticatedSubject();
+        final AuthenticationData authenticationData = createAuthenticationData(user, password);
+        mock.checking(new Expectations() {
+            {
+                one(config).getLogoutOnHttpSessionExpire();
+                will(returnValue(false));
+                one(req).getRequestedSessionId();
+                will(returnValue("abc"));
+                one(req).isRequestedSessionIdValid();
+                will(returnValue(false));
+                allowing(authnService).authenticate(with(equal(jaasEntryName)), with(matchingAuthenticationData(authenticationData)), with(equal((Subject) null)));
+                will(throwException(new com.ibm.ws.security.authentication.UserRevokedException("authn failed")));
+                one(cu).getUserRegistryRealm(securityServiceRef);
+                will(returnValue("joe"));
+                allowing(securityServiceRef).getService();
+                will(returnValue(securityService));
+                allowing(securityService).getAuthenticationService();
+                will(returnValue(authnService));
+                allowing(authnService).getAuthCacheService();
+                allowing(req).getRemoteUser();
+                allowing(req).getUserPrincipal();
+                allowing(ssoCookieHelper).getSSOCookiename();
+                allowing(req).getCookies();
+                allowing(req).getServletContext();
+                will(returnValue(mockServletContext));
+                allowing(mockServletContext).getAttribute(with(any(String.class)));
+                will(returnValue(null));  
+            }
+        });
+        
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, cu, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"));
+        BasicAuthAuthenticator basicAuthAuthenticator = new BasicAuthAuthenticator(authnService, userRegistry, ssoCookieHelper, config);
+        
+        try {
+            authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
+        } catch (Exception e) {
             
-            assertEquals(e.getMessage(), true, e.getMessage().contains("[PWEXPIRED]"));
-        }
-        }
-        finally {
-            pw.flush();
-            pw.close();
+            boolean foundException = false;
+            if(e instanceof com.ibm.websphere.security.web.UserRevokedException) {
+                foundException = true;
+            }
+            assertEquals(e.getMessage(), true, foundException);
         }
     }
 
