@@ -212,7 +212,6 @@ public class ServerBuilder {
      * @return a reference to this object.
      */
     public ServerBuilder addProductExtension(String name, Properties props) {
-        System.out.println("addingExtension");
         if ((name != null) && (props != null)) {
             if (productExtensions == null) {
                 productExtensions = new HashMap<String, Properties>();
