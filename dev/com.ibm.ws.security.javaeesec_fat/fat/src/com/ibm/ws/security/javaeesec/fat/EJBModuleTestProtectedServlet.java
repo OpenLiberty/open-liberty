@@ -11,8 +11,6 @@
 
 package com.ibm.ws.security.javaeesec.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -141,7 +139,7 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testEJBAnnotatedLdapISOnWar1andWar2() throws Exception {
         String response;
@@ -169,8 +167,6 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         //start server
         startServer(XML_NAME, EJB_APP_NAME);
-        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
-                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
 
         //Test case isUserInRoleLDAPISWar1
         //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.
@@ -241,7 +237,7 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     @AllowedFFDC("javax.naming.AuthenticationException")
     public void testEJBCustomISonWAR1AnnotatedLDAPISonWAR2() throws Exception {
@@ -268,8 +264,7 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         //start server
         startServer(XML_NAME, EJB_APP_NAME);
-        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
-                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
+
         String queryString;
         String response;
 
@@ -373,7 +368,6 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
 
     }
 
-//TODO
     /**
      * Verify the following:
      * <OL>
@@ -395,8 +389,8 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.LITE)
-    //TODO @Test
-    public void testEJBRunAsAnnotatedLdapOnWar1AndDBOnWAR2() throws Exception {
+    @Test
+    public void testEJBRunAsAnnotatedDBOnWar1AndLDAPOnWAR2() throws Exception {
 
         String response;
         String queryString;
@@ -406,7 +400,7 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean", "web.war.ejb.is.servlet",
-                                      "web.war.identitystores.db.derby2;");
+                                      "web.war.identitystores.db.derby2");
 
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_WAR_NAME2, true, EJB_BEAN_JAR_NAME, true, "web.jar.base",
@@ -422,8 +416,6 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(XML_NAME, EJB_APP_NAME);
-        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
-                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
 
         //Test case testisRunAsUserInRoleLDAPtoDBWar1
         //Access WAR 2 and check for UserInRole, sending AnotherUser1 which exist in WAR 2 Annotated LDAP IS.
@@ -494,8 +486,6 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(JASPIC_RUN_AS_XML_NAME, EJB_APP_NAME);
-        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
-                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
 
         //Test case testisRunAsUserInRoleLDAPtoDBWar1
         //Access WAR 2 and check for UserInRole, sending AnotherUser1 which exist in WAR 2 Annotated LDAP IS.
@@ -559,8 +549,6 @@ public class EJBModuleTestProtectedServlet extends JavaEESecTestBase {
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(LDAP_RUN_AS_XML_NAME, EJB_APP_NAME);
-        assertNotNull("Application DefaultQueryDatabaseServlet2 does not appear to have started.",
-                      myServer.waitForStringInLog("CWWKZ0001I: Application DefaultQueryDatabaseServlet2 started"));
 
         //Test case isUserInRoleLDAPISWar1
         //Access WAR 1 and check UserInRole, sending RunAsUser1 which exist in the Annotated LDAP IS.

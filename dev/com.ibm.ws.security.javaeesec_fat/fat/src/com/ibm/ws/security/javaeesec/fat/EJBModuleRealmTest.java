@@ -126,7 +126,7 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testEJBAnnotatedLdapISRealmOnWar1andWar2CorrectRealm() throws Exception {
         String response;
@@ -155,8 +155,6 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(XML_REALM_NAME, EJB_REALM_APP_NAME, EJB_REALM2_APP_NAME);
-//        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
-//                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
 
         //Test case USER1AccessEAR1
         //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.
@@ -213,7 +211,7 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testEJBAnnotatedLdapISRealmOnWar1andWar2IncorrectRealm() throws Exception {
         String response;
@@ -242,8 +240,6 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(XML_INCORRECT_REALM, EJB_REALM_APP_NAME, EJB_REALM2_APP_NAME);
-//        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
-//                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
 
         //Test case USER1AccessEAR1
         //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.

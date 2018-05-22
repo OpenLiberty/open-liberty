@@ -100,9 +100,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
         Log.info(logClass, "setUp()", "-----EAR app created");
 
         startServer(XML_NAME, EJB_APP_NAME);
-        //TODO
-//        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
-//                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
+
     }
 
     @AfterClass
@@ -149,7 +147,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testisUserInRoleLDAPISWar1() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -180,7 +178,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testisUserInRoleLDAPISWar2() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -214,7 +212,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testisRunAsUserInRoleLDAPtoDBWar1() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -245,7 +243,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testisUserNotInRoleLDAPWar1() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -275,7 +273,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testisUserNotInRoleLDAPWar2() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -305,7 +303,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testRunAsInvalidUserUnprotectedServletInRoleLDAPWar1() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -336,7 +334,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testisUserInRoleBasicUserRegistryFallBackWar1WithAnnotations() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -365,7 +363,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testDBUserAccessLDAPServletWar1() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -397,7 +395,7 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testDBUserAccessWAR2Servlet() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

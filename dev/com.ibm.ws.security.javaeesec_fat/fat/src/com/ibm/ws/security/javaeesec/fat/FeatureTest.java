@@ -132,7 +132,7 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testEJBAppSecurity30() throws Exception {
         String response;
@@ -159,8 +159,6 @@ public class FeatureTest extends JavaEESecTestBase {
 
         Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
         startServer(XML_NAME, EJB_APP_NAME);
-//        assertNotNull("Application CustomQueryDatabaseServlet does not appear to have started.",
-//                      myServer.waitForStringInLog("CWWKZ0001I: Application CustomQueryDatabaseServlet started"));
 
         //Test case isUserInRoleLDAPISWar1
         //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.
@@ -250,7 +248,7 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC(value = { "java.lang.NoClassDefFoundError", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEJBAppSecurity10() throws Exception {
