@@ -52,7 +52,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean trackLoggedOutSSOCookies = false;
     private final Boolean useOnlyCustomCookieName = false;
     private final String jaspicSessionCookieName = "jaspicSession";
-    private final Boolean jaspicSessionForMechanismsEnabled = true;
+    private final Boolean jaspicSessionForMechanismsEnabled = false;
 
     WebAdminSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded

@@ -124,7 +124,7 @@
         <AD id="basicAuthenticationMechanismRealmName" name="%basicAuthenticationMechanismRealmName" description="%basicAuthenticationMechanismRealmName.desc"
             required="false" type="String" default="defaultRealm" />
 
-        <AD id="jaspicSessionForMechanismsEnabled" name="%jaspicSessionForMechanismsEnabled" description="%jaspicSessionForMechanismsEnabled.desc"
+        <AD id="jaspicSessionEnabled" name="%jaspicSessionEnabled" description="%jaspicSessionEnabled.desc"
             required="false" type="Boolean"
             default="false" />
 
