@@ -593,6 +593,7 @@ public class H2StreamProcessor {
         this.state = state;
         if (StreamState.CLOSED.equals(state)) {
             muxLink.getStreamCloseTimer().schedule(new CleanupTask(this), STREAM_CLOSE_DELAY);
+            muxLink.cleanupStream(getId());
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "current stream state for stream " + this.myID + " : " + this.state);

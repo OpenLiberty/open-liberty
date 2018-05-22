@@ -801,7 +801,6 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public void cleanupStream(int streamID) {
-        streamTable.remove(streamID);
         if (streamID != 0) {
             writeQ.removeNodeFromQ(streamID);
         }
@@ -1166,7 +1165,6 @@ public class H2InboundLink extends HttpInboundLink {
      */
     public void triggerStreamClose(H2StreamProcessor streamProcessor) {
         streamTable.remove(streamProcessor.getId());
-        cleanupStream(streamProcessor.getId());
         if (streamProcessor.getId() % 2 == 0) {
             synchronized (pushSync) {
                 this.openPushStreams--;
