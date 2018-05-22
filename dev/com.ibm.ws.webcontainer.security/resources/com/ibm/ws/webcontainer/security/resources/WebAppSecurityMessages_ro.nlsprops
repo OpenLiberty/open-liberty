@@ -138,6 +138,10 @@ SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: URL-ul furnizat pe logoutExitPage pe
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Serviciul de Delogare cu formular a e\u015fuat redirec\u0163ionarea la pagina specificat\u0103 pe parametrul de servlet logoutExitPage. URL-ul specificat este fie un URL formatat invalid fie numele de gazd\u0103 nu este specificat pe proprietatea com.ibm.websphere.security.logoutExitPageDomainList.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Corecta\u0163i URL-ul specificat pe parametrul logoutExitPage.
 
-JWT_ALREADY_LOGGED_OUT=CWWKS9126E: Logarea cu un jeton JWT (JSON Web Token) a e\u015fuat deoarece jetonul a fost anterior delogat.
-JWT_ALREADY_LOGGED_OUT.explanation=Un jeton JWT care a fost anterior delogat a fost retransmis pentru autentificarea de logare.
-JWT_ALREADY_LOGGED_OUT.useraction=Ob\u0163ine\u0163i un JWT (JSON Web Token) nou sau seta\u0163i atributul de configura\u0163ie trackLoggedOutSSOCookiesEnabled la false, ceea ce este mai pu\u0163in sigur.
+JWT_ALREADY_LOGGED_OUT=CWWKS9126A: Autentificarea care utilizeaz\u0103 un JSON Web Token nu a reu\u015fit deoarece jetonul a fost delogat anterior.
+JWT_ALREADY_LOGGED_OUT.explanation=Un JSON Web Token (JWT) care a fost delogat anterior a fost retrimis pentru autentificare.
+JWT_ALREADY_LOGGED_OUT.useraction=Ob\u0163ine\u0163i un nou JSON Web Token.
+
+JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: Caracteristica jwtSso seteaz\u0103 un cookie securizat pe o cerere HTTP nesecurizat\u0103.  Aceasta ar putea fi o eroare de configurare.  Utiliza\u0163i protocolul HTTPS sau seta\u0163i setCookieSecureFlag al atributului de configura\u0163ie jwtSso la false.
+JWT_COOKIE_SECURITY_MISMATCH.explanation=Un cookie este marcat ca securizat dar protocolul este HTTP, deci cookie-ul nu va fi returnat niciodat\u0103, aceasta ar putea face ca cererile ulterioare s\u0103 e\u015fueze.
+JWT_COOKIE_SECURITY_MISMATCH.useraction=Utiliza\u0163i protocolul HTTPS sau seta\u0163i setCookieSecureFlag al atributului de configura\u0163ie jwtSso la false.

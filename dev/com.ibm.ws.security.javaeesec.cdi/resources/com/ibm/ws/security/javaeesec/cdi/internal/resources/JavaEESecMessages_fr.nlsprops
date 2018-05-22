@@ -17,50 +17,45 @@
 # -------------------------------------------------------------------------------------------------
 
 # Message prefix block: CWWKS1925 - CWWKS1949
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: Le d\u00e9ploiement du module {0} dans l''application {1} a \u00e9chou\u00e9 en raison de plusieurs impl\u00e9mentations HttpAuthenticationMechanism : {2}. Il s''agit probablement d''un probl\u00e8me d''empaquetage de l''application. V\u00e9rifiez qu''une seule impl\u00e9mentation HttpAuthenticationMechanism est pr\u00e9sente pour chaque module.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Le d\u00e9ploiement de l'application a \u00e9chou\u00e9 car plusieurs impl\u00e9mentations HttpAuthenticationMechanism ont \u00e9t\u00e9  d\u00e9tect\u00e9es.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Assurez-vous qu'une seule impl\u00e9mentation HttpAuthenticationMechanism est pr\u00e9sente pour chaque module dans l'application.
 
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: Le d\u00e9ploiement du module {0} dans l''application {1} a \u00e9chou\u00e9 car plusieurs impl\u00e9mentations HttpAuthenticationMechanism ont \u00e9t\u00e9 trouv\u00e9es. Liste des classes : {2}. Il s''agit probablement d''un probl\u00e8me de packaging de l''application. V\u00e9rifiez qu''une seule impl\u00e9mentation HttpAuthenticationMechanism est pr\u00e9sente dans chaque module.
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Le d\u00e9ploiement de l'application a \u00e9chou\u00e9 car plusieurs impl\u00e9mentations HttpAuthenticationMechanism ont \u00e9t\u00e9 d\u00e9tect\u00e9es. Cette condition n'est pas autoris\u00e9e.
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=V\u00e9rifiez qu'une seule impl\u00e9mentation HttpAuthenticationMechanism est pr\u00e9sente pour chaque module dans l'application.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST=CWWKS1926E: Le bean HttpAuthenticationMechanism de connexion par formulaire ou de connexion par formulaire personnalis\u00e9e n'est pas correctement configur\u00e9. L'annotation LoginToContinue est manquante.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST.explanation=Le bean HttpAuthenticationMechanism de connexion par formulaire ou de connexion par formulaire personnalis\u00e9e requiert l'annotation LoginToContinue pour que l'une ou l'autre de ces connexions soit correctement configur\u00e9e.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST.useraction=V\u00e9rifiez que l'application est accompagn\u00e9e de l'annotation LoginToContinue dans l'annotation FormAuthenticationMechanismDefinition ou CustomFormAuthenticationMechanismDefinition.
 
-JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: Le bean LoginToContinueProperties n'existe pas. La connexion par formulaire n'est pas activ\u00e9e. V\u00e9rifiez que l'application est accompagn\u00e9e de l'annotation LoginToContinue.
-JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=Le bean LoginToContinueProperties requis par l'authentification de connexion par formulaire n'existe pas.
-JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=V\u00e9rifiez que l'application est annot\u00e9e avec l'annotation LoginToContinue dans l'annotation FormAuthenticationMechanismDefinition ou CustomFormAuthenticationMechanismDefinition.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: Aucun magasin d''identit\u00e9s n''a \u00e9t\u00e9 configur\u00e9. Les donn\u00e9es d''identification de type {0} ne peuvent pas \u00eatre utilis\u00e9es pour l''authentification de secours aupr\u00e8s du registre d''utilisateurs. Utilisez la classe javax.security.enterprise.credential.UsernamePasswordCredential ou javax.security.enterprise.credential.BasicAuthenticationCredential pour l''authentification de secours.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation= Le registre d'utilisateurs ne prend pas en charge la classe de donn\u00e9es d'identification fournie pour l'authentification. Les classes javax.security.enterprise.credential.UsernamePasswordCredential et javax.security.enterprise.credential.BasicAuthenticationCredential sont des classes de donn\u00e9es d'identification prises en charge.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Assurez-vous que les magasins d'identit\u00e9s sont configur\u00e9s ou que le registre d'utilisateurs utilise une classe de donn\u00e9es d'identification prise en charge pour authentifier l'utilisateur.
 
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: La classe de donn\u00e9es d''identification {0} fournie n''est pas prise en charge par le registre d''utilisateurs. Vous devez utiliser soit javax.security.enterprise.credential.UsernamePasswordCredential, soit javax.security.enterprise.credential.BasicAuthenticationCredential, pour l''authentification.
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=La classe de donn\u00e9es d'identification fournie pour l'authentification n'est pas prise en charge par le registre d'utilisateurs. Vous devez utiliser soit javax.security.enterprise.credential.UsernamePasswordCredential, soit javax.security.enterprise.credential.BasicAuthenticationCredential, pour l'authentification.
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=V\u00e9rifiez que la classe de donn\u00e9es d'identification prise en charge est utilis\u00e9e pour l'authentification avec le registre d'utilisateurs.
+JAVAEESEC_CDI_INFO_NO_IDENTITY_STORE=CWWKS1930I: L'objet IdentityStore configur\u00e9 est introuvable. Si un registre d'utilisateurs est configur\u00e9, il est utilis\u00e9 \u00e0 la place. Si l'objet IdentityStore doit \u00eatre utilis\u00e9, assurez-vous qu'il est correctement configur\u00e9.
+JAVAEESEC_CDI_INFO_NO_IDENTITY_STORE.explanation=La raison pour laquelle l'objet IdentityStore est introuvable varie. Les messages d'erreur li\u00e9s \u00e0 l'objet IdentityStore fournissent des informations sur la raison pour laquelle il est introuvable.
+JAVAEESEC_CDI_INFO_NO_IDENTITY_STORE.useraction=Examinez les \u00e9ventuels messages d'erreur \u00e9mis par l'objet IdentityStore et apportez les corrections n\u00e9cessaires en fonction des messages d'erreur.
 
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE=CWWKS1930W: L'objet IdentityStore configur\u00e9 est introuvable. Si un registre d'utilisateurs est configur\u00e9, il est utilis\u00e9 \u00e0 la place. Assurez-vous que l'objet IdentityStore configur\u00e9 par l'application est disponible.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.explanation=La raison pour laquelle l'objet IdentityStore est introuvable varie. Les messages d'erreur li\u00e9s \u00e0 l'objet IdentityStore fournissent des informations sur la raison pour laquelle il est introuvable.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.useraction=Examinez les \u00e9ventuels messages d'erreur \u00e9mis par l'objet IdentityStore et apportez les corrections n\u00e9cessaires en fonction des messages d'erreur.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: Le d\u00e9ploiement de l''application {1} a \u00e9chou\u00e9 car un \u00e9l\u00e9ment login-config dans le fichier web.xml et l''\u00e9l\u00e9ment HttpAuthenticationsMechanism ont \u00e9t\u00e9 sp\u00e9cifi\u00e9s pour le module {0}. Assurez-vous qu''un seul m\u00e9canisme d''authentification est configur\u00e9.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=Le d\u00e9ploiement de l'application a \u00e9chou\u00e9 car l'\u00e9l\u00e9ment login-config et l'\u00e9l\u00e9ment HttpAuthenticationMechanism sont d\u00e9finis. Un seul de ces m\u00e9canismes d'authentification peut \u00eatre utilis\u00e9 dans votre application.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Assurez-vous qu'un seul de ces m\u00e9canismes d'authentification est configur\u00e9.
 
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: Le d\u00e9ploiement de l''application a \u00e9chou\u00e9 car un \u00e9l\u00e9ment login-config a \u00e9t\u00e9 d\u00e9tect\u00e9 dans le fichier web.xml du module {0} dans l''application {1}. Pour activer le bean HttpAuthenticationMechanism, supprimez du fichier web.xml l''\u00e9l\u00e9ment login-configbean.
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=Le d\u00e9ploiement de l'application a \u00e9chou\u00e9 car l'\u00e9l\u00e9ment login-config et le bean HttpAuthenticationMechanism ont \u00e9t\u00e9 d\u00e9finis. Un seul de ces m\u00e9canismes d'authentification peut \u00eatre utilis\u00e9 dans votre application.
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Pour activer le bean HttpAuthenticationMechanism, supprimez du fichier web.xml l'\u00e9l\u00e9ment login-configbean.
-
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: Le nom de domaine pour l'authentification de base n'ayant pas \u00e9t\u00e9 d\u00e9fini, la valeur par d\u00e9faut, defaultRealm, a \u00e9t\u00e9 utilis\u00e9e.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Comme le nom de domaine pour l'authentification par d\u00e9faut n'a pas \u00e9t\u00e9 d\u00e9fini, il a \u00e9t\u00e9 d\u00e9fini \u00e0 la valeur par d\u00e9faut, \u00e0 \u00e0 savoir defaultRealm.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Pour d\u00e9finir le nom de domaine, sp\u00e9cifiez-le dans une annotation BasicAuthenticationMechanismDefinition dans l'application. Ou bien, lorsque l'attribut overrideHttpAuthenticationMechanism a pour valeur BASIC, d\u00e9finissez la valeur de l'attribut basicAuthenticationMechanismRealmName.
-
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: La valeur {0} du param\u00e8tre de configuration {1} n''est pas valide.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=La valeur du param\u00e8tre de configuration n'est pas valide.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: Le hachage de mot de passe pour l''attribut DatabaseIdentityStore n''est pas valide car la valeur non admise {0} est associ\u00e9e au param\u00e8tre de configuration {1}.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=Le hachage de mot de passe pour l'attribut DatabaseIdentityStore n'est pas valide car la valeur du param\u00e8tre de configuration n'est pas admise. Pour conna\u00eetre la valeur valide, reportez-vous au Javadoc de l'interface javax.security.enterprise.identitystore.Pbkdf2PasswordHash.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=V\u00e9rifiez que le param\u00e8tre de configuration a \u00e9t\u00e9 d\u00e9fini correctement.
 
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: La valeur {0} du param\u00e8tre de configuration {1} est inf\u00e9rieure \u00e0 la valeur minimum, \u00e0 savoir {2}.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=La valeur du param\u00e8tre de configuration est inf\u00e9rieure \u00e0 la valeur minimum.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: Le hachage de mot de passe pour l''attribut DatabaseIdentityStore n''est pas valide car la valeur {0} du param\u00e8tre de configuration {1} est inf\u00e9rieure \u00e0 la valeur minimale {2}.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=Pour que le hachage de mot de passe de l'attribut DatabaseIdentityStore soit valide, la valeur du param\u00e8tre de configuration doit \u00eatre sup\u00e9rieure ou \u00e9gale \u00e0 la valeur minimale.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=V\u00e9rifiez que la valeur du param\u00e8tre de configuration est \u00e9gale ou sup\u00e9rieure \u00e0 la valeur minimum.
 
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Les donn\u00e9es hach\u00e9es ne sont pas valides. {0}
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=La valeur hach\u00e9e dans la base de donn\u00e9es n'est pas valide.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=V\u00e9rifiez que les donn\u00e9es hach\u00e9es dans la base de donn\u00e9es ont \u00e9t\u00e9 hach\u00e9es par l'algorithme de hachage prise en charge par le classe d'impl\u00e9mentation PasswordHash.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Le hachage de mot de passe issu de la base de donn\u00e9es n''est pas valide. {0}
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=Le hachage de mot de passe issu de la base de donn\u00e9es n'est pas valide, probablement parce que le format du mot de passe est incorrect. 
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Assurez-vous que le format du hachage de mot de passe dans la base de donn\u00e9es correspond au format appropri\u00e9 requis par l'impl\u00e9mentation Pbkdf2PasswordHash.
 
-JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: L''attribut {0} n''est pas d\u00e9fini dans l''\u00e9l\u00e9ment webAppSecurity ; la fonction de remplacement par le conteneur de la configuration d''HttpAuthenticationMechanism ne fonctionnera pas correctement."
-JAVAEESEC_CDI_ERROR_NO_URL.explanation=Etant donn\u00e9 que l'attribut requis n'est pas d\u00e9fini, la fonction de remplacement par le conteneur de l'authentification par formulaire HttpAuthenticationMechanism ne fonctionne pas.
-JAVAEESEC_CDI_ERROR_NO_URL.useraction=L'attribut mentionn\u00e9 dans le message doit \u00eatre d\u00e9fini.
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: L''utilisateur n''a pas pu se connecter. L''attribut FormLoginHttpAuthenticationMechanism n''a pas pu \u00eatre utilis\u00e9 pour la connexion car l''attribut {0} n''est pas d\u00e9fini dans l''\u00e9l\u00e9ment webAppSecurity.
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=L'utilisateur a peut-\u00eatre re\u00e7u une erreur 401 ou 403 lorsqu'il a tent\u00e9 de se connecter. L'attribut FormLoginHttpAuthenticationMechanism n'a pas pu \u00eatre utilis\u00e9 pour la connexion car l'attribut loginFormURL ou loginErrorURL n'est pas d\u00e9fini dans l'\u00e9l\u00e9ment webAppSecurity.
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=Assurez-vous que les attributs loginFormURL et loginErrorURL sont d\u00e9finis.
 
-JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: La valeur {0} de l''attribut contextRootForFormAuthenticationMechanism ne correspond pas \u00e0 la valeur de racine de contexte {1} de l''attribut {2} dans l''\u00e9l\u00e9ment webAppSecurity ; la fonction de remplacement par le conteneur de la configuration d''HttpAuthenticationMechanism ne fonctionnera pas correctement."
-JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=Etant donn\u00e9 que la valeur de racine de contexte ne correspond pas \u00e0 l'attribut sp\u00e9cifi\u00e9, la fonction de remplacement par le conteneur de l'authentification par formulaire HttpAuthenticationMechanism ne fonctionne pas."
-JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=L'attribut mentionn\u00e9 dans le message doit correspondre \u00e0 la racine de contexte sp\u00e9cifi\u00e9e.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: Il existe une non-concordance entre l''attribut contextRootForFormAuthenticationMechanism {0} et l''URL {1} de {2}.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=L'attribut loginFormURL ou loginErrorURL ne commence pas par la valeur d'attribut contextRootForFormAuthenticationMechanism.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=Assurez-vous que les attributs loginFormURL et loginErrorURL commencent par la valeur d'attribut contextRootForFormAuthenticationMechanism.
 
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=Les it\u00e9rations {0} ne sont pas un nombre.

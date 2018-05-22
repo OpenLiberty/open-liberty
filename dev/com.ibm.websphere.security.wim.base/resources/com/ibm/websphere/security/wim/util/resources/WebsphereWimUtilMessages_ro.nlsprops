@@ -20,7 +20,7 @@
 
 DUPLICATE_PROPERTY_EXTENDED=CWIML1996W: Proprietatea extins\u0103 ''{0}'' este ignorat\u0103 deoarece a fost deja definit\u0103 pentru entitatea ''{1}''.
 DUPLICATE_PROPERTY_EXTENDED.explanation=Proprietatea extins\u0103 este deja definit\u0103, \u015fi defini\u0163ia duplicat\u0103 este ignorat\u0103, deoarece dou\u0103 propriet\u0103\u0163i nu pot avea acela\u015fi nume.
-DUPLICATE_PROPERTY_EXTENDED.useraction=Verifica\u0163i definiu\u0163iile multiple pentru proprietatea extins\u0103 \u00een configura\u0163ia de server. \u015eterge\u0163i sau redenumi\u0163i duplicatele.
+DUPLICATE_PROPERTY_EXTENDED.useraction=Verifica\u0163i defini\u0163iile multiple pentru proprietatea extins\u0103 \u00een configura\u0163ia de server. \u015eterge\u0163i sau redenumi\u0163i duplicatele.
 
 DUPLICATE_PROPERTY_ENTITY=CWIML1997W: Proprietatea extins\u0103 ''{0}'' este ignorat\u0103 deoarece nu poate \u00eenlocui proprietatea cu acela\u015fi nume pentru entitatea ''{1}''.
 DUPLICATE_PROPERTY_ENTITY.explanation=Deoarece proprietatea este deja definit\u0103 \u00een schema entit\u0103\u0163ii, ea este ignorat\u0103 deoarece nu poate fi redefinit\u0103 ca o proprietate extins\u0103.
