@@ -13,7 +13,4 @@
 		<com.ibm.ws.sib.topicSpace id="Default.Topic.Space" />
 		<com.ibm.ws.sib.fileStore id="defaultFileStore"/>
 	
-	<executor name="Default Executor" id="default" coreThreads="60" maxThreads="0" 
-          keepAlive="60s" stealPolicy="STRICT" rejectedWorkPolicy="CALLER_RUNS" />  
-	
 </server>

@@ -14,7 +14,4 @@
       <properties.wasJms/>
     </bundleResourceAdapter>
   
-  	<executor name="Default Executor" id="default" coreThreads="60" maxThreads="0" 
-          keepAlive="60s" stealPolicy="STRICT" rejectedWorkPolicy="CALLER_RUNS" />
-
 </server>

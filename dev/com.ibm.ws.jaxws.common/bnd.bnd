@@ -16,8 +16,6 @@ Bundle-Name: JAX-WS Common
 Bundle-SymbolicName: com.ibm.ws.jaxws.common
 Bundle-Description: IBM JAX-WS Common; version=${bVersion}
 
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
-
 # in cxf-rt-frontend-jaxws-2.6.2 bundle, we exposed: 
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
 # so we need make com.ibm.ws.jaxws.client;thread-context=true
@@ -168,9 +166,6 @@ Service-Component: \
      implementation:=com.ibm.ws.jaxws.policy.PolicyAttachmentApplicationBusListener; \
      provide:='com.ibm.ws.jaxws.bus.LibertyApplicationBusListener'; \
      properties:="service.vendor=IBM"
-
-Include-Resource: \
-   OSGI-INF=resources/OSGI-INF
 
 instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 
