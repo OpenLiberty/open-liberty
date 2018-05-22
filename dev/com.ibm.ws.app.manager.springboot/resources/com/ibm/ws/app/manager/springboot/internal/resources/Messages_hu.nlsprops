@@ -50,3 +50,11 @@ error.missing.servlet.useraction=A szervlet szolg\u00e1ltat\u00e1st kell konfigu
 error.multiple.applications.not.allowed=CWWKC0255E: A Spring Boot alkalmaz\u00e1s ({0}) nem ind\u00edthat\u00f3 el, mert a(z) {1} alkalmaz\u00e1s m\u00e1r akt\u00edv. Nem \u00e1ll\u00edthat be t\u00f6bb Spring Boot alkalmaz\u00e1st ugyanabban a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
 error.multiple.applications.not.allowed.explanation=T\u00f6bb Spring Boot alkalmaz\u00e1s be\u00e1ll\u00edt\u00e1sa ugyanabban a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban nem t\u00e1mogatott.
 error.multiple.applications.not.allowed.useraction=Kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3nk\u00e9nt csak egy Spring Boot alkalmaz\u00e1st \u00e1ll\u00edtson be.
+
+error.no.manifest.found=CWWKC0256E: Nem tal\u00e1lhat\u00f3 META-INF/MANIFEST.MF f\u00e1jl a(z) {0} Spring Boot alkalmaz\u00e1shoz.
+error.no.manifest.found.explanation=A Spring Boot alkalmaz\u00e1snak tartalmaznia kell egy META-INF/MANIFEST.MF f\u00e1jlt.
+error.no.manifest.found.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes Spring Boot alkalmaz\u00e1st, amely tartalmaz META-INF/MANIFEST.MF f\u00e1jlt a kiszolg\u00e1l\u00f3val egy\u00fctt.
+
+error.no.spring.class.found=CWWKC0257E: A Spring Boot alkalmaz\u00e1s META-INF/MANIFEST.MF f\u00e1jlj\u00e1nak meg kell hat\u00e1roznia egy Start-Class fejl\u00e9cet.
+error.no.spring.class.found.explanation=A Spring Boot alkalmaz\u00e1soknak tartalmazniuk kell egy, a Sart-Class le\u00edr\u00f3 fejl\u00e9cben meghat\u00e1rozott f\u0151 oszt\u00e1lyt.
+error.no.spring.class.found.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes Spring Boot alkalmaz\u00e1st, amely tartalmazza a Start-Class le\u00edr\u00f3 fejl\u00e9cet, a kiszolg\u00e1l\u00f3val egy\u00fctt.

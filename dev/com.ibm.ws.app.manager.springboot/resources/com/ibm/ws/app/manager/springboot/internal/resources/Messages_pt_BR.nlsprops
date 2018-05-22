@@ -50,3 +50,11 @@ error.missing.servlet.useraction=Um recurso Servlet precisa ser configurado no s
 error.multiple.applications.not.allowed=CWWKC0255E: O aplicativo de inicializa\u00e7\u00e3o de Spring {0} n\u00e3o pode ser iniciado porque o aplicativo {1} j\u00e1 est\u00e1 ativo. N\u00e3o \u00e9 poss\u00edvel configurar v\u00e1rios aplicativos de inicializa\u00e7\u00e3o de Spring na mesma configura\u00e7\u00e3o do servidor.
 error.multiple.applications.not.allowed.explanation=A configura\u00e7\u00e3o de v\u00e1rios aplicativos de inicializa\u00e7\u00e3o de Spring na mesma configura\u00e7\u00e3o do servidor n\u00e3o \u00e9 suportada.
 error.multiple.applications.not.allowed.useraction=Configure apenas um aplicativo de inicializa\u00e7\u00e3o de Spring por configura\u00e7\u00e3o do servidor.
+
+error.no.manifest.found=CWWKC0256E: Nenhum arquivo META-INF/MANIFEST.MF foi localizado para o aplicativo Spring Boot {0}.
+error.no.manifest.found.explanation=Os aplicativos Spring Boot devem conter um arquivo META-INF/MANIFEST.MF.
+error.no.manifest.found.useraction=Configure um aplicativo Spring Boot v\u00e1lido, que cont\u00e9m um arquivo META-INF/MANIFEST.MF, com o servidor.
+
+error.no.spring.class.found=CWWKC0257E: O arquivo META-INF/MANIFEST.MF do aplicativo Spring Boot deve especificar um cabe\u00e7alho Start-Class.
+error.no.spring.class.found.explanation=Os aplicativos Spring Boot devem conter uma classe principal especificada pelo cabe\u00e7alho de manifest Start-Class.
+error.no.spring.class.found.useraction=Configure um aplicativo Spring Boot v\u00e1lido, que cont\u00e9m um cabe\u00e7alho de manifest Start-Class, com o servidor.

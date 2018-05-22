@@ -50,3 +50,11 @@ error.missing.servlet.useraction=Das Servlet-Feature muss in der Datei server.xm
 error.multiple.applications.not.allowed=CWWKC0255E: Die Spring Boot-Anwendung {0} kann nicht gestartet werden, weil die Anwendung {1} bereits aktiv ist. Es ist nicht m\u00f6glich, mehrere Spring Boot-Anwendungen in derselben Konfiguration zu konfigurieren.
 error.multiple.applications.not.allowed.explanation=Die Konfiguration mehrerer Spring Boot-Anwendungen in derselben Konfiguration wird nicht unterst\u00fctzt.
 error.multiple.applications.not.allowed.useraction=Konfigurieren Sie nur eine einzige Spring Boot-Anwendung pro Serverkonfiguration.
+
+error.no.manifest.found=CWWKC0256E: Es wurde keine Datei META-INF/MANIFEST.MF f\u00fcr die Spring Boot-Anwendung {0} gefunden.
+error.no.manifest.found.explanation=Spring Boot-Anwendungen m\u00fcssen eine Datei META-INF/MANIFEST.MF enthalten.
+error.no.manifest.found.useraction=Konfigurieren Sie eine g\u00fcltige Spring Boot-Anwendung, die eine Datei META-INF/MANIFEST.MF enth\u00e4lt, f\u00fcr den Server.
+
+error.no.spring.class.found=CWWKC0257E: Die Datei META-INF/MANIFEST.MF der Spring Boot-Anwendung muss einen Header Start-Class angeben.
+error.no.spring.class.found.explanation=Spring Boot-Anwendungen m\u00fcssen eine Hauptklasse (main) enthalten, die im Manifestheader Start-Class angegeben ist.
+error.no.spring.class.found.useraction=Konfigurieren Sie eine g\u00fcltige Spring Boot-Anwendung, die einen Manifestheader Start-Class enth\u00e4lt, f\u00fcr den Server.

@@ -205,3 +205,19 @@ ENTITY_ALREADY_EXIST.useraction=Wiederholen Sie die Operation und geben Sie eine
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Schreiboperationen sind auf dem sekund\u00e4ren LDAP-Server {0} nicht zul\u00e4ssig.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Alle Schreiboperationen (create, update, delete) sind nur auf dem prim\u00e4ren LDAP-Server zul\u00e4ssig.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Stellen Sie sicher, dass der prim\u00e4re Server erneut gestartet wird, und wiederholen Sie dann die Operation.
+
+LDAP_REGISTRY_MAPPER_NOT_BOUND=CWIML4500W: Es wurde kein angepasster X.509-Zertifikatsmapper an diese LDAP-Registry gebunden.
+LDAP_REGISTRY_MAPPER_NOT_BOUND.explanation=Der X.509-Zertifikatszuordnungsmodus wurde auf CUSTOM gesetzt, aber es wurde kein angepasster X.509-Zertifikatsmapper an die LDAP-Registry gebunden. 
+LDAP_REGISTRY_MAPPER_NOT_BOUND.useraction=Stellen Sie sicher, dass das Attribut certificateMapperId in der LDAP-Registry so konfiguriert ist, dass es auf einen g\u00fcltigen angepassten X.509-Zertifikatsmapper verweist.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWIML4502W: Der angepasster X.509-Zertifikatsmapper hat eine Ausnahme des Typs CertificateMapNotSupportedException ausgel\u00f6st.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Der angepasster X.509-Zertifikatsmapper hat eine Ausnahme des Typs CertificateMapNotSupportedException ausgel\u00f6st.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Wenn die Ausnahme unerwartet ist, \u00fcberpr\u00fcfen Sie die Implementierung des angepassten X.509-Zertifikatsmappers und nehmen Sie die erforderlichen \u00c4nderungen vor.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED=CWIML4503E: Der angepasster X.509-Zertifikatsmapper hat eine Ausnahme des Typs CertificateMapFailedException ausgel\u00f6st.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Der angepasster X.509-Zertifikatsmapper hat eine Ausnahme des Typs CertificateMapFailedException ausgel\u00f6st.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Wenn die Ausnahme unerwartet ist, \u00fcberpr\u00fcfen Sie die Implementierung des angepassten X.509-Zertifikatsmappers und nehmen Sie die erforderlichen \u00c4nderungen vor.
+
+LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Der angepasste X.509-Zertifikatsmapper hat einen leeren Wert oder einen Nullwert zur\u00fcckgegeben. 
+LDAP_REGISTRY_INVALID_MAPPING.explanation=Der angepasste X.509-Zertifikatsmapper muss einen nicht leeren Wert ungleich null zur\u00fcckgeben oder eine der benannten Ausnahmen ausl\u00f6sen.
+LDAP_REGISTRY_INVALID_MAPPING.useraction=\u00c4ndern Sie die Implementierung des angepassten X.509-Zertifikatsmappers so, dass kein leerer Wert und kein Nullwert zur\u00fcckgegeben wird. Wenn kein g\u00fcltiger Wert zur\u00fcckgegeben werden kann, muss die Implementierung eine gepr\u00fcfte Ausnahme zur\u00fcckgeben.
