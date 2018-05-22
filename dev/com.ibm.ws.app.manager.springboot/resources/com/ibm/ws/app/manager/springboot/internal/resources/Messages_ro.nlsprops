@@ -36,13 +36,17 @@ warning.could.not.thin.application.explanation=Aplica\u0163ia nu a putut fi conv
 warning.could.not.thin.application.useraction=\u00cencerca\u0163i s\u0103 rezolva\u0163i problema din mesajul excep\u0163iei \u015fi fie reporni\u0163i serverul, fie actualiza\u0163i aplica\u0163ia. 
 
 error.need.springboot.version.15=CWWKC0252E: Nu s-a putut rula aplica\u0163ia deoarece este configurat\u0103 versiunea gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml. Aplica\u0163ia cere s\u0103 fie configurat\u0103 caracteristica springBoot-1.5.
-error.need.springboot.version.15.explanation= Aplica\u0163ia necesit\u0103 Spring Boot versiunea 1.5 dar este configurat\u0103 o versiune gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml.  
-error.need.springboot.version.15.useraction= Caracteristica springBoot-1.5 trebuie s\u0103 fie configurat\u0103 \u00een server.xml.
+error.need.springboot.version.15.explanation=Aplica\u0163ia necesit\u0103 Spring Boot versiunea 1.5 dar este configurat\u0103 o versiune gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml.  
+error.need.springboot.version.15.useraction=Caracteristica springBoot-1.5 trebuie s\u0103 fie configurat\u0103 \u00een server.xml.
 
 error.need.springboot.version.20=CWWKC0253E: Nu s-a putut rula aplica\u0163ia deoarece este configurat\u0103 versiunea gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml. Aplica\u0163ia cere s\u0103 fie configurat\u0103 caracteristica springBoot-2.0.
-error.need.springboot.version.20.explanation= Aplica\u0163ia necesit\u0103 Spring Boot versiunea 2.0 dar este configurat\u0103 o versiune gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml.  
-error.need.springboot.version.20.useraction= Caracteristica springBoot-2.0 trebuie s\u0103 fie configurat\u0103 \u00een server.xml.
+error.need.springboot.version.20.explanation=Aplica\u0163ia necesit\u0103 Spring Boot versiunea 2.0 dar este configurat\u0103 o versiune gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml.  
+error.need.springboot.version.20.useraction=Caracteristica springBoot-2.0 trebuie s\u0103 fie configurat\u0103 \u00een server.xml.
 
-error.missing.servlet=CWWKC0254E: Nu s-a putut rula aplica\u0163ia deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml. Trebuie s\u0103 fie configurat fie servlet-3.1 fie servlet-4.0.
-error.missing.servlet.explanation= Aplica\u0163ia este o aplica\u0163ie web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml.
-error.missing.servlet.useraction= Trebuie s\u0103 fie configurat fie servlet-3.1 fie servlet-4.0 \u00een server.xml.
+error.missing.servlet=CWWKC0254E: Nu s-a putut rula aplica\u0163ia deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml.
+error.missing.servlet.explanation=Aplica\u0163ia este o aplica\u0163ie web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml.
+error.missing.servlet.useraction=Trebuie s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml.
+
+error.multiple.applications.not.allowed=CWWKC0255E: Aplica\u0163ia Spring Boot {0} nu poate fi pornit\u0103 deoarece aplica\u0163ia {1} este deja activ\u0103. Nu pute\u0163i configura mai multe aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server.
+error.multiple.applications.not.allowed.explanation=Configurarea mai multor aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server nu este suportat\u0103.
+error.multiple.applications.not.allowed.useraction=Configura\u0163i doar o aplica\u0163ie Spring Boot per configura\u0163ie de server.

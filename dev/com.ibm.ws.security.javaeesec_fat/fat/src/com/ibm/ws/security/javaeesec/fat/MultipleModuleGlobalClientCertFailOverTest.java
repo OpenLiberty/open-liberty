@@ -270,7 +270,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
      * <LI> Verify that the client certificate login is carried out.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testNoJavaEESecOverrideClientCertWithFailOverToBASuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -304,7 +304,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
      * <LI> Verify that the login is successful with basic auth login method.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testNoJavaEESecOverrideClientCertWithFailOverToBAFailOverSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -417,7 +417,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
      * <LI> Verify that the client certificate login is carried out.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testNoJavaEESecOverrideClientCertWithFailOverToFormSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -453,7 +453,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testNoJavaEESecOverrideClientCertWithFailOverToFormFailOverSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -494,7 +494,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
      * <LI> Verify that the client certificate login is carried out.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideClientCertWithFailOverToAppDefinedSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -571,7 +571,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
      * <LI> Verify that the client certificate login is carried out.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testNoJavaEESecOverrideClientCertWithFailOverToAppDefinedSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -606,7 +606,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testNoJavaEESecOverrideClientCertWithFailOverToAppDefinedFailOverSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

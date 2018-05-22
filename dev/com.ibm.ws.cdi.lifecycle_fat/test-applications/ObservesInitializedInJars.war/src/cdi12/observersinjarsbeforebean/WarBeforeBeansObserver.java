@@ -45,10 +45,10 @@ public class WarBeforeBeansObserver implements Extension {
             classLoaderLoadedSuccessfully = false;
         }
 
-        String stackTrace = "" + System.getProperty("line.separator") + System.getProperty("line.separator");
+        String stackTrace = "" + System.lineSeparator() + System.lineSeparator();
 
         for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-            stackTrace += ste + System.getProperty("line.separator");
+            stackTrace += ste + System.lineSeparator();
         }
 
         if (classLoaderLoadedSuccessfully) {

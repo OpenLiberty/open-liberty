@@ -37,6 +37,9 @@ src: \
 javac.source: 1.8
 javac.target: 1.8
 
+# Opt out of the --release javac flag for JDK 9+, which will allow us to add our own javax.annotation.* packages to the classpath
+javac.args.release: false
+
 fat.project: true
 
 tested.features: \

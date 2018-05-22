@@ -36,7 +36,7 @@ public class AlterableContextTestServlet extends HttpServlet {
         PrintWriter pw = response.getWriter();
 
         for (String s : DirtySingleton.getStrings()) {
-            pw.write(s + System.getProperty("line.separator"));
+            pw.write(s + System.lineSeparator());
         }
 
         pw.flush();

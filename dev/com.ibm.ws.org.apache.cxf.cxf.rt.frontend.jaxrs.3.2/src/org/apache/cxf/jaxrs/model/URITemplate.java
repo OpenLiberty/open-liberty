@@ -523,7 +523,9 @@ public final class URITemplate {
          * @return Variable if variable was successfully created; null if uriChunk was not a variable
          */
         public static Variable create(String uriChunk, List<Parameter> params) { //Liberty change
-            Variable newVariable = new Variable();
+            // Liberty change start
+            //Variable newVariable = new Variable();
+            // Liberty change end
             if (uriChunk == null || "".equals(uriChunk)) {
                 return null;
             }
@@ -531,6 +533,9 @@ public final class URITemplate {
                 uriChunk = CurlyBraceTokenizer.stripBraces(uriChunk).trim();
                 Matcher matcher = VARIABLE_PATTERN.matcher(uriChunk);
                 if (matcher.matches()) {
+                    // Liberty change start
+                    Variable newVariable = new Variable();
+                    // Liberty change end
                     newVariable.name = matcher.group(1).trim();
                     if (matcher.group(2) != null && matcher.group(3) != null) {
                         String patternExpression = matcher.group(3).trim();
@@ -613,8 +618,12 @@ public final class URITemplate {
             int level = 0;
             int lastIdx = 0;
             int idx;
-            for (idx = 0; idx < string.length(); idx++) {
-                if (string.charAt(idx) == '{') {
+            // Liberty change start
+            int length = string.length();
+            for (idx = 0; idx < length; idx++) {
+                char c = string.charAt(idx);
+                if (c == '{') {
+                    // Liberty change end
                     if (outside) {
                         if (lastIdx < idx) {
                             tokens.add(string.substring(lastIdx, idx));
@@ -624,12 +633,16 @@ public final class URITemplate {
                     } else {
                         level++;
                     }
-                } else if (string.charAt(idx) == '}' && !outside) {
+                // Liberty change start
+                } else if (c == '}' && !outside) {
+                // Liberty change end
                     if (level > 0) {
                         level--;
                     } else {
                         if (lastIdx < idx) {
-                            tokens.add(string.substring(lastIdx, idx + 1));
+                            // Liberty change start
+                            tokens.add(lastIdx == 0 && idx + 1 == length ? string : string.substring(lastIdx, idx + 1));
+                            // Liberty change end
                         }
                         lastIdx = idx + 1;
                         outside = true;
@@ -637,7 +650,9 @@ public final class URITemplate {
                 }
             }
             if (lastIdx < idx) {
-                tokens.add(string.substring(lastIdx, idx));
+                // Liberty change start
+                tokens.add(lastIdx == 0 ? string : string.substring(lastIdx, idx));
+                // Liberty change end
             }
         }
 

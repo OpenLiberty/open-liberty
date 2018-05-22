@@ -36,13 +36,17 @@ warning.could.not.thin.application.explanation=Aplikaci se nepoda\u0159ilo p\u01
 warning.could.not.thin.application.useraction=Pokuste se vy\u0159e\u0161it probl\u00e9m popsan\u00fd v zpr\u00e1v\u011b v\u00fdjimky a restartujte server nebo aktualizujte aplikaci. 
 
 error.need.springboot.version.15=CWWKC0252E: Aplikaci se nepoda\u0159ilo spustit, proto\u017ee v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-1.5.
-error.need.springboot.version.15.explanation= Aplikace vy\u017eaduje verzi Spring Boot 1.5, ale v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. 
-error.need.springboot.version.15.useraction= V souboru server.xml mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-1.5.
+error.need.springboot.version.15.explanation=Aplikace vy\u017eaduje verzi Spring Boot 1.5, ale v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. 
+error.need.springboot.version.15.useraction=V souboru server.xml mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-1.5.
 
 error.need.springboot.version.20=CWWKC0253E: Aplikaci se nepoda\u0159ilo spustit, proto\u017ee v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-2.0.
-error.need.springboot.version.20.explanation= Aplikace vy\u017eaduje verzi Spring Boot 2.0, ale v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. 
-error.need.springboot.version.20.useraction= V souboru server.xml mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-2.0.
+error.need.springboot.version.20.explanation=Aplikace vy\u017eaduje verzi Spring Boot 2.0, ale v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. 
+error.need.springboot.version.20.useraction=V souboru server.xml mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-2.0.
 
-error.missing.servlet=CWWKC0254E: Nelze spustit aplikaci, proto\u017ee vy\u017eaduje funkci servletu, kter\u00fd m\u00e1 b\u00fdt nakonfigurov\u00e1n v souboru server.xml. Je zapot\u0159eb\u00ed nakonfigurovat bu\u010f servlet-3.1, nebo servlet-4.0.
-error.missing.servlet.explanation= Aplikace je webov\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce servletu v souboru server.xml.
-error.missing.servlet.useraction= Je zapot\u0159eb\u00ed nakonfigurovat bu\u010f servlet-3.1, nebo servlet-4.0 v souboru server.xml.
+error.missing.servlet=CWWKC0254E: Nelze spustit aplikaci, proto\u017ee vy\u017eaduje funkci servletu, kter\u00fd m\u00e1 b\u00fdt nakonfigurov\u00e1n v souboru server.xml.
+error.missing.servlet.explanation=Aplikace je webov\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce servletu v souboru server.xml.
+error.missing.servlet.useraction=Funkce servletu vy\u017eaduje konfiguraci v souboru server.xml.
+
+error.multiple.applications.not.allowed=CWWKC0255E: Aplikaci Spring Boot {0} nelze spustit, proto\u017ee aplikace {1} je ji\u017e aktivn\u00ed. Ve stejn\u00e9 konfiguraci serveru nelze konfigurovat v\u00edce aplikac\u00ed Spring Boot.
+error.multiple.applications.not.allowed.explanation=Konfigurace v\u00edce aplikac\u00ed Spring Boot ve stejn\u00e9 konfiguraci serveru nen\u00ed podporov\u00e1na.
+error.multiple.applications.not.allowed.useraction=Nakonfigurujte pouze jednu aplikaci Spring Boot na konfiguraci serveru.

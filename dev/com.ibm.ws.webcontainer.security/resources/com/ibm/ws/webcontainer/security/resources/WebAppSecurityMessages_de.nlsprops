@@ -135,6 +135,10 @@ SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: Die f\u00fcr die angepasste logoutEx
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Der Service f\u00fcr die formulargest\u00fctzte Abmeldung (Form-Logout) konnte die Umleitung zu der mit dem Servletparameter logoutExitPage angegebenen Seite nicht erfolgreich durchf\u00fchren. Entweder ist das Format der angegebenen URL nicht g\u00fcltig oder der Hostname ist nicht in der Eigenschaft com.ibm.websphere.security.logoutExitPageDomainList angegeben.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Korrigieren Sie die im Parameter logoutExitPage angegebene URL.
 
-JWT_ALREADY_LOGGED_OUT=CWWKS9126E: Die Anmeldung mit einem JSON Web Token ist fehlgeschlagen, weil das Token zuvor abgemeldet wurde.
-JWT_ALREADY_LOGGED_OUT.explanation=Ein zuvor abgemeldetes JSON Web Token (JWT) wurde erneut zur Anmeldeauthentifizierung gesendet.
-JWT_ALREADY_LOGGED_OUT.useraction=Fordern Sie ein neues JSON Web Token an oder setzen Sie das Konfigurationsattribut trackLoggedOutSSOCookiesEnabled auf false, was jedoch die Sicherheit beeintr\u00e4chtigt.
+JWT_ALREADY_LOGGED_OUT=CWWKS9126A: Die Authentifizierung mit einem JSON Web Token (JWT) war nicht erfolgreich, weil das Token zuvor abgemeldet wurde.
+JWT_ALREADY_LOGGED_OUT.explanation=Ein zuvor abgemeldetes JSON Web Token (JWT) wurde erneut zur Authentifizierung gesendet.
+JWT_ALREADY_LOGGED_OUT.useraction=Fordern Sie ein neues JSON Web Token an.
+
+JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: Das Feature jwtSso setzt ein sicheres Cookie in einer nicht sicheren HTTP-Anforderung. Dies ist m\u00f6glicherweise ein Konfigurationsfehler. Verwenden Sie das HTTPS-Protokoll oder setzen Sie das jwtSso-Konfigurationsattribut setCookieSecureFlag auf false.
+JWT_COOKIE_SECURITY_MISMATCH.explanation=Ein Cookie ist als sicher markiert, aber das Protokoll ist HTTP. Deshalb wird das Cookie nie zur\u00fcckgegeben, was zum Fehlschlagen nachfolgender Anforderungen f\u00fchren kann.
+JWT_COOKIE_SECURITY_MISMATCH.useraction=Verwenden Sie das HTTPS-Protokoll oder setzen Sie das jwtSso-Konfigurationsattribut setCookieSecureFlag auf false.

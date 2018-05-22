@@ -278,7 +278,7 @@ patchingNotApplicableNoChange=Aucun contenu n''a \u00e9t\u00e9 extrait car il n'
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
 patchingSkippedSupersededFix=Le correctif {0} est remplac\u00e9 par le correctif {1}, qui est d\u00e9j\u00e0 install\u00e9.\n\
-L''installation du correctif {0} a \u00e9t\u00e9 ignor\u00e9e.
+L''installation de {0} a \u00e9t\u00e9 ignor\u00e9e.
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=Une erreur s''est produite lors de la lecture des informations de correctif temporaire pour l''installation en cours. Le message d''exception est : {0}.

@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com/ibm/ws/cloudant/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD Cloudant client
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: This message prefix is shared with other Liberty components
+# Message IDs 0300-0399 are reserved for cloudant.
+
+#{0} is the config element name (either jndi name or config id)
+error.cloudant.config.CWWKD0300E=CWWKD0300E: \u5fc5\u987b\u5728 Cloudant \u914d\u7f6e\u5143\u7d20 {0} \u4e2d\u6307\u5b9a URL \u6216\u5e10\u6237\u5c5e\u6027\u5176\u4e2d\u4e00\u9879\u3002
+error.cloudant.config.CWWKD0300E.explanation=\u8981\u521b\u5efa Cloundant \u5ba2\u6237\u7aef\uff0c\u5fc5\u987b\u5728\u914d\u7f6e\u4e2d\u6307\u5b9a\u6570\u636e\u5e93 URL \u6216\u5e10\u6237\u5176\u4e2d\u4e00\u9879\u3002
+error.cloudant.config.CWWKD0300E.useraction=\u5c06 URL \u6216\u5e10\u6237\u5c5e\u6027\u6dfb\u52a0\u81f3\u670d\u52a1\u5668\u914d\u7f6e\u3002
+
+#{0} JNDI name of the cloudant config element
+# ClientBuilder is a class name
+direct.lookup.CWWKD0301E=CWWKD0301E: \u67e5\u8be2 Cloudant ClientBuilder {0} \u5c06\u9700\u8981\u8d44\u6e90\u5f15\u7528\u3002
+direct.lookup.CWWKD0301E.explanation=\u5fc5\u987b\u901a\u8fc7\u8d44\u6e90\u5f15\u7528\u6765\u67e5\u8be2\u53ef\u4fee\u6539\u7684\u8d44\u6e90\uff08\u4f8b\u5982\uff0cCloudantBuilder\uff09\uff0c\u4ee5\u4fbf\u4e3a\u6bcf\u6b21\u67e5\u8be2\u8fd4\u56de\u65b0\u7684\u5b9e\u4f8b\u3002\u5982\u679c\u5141\u8bb8\u8fdb\u884c\u6ca1\u6709\u8d44\u6e90\u5f15\u7528\u7684\u67e5\u8be2\uff0c\u90a3\u4e48\u5c06\u4ea7\u751f\u5171\u4eab ClientBuilder \u5b9e\u4f8b\uff0c\u5f53\u5e94\u7528\u7a0b\u5e8f\u591a\u6b21\u67e5\u8be2\u8be5\u5b9e\u4f8b\u548c\u4ee5\u4e0d\u540c\u65b9\u5f0f\u4fee\u6539\u8be5\u5b9e\u4f8b\u65f6\uff0c\u5c06\u5bfc\u81f4\u4e0d\u53ef\u9884\u6d4b\u7684\u884c\u4e3a\u3002
+direct.lookup.CWWKD0301E.useraction=\u8bf7\u5728 ClientBuilder \u7684\u5e94\u7528\u7a0b\u5e8f\u4e2d\u5305\u62ec\u8d44\u6e90\u5f15\u7528\uff0c\u5e76\u4f7f\u7528\u8d44\u6e90\u5f15\u7528\u6765\u67e5\u8be2 Cloudant ClientBuilder\u3002\u6b64\u5916\uff0c\u4f7f\u7528\u8d44\u6e90\u6ce8\u5165\uff08\u8fd9\u4f1a\u9690\u5f0f\u521b\u5efa\u8d44\u6e90\u5f15\u7528\uff09\u5c06 ClientBuilder \u5b9e\u4f8b\u6ce8\u5165\u5e94\u7528\u7a0b\u5e8f\u4e2d\u3002
+
+#{0} Cloudant class name
+#{1} JNDI name of the cloudant config element
+class.not.found.CWWKD0302E=CWWKD0302E: \u65e0\u6cd5\u88c5\u5165 {0}\uff0c\u56e0\u4e3a\u672a\u5bf9 cloudant \u914d\u7f6e\u5143\u7d20 {1} \u914d\u7f6e libraryRef\uff0c\u5e76\u4e14\u5f53\u524d\u7ebf\u7a0b\u65e0\u6743\u8bbf\u95ee\u5e94\u7528\u7a0b\u5e8f\u7c7b\u88c5\u5165\u5668\u3002
+class.not.found.CWWKD0302E.explanation=cloudant \u914d\u7f6e\u5143\u7d20\u5fc5\u987b\u914d\u7f6e\u6709\u6307\u5411 Cloudant \u5e93\u7684 libraryRef\uff0c\u6216\u8005\u5e94\u7528\u7a0b\u5e8f\u4e2d\u5fc5\u987b\u5305\u542b Cloudant \u5e93\uff08\u5728\u6b64\u60c5\u51b5\u4e0b\uff0c\u5fc5\u987b\u901a\u8fc7\u5e94\u7528\u7a0b\u5e8f\u7ebf\u7a0b\u67e5\u627e Cloudant JNDI \u8d44\u6e90\uff09\u3002
+class.not.found.CWWKD0302E.useraction=\u5c06 libraryRef \u6dfb\u52a0\u81f3 cloudant \u914d\u7f6e\u5143\u7d20\uff0c\u6216\u66f4\u65b0\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4ee5\u4ec5\u901a\u8fc7\u5e94\u7528\u7a0b\u5e8f\u7ebf\u7a0b\u67e5\u627e Cloudant JNDI \u8d44\u6e90\u3002

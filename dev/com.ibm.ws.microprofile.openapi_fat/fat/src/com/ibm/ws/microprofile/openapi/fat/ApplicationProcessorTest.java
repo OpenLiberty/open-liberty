@@ -32,7 +32,7 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * Test to ensure exercise Application Processor. Here's summary of all the scnearios being tested:
+ * Test to ensure exercise Application Processor. Here's summary of all the scenarios being tested:
  * - Deploy a single app and ensure it's documentation shows up in /openapi
  * - Deploy two apps and ensure one app's documentation shows up in /openapi
  * - Remove the app that was picked from the above scenario and ensure that the other app's documentation now shows up in /openapi

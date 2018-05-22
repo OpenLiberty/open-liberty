@@ -65,7 +65,8 @@ thin.optional-key.targetlibcache=\ \ \ \ --targetLibCachePath=directory
 #Note to translator the word "lib.index.cache" should not be translated
 thin.optional-desc.targetlibcache=\tIl percorso directory utilizzato per salvare la cache libreria.\n\
 \tSe questa opzione non viene specificata, verr\u00e0 creata una directory denominata lib.index.cache\n\
-\tnella directory parent dell''applicazione di origine. 
+\tnella directory parent dell''applicazione di origine.
+
 thin.optional-key.parentlibcache=\ \ \ \ --parentLibCachePath=directory
 thin.optional-desc.parentlibcache=\tIl percorso directory della cache libreria di sola lettura parent.\n\
 \tViene esaminata prima la cache libreria parent per individuare le librerie\n\

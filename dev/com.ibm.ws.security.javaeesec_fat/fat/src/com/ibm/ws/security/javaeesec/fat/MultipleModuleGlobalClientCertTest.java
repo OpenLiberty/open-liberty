@@ -157,7 +157,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
      * <LI> Verify that the client certificate login is carried out.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideClientCertRequiredSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -193,7 +193,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
      * <LI> Verify that the exception is caught.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideClientCertRequiredNoCertFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -237,7 +237,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
      * <LI> Verify that the 403 error is returned.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideClientCertValidCertRequiredAuthzFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -271,7 +271,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
      * <LI> Verify that the 403 error is returned.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideClientCertRequiredInvalidCertFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -305,7 +305,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
      * <LI> Verify that the client certificate login is carried out.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideClientCertSupportSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -341,7 +341,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
      * <LI> Verify that the exception is caught.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideClientCertSupportNoCertFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -375,7 +375,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
      * <LI> Verify that the 403 error is returned.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideClientCertSupportValidCertAuthzFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -409,7 +409,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
      * <LI> Verify that the 403 error is returned.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideClientCertSupportInvalidCertFailure() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

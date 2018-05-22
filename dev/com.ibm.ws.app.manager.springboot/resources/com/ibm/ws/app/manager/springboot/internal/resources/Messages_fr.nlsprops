@@ -36,13 +36,17 @@ warning.could.not.thin.application.explanation=L'application n'a pas pu \u00eatr
 warning.could.not.thin.application.useraction=Essayez de r\u00e9soudre le probl\u00e8me dans le message d'exception, puis red\u00e9marrez le serveur ou mettez \u00e0 jour l'application. 
 
 error.need.springboot.version.15=CWWKC0252E: Impossible d'ex\u00e9cuter l'application car une version inappropri\u00e9e de la fonction Spring Boot est configur\u00e9e dans le fichier server.xml. L'application requiert la configuration de la fonction springBoot-1.5.
-error.need.springboot.version.15.explanation= L'application requiert la version 1.5 de Spring Boot, mais une autre version de la fonction Spring Boot est configur\u00e9e dans le fichier server.xml. 
-error.need.springboot.version.15.useraction= La fonction springBoot-1.5 doit \u00eatre configur\u00e9e dans le fichier server.xml.
+error.need.springboot.version.15.explanation=L'application requiert la version 1.5 de Spring Boot, mais une version inappropri\u00e9e de la fonction Spring Boot est configur\u00e9e dans le fichier server.xml. 
+error.need.springboot.version.15.useraction=La fonction springBoot-1.5 doit \u00eatre configur\u00e9e dans le fichier server.xml.
 
 error.need.springboot.version.20=CWWKC0253E: Impossible d'ex\u00e9cuter l'application car une version inappropri\u00e9e de la fonction Spring Boot est configur\u00e9e dans le fichier server.xml. L'application requiert la configuration de la fonction springBoot-2.0.
-error.need.springboot.version.20.explanation= L'application requiert la version 2.0 de Spring Boot, mais une autre version de la fonction Spring Boot est configur\u00e9e dans le fichier server.xml. 
-error.need.springboot.version.20.useraction= La fonction springBoot-2.0 doit \u00eatre configur\u00e9e dans le fichier server.xml.
+error.need.springboot.version.20.explanation=L'application requiert la version 2.0 de Spring Boot, mais une version inappropri\u00e9e de la fonction Spring Boot est configur\u00e9e dans le fichier server.xml. 
+error.need.springboot.version.20.useraction=La fonction springBoot-2.0 doit \u00eatre configur\u00e9e dans le fichier server.xml.
 
-error.missing.servlet=CWWKC0254E: Impossible d'ex\u00e9cuter l'application car elle requiert la configuration d'une fonction servlet dans le fichier server.xml. La fonction servlet-3.1 ou servlet-4.0 doit \u00eatre configur\u00e9e.
-error.missing.servlet.explanation= L'application est une application Web et elle requiert la configuration d'une fonction servlet dans le fichier server.xml.
-error.missing.servlet.useraction= La fonction servlet-3.1 ou servlet-4.0 doit \u00eatre configur\u00e9e dans le fichier server.xml.
+error.missing.servlet=CWWKC0254E: Impossible d'ex\u00e9cuter l'application car elle requiert la configuration d'une fonction servlet dans le fichier server.xml.
+error.missing.servlet.explanation=L'application est une application Web et elle requiert la configuration d'une fonction servlet dans le fichier server.xml.
+error.missing.servlet.useraction=Une fonction Servlet doit \u00eatre configur\u00e9e dans le fichier server.xml.
+
+error.multiple.applications.not.allowed=CWWKC0255E: L''application Spring Boot {0} ne peut pas \u00eatre d\u00e9marr\u00e9e car l''application {1} est d\u00e9j\u00e0 active. Vous ne pouvez pas configurer plusieurs applications Spring Boot dans la m\u00eame configuration de serveur.
+error.multiple.applications.not.allowed.explanation=La configuration de plusieurs applications Spring Boot dans la m\u00eame configuration de serveur n'est pas prise en charge.
+error.multiple.applications.not.allowed.useraction=Configurez une seule application Spring Boot par configuration de serveur.
