@@ -105,7 +105,7 @@ public class NoIdentityStoreTest extends JavaEESecTestBase {
      * <LI> Veirfy that CWWKS1930W message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testNoIDStoreWithCustomIDSandIDSHandler_NoOp() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

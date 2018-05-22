@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
+import com.ibm.ws.security.javaeesec.fat_helper.FATHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
@@ -48,12 +49,18 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
     protected static Class<?> logClass = MultipleIdentityStoreApplLoginToContinueTest.class;
     protected static String urlBase;
     protected static String JAR_NAME = "JavaEESecBase.jar";
-    protected static String APP_NAME = "JavaEESecMultipleISForm";
-    protected static String WAR_NAME = APP_NAME + ".war";
-    protected static String XML_NAME = "multipleISForm.xml";
-    protected String queryString = "/" + APP_NAME + "/MultipleISApplLoginToContinueServlet";
-    protected static String loginUri = "/" + APP_NAME + "/login.jsp";
-    protected static String loginformUri = "/" + APP_NAME + "/j_security_check";
+    protected static String APP_REDIRECT_NAME = "ApplLTCRedirect";
+    protected static String APP_FORWARD_NAME = "ApplLTCForward";
+    protected static String WAR_RESOURCE_LOCATION = "FormGetResources";
+    protected static String WAR_REDIRECT_NAME = APP_REDIRECT_NAME + ".war";
+    protected static String WAR_FORWARD_NAME = APP_FORWARD_NAME + ".war";
+    protected static String XML_NAME = "multipleISApplLTC.xml";
+    protected String redirectQueryString = "/" + APP_REDIRECT_NAME + "/MultipleISApplLoginToContinueServlet";
+    protected String forwardQueryString = "/" + APP_FORWARD_NAME + "/MultipleISApplLoginToContinueServlet";
+    protected static String redirectLoginUri = "/" + APP_REDIRECT_NAME + "/login.jsp";
+    protected static String forwardLoginUri = "/" + APP_FORWARD_NAME + "/login.jsp";
+    protected static String redirectLoginformUri = "/" + APP_REDIRECT_NAME + "/j_security_check";
+    protected static String forwardLoginformUri = "/" + APP_FORWARD_NAME + "/j_security_check";
     protected static String TITLE_LOGIN_PAGE = "login page for the form login test";
     protected static String TITLE_ERROR_PAGE = "A Form login authentication failure occurred";
     protected static boolean REDIRECT = true;
@@ -73,6 +80,18 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
 
         ldapServer = new LocalLdapServer();
         ldapServer.start();
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.appllogintocontinue",
+                                               "web.war.mechanisms.appllogintocontinue.redirect", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2",
+                                               "web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.appllogintocontinue",
+                                               "web.war.mechanisms.appllogintocontinue.forward", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2",
+                                               "web.war.identitystores.custom.grouponly");
+
+        myServer.setServerConfigurationFile(XML_NAME);
+        myServer.startServer(true);
+        myServer.addInstalledAppForValidation(APP_REDIRECT_NAME);
+        myServer.addInstalledAppForValidation(APP_FORWARD_NAME);
+        urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 
     @AfterClass
@@ -97,22 +116,11 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
     @After
     public void cleanupConnection() throws Exception {
         httpclient.getConnectionManager().shutdown();
-        myServer.stopServer();
     }
 
     @Override
     protected String getCurrentTestName() {
         return name.getMethodName();
-    }
-
-    protected void startServer(String packageName) throws Exception {
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.appllogintocontinue",
-                                               ("web.war.mechanisms.appllogintocontinue." + packageName), "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2",
-                                               "web.war.identitystores.custom.grouponly");
-        myServer.setServerConfigurationFile(XML_NAME);
-        myServer.startServer(true);
-        myServer.addInstalledAppForValidation(APP_NAME);
-        urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 
     /**
@@ -129,20 +137,19 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISApplLoginToContinueRedirectWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        startServer("redirect");
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        String response = getFormLoginPage(httpclient, urlBase + queryString, true, urlBase + loginUri, TITLE_LOGIN_PAGE);
+        String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, true, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + queryString);
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + redirectQueryString);
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
         verifyRealm(response, "127.0.0.1:10389");
         verifyNotInGroups(response, "group:localhost:10389/"); // make sure that there is no realm name from the second IdentityStore.
@@ -164,18 +171,18 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISApplLoginToContinueForwardWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        startServer("forward");
-        String response = getFormLoginPage(httpclient, urlBase + queryString, false, urlBase + loginUri, TITLE_LOGIN_PAGE);
+
+        String response = getFormLoginPage(httpclient, urlBase + forwardQueryString, false, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + queryString);
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + forwardQueryString);
 
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
         verifyRealm(response, "localhost:10389");
@@ -198,20 +205,20 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISApplLoginToContinueRedirectWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        startServer("redirect");
+
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        String response = getFormLoginPage(httpclient, urlBase + queryString, true, urlBase + loginUri, TITLE_LOGIN_PAGE);
+        String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, true, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.USER1, LocalLdapServer.ANOTHERPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.ANOTHERPASSWORD, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + queryString);
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + redirectQueryString);
 
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
         verifyRealm(response, "localhost:10389");
@@ -232,19 +239,19 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISApplLoginToContinueForwardWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        startServer("forward");
+
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        String response = getFormLoginPage(httpclient, urlBase + queryString, false, urlBase + loginUri, TITLE_LOGIN_PAGE);
+        String response = getFormLoginPage(httpclient, urlBase + forwardQueryString, false, urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.INVALIDUSER, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + forwardLoginformUri, LocalLdapServer.INVALIDUSER, LocalLdapServer.PASSWORD, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns 403 due to authorization failure.
-        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_FORBIDDEN, urlBase + queryString);
+        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_FORBIDDEN, urlBase + forwardQueryString);
 
         verifyMessageReceivedInMessageLog("CWWKS9104A:.*" + LocalLdapServer.INVALIDUSER + ".*" + LocalLdapServer.GRANTEDGROUP);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
@@ -262,16 +269,16 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISApplLoginToContinueRedirectWith1st2ndFail_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        startServer("redirect");
-        String response = getFormLoginPage(httpclient, urlBase + queryString, true, urlBase + loginUri, TITLE_LOGIN_PAGE);
+
+        String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, true, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.USER1, LocalLdapServer.INVALIDPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.USER1, LocalLdapServer.INVALIDPASSWORD, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, TITLE_ERROR_PAGE);

@@ -149,6 +149,10 @@ SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=O servi\u00e7o Form-Logout falhou ao
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Corrija a \
 URL especificada no par\u00e2metro logoutExitPage.
 
-JWT_ALREADY_LOGGED_OUT=CWWKS9126E: O login usando um JSON Web Token falhou porque o token foi desconectado anteriormente.
-JWT_ALREADY_LOGGED_OUT.explanation=Um JSON Web Token (JWT) que foi desconectado anteriormente foi reenviado para a autentica\u00e7\u00e3o de login.
-JWT_ALREADY_LOGGED_OUT.useraction=Obtenha um novo JSON Web Token ou configure o atributo de configura\u00e7\u00e3o trackLoggedOutSSOCookiesEnabled para false, que \u00e9 menos seguro.
+JWT_ALREADY_LOGGED_OUT=CWWKS9126A: A autentica\u00e7\u00e3o utilizando um token da web JSON n\u00e3o foi bem-sucedida porque o token foi desconectado anteriormente.
+JWT_ALREADY_LOGGED_OUT.explanation=Um Token da web JSON (JWT) que foi desconectado anteriormente foi reenviado para autentica\u00e7\u00e3o.
+JWT_ALREADY_LOGGED_OUT.useraction=Obtenha um novo Token da web JSON.
+
+JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: O recurso jwtSso est\u00e1 configurando um cookie seguro em uma solicita\u00e7\u00e3o de HTTP insegura.  Esse pode ser um erro de configura\u00e7\u00e3o.  Use o protocolo HTTPS ou configure o atributo setCookieSecureFlag da configura\u00e7\u00e3o jwtSso como false.
+JWT_COOKIE_SECURITY_MISMATCH.explanation=Um cookie est\u00e1 marcado como seguro, mas o protocolo \u00e9 HTTP, portanto, o cookie nunca ser\u00e1 retornado e isso pode causar a falha de solicita\u00e7\u00f5es subsequentes.
+JWT_COOKIE_SECURITY_MISMATCH.useraction=Use o protocolo HTTPS ou configure o atributo setCookieSecureFlag da configura\u00e7\u00e3o jwtSso como false.

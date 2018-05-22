@@ -25,6 +25,7 @@ import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.AccessedExpiryPolicy;
 import javax.cache.expiry.Duration;
 import javax.cache.spi.CachingProvider;
+import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -34,9 +35,9 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/JCacheTestServlet")
 public class JCacheTestServlet extends FATServlet {
+    @Inject
+    ZombiePod zp;
 	
-	//TODO: Disabling all tests until the hazelcast config for the bucket is fixed and Annotations are addressed.
-	@Test
 	public void mustHaveTest() throws Exception {
 		assertTrue(true);
 	}
@@ -44,7 +45,6 @@ public class JCacheTestServlet extends FATServlet {
     /**
      * Basic test to confirm we can get a cache, insert a value, and retrieve it.
      */
-    //@Test
     public void basicJCacheTest() throws Exception {
         CachingProvider provider = Caching.getCachingProvider();
         URI hazelcastXML = new URI("../hazelcast/hazelcast-localhost-only.xml");
@@ -71,7 +71,6 @@ public class JCacheTestServlet extends FATServlet {
         provider.close(hazelcastXML, Caching.getDefaultClassLoader());
     }
     
-    //@Test
     public void testCloseAndReopen() throws Exception {
         CachingProvider provider = Caching.getCachingProvider();
         URI hazelcastXML = new URI("../hazelcast/hazelcast-localhost-only.xml");
@@ -102,7 +101,6 @@ public class JCacheTestServlet extends FATServlet {
      * Test that we can use an entry processor with a cache.
      * @throws Exception
      */
-    //@Test
     public void testEntryProcessor() throws Exception {
         CachingProvider provider = Caching.getCachingProvider();
         URI hazelcastXML = new URI("../hazelcast/hazelcast-localhost-only.xml");
@@ -139,22 +137,22 @@ public class JCacheTestServlet extends FATServlet {
     /**
      * Test that we can use annotations
      */
-    //@Test
     public void testAnnotations() throws Exception {
-    		ZombiePod zp = new ZombiePod();
-    		String name = zp.getZombie(2);
-    		int zid = zp.addZombie("Nathan");
-    		zp.emptyPod();
-    		
-    		CachingProvider provider = Caching.getCachingProvider();
-        URI hazelcastXML = new URI("../hazelcast/hazelcast-localhost-only.xml");
-        CacheManager manager = provider.getCacheManager(hazelcastXML, Caching.getDefaultClassLoader());
-        //Cache zom = manager.getCache("zombies");
-        //System.out.println(zom.iterator().hasNext());
-    
-            
-    		assertEquals("Should have received cached name",name,zp.getZombie(2));		
-    		
-    		//TODO remove cache
+        zp.emptyPod();
+
+        zp.addOrReplaceZombie(1, "Alex");
+        assertEquals("Andy", zp.getZombie(2, "Andy"));
+        //TODO assertEquals("Andy", zp.getZombie(2, "should-ignore-this-value"));
+        //TODO assertEquals("Alex", zp.getZombie(1, "should-ignore-this-value"));
+
+        zp.removeZombie(1);
+        assertEquals("Jim", zp.getZombie(1, "Jim"));
+
+        zp.addOrReplaceZombie(2, "Joe");
+        // TODO assertEquals("Joe", zp.getZombie(2, "should-ignore-this-value"));
+
+        zp.emptyPod();
+        assertEquals("Mark", zp.getZombie(1, "Mark"));
+        assertEquals("Nathan", zp.getZombie(2, "Nathan"));
     }
 }

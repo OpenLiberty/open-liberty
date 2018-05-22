@@ -18,9 +18,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-
                 AlwaysPassesTest.class,
-                //                CustomFormHttpAuthenticationMechanismTest.class,
                 BasicAuthenticationMechanismTest.class,
                 RememberMeTest.class,
                 AutoApplySessionTest.class,
@@ -28,10 +26,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 LdapIdentityStoreDeferredSettingsTest.class,
                 MultipleIdentityStoreBasicTest.class,
                 MultipleIdentityStoreApplCustomTest.class,
-                MultipleIdentityStoreFormRedirectTest.class,
-                MultipleIdentityStoreFormForwardTest.class,
-                MultipleIdentityStoreCustomFormRedirectTest.class,
-                MultipleIdentityStoreCustomFormForwardTest.class,
+                MultipleIdentityStoreFormTest.class,
+                MultipleIdentityStoreCustomFormTest.class,
                 NoJavaEESecFormTest.class,
                 MultipleIdentityStoreFormPostTest.class,
                 MultipleIdentityStoreCustomFormPostTest.class,
@@ -46,7 +42,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 HttpAuthenticationMechanismDBHashBeanTest.class,
                 HttpAuthenticationMechanismDBHashNoConfigTest.class,
                 ProgrammaticTest.class,
-                MultipleModuleTest.class,
+                MultipleModuleNoExpandTest.class,
+                MultipleModuleExpandTest.class,
                 SecurityContextTest.class,
                 SecurityContextJaxRSTest.class,
                 SecurityContextEJBTest.class,
@@ -54,9 +51,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 EAREJBModuleTest.class,
                 MultipleModuleGlobalLoginTest.class,
                 MultipleModuleRunAsTest.class,
+                MultipleModuleDBRunAsTest.class,
                 ScopedTest.class,
                 CustomIdentityStoreHandlerTest.class,
-                NoIdentityStoreTest.class
+                NoIdentityStoreTest.class,
+                MultipleModuleGlobalClientCertTest.class,
+                MultipleModuleGlobalClientCertFailOverTest.class
 })
 
 /**

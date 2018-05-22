@@ -17,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -161,34 +163,75 @@ public class WebAppSecurityConfigImplTest {
 
     @Test
     public void getChangedProperties_allChanged() {
-        Map<String, Object> cfg = new HashMap<String, Object>();
-        cfg.put("allowFailOverToBasicAuth", Boolean.TRUE);
-        cfg.put("displayAuthenticationRealm", Boolean.FALSE);
-        cfg.put("ssoCookieName", "webSSOCookie");
-        cfg.put("autoGenSsoCookieName", Boolean.FALSE);
-        cfg.put("ssoDomainNames", "austin.ibm.com|raleigh.ibm.com|useDomainFromURL");
-        cfg.put("webAlwaysLogin", Boolean.TRUE);
-        cfg.put("jaspicSessionForMechanismsEnabled", Boolean.TRUE);
-        cfg.put("jaspicSessionCookieName", "jaspicSession");
-        WebAppSecurityConfig webCfgOld = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
 
-        cfg.put("allowFailOverToBasicAuth", Boolean.FALSE);
-        cfg.put("displayAuthenticationRealm", Boolean.TRUE);
-        cfg.put("ssoCookieName", "mySSOCookie");
-        cfg.put("autoGenSsoCookieName", Boolean.FALSE);
-        cfg.put("ssoDomainNames", "");
-        cfg.put("webAlwaysLogin", Boolean.FALSE);
-        cfg.put("jaspicSessionForMechanismsEnabled", Boolean.FALSE);
-        cfg.put("jaspicSessionCookieName", "myJaspicSession");
-        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
+        WebAppSecurityConfig webCfgOld = new WebAppSecurityConfigImpl(createMapOriginal(), locationAdminRef, securityServiceRef);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(createMapChanged(), locationAdminRef, securityServiceRef);
 
         assertEquals("When all settings have changed, all should be listed",
-                     "allowFailOverToBasicAuth=false,displayAuthenticationRealm=true,jaspicSessionCookieName=myJaspicSession,jaspicSessionForMechanismsEnabled=false,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false",
+                     "allowFailOverToBasicAuth=false,autoGenSsoCookieName=true,basicAuthenticationMechanismRealmName=newRealm,contextRootForFormAuthenticationMechanism=/modified,displayAuthenticationRealm=true,jaspicSessionCookieName=myJaspicSession,jaspicSessionForMechanismsEnabled=false,loginErrorURL=modifiedLoginError,overrideHttpAuthMethod=modified,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false",
                      webCfg.getChangedProperties(webCfgOld));
     }
 
+    @Test
+    public void getChangedPropertiesMap_allChanged() {
+
+        WebAppSecurityConfig webCfgOld = new WebAppSecurityConfigImpl(createMapOriginal(), locationAdminRef, securityServiceRef);
+        Map<String, Object> changed = createMapChanged();
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(changed, locationAdminRef, securityServiceRef);
+        Map<String, String> expected = convertValues(changed);
+        assertTrue("When all settings have changed, all should be listed", expected.equals(webCfg.getChangedPropertiesMap(webCfgOld)));
+    }
+
+    private Map<String, Object> createMapOriginal() {
+        Map<String, Object> cfg = new HashMap<String, Object>() {
+            {
+                put("allowFailOverToBasicAuth", Boolean.TRUE);
+                put("displayAuthenticationRealm", Boolean.FALSE);
+                put("ssoCookieName", "webSSOCookie");
+                put("autoGenSsoCookieName", Boolean.FALSE);
+                put("ssoDomainNames", "austin.ibm.com|raleigh.ibm.com|useDomainFromURL");
+                put("webAlwaysLogin", Boolean.TRUE);
+                put("jaspicSessionForMechanismsEnabled", Boolean.TRUE);
+                put("jaspicSessionCookieName", "jaspicSession");
+                put("loginErrorURL", "originalLoginError");
+                put("contextRootForFormAuthenticationMechanism", "/original");
+                put("basicAuthenticationMechanismRealmName", "realm");
+                put("overrideHttpAuthMethod", "original");
+            }
+        };
+        return cfg;
+    }
+
+    private Map<String, Object> createMapChanged() {
+        Map<String, Object> cfg = new HashMap<String, Object>() {
+            {
+                put("allowFailOverToBasicAuth", Boolean.FALSE);
+                put("displayAuthenticationRealm", Boolean.TRUE);
+                put("ssoCookieName", "mySSOCookie");
+                put("autoGenSsoCookieName", Boolean.TRUE);
+                put("ssoDomainNames", "");
+                put("webAlwaysLogin", Boolean.FALSE);
+                put("jaspicSessionForMechanismsEnabled", Boolean.FALSE);
+                put("jaspicSessionCookieName", "myJaspicSession");
+                put("loginErrorURL", "modifiedLoginError");
+                put("contextRootForFormAuthenticationMechanism", "/modified");
+                put("basicAuthenticationMechanismRealmName", "newRealm");
+                put("overrideHttpAuthMethod", "modified");
+            }
+        };
+        return cfg;
+    }
+
+    private Map<String, String> convertValues(Map<String, Object> original) {
+        Map<String, String> output = new TreeMap<String, String>();
+        for (Entry<String, Object> entry : original.entrySet()) {
+            output.put(entry.getKey(), entry.getValue().toString());
+        }
+        return output;
+    }
+
     private void driveSingleAttributeTest(String name, Object oldValue, Object newValue) {
-        Map<String, Object> cfg = new HashMap<String, Object>();
+        Map<String, Object> cfg = new TreeMap<String, Object>();
         cfg.put(name, oldValue);
         WebAppSecurityConfig webCfgOld = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
 
@@ -196,6 +239,8 @@ public class WebAppSecurityConfigImplTest {
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
         assertEquals("Did not get expected name value pair for attribute " + name,
                      name + "=" + newValue, webCfg.getChangedProperties(webCfgOld));
+
+        assertEquals("Did not get expected result from getChangedPropertiesMap. attribute name : " + name, convertValues(cfg), webCfg.getChangedPropertiesMap(webCfgOld));
     }
 
     @Test
@@ -316,6 +361,30 @@ public class WebAppSecurityConfigImplTest {
     public void getChangedProperties_webAlwaysLogin() {
         driveSingleAttributeTest("webAlwaysLogin",
                                  Boolean.TRUE, Boolean.FALSE);
+    }
+
+    @Test
+    public void getChangedProperties_loginErrorURL() {
+        driveSingleAttributeTest("loginErrorURL",
+                                 "", "/new");
+    }
+
+    @Test
+    public void getChangedProperties_overrideHttpAuthMethod() {
+        driveSingleAttributeTest("overrideHttpAuthMethod",
+                                 "BASIC", "FORM");
+    }
+
+    @Test
+    public void getChangedProperties_contextRootForFormAuthenticationMechanism() {
+        driveSingleAttributeTest("contextRootForFormAuthenticationMechanism",
+                                 "someValue", "");
+    }
+
+    @Test
+    public void getChangedProperties_basicAuthenticationMechanismRealmName() {
+        driveSingleAttributeTest("basicAuthenticationMechanismRealmName",
+                                 "old", "new");
     }
 
     @Test

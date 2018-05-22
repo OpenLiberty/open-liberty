@@ -110,9 +110,6 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-
-        myServer.stopServer("CWWKS1916W", "CWWKS3400W", "CWWKS3401E", "CWWKS3402E", "CWWKS3405W", "CWWKS3406W");
-
         if (ldapServer != null) {
             try {
                 ldapServer.stopService();
@@ -120,6 +117,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
                 Log.error(logClass, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
             }
         }
+        myServer.stopServer("CWWKS1916W", "CWWKS3400W", "CWWKS3401E", "CWWKS3402E", "CWWKS3405W", "CWWKS3406W");
 
     }
 

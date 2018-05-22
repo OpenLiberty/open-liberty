@@ -1,0 +1,57 @@
+<server description="JavaEESec Multiple Module Global Login Cert FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+        <feature>ldapRegistry-3.0</feature>
+        <feature>jsf-2.3</feature>
+    </featureManager>
+
+    <webAppSecurity overrideHttpAuthMethod="CLIENT_CERT" allowAuthenticationFailOverToAuthMethod="APP_DEFINED"/>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+    <keyStore id="defaultTrustStore" location="${server.config.dir}/resources/security/trust.jks" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 4/12/2038 -->
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" clientAuthenticationSupported="true" />
+
+    <ldapRegistry id="LDAP" realm="MyLdapRealm" host="localhost" port="10389" ignoreCase="true"
+        loginProperty="uid"
+        bindDN="uid=admin,ou=users,o=ibm,c=us"
+        bindPassword="s3cur1ty"
+        baseDN="o=ibm,c=us"
+        certificateMapMode="CERTIFICATE_FILTER" 
+        certificateFilter="uid=${SubjectCN}"
+        userFilter="(&amp;(uid=%v)(objectclass=inetOrgPerson))"
+        groupFilter="(&amp;(cn=%v)(objectclass=groupOfNames))"
+        userIdMap="*:uid"
+        groupIdMap="*:cn"
+        groupMemberIdMap="groupOfNames:member" 
+        ldapType="Custom" >
+    </ldapRegistry>     
+
+    <application type="ear" id="multipleModule" name="multipleModule" location="multipleModule.ear">
+        <application-bnd>
+            <!-- members of certgroup1 is certuser1, user3 -->
+            <security-role name="grantedgroup">
+                <group name="certgroup1" />
+                <group name="grantedgroup" access-id="grantedgroup"/>
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <application type="war" id="NoJavaEESecForm" name="NoJavaEESecForm" location="NoJavaEESecForm.war">
+        <application-bnd>
+            <security-role name="group1">
+                <group name="certgroup1" />
+            </security-role>    
+        </application-bnd>
+    </application>
+
+    <application type="war" id="NoJavaEESecBasic" name="NoJavaEESecBasic" location="NoJavaEESecBasic.war">
+        <application-bnd>
+            <security-role name="group1">
+                <group name="certgroup1" />
+            </security-role>    
+        </application-bnd>
+    </application>
+
+    <include location="../fatTestPorts.xml" />
+</server>

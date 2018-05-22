@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.version15.test.app;
 
+import java.io.FileNotFoundException;
+
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,16 @@ public class TestApplication {
 		return context.getInitParameter("context_parameter_test_key");
 	}
 	
+	@RequestMapping(value="/exception", produces="text/html")
+	public void throwIllegalArgumentException() {
+		throw new IllegalArgumentException("Thrown on purpose for FAT test. Exception error page.");
+	}
+
+	@RequestMapping(value="/other-exception", produces="text/html")
+    public void throwFileSystemNotFoundException() {
+        throw new java.nio.file.FileSystemNotFoundException("Thrown on purpose for FAT test. Default error page.");
+    }   
+
 	static final String 
 			IbmApiClazzName = "com.ibm.websphere.application.ApplicationMBean",
 			TpClazzName 	= "javax.mail.Message";

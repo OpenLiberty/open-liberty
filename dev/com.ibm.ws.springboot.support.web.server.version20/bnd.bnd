@@ -34,6 +34,7 @@ instrument.disabled: true
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot20Server.jar; version:Version=2.0
 
 -buildpath: \
+	org.springframework:spring-web;strategy=exact;version=5.0.4.RELEASE, \
 	org.springframework:spring-core;strategy=exact;version=5.0.4.RELEASE, \
 	org.springframework:spring-context;strategy=exact;version=5.0.4.RELEASE, \
 	org.springframework:spring-aop;strategy=exact;version=5.0.4.RELEASE, \
@@ -61,7 +62,7 @@ Provide-Capability: spring.boot.support; jars:List<String>=springBoot20Server.ja
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1
 
--dsannotations: com.ibm.ws.springboot.support.web.server.version20.osgi.SpringBoot15Support
+-dsannotations: com.ibm.ws.springboot.support.web.server.version20.osgi.SpringBoot20Support
 -dsannotations-inherit: true
 
 -make= (*).(jar); type=bnd; recipe="bnd/$1.bnd"

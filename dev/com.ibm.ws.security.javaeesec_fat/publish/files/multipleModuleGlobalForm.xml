@@ -7,7 +7,7 @@
 
     <!-- a slash character is intentionally added to loginFormURL -->
     <webAppSecurity loginFormURL="/test/globalLogin/globalLogin.jsp" loginErrorURL="test/globalLogin/globalLoginError.jsp"
-     overrideHttpAuthenticationMechanism="FORM" contextRootForFormAuthenticationMechanism="/test/globalLogin" />
+     overrideHttpAuthMethod="FORM" contextRootForFormAuthenticationMechanism="/test/globalLogin" />
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 

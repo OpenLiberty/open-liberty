@@ -1225,15 +1225,20 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
     
     /**
      * Set the ALPN protocol negotiated for this link
+     *
      * @param String protocol
      */
     public void setAlpnProtocol(String protocol) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setAlpnProtocol: " + protocol + " " + this);
+        }
         this.alpnProtocol = protocol;
         this.sslConnectionContext.setAlpnProtocol(protocol);
     }
     
     /**
      * The ALPN protocol negotiated for this link
+     *
      * @return the protocol String, or null if ALPN was not used
      */
     public String getAlpnProtocol() {

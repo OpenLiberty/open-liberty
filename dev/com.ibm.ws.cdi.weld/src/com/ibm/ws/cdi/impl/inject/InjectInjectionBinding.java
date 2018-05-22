@@ -73,8 +73,9 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (isTraceOn && tc.isDebugEnabled())
-            Tr.debug(tc, "getInjectionObjectInstance");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getInjectionObjectInstance", new Object[] { Util.identity(targetObject), Util.identity(targetContext)});
+        }
         WeldCreationalContext<Object> cc = null;
 
         if (targetContext == null) {
@@ -100,8 +101,9 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
         }
         Object retObj = InjectInjectionObjectFactory.getObjectInstance(this, targetObject, cc, methodInvocationContext, cdiRuntime);
 
-        if (isTraceOn && tc.isDebugEnabled())
-            Tr.debug(tc, "getInjectionObjectInstance : " + Util.identity(retObj));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "getInjectionObjectInstance", Util.identity(retObj));
+        }
 
         return retObj;
     }
@@ -146,6 +148,10 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
             InjectionTargetContext targetContext)
                     throws InjectionException {
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getInjectionObject", new Object[] { Util.identity(targetObject), Util.identity(targetContext)});
+        }
+
         Object retObj = null;
 
         //First attempt to get the injection object, and handle any exceptions thrown in the process. 
@@ -161,8 +167,8 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
         {
 
             if (CDIUtils.isInjectionFailureIgnored()){
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "com.ibm.ws.cdi.ignoreInjectionFailure = true, ignoring InjectionException", ex);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "com.ibm.ws.cdi.ignoreInjectionFailure = true, ignoring InjectionException and will return null", ex);
                 }
                 return null;
             }
@@ -228,8 +234,8 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
                     app + " application cannot be resolved."); // d502635.1
             
             if (CDIUtils.isInjectionFailureIgnored()){
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "com.ibm.ws.cdi.ignoreInjectionFailure = true, ignoring InjectionException", ex);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "com.ibm.ws.cdi.ignoreInjectionFailure = true, ignoring InjectionException and will return null", ex);
                 }
                 return null;
             } else {
@@ -257,8 +263,8 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
             retObj = retObjArray;
         }
         
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getInjectionObject", retObj);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "getInjectionObjectInstance", Util.identity(retObj));
         }
         return retObj;
     }

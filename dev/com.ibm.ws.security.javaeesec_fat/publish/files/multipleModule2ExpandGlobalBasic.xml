@@ -5,7 +5,7 @@
         <feature>jsf-2.3</feature>
     </featureManager>
 
-    <webAppSecurity overrideHttpAuthenticationMechanism="BASIC" basicAuthenticationMechanismRealmName="OverriddenByContainer" />
+    <webAppSecurity overrideHttpAuthMethod="BASIC" basicAuthenticationMechanismRealmName="OverriddenByContainer" />
 
     <applicationManager autoExpand="true"/>
 

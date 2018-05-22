@@ -986,15 +986,22 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
      */
     private boolean checkForH2MagicString(HttpInboundServiceContextImpl isc) {
 
+        boolean hasMagicString = false;
+        WsByteBuffer buffer;
+
+        if (myTSC == null || myTSC.getReadInterface() == null ||
+            (buffer = myTSC.getReadInterface().getBuffer()) == null) {
+            return hasMagicString;
+        }
+
         // read the buffer, flip it, and if there is a backing array pull that out
-        WsByteBuffer buffer = this.myTSC.getReadInterface().getBuffer().duplicate();
+        buffer = buffer.duplicate();
         buffer.flip();
         byte[] bufferArray = null;
         if (buffer.hasArray()) {
             bufferArray = buffer.array();
         }
 
-        boolean hasMagicString = false;
         // return true if the read buffer starts with the magic string
         if (bufferArray != null && bufferArray.length >= 24) {
             String bufferString = new String(bufferArray, 0, 24);

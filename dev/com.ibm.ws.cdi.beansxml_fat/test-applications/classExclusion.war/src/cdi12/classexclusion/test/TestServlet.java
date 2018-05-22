@@ -58,15 +58,15 @@ public class TestServlet extends HttpServlet {
 
         PrintWriter pw = response.getWriter();
 
-        pw.write(included.getOutput() + System.getProperty("line.separator"));
-        pw.write(excluded.getOutput() + System.getProperty("line.separator"));
-        pw.write(excludedPackageBean.getOutput() + System.getProperty("line.separator"));
-        pw.write(excludedPackageTreeBean.getOutput() + System.getProperty("line.separator"));
-        pw.write(protectedByClassBean.getOutput() + System.getProperty("line.separator"));
-        pw.write(excludedByPropertyBean.getOutput() + System.getProperty("line.separator"));
-        pw.write(excludedByComboBean.getOutput() + System.getProperty("line.separator"));
-        pw.write(proectedByHalfComboBean.getOutput() + System.getProperty("line.separator"));
-        pw.write(vetoedBean.getOutput() + System.getProperty("line.separator"));
+        pw.write(included.getOutput() + System.lineSeparator());
+        pw.write(excluded.getOutput() + System.lineSeparator());
+        pw.write(excludedPackageBean.getOutput() + System.lineSeparator());
+        pw.write(excludedPackageTreeBean.getOutput() + System.lineSeparator());
+        pw.write(protectedByClassBean.getOutput() + System.lineSeparator());
+        pw.write(excludedByPropertyBean.getOutput() + System.lineSeparator());
+        pw.write(excludedByComboBean.getOutput() + System.lineSeparator());
+        pw.write(proectedByHalfComboBean.getOutput() + System.lineSeparator());
+        pw.write(vetoedBean.getOutput() + System.lineSeparator());
 
         pw.flush();
         pw.close();

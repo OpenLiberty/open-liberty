@@ -27,5 +27,14 @@ public class TestApplication {
 	public String hello() {
 		return "HELLO SPRING BOOT!!";
 	}
-	
+
+	@RequestMapping(value="/exception", produces="text/html")
+	public void throwIllegalArgumentException() {
+		throw new IllegalArgumentException("Thrown on purpose for FAT test. Exception error page.");
+	}
+
+	@RequestMapping(value="/other-exception", produces="text/html")
+	public void throwFileSystemNotFoundException() {
+		throw new java.nio.file.FileSystemNotFoundException("Thrown on purpose for FAT test. Default error page.");
+	}	
 }

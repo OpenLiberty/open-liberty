@@ -72,7 +72,7 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
             authResult = authenticator.authenticate(webRequest);
             if (authenticator instanceof CertificateLoginAuthenticator &&
                 authResult != null && authResult.getStatus() != AuthResult.SUCCESS &&
-                webAppSecurityConfig.allowFailOver()) {
+                webAppSecurityConfig.allowFailOver() && !webRequest.isDisableClientCertFailOver()) {
                 extraAuditData.put(AuditConstants.ORIGINAL_AUTH_TYPE, authType);
                 authType = getFailOverToAuthType(webRequest);
                 extraAuditData.put(AuditConstants.FAILOVER_AUTH_TYPE, authType);
@@ -157,7 +157,13 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
      */
     private String getFailOverToAuthType(WebRequest webRequest) {
         String authType = null;
-        if (webAppSecurityConfig.getAllowFailOverToBasicAuth() && webAppSecurityConfig.getAllowFailOverToFormLogin()) {
+        if (webAppSecurityConfig.getAllowFailOverToAppDefined()) {
+            SecurityMetadata securityMetadata = webRequest.getSecurityMetadata();
+            LoginConfiguration loginConfig = securityMetadata.getLoginConfiguration();
+            if (loginConfig != null) {
+                authType = loginConfig.getAuthenticationMethod();
+            }
+        } else if (webAppSecurityConfig.getAllowFailOverToBasicAuth() && webAppSecurityConfig.getAllowFailOverToFormLogin()) {
             if (appHasWebXMLFormLogin(webRequest) || globalWebAppSecurityConfigHasFormLogin()) {
                 authType = LoginConfiguration.FORM;
             } else {
@@ -180,6 +186,10 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
      * @return The correct WebAuthenticator to handle the webRequest, or {@code null} if it could not be created.
      */
     public WebAuthenticator getWebAuthenticator(WebRequest webRequest) {
+        String authMech = webAppSecurityConfig.getOverrideHttpAuthMethod();
+        if (authMech != null && authMech.equals("CLIENT_CERT")) {
+            return createCertificateLoginAuthenticator();
+        }
         SecurityMetadata securityMetadata = webRequest.getSecurityMetadata();
         LoginConfiguration loginConfig = securityMetadata.getLoginConfiguration();
 

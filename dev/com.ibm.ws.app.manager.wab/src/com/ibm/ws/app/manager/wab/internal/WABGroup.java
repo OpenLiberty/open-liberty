@@ -30,7 +30,7 @@ final class WABGroup {
     }
 
     //this is called by the WAB itself when it responds to it's own sub tracker opening
-    //after adding the wab to the web container etc.. 
+    //after adding the wab to the web container etc..
     void addWab(WAB wab, WABInstaller installer) {
         if (!Thread.holdsLock(this)) {
             throw new IllegalStateException();
@@ -74,7 +74,7 @@ final class WABGroup {
                     toRemove.add(wab);
                 }
                 wabs.removeAll(toRemove);
-                //any left in the 2nd pass just don't get removed. 
+                //any left in the 2nd pass just don't get removed.
                 if (wabs.size() != 0) {
                     installer.wabLifecycleDebug("Second pass wab group uninstall detected outstanding WABs", wabs);
                 }
@@ -85,18 +85,20 @@ final class WABGroup {
     /**
      * Tells this wab group to forget this wab
      * DOES NOT UNINSTALL the wab.
-     * 
+     *
      * @param wab
+     * @return true if group is empty
      */
-    void removeWAB(WAB wab) {
+    boolean removeWAB(WAB wab) {
         if (!Thread.holdsLock(this)) {
             throw new IllegalStateException();
         }
 
-        //this is invoked _after_ the wab is uninstalled from the web container, 
-        //and is our chance to forget the wab, thus we don't need to care about 
+        //this is invoked _after_ the wab is uninstalled from the web container,
+        //and is our chance to forget the wab, thus we don't need to care about
         //the group uninstallation state when we forget this one.
         wabs.remove(wab);
+        return wabs.isEmpty();
     }
 
     @Override

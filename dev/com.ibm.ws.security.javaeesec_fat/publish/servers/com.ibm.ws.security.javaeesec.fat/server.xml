@@ -7,27 +7,9 @@
 	</featureManager>
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
-<!--
-	<basicRegistry id="basic1" realm="JaspiRealm">
-		<user name="jaspiuser2" password="s3cur1ty" />
-		<user name="jaspiuser1" password="s3cur1ty" />
-		<user name="jaspiuser3" password="s3cur1ty" />
-		<user name="jaspiuser4" password="s3cur1ty" />
-		<user name="jaspiuser5" password="s3cur1ty" />
-		<group name="group1">
-			<member name="jaspiuser1" />
-		</group>
-		<group name="group2">
-			<member name="jaspiuser2" />
-		</group>
-		<group name="group3">
-			<member name="jaspiuser3" />
-		</group>
-		<group name="group5">
-			<member name="jaspiuser5" />
-		</group>
-	</basicRegistry>
--->
+
+    <webAppSecurity jaspicSessionForMechanismsEnabled="true" />
+
  	<application type="war" id="JavaEESecBasicAuthServlet" name="JavaEESecBasicAuthServlet" location="JavaEESecBasicAuthServlet.war">
  		<application-bnd>
 			<security-role name="javaeesec_basic">
@@ -60,8 +42,6 @@
 			</security-role>
 		</application-bnd>
 	</application>
-	
 
-	
 	<include location="../fatTestPorts.xml" />
 </server>

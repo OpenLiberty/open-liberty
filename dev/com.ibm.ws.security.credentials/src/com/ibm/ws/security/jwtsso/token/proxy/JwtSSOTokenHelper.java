@@ -13,6 +13,7 @@ package com.ibm.ws.security.jwtsso.token.proxy;
 import java.util.Map;
 
 import javax.security.auth.Subject;
+import javax.security.auth.login.LoginException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -24,7 +25,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
@@ -85,16 +85,10 @@ public class JwtSSOTokenHelper {
         }
     }
 
-    public static void createJwtSSOToken(Subject subject) {
+    public static void createJwtSSOToken(Subject subject) throws LoginException {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            try {
-                jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
-            } catch (WSSecurityException e) {
-                String msg = Tr.formatMessage(tc, "WARN_JWT_SSO_TOKEN_SERVICE_ERROR");
-                Tr.warning(tc, msg);
-            }
+            jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
         }
-
     }
 
     /**
@@ -108,7 +102,7 @@ public class JwtSSOTokenHelper {
 
     }
 
-    public static Subject handleJwtSSOToken(String jwtssotoken) throws WSSecurityException {
+    public static Subject handleJwtSSOToken(String jwtssotoken) throws LoginException {
         if (jwtSSOTokenProxyRef.getService() != null) {
             return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(null, jwtssotoken);
         }
@@ -116,7 +110,7 @@ public class JwtSSOTokenHelper {
 
     }
 
-    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) throws WSSecurityException {
+    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) throws LoginException {
         if (jwtSSOTokenProxyRef.getService() != null) {
             return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(subject, jwtssotoken);
         }
@@ -138,9 +132,9 @@ public class JwtSSOTokenHelper {
         return null;
     }
 
-    public static void addCustomCacheKeyToJwtSSOToken(Subject subject, String cacheKeyValue) {
+    public static void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws LoginException {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            jwtSSOTokenProxyRef.getService().addCustomCacheKeyToJwtSSOToken(subject, cacheKeyValue);
+            jwtSSOTokenProxyRef.getService().addCustomCacheKeyAndRealmToJwtSSOToken(subject);
         }
     }
 
