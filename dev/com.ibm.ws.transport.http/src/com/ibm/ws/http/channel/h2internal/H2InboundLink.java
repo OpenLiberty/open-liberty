@@ -12,6 +12,7 @@ package com.ibm.ws.http.channel.h2internal;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -102,9 +103,7 @@ public class H2InboundLink extends HttpInboundLink {
     WsByteBuffer slicedBuffer = null;
 
     ConcurrentHashMap<Integer, H2StreamProcessor> streamTable = new ConcurrentHashMap<Integer, H2StreamProcessor>();
-
-    ConcurrentHashMap<Integer, H2StreamProcessor> closeTable = new ConcurrentHashMap<Integer, H2StreamProcessor>();
-    private static long CLOSE_TABLE_PURGE_TIME = 30L * 1000000000L; // 30 seconds converted to nano-seconds
+    Timer streamCloseTimer;
 
     HttpInboundLink initialHttpInboundLink = null;
     VirtualConnection initialVC = null;
@@ -282,6 +281,7 @@ public class H2InboundLink extends HttpInboundLink {
         // create the initial stream processor, add it to the link stream table, and add it to the write queue
         H2StreamProcessor streamProcessor = new H2StreamProcessor(streamID, wrap, this, StreamState.OPEN);
         streamTable.put(streamID, streamProcessor);
+        streamCloseTimer = new Timer();
         writeQ.addNewNodeToQ(streamID, Node.ROOT_STREAM_ID, Node.DEFAULT_NODE_PRIORITY, false);
         this.setDeviceLink((ConnectionLink) myTSC);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -336,6 +336,7 @@ public class H2InboundLink extends HttpInboundLink {
         writeQ.addNewNodeToQ(streamID, Node.ROOT_STREAM_ID, Node.DEFAULT_NODE_PRIORITY, false);
 
         streamTable.put(streamID, streamProcessor);
+        streamCloseTimer = new Timer();
         highestClientStreamId = streamID;
 
         // add stream 0 to the table, in case we need to write out any control frames prior to initialization completion
@@ -801,7 +802,9 @@ public class H2InboundLink extends HttpInboundLink {
 
     public void cleanupStream(int streamID) {
         streamTable.remove(streamID);
-        writeQ.removeNodeFromQ(streamID);
+        if (streamID != 0) {
+            writeQ.removeNodeFromQ(streamID);
+        }
     }
 
     /*
@@ -1156,27 +1159,14 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     /**
-     * Set a stream as closed on this link: remove it from the open streams table and move it to the closed streams table
+     * Set a stream as closed on this link: remove it from the open streams table
      * If the stream is even (locally opened), decrement the number of open push streams
      *
      * @param streamProcessor
      */
     public void triggerStreamClose(H2StreamProcessor streamProcessor) {
-
-        if (closeTable.size() >= 512) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "triggerStreamClose : close table size greater than or equal to 512, purge the table of old entries");
-            }
-            purgeCloseTable();
-        }
-
-        streamProcessor.setCloseTime(System.nanoTime());
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "triggerStreamClose : move stream into close table.  stream-id: " + streamProcessor.getId());
-        }
-
-        closeTable.put(streamProcessor.getId(), streamProcessor);
         streamTable.remove(streamProcessor.getId());
+        cleanupStream(streamProcessor.getId());
         if (streamProcessor.getId() % 2 == 0) {
             synchronized (pushSync) {
                 this.openPushStreams--;
@@ -1188,56 +1178,14 @@ public class H2InboundLink extends HttpInboundLink {
      * Get the stream processor for a given stream ID, if it exists
      *
      * @param streamID of the desired stream
-     * @return a stream object if it's in the open or close table, or null if the
-     *         ID is new or has already been removed from the close table
+     * @return a stream object if it's in the open stream table, or null if the
+     *         ID is new or has already been removed from the stream table
      */
     public H2StreamProcessor getStream(int streamID) {
         H2StreamProcessor streamProcessor = null;
 
         streamProcessor = streamTable.get(streamID);
-        if (streamProcessor == null) {
-            streamProcessor = closeTable.get(streamID);
-        }
-
         return streamProcessor;
-    }
-
-    public boolean significantlyPastCloseTime(int streamID) {
-        if (streamTable.containsKey(streamID))
-            return false;
-        if (closeTable.containsKey(streamID)) {
-            H2StreamProcessor streamProcessor = closeTable.get(streamID);
-            if (streamProcessor.getCloseTime() != Constants.INITIAL_CLOSE_TIME) {
-                long diff = System.nanoTime() - streamProcessor.getCloseTime();
-                if (diff > CLOSE_TABLE_PURGE_TIME) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "stream-id: " + streamID + " closed and significantly past the close time, close time: " + streamProcessor.getCloseTime()
-                                     + " now: " + System.nanoTime() + " diff: " + diff);
-                    }
-                    closeTable.remove(streamID);
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Stream ID: " + streamID + " not in stream or close table");
-        }
-        return true;
-    }
-
-    public void purgeCloseTable() {
-        long now = System.nanoTime();
-        for (Map.Entry<Integer, H2StreamProcessor> entry : closeTable.entrySet()) {
-            if (entry.getValue().getCloseTime() + CLOSE_TABLE_PURGE_TIME < now) {
-                // old closed stream, so remove
-                closeTable.remove(entry.getKey());
-            }
-        }
     }
 
     public int getHighestClientStreamId() {
@@ -1270,6 +1218,10 @@ public class H2InboundLink extends HttpInboundLink {
 
     protected int getconfiguredInactivityTimeout() {
         return configuredInactivityTimeout;
+    }
+
+    protected Timer getStreamCloseTimer() {
+        return streamCloseTimer;
     }
 
 }

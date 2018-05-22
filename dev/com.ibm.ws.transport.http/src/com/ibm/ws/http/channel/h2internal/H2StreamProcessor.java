@@ -13,6 +13,7 @@ package com.ibm.ws.http.channel.h2internal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -117,10 +118,12 @@ public class H2StreamProcessor {
     private long actualReadCount = 0;
     private CountDownLatch readLatch = new CountDownLatch(1);
 
+    // handle various stream close conditions
     private boolean rstStreamSent = false;
+    private final int STREAM_CLOSE_DELAY = 5000;
 
     /**
-     * Constructor
+     * Create a stream processor initialized in idle state
      *
      * @param ID
      * @param H2HttpInboundLinkWrap
@@ -212,20 +215,11 @@ public class H2StreamProcessor {
         if (isStreamClosed()) {
             // stream is already closed
             if (direction.equals(Constants.Direction.WRITING_OUT) && !this.continuationExpected) {
-                // handle a write requested after stream closure
-                if (muxLink.significantlyPastCloseTime(myID)) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processNextFrame: stream significantly past close time - cannot write on stream-id: " + myID);
-                    }
-                    // ignore
-                    return;
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processNextFrame: stream is closed - cannot write out anything else on stream-id: " + myID);
-                    }
-                    // ignore
-                    return;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processNextFrame: stream is closed - cannot write out anything else on stream-id: " + myID);
                 }
+                // ignore
+                return;
             } else if (direction.equals(Constants.Direction.READ_IN) &&
                        !frame.getFrameType().equals(FrameTypes.PUSH_PROMISE)) {
                 // handle a frame recieved after stream closure
@@ -234,7 +228,7 @@ public class H2StreamProcessor {
                     // Ignore PRIORITY RST_STREAM and WINDOW_UPDATE in all closed situations
                     return;
                 }
-                if (muxLink.closeTable.containsKey(this.myID)) {
+                if (muxLink.streamTable.containsKey(this.myID)) {
                     throw new StreamClosedException(frame.getFrameType() + " frame received on a closed stream");
                 } else {
                     throw new ProtocolException(frame.getFrameType() + " frame received on a closed stream");
@@ -598,7 +592,7 @@ public class H2StreamProcessor {
     private void updateStreamState(StreamState state) {
         this.state = state;
         if (StreamState.CLOSED.equals(state)) {
-            muxLink.triggerStreamClose(this);
+            muxLink.getStreamCloseTimer().schedule(new CleanupTask(this), STREAM_CLOSE_DELAY);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "current stream state for stream " + this.myID + " : " + this.state);
@@ -846,8 +840,7 @@ public class H2StreamProcessor {
             }
             return;
         }
-
-        muxLink.triggerStreamClose(this);
+        this.updateStreamState(StreamState.CLOSED);
 
         // send out a goaway in response; return the same last stream, for now
         currentFrame = new FrameGoAway(0, new byte[0], 0, muxLink.getHighestClientStreamId(), false);
@@ -1890,5 +1883,26 @@ public class H2StreamProcessor {
 
     public H2HttpInboundLinkWrap getWrappedInboundLink() {
         return h2HttpInboundLinkWrap;
+    }
+
+    /**
+     * After a given delay (default 5s), this task removes this stream from the connection table of active streams
+     */
+    private class CleanupTask extends TimerTask {
+
+        H2StreamProcessor h2sp;
+
+        public CleanupTask(H2StreamProcessor processor) {
+            h2sp = processor;
+        }
+
+        @Override
+        public void run() {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "CleanupTask.run: remove stream-id: " + h2sp.getId()
+                             + " from the active stream table for H2InboundLink hc: " + h2sp.muxLink.hashCode());
+            }
+            muxLink.triggerStreamClose(h2sp);
+        }
     }
 }
