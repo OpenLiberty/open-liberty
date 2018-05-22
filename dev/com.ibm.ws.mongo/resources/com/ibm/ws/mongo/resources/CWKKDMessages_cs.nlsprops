@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com.ibm.ws.mongo/resources/com/ibm/ws/mongo/resources/CWKKDMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWKKD
+#COMPONENTNAMEFOR CWKKD MongoDB Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+CWKKD0010.prop.error=CWKKD0010E: Vlastnost {0} na slu\u017eb\u011b {1} s ID {2} a hodnotou {3} nelze konfigurovat.
+CWKKD0010.prop.error.explanation=Bu\u010f nen\u00ed nakonfigurovan\u00e1 vlastnost rozpozn\u00e1na, nebo ji nelze nakonfigurovat v d\u016fsledku chyby.
+CWKKD0010.prop.error.useraction=Opravte nebo odeberte konfigurovanou vlastnost.
+
+CWKKD0011.hosts.ports.mismatch=CWKKD0011E: Slu\u017eba {0} s ID {1} je definovan\u00e1 s rozd\u00edln\u00fdm po\u010dtem n\u00e1zv\u016f hostitel\u016f ({2}) a port\u016f ({3}).
+CWKKD0011.hosts.ports.mismatch.explanation=Seznamy n\u00e1zv\u016f hostitel\u016f a port\u016f mus\u00ed obsahovat stejn\u00fd po\u010det prvk\u016f. 
+CWKKD0011.hosts.ports.mismatch.useraction=Aktualizujte konfiguraci serveru tak, aby atributy n\u00e1zv\u016f hostitel\u016f a port\u016f obsahovaly stejn\u00fd po\u010det prvk\u016f.
+
+CWKKD0012.authentication.error=CWKKD0012E: Slu\u017ebu {0} s ID {1} nelze ov\u011b\u0159it u datab\u00e1ze {2}.
+CWKKD0012.authentication.error.explanation=Datab\u00e1ze odm\u00edtla pokus o ov\u011b\u0159en\u00ed.
+CWKKD0012.authentication.error.useraction=Aktualizujte konfiguraci serveru spr\u00e1vn\u00fdm jm\u00e9nem u\u017eivatele a heslem.
+
+CWKKD0013.unsupported.driver=CWKKD0013E: Slu\u017eba {0} rozpoznala nepodporovanou verzi ovlada\u010de datab\u00e1ze MongoDB ve sd\u00edlen\u00e9 knihovn\u011b {1}. O\u010dek\u00e1van\u00e1 minim\u00e1ln\u00ed \u00farove\u0148 je {2}, nalezena ale byla {3}.
+CWKKD0013.unsupported.driver.explanation=Slu\u017eb\u011b datab\u00e1ze MongoDB byla dod\u00e1na neplatn\u00e1 knihovna ovlada\u010de.
+CWKKD0013.unsupported.driver.useraction=Aktualizujte sd\u00edlenou knihovnu podporovanou \u00farovn\u00ed.
+
+CWKKD0014.missing.driver=CWKKD0014E: Slu\u017eba {0} nem\u016f\u017ee nal\u00e9zt po\u017eadovan\u00e9 t\u0159\u00eddy ovlada\u010de datab\u00e1ze MongoDB ve sd\u00edlen\u00e9 knihovn\u011b {1}.
+CWKKD0014.missing.driver.explanation=Slu\u017eba datab\u00e1ze MongoDB nem\u016f\u017ee nal\u00e9zt po\u017eadovan\u00e9 t\u0159\u00eddy v konfigurovan\u00e9 sd\u00edlen\u00e9 knihovn\u011b.
+CWKKD0014.missing.driver.useraction=Aktualizujte sd\u00edlenou knihovnu podporovanou \u00farovn\u00ed.
+
+CWKKD0015.ssl.feature.missing=CWKKD0015E: Slu\u017eba {0} s ID {1} se pokou\u0161\u00ed pou\u017e\u00edt SSL bez funkce ssl-1.0 povolen\u00e9 v souboru server.xml.
+CWKKD0015.ssl.feature.missing.explanation=Konfiguraci SSL nelze pou\u017e\u00edvat bez toho, aby byla povolena funkce ssl-1.0.
+CWKKD0015.ssl.feature.missing.useraction=P\u0159idejte funkci ssl-1.0 do souboru server.xml.
+
+CWKKD0017.ssl.incompatible.driver=CWKKD0017E: Slu\u017eba {0} s ID {1} rozpoznala ve sd\u00edlen\u00e9 knihovn\u011b {2} nekompatibiln\u00ed verzi ovlada\u010de MongoDB. Pro zabezpe\u010den\u00ed SSL je vy\u017eadov\u00e1na minim\u00e1ln\u00ed \u00farove\u0148 {3}, ale slu\u017eba nalezla \u00farove\u0148 {4}.
+CWKKD0017.ssl.incompatible.driver.explanation=Slu\u017eba MongoDB byla poskytnuta k pou\u017eit\u00ed se zabezpe\u010den\u00edm SSL s neplatnou knihovnou ovlada\u010de.
+CWKKD0017.ssl.incompatible.driver.useraction=Aktualizujte sd\u00edlenou knihovnu podporovanou \u00farovn\u00ed.
+
+# Do not translate "useCertificateAuthentication", "user" and "password"
+CWKKD0018.ssl.user.pswd.certificate=CWKKD0018E: Slu\u017eba {0} s ID {1} rozpoznala nekompatibiln\u00ed kombinaci voleb ov\u011b\u0159ov\u00e1n\u00ed. useCertificateAuthentication je nekompatibiln\u00ed s u\u017eivatelem a heslem.
+CWKKD0018.ssl.user.pswd.certificate.explanation=Slu\u017eba MongoDB byla dod\u00e1na s nekompatibiln\u00edmi volbami ov\u011b\u0159ov\u00e1n\u00ed pro pou\u017eit\u00ed se zabezpe\u010den\u00edm SSL.
+CWKKD0018.ssl.user.pswd.certificate.useraction=Aktualizujte prvek mongo server.xml pro ur\u010den\u00ed u\u017eivatele a hesla nebo useCertificateAuthentication, nikoli oboj\u00ed.
+
+CWKKD0019.ssl.certificate.no.ssl=CWKKD0019E: Slu\u017eba {0} s ID {1} byla nakonfigurov\u00e1na pro pou\u017eit\u00ed ov\u011b\u0159ov\u00e1n\u00ed pomoc\u00ed certifik\u00e1tu bez povolen\u00ed zabezpe\u010den\u00ed SSL.
+CWKKD0019.ssl.certificate.no.ssl.explanation=Slu\u017eba MongoDB byla nakonfigurov\u00e1na pro certifik\u00e1t zalo\u017een\u00fd na ov\u011b\u0159en\u00ed bez zabezpe\u010den\u00ed SSL.
+CWKKD0019.ssl.certificate.no.ssl.useraction=Aktualizujte prvek mongo v souboru server.xml pro zahrnut\u00ed sslEnabled=true nebo odeberte useCertificateAuthentication.
+
+CWKKD0020.ssl.get.certificate.user=CWKKD0020E: Slu\u017eba {0} s ID {1} p\u0159ijala v\u00fdjimku b\u011bhem \u010dten\u00ed kl\u00ed\u010de a certifik\u00e1tu klienta z dodan\u00e9ho \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f. Vno\u0159en\u00e1 v\u00fdjimka je {2}
+CWKKD0020.ssl.get.certificate.user.explanation=Slu\u017eba MongoDB se pokusila \u010d\u00edst kl\u00ed\u010d a certifik\u00e1t klienta z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f a do\u0161lo k probl\u00e9mu s \u00falo\u017ei\u0161t\u011bm kl\u00ed\u010d\u016f nebo s jeho certifik\u00e1tem. 
+CWKKD0020.ssl.get.certificate.user.useraction=Vno\u0159en\u00e1 v\u00fdjimka by m\u011bla poskytnout dal\u0161\u00ed informace.
+
+CWKKD0023.ssl.certauth.incompatible.driver=CWKKD0023E: Slu\u017eba {0} s ID {1} rozpoznala ve sd\u00edlen\u00e9 knihovn\u011b {2} nekompatibiln\u00ed verzi ovlada\u010de MongoDB. Pro ov\u011b\u0159ov\u00e1n\u00ed pomoc\u00ed certifik\u00e1tu je vy\u017eadov\u00e1na minim\u00e1ln\u00ed \u00farove\u0148 {3}, ale slu\u017eba nalezla \u00farove\u0148 {4}.
+CWKKD0023.ssl.certauth.incompatible.driver.explanation=Slu\u017eba MongoDB byla poskytnuta k pou\u017eit\u00ed s ov\u011b\u0159ov\u00e1n\u00edm pomoc\u00ed certifik\u00e1tu s neplatnou knihovnou ovlada\u010de.
+CWKKD0023.ssl.certauth.incompatible.driver.useraction=Aktualizujte sd\u00edlenou knihovnu s podporovanou \u00farovn\u00ed...
+
+CWKKD0024.ssl.sslref.no.ssl=CWKKD0024E: Slu\u017eba {0} s ID {1} m\u00e1 nastavenou vlastnost sslRef v souboru server.xml, ale vlastnost sslEnabled nen\u00ed nastavena na true.
+CWKKD0024.ssl.sslref.no.ssl.explanation=Nastaven\u00ed sslRef bez povolen\u00ed ssl je neplatn\u00e9.
+CWKKD0024.ssl.sslref.no.ssl.useraction=Nastavte sslEnabled=true, nebo odeberte sslRef.
+
+# Do not translate "clientKeyAlias"
+CWKKD0026.ssl.certificate.exception=CWKKD0026E: Slu\u017eba {0} s ID {1} nem\u016f\u017ee extrahovat kl\u00ed\u010d a certifik\u00e1t klienta z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f. Bu\u010f v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f nejsou \u017e\u00e1dn\u00e9 kl\u00ed\u010de, nebo je v\u00edce kl\u00ed\u010d\u016f a atribut clientKeyAlias nebyl ur\u010den v prvku ssl.
+CWKKD0026.ssl.certificate.exception.explanation=Odkazovan\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f mus\u00ed obsahovat alespo\u0148 jeden p\u00e1r kl\u00ed\u010d a certifik\u00e1t klienta a pokud obsahuje v\u00edce ne\u017e jeden parametr clientKeyAlias, mus\u00ed se pou\u017e\u00edt k identifikaci, kter\u00fd pou\u017e\u00edt.
+CWKKD0026.ssl.certificate.exception.useraction=Zkontrolujte pou\u017e\u00edvan\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f n\u00e1strojem Java keytool. Nap\u0159. "keytool -list -keystore keystorename.jks" zobrazuje polo\u017eky v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f a jeho aliasy. Ur\u010dete tyto aliasy pomoc\u00ed clientKeyAlias v prvku ssl.
+

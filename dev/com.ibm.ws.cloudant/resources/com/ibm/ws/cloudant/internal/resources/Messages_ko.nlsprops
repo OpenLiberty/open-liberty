@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com/ibm/ws/cloudant/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD Cloudant client
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: This message prefix is shared with other Liberty components
+# Message IDs 0300-0399 are reserved for cloudant.
+
+#{0} is the config element name (either jndi name or config id)
+error.cloudant.config.CWWKD0300E=CWWKD0300E: cloudant \uad6c\uc131 \uc694\uc18c {0}\uc5d0 url \ub610\ub294 \uacc4\uc815 \uc18d\uc131\uc744 \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+error.cloudant.config.CWWKD0300E.explanation=Cloundant \ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \uc791\uc131\ud558\ub824\uba74 \uad6c\uc131\uc5d0 \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc758 url \ub610\ub294 \uacc4\uc815\uc744 \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+error.cloudant.config.CWWKD0300E.useraction=\uc11c\ubc84 \uad6c\uc131\uc5d0 url \ub610\ub294 \uacc4\uc815 \uc18d\uc131\uc744 \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.
+
+#{0} JNDI name of the cloudant config element
+# ClientBuilder is a class name
+direct.lookup.CWWKD0301E=CWWKD0301E: Cloudant ClientBuilder {0}\uc758 \uac80\uc0c9\uc5d0\uc11c\ub294 \uc790\uc6d0 \ucc38\uc870\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.
+direct.lookup.CWWKD0301E.explanation=\uc218\uc815 \uac00\ub2a5\ud55c \uc790\uc6d0(\uc608: CloudantBuilder)\uc740 \uac01 \uac80\uc0c9\ub9c8\ub2e4 \uc0c8 \uc778\uc2a4\ud134\uc2a4\uac00 \ub9ac\ud134\ub418\ub3c4\ub85d \uc790\uc6d0 \ucc38\uc870\ub97c \ud1b5\ud574 \uac80\uc0c9\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4. \uc790\uc6d0 \ucc38\uc870 \uc5c6\ub294 \uac80\uc0c9\uc774 \ud5c8\uc6a9\ub418\uba74 \uacb0\uacfc\uc801\uc73c\ub85c \uacf5\uc720 ClientBuilder \uc778\uc2a4\ud134\uc2a4\uac00 \ubc1c\uc0dd\ud558\uba70, \uc774\ub85c \uc778\ud574 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc774\ub97c \uc218 \ucc28\ub840 \uac80\uc0c9\ud558\uace0 \uc774\ub97c \ub2e4\ub978 \ubc29\uc2dd\uc73c\ub85c \uc218\uc815\ud560 \ub54c \uc608\uc0c1\uce58 \ubabb\ud55c \uc791\ub3d9\uc744 \uc720\ubc1c\ud569\ub2c8\ub2e4.
+direct.lookup.CWWKD0301E.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 ClientBuilder\ub97c \uc704\ud55c \uc790\uc6d0 \ucc38\uc870\ub97c \ud3ec\ud568\ud558\uace0, \uc790\uc6d0 \ucc38\uc870\ub97c \uc0ac\uc6a9\ud558\uc5ec Cloudant ClientBuilder\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624. \ub610\ub294 \uc790\uc6d0 \uc778\uc81d\uc158(\uc774\ub294 \ub0b4\uc7ac\uc801\uc73c\ub85c \uc790\uc6d0 \ucc38\uc870\ub97c \uc791\uc131\ud568)\uc744 \uc0ac\uc6a9\ud558\uc5ec ClientBuilder \uc778\uc2a4\ud134\uc2a4\ub97c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uc0bd\uc785\ud558\uc2ed\uc2dc\uc624.
+
+#{0} Cloudant class name
+#{1} JNDI name of the cloudant config element
+class.not.found.CWWKD0302E=CWWKD0302E: cloudant \uad6c\uc131 \uc694\uc18c {1}\uc774(\uac00) libraryRef\ub85c \uad6c\uc131\ub418\uc9c0 \uc54a\uace0 \ud604\uc7ac \uc2a4\ub808\ub4dc\uc5d0\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ud074\ub798\uc2a4 \ub85c\ub354\uc5d0 \ub300\ud55c \uc561\uc138\uc2a4 \uad8c\ud55c\uc774 \uc5c6\uc73c\ubbc0\ub85c {0}\uc744(\ub97c) \ub85c\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+class.not.found.CWWKD0302E.explanation=cloudant \uad6c\uc131 \uc694\uc18c\ub294 Cloudant \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0\uc11c \uc9c0\uc815\ud558\ub294 libraryRef\ub85c \uad6c\uc131\ub418\uac70\ub098 Cloudant \ub77c\uc774\ube0c\ub7ec\ub9ac\ub97c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ud3ec\ud568\ud574\uc57c \ud569\ub2c8\ub2e4. \uc774 \uacbd\uc6b0 Cloudant JNDI \uc790\uc6d0\uc740 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc2a4\ub808\ub4dc\uc5d0\uc11c \uac80\uc0c9\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+class.not.found.CWWKD0302E.useraction=libraryRef\ub97c cloudant \uad6c\uc131 \uc694\uc18c\uc5d0 \ucd94\uac00\ud558\uac70\ub098 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc2a4\ub808\ub4dc\uc5d0\uc11c Cloudant JNDI \uc790\uc6d0\uc744 \uac80\uc0c9\ub9cc \ud558\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
