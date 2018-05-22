@@ -123,8 +123,8 @@ import app.web.airlines.resources.bookings.BookingResource;
                            schema = @Schema(implementation = String.class)),
                        @Parameter(
                            name = "username",
-                           in = ParameterIn.QUERY,
-                           description = "The name that needs to be deleted",
+                           in = ParameterIn.PATH,
+                           description = "The name of the user to be retrieved",
                            schema = @Schema(type = SchemaType.STRING),
                            required = true) },
         examples = {
