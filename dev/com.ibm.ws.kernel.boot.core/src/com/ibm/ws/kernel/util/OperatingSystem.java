@@ -12,15 +12,16 @@ package com.ibm.ws.kernel.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
 /**
  * Various operating system utilities. This class might be used in things like
@@ -76,48 +77,37 @@ public class OperatingSystem {
         return OperatingSystemType.Unknown;
     }
 
-    /**
-     * Reads all lines in the file specified by {@code path}. Obviously be careful not
-     * to call this on potentially large files.
-     *
-     * @param path Path to read.
-     * @return List of lines from the file.
-     * @throws FileNotFoundException File cannot be found.
-     * @throws IOException Error reading the file.
-     */
-    public static List<String> readAllLines(String path) throws FileNotFoundException, IOException {
-        List<String> result = new ArrayList<String>();
-        try (FileInputStream fis = new FileInputStream(path)) {
-            try (InputStreamReader isr = new InputStreamReader(fis)) {
-                try (BufferedReader br = new BufferedReader(isr)) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        result.add(line);
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
     private static int cachedPageSize = -1;
 
     /**
-     * Get the page size. Currently only works on POSIX operating systems.
+     * Get the base OS page size (this current Java process may not
+     * necessarily be using this page size). Not implemented on Windows.
      *
      * @return Page size.
      * @throws OperatingSystemException Error computing page size.
      */
     public static synchronized int getPageSize() throws OperatingSystemException {
         if (cachedPageSize == -1) {
-            List<String> getconfLines = executeProgram("/usr/bin/getconf", "PAGE_SIZE");
-            if (getconfLines.size() == 1) {
-                cachedPageSize = Integer.parseInt(getconfLines.get(0));
-            } else {
-                throw new OperatingSystemException("Unexpected response from getconf: " + getconfLines);
+            switch (instance().getOperatingSystemType()) {
+                case AIX:
+                case HPUX:
+                case IBMi:
+                case Linux:
+                case Mac:
+                case Solaris:
+                case zOS:
+                    cachedPageSize = getPageSizePOSIX();
+                    break;
+                default:
+                    throw new OperatingSystemException(BootstrapConstants.messages.getString("os.pagesize.unavailable"));
             }
         }
         return cachedPageSize;
+    }
+
+    private static int getPageSizePOSIX() throws OperatingSystemException {
+        List<String> getconfLines = executeProgram("/usr/bin/getconf", "PAGE_SIZE");
+        return Integer.parseInt(getconfLines.get(0).trim());
     }
 
     /**
@@ -180,7 +170,7 @@ public class OperatingSystem {
             try {
                 int returnCode = process.waitFor();
                 if (returnCode != 0) {
-                    throw new OperatingSystemException("Unexpected return code " + returnCode + " from " + commandLine);
+                    throw new OperatingSystemException(MessageFormat.format(BootstrapConstants.messages.getString("os.execute.error"), commandLine, returnCode, lines));
                 }
                 return lines;
             } catch (InterruptedException e) {

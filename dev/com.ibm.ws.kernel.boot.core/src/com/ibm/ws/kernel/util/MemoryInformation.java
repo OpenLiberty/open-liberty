@@ -18,10 +18,13 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
 /**
  * Provides information about the underlying operating system. This class might
@@ -102,8 +105,38 @@ public class MemoryInformation {
 
     /**
      * Get an estimate of the number of bytes that can be made available for
-     * application usage (e.g. minus transient file cache in RAM). It should
-     * be assumed that this is an expensive operation.
+     * application usage (e.g. free RAM plus transient file cache). It
+     * should be assumed that this is an expensive operation.
+     *
+     * The classic view of RAM is that some of it is used by the operating
+     * system kernel, some by user programs, and some of it is free.
+     * However, all modern operating systems are much smarter than that -
+     * they use some of the free RAM as cache (sometimes called a "page cache"
+     * since it's usually tracked in fixed-size blocks called pages).
+     * One of the largest caches is often the "file cache" which is a cache
+     * of recently used files. Since RAM is so much faster than going out
+     * to disk, if the file is already in file cache (e.g. it was read before),
+     * this can greatly reduce file I/O times. Some operating systems will
+     * even write file modifications to file cache, mark that page as
+     * "dirty" and then later on sync those changes with the disk (this is why
+     * it's important to "safely remove" things like USB drives after writing
+     * to them since that forces a sync). However, file cache (and various
+     * other types of caches) are sometimes volatile, meaning that they
+     * can be "pushed out" of RAM to make room for things like new programs
+     * or program memory allocations. Therefore, the purpose of this method
+     * is to allow the API caller to understand how much "effectively available"
+     * RAM there is for programs by trying to take into account these caches
+     * and buffers that can be made available. Some operating systems (e.g. Linux)
+     * provide more accurate numbers than others. Some operating systems have
+     * somewhat surprising behavior like Linux - with its default value of
+     * swappiness ({@link #applySwappiness(long)}) - which will even prefer
+     * to page out program memory before file cache to try to balance these
+     * two different demands. It's not always free to push out some caches and
+     * buffers, since it still takes computation and if the pages are dirty,
+     * disk sync, so there is no simple answer, but if you want a more
+     * straightforward view of just the free RAM, create a new instance
+     * of {@link #MemoryInformation(boolean, boolean)} with
+     * {@code useLightweightAvailableRam} set to true.
      *
      * @return Bytes of available RAM.
      * @throws MemoryInformationException Error retrieving information.
@@ -146,7 +179,7 @@ public class MemoryInformation {
 
     /**
      * Get a ratio of an estimate of the number of bytes that can be made
-     * available for application usage (e.g. minus transient file cache in RAM)
+     * available for application usage ({@link #getAvailableMemory()})
      * to the total number of bytes of visible RAM. It should be assumed that
      * this is an expensive operation.
      *
@@ -250,7 +283,7 @@ public class MemoryInformation {
     private long getTotalMemoryLinux() throws MemoryInformationException {
         try {
             // https://www.kernel.org/doc/Documentation/filesystems/proc.txt
-            List<String> lines = OperatingSystem.readAllLines("/proc/meminfo");
+            List<String> lines = FileSystem.readAllLines("/proc/meminfo");
             for (String meminfoLine : lines) {
                 if (meminfoLine.startsWith("MemTotal:")) {
                     // MemTotal: Total usable ram (i.e. physical ram minus a few reserved
@@ -258,7 +291,7 @@ public class MemoryInformation {
                     return parseLinuxMeminfoLine(meminfoLine);
                 }
             }
-            throw new MemoryInformationException("Expected memory information missing in /proc/meminfo: " + lines);
+            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/proc/meminfo", lines));
         } catch (IOException e) {
             throw new MemoryInformationException(e);
         }
@@ -274,7 +307,7 @@ public class MemoryInformation {
             if (modifierString.equals("kB")) {
                 modifier = 1024;
             } else {
-                throw new MemoryInformationException("Unknown meminfo modifier " + modifierString);
+                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/proc/meminfo", modifierString));
             }
         }
         return Long.parseLong(line) * modifier;
@@ -288,14 +321,12 @@ public class MemoryInformation {
             // return that immediately if we find it. Otherwise, we figure it
             // out from other lines.
 
-            // https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=34e431b0ae398fc54ea69ff85ec700722c9da773
-
             long fileCache = 0;
             long slabReclaimable = 0;
             long buffers = 0;
             long cached = 0;
             long free = 0;
-            List<String> lines = OperatingSystem.readAllLines("/proc/meminfo");
+            List<String> lines = FileSystem.readAllLines("/proc/meminfo");
             for (String meminfoLine : lines) {
                 if (meminfoLine.startsWith("MemAvailable:")) {
                     // MemAvailable: An estimate of how much memory is available for starting new
@@ -327,10 +358,10 @@ public class MemoryInformation {
                 }
             }
 
-            // No MemAvailable, so fallback:
+            // No MemAvailable, so mimic what the newer MemAvailable calculates.
 
             long watermark_low = 0;
-            for (String zoneinfoLine : OperatingSystem.readAllLines("/proc/zoneinfo")) {
+            for (String zoneinfoLine : FileSystem.readAllLines("/proc/zoneinfo")) {
                 zoneinfoLine = zoneinfoLine.trim();
                 if (zoneinfoLine.startsWith("low")) {
                     watermark_low += Long.parseLong(zoneinfoLine.substring(3).trim());
@@ -345,6 +376,8 @@ public class MemoryInformation {
                 availableFallback = free - watermark_low + fileCache + slabReclaimable
                                     - Math.min(slabReclaimable / 2, watermark_low);
             } else {
+                // If some of the numbers aren't available, then
+                // fallback to the "classic" calculation of "-/+ buffers/cache":
                 availableFallback = free + buffers + applySwappiness(cached);
             }
 
@@ -352,7 +385,7 @@ public class MemoryInformation {
                 return availableFallback;
             }
 
-            throw new MemoryInformationException("Expected memory information missing in /proc/meminfo: " + lines);
+            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/proc/meminfo", lines));
         } catch (IOException | OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -360,36 +393,42 @@ public class MemoryInformation {
 
     private long applySwappiness(long cached) throws IOException, MemoryInformationException {
         int swappiness = getSwappiness();
-        if (swappiness > 0) {
-            // https://lwn.net/Articles/83588/
 
-            // If swappiness is < 50, then in the worst case of full memory, under no
-            // distress, page cache should be pushed out
-            if (swappiness >= 50) {
-                // It's unclear what the probability is of pushing page cache out if
-                // swap_tendency >= 100, so we just assume 1.0
-                cached = 0;
-            }
+        // Swappiness is a number from 0 to 100 that is a factor in a
+        // calculation of whether to page out file cache or program pages from
+        // RAM when new memory is needed and there's no free RAM. The idea
+        // is that a lot of resident program pages aren't actually used,
+        // and the performance benefit of having frequently used file pages
+        // can be huge, so a larger value means to prefer to keep file cache in
+        // RAM and page out program pages. The default value is 60.
+        // Simplifying the calculation, if swappiness is < 50, then even in
+        // the worst case of full memory, under no distress, swap_tendency
+        // is < 100, so page cache tends to be pushed out for programs, so we
+        // can assume all of it is available for program demands, and thus
+        // make no modification to the incoming cached bytes count.
+
+        if (swappiness >= 50) {
+            // However, if it's >= 50, even under no distress, Linux might
+            // prefer to keep page cache and page out programs. We make a
+            // somewhat arbitrary guesstimate about how much might
+            // be available to be pushed out based on swappiness.
+            cached = (long) (cached * ((100 - swappiness) / 100.0));
         }
         return cached;
     }
 
-    private static int cachedSwappiness = -1;
-
     public static synchronized int getSwappiness() throws MemoryInformationException {
-        if (cachedSwappiness == -1) {
-            try {
-                List<String> swappinessLines = OperatingSystem.readAllLines("/proc/sys/vm/swappiness");
-                if (swappinessLines.size() == 1) {
-                    cachedSwappiness = Integer.parseInt(swappinessLines.get(0));
-                } else {
-                    throw new MemoryInformationException("Unexpected contents of /proc/sys/vm/swappiness: " + swappinessLines);
-                }
-            } catch (IOException e) {
-                throw new MemoryInformationException(e);
+        try {
+            List<String> swappinessLines = FileSystem.readAllLines("/proc/sys/vm/swappiness");
+            if (swappinessLines.size() == 1) {
+                return Integer.parseInt(swappinessLines.get(0));
+            } else {
+                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/proc/sys/vm/swappiness",
+                                                                          swappinessLines));
             }
+        } catch (IOException e) {
+            throw new MemoryInformationException(e);
         }
-        return cachedSwappiness;
     }
 
     private long getTotalMemoryMac() throws MemoryInformationException {
@@ -401,10 +440,10 @@ public class MemoryInformation {
                 if (i != -1) {
                     return Long.parseLong(line.substring(i + 2));
                 } else {
-                    throw new MemoryInformationException("Unexpected output: " + line);
+                    throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/usr/sbin/sysctl", lines));
                 }
             } else {
-                throw new MemoryInformationException("Unexpected response from sysctl: " + lines);
+                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/usr/sbin/sysctl", lines));
             }
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
@@ -437,7 +476,7 @@ public class MemoryInformation {
             }
 
             if (available <= 0) {
-                throw new MemoryInformationException("Unexpected output of vm_stat: " + vmstatLines);
+                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "vm_stat", vmstatLines));
             }
 
             available *= OperatingSystem.getPageSize();
@@ -463,7 +502,7 @@ public class MemoryInformation {
                     return processWmicLine(line) * 1024;
                 }
             }
-            throw new MemoryInformationException("Unexpected response from wmic: " + lines);
+            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "wmic", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -490,7 +529,7 @@ public class MemoryInformation {
             }
 
             if (available <= 0) {
-                throw new MemoryInformationException("Unexpected output of wmic: " + lines);
+                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "wmic", lines));
             }
 
             return available;
@@ -512,7 +551,7 @@ public class MemoryInformation {
                     return Long.parseLong(line) * 1024;
                 }
             }
-            throw new MemoryInformationException("Unexpected response from lsattr: " + lines);
+            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "lsattr", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -530,12 +569,12 @@ public class MemoryInformation {
                     if (pieces.length >= 7) {
                         return Long.parseLong(pieces[6]) * 1024;
                     } else {
-                        throw new MemoryInformationException("Expected memory information missing in svmon: " + lines);
+                        throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "svmon", lines));
                     }
                 }
             }
 
-            throw new MemoryInformationException("Expected memory information missing in svmon: " + lines);
+            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "svmon", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -557,7 +596,7 @@ public class MemoryInformation {
                 }
             }
 
-            throw new MemoryInformationException("Unexpected response from vmstat: " + lines);
+            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "vmstat", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -574,7 +613,7 @@ public class MemoryInformation {
                 }
             }
 
-            throw new MemoryInformationException("Expected memory information missing in vmstat: " + lines);
+            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "vmstat", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -610,7 +649,7 @@ public class MemoryInformation {
                     return inferBytes(line);
                 }
             }
-            throw new MemoryInformationException("Unexpected response from prtdiag: " + lines);
+            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "prtdiag", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -636,7 +675,7 @@ public class MemoryInformation {
                 }
             }
 
-            throw new MemoryInformationException("Expected memory information missing in vmstat: " + lines);
+            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "vmstat", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -666,7 +705,7 @@ public class MemoryInformation {
 
         // Testing has shown that IBM Java returns -1
         if (result <= 0) {
-            throw new MemoryInformationException("Estimate of available memory not available on z/OS");
+            throw new MemoryInformationException(BootstrapConstants.messages.getString("memory.information.unavailable"));
         }
 
         return result;

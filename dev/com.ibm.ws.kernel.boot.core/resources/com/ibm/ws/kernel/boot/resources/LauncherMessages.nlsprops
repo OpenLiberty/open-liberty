@@ -741,3 +741,19 @@ info.initlogs=Redirecting stdout and stderr to file {0}
 info.no.servers.defined=There are no servers defined in the user directory {0}.
 info.list.of.defined.servers=The following servers are defined relative to the user directory {0}.
 info.communicate.server=A communication error has occurred between the command {0} and the server {1}.
+
+memory.information.unexpected=CWWKE0947E: Encountered unexpected operating system memory information in {0}: {1}
+memory.information.unexpected.explanation=Some operating system memory information was not in the expected format.
+memory.information.unexpected.useraction=Check the the operating system is behaving correctly.
+
+memory.information.unavailable=CWWKE0948E: Available memory information is not implemented on this operating system.
+memory.information.unavailable.explanation=This function has not been implemented for this operating system.
+memory.information.unavailable.useraction=Use the OperatingSystem API to get the type of operating system and avoid calling this function for this type of operating system.
+
+os.pagesize.unavailable=CWWKE0949E: Page size information is not implemented on this operating system.
+os.pagesize.unavailable.explanation=This function has not been implemented for this operating system.
+os.pagesize.unavailable.useraction=Use the OperatingSystem API to get the type of operating system and avoid calling this function for this type of operating system.
+
+os.execute.error=CWWKE0950E: The execution of {0} failed with return code {1} with output {2}
+os.execute.error.explanation=The program execution is considered to be a failure because of the unexpected return code.
+os.execute.error.useraction=Ensure that the command exists and is on the available PATH.
