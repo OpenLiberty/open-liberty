@@ -63,7 +63,9 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
     private final Map<String, String> userToAccessId = new HashMap<String, String>();
     private final Map<String, String> groupToAccessId = new HashMap<String, String>();
     private final Map<String, RoleSet> userToRoles = new HashMap<String, RoleSet>();
+    private final Map<String, RoleSet> userAccessIdToRoles = new HashMap<String, RoleSet>();
     private final Map<String, RoleSet> groupToRoles = new HashMap<String, RoleSet>();
+    private final Map<String, RoleSet> groupAccessIdToRoles = new HashMap<String, RoleSet>();
 
     private static HashSet<String> ALL_AUTHENTICATED_USERS_SET = new HashSet<String>();
     static {
@@ -134,8 +136,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         if (ManagementSecurityConstants.ADMIN_RESOURCE_NAME.equals(resName)) {
             if (specialSubject.equals(AuthorizationTableService.ALL_AUTHENTICATED_USERS)) {
                 return ALL_AUTHENTICATED_USERS_ROLESET;
-            }
-            else {
+            } else {
                 return RoleSet.EMPTY_ROLESET;
             }
         } else {
@@ -168,7 +169,9 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         userToAccessId.clear();
         groupToAccessId.clear();
         userToRoles.clear();
+        userAccessIdToRoles.clear();
         groupToRoles.clear();
+        groupAccessIdToRoles.clear();
     }
 
     /**
@@ -189,7 +192,9 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         clearAuthorizationTable();
 
         Map<String, Set<String>> userToRoleName = new HashMap<String, Set<String>>();
+        Map<String, Set<String>> userAccessIdToRoleName = new HashMap<String, Set<String>>();
         Map<String, Set<String>> groupToRoleName = new HashMap<String, Set<String>>();
+        Map<String, Set<String>> groupAccessIdToRoleName = new HashMap<String, Set<String>>();
         Iterator<ManagementRole> itr = managementRoles.getServices();
         while (itr.hasNext()) {
             ManagementRole role = itr.next();
@@ -202,6 +207,16 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
                 }
                 assignedRoles.add(roleName);
             }
+
+            for (String userAccessId : role.getUserAccessIds()) {
+                Set<String> assignedRoles = userAccessIdToRoleName.get(userAccessId);
+                if (assignedRoles == null) {
+                    assignedRoles = new HashSet<String>();
+                    userAccessIdToRoleName.put(userAccessId, assignedRoles);
+                }
+                assignedRoles.add(roleName);
+            }
+
             for (String group : role.getGroups()) {
                 Set<String> assignedRoles = groupToRoleName.get(group);
                 if (assignedRoles == null) {
@@ -210,19 +225,38 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
                 }
                 assignedRoles.add(roleName);
             }
+
+            for (String groupAccessId : role.getGroupAccessIds()) {
+                Set<String> assignedRoles = groupAccessIdToRoleName.get(groupAccessId);
+                if (assignedRoles == null) {
+                    assignedRoles = new HashSet<String>();
+                    groupAccessIdToRoleName.put(groupAccessId, assignedRoles);
+                }
+                assignedRoles.add(roleName);
+            }
+
         }
 
         for (Map.Entry<String, Set<String>> entry : userToRoleName.entrySet()) {
             userToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
         }
+
+        for (Map.Entry<String, Set<String>> entry : userAccessIdToRoleName.entrySet()) {
+            userAccessIdToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
+        }
+
         for (Map.Entry<String, Set<String>> entry : groupToRoleName.entrySet()) {
             groupToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
+        }
+
+        for (Map.Entry<String, Set<String>> entry : groupAccessIdToRoleName.entrySet()) {
+            groupAccessIdToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
         }
     }
 
     /**
      * Retrieve the roles, if any, for the given accessId.
-     * 
+     *
      * @param accessId
      * @return a non-null RoleSet
      */
@@ -244,11 +278,11 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
      * update the accessId-to-roles mapping with the result. If the accessId was
      * not found, an empty list is added to the accessId-to-role map. Otherwise,
      * the list contains the set of roles mapped to the accessId.
-     * 
+     *
      * @param accessid the access id of the entity
      * @param resName the name of the application, this is the key used when
      *            updating the accessId-to-roles map
-     * 
+     *
      * @return the updated accessId-to-roles map
      */
     private RoleSet findRolesForAccessId(String accessId) {
@@ -256,8 +290,15 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         if (!AccessIdUtil.isAccessId(accessId)) {
             throw new IllegalArgumentException("Invalid accessId");
         }
+        RoleSet roles = null;
 
         if (AccessIdUtil.isUserAccessId(accessId)) {
+            // access id takes precedence
+            roles = userAccessIdToRoles.get(accessId);
+            if (roles != null && !roles.isEmpty()) {
+                return roles;
+            }
+
             for (String user : userToRoles.keySet()) {
                 String userAccessId = userToAccessId.get(user);
                 if (userAccessId == null) {
@@ -282,6 +323,12 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
                 }
             }
         } else if (AccessIdUtil.isGroupAccessId(accessId)) {
+            // access id takes precedence
+            roles = groupAccessIdToRoles.get(accessId);
+            if (roles != null && !roles.isEmpty()) {
+                return roles;
+            }
+
             for (String group : groupToRoles.keySet()) {
                 String groupAccessId = groupToAccessId.get(group);
                 if (groupAccessId == null) {
@@ -321,7 +368,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
 
     /**
      * Get the access id for a user by performing a looking up in the user registry.
-     * 
+     *
      * @param userName the user for which to create an access id
      * @return the access id of the userName specified,
      *         otherwise null when a registry error occurs or the entry is not found
@@ -351,7 +398,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
 
     /**
      * Get the access id for a group by performing a looking up in the user registry.
-     * 
+     *
      * @param groupName the user for which to create an access id
      * @return the access id of the groupName specified,
      *         otherwise null when a registry error occurs or the entry is not found
@@ -405,7 +452,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         return match;
     }
 
-    // in order to decouple the dependency to com.ibm.ws.security.authorization.builtin bundle, the getIgnoreCase method 
+    // in order to decouple the dependency to com.ibm.ws.security.authorization.builtin bundle, the getIgnoreCase method
     // and some other methods are copied from com.ibm.ws.security.authorization.builtin.BaseAuthorizationTableService class.
     protected boolean getIgnoreCase() {
         boolean value = false;
