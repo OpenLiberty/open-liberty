@@ -53,7 +53,8 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ExtractedAppTests.class,
                 WebSocketTests15.class,
                 ErrorPage15Test.class,
-                ErrorPage20Test.class
+                ErrorPage20Test.class,
+                WebFluxApplicationNotSupportedTest.class
 })
 
 public class FATSuite {
