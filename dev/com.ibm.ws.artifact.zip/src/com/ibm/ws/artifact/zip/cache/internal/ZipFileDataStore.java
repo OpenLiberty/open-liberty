@@ -125,11 +125,15 @@ public class ZipFileDataStore {
 
         @Trivial
         public void excise() {
+            if ( this.next == this ) {
+                throw new IllegalArgumentException("Cannot excise the anchor");
+            }
+
             this.next.prev = this.prev;
             this.prev.next = this.next;
 
-            this.next = null;
             this.prev = null;
+            this.next = null;
         }
 
         @Trivial
@@ -242,7 +246,6 @@ public class ZipFileDataStore {
         }
 
         ZipFileData data = cell.data;
-        cell.data = null;
         cell.excise();
         return data;
     }
@@ -302,7 +305,7 @@ public class ZipFileDataStore {
         Cell newLastCell = new Cell(newLastData);
         cells.put(newLastPath, newLastCell);
 
-        newLastCell.putBetween(anchor, oldLastCell);
+        newLastCell.putBetween(oldLastCell, anchor);
 
         return oldLastCell.data;
     }
@@ -351,7 +354,7 @@ public class ZipFileDataStore {
             oldFirstCell.excise();
             oldFirstCell.putBetween(anchor.prev, anchor);
         }
-        
+
         return oldFirstData;
     }
 
@@ -359,15 +362,15 @@ public class ZipFileDataStore {
 
     public void display() {
         System.out.println("Store [ " + name + " ]");
-        
+
         int cellNo = 0;
         Cell next = anchor;
         display(cellNo, next);
-        
+
         while ( (next = next.next) != anchor ) {
             cellNo++;
             display(cellNo, next);
-        }        
+        }
     }
 
     public void display(int cellNo, Cell cell) {

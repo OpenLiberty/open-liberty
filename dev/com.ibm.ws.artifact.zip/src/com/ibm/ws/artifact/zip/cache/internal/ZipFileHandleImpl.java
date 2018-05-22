@@ -103,7 +103,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         } else {
             zipFileReaper = new ZipFileReaper(
                 "zip cache reaper",
-                ZipCachingProperties.ZIP_CACHE_DEBUG_STATE,
+                ZipCachingProperties.ZIP_REAPER_DEBUG_STATE,
                 ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
                 ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
                 ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MAX,

@@ -245,43 +245,7 @@ public class ZipCachingProperties {
         }
     }
 
-    //
-
-    /**
-     * Property for zip file cache state logging enablement.
-     *
-     * Enabling state debug has three consequences:
-     *
-     * <ul>
-     * <li>All zip data is retained forever.</li>
-     * <li>A shutdown thread is created and registered as a shutdown thread.</li>
-     * <li>The shutdown thread processes all zip data, forcing all to be
-     * closed, and displaying lifetime statistics for all.</li>
-     * </ul>
-     */
-    public static final String ZIP_CACHE_DEBUG_STATE_PROPERTY_NAME =
-        "zip.cache.debug.state";
-    public static final boolean ZIP_CACHE_DEBUG_STATE_DEFAULT_VALUE = false;
-    public static final boolean ZIP_CACHE_DEBUG_STATE;
-
-    public static final String ZIP_CACHE_COLLECT_TIMINGS_PROPERTY_NAME =
-        "zip.cache.collect.timings";
-    public static final boolean ZIP_CACHE_COLLECT_TIMINGS_DEFAULT_VALUE = false;
-    public static final boolean ZIP_CACHE_COLLECT_TIMINGS;
-
-    static {
-        String methodName = "<static init>";
-
-        ZIP_CACHE_COLLECT_TIMINGS = getProperty(methodName,
-            ZIP_CACHE_COLLECT_TIMINGS_PROPERTY_NAME,
-            ZIP_CACHE_COLLECT_TIMINGS_DEFAULT_VALUE);
-
-        ZIP_CACHE_DEBUG_STATE = getProperty(methodName,
-            ZIP_CACHE_DEBUG_STATE_PROPERTY_NAME,
-            ZIP_CACHE_DEBUG_STATE_DEFAULT_VALUE);
-    }
-
-    //
+   //
 
     /** The maximum number of zip file handles to keep in the cache. */
     public static final String ZIP_CACHE_HANDLE_MAX_PROPERTY_NAME = "zip.cache.handle.max";
@@ -310,6 +274,42 @@ public class ZipCachingProperties {
     }
 
     //
+
+    //
+
+    /**
+     * Property for zip reaper state logging.
+     *
+     * Enabling state debug has three consequences:
+     *
+     * <ul>
+     * <li>All zip data is retained forever.</li>
+     * <li>A shutdown thread is created and registered as a shutdown thread.</li>
+     * <li>The shutdown thread processes all zip data, forcing all to be
+     * closed, and displaying lifetime statistics for all.</li>
+     * </ul>
+     */
+    public static final String ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME =
+        "zip.reaper.debug.state";
+    public static final boolean ZIP_REAPER_DEBUG_STATE_DEFAULT_VALUE = false;
+    public static final boolean ZIP_REAPER_DEBUG_STATE;
+
+    public static final String ZIP_REAPER_COLLECT_TIMINGS_PROPERTY_NAME =
+        "zip.reaper.collect.timings";
+    public static final boolean ZIP_REAPER_COLLECT_TIMINGS_DEFAULT_VALUE = false;
+    public static final boolean ZIP_REAPER_COLLECT_TIMINGS;
+
+    static {
+        String methodName = "<static init>";
+
+        ZIP_REAPER_COLLECT_TIMINGS = getProperty(methodName,
+            ZIP_REAPER_COLLECT_TIMINGS_PROPERTY_NAME,
+            ZIP_REAPER_COLLECT_TIMINGS_DEFAULT_VALUE);
+
+        ZIP_REAPER_DEBUG_STATE = getProperty(methodName,
+            ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME,
+            ZIP_REAPER_DEBUG_STATE_DEFAULT_VALUE);
+    }
 
     /**
      * Generally, the ZIP cache properties should be left to their

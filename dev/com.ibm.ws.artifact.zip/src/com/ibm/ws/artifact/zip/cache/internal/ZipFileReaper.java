@@ -271,7 +271,7 @@ public class ZipFileReaper {
     @Trivial
     public ZipFileReaper(String reaperName, long initialAt) {
         this(reaperName,
-             ZipCachingProperties.ZIP_CACHE_DEBUG_STATE,
+             ZipCachingProperties.ZIP_REAPER_DEBUG_STATE,
              ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
@@ -616,17 +616,21 @@ public class ZipFileReaper {
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " Path [ " + data.path + " ] at [ " + toRelSec(initialAt, fullCloseAt) + " ]");
         }
-        // System.out.println(methodName + " Path [ " + data.path + " ] at [ " + toRelSec(initialAt, fullCloseAt) + " ]");        
 
         data.closeZipFile();
         data.enactFullClose(fullCloseAt);
 
         if ( !isShutdown && !debugState ) {
-            storage.remove(data.path);
+            @SuppressWarnings("unused") // Same as 'data'
+			ZipFileData fullyClosedData = storage.remove(data.path);
 
-            @SuppressWarnings("unused")
             ZipFileData oldestCompletedClose =
                 completedStorage.addLast( data, getMaxCache() );
+            if ( tc.isDebugEnabled() ) {
+            	if ( oldestCompletedClose != null ) {
+            		Tr.debug(tc, methodName + " Discard completed close [ " + oldestCompletedClose.path + " ]");
+            	}
+            }
         }
     }
 
@@ -1013,13 +1017,11 @@ public class ZipFileReaper {
                 }
 
                 if ( data.expireQuickly ) {
-                    // pendingQuickStorage.display();
-                    pendingQuickStorage.remove(path);
-                    // pendingQuickStorage.display();
+                    @SuppressWarnings("unused") // same as 'data'
+					ZipFileData pendingQuickData = pendingQuickStorage.remove(path);
                 } else {
-                    // pendingSlowStorage.display();
-                    pendingSlowStorage.remove(path);
-                    // pendingSlowStorage.display();
+                    @SuppressWarnings("unused") // same as 'data'
+                	ZipFileData pendingSlowData = pendingSlowStorage.remove(path);
                 }
                 // Removal from pending may result in the next reap
                 // discovering no expired closes.

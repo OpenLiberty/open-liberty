@@ -73,7 +73,7 @@ public class ZipFileData {
     //
 
     private static final boolean ZIP_CACHE_COLLECT_TIMINGS =
-        ZipCachingProperties.ZIP_CACHE_COLLECT_TIMINGS;
+        ZipCachingProperties.ZIP_REAPER_COLLECT_TIMINGS;
 
     private void timing(String text) {
         System.out.println("ZFC: Path [ " + path + " ] " + text);
@@ -335,7 +335,7 @@ public class ZipFileData {
 
             if ( ZIP_CACHE_COLLECT_TIMINGS ) {
                 timing(" Failed Pend [ " + toAbsSec(lastPendDuration) + "s ]");
-                timing(" Full Close [ " + toAbsSec(fullCloseAt) + " s ]");
+                timing(" Full Close [ " + dualTiming(fullCloseAt) + "s ]");
             }
 
         } else if ( zipFileState == ZipFileState.FULLY_CLOSED ) {
@@ -662,7 +662,7 @@ public class ZipFileData {
     public void debugState() {
         String methodName = "debugState";
 
-        if ( !ZipCachingProperties.ZIP_CACHE_DEBUG_STATE || !tc.isInfoEnabled() ) {
+        if ( !ZipCachingProperties.ZIP_REAPER_DEBUG_STATE || !tc.isInfoEnabled() ) {
             return;
         }
 
