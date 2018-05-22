@@ -22,12 +22,12 @@ import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
 public class H2ConnectionSettings {
 
     // set spec default connection settings
-    public int headerTableSize = 4096; // SETTINGS_HEADER_TABLE_SIZE
-    public int enablePush = 1; // SETTINGS_ENABLE_PUSH; true (1) by default
-    public int maxConcurrentStreams = 100; // SETTINGS_MAX_CONCURRENT_STREAMS: max open push streams, 100 by default
-    public int initialWindowSize = 65535; // SETTINGS_INITIAL_WINDOW_SIZE
+    private int headerTableSize = 4096; // SETTINGS_HEADER_TABLE_SIZE
+    private int enablePush = 1; // SETTINGS_ENABLE_PUSH; true (1) by default
+    private int maxConcurrentStreams = 100; // SETTINGS_MAX_CONCURRENT_STREAMS: max open push streams, 100 by default
+    private int initialWindowSize = 65535; // SETTINGS_INITIAL_WINDOW_SIZE
     public int maxFrameSize = 16384; // SETTINGS_MAX_FRAME_SIZE
-    public int maxHeaderListSize = -1; // SETTINGS_MAX_HEADER_LIST_SIZE : unlimited (-1) by default
+    private int maxHeaderListSize = -1; // SETTINGS_MAX_HEADER_LIST_SIZE : unlimited (-1) by default
 
     /**
      * A settings frame can be encoded as a base-64 string and passed as a header on the initial upgrade request.
@@ -67,6 +67,70 @@ public class H2ConnectionSettings {
         if (settings.getMaxHeaderListSize() != -1) {
             this.maxHeaderListSize = settings.getMaxHeaderListSize();
         }
+    }
+
+    /**
+     * @return the headerTableSize
+     */
+    public int getHeaderTableSize() {
+        return headerTableSize;
+    }
+
+    /**
+     * @param headerTableSize the headerTableSize to set
+     */
+    public void setHeaderTableSize(int headerTableSize) {
+        this.headerTableSize = headerTableSize;
+    }
+
+    /**
+     * @return the initialWindowSize
+     */
+    public int getInitialWindowSize() {
+        return initialWindowSize;
+    }
+
+    /**
+     * @param initialWindowSize the initialWindowSize to set
+     */
+    public void setInitialWindowSize(int initialWindowSize) {
+        this.initialWindowSize = initialWindowSize;
+    }
+
+    /**
+     * @return the maxHeaderListSize
+     */
+    public int getMaxHeaderListSize() {
+        return maxHeaderListSize;
+    }
+
+    /**
+     * @param maxHeaderListSize the maxHeaderListSize to set
+     */
+    public void setMaxHeaderListSize(int maxHeaderListSize) {
+        this.maxHeaderListSize = maxHeaderListSize;
+    }
+
+    /**
+     * @return the maxFrameSize
+     */
+    public int getMaxFrameSize() {
+        return maxFrameSize;
+    }
+
+    /**
+     * @param enablePush the enablePush to set
+     */
+    public void setEnablePush(int enablePush) {
+        this.enablePush = enablePush;
+    }
+
+    public void setMaxFrameSize(int maxFrameSize) {
+        this.maxFrameSize = maxFrameSize;
+    }
+
+    public void setMaxConcurrentStreams(int maxConcurrentStreams) {
+        this.maxConcurrentStreams = maxConcurrentStreams;
     }
 
     /**

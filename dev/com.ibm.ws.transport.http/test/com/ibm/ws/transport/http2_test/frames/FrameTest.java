@@ -104,12 +104,12 @@ public class FrameTest {
         verifyFlags(frame, false, false, false, false, false);
 
         // Verify that all of the settings were set up properly
-        Assert.assertTrue("headerTableSize setting was not set correctly", settings.headerTableSize == headerTableSize);
-        Assert.assertTrue("enablePushsetting was not set correctly", settings.enablePush == enablePush);
-        Assert.assertTrue("maxConcurrentStreams setting was not set correctly", settings.maxConcurrentStreams == maxConcurrentStreams);
-        Assert.assertTrue("initialWindowSize setting was not set correctly", settings.initialWindowSize == initialWindowSize);
-        Assert.assertTrue("maxFrameSize setting was not set correctly", settings.maxFrameSize == maxFrameSize);
-        Assert.assertTrue("maxHeaderListSize setting was not set correctly", settings.maxHeaderListSize == maxHeaderListSize);
+        Assert.assertTrue("headerTableSize setting was not set correctly", settings.getHeaderTableSize() == headerTableSize);
+        Assert.assertTrue("enablePushsetting was not set correctly", settings.getEnablePush() == enablePush);
+        Assert.assertTrue("maxConcurrentStreams setting was not set correctly", settings.getMaxConcurrentStreams() == maxConcurrentStreams);
+        Assert.assertTrue("initialWindowSize setting was not set correctly", settings.getInitialWindowSize() == initialWindowSize);
+        Assert.assertTrue("maxFrameSize setting was not set correctly", settings.getMaxFrameSize() == maxFrameSize);
+        Assert.assertTrue("maxHeaderListSize setting was not set correctly", settings.getMaxHeaderListSize() == maxHeaderListSize);
 
         // verify empty ACK settings frame
         FrameSettings ackFrame = new FrameSettings(streamId, -1, -1, -1, -1, -1, -1, false);
