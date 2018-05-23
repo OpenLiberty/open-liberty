@@ -130,11 +130,9 @@ public class ConfigAttributeTests extends CommonJwtFat {
      * see evidence in the logs that the customized issuer was presented.
      * That's all we care about.
      */
-    // TODO - Fix NPE
     @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException",
                     "com.ibm.websphere.security.jwt.InvalidTokenException",
-                    "com.ibm.ws.security.authentication.AuthenticationException",
-                    "java.lang.NullPointerException" })
+                    "com.ibm.ws.security.authentication.AuthenticationException" })
     @Mode(TestMode.LITE)
     @Test
     public void test_validBuilderRef() throws Exception {
@@ -200,7 +198,6 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Test
     @Mode(TestMode.LITE)
     @ExpectedFFDC({ "com.ibm.ws.security.authentication.AuthenticationException",
-                    "javax.security.auth.login.LoginException",
                     "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException" })
     public void test_invalidConsumerRef() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testbadconsumer.xml");
