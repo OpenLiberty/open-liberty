@@ -241,7 +241,7 @@ public class FileLogHolder implements TraceWriter {
         if (ps.checkError()) {
             setStreamStatus(StreamStatus.CLOSED, null, null, DummyOutputStream.psInstance);
             File exf = new File(this.fileLogSet.getDirectory(), this.fileLogSet.getFileName() + this.fileLogSet.getFileExtension());
-            Tr.error(getTc(), "FAILED_TO_WRITE_LOG", new Object[] { exf.getAbsolutePath() });
+            System.err.println(Tr.formatMessage(getTc(), "FAILED_TO_WRITE_LOG", new Object[] { exf.getAbsolutePath() }));
         }
     }
 
