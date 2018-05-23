@@ -9,7 +9,7 @@
     <application type="war" id="JavaEESec" name="JavaEESec" location="JavaEESec.war">
         <application-bnd>
             <security-role name="javaeesec_basic">
-                <user name="jaspiuser1" access-id="defaultRealm/jaspiuser1" />
+                <user name="jaspiuser1" access-id="BaseIdentityStore/jaspiuser1" />
                 <group name="group1" />
             </security-role>
         </application-bnd>

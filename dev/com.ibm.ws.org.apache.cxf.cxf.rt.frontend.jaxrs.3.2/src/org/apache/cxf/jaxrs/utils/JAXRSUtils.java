@@ -94,6 +94,7 @@ import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.io.DelegatingInputStream;
 import org.apache.cxf.io.ReaderInputStream;
 import org.apache.cxf.jaxrs.JAXRSServiceImpl;
 import org.apache.cxf.jaxrs.ext.ContextProvider;
@@ -834,7 +835,12 @@ public final class JAXRSUtils {
                                            MultivaluedMap<String, String> values,
                                            Message message,
                                            OperationResourceInfo ori) throws IOException, WebApplicationException {
-        InputStream is = copyAndGetEntityStream(message); // Liberty change
+        InputStream is = message.getContent(InputStream.class);
+        // Liberty change start
+        if (is instanceof DelegatingInputStream) {
+            ((DelegatingInputStream)is).cacheInput();
+        }
+        // Liberty change end
         if (is == null) {
             Reader reader = message.getContent(Reader.class);
             if (reader != null) {
@@ -976,9 +982,14 @@ public final class JAXRSUtils {
             m.put(FormUtils.FORM_PARAM_MAP, params);
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
-                InputStream entityStream = copyAndGetEntityStream(m); // Liberty change
+                // Liberty change start
+                InputStream is = m.getContent(InputStream.class);
+                if (is instanceof DelegatingInputStream) {
+                    ((DelegatingInputStream)is).cacheInput();
+                }
+                // Liberty change end
                 String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
-                String body = FormUtils.readBody(entityStream, enc); // Liberty change
+                String body = FormUtils.readBody(is, enc); // Liberty change
                 FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
@@ -1910,20 +1921,4 @@ public final class JAXRSUtils {
     public static JaxRsRuntimeException toJaxRsRuntimeException(Throwable ex) {
         return new JaxRsRuntimeException(ex);
     }
-
-    // Liberty change start
-    // copy the input stream so that it is not inadvertently closed
-    private static InputStream copyAndGetEntityStream(Message m) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            IOUtils.copy(m.getContent(InputStream.class), baos);
-        } catch (IOException e) {
-            throw ExceptionUtils.toInternalServerErrorException(e, null);
-        }
-        final byte[] copiedBytes = baos.toByteArray();
-        m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
-        m.setContent(ByteArrayInputStream.class, new ByteArrayInputStream(copiedBytes));
-        return new ByteArrayInputStream(copiedBytes);
-    }
-    // Liberty change end
 }

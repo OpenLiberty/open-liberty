@@ -612,3 +612,7 @@ ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=Review the configurati
 ssl.defaultKeyStore.not.created.CWPKI0819I=CWPKI0819I: The default keystore is not created because a password is not configured on the <keyStore id="defaultKeyStore"/> element, and the 'keystore_password' environment variable is not set. 
 ssl.defaultKeyStore.not.created.CWPKI0819I.explanation=The default keystore is not created because a password is not configured on the <keyStore id="defaultKeyStore"/> element, and the 'keystore_password' environment variable is not set.
 ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=No action is required.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: The default keystore has been created using the 'keystore_password' environment variable.
+ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=The default keystore has been created using the 'keystore_password' environment variable. This is generated into the server.env file during server creation, or overridden in the environment the server was launched from.
+ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=No action is required.

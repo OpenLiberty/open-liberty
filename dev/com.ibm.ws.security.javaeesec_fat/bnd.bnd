@@ -11,7 +11,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-
+#fat.test.mode=full
 src: \
 	fat/src,\
 	test-applications/JavaEESecBase.jar/src,\
@@ -20,6 +20,7 @@ src: \
 	test-applications/JavaEESecAnnotatedBasicAuthServlet.war/src,\
 	test-applications/JavaEESecAnnotatedBasicAuthServletDeferred.war/src,\
 	test-applications/DatabaseAnnotatedBasicAuthServlet.war/src,\
+	test-applications/DatabaseAnnotatedDSServlet.war/src,\
 	test-applications/dbfat.war/src,\
 	test-applications/dbfatCustomHash.war/src,\
 	test-applications/dbfatAuthAlias.war/src,\
@@ -27,6 +28,7 @@ src: \
 	test-applications/IdentityStores.jar/src,\
 	test-applications/AuthMechs.jar/src,\
 	test-applications/DatabaseIdstoreDeferred.war/src,\
+	test-applications/DatabaseIdstoreImmediate.war/src,\
 	test-applications/securityContextHamApp.war/src,\
 	test-applications/SecurityEJBinWAR.jar/src,\
 	test-applications/ejbinwarservlet.war/src,\

@@ -386,7 +386,6 @@ public class DatabaseIdentityStore implements IdentityStore {
         }
 
         Connection conn = localDataSource.getConnection();
-        conn.setReadOnly(true);
         return conn;
     }
 }

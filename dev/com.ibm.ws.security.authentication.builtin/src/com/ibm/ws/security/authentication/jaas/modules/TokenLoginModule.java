@@ -11,7 +11,9 @@
 package com.ibm.ws.security.authentication.jaas.modules;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Hashtable;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -24,6 +26,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
+import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.websphere.security.auth.callback.WSAuthMechOidCallbackImpl;
 import com.ibm.websphere.security.auth.callback.WSCredTokenCallbackImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -40,6 +43,7 @@ import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
+import com.ibm.wsspi.security.token.SingleSignonToken;
 
 /**
  * Handles token based authentication, such as Single Sign-on.
@@ -51,6 +55,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
     private String accessId = null;
     private Token recreatedToken;
+    private String customRealm = null;
 
     private final String[] hashtableLoginProperties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
                                                         AttributeNameConstants.WSCREDENTIAL_USERID,
@@ -62,7 +67,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore({ InvalidTokenException.class, TokenExpiredException.class })
+    @FFDCIgnore({ InvalidTokenException.class, TokenExpiredException.class, WSLoginFailedException.class })
     public boolean login() throws LoginException {
         if (isAlreadyProcessed()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -97,11 +102,11 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
             }
             updateSharedState();
             return true;
-        } catch (
-
-        InvalidTokenException e) {
+        } catch (InvalidTokenException e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
         } catch (TokenExpiredException e) {
+            throw new AuthenticationException(e.getLocalizedMessage(), e);
+        } catch (WSLoginFailedException e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
         } catch (Exception e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
@@ -161,16 +166,21 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
     }
 
     private void setUpTemporaryUserSubjectForJsonWebToken(String jwtToken) throws Exception {
+        Subject jwtPartialSubject = new Subject();
+        jwtPartialSubject = JwtSSOTokenHelper.handleJwtSSOToken(jwtToken);
+        Set<Principal> jwtPrincipals = jwtPartialSubject.getPrincipals();
         temporarySubject = new Subject();
-        temporarySubject = JwtSSOTokenHelper.handleJwtSSOToken(jwtToken);
+        temporarySubject.getPrincipals().addAll(jwtPrincipals);
+
         SubjectHelper subjectHelper = new SubjectHelper();
-        //TODO: call JwtSSOTokenHelper to get accessId, securityname and groups
-        Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(temporarySubject, hashtableLoginProperties);
+        Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(jwtPartialSubject, hashtableLoginProperties);
         accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
-        setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE);
+        customRealm = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM);
+
+        setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_JWT_SSO_TOKEN);
         setCredentials(temporarySubject, securityName, securityName);
-        setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_HASH_TABLE, customProperties);
+        setOtherPrincipals(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_JWT_SSO_TOKEN, customProperties);
     }
 
     /** {@inheritDoc} */
@@ -182,7 +192,22 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
             return false;
         }
         setUpSubject();
+        if (customRealm != null) {
+            addCustomRealmToSSOToken();
+        }
         return true;
+    }
+
+    private void addCustomRealmToSSOToken() {
+        SingleSignonToken ssoToken = getSSOToken(subject);
+        if (ssoToken != null) {
+            if (customRealm != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Add custom realm into SSOToken");
+                }
+                ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
+            }
+        }
     }
 
     /** {@inheritDoc} */

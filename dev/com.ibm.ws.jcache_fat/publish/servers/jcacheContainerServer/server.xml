@@ -11,6 +11,7 @@
 <server>
 
     <featureManager>
+        <feature>cdi-2.0</feature>
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
         <feature>jcacheContainer-1.1</feature>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <!-- mongo -->
+
+ <Designate factoryPid="com.ibm.ws.mongo.mongo">
+  <Object ocdref="com.ibm.ws.mongo.mongo"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.mongo.mongo" ibm:alias="mongo" name="%mongo" description="%mongo.desc"  ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="hostNames"                      type="String"  default="localhost" cardinality="10000" name="%hostNames" description="%hostNames.desc"/>
+  <AD id="libraryRef"                     type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1" name="%libraryRef" description="%libraryRef.desc" />
+  <AD id="library.target"                 type="String"  default="(service.pid=${libraryRef})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="onError"                        type="String"  default="WARN" ibm:type="onError" ibm:variable="onError" name="%onError" description="%onError.desc">
+   <Option value="FAIL"   label="%onError.FAIL"/>
+   <Option value="IGNORE" label="%onError.IGNORE"/>
+   <Option value="WARN"   label="%onError.WARN"/>
+  </AD>
+  <AD id="ports"                          type="Integer" default="27017" cardinality="10000" min="0" name="%ports" description="%ports.desc"/>
+  <AD id="password"                       type="String"  required="false" ibm:type="password" name="%password" description="%password.desc"/>
+  <AD id="user"                           type="String"  required="false" name="%user" description="%user.desc"/>
+  <AD id="useCertificateAuthentication"   type="Boolean" required="false" name="%useCertificateAuthentication" description="%useCertificateAuthentication.desc"/>
+
+  <!-- MongoClientOptions -->
+  <AD id="autoConnectRetry"               ibmui:group="MongoClientOptions" type="Boolean" required="false" name="%autoConnectRetry" description="%autoConnectRetry.desc"/>
+  <AD id="connectionsPerHost"             ibmui:group="MongoClientOptions" type="Integer" required="false" min="0" name="%connectionsPerHost" description="%connectionsPerHost.desc"/>
+  <AD id="connectTimeout"                 ibmui:group="MongoClientOptions" type="String"  required="false" ibm:type="duration(ms)" min="0" name="%connectTimeout" description="%connectTimeout.desc"/>
+  <AD id="cursorFinalizerEnabled"         ibmui:group="MongoClientOptions" type="Boolean" required="false" name="%cursorFinalizerEnabled" description="%cursorFinalizerEnabled.desc"/>
+  <AD id="description"                    ibmui:group="MongoClientOptions" type="String"  required="false" name="%description" description="%description.desc"/>
+  <AD id="maxAutoConnectRetryTime"        ibmui:group="MongoClientOptions" type="String"  required="false" ibm:type="duration(ms)" min="0" name="%maxAutoConnectRetryTime" description="%maxAutoConnectRetryTime.desc"/>
+  <AD id="maxWaitTime"                    ibmui:group="MongoClientOptions" type="String"  required="false" ibm:type="duration(ms)" name="%maxWaitTime" description="%maxWaitTime.desc"/>
+  <AD id="socketKeepAlive"                ibmui:group="MongoClientOptions" type="Boolean" required="false" name="%socketKeepAlive" description="%socketKeepAlive.desc"/>
+  <AD id="socketTimeout"                  ibmui:group="MongoClientOptions" type="String"  required="false" ibm:type="duration(ms)" min="0" name="%socketTimeout" description="%socketTimeout.desc"/>
+  <AD id="sslEnabled"                     ibmui:group="MongoClientOptions" type="Boolean" required="false" name="%sslEnabled" description="%sslEnabled.desc"/>
+  <AD id="sslRef"                         ibmui:group="MongoClientOptions" type="String"  required="false" name="%sslRef"     description="%sslRef.desc" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.repertoire" ibmui:requiresTrue="sslEnabled"/> 
+  <AD id="ssl.target"                  type="String"  required="false"  name="internal"            description="internal use only" ibm:final="true" default="(service.pid=${sslRef})"/>
+  <AD id="threadsAllowedToBlockForConnectionMultiplier" ibmui:group="MongoClientOptions" type="Integer" required="false" min="0" name="%threadsAllowedToBlockForConnectionMultiplier" description="%threadsAllowedToBlockForConnectionMultiplier.desc"/>  
+  <AD id="readPreference"                 ibmui:group="MongoClientOptions" type="String"  required="false" name="%readPreference" description="%readPreference.desc">
+   <Option value="nearest"            label="nearest"/>
+   <Option value="primary"            label="primary"/>
+   <Option value="primaryPreferred"   label="primaryPreferred"/>
+   <Option value="secondary"          label="secondary"/>
+   <Option value="secondaryPreferred" label="secondaryPreferred"/>
+  </AD>
+  <AD id="writeConcern"                 ibmui:group="MongoClientOptions" type="String"  required="false" name="%writeConcern" description="%writeConcern.desc">
+    <Option value="ACKNOWLEDGED"            label="ACKNOWLEDGED" />
+    <Option value="ERRORS_IGNORED"          label="ERRORS_IGNORED" />
+    <Option value="FSYNC_SAFE"              label="FSYNC_SAFE" />
+    <Option value="FSYNCED"                 label="FSYNCED" />
+    <Option value="JOURNAL_SAFE"            label="JOURNAL_SAFE" />
+    <Option value="JOURNALED"               label="JOURNALED" />
+    <Option value="MAJORITY"                label="MAJORITY" />
+    <Option value="NONE"                    label="NONE" />
+    <Option value="NORMAL"                  label="NORMAL" />
+    <Option value="REPLICA_ACKNOWLEDGED"    label="REPLICA_ACKNOWLEDGED" />
+    <Option value="REPLICAS_SAFE"           label="REPLICAS_SAFE" />
+    <Option value="SAFE"                    label="SAFE" />
+    <Option value="UNACKNOWLEDGED"          label="UNACKNOWLEDGED" />
+  </AD>  
+ </OCD>
+
+ <!-- mongoDB -->
+
+ <Designate factoryPid="com.ibm.ws.mongo.mongoDB">
+  <Object ocdref="com.ibm.ws.mongo.mongoDB"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.mongo.mongoDB" ibm:alias="mongoDB" name="%mongoDB" description="%mongoDB.desc">
+  <AD id="databaseName"                   type="String"  name="%databaseName" description="%databaseName.desc"/>
+  <AD id="jndiName"                       type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
+  <AD id="mongoRef"                       type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.mongo.mongo" cardinality="1" name="%mongoRef" description="%mongoRef.desc"/>
+  <AD id="mongo.target"                   type="String"  default="(service.pid=${mongoRef})" ibm:final="true" name="internal" description="internal use only"/>
+ </OCD>
+
+</metatype:MetaData>

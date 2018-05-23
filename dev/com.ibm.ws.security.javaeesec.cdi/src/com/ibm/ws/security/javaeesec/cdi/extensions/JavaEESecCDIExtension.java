@@ -56,6 +56,7 @@ import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -66,6 +67,7 @@ import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
+import com.ibm.ws.security.javaeesec.ApplicationUtils;
 import com.ibm.ws.threadContext.ModuleMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
@@ -111,12 +113,12 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             Tr.debug(tc, "processAnnotatedType : annotation : " + annotatedType);
 
         Class<?> javaClass = annotatedType.getJavaClass();
-        boolean useGlobalLogin = isGlobalLoginEnabled();
+        boolean isAuthMechOverridden = isAuthMechOverridden();
         if (isApplicationAuthMech(javaClass)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Found an application specific HttpAuthenticationMechanism : " + javaClass);
             }
-            if (useGlobalLogin) {
+            if (isAuthMechOverridden) {
                 createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
             } else {
                 Annotation ltc = annotatedType.getAnnotation(LoginToContinue.class);
@@ -134,13 +136,13 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             // TODO: If I see my annotations, create beans by type. Add more bean types.
             Class<? extends Annotation> annotationType = annotation.annotationType();
             if (BasicAuthenticationMechanismDefinition.class.equals(annotationType)) {
-                if (useGlobalLogin) {
+                if (isAuthMechOverridden) {
                     createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
                 } else {
                     createModulePropertiesProviderBeanForBasicToAdd(beanManager, annotation, annotationType, javaClass);
                 }
             } else if (FormAuthenticationMechanismDefinition.class.equals(annotationType) || CustomFormAuthenticationMechanismDefinition.class.equals(annotationType)) {
-                if (useGlobalLogin) {
+                if (isAuthMechOverridden) {
                     createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
                 } else {
                     createModulePropertiesProviderBeanForFormToAdd(beanManager, annotation, annotationType, javaClass);
@@ -157,11 +159,11 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         AnnotatedType<SecurityContextProducer> securityContextProducerType = beanManager.createAnnotatedType(SecurityContextProducer.class);
-        beforeBeanDiscovery.addAnnotatedType(securityContextProducerType, SecurityContextProducer.class.getName());
+        beforeBeanDiscovery.addAnnotatedType(securityContextProducerType, SecurityContextProducer.class.getName() + ":" + getClass().getClassLoader().hashCode());
         AnnotatedType<AutoApplySessionInterceptor> autoApplySessionInterceptorType = beanManager.createAnnotatedType(AutoApplySessionInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(autoApplySessionInterceptorType, AutoApplySessionInterceptor.class.getName());
+        beforeBeanDiscovery.addAnnotatedType(autoApplySessionInterceptorType, AutoApplySessionInterceptor.class.getName() + ":" + getClass().getClassLoader().hashCode());
         AnnotatedType<RememberMeInterceptor> rememberMeInterceptorInterceptorType = beanManager.createAnnotatedType(RememberMeInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(rememberMeInterceptorInterceptorType, RememberMeInterceptor.class.getName());
+        beforeBeanDiscovery.addAnnotatedType(rememberMeInterceptorInterceptorType, RememberMeInterceptor.class.getName() + ":" + getClass().getClassLoader().hashCode());
     }
 
     public <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
@@ -181,8 +183,11 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             afterBeanDiscovery.addDefinitionError(de);
         }
         if (!isEmptyModuleMap()) {
+            // this is a JSR375 app.
             ModulePropertiesProviderBean bean = new ModulePropertiesProviderBean(beanManager, moduleMap);
             beansToAdd.add(bean);
+            // register the application name for recycle the apps.
+            ApplicationUtils.registerApplication(getApplicationName());
         }
 
         // TODO: Validate beans to add.
@@ -306,7 +311,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             Properties props;
             Class implClass;
 
-            if (isGlobalLoginFormEnabled()) {
+            if (isAuthMechOverriddenByForm()) {
                 props = getGlobalLoginFormProps();
                 implClass = FormAuthenticationMechanism.class;
             } else {
@@ -922,7 +927,16 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         String result = null;
         Map<URL, ModuleMetaData> mmds = getModuleMetaDataMap();
         if (mmds != null && !mmds.isEmpty()) {
-            result = mmds.get(0).getJ2EEName().getApplication();
+            for (Map.Entry<URL, ModuleMetaData> entry : mmds.entrySet()) {
+                ModuleMetaData mmd = entry.getValue();
+                if (mmd instanceof WebModuleMetaData) {
+                    J2EEName j2eeName = mmd.getJ2EEName();
+                    if (j2eeName != null) {
+                        result = j2eeName.getApplication();
+                        break;
+                    }
+                }
+            }
         }
         return result;
     }
@@ -1029,18 +1043,42 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return props;
     }
 
-    private boolean isGlobalLoginEnabled() {
-        String value = getWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
-        if (value != null && (value.equals("FORM") || value.equals("BASIC"))) {
-            return true;
+    /**
+     * This method validates whether the authentication mechanism needs to be overridden by the global
+     * login setting in webAppSecurityConfig element.
+     * There are two condtions when the global login setting needs to be used:
+     * 1. when overrideHttpAuthMethod attribute is set to FORM or BASIC.
+     * 2. when overrideHttpAuthMethod attribute is set to CLIENT_CERT, and allowAuthenticationFailOverToAuthMethod
+     *    attribute is set to BASIC or FORM.
+     */
+    private boolean isAuthMechOverridden() {
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
+        String value = webAppSecConfig.getOverrideHttpAuthMethod();
+        if (value != null) {
+            if ((value.equals(LoginConfiguration.FORM) || value.equals(LoginConfiguration.BASIC))) {
+                return true;
+            } else if (value.equals(LoginConfiguration.CLIENT_CERT)) {
+                // if CLIENT_CERT is set, check failover setting.
+                if (webAppSecConfig.getAllowFailOverToFormLogin() || webAppSecConfig.getAllowFailOverToBasicAuth()) {
+                    return true;
+                }
+            }
         }
         return false;
     }
 
-    private boolean isGlobalLoginFormEnabled() {
-        String value = getWebAppSecurityConfig().getOverrideHttpAuthenticationMechanism();
-        if (value != null && value.equals("FORM")) {
-            return true;
+    private boolean isAuthMechOverriddenByForm() {
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
+        String value = webAppSecConfig.getOverrideHttpAuthMethod();
+        if (value != null) {
+            if (value.equals(LoginConfiguration.FORM)) {
+                return true;
+            } else if (value.equals(LoginConfiguration.CLIENT_CERT)) {
+                // if CLIENT_CERT is set, check failover setting.
+                if (webAppSecConfig.getAllowFailOverToFormLogin()) {
+                    return true;
+                }
+            }
         }
         return false;
     }

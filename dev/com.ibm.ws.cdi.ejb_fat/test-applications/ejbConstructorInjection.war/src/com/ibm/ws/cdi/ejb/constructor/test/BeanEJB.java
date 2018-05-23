@@ -41,13 +41,13 @@ public class BeanEJB {
     public String test() {
 
         StaticState.append("First bean message: " + firstBeanMessage);
-        StaticState.append(System.getProperty("line.separator"));
+        StaticState.append(System.lineSeparator());
         StaticState.append("Second bean message: " + secondBeanMessage);
-        StaticState.append(System.getProperty("line.separator"));
+        StaticState.append(System.lineSeparator());
         StaticState.append("Third bean message: " + thirdBeanMessage);
-        StaticState.append(System.getProperty("line.separator"));
+        StaticState.append(System.lineSeparator());
         StaticState.append("Forth bean message: " + forthBeanMessage);
-        StaticState.append(System.getProperty("line.separator"));
+        StaticState.append(System.lineSeparator());
 
         return StaticState.getOutput();
     }

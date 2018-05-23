@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.NameCallback;
 import javax.security.auth.message.MessageInfo;
 import javax.security.auth.message.callback.CallerPrincipalCallback;
 import javax.security.auth.message.callback.GroupPrincipalCallback;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 /**
  *
@@ -49,6 +51,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
     private boolean isRegisterSession = false;
     private AuthenticationParameters authenticationParameters = new AuthenticationParameters();
     private boolean isAuthenticationRequest = false;
+
+    private CredentialValidationResult result;
 
     /**
      * @param messageInfo
@@ -230,6 +234,7 @@ public class HttpMessageContextImpl implements HttpMessageContext {
     @Override
     public AuthenticationStatus notifyContainerAboutLogin(CredentialValidationResult result) {
         if (CredentialValidationResult.Status.VALID.equals(result.getStatus())) {
+            this.result = result;
             return notifyContainerAboutLogin(result.getCallerPrincipal(), result.getCallerGroups());
         }
         return AuthenticationStatus.SEND_FAILURE;
@@ -245,14 +250,37 @@ public class HttpMessageContextImpl implements HttpMessageContext {
         try {
             this.principal = principal;
             this.groups = Collections.unmodifiableSet(groups); // Unmodifiable view to avoid corruption
-            Callback[] callbacks = new Callback[2];
-            callbacks[0] = new CallerPrincipalCallback(clientSubject, principal);
-            callbacks[1] = new GroupPrincipalCallback(clientSubject, groups.toArray(new String[] {}));
+
+            Callback[] callbacks = new Callback[3];
+            callbacks[0] = getRealmNameCallback();
+            callbacks[1] = new CallerPrincipalCallback(clientSubject, principal);
+            callbacks[2] = new GroupPrincipalCallback(clientSubject, groups.toArray(new String[] {}));
             handler.handle(callbacks);
         } catch (Exception e) {
             // TODO: Determine if this needs a serviceability message
         }
         return AuthenticationStatus.SUCCESS;
+    }
+
+    private NameCallback getRealmNameCallback() {
+        NameCallback realmNameCallback = new NameCallback(AttributeNameConstants.WSCREDENTIAL_REALM);
+        realmNameCallback.setName(getRealm());
+        return realmNameCallback;
+    }
+
+    private String getRealm() {
+        String realm = JavaEESecConstants.DEFAULT_REALM;
+        if (result != null) {
+            String idStoreId = result.getIdentityStoreId();
+            if (idStoreId == null || idStoreId.trim().isEmpty()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The identity store id is not defined, \"defaultRealm\" is used.");
+                }
+            } else {
+                realm = idStoreId;
+            }
+        }
+        return realm;
     }
 
     /*
@@ -264,7 +292,7 @@ public class HttpMessageContextImpl implements HttpMessageContext {
     public AuthenticationStatus notifyContainerAboutLogin(String callername, Set<String> groups) {
         try {
             this.groups = Collections.unmodifiableSet(groups); // Unmodifiable view to avoid corruption
-            Callback[] callbacks = new Callback[2];
+            Callback[] callbacks = new Callback[3];
             callbacks[0] = new CallerPrincipalCallback(clientSubject, callername);
             callbacks[1] = new GroupPrincipalCallback(clientSubject, groups.toArray(new String[] {}));
             handler.handle(callbacks);

@@ -567,53 +567,10 @@ serverEnvDefaults()
   *,*)
     SERVER_IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
     ;;
-
   *)
     if $shareclassesCacheDirPerm
     then
-      ibmVersionProperties=
-      if [ -z "${JAVA_HOME}" ]
-      then
-        javaBinDir=`type java 2> /dev/null | sed -e 's,[^/]*,,' -e 's,/java[^/]*$,,'`
-        if [ -n "${javaBinDir}" ]
-        then
-          if [ -f "${javaBinDir}/../lib/version.properties" ]
-          then
-            ibmVersionProperties=${javaBinDir}/../lib/version.properties
-          elif [ -f "${javaBinDir}/../jre/lib/version.properties" ]
-          then
-            ibmVersionProperties=${javaBinDir}/../jre/lib/version.properties
-          fi
-        fi
-      elif [ -f "${JAVA_HOME}/lib/version.properties" ]
-      then
-        ibmVersionProperties=${JAVA_HOME}/lib/version.properties
-      elif [ -f "${JAVA_HOME}/jre/lib/version.properties" ]
-      then
-        ibmVersionProperties=${JAVA_HOME}/jre/lib/version.properties
-      fi
-
-      SERVER_IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
-      if [ -n "${ibmVersionProperties}" ] && ibmSdkVersion=`grep '^sdk\.version=' "${ibmVersionProperties}"`
-      then
-        # The IBM SDK version scheme is (arch)(version#)[sr#][fp#]-(date)
-        # We only want to set -Xshareclasses if we can set the cacheDirPerm option,
-        # but it is only available on IBM 1.6 SR10 and 1.6 (2.6 VM) SR1 and later.
-        # The version.properties file was added in IBM 1.6, so accept any other
-        # version for forwards compatibility.
-        case $ibmSdkVersion in
-        sdk.version=*60fp*);;
-        sdk.version=*60ifix*);;
-        sdk.version=*60sr[1-9]-*);;
-        sdk.version=*60sr[1-9]fp*);;
-        sdk.version=*60sr[1-9]ifix*);;
-        sdk.version=*60_26-*);;
-        sdk.version=*60_26fp*);;
-        sdk.version=*60_26ifix*);;
-        sdk.version=*)
-          SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m ${IBM_JAVA_OPTIONS}"
-        esac
-      fi
+      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m ${IBM_JAVA_OPTIONS}"
     else
       SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m ${IBM_JAVA_OPTIONS}"
     fi

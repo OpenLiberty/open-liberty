@@ -168,3 +168,11 @@ SEC_JACC_AUTHZ_FAILED.useraction=Si cette situation est inattendue, adressez-vou
 SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: L''URL fournie pour le param\u00e8tre personnalis\u00e9 logoutExitPage du service de d\u00e9connexion par formulaire ne peut pas \u00eatre affich\u00e9e. requestURL={0}, logoutExitPage={1}. La d\u00e9connexion a abouti et la page de d\u00e9connexion par formulaire par d\u00e9faut s''est affich\u00e9e.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Le service de d\u00e9connexion par formulaire n'a pas pu effectuer un r\u00e9acheminement vers la page sp\u00e9cifi\u00e9e au param\u00e8tre de servlet logoutExitPage. Soit le format de l'URL sp\u00e9cifi\u00e9e est incorrect, soit le nom d'h\u00f4te n'est pas indiqu\u00e9 dans la propri\u00e9t\u00e9 com.ibm.websphere.security.logoutExitPageDomainList.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Corrigez l'URL sp\u00e9cifi\u00e9e pour le param\u00e8tre logoutExitPage.
+
+JWT_ALREADY_LOGGED_OUT=CWWKS9126A: L'authentification \u00e0 l'aide d'un jeton WEB JSON a \u00e9chou\u00e9 car le jeton a \u00e9t\u00e9 pr\u00e9c\u00e9demment d\u00e9connect\u00e9.
+JWT_ALREADY_LOGGED_OUT.explanation=Un jeton Web JSON (JWT) qui a \u00e9t\u00e9 d\u00e9connect\u00e9 pr\u00e9c\u00e9demment a \u00e9t\u00e9 renvoy\u00e9 en vue de l'authentification.
+JWT_ALREADY_LOGGED_OUT.useraction=Procurez-vous un nouveau jeton Web JSON.
+
+JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: La fonction jwtSso d\u00e9finit un cookie s\u00e9curis\u00e9 sur une demande HTTP non s\u00e9curis\u00e9e. Il peut s'agir d'une erreur de configuration.  Utilisez le protocole HTTPS ou affectez la valeur false \u00e0 l'attribut de configuration jwtSso setCookieSecureFlag.
+JWT_COOKIE_SECURITY_MISMATCH.explanation=Un cookie est marqu\u00e9 comme s\u00e9curis\u00e9 mais le protocole est HTTP, par cons\u00e9quent, le cookie ne sera jamais renvoy\u00e9 et cela peut provoquer l'\u00e9chec des demandes suivantes.
+JWT_COOKIE_SECURITY_MISMATCH.useraction=Utilisez le protocole HTTPS ou affectez la valeur false \u00e0 l'attribut de configuration jwtSso setCookieSecureFlag.

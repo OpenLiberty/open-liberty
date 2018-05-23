@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import javax.ejb.AsyncResult;
 
 import com.ibm.ejs.util.Util;
 import com.ibm.websphere.ras.Tr;
@@ -237,11 +239,64 @@ public abstract class ServerAsyncResult implements Future<Object> {
         // F743-16193
         // Remove instanceof check for Future object.  Return type validation check
         // moved to EJBMDOrchestrator.java
-        Object resultToReturn;
-        if (ivFuture == null) {
-            resultToReturn = null;
-        } else {
+        Object resultToReturn = null;
+        if (ivFuture != null) {
             resultToReturn = ivFuture.get(); // d650178
+        }
+
+        return (resultToReturn);
+    }
+
+    /**
+     * This get method returns the result of the asynch method call. This method
+     * must not be called unless ivGate indicates that results are available.
+     *
+     * @param timeout - the timeout value
+     * @param unit - the time unit for the timeout value (e.g. milliseconds, seconds, etc.)
+     *
+     * @return - the result object
+     *
+     * @throws InterruptedException - if the thread is interrupted while waiting
+     * @throws CancellationException - if the async method was canceled successfully
+     * @throws ExecutionException - if the async method ended with an exception
+     * @throws TimeoutException - if the timeout period expires before the asynch method completes
+     */
+    private Object getResult(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        if (ivCancelled) { // F743-11774
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getResult: throwing CancellationException");
+            }
+            throw new CancellationException(); // F743-11774
+        }
+
+        // Method ended with an exception
+        if (ivException != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getResult: " + ivException);
+            }
+            throw new ExecutionException(ivException);
+        }
+
+        // F743-609CodRev
+        // If the result object is itself a Future object, we need to call "get" on it
+        // so that we unwrap the results and place them in this Future object.  This
+        // is done to support asynchronous method calls that return results wrapped
+        // in Future objects, and also to support nested asynchronous method calls.
+        // Also, note that "null" is an acceptable result.
+        // F743-16193
+        // Remove instanceof check for Future object.  Return type validation check
+        // moved to EJBMDOrchestrator.java
+        Object resultToReturn = null;
+        if (ivFuture != null) {
+            // AsyncResult EJB3.2 API just throws IllegalStateExceptions for everything but .get().
+            // Even in EJB3.1 API get(timeout, unit) just immediately returned. In a long nested
+            // chain of futures, only the last one will be AsyncResult so we won't need to pass
+            // down the remaining timeout anyway.
+            if (ivFuture instanceof AsyncResult) {
+                resultToReturn = ivFuture.get();
+            } else {
+                resultToReturn = ivFuture.get(timeout, unit); // d650178
+            }
         }
 
         return (resultToReturn);
@@ -293,13 +348,17 @@ public abstract class ServerAsyncResult implements Future<Object> {
             throw new NullPointerException("unit");
         }
 
+        long startTime = System.nanoTime();
+
         if (!await(timeout, unit)) { // F16043
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "get - asynchronous method timed out, throwing TimeoutException.");
             throw new TimeoutException();
         }
 
-        Object resultToReturn = getResult(); // d650178
+        long remainingTime = timeout - unit.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+
+        Object resultToReturn = getResult(remainingTime, unit); // d650178
 
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "get: " + Util.identity(resultToReturn));
@@ -375,4 +434,3 @@ public abstract class ServerAsyncResult implements Future<Object> {
     }
 
 } // ServerAsyncResult
-

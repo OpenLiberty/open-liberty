@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com/ibm/ws/cloudant/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD Cloudant client
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: This message prefix is shared with other Liberty components
+# Message IDs 0300-0399 are reserved for cloudant.
+
+#{0} is the config element name (either jndi name or config id)
+error.cloudant.config.CWWKD0300E=CWWKD0300E: Um atributo de URL ou de conta deve ser especificado no elemento de configura\u00e7\u00e3o do Cloudant {0}.
+error.cloudant.config.CWWKD0300E.explanation=Para criar um cliente Cloudant, deve-se especificar a URL de um banco de dados ou uma conta na configura\u00e7\u00e3o.
+error.cloudant.config.CWWKD0300E.useraction=Inclua um atributo de URL ou de conta na configura\u00e7\u00e3o do servidor.
+
+#{0} JNDI name of the cloudant config element
+# ClientBuilder is a class name
+direct.lookup.CWWKD0301E=CWWKD0301E: A consulta de Cloudant ClientBuilder {0} requer uma refer\u00eancia de recurso.
+direct.lookup.CWWKD0301E.explanation=Recursos modific\u00e1veis como o CloudantBuilder devem ser consultados por meio de uma refer\u00eancia de recurso, de modo que uma nova inst\u00e2ncia seja retornada para cada consulta. Se uma consulta sem uma refer\u00eancia de recurso fosse permitida, isso resultaria em uma inst\u00e2ncia compartilhada do ClientBuilder, o que causaria um comportamento imprevis\u00edvel quando os aplicativos a procurassem v\u00e1rias vezes e a modificassem de maneiras diferentes.
+direct.lookup.CWWKD0301E.useraction=Inclua uma refer\u00eancia de recurso em seu aplicativo para o ClientBuilder e use a refer\u00eancia de recurso para consultar o Cloudant ClientBuilder. Como alternativa, use a inje\u00e7\u00e3o de recurso (que implicitamente cria uma refer\u00eancia de recurso) para injetar uma inst\u00e2ncia do ClientBuilder em seu aplicativo.
+
+#{0} Cloudant class name
+#{1} JNDI name of the cloudant config element
+class.not.found.CWWKD0302E=CWWKD0302E: N\u00e3o \u00e9 poss\u00edvel carregar o {0} porque o elemento de configura\u00e7\u00e3o do Cloudant {1} n\u00e3o est\u00e1 configurado com um libraryRef e o encadeamento atual n\u00e3o tem acesso a um carregador de classes de aplicativo.
+class.not.found.CWWKD0302E.explanation=O elemento de configura\u00e7\u00e3o do Cloudant deve ser configurado com um libraryRef que aponta para as bibliotecas do Cloudant ou as bibliotecas do Cloudant devem ser inclu\u00eddas no aplicativo, nesse caso, o recurso JNDI do Cloudant deve ser consultado em um encadeamento de aplicativos.
+class.not.found.CWWKD0302E.useraction=Inclua um libraryRef no elemento de configura\u00e7\u00e3o do Cloudant ou atualize o c\u00f3digo do aplicativo para consultar somente o recurso JNDI do Cloudant em encadeamentos de aplicativos.

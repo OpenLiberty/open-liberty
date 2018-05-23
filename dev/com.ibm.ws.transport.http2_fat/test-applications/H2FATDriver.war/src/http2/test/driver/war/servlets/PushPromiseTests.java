@@ -65,7 +65,7 @@ public class PushPromiseTests extends H2FATDriverServlet {
         date.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         // Setting frame(s) on stream 0
-        h2Client.addExpectedFrame(EMPTY_SETTINGS_FRAME);
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         // PushPromiseFrame on stream 1
         List<H2HeaderField> pushPromiseHeadersReceived = new ArrayList<H2HeaderField>();
@@ -148,7 +148,7 @@ public class PushPromiseTests extends H2FATDriverServlet {
         date.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         // Setting frame(s) on stream 0
-        h2Client.addExpectedFrame(EMPTY_SETTINGS_FRAME);
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         // PushPromiseFrame on stream 1
         List<H2HeaderField> pushPromiseHeadersReceived = new ArrayList<H2HeaderField>();
@@ -211,7 +211,7 @@ public class PushPromiseTests extends H2FATDriverServlet {
         date.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         // Setting frame(s) on stream 0
-        h2Client.addExpectedFrame(EMPTY_SETTINGS_FRAME);
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         // Headers frame with results from the original request on stream 1
         List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
@@ -255,7 +255,7 @@ public class PushPromiseTests extends H2FATDriverServlet {
         date.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         // Setting frame(s) on stream 0
-        h2Client.addExpectedFrame(EMPTY_SETTINGS_FRAME);
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         // Headers frame with results from the original request on stream 1
         List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();

@@ -1,0 +1,34 @@
+<project name="com.ibm.ws.org.apache.commons.collections" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+  
+  <property name="original.jar.name" value="org.apache.commons.collections"/>
+  <property name="original.jar.version" value="3.2.1"/>
+
+  <property name="src.jar" value="lib/${original.jar.name}_${original.jar.version}.jar"/>
+
+  <property name="bundle.version" value="1.0"/>
+
+  <property name="base.name" value="com.ibm.ws"/>
+  <property name="symbolic.name" value="${base.name}.${original.jar.name}.${original.jar.version}"/>
+  <property name="jar.name" value="${symbolic.name}_${bundle.version}.jar"/>
+  <property name="output.dir" value="${build.dir}/lib"/>
+
+  <target name="post-compile">
+    <mkdir dir="${output.dir}"/>
+    <jar destfile="${output.dir}/${jar.name}"
+        filesetmanifest="merge">
+
+      <manifest>
+        <attribute name="Bundle-SymbolicName" value="${symbolic.name}"/>
+        <attribute name="Bundle-Version" value="${bundle.version}"/>
+      </manifest>
+      <zipfileset src="${src.jar}"/>
+
+    </jar>
+  </target>
+
+  <patternset id="publish.bundles">
+    <include name="**/*.jar" />
+  </patternset>
+
+</project>

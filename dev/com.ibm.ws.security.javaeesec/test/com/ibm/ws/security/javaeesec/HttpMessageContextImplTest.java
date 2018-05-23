@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,8 +44,8 @@ import org.junit.Test;
 
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
-import com.ibm.ws.security.jaspi.JaspiCallbackHandler;
 import com.ibm.ws.security.jaspi.JaspiMessageInfo;
+import com.ibm.ws.security.jaspi.NonMappingCallbackHandler;
 import com.ibm.ws.webcontainer.security.JaspiService;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
@@ -79,7 +79,7 @@ public class HttpMessageContextImplTest {
         messageInfo = createMessageInfo(true);
         clientSubject = new Subject();
         jaspiService = mockery.mock(JaspiService.class);
-        handler = new JaspiCallbackHandler(jaspiService);
+        handler = new NonMappingCallbackHandler(jaspiService);
         principal = new CallerPrincipal(principalName);
         groups = new HashSet<String>();
         groups.add("tester");
@@ -250,6 +250,18 @@ public class HttpMessageContextImplTest {
     }
 
     @Test
+    public void testNotifyContainerAboutLoginCredentialValidationResultIdStoreIdAsRealm() {
+        setJaspicExpectations();
+        String idStoreId = "IdStoreId";
+        CredentialValidationResult result = new CredentialValidationResult(idStoreId, principal, null, principalName, groups);
+        httpMessageContext.notifyContainerAboutLogin(result);
+
+        Hashtable<String, ?> customProperties = getSubjectHashtable();
+        assertEquals("The unique id must be set in the subject.", "user:" + idStoreId + "/" + principalName, customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
+        assertEquals("The realm name must be set in the subject.", idStoreId, customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM));
+    }
+
+    @Test
     public void testNotifyContainerAboutLoginCredentialValidationResultFAILURE() {
         setJaspicExpectations();
 
@@ -317,7 +329,7 @@ public class HttpMessageContextImplTest {
         assertEquals("The security name must be set in the subject.", principalName, customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME));
         List<String> subjectGroups = (List<String>) customProperties.get(AttributeNameConstants.WSCREDENTIAL_GROUPS);
         assertTrue("The groups must be set in the subject.", groups.containsAll(subjectGroups) && subjectGroups.containsAll(groups));
-        assertNull("The realm name must not be set in the subject.", customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM));
+        assertNotNull("The realm name must be set in the subject.", customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM));
         assertNull("The cache key must not be set in the subject.", customProperties.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY));
         return customProperties;
     }

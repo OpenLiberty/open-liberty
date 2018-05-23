@@ -34,8 +34,7 @@ no.application.name.CWMCG0201E.useraction=Revise os logs message.log e FFDC do s
 # More than one application found with name {0}
 duplicate.application.name.CWMCG0202E=CWMCG0202E: Mais de um aplicativo localizado com o nome {0}.
 duplicate.application.name.CWMCG0202E.explanation=O nome do aplicativo deve ser exclusivo.
-duplicate.application.name.CWMCG0202E.useraction=Revise o arquivo server.xml para assegurar-se de que cada nome de aplicativo seja exclusivo.
-
+duplicate.application.name.CWMCG0202E.useraction=Revise o arquivo server.xml para assegurar que cada nome de aplicativo seja exclusivo.
 # More than one configuration found for application with name {0}
 duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: Mais de uma configura\u00e7\u00e3o localizada para o aplicativo com o nome {0}.
 duplicate.application.configuration.name.CWMCG0203E.explanation=A configura\u00e7\u00e3o do aplicativo deve ser exclusiva.

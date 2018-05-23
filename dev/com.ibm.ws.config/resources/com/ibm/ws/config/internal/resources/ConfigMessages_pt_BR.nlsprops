@@ -476,6 +476,11 @@ mais vis\u00edvel aos outros pacotes configur\u00e1veis.
 warning.binding.config.useraction=Para assegurar que o local do pacote configur\u00e1vel seja o valor esperado, use o \
 m\u00e9todo getConfiguration na interface ConfigurationAdmin que obt\u00e9m um local do pacote configur\u00e1vel como o segundo par\u00e2metro.
 
+# This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
+info.config.conflict=CWWKG0102I: {0}
+info.config.conflict.explanation=Os valores m\u00faltiplos s\u00e3o especificados para a mesma propriedade de configura\u00e7\u00e3o. 
+info.config.conflict.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. A mensagem informativa pode ser evitada editando a configura\u00e7\u00e3o do servidor para remover o conflito.
+ 
 
 # Non-TR message
 error.invalidOCDRef=ERRO: A PID de metatipo [{0}] especifica o ID de defini\u00e7\u00e3o de classe de objeto n\u00e3o existente [{1}]

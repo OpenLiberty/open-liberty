@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ public class WebRequestImpl implements WebRequest {
     private boolean specialUnprotectedURI = false;
     private Map<String, Object> propMap = null;
     private boolean requestAuthenticate = false;
+    private boolean disableClientCertFailOver = false;
 
     public WebRequestImpl(HttpServletRequest req, HttpServletResponse resp,
                           SecurityMetadata securityMetadata, WebAppSecurityConfig config) {
@@ -258,6 +259,16 @@ public class WebRequestImpl implements WebRequest {
     @Override
     public void setRequestAuthenticate(boolean requestAuthenticate) {
         this.requestAuthenticate = requestAuthenticate;
+    }
+
+    @Override
+    public boolean isDisableClientCertFailOver() {
+        return disableClientCertFailOver;
+    }
+
+    @Override
+    public void setDisableClientCertFailOver(boolean isDisable) {
+        disableClientCertFailOver = isDisable;
     }
 
 }

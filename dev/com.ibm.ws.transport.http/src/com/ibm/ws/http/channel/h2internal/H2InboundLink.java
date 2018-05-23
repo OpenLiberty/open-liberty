@@ -70,6 +70,8 @@ public class H2InboundLink extends HttpInboundLink {
     READ_LINK_STATUS readLinkStatus = READ_LINK_STATUS.NOT_READING;
     Object readLinkStatusSync = new Object() {};
 
+    private final int configuredInactivityTimeout = 0; // in milleseconds;
+    private long lastWriteTime = 0;
     private int OutstandingWriteCount = 0;
     private final Object OutstandingWriteCountSync = new Object() {};
     private final int closeWaitForWritesWatchDogTimer = 5000;
@@ -110,7 +112,9 @@ public class H2InboundLink extends HttpInboundLink {
     TCPConnectionContext h2MuxTCPConnectionContext = null;
     HttpInboundServiceContextImpl h2MuxServiceContextImpl = null;
 
-    H2ConnectionSettings connectionSettings;
+    private H2ConnectionSettings localConnectionSettings;
+    private H2ConnectionSettings remoteConnectionSettings;
+
     H2WorkQInterface writeQ = null;
 
     int h2NextPromisedStreamId = 0;
@@ -159,8 +163,12 @@ public class H2InboundLink extends HttpInboundLink {
         h2MuxTCPConnectionContext = tcc;
         h2MuxTCPReadContext = tcc.getReadInterface();
         h2MuxTCPWriteContext = tcc.getWriteInterface();
-        connectionSettings = new H2ConnectionSettings();
         config = channel.getHttpConfig();
+        localConnectionSettings = new H2ConnectionSettings();
+        localConnectionSettings.setMaxConcurrentStreams(this.config.getH2MaxConcurrentStreams());
+        localConnectionSettings.setMaxFrameSize(this.config.getH2MaxFrameSize());
+        remoteConnectionSettings = new H2ConnectionSettings();
+
         h2MuxServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
 
         // set up the initial connection read window size
@@ -176,7 +184,7 @@ public class H2InboundLink extends HttpInboundLink {
         hcDebug = this.hashCode();
 
         initialVC.getStateMap().put(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE, "true");
-        initialVC.getStateMap().put("h2_frame_size", getConnectionSettings().maxFrameSize);
+        initialVC.getStateMap().put("h2_frame_size", getRemoteConnectionSettings().getMaxFrameSize());
     }
 
     public synchronized long getInitialWindowSize() {
@@ -196,7 +204,7 @@ public class H2InboundLink extends HttpInboundLink {
         }
         if ((streamID % 2 == 0) && (streamID != 0)) {
             synchronized (pushSync) {
-                int maxPushStreams = getConnectionSettings().getMaxConcurrentStreams();
+                int maxPushStreams = getRemoteConnectionSettings().getMaxConcurrentStreams();
                 // if there are too many locally-open active streams, don't open a new one
                 if (maxPushStreams >= 0 && openPushStreams > maxPushStreams) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -348,7 +356,7 @@ public class H2InboundLink extends HttpInboundLink {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleHTTP2UpgradeRequest, processing upgrade header settings : " + settings);
             }
-            getConnectionSettings().processUpgradeHeaderSettings(settings);
+            getRemoteConnectionSettings().processUpgradeHeaderSettings(settings);
         } catch (Http2Exception e1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleHTTP2UpgradeRequest an error occurred processing the settings during connection initialization");
@@ -402,8 +410,13 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public void startAsyncRead(boolean newFrame) {
+        // start the read with the configured read timeout
+        startAsyncRead(newFrame, configuredInactivityTimeout);
+    }
+
+    public void startAsyncRead(boolean newFrame, int readTimeout) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "startAsyncRead entry; newframe = " + newFrame);
+            Tr.debug(tc, "startAsyncRead entry; newframe = " + newFrame + " readTimeout: " + readTimeout);
         }
         // if new frame, reset and reuse the current one
         if (newFrame) {
@@ -426,7 +439,12 @@ public class H2InboundLink extends HttpInboundLink {
                 readLinkStatus = READ_LINK_STATUS.READ_OUTSTANDING;
             }
             try {
-                h2MuxTCPReadContext.read(numBytes, h2MuxReadCallback, forceQueue, TCPRequestContext.NO_TIMEOUT);
+                int timeout = TCPRequestContext.NO_TIMEOUT;
+                if (readTimeout != 0) {
+                    timeout = readTimeout;
+                }
+
+                h2MuxTCPReadContext.read(numBytes, h2MuxReadCallback, forceQueue, timeout);
             } catch (Throwable up) {
                 setReadLinkStatusToNotReadingAndNotify();
                 throw up;
@@ -495,6 +513,11 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public void processRead(VirtualConnection vc, TCPReadRequestContext rrc) {
+        // use the configured timeout
+        processRead(vc, rrc, configuredInactivityTimeout);
+    }
+
+    public void processRead(VirtualConnection vc, TCPReadRequestContext rrc, int readTimeout) {
 
         boolean readForNewFrame = true;
 
@@ -593,7 +616,7 @@ public class H2InboundLink extends HttpInboundLink {
             if (doRead) {
                 // read for a new frame
                 // read outside of synchronized to avoid thread deadlock
-                startAsyncRead(readForNewFrame);
+                startAsyncRead(readForNewFrame, readTimeout);
             }
         }
     }
@@ -617,7 +640,8 @@ public class H2InboundLink extends HttpInboundLink {
         h2MuxTCPConnectionContext = null;
         h2MuxTCPReadContext = null;
         h2MuxTCPWriteContext = null;
-        connectionSettings = null;
+        localConnectionSettings = null;
+        remoteConnectionSettings = null;
         readContextTable = null;
         writeContextTable = null;
 
@@ -698,11 +722,19 @@ public class H2InboundLink extends HttpInboundLink {
                 }
                 e.waitWriteCompleteLatch();
             }
+
+            // write worked, update time if we are current tracking it for inactivity
+            if (configuredInactivityTimeout != 0) {
+                synchronized (OutstandingWriteCountSync) {
+                    lastWriteTime = System.nanoTime();
+                }
+            }
+
         } finally {
             synchronized (OutstandingWriteCountSync) {
                 OutstandingWriteCount--;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "writeSync - decremented write count to: " + OutstandingWriteCount + " H2InboundLink hc: " + this.hashCode());
+                    Tr.debug(tc, "writeSync - decremented write count to: " + OutstandingWriteCount + " lastWriteTime: " + lastWriteTime + " H2InboundLink hc: " + this.hashCode());
                 }
                 if (OutstandingWriteCount == 0) {
                     OutstandingWriteCountSync.notify();
@@ -768,15 +800,28 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     /**
-     * @return the connectionSettings
+     * Returns the connection settings as specified by the local http endpoint
+     *
+     * @return the localConnectionSettings
      */
-    public H2ConnectionSettings getConnectionSettings() {
-        return connectionSettings;
+    public H2ConnectionSettings getLocalConnectionSettings() {
+        return localConnectionSettings;
+    }
+
+    /**
+     * Returns the connection settings as specified by the remote http endpoint
+     *
+     * @return the remoteConnectionSettings
+     */
+    public H2ConnectionSettings getRemoteConnectionSettings() {
+        return remoteConnectionSettings;
     }
 
     public void cleanupStream(int streamID) {
         streamTable.remove(streamID);
-        writeQ.removeNodeFromQ(streamID);
+        if (streamID != 0) {
+            writeQ.removeNodeFromQ(streamID);
+        }
     }
 
     /*
@@ -807,7 +852,8 @@ public class H2InboundLink extends HttpInboundLink {
         h2MuxTCPConnectionContext = null;
         h2MuxTCPReadContext = null;
         h2MuxTCPWriteContext = null;
-        connectionSettings = null;
+        localConnectionSettings = null;
+        remoteConnectionSettings = null;
         readContextTable = null;
         writeContextTable = null;
 
@@ -838,6 +884,10 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     public void closeConnectionLink(Exception exceptionForCloseFromHere) {
+        closeConnectionLink(exceptionForCloseFromHere, false);
+    }
+
+    public void closeConnectionLink(Exception exceptionForCloseFromHere, boolean attemptGoAway) {
 
         // can only enter this routine once per lifecycle of this object
         synchronized (oneTimeEntrySync) {
@@ -886,13 +936,38 @@ public class H2InboundLink extends HttpInboundLink {
                 }
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "closeConnectionLink: close the device link now. setting :linkStatus: to CLOSING" + " :close: H2InboundLink hc: " + this.hashCode());
+            if (!attemptGoAway) {
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeConnectionLink: close the device link now. setting :linkStatus: to CLOSING" + " :close: H2InboundLink hc: " + this.hashCode());
+                }
+                // we are tasked with closing the device link, and now no more frames should be written or read by the H2 code on this connection.
+                linkStatus = LINK_STATUS.CLOSING;
             }
-            // we are tasked with closing the device link, and now no more frames should be written or read by the H2 code on this connection.
-            linkStatus = LINK_STATUS.CLOSING;
 
         } // end sync, close the deviceLink outside the sync lock
+
+        if (attemptGoAway) {
+
+            try {
+                streamTable.get(0).sendGOAWAYFrame(new Http2Exception(exceptionForCloseFromHere.getMessage()));
+            } catch (Http2Exception x) {
+                // just keep closing down
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeConnectionLink: exeception received while sending GOAWAY :close: H2InboundLink hc: " + hcDebug + " " + x);
+                }
+            }
+
+            synchronized (linkStatusSync) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeConnectionLink: close the device link now after sending GOAWAY. setting :linkStatus: to CLOSING" + " :close: H2InboundLink hc: "
+                                 + this.hashCode());
+                }
+                // we are tasked with closing the device link, and now no more frames should be written or read by the H2 code on this connection.
+                linkStatus = LINK_STATUS.CLOSING;
+            }
+
+        }
 
         // tell the write tree queue to quit.  wait for the queue to drain, so no writes will be outstanding when closing
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1122,7 +1197,7 @@ public class H2InboundLink extends HttpInboundLink {
         }
 
         closeTable.put(streamProcessor.getId(), streamProcessor);
-        streamTable.remove(streamProcessor.getId());
+        cleanupStream(streamProcessor.getId());
         if (streamProcessor.getId() % 2 == 0) {
             synchronized (pushSync) {
                 this.openPushStreams--;
@@ -1206,6 +1281,16 @@ public class H2InboundLink extends HttpInboundLink {
      */
     public String getAuthority() {
         return this.authority;
+    }
+
+    protected long getLastWriteTime() {
+        synchronized (OutstandingWriteCountSync) {
+            return lastWriteTime;
+        }
+    }
+
+    protected int getconfiguredInactivityTimeout() {
+        return configuredInactivityTimeout;
     }
 
 }

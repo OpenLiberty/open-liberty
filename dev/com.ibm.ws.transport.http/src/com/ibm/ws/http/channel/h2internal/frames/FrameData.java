@@ -239,7 +239,7 @@ public class FrameData extends Frame {
         if (streamId == 0) {
             throw new ProtocolException("DATA frame stream ID cannot be 0x0");
         }
-        if (getPayloadLength() > settings.maxFrameSize) {
+        if (getPayloadLength() > settings.getMaxFrameSize()) {
             throw new FrameSizeException("DATA payload greater than allowed by the max frame size");
         }
         if (payloadLength > 0 && paddingLength > 0 && paddingLength >= payloadLength) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,13 +59,18 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
     protected static Class<?> logClass = MultipleIdentityStoreCustomFormPostTest.class;
     protected static String urlBase;
     protected static String JAR_NAME = "JavaEESecBase.jar";
-    protected static String APP_NAME = "JavaEESecMultipleISCustomFormPost";
-    protected static String WAR_NAME = APP_NAME + ".war";
+    protected static String APP_REDIRECT_NAME = "CustomFormPostRedirect";
+    protected static String APP_FORWARD_NAME = "CustomFormPostForward";
+    protected static String WAR_REDIRECT_NAME = APP_REDIRECT_NAME + ".war";
+    protected static String WAR_FORWARD_NAME = APP_FORWARD_NAME + ".war";
+    protected static String WAR_RESOURCE_LOCATION = "CustomFormPostResources";
     protected static String XML_NAME = "multipleISCustomFormPost.xml";
     protected static String SERVLET_NAME = "form.xhtml";
     protected static String SERVLET_TITLE = "AddressBook";
-    protected String queryString = "/" + APP_NAME + "/" + SERVLET_NAME;
-    protected static String loginUri = "/" + APP_NAME + "/customLogin.xhtml";
+    protected String redirectQueryString = "/" + APP_REDIRECT_NAME + "/" + SERVLET_NAME;
+    protected String forwardQueryString = "/" + APP_FORWARD_NAME + "/" + SERVLET_NAME;
+    protected static String redirectLoginUri = "/" + APP_REDIRECT_NAME + "/customLogin.xhtml";
+    protected static String forwardLoginUri = "/" + APP_FORWARD_NAME + "/customLogin.xhtml";
     protected static String TITLE_LOGIN_PAGE = "Custom Login Sample by using JSF";
     protected static String TITLE_ERROR_PAGE = "A Form login authentication failure occurred";
 
@@ -93,10 +98,16 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform.post.redirect", "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform.post.forward", "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
+        myServer.setServerConfigurationFile(XML_NAME);
+        myServer.startServer(true);
+        myServer.addInstalledAppForValidation(APP_REDIRECT_NAME);
+        myServer.addInstalledAppForValidation(APP_FORWARD_NAME);
+        urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
 
     }
 
@@ -122,20 +133,11 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
     @After
     public void cleanupConnection() throws Exception {
         httpclient.getConnectionManager().shutdown();
-        myServer.stopServer();
     }
 
     @Override
     protected String getCurrentTestName() {
         return name.getMethodName();
-    }
-
-    protected void startServer(String servletPackage) throws Exception {
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", servletPackage, "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
-        myServer.setServerConfigurationFile(XML_NAME);
-        myServer.startServer(true);
-        myServer.addInstalledAppForValidation(APP_NAME);
-        urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 
     /**
@@ -156,17 +158,16 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
     @Test
     public void testMultipleISCustomFormPostRedirectWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        startServer("web.war.servlets.customform.post.redirect");
 
-        String response = accessPageNoChallenge(httpclient, urlBase + queryString, HttpServletResponse.SC_OK, SERVLET_NAME);
+        String response = accessPageNoChallenge(httpclient, urlBase + redirectQueryString, HttpServletResponse.SC_OK, SERVLET_NAME);
 
         List<NameValuePair> params = createPostParams(getViewState(response));
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        response = postFormLoginPage(httpclient, urlBase + queryString, params, true,  urlBase + loginUri, TITLE_LOGIN_PAGE);
+        response = postFormLoginPage(httpclient, urlBase + redirectQueryString, params, true,  urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeCustomFormLogin(httpclient, urlBase + loginUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
+        String location = executeCustomFormLogin(httpclient, urlBase + redirectLoginUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, SERVLET_TITLE);
@@ -189,27 +190,26 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     @AllowedFFDC({"javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostRedirectWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        startServer("web.war.servlets.customform.post.redirect");
 
-        String response = accessPageNoChallenge(httpclient, urlBase + queryString, HttpServletResponse.SC_OK, SERVLET_NAME);
+        String response = accessPageNoChallenge(httpclient, urlBase + redirectQueryString, HttpServletResponse.SC_OK, SERVLET_NAME);
         List<NameValuePair> params = createPostParams(getViewState(response));
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        response = postFormLoginPage(httpclient, urlBase + queryString, params, true,  urlBase + loginUri, TITLE_LOGIN_PAGE);
+        response = postFormLoginPage(httpclient, urlBase + redirectQueryString, params, true,  urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
         String viewState = getViewState(response);
         // Execute form login for failure.
-        String location = executeCustomFormLogin(httpclient, urlBase + loginUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.INVALIDPASSWORD, viewState);
+        String location = executeCustomFormLogin(httpclient, urlBase + redirectLoginUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.INVALIDPASSWORD, viewState);
         // Redirect to the error page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, TITLE_ERROR_PAGE);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
 
         // Execute form login for retry
-        location = executeCustomFormLogin(httpclient, urlBase + loginUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, viewState);
+        location = executeCustomFormLogin(httpclient, urlBase + redirectLoginUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, viewState);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, SERVLET_TITLE);
@@ -232,20 +232,19 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISCustomFormPostForwardWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        startServer("web.war.servlets.customform.post.forward");
 
-        String response = accessPageNoChallenge(httpclient, urlBase + queryString, HttpServletResponse.SC_OK, SERVLET_NAME);
+        String response = accessPageNoChallenge(httpclient, urlBase + forwardQueryString, HttpServletResponse.SC_OK, SERVLET_NAME);
         List<NameValuePair> params = createPostParams(getViewState(response));
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        response = postFormLoginPage(httpclient, urlBase + queryString, params, false,  urlBase + loginUri, TITLE_LOGIN_PAGE);
+        response = postFormLoginPage(httpclient, urlBase + forwardQueryString, params, false,  urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeCustomFormLogin(httpclient, urlBase + loginUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
+        String location = executeCustomFormLogin(httpclient, urlBase + forwardLoginUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response));
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, SERVLET_TITLE);
@@ -273,24 +272,23 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
     @AllowedFFDC({"javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostForwardWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        startServer("web.war.servlets.customform.post.forward");
 
-        String response = accessPageNoChallenge(httpclient, urlBase + queryString, HttpServletResponse.SC_OK, SERVLET_NAME);
+        String response = accessPageNoChallenge(httpclient, urlBase + forwardQueryString, HttpServletResponse.SC_OK, SERVLET_NAME);
         List<NameValuePair> params = createPostParams(getViewState(response));
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        response = postFormLoginPage(httpclient, urlBase + queryString, params, false,  urlBase + loginUri, TITLE_LOGIN_PAGE);
+        response = postFormLoginPage(httpclient, urlBase + forwardQueryString, params, false,  urlBase + forwardLoginUri, TITLE_LOGIN_PAGE);
 
         String viewState = getViewState(response);
 
         // Execute form login for failure.
-        String location = executeCustomFormLogin(httpclient, urlBase + loginUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.INVALIDPASSWORD, viewState);
+        String location = executeCustomFormLogin(httpclient, urlBase + forwardLoginUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.INVALIDPASSWORD, viewState);
         // Redirect to the error page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, TITLE_ERROR_PAGE);
         verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
 
         // Execute form login for retry
-        location = executeCustomFormLogin(httpclient, urlBase + loginUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, viewState);
+        location = executeCustomFormLogin(httpclient, urlBase + forwardLoginUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, viewState);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, SERVLET_TITLE);

@@ -12,6 +12,7 @@ package com.ibm.ws.app.manager.springboot.support;
 
 import java.io.IOException;
 
+import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
@@ -32,5 +33,6 @@ public interface ContainerInstanceFactory<T> {
 
     Class<T> getType();
 
-    Instance intialize(SpringBootApplication app, String id, String virtualHostId, T helperParam) throws IOException, UnableToAdaptException, MetaDataException;
+    Instance intialize(SpringBootApplication app, String id, String virtualHostId, T helperParam,
+                       SpringConfiguration additionalConfig) throws IOException, UnableToAdaptException, MetaDataException;
 }

@@ -32,7 +32,7 @@
 	</dataSource>
 	
 	<!-- Perms needed because the application uses Hazelcast directly   -->
-	<javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+	<javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
@@ -46,7 +46,10 @@
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.net.NetPermission" name="getNetworkInformation"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
-    
+
+    <!-- Needed for the test application to invoke IBMSessionExt.invalidateAll -->
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="com.ibm.websphere.security.WebSphereRuntimePermission" name="accessInvalidateAll"/>
+
     <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
     <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
     <!-- Needed for hazelcast JVM shutdown hook -->
@@ -57,5 +60,6 @@
 
     <!--  Permissions for application to access mbeans -->
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanPermission" actions="registerMBean,queryNames" name="*"/>
 
 </server>

@@ -161,9 +161,9 @@ org.apache.johnzon:johnzon-jsonb:1.1.5
 org.apache.johnzon:johnzon-mapper:1.1.5
 org.apache.maven:maven-model:3.5.0
 org.apache.myfaces.core:myfaces-api:2.2.12
-org.apache.myfaces.core:myfaces-api:2.3.0
+org.apache.myfaces.core:myfaces-api:2.3.1
 org.apache.myfaces.core:myfaces-impl:2.2.12
-org.apache.myfaces.core:myfaces-impl:2.3.0
+org.apache.myfaces.core:myfaces-impl:2.3.1
 org.apache.myfaces.buildtools:myfaces-builder-annotations:1.0.9
 org.apache.neethi:neethi:3.0.2
 org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel:5.2_3
@@ -199,8 +199,8 @@ org.glassfish.jersey.core:jersey-client:2.26
 org.glassfish.jersey.core:jersey-common:2.26
 org.glassfish.jersey.inject:jersey-hk2:2.26
 org.hamcrest:hamcrest-all:1.3
-org.hibernate.validator:hibernate-validator:6.0.7.Final
-org.hibernate.validator:hibernate-validator-cdi:6.0.7.Final
+org.hibernate.validator:hibernate-validator:6.0.9.Final
+org.hibernate.validator:hibernate-validator-cdi:6.0.9.Final
 org.jacoco:org.jacoco.agent:0.7.9
 org.jacoco:org.jacoco.ant:0.7.9
 org.jacoco:org.jacoco.core:0.7.9

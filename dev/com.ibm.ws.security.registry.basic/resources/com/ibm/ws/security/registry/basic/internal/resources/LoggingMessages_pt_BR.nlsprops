@@ -53,3 +53,27 @@ BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Defina apenas uma entrada de me
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: A entrada de membro com o nome ''{0}'' para o grupo ''{1}'' n\u00e3o corresponde a um usu\u00e1rio definido.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=O nome especificado para a entrada de membro n\u00e3o corresponde a nenhum usu\u00e1rio definido.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Verifique a ortografia do nome do membro e assegure que ela corresponda a uma definida pelo usu\u00e1rio no registro.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: Um mapeador de certificado X.509 customizado n\u00e3o foi ligado a este registro b\u00e1sico.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=O modo de mapeamento de certificado X.509 foi configurado como CUSTOM, mas nenhum mapeador de certificado X.509 customizado foi ligado ao registro b\u00e1sico. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Certifique-se de que o atributo certificateMapperId no registro b\u00e1sico esteja configurado para apontar para um mapeador de certificado X.509 customizado v\u00e1lido.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: O filtro ou nome distinto ''{0}'' retornado do mapeador de certificado customizado X.509 n\u00e3o \u00e9 mapeado para um usu\u00e1rio do registro.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=O valor retornado do mapeador de certificado X.509 customizado n\u00e3o \u00e9 mapeado para um usu\u00e1rio no registro b\u00e1sico.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Certifique-se de que o usu\u00e1rio exista no registro b\u00e1sico e que o mapeamento seja v\u00e1lido.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: O mapeador de certificado X.509 customizado lan\u00e7ou uma exce\u00e7\u00e3o CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=O mapeador de certificado X.509 customizado lan\u00e7ou uma exce\u00e7\u00e3o CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Se a exce\u00e7\u00e3o foi inesperada, revise a implementa\u00e7\u00e3o do mapeador de certificado X.509 customizado e fa\u00e7a as mudan\u00e7as necess\u00e1rias.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: O mapeador de certificado X.509 customizado lan\u00e7ou uma exce\u00e7\u00e3o CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=O mapeador de certificado X.509 customizado lan\u00e7ou uma exce\u00e7\u00e3o CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Se a exce\u00e7\u00e3o foi inesperada, revise a implementa\u00e7\u00e3o do mapeador de certificado X.509 customizado e fa\u00e7a as mudan\u00e7as necess\u00e1rias.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: O nome distinto (DN) ''{0}'' n\u00e3o \u00e9 mapeado para um usu\u00e1rio do registro b\u00e1sico v\u00e1lido.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=O DN do principal do usu\u00e1rio no certificado X.509 n\u00e3o \u00e9 mapeado para um usu\u00e1rio do registro b\u00e1sico v\u00e1lido. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Certifique-se de que o DN do principal do usu\u00e1rio contenha um nome distinto relativo (RDN) 'cn' e que o usu\u00e1rio no registro b\u00e1sico corresponda ao valor do RDN. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: O registro b\u00e1sico est\u00e1 configurado para ignorar solicita\u00e7\u00f5es de autentica\u00e7\u00e3o de certificado X.509.
+BASIC_REGISTRY_CERT_IGNORED.explanation=O atributo de configura\u00e7\u00e3o certificateMapMode para o registro b\u00e1sico est\u00e1 configurado como IGNORE.
+BASIC_REGISTRY_CERT_IGNORED.useraction=Para ativar o registro b\u00e1sico para processar solicita\u00e7\u00f5es de autentica\u00e7\u00e3o de certificado X.509, mude o atributo de configura\u00e7\u00e3o certificateMapMode para permitir o processamento.

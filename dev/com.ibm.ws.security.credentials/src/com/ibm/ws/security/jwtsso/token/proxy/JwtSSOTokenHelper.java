@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.WSSecurityException;
+import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
@@ -85,16 +85,10 @@ public class JwtSSOTokenHelper {
         }
     }
 
-    public static void createJwtSSOToken(Subject subject) {
+    public static void createJwtSSOToken(Subject subject) throws WSLoginFailedException {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            try {
-                jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
-            } catch (WSSecurityException e) {
-                String msg = Tr.formatMessage(tc, "WARN_JWT_SSO_TOKEN_SERVICE_ERROR");
-                Tr.warning(tc, msg);
-            }
+            jwtSSOTokenProxyRef.getService().createJwtSSOToken(subject);
         }
-
     }
 
     /**
@@ -108,15 +102,11 @@ public class JwtSSOTokenHelper {
 
     }
 
-    public static Subject handleJwtSSOToken(String jwtssotoken) throws WSSecurityException {
-        if (jwtSSOTokenProxyRef.getService() != null) {
-            return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(null, jwtssotoken);
-        }
-        return null;
-
+    public static Subject handleJwtSSOToken(String jwtssotoken) throws WSLoginFailedException {
+        return handleJwtSSOToken(null, jwtssotoken);
     }
 
-    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) throws WSSecurityException {
+    public static Subject handleJwtSSOToken(Subject subject, String jwtssotoken) throws WSLoginFailedException {
         if (jwtSSOTokenProxyRef.getService() != null) {
             return jwtSSOTokenProxyRef.getService().handleJwtSSOTokenValidation(subject, jwtssotoken);
         }
@@ -138,9 +128,9 @@ public class JwtSSOTokenHelper {
         return null;
     }
 
-    public static void addCustomCacheKeyToJwtSSOToken(Subject subject, String cacheKeyValue) {
+    public static void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws WSLoginFailedException {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            jwtSSOTokenProxyRef.getService().addCustomCacheKeyToJwtSSOToken(subject, cacheKeyValue);
+            jwtSSOTokenProxyRef.getService().addCustomCacheKeyAndRealmToJwtSSOToken(subject);
         }
     }
 
@@ -166,9 +156,9 @@ public class JwtSSOTokenHelper {
         return true;
     }
 
-    public static boolean shouldFallbackToLtpaCookie() {
+    public static boolean shouldUseLtpaIfJwtAbsent() {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            return jwtSSOTokenProxyRef.getService().shouldFallbackToLtpaCookie();
+            return jwtSSOTokenProxyRef.getService().shouldUseLtpaIfJwtAbsent();
         }
         return true;
     }
@@ -186,6 +176,14 @@ public class JwtSSOTokenHelper {
             return jwtSSOTokenProxyRef.getService().isCookieSecured();
         }
         return true;
+
+    }
+
+    public static long getValidTimeInMinutes() {
+        if (jwtSSOTokenProxyRef.getService() != null) {
+            return jwtSSOTokenProxyRef.getService().getValidTimeInMinutes();
+        }
+        return 0;
 
     }
 }

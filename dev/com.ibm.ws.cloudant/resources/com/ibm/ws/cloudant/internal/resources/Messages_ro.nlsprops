@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com/ibm/ws/cloudant/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD Cloudant client
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: This message prefix is shared with other Liberty components
+# Message IDs 0300-0399 are reserved for cloudant.
+
+#{0} is the config element name (either jndi name or config id)
+error.cloudant.config.CWWKD0300E=CWWKD0300E: Trebuie specificat fie un URL fie un atribut de cont \u00een elementul de configura\u0163ie cloudant {0}.
+error.cloudant.config.CWWKD0300E.explanation=Pentru a crea un client Cloundant, trebuie s\u0103 specifica\u0163i fie URL-ul unei baze de date fie un cont \u00een configura\u0163ie.
+error.cloudant.config.CWWKD0300E.useraction=Ad\u0103uga\u0163i un URL sau un atribut de cont la configurarea serverului.
+
+#{0} JNDI name of the cloudant config element
+# ClientBuilder is a class name
+direct.lookup.CWWKD0301E=CWWKD0301E: C\u0103utarea Cloudant ClientBuilder {0} necesit\u0103 o referin\u0163\u0103 de resurse.
+direct.lookup.CWWKD0301E.explanation=Resursele modificabile, cum ar fi CloudantBuilder, trebuie s\u0103 fie c\u0103utate via o referin\u0163\u0103 de resurse astfel \u00eenc\u00e2t este returnat\u0103 o instan\u0163\u0103 nou\u0103 pentru fiecare c\u0103utare. \u00cen cazul \u00een care a fost permis\u0103 o referin\u0163\u0103 de resurse, ar avea ca rezultat o instan\u0163\u0103 partajat\u0103 ClientBuilder care ar fi cauza unui comportament imprevizibil c\u00e2nd aplica\u0163ia o caut\u0103 de mai multe ori \u015fi o modific\u0103 \u00een diferite moduri.
+direct.lookup.CWWKD0301E.useraction=Include\u0163i o referin\u0163\u0103 de resurse \u00een aplica\u0163ie pentru ClientBuilder \u015fi utiliza\u0163i referin\u0163a de resurse pentru a c\u0103uta Cloudant ClientBuilder. \u00cen schimb, utiliza\u0163i injec\u0163ia de resurse (care creeaz\u0103 implicit o referin\u0163\u0103 de resurse) pentru a injecta o instan\u0163\u0103 ClientBuilder \u00een aplica\u0163ie.
+
+#{0} Cloudant class name
+#{1} JNDI name of the cloudant config element
+class.not.found.CWWKD0302E=CWWKD0302E: Nu se poate \u00eenc\u0103rca {0} deoarece elementul de configurare cloudant {1} nu este configurat cu o libraryRef \u015fi firul de execu\u0163ie curent nu are acces la un \u00eenc\u0103rc\u0103tor de clas\u0103 de aplica\u0163ii.
+class.not.found.CWWKD0302E.explanation=Elementul de configurare cloudant trebuie fie s\u0103 fie configurat cu un libraryRef care indic\u0103 la bibliotecile Cloudant, sau bibliotecile Cloudant trebuie s\u0103 fie incluse \u00een aplica\u0163ie, caz \u00een care resursa Cloudant JNDI trebuie c\u0103utat\u0103 dintr-un fir de execu\u0163ie aplica\u0163ie.
+class.not.found.CWWKD0302E.useraction=Ad\u0103uga\u0163i un libraryRef la elementul de configurare cloudant sau actualiza\u0163i codul aplica\u0163iei numai la c\u0103utarea resursei Cloudant JNDI din firele de execu\u0163ie ale aplica\u0163iilor.

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.utils;
 
@@ -20,13 +20,14 @@ public class JwtSsoConstants {
 	public static final String CFG_KEY_HTTPONLYCOOKIES = "httpOnlyCookies";
 	public static final String CFG_KEY_SSOUSEDOMAINFROMURL = "ssoUseDomainFromURL";
 	public static final String CFG_KEY_SSODOMAINNAMES = "ssoDomainNames";
-	public static final String CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH = "setCookiePathToWebAppContextPath";
+	public static final String CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH = "setCookiePathToWebAppContextRoot";
 	public static final String CFG_KEY_INCLUDELTPACOOKIE = "includeLtpaCookie";
-	public static final String CFG_KEY_FALLBACKTOLTPA = "fallbackToLtpa";
+	public static final String CFG_USE_LTPA_IF_JWT_ABSENT = "useLtpaIfJwtAbsent";
 	public static final String CFG_KEY_COOKIESECUREFLAG = "setCookieSecureFlag";
 
 	public static final String CFG_KEY_JWTBUILDERREF = "jwtBuilderRef";
-	public static final String CFG_KEY_JWTCONSUMERREF = "jwtConsumerRef";
+	public static final String CFG_KEY_JWTCONSUMERREF = "mpjwtConsumerRef";
+	public static final String DEFAULT_JWTSSO_ID = "defaultJwtSso";
 	public static final String GROUP_PREFIX = "group:";
 	public static final String TOKEN_TYPE_JWT = "JWT";
 	public static final String UNAUTHENTICATED = "UNAUTHENTICATED";

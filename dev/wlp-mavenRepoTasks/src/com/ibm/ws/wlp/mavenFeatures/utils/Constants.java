@@ -33,6 +33,10 @@ public class Constants {
 	
 	public static final String API_DEPENDENCIES_GROUP_ID = "com.ibm.websphere.appserver.api";
 	public static final String SPI_DEPENDENCIES_GROUP_ID = "com.ibm.websphere.appserver.spi";
+	public static final String MANIFEST_ZIP_ENTRY = "OSGI-INF/SUBSYSTEM.MF";
+	public static final String SUBSYSTEM_CONTENT = "Subsystem-Content";
+	public static final String SUBSYSTEM_MAVEN_COORDINATES = "mavenCoordinates";
+
 	
 	public static final String WEBSPHERE_LIBERTY_FEATURES_GROUP_ID = "com.ibm.websphere.appserver.features";
 	public static final String OPEN_LIBERTY_FEATURES_GROUP_ID = "io.openliberty.features";
