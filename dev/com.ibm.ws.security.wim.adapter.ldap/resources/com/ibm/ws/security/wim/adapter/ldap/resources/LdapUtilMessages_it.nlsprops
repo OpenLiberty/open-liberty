@@ -205,3 +205,19 @@ ENTITY_ALREADY_EXIST.useraction=Tentare nuovamente l'operazione e specificare un
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: Impossibile completare l''operazione registro utenti. Le operazioni di scrittura non sono consentite sul server LDAP secondario {0}.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Tutte le operazioni di scrittura (creazione, aggiornamento, eliminazione) sono consentite solo nel server LDAP principale.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Verificare che il server principale sia stato avviato e ripetere l'operazione.
+
+LDAP_REGISTRY_MAPPER_NOT_BOUND=CWIML4500W: Un mapper certificato X.509 personalizzato non era collegato con questo registro LDAP.
+LDAP_REGISTRY_MAPPER_NOT_BOUND.explanation=La modalit\u00e0 di associazione certificato X.509 era impostata su CUSTOM, ma nessun mapper certificato X.509 personalizzato era collegato al registro LDAP. 
+LDAP_REGISTRY_MAPPER_NOT_BOUND.useraction=Verificare che l'attributo certificateMapperId nel registro LDAP sia configurato per puntare ad un mapper certificato X.509 personalizzato valido.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWIML4502W: Il mapper certificato X.509 personalizzato ha emesso un'eccezione CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Il mapper certificato X.509 personalizzato ha emesso un'eccezione CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Se l'eccezione era imprevista, esaminare l'implementazione del mapper certificato X.509 personalizzato ed effettuare le modifiche necessarie.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED=CWIML4503E: Il mapper certificato X.509 personalizzato ha emesso un'eccezione CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Il mapper certificato X.509 personalizzato ha emesso un'eccezione CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Se l'eccezione era imprevista, esaminare l'implementazione del mapper certificato X.509 personalizzato ed effettuare le modifiche necessarie.
+
+LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Il mapper certificato X.509 personalizzato ha restituito un valore vuoto o null. 
+LDAP_REGISTRY_INVALID_MAPPING.explanation=Il mapper certificato X.509 personalizzato deve restituire un valore non vuoto e non null o emettere una delle eccezioni indicate.
+LDAP_REGISTRY_INVALID_MAPPING.useraction=Modificare l'implementazione del mapper certificato X.509 personalizzato in modo che non restituisca un valore vuoto o null. Se non pu\u00f2 essere restituito un valore valido, l'implementazione deve emettere un'eccezione controllata. 

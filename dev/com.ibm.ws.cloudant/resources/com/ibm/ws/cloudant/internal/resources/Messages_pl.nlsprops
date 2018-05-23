@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com/ibm/ws/cloudant/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD Cloudant client
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: This message prefix is shared with other Liberty components
+# Message IDs 0300-0399 are reserved for cloudant.
+
+#{0} is the config element name (either jndi name or config id)
+error.cloudant.config.CWWKD0300E=CWWKD0300E: W elemencie konfiguracji Cloudant {0} musi zosta\u0107 podany atrybut url lub account.
+error.cloudant.config.CWWKD0300E.explanation=W celu utworzenia klienta Cloundant w konfiguracji nale\u017cy poda\u0107 adres URL bazy danych lub konto.
+error.cloudant.config.CWWKD0300E.useraction=Do konfiguracji serwera dodaj atrybut url lub account.
+
+#{0} JNDI name of the cloudant config element
+# ClientBuilder is a class name
+direct.lookup.CWWKD0301E=CWWKD0301E: Wyszukanie zasobu Cloudant ClientBuilder {0} wymaga odwo\u0142ania do zasobu.
+direct.lookup.CWWKD0301E.explanation=Modyfikowalne zasoby, takie jak CloudantBuilder, musz\u0105 by\u0107 wyszukiwane za po\u015brednictwem odwo\u0142ania do zasobu, dzi\u0119ki czemu dla ka\u017cdej operacji wyszukiwania zwracana jest nowa instancja. Je\u015bli dozwolone by\u0142yby operacje wyszukiwania bez odwo\u0142ania do zasobu, spowodowa\u0142aby one powstanie wsp\u00f3\u0142u\u017cytkowanej instancji zasobu ClientBuilder, kt\u00f3ra zachowywa\u0142aby si\u0119 w nieprzewidywalny spos\u00f3b, gdy aplikacje wyszukiwa\u0142yby ten zas\u00f3b wielokrotnie i modyfikowa\u0142y go na r\u00f3\u017cne sposoby.
+direct.lookup.CWWKD0301E.useraction=Do\u0142\u0105cz do aplikacji odwo\u0142anie do zasobu ClientBuilder i u\u017cywaj go do wyszukiwania zasobu Cloudant ClientBuilder. Alternatywnie mo\u017cna u\u017cy\u0107 funkcji wstrzykiwania zasobu (kt\u00f3ra niejawnie tworzy odwo\u0142anie do zasobu) w celu wstrzykni\u0119cia instancji zasobu ClientBuilder do aplikacji.
+
+#{0} Cloudant class name
+#{1} JNDI name of the cloudant config element
+class.not.found.CWWKD0302E=CWWKD0302E: Nie mo\u017cna za\u0142adowa\u0107 klasy {0}, poniewa\u017c element konfiguracyjny cloudant {1} nie jest skonfigurowany z odwo\u0142aniem libraryRef, a bie\u017c\u0105cy w\u0105tek nie ma dost\u0119pu do programu \u0142aduj\u0105cego klasy aplikacji.
+class.not.found.CWWKD0302E.explanation=Element konfiguracyjny cloudant musi by\u0107 skonfigurowany z odwo\u0142aniem libraryRef wskazuj\u0105cym biblioteki cloudant lub biblioteki Cloudant musz\u0105 by\u0107 uwzgl\u0119dnione w aplikacji, przy czym zas\u00f3b Cloudant JNDI musi zosta\u0107 wyszukany z poziomu w\u0105tku aplikacji.
+class.not.found.CWWKD0302E.useraction=Dodaj odwo\u0142ania libraryRef do elementu konfiguracyjnego cloudant lub zaktualizuj kod aplikacji, ograniczaj\u0105c wyszukiwanie zasob\u00f3w Cloudant JNDI wy\u0142\u0105cznie na poziomie w\u0105tk\u00f3w aplikacji.

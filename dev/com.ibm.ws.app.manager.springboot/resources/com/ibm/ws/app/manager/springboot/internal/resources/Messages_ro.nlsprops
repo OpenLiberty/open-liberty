@@ -50,3 +50,11 @@ error.missing.servlet.useraction=Trebuie s\u0103 fie configurat\u0103 o caracter
 error.multiple.applications.not.allowed=CWWKC0255E: Aplica\u0163ia Spring Boot {0} nu poate fi pornit\u0103 deoarece aplica\u0163ia {1} este deja activ\u0103. Nu pute\u0163i configura mai multe aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server.
 error.multiple.applications.not.allowed.explanation=Configurarea mai multor aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server nu este suportat\u0103.
 error.multiple.applications.not.allowed.useraction=Configura\u0163i doar o aplica\u0163ie Spring Boot per configura\u0163ie de server.
+
+error.no.manifest.found=CWWKC0256E: Nu a fost g\u0103sit niciun fi\u015fier META-INF/MANIFEST.MF pentru aplica\u0163ia Spring Boot {0}.
+error.no.manifest.found.explanation=Aplica\u0163iile Spring Boot trebuie s\u0103 con\u0163in\u0103 un fi\u015fier META-INF/MANIFEST.MF.
+error.no.manifest.found.useraction=Configura\u0163i o aplica\u0163ie Spring Boot valid\u0103, care s\u0103 con\u0163in\u0103 un fi\u015fier META-INF/MANIFEST.MF, cu serverul.
+
+error.no.spring.class.found=CWWKC0257E: Fi\u015fierul META-INF/MANIFEST.MF al aplica\u0163iei Spring Boot trebuie s\u0103 specifice un antet Start-Class.
+error.no.spring.class.found.explanation=Aplica\u0163iile Boot Spring trebuie s\u0103 con\u0163in\u0103 o clas\u0103 principal\u0103 specificat\u0103 de antetul de manifest Start-Class.
+error.no.spring.class.found.useraction=Configura\u0163i o aplica\u0163ie Spring Boot valid\u0103, care s\u0103 con\u0163in\u0103 un antet de manifest Start-Class, cu serverul.

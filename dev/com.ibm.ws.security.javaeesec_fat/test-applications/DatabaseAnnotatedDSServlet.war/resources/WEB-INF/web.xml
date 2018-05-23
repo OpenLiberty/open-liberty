@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="JASPIBasicAuthServlet" version="3.1" 
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">  
+
+	<display-name>DatabaseAnnotatedDSServlet</display-name>
+	
+	<!-- SERVLET DEFINITIONS -->
+	<servlet>
+		<servlet-name>DatabaseAnnotatedDSServlet</servlet-name>
+		<servlet-class>web.war.annotatedbasic.ds.DatabaseAnnotatedDSServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DatabaseAnnotatedDSServlet</servlet-name>
+		<url-pattern>/JavaEESecAnnotatedBasic</url-pattern>
+		<url-pattern>/Protected</url-pattern>
+		<url-pattern>/Unprotected</url-pattern>
+	</servlet-mapping>
+		
+	<!-- SECURITY CONSTRAINTS -->
+	<security-constraint>
+		<display-name>basic_auth</display-name>
+		<web-resource-collection>
+			<web-resource-name>basic_auth_servlet</web-resource-name>
+			<url-pattern>/JavaEESecAnnotatedBasic</url-pattern>
+			<url-pattern>/Protected</url-pattern>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>javaeesec_basic</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<security-constraint>
+		<display-name>unprotected_basic_auth</display-name>
+		<web-resource-collection>
+			<web-resource-name>unprotected_basic_auth_servlet</web-resource-name>
+			<url-pattern>/Unprotected</url-pattern>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+	</security-constraint>
+	
+  <!-- CHALLENGE TYPE
+  <login-config id="LoginConfig_1">
+  	<auth-method>BASIC</auth-method>
+    <realm-name>Basic Authentication</realm-name>
+  </login-config> 
+  -->
+
+   <!-- ROLES DEFINITION -->
+	<security-role>
+		<role-name>javaeesec_basic</role-name>
+	</security-role>
+</web-app>

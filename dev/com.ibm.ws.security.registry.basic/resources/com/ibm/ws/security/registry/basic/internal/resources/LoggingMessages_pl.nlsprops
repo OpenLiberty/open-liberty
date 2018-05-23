@@ -53,3 +53,27 @@ BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Zdefiniuj tylko jeden wpis elem
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: Wpis dotycz\u0105cy cz\u0142onka o nazwie {0} dla grupy {1} jest niezgodny ze zdefiniowanym u\u017cytkownikiem.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Nazwa podana dla wpisu dotycz\u0105cego cz\u0142onka jest niezgodna z \u017cadnym ze zdefiniowanych u\u017cytkownik\u00f3w.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Sprawd\u017a poprawno\u015b\u0107 zapisu nazwy cz\u0142onka i upewnij si\u0119, \u017ce jest ona zgodna z u\u017cytkownikiem zdefiniowanym w rejestrze.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 nie zosta\u0142 powi\u0105zany z tym rejestrem podstawowym.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=Tryb odwzorowania certyfikatu X.509 zosta\u0142 ustawiony na warto\u015b\u0107 CUSTOM, ale \u017caden niestandardowy program odwzorowuj\u0105cy certyfikat X.509 nie zosta\u0142 powi\u0105zany z rejestrem podstawowym. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Upewnij si\u0119, \u017ce atrybut certificateMapperId w rejestrze podstawowym jest skonfigurowany w taki spos\u00f3b, aby wskazywa\u0142 poprawny niestandardowy program odwzorowuj\u0105cy certyfikat X.509.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: Filtr lub nazwa wyr\u00f3\u017cniaj\u0105ca ''{0}'' zwr\u00f3cona przez niestandardowy program odwzorowuj\u0105cy certyfikat X.509 nie jest odwzorowywana na u\u017cytkownika w rejestrze.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=Warto\u015b\u0107 zwracana przez niestandardowy program odwzorowuj\u0105cy certyfikat X.509 nie jest odwzorowywana na u\u017cytkownika w rejestrze podstawowym.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik istnieje w rejestrze podstawowym i \u017ce odwzorowanie jest poprawne.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zg\u0142osi\u0142 wyj\u0105tek CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zg\u0142osi\u0142 wyj\u0105tek CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Je\u015bli wyj\u0105tek by\u0142 nieoczekiwany, sprawd\u017a implementacj\u0119 niestandardowego programu odwzorowuj\u0105cego certyfikat X.509 i wprowad\u017a niezb\u0119dne zmiany.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zg\u0142osi\u0142 wyj\u0105tek CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zg\u0142osi\u0142 wyj\u0105tek CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Je\u015bli wyj\u0105tek by\u0142 nieoczekiwany, sprawd\u017a implementacj\u0119 niestandardowego programu odwzorowuj\u0105cego certyfikat X.509 i wprowad\u017a niezb\u0119dne zmiany.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: Nazwa wyr\u00f3\u017cniaj\u0105ca (DN) ''{0}'' nie jest odwzorowywana na poprawnego u\u017cytkownika w rejestrze podstawowym.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=Nazwa wyr\u00f3\u017cniaj\u0105ca przypisana do nazwy u\u017cytkownika podmiotu certyfikatu X.509 nie jest odwzorowywana na poprawnego u\u017cytkownika w rejestrze podstawowym. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce nazwa wyr\u00f3\u017cniaj\u0105ca przypisana do nazwy u\u017cytkownika podmiotu zawiera wzgl\u0119dn\u0105 nazw\u0119 wyr\u00f3\u017cniaj\u0105c\u0105 (RDN) 'cn' i \u017ce u\u017cytkownik w rejestrze podstawowym jest zgodny z warto\u015bci\u0105 RDN. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: Rejestr podstawowy jest skonfigurowany pod k\u0105tem ignorowania \u017c\u0105da\u0144 uwierzytelniania przy u\u017cyciu certyfikatu X.509.
+BASIC_REGISTRY_CERT_IGNORED.explanation=Atrybut konfiguracyjny certificateMapMode dotycz\u0105cy rejestru podstawowego ma ustawion\u0105 warto\u015b\u0107 IGNORE.
+BASIC_REGISTRY_CERT_IGNORED.useraction=Aby rejestrowi podstawowemu umo\u017cliwi\u0107 przetwarzanie \u017c\u0105da\u0144 uwierzytelniania przy u\u017cyciu certyfikatu X.509, zmie\u0144 warto\u015b\u0107 atrybutu konfiguracyjnego certificateMapMode w celu umo\u017cliwienia przetwarzania. 

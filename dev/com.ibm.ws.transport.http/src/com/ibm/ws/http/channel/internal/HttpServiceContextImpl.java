@@ -2285,8 +2285,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
             if ((link instanceof H2HttpInboundLinkWrap) &&
                 (((H2HttpInboundLinkWrap) link).muxLink != null) &&
-                (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings() != null) &&
-                (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings().getEnablePush() == 1)) {
+                (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings() != null) &&
+                (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings().getEnablePush() == 1)) {
 
                 // Loop through the headers in this message, check for
                 // link header

@@ -53,3 +53,27 @@ BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Defina s\u00f3lo una entrada de
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: La entrada de miembro con el nombre ''{0}'' para el grupo ''{1}'' no coincide con un usuario definido.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=El nombre especificado para la entrada de miembro no coincide con ning\u00fan usuario definido.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Compruebe la ortograf\u00eda del nombre de miembro y aseg\u00farese de que coincida con un usuario definido en el registro. 
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: No se ha enlazado ning\u00fan correlacionador de certificado X.509 personalizado con este registro b\u00e1sico.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=La modalidad de correlaci\u00f3n de certificado X.509 se ha establecido en CUSTOM, pero no se ha enlazado ning\u00fan correlacionador de certificado X.509 personalizado con el registro b\u00e1sico.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Aseg\u00farese de que el atributo certificateMapperId del registro b\u00e1sico se haya configurado de modo que apunte a un correlacionador de certificado X.509 personalizado v\u00e1lido.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: El filtro o nombre distinguido ''{0}'' devuelto del correlacionador de certificado personalizado X.509 no se correlaciona con un usuario del registro.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=El valor que se devuelve del correlacionador de certificado X.509 personalizado no se correlaciona con ning\u00fan usuario del registro b\u00e1sico.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Aseg\u00farese de que el usuario exista en el registro b\u00e1sico y de que la correlaci\u00f3n sea v\u00e1lida.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: El correlacionador de certificado X.509 personalizado ha emitido una excepci\u00f3n CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=El correlacionador de certificado X.509 personalizado ha emitido una excepci\u00f3n CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Si la excepci\u00f3n no se esperaba, revise la implementaci\u00f3n del correlacionador de certificado X.509 personalizado y realice los cambios pertinentes.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: El correlacionador de certificado X.509 personalizado ha emitido una excepci\u00f3n CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=El correlacionador de certificado X.509 personalizado ha emitido una excepci\u00f3n CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Si la excepci\u00f3n no se esperaba, revise la implementaci\u00f3n del correlacionador de certificado X.509 personalizado y realice los cambios pertinentes.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: El nombre distinguido (DN) ''{0}'' no se correlaciona con un usuario v\u00e1lido del registro b\u00e1sico.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=El DN del principal del sujeto del certificado X.509 no se correlaciona con un usuario v\u00e1lido del registro b\u00e1sico. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Aseg\u00farese de que el DN del principal contenga un nombre distinguido relativo 'cn' (RDN) y que un usuario del registro b\u00e1sico coincida con el valor del RDN. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: El registro b\u00e1sico se ha configurado para ignorar las solicitudes de autenticaci\u00f3n del certificado X.509.
+BASIC_REGISTRY_CERT_IGNORED.explanation=El atributo de configuraci\u00f3n certificateMapMode del registro b\u00e1sico se ha establecido en IGNORE.
+BASIC_REGISTRY_CERT_IGNORED.useraction=Para permitir que el registro b\u00e1sico procese las solicitudes de autenticaci\u00f3n del certificado X.509, cambie el atributo de configuraci\u00f3n certificateMapMode de modo que permita el proceso.

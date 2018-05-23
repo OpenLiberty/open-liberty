@@ -138,6 +138,10 @@ public class HttpChannelConfig {
     /** Set as an attribute to the HttpEndpoint **/
     private Boolean useH2ProtocolAttribute = null;
 
+    private int http2ConnectionIdleTimeout = 30;
+    private int http2MaxConcurrentStreams = 200;
+    private int http2MaxFrameSize = 57344; //Default to 56kb
+
     /**
      * Constructor for an HTTP channel config object.
      *
@@ -359,6 +363,19 @@ public class HttpChannelConfig {
                 continue;
             }
 
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_CONNECTION_IDLE_TIMEOUT)) {
+                props.put(HttpConfigConstants.PROPNAME_H2_CONNECTION_IDLE_TIMEOUT, value);
+                continue;
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_MAX_CONCURRENT_STREAMS)) {
+                props.put(HttpConfigConstants.PROPNAME_H2_MAX_CONCURRENT_STREAMS, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_MAX_FRAME_SIZE)) {
+                props.put(HttpConfigConstants.PROPNAME_H2_MAX_FRAME_SIZE, value);
+            }
+
             props.put(key, value);
         }
 
@@ -400,6 +417,9 @@ public class HttpChannelConfig {
         parseH2ConnCloseTimeout(props);
         parseH2ConnReadWindowSize(props);
         parsePurgeRemainingResponseBody(props); //PI81572
+        parseH2ConnectionIdleTimeout(props);
+        parseH2MaxConcurrentStreams(props);
+        parseH2MaxFrameSize(props);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -644,6 +664,61 @@ public class HttpChannelConfig {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseWriteTimeout", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: Invalid write timeout; " + value);
+                }
+            }
+        }
+    }
+
+    private void parseH2ConnectionIdleTimeout(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_CONNECTION_IDLE_TIMEOUT);
+        if (null != value) {
+            try {
+                this.http2ConnectionIdleTimeout = TIMEOUT_MODIFIER * minLimit(convertInteger(value), HttpConfigConstants.MIN_TIMEOUT);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Connection idle timeout is " + getH2ConnectionIdleTimeout());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ConnectionIdleTimeout", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 connection idle timeout; " + value);
+                }
+
+            }
+        }
+
+    }
+
+    private void parseH2MaxConcurrentStreams(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_CONCURRENT_STREAMS);
+        if (null != value) {
+            try {
+                this.http2MaxConcurrentStreams = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Max Concurrent Streams is " + getH2MaxFrameSize());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxConcurrentStreams", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Concurrent Streams; " + value);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2MaxFrameSize(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_FRAME_SIZE);
+        if (null != value) {
+            try {
+                this.http2MaxFrameSize = rangeLimit(convertInteger(value), HttpConfigConstants.MIN_LIMIT_FRAME_SIZE, HttpConfigConstants.MAX_LIMIT_FRAME_SIZE);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Max Frame Size is " + getH2MaxFrameSize());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxFrameSize", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Frame Size; " + value);
+
                 }
             }
         }
@@ -1284,6 +1359,18 @@ public class HttpChannelConfig {
      */
     public Boolean getUseH2ProtocolAttribute() {
         return this.useH2ProtocolAttribute;
+    }
+
+    public int getH2ConnectionIdleTimeout() {
+        return this.http2ConnectionIdleTimeout;
+    }
+
+    public int getH2MaxFrameSize() {
+        return this.http2MaxFrameSize;
+    }
+
+    public int getH2MaxConcurrentStreams() {
+        return this.http2MaxConcurrentStreams;
     }
 
     /**

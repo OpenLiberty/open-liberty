@@ -205,3 +205,19 @@ ENTITY_ALREADY_EXIST.useraction=Relancez l'op\u00e9ration et indiquez un nom dif
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e. Les op\u00e9rations d''\u00e9criture ne sont pas autoris\u00e9es sur un serveur LDAP secondaire {0}.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Toutes les op\u00e9rations d'\u00e9criture (Cr\u00e9er, mettre \u00e0 jour, supprimer) sont autoris\u00e9es uniquement sur un serveur LDAP principal.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Assurez-vous que le serveur principal est d\u00e9marr\u00e9 et relancez l'op\u00e9ration.
+
+LDAP_REGISTRY_MAPPER_NOT_BOUND=CWIML4500W: Un programme de mappage de certificat X.509 personnalis\u00e9 n'\u00e9tait pas li\u00e9 \u00e0 ce registre LDAP.
+LDAP_REGISTRY_MAPPER_NOT_BOUND.explanation=La valeur affect\u00e9e au mode de mappage de certificat X.509 \u00e9tait CUSTOM, mais aucun programme de mappage de certificat X.509 personnalis\u00e9 n'\u00e9tait li\u00e9 au registre LDAP. 
+LDAP_REGISTRY_MAPPER_NOT_BOUND.useraction=Assurez-vous que l'attribut certificateMapperId dans le registre LDAP est configur\u00e9 pour pointer vers un programme de mappage de certificat X.509 personnalis\u00e9 valide.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWIML4502W: Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Si l'exception \u00e9tait inattendue, v\u00e9rifiez l'impl\u00e9mentation du programme de mappage de certificat X.509 personnalis\u00e9 et effectuez les modifications n\u00e9cessaires.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED=CWIML4503E: Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Si l'exception \u00e9tait inattendue, v\u00e9rifiez l'impl\u00e9mentation du programme de mappage de certificat X.509 personnalis\u00e9 et effectuez les modifications n\u00e9cessaires.
+
+LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Le programme de mappage de certificat X.509 personnalis\u00e9 a renvoy\u00e9 une valeur vide ou ind\u00e9finie. 
+LDAP_REGISTRY_INVALID_MAPPING.explanation=Le programme de mappage de certificat X.509 personnalis\u00e9 doit renvoyer une valeur non vide ou d\u00e9finie ou \u00e9mettre les exceptions nomm\u00e9es.
+LDAP_REGISTRY_INVALID_MAPPING.useraction=Modifiez le programme de mappage de certificat X.509 personnalis\u00e9 de sorte qu'il ne renvoie pas une valeur vide ou ind\u00e9finie. Si une valeur valide ne peut pas \u00eatre renvoy\u00e9e, l'impl\u00e9mentation doit \u00e9mettre une exception v\u00e9rifi\u00e9e. 

@@ -38,6 +38,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.springframework.boot.web.server.MimeMappings;
 import org.springframework.boot.web.server.Ssl;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.server.WebServerException;
@@ -117,6 +118,10 @@ public class LibertyServletContainer implements WebServer {
                 ibm_spring_errpg.setGlobal(true);
             }
             configHolder.addErrorPage(ibm_spring_errpg);
+        }
+
+        for (MimeMappings.Mapping mapping : factory.getMimeMappings()) {
+            configHolder.addMimeMapping(mapping.getExtension(), mapping.getMimeType());
         }
         return configHolder;
     }

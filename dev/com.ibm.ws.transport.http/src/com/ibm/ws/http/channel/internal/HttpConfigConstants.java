@@ -397,4 +397,11 @@ public class HttpConfigConstants {
     /** Can be set to specify the http protocol version. Ex: http/1.1, http/2 */
     public static final String PROPNAME_PROTOCOL_VERSION = "protocolVersionInternal";
 
+    public static final int MIN_LIMIT_FRAME_SIZE = 16384;
+    public static final int MAX_LIMIT_FRAME_SIZE = 16777215;
+
+    public static final String PROPNAME_H2_CONNECTION_IDLE_TIMEOUT = "http2ConnectionIdleTimeout";
+    public static final String PROPNAME_H2_MAX_CONCURRENT_STREAMS = "maxConcurrentStreams";
+    public static final String PROPNAME_H2_MAX_FRAME_SIZE = "maxFrameSize";
+
 }
