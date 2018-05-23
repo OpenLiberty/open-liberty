@@ -1352,10 +1352,15 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
 
             throw new ServletErrorReport(e);
         } finally {
-            // LIBERTY
+            WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
+            if (reqState.getAttribute("webcontainer.resetAsyncStartedOnExit") != null){
+                ((SRTServletRequest) ServletUtil.unwrapRequest(req)).setAsyncStarted(false);
+                reqState.removeAttribute("webcontainer.resetAsyncStartedOnExit");
+            }
+
             nServicing.getAndDecrement();
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) // 306998.15
-                logger.exiting(CLASS_NAME, "service"); // 569469
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                logger.exiting(CLASS_NAME, "service");
         }
     }
 
