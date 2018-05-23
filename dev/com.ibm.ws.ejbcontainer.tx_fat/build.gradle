@@ -29,9 +29,21 @@ dependencies {
 
 task addEJBTools(type: Copy) {
   from configurations.ejbTools
+  into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.tx.fat.MDBServer/lib/global"
+}
+
+task addEJBTools2(type: Copy) {
+  from configurations.ejbTools
   into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.tx.fat.RunUnderUOWServer/lib/global"
+}
+
+task addEJBTools3(type: Copy) {
+  from configurations.ejbTools
+  into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.tx.fat.SecureServer/lib/global"
 }
 
 addRequiredLibraries {
   dependsOn addEJBTools
+  dependsOn addEJBTools2
+  dependsOn addEJBTools3
 }

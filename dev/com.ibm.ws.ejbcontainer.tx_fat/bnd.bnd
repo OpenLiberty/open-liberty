@@ -14,12 +14,16 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/RunUnderUOWBean.jar/src, \
-	test-applications/RunUnderUOWWeb.war/src
+	test-applications/RunUnderUOWWeb.war/src, \
+	test-applications/MethodIntfEJB.jar/src, \
+	test-applications/MethodIntfWeb.war/src, \
+	test-applications/StatelessMixASMDescEJB.jar, \
+	test-applications/StatelessMixSecWeb.war
 
 fat.project: true
 
 tested.features: \
-	servlet-3.1, servlet-4.0, ejbLite-3.2
+	servlet-3.1, servlet-4.0, ejbLite-3.2, appsecurity-3.0, cdi-2.0, el-3.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
@@ -27,4 +31,5 @@ tested.features: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
 	com.ibm.ws.ejbcontainer.fat_tools; version=latest, \
-	com.ibm.ws.tx.embeddable; version=latest
+	com.ibm.ws.tx.embeddable; version=latest, \
+	com.ibm.websphere.javaee.jms.1.1; version=latest
