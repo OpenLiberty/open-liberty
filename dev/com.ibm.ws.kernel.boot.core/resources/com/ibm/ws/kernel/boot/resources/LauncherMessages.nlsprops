@@ -744,7 +744,7 @@ info.communicate.server=A communication error has occurred between the command {
 
 memory.information.unexpected=CWWKE0947E: Encountered unexpected operating system memory information in {0}: {1}
 memory.information.unexpected.explanation=Some operating system memory information was not in the expected format.
-memory.information.unexpected.useraction=Check the the operating system is behaving correctly.
+memory.information.unexpected.useraction=Check that the operating system is behaving correctly.
 
 memory.information.unavailable=CWWKE0948E: Available memory information is not implemented on this operating system.
 memory.information.unavailable.explanation=This function has not been implemented for this operating system.
