@@ -36,7 +36,7 @@ public class AdministratorRole implements ManagementRole {
     static final String CFG_KEY_USER_ACCESSID = "user-access-id";
     static final String CFG_KEY_GROUP = "group";
     static final String CFG_KEY_GROUP_ACCESSID = "group-access-id";
-    // The users set have both user and access-id
+    // The users set have both user and user-access-id
     private final Set<String> users = new HashSet<String>();
     // The groups set have both group and group-access-id
     private final Set<String> groups = new HashSet<String>();
