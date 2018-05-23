@@ -20,6 +20,15 @@ import com.ibm.ws.app.manager.springboot.container.ApplicationError.Type;
 public class FeatureAuditor implements EnvironmentPostProcessor {
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
+
+        /* Throw an Application error when Webflux application is deployed */
+        try {
+            Class.forName("org.springframework.web.reactive.config.EnableWebFlux");
+            throw new ApplicationError(Type.WEBFLUX_NOT_SUPPORTED);
+        } catch (ClassNotFoundException e) {
+
+        }
+
         /*
          * Throw an Application error if the wrong version of spring boot feature is
          * enabled
@@ -57,6 +66,7 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         } catch (ClassNotFoundException e) {
 
         }
+
     }
 
     private void checkWebSocketPresent() {
