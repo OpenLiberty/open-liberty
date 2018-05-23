@@ -53,3 +53,27 @@ BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=D\u00e9finissez une seule entr\
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: L''entr\u00e9e member ayant le nom ''{0}'' pour le groupe ''{1}'' ne correspond pas \u00e0 un utilisateur d\u00e9fini.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Le nom sp\u00e9cifi\u00e9 pour l'entr\u00e9e member ne correspond pas \u00e0 un utilisateur d\u00e9fini.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=V\u00e9rifiez l'orthographe du nom du membre et assurez-vous qu'il correspond \u00e0 un utilisateur d\u00e9fini dans le registre.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: Un programme de mappage de certificat X.509 personnalis\u00e9 n'\u00e9tait pas li\u00e9 \u00e0 ce registre de base.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=La valeur affect\u00e9e au mode de mappage de certificat X.509 \u00e9tait CUSTOM, mais aucun programme de mappage de certificat X.509 personnalis\u00e9 n'\u00e9tait li\u00e9 au registre de base. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Assurez-vous que l'attribut certificateMapperId dans le registre de base est configur\u00e9 pour pointer vers un programme de mappage de certificat X.509 personnalis\u00e9 valide.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: Le filtre ou nom distinctif ''{0}'' renvoy\u00e9 par le programme de mappage de certificat X.509 personnalis\u00e9 n''est pas mapp\u00e9 \u00e0 un utilisateur de registre.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=La valeur renvoy\u00e9e par le programme de mappage de certificat X.509 personnalis\u00e9 n'est pas mapp\u00e9 \u00e0 un utilisateur du registre de base.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Assurez-vous que l'utilisateur existe dans le registre de base et que le mappage est valide.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Si l'exception \u00e9tait inattendue, v\u00e9rifiez l'impl\u00e9mentation du programme de mappage de certificat X.509 personnalis\u00e9 et effectuez les modifications n\u00e9cessaires.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Le programme de mappage de certificat X.509 personnalis\u00e9 a \u00e9mis une exception CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Si l'exception \u00e9tait inattendue, v\u00e9rifiez l'impl\u00e9mentation du programme de mappage de certificat X.509 personnalis\u00e9 et effectuez les modifications n\u00e9cessaires.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: Le nom distinctif ''{0}'' n''est pas mapp\u00e9 \u00e0 un utilisateur de registre de base valide.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=Le nom distinctif du principal du sujet dans le certificat X.509 n'est pas mapp\u00e9 \u00e0 un utilisateur de registre de base valide. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Assurez-vous que le nom distinctif du principal du sujet contient un nom distinctif relatif 'cn' et qu'un utilisateur du registre de base est mapp\u00e9 \u00e0 la valeur du nom distinctif relatif. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: Le registre de base est configur\u00e9 pour ignorer les demandes d'authentification par certificat X.509.
+BASIC_REGISTRY_CERT_IGNORED.explanation=La valeur IGNORE a \u00e9t\u00e9 affect\u00e9e \u00e0 l'attribut de configuration certificateMapMode du registre de base.
+BASIC_REGISTRY_CERT_IGNORED.useraction=Pour que le registre de base puisse traiter les demandes d'authentification par certificat X.509, modifiez l'attribut de configuration certificateMapMode de mani\u00e8re \u00e0 permettre le traitement.

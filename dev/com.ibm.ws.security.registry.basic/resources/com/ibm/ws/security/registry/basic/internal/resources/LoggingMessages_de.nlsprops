@@ -53,3 +53,27 @@ BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Definieren Sie nur einen einzig
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: Der Membereintrag mit dem Namen ''{0}'' f\u00fcr die Gruppe ''{1}'' stimmt nicht mit einem definierten Benutzer \u00fcberein.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Der f\u00fcr den Membereintrag angegebene Name stimmt mit keinem definierten Benutzer \u00fcberein.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Pr\u00fcfen Sie die Schreibweise des Membernamens, und stellen Sie sicher, dass er mit einem in der Registry definierten Benutzer \u00fcbereinstimmt.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: Es wurde kein angepasster X.509-Zertifikatsmapper an diese Basisregistry gebunden.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=Der X.509-Zertifikatszuordnungsmodus wurde auf CUSTOM gesetzt, aber es wurde kein angepasster X.509-Zertifikatsmapper an die Basisregistry gebunden. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Stellen Sie sicher, dass das Attribut certificateMapperId in der Basisregistry so konfiguriert ist, dass es auf einen g\u00fcltigen angepassten X.509-Zertifikatsmapper verweist.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: Der vom angepassten X.509-Zertifikatsmapper zur\u00fcckgegebene Filter oder definierte Name (DN) ''{0}'' entspricht keinem Registry-Benutzer.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=Der vom angepassten X.509-Zertifikatsmapper zur\u00fcckgegebene Wert kann keinem Benutzer in der Basisregistry zugeordnet werden.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Stellen Sie sicher, dass der Benutzer in der Basisregistry vorhanden und die Zuordnung g\u00fcltig ist.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: Der angepasster X.509-Zertifikatsmapper hat eine Ausnahme des Typs CertificateMapNotSupportedException ausgel\u00f6st.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Der angepasster X.509-Zertifikatsmapper hat eine Ausnahme des Typs CertificateMapNotSupportedException ausgel\u00f6st.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Wenn die Ausnahme unerwartet ist, \u00fcberpr\u00fcfen Sie die Implementierung des angepassten X.509-Zertifikatsmappers und nehmen Sie die erforderlichen \u00c4nderungen vor.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: Der angepasster X.509-Zertifikatsmapper hat eine Ausnahme des Typs CertificateMapFailedException ausgel\u00f6st.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Der angepasster X.509-Zertifikatsmapper hat eine Ausnahme des Typs CertificateMapFailedException ausgel\u00f6st.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Wenn die Ausnahme unerwartet ist, \u00fcberpr\u00fcfen Sie die Implementierung des angepassten X.509-Zertifikatsmappers und nehmen Sie die erforderlichen \u00c4nderungen vor.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: Der definierte Name (DN) ''{0}'' entspricht keinem g\u00fcltigen Basisregistry-Benutzer.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=Der definierte Name (DN) des Subjektprincipals im X.509-Zertifikat entspricht keinem g\u00fcltigen Basisregistry-Benutzer. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Stellen Sie sicher, dass der DN des Subjektprincipals einen relativ definierten Namen (RDN) f\u00fcr den 'cn' enth\u00e4lt und dass ein Benutzer in der Basisregistry dem Wert des RDN entspricht. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: Die Basisregistry ist so konfiguriert, dass X.509-Zertifikatsauthentifizierungsanforderungen ignoriert werden.
+BASIC_REGISTRY_CERT_IGNORED.explanation=Das Konfigurationsattribut certificateMapMode f\u00fcr die Basisregistry ist auf IGNORE gesetzt.
+BASIC_REGISTRY_CERT_IGNORED.useraction=Damit die Basisregistry X.509-Zertifikatsauthentifizierungsanforderungen verarbeiten kann, m\u00fcssen Sie das Konfigurationsattribut certificateMapMode so \u00e4ndern, dass die Verarbeitung zugelassen wird. 

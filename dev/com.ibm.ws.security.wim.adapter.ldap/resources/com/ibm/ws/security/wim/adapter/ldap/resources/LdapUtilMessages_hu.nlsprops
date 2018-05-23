@@ -205,3 +205,19 @@ ENTITY_ALREADY_EXIST.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velett
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Az \u00edr\u00e1si m\u0171veletek nem enged\u00e9lyezettek a(z) {0} m\u00e1sodlagos LDAP kiszolg\u00e1l\u00f3n.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Minden \u00edr\u00e1si m\u0171velet (l\u00e9trehoz\u00e1s, friss\u00edt\u00e9s, t\u00f6rl\u00e9s) csak az els\u0151dleges LDAP kiszolg\u00e1l\u00f3n enged\u00e9lyezett.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az els\u0151dleges kiszolg\u00e1l\u00f3 el van ind\u00edtva, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+
+LDAP_REGISTRY_MAPPER_NOT_BOUND=CWIML4500W: Az LDAP nyilv\u00e1ntart\u00e1ssal nincs \u00f6sszerendelve egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151.
+LDAP_REGISTRY_MAPPER_NOT_BOUND.explanation=Az X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u00e9si m\u00f3d be\u00e1ll\u00edt\u00e1sa CUSTOM, de nincs egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 az LDAP nyilv\u00e1ntart\u00e1shoz rendelve. 
+LDAP_REGISTRY_MAPPER_NOT_BOUND.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a certificateMapperId attrib\u00fatum az LDAP nyilv\u00e1ntart\u00e1sban \u00e9rv\u00e9nyes egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151re mutasson.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWIML4502W: Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapNotSupportedException hib\u00e1t jelentett.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapNotSupportedException hib\u00e1t jelentett.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Ha ez egy v\u00e1ratlan hiba, vizsg\u00e1lja fel\u00fcl az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 megval\u00f3s\u00edt\u00e1st, \u00e9s v\u00e9gezze el a sz\u00fcks\u00e9ges m\u00f3dos\u00edt\u00e1sokat.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED=CWIML4503E: Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapFailedException hib\u00e1t jelentett.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapFailedException hib\u00e1t jelentett.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Ha ez egy v\u00e1ratlan hiba, vizsg\u00e1lja fel\u00fcl az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 megval\u00f3s\u00edt\u00e1st, \u00e9s v\u00e9gezze el a sz\u00fcks\u00e9ges m\u00f3dos\u00edt\u00e1sokat.
+
+LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 \u00fcres vagy null\u00e9rt\u00e9ket adott vissza. 
+LDAP_REGISTRY_INVALID_MAPPING.explanation=Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 csak nem \u00fcres \u00e9s nem null \u00e9rt\u00e9ket adhat vissza, k\u00fcl\u00f6nben a megadott kiv\u00e9telek egyik\u00e9t jelenti.
+LDAP_REGISTRY_INVALID_MAPPING.useraction=M\u00f3dos\u00edtsa az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 megval\u00f3s\u00edt\u00e1st \u00fagy, hogy ne \u00fcres vagy null\u00e9rt\u00e9ket adjon vissza. Ha nem adhat\u00f3 vissza \u00e9rv\u00e9nyes \u00e9rt\u00e9k, a megval\u00f3s\u00edt\u00e1snak ellen\u0151rz\u00f6tt hib\u00e1t kell jelentenie. 

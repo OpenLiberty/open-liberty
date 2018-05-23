@@ -53,3 +53,27 @@ BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Csak egy tagbejegyz\u00e9st hat
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: A(z) "{1}" csoport "{0}" nev\u0171 tagbejegyz\u00e9se nem felel meg a megadott felhaszn\u00e1l\u00f3nak.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=A tagbejegyz\u00e9s sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9k nem felel meg egyetlen megadott felhaszn\u00e1l\u00f3nak sem.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Ellen\u0151rizze a tag nev\u00e9nek helyes\u00edr\u00e1s\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel a nyilv\u00e1ntart\u00e1sban megadott felhaszn\u00e1l\u00f3nak.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: Az alap nyilv\u00e1ntart\u00e1ssal nincs \u00f6sszerendelve egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=Az X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u00e9si m\u00f3d be\u00e1ll\u00edt\u00e1sa CUSTOM, de nincs egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 az alap nyilv\u00e1ntart\u00e1shoz rendelve. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a certificateMapperId attrib\u00fatum az alap nyilv\u00e1ntart\u00e1sban \u00e9rv\u00e9nyes egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151re mutasson.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: Az X.509 egy\u00e9ni tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 \u00e1ltal visszaadott sz\u0171r\u0151 vagy a(z) ''{0}'' megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v nem felel meg felhaszn\u00e1l\u00f3nak a nyilv\u00e1ntart\u00e1sban.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=Az X.509 egy\u00e9ni tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 \u00e1ltal visszaadott \u00e9rt\u00e9k nem felel meg felhaszn\u00e1l\u00f3nak az alap nyilv\u00e1ntart\u00e1sban.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 l\u00e9tezik az alap nyilv\u00e1ntart\u00e1sban, \u00e9s hogy a lek\u00e9pez\u00e9s \u00e9rv\u00e9nyes.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapNotSupportedException hib\u00e1t jelentett.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapNotSupportedException hib\u00e1t jelentett.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Ha ez egy v\u00e1ratlan hiba, vizsg\u00e1lja fel\u00fcl az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 megval\u00f3s\u00edt\u00e1st, \u00e9s v\u00e9gezze el a sz\u00fcks\u00e9ges m\u00f3dos\u00edt\u00e1sokat.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapFailedException hib\u00e1t jelentett.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 CertificateMapFailedException hib\u00e1t jelentett.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Ha ez egy v\u00e1ratlan hiba, vizsg\u00e1lja fel\u00fcl az egy\u00e9ni X.509 tan\u00fas\u00edtv\u00e1ny lek\u00e9pez\u0151 megval\u00f3s\u00edt\u00e1st, \u00e9s v\u00e9gezze el a sz\u00fcks\u00e9ges m\u00f3dos\u00edt\u00e1sokat.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: A(z) ''{0}'' megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v (DN) nem egyezik \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3val az alap nyilv\u00e1ntart\u00e1sban.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=A tulajdonos azonos\u00edt\u00f3 DN az X.509 tan\u00fas\u00edtv\u00e1nyban nem egyezik \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3val az alap nyilv\u00e1ntart\u00e1sban. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a tulajdonos azonos\u00edt\u00f3 DN tartalmazzon egy 'cn' relat\u00edv megk\u00fcl\u00f6nb\u00f6ztetett nevet (RDN), \u00e9s hogy az RDN \u00e9rt\u00e9ke megfeleljen egy \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3nak az alap nyilv\u00e1ntart\u00e1sban. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: Az alap nyilv\u00e1ntart\u00e1s az X.509 tan\u00fas\u00edtv\u00e1nyhiteles\u00edt\u00e9si k\u00e9r\u00e9sek mell\u0151z\u00e9s\u00e9re van be\u00e1ll\u00edtva.
+BASIC_REGISTRY_CERT_IGNORED.explanation=Az alap nyilv\u00e1ntart\u00e1s certificateMapMode konfigur\u00e1ci\u00f3s attrib\u00fatuma IGNORE \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
+BASIC_REGISTRY_CERT_IGNORED.useraction=Annak \u00e9rdek\u00e9ben, hogy az alap nyilv\u00e1ntart\u00e1s feldolgozza az X.509 tan\u00fas\u00edtv\u00e1nyhiteles\u00edt\u00e9si k\u00e9r\u00e9seket, m\u00f3dos\u00edtsa a certificateMapMode konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e9rt\u00e9k\u00e9t a feldolgoz\u00e1st lehet\u0151 tev\u0151 \u00e9rt\u00e9kre.

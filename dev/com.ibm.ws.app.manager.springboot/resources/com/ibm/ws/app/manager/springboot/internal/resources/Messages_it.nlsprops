@@ -50,3 +50,11 @@ error.missing.servlet.useraction=Una funzione servlet deve essere configurata in
 error.multiple.applications.not.allowed=CWWKC0255E: Impossibile avviare l''applicazione Spring Boot {0} perch\u00e9 l''applicazione {1} \u00e8 gi\u00e0 attiva. Non \u00e8 possibile configurare pi\u00f9 applicazioni Spring Boot nella stessa configurazione del server.
 error.multiple.applications.not.allowed.explanation=La configurazione di pi\u00f9 applicazioni Spring Boot nella stessa configurazione server non \u00e8 supportata.
 error.multiple.applications.not.allowed.useraction=Configurare una sola applicazione Spring Boot per configurazione server.
+
+error.no.manifest.found=CWWKC0256E: Nessun file META-INF/MANIFEST.MF trovato per l''applicazione Spring Boot {0}.
+error.no.manifest.found.explanation=Le applicazioni Spring Boot devono contenere un file META-INF/MANIFEST.MF.
+error.no.manifest.found.useraction=Configurare un'applicazione Spring Boot valida, che contenga un file META-INF/MANIFEST.MF, con il server.
+
+error.no.spring.class.found=CWWKC0257E: Il file META-INF/MANIFEST.MF dell'applicazione Spring Boot deve specificare un'intestazione Start-Class.
+error.no.spring.class.found.explanation=Le applicazioni Spring Boot devono contenere una classe principale specificata dall'intestazione manifest Start-Class.
+error.no.spring.class.found.useraction=Configurare un'applicazione Spring Boot valida, che contenga un'intestazione manifest Start-Class, con il server.

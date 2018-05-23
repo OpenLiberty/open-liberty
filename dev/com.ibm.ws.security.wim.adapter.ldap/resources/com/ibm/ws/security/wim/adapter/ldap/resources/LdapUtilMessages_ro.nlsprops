@@ -205,3 +205,19 @@ ENTITY_ALREADY_EXIST.useraction=Re\u00eencerca\u0163i opera\u0163ia \u015fi spec
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: Opera\u0163ia de \u00eenregistrare utilizator nu a putut fi finalizat\u0103. Opera\u0163iile de scriere nu sunt permise pe serverul LDAP secundar {0}.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Toate opera\u0163iile de scriere (creare, acualizare, \u015ftergere) sunt permise doar \u00een serverul LDAP primar.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul primar a fost pornit \u015f re\u00eencerca\u0163i opera\u0163ia.
+
+LDAP_REGISTRY_MAPPER_NOT_BOUND=CWIML4500W: Un mapator de certificate X.509 personalizat nu a fost legat cu acest registru LDAP.
+LDAP_REGISTRY_MAPPER_NOT_BOUND.explanation=Modul mapatorului de certificate X.509 a fost setat la CUSTOM, dar niciun mapator de certificate X.509 personalizat nu a fost legat la registrul LDAP. 
+LDAP_REGISTRY_MAPPER_NOT_BOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul certificateMapperId din registrul LDAP este configurat astfel \u00eenc\u00e2t s\u0103 indice un mapator de certificate X.509 personalizat valid.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWIML4502W: Mapatorul de certificate X.509 personalizat a aruncat excep\u0163ia CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Mapatorul de certificate X.509 personalizat a aruncat excep\u0163ia CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Dac\u0103 excep\u0163ia a fost nea\u015fteptat\u0103, examina\u0163i implementarea mapatorului de certificate X.509 personalizat \u015fi face\u0163i modific\u0103rile necesare.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED=CWIML4503E: Mapatorul de certificate X.509 personalizat a aruncat excep\u0163ia CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Mapatorul de certificate X.509 personalizat a aruncat excep\u0163ia CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Dac\u0103 excep\u0163ia a fost nea\u015fteptat\u0103, examina\u0163i implementarea mapatorului de certificate X.509 personalizat \u015fi face\u0163i modific\u0103rile necesare.
+
+LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Mapatorul de certificate X.509 personalizat a returnat o valoare goal\u0103 sau nul\u0103. 
+LDAP_REGISTRY_INVALID_MAPPING.explanation=Mapatorul de certificate X.509 personalizat trebuie s\u0103 returneze o valoare care s\u0103 nu fie goal\u0103 sau nul\u0103 sau s\u0103 arunce una dintre excep\u0163iile numite.
+LDAP_REGISTRY_INVALID_MAPPING.useraction=Modifica\u0163i implementarea mapatorului de certificate X.509 personalizat astfel \u00eenc\u00e2t s\u0103 nu returneze o valoare goal\u0103 sau nul\u0103. Dac\u0103 nu poate fi returnat\u0103 o valoare valid\u0103, implementarea trebuie s\u0103 arunce o excep\u0163ie verificat\u0103. 
