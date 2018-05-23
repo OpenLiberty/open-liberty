@@ -173,10 +173,14 @@ task packageOpenLibertyWebProfile8(type: PackageLibertyWithFeatures) {
     withFeatures this.&webProfile8Features
     outputTo packageDir
     doLast {
-        def src = new File(packageDir, 'wlp/templates/servers/webProfile8/server.xml')
-        def dest = new File(packageDir, 'wlp/templates/servers/defaultServer/server.xml')
-        dest.delete()
-        dest << src.text
+        copy {
+            from "$packageDir/wlp/templates/servers/webProfile8/server.xml" 
+            into "$packageDir/wlp/templates/servers/defaultServer" 
+        }
+        copy {
+            from "$packageDir/wlp/templates/clients/javaeeClient8/client.xml"
+            into "$packageDir/wlp/templates/clients/defaultClient" 
+        }
         excludedFeatures.each {
             this.&restoreFeature("${it}")
         }
@@ -196,10 +200,14 @@ task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
     withFeatures this.&javaee8Features
     outputTo packageDir
     doLast {
-        def src = new File(packageDir, 'wlp/templates/servers/javaee8/server.xml')
-        def dest = new File(packageDir, 'wlp/templates/servers/defaultServer/server.xml')
-        dest.delete()
-        dest << src.text
+        copy {
+            from "$packageDir/wlp/templates/servers/javaee8/server.xml" 
+            into "$packageDir/wlp/templates/servers/defaultServer" 
+        }
+        copy {
+            from "$packageDir/wlp/templates/clients/javaeeClient8/client.xml"
+            into "$packageDir/wlp/templates/clients/defaultClient" 
+        }
         excludedFeatures.each {
             this.&restoreFeature("${it}")
         }
