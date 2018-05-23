@@ -28,7 +28,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -210,12 +213,21 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
     @Before
     public void setupConnection() {
-        httpclient = new DefaultHttpClient();
+        // disable auto redirect.
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+
+        httpclient = new DefaultHttpClient(httpParams);
     }
 
     @After
     public void cleanupConnection() {
         httpclient.getConnectionManager().shutdown();
+    }
+
+    public void resetConnection() {
+        cleanupConnection();
+        setupConnection();
     }
 
     @Override
@@ -241,12 +253,16 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         }
 //        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER1_PASSWORD); TODO Uncomment when ApacheDS logs are clean
 
+        resetConnection();
+
         /* ldapuser2 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER2_UID, LDAP_USER2_PASSWORD, code2);
         if (code2 == SC_OK) {
             verifyUserResponse(response, getUserPrincipalFound + LDAP_USER2_UID, getRemoteUserFound + LDAP_USER2_UID);
         }
 //        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER2_PASSWORD); TODO Uncomment when ApacheDS logs are clean
+
+        resetConnection();
 
         /* ldapuser3 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER3_UID, LDAP_USER3_PASSWORD, code3);
@@ -255,6 +271,7 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
         }
 //        passwordChecker.checkForPasswordInAnyFormat(LDAP_USER3_PASSWORD); TODO Uncomment when ApacheDS logs are clean
 
+        resetConnection();
         /* ldapuser4 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, LDAP_USER4_UID, LDAP_USER4_PASSWORD, code4);
         if (code4 == SC_OK) {
