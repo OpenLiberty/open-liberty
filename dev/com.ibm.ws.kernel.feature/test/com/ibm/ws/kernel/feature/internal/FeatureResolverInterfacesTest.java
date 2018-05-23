@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -143,6 +145,45 @@ public class FeatureResolverInterfacesTest {
         assertThat(result.getResolvedFeatures(), containsInAnyOrder("com.example.featureA-1.0", "com.example.featureB-1.0", "com.example.autoFeature-1.0"));
     }
 
+    @Test
+    public void testResolveMissingFeature() {
+        FeatureResolver resolver = new FeatureResolverImpl();
+
+        TestRepository repo = new TestRepository();
+
+        Result result = resolver.resolveFeatures(repo, Arrays.asList("com.example.missingFeature"), Collections.<String> emptySet(), false);
+        assertThat(result.hasErrors(), is(true));
+        assertThat(result.getResolvedFeatures(), is(empty()));
+        assertThat(result.getMissing(), contains("com.example.missingFeature"));
+    }
+
+    @Test
+    public void testResolveMissingDep() {
+        FeatureResolver resolver = new FeatureResolverImpl();
+
+        TestRepository repo = new TestRepository();
+        repo.add(TestFeature.create("com.example.featureA-1.0").dependency("com.example.missingFeature").build());
+
+        Result result = resolver.resolveFeatures(repo, Arrays.asList("com.example.featureA-1.0"), Collections.<String> emptySet(), false);
+        assertThat(result.hasErrors(), is(true));
+        assertThat(result.getResolvedFeatures(), contains("com.example.featureA-1.0"));
+        assertThat(result.getMissing(), contains("com.example.missingFeature"));
+    }
+
+    @Test
+    public void testResolveMissingDepWithTolerates() {
+        FeatureResolver resolver = new FeatureResolverImpl();
+
+        TestRepository repo = new TestRepository();
+        repo.add(TestFeature.create("com.example.featureA-1.0").dependency("com.example.missingFeature-1.0", "1.1", "1.2").build());
+
+        Result result = resolver.resolveFeatures(repo, Arrays.asList("com.example.featureA-1.0"), Collections.<String> emptySet(), false);
+        assertThat(result.hasErrors(), is(true));
+        assertThat(result.getResolvedFeatures(), contains("com.example.featureA-1.0"));
+        assertThat(result.getMissing(), contains("com.example.missingFeature-1.0"));
+
+    }
+
     /**
      * Test implementation of {@link FeatureResolver.Repository} which holds the features in a map.
      * <p>
@@ -185,7 +226,7 @@ public class FeatureResolverInterfacesTest {
      * <p>
      * This class only implements the methods required to test the resolver.
      * <p>
-     * New instances should be created using {@link TestFeature#create(String)}.
+     * New instances should be created using {@link #create(String)}.
      */
     public static class TestFeature implements ProvisioningFeatureDefinition {
 

@@ -26,6 +26,7 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.feature.core;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.product.utility;version=latest,\
 	com.ibm.ws.repository;version=latest,\
@@ -37,8 +38,8 @@ instrument.disabled: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
-    org.hamcrest:hamcrest-all;version=1.3, \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    org.hamcrest:hamcrest-all;version=1.3, \
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.repository.liberty;version=latest, \
