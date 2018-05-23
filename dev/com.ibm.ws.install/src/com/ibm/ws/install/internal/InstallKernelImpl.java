@@ -171,6 +171,30 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
         return installed;
     }
 
+    public Collection<String> installLocalFeatureNoResolve(String esaLocation, String toExtension, boolean acceptLicense,
+                                                           ExistsAction existsAction) throws InstallException {
+        this.director.log(Level.FINE,
+                          Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALL_FEATURES", esaLocation));
+        this.director.fireProgressEvent(InstallProgressEvent.BEGIN, 0,
+                                        Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
+        Collection<String> installed;
+        try {
+            this.director.refresh();
+            this.director.installFeatureNoResolve(esaLocation, toExtension, acceptLicense);
+            this.director.install(existsAction, false, false);
+            installed = this.director.getInstalledFeatureNames();
+            this.director.reapplyFixIfNeeded();
+        } catch (InstallException e) {
+            throw e;
+        } finally {
+            this.director.setScriptsPermission(InstallProgressEvent.POST_INSTALL);
+            this.director.cleanUp();
+        }
+        this.director.fireProgressEvent(InstallProgressEvent.COMPLETE, 100,
+                                        Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_COMPLETED_INSTALL"));
+        return installed;
+    }
+
     @Override
     public Collection<String> installFeature(Collection<String> featureIds, File fromDir, String toExtension,
                                              boolean acceptLicense, ExistsAction existsAction, boolean offlineOnly) throws InstallException {
